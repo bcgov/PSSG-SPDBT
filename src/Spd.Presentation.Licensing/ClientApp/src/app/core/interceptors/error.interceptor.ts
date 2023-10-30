@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { WorkerLicensingService } from 'src/app/api/services';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 
 @Injectable()
@@ -40,11 +41,21 @@ export class ErrorInterceptor implements HttpInterceptor {
 				// 	}
 				// }
 
+				// Certain 404s will be handled in the component
+				// TODO fix
+				if (errorResponse.status == 500) {
+					const url = WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.substring(
+						WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.indexOf('/api') + 1,
+						WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.lastIndexOf('/')
+					);
+					if (errorResponse.url?.includes(url)) {
+						return throwError(() => errorResponse);
+					}
+				}
+
 				let message = 'An error has occurred';
-				let title = errorResponse.statusText ?? 'Unexpected Error';
 				if (errorResponse.error) {
 					if (errorResponse.error?.errors) {
-						title = errorResponse.error.title;
 						message = '<ul>';
 						for (const key in errorResponse.error?.errors) {
 							const value = errorResponse.error?.errors[key];

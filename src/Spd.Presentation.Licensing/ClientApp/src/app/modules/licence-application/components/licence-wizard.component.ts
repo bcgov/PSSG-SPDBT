@@ -280,7 +280,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 		if (this.hasValueChanged) {
 			this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
-				next: (resp) => {
+				next: (resp: any) => {
 					this.hotToastService.success('Licence information has been saved');
 					this.hasValueChanged = false;
 
@@ -299,10 +299,12 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 							this.stepIdentificationComponent?.onGoToFirstStep();
 							break;
 					}
+					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
-				error: (error) => {
+				error: (error: any) => {
 					// only 404 will be here as an error
 					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
 			});
 		} else {
@@ -333,15 +335,15 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		if (this.stepper.selectedIndex == this.STEP_BACKGROUND) {
 			saveTypeCode = LicenceSaveTypeCode.MentalHealthPoliceFingerprints;
 		}
-
 		this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
-			next: (resp) => {
+			next: (resp: any) => {
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 			},
-			error: (error) => {
+			error: (error: any) => {
 				// only 404 will be here as an error
 				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
 	}
@@ -353,14 +355,15 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	onChildNextStep(saveTypeCode: LicenceSaveTypeCode) {
 		if (this.hasValueChanged) {
 			this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
-				next: (resp) => {
+				next: (resp: any) => {
 					this.hotToastService.success('Licence information has been saved');
 					this.hasValueChanged = false;
 					this.goToChildNextStep();
 				},
-				error: (error) => {
+				error: (error: any) => {
 					// only 404 will be here as an error
 					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
 			});
 		} else {

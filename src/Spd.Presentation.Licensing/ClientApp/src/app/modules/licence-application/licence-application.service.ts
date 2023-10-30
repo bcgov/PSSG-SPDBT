@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import {
 	ApplicationTypeCode,
 	DocumentTypeCode,
@@ -16,6 +16,7 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 	WorkerLicenceUpsertRequest,
+	WorkerLicenceUpsertResponse,
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -1077,7 +1078,112 @@ export class LicenceApplicationService {
 		return [...updatedList];
 	}
 
-	saveLicence(saveTypeCode: LicenceSaveTypeCode): Observable<StrictHttpResponse<WorkerLicenceUpsertRequest>> {
+	saveLicence(saveTypeCode: LicenceSaveTypeCode): any {
+		console.log('saveLicence', saveTypeCode);
+
+		switch (saveTypeCode) {
+			case LicenceSaveTypeCode.BasicInformation:
+				break;
+			case LicenceSaveTypeCode.CategoriesDogsRestraints:
+				break;
+			case LicenceSaveTypeCode.MentalHealthPoliceFingerprints:
+				break;
+			case LicenceSaveTypeCode.PhotoCitizenshipGovIssuedId:
+				break;
+		}
+
+		return forkJoin([
+			this.saveLicenceBasicInformation(),
+			// this.saveLicenceFingerprint(),
+			// this.workerLicensingService.apiWorkerLicencesFingerprintPost$Response(),
+			this.workerLicensingService.apiWorkerLicencesPhotographOfYourselfPost$Response(),
+		]);
+
+		// return this.saveLicenceBasicInformation();
+	}
+
+	saveLicenceBasicInformation(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+		const formValue = this.licenceModelFormGroup.value;
+		console.debug('saveLicenceBasicInformation licenceModelFormGroup', formValue);
+
+		const workerLicenceTypeData = { ...formValue.workerLicenceTypeData };
+		const applicationTypeData = { ...formValue.applicationTypeData };
+		const soleProprietorData = { ...formValue.soleProprietorData };
+		const contactInformationData = { ...formValue.contactInformationData };
+		const expiredLicenceData = { ...formValue.expiredLicenceData };
+		const characteristicsData = { ...formValue.characteristicsData };
+		const personalInformationData = { ...formValue.personalInformationData };
+		const residentialAddressData = { ...formValue.residentialAddressData };
+		const mailingAddressData = { ...formValue.mailingAddressData };
+
+		const body: WorkerLicenceUpsertRequest = {
+			// licenceApplicationId: formValue.applicationTypeData.licenceApplicationId,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			isSoleProprietor: soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
+			// hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
+			// aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
+			// hasBcDriversLicence: formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes,
+			// bcDriversLicenceNumber:
+			// 	formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
+			// 		? formValue.bcDriversLicenceData.bcDriversLicenceNumber
+			// 		: null,
+			// contactEmailAddress: contactInformationData.contactEmailAddress,
+			// contactPhoneNumber: contactInformationData.contactPhoneNumber,
+			// dateOfBirth: formValue.applicationTypeData.dateOfBirth,
+			// hasExpiredLicence: formValue.expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes,
+			// expiredLicenceNumber:
+			// 	formValue.expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes
+			// 		? expiredLicenceData.expiredLicenceNumber
+			// 		: null,
+			// expiryDate:
+			// 	formValue.expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiryDate : null,
+			// eyeColourCode: characteristicsData.eyeColourCode,
+			// hairColourCode: characteristicsData.hairColourCode,
+			// height: characteristicsData.height,
+			// heightUnitCode: characteristicsData.heightUnitCode,
+			// weight: characteristicsData.weight,
+			// weightUnitCode: characteristicsData.weightUnitCode,
+			// genderCode: personalInformationData.genderCode,
+			// givenName: personalInformationData.givenName,
+			// oneLegalName: personalInformationData.oneLegalName,
+			// middleName1: personalInformationData.middleName1,
+			// middleName2: personalInformationData.middleName2,
+			// surname: personalInformationData.surname,
+			// hasCriminalHistory: formValue.applicationTypeData.hasCriminalHistory == BooleanTypeCode.Yes,
+			// licenceTermCode: formValue.applicationTypeData.licenceTermCode,
+			// isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
+			// mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
+			// 	? residentialAddressData
+			// 	: mailingAddressData,
+			// residentialAddressData,
+		};
+		return this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body });
+
+		// const body2: ProofOfFingerprintUpsertRequest = {
+		// 	licenceApplicationId: '',
+		// };
+		// const proofOfFingerprintDocs: Documents = {
+		// 	attachments: [...formValue.proofOfFingerprintData.attachments],
+		// 	documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
+		// };
+		// const body3: PhotographOfYourselfUpsertRequest = { documents: proofOfFingerprintDocs };
+
+		// return forkJoin([
+		// 	this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body }),
+		// 	// this.workerLicensingService.apiWorkerLicencesFingerprintPost$Response(),
+		// 	// this.workerLicensingService.apiWorkerLicencesPhotographOfYourselfPost$Response(),
+		// ]);
+	}
+
+	saveLicenceFingerprint(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+		const formValue = this.licenceModelFormGroup.value;
+		console.debug('saveLicenceFingerprint licenceModelFormGroup', formValue);
+
+		return this.workerLicensingService.apiWorkerLicencesFingerprintPost$Response();
+	}
+
+	xxxxxxxxxxxxxxx(): any {
 		const formValue = this.licenceModelFormGroup.value;
 		console.debug('saveLicence licenceModelFormGroup', formValue);
 		/*
@@ -1506,6 +1612,34 @@ export class LicenceApplicationService {
 			// 	: mailingAddressData,
 			// residentialAddressData,
 		};
-		return this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body });
+		// return this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body });
+
+		// const body2: ProofOfFingerprintUpsertRequest = {
+		// 	licenceApplicationId: '',
+		// };
+		// const proofOfFingerprintDocs: Documents = {
+		// 	attachments: [...formValue.proofOfFingerprintData.attachments],
+		// 	documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
+		// };
+		// const body3: PhotographOfYourselfUpsertRequest = { documents: proofOfFingerprintDocs };
+
+		return forkJoin([
+			this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body }),
+			// this.workerLicensingService.apiWorkerLicencesFingerprintPost$Response(),
+			// this.workerLicensingService.apiWorkerLicencesPhotographOfYourselfPost$Response(),
+		]);
+
+		// forkJoin([
+		// 	this.workerLicensingService.apiWorkerLicencesFingerprintPost$Response({ body: body2 }),
+		// 	this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body }),
+		// ]).subscribe({
+		// 	next: (resp) => {
+		// 		console.log('resp', resp);
+		// 	},
+		// 	error: (error) => {
+		// 		// only 404 will be here as an error
+		// 		console.log('An error occurred during save', error);
+		// 	},
+		// });
 	}
 }
