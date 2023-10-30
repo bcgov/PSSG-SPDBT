@@ -9,7 +9,13 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceUpsertRequest, SaveLicenceApplicationCmd>();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
-        CreateMap<ResidentialAddr, ResidentialAddress>();
-        CreateMap<MailingAddr, MailingAddress>();
+        CreateMap<Address, Addr>()
+            .ReverseMap();
+        CreateMap<ResidentialAddress, ResidentialAddr>()
+            .IncludeBase<Address, Addr>()
+            .ReverseMap();
+        CreateMap<MailingAddress, MailingAddr>()
+            .IncludeBase<Address, Addr>()
+            .ReverseMap();
     }
 }
