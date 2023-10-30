@@ -148,11 +148,11 @@ namespace Spd.Utilities.Dynamics
             {"MCFD", Guid.Parse("a3834126-1e9d-ed11-b83d-00505683fbf4")},
             {"PE_CRC", Guid.Parse("a5d6ca3b-1e9d-ed11-b83d-00505683fbf4")},
             {"PE_CRC_VS", Guid.Parse("61a2ecee-58ae-ed11-b83e-00505683fbf4")},
-            {"SECURITY_WORKER_LICENCE", Guid.Parse("451101f8-58ae-ed11-b83e-00505683fbf4")},
+            {"SecurityWorkerLicence", Guid.Parse("451101f8-58ae-ed11-b83e-00505683fbf4")},
             {"PSSO_VS", Guid.Parse("8c653cc7-64b9-ed11-b83e-00505683fbf4")},
             {"SECURITY_BUSINESS_LICENCE", Guid.Parse("86aa9004-4c32-ee11-b845-00505683fbf4")},
-            {"AVAMCCA", Guid.Parse("b0572417-4c32-ee11-b845-00505683fbf4")},
-            {"BACA", Guid.Parse("f504b223-4c32-ee11-b845-00505683fbf4")},
+            {"ArmouredVehiclePermit", Guid.Parse("b0572417-4c32-ee11-b845-00505683fbf4")}, //AVAMCCA
+            {"BodyArmourPermit", Guid.Parse("f504b223-4c32-ee11-b845-00505683fbf4")}, //BAP
             {"MDRA", Guid.Parse("b212c347-4c32-ee11-b845-00505683fbf4")},
             {"SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC", Guid.Parse("9c7cf246-c942-ee11-b845-00505683fbf4")},
         }.ToImmutableDictionary();
