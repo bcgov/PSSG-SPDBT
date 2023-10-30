@@ -24,7 +24,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         //create contact
 
         //create alias
-        if (cmd.HasPreviousName.Value)
+        if (cmd.HasPreviousName!= null && cmd.HasPreviousName.Value)
         {
             //
         }
