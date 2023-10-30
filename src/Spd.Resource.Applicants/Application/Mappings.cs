@@ -301,8 +301,9 @@ namespace Spd.Resource.Applicants.Application
         private static Addr GetMailingAddress(LicenceApplication app)
         {
             //if residential address is the same as mailing address, fe will send an empty mailing address
-            if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential) return app.ResidentialAddressData;
-            if ((bool)app.IsMailingTheSameAsResidential) return app.MailingAddressData;
+            if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential) 
+                return app.MailingAddressData;
+            if ((bool)app.IsMailingTheSameAsResidential) return app.ResidentialAddressData;
             return app.MailingAddressData;
         }
 

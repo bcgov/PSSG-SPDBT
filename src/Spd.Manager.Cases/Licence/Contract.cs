@@ -123,7 +123,6 @@ namespace Spd.Manager.Cases.Licence
 
     public abstract record Address
     {
-        public bool AddressSelected { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? City { get; set; }
