@@ -20,7 +20,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<div
 											class="step-container__box step-container__box__fullheight"
 											(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityBusinessLicence)"
-											[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
+											[ngClass]="{ 'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
 										>
 											<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
 												<div class="box__image d-none d-md-block">
@@ -35,7 +35,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityWorkerLicence)"
 										[ngClass]="{
-											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
+											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
 										}"
 									>
 										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
@@ -51,7 +51,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.ArmouredVehiclePermit)"
 										[ngClass]="{
-											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
+											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
 										}"
 									>
 										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
@@ -66,7 +66,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
-										[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit }"
+										[ngClass]="{
+											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit
+										}"
 									>
 										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
@@ -122,7 +124,7 @@ export class LicenceSelectionComponent implements OnInit {
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
 
-	licenceTypeCode: WorkerLicenceTypeCode | null = null;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
@@ -131,7 +133,7 @@ export class LicenceSelectionComponent implements OnInit {
 	isImagesLoaded = false;
 	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 
-	form: FormGroup = this.licenceApplicationService.licenceTypeFormGroup;
+	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
 
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -149,7 +151,7 @@ export class LicenceSelectionComponent implements OnInit {
 			tmp.src = path;
 		});
 
-		this.licenceTypeCode = this.form.value.licenceTypeCode;
+		this.workerLicenceTypeCode = this.form.value.workerLicenceTypeCode;
 	}
 
 	onStepNext(): void {
@@ -161,8 +163,8 @@ export class LicenceSelectionComponent implements OnInit {
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		this.form.patchValue({ licenceTypeCode: _val });
-		this.licenceTypeCode = _val;
+		this.form.patchValue({ workerLicenceTypeCode: _val });
+		this.workerLicenceTypeCode = _val;
 
 		this.isFormValid();
 	}

@@ -90,9 +90,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licences-fingerprint")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceFingerPrint([FromBody][Required] ProofOfFingerprintUpsertRequest fingerprint)
+        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceFingerprint([FromBody][Required] ProofOfFingerprintUpsertRequest fingerprint)
         {
-            _logger.LogInformation("Get SaveWorkerLicenceFingerPrint");
+            _logger.LogInformation("Get SaveWorkerLicenceFingerprint");
             var info = _currentUser.GetBcscUserIdentityInfo();
             return null;
         }
@@ -102,7 +102,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
-        [Route("api/worker-licences-fingerprint")]
+        [Route("api/worker-licences-photograph-of-yourself")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePhotographOfYourself([FromBody][Required] PhotographOfYourselfUpsertRequest fingerprint)
