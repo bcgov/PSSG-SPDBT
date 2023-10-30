@@ -252,4 +252,32 @@ namespace Spd.Utilities.Dynamics
         Update = 100000002,
         Replacement = 100000003
     }
+
+    public enum LicenceTermOptionSet
+    {
+        NintyDays = 100000000,
+        OneYear = 100000001,
+        TwoYears = 100000002,
+        ThreeYears = 100000003,
+        FiveYears = 100000004
+    }
+
+    public enum HairColorOptionSet
+    {
+        Black = 100000000,
+        Blonde = 100000001,
+        Brown = 100000002,
+        Red = 100000003,
+        Grey = 100000004,
+        Bald = 100000005
+    }
+
+    public enum EyeColorOptionSet
+    {
+        Blue = 100000000,
+        Brown = 100000001,
+        Black = 100000002,
+        Green = 100000003,
+        Hazel = 100000004,
+    }
 }
