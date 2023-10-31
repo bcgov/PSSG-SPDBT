@@ -773,8 +773,7 @@ namespace Spd.Manager.Cases.Screening
     public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<ApplicantAppFileCreateResponse>>;
     public record ApplicantAppFileUploadRequest(
         IList<IFormFile> Files,
-        FileTypeCode FileType = FileTypeCode.StatutoryDeclaration,
-        DateTimeOffset? ExpiryDate = null
+        FileTypeCode FileType = FileTypeCode.StatutoryDeclaration
     );
     public record ApplicantAppFileCreateResponse
     {
