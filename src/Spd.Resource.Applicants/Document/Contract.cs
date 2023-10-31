@@ -42,6 +42,8 @@ namespace Spd.Resource.Applicants.Document
         public DocumentTypeEnum DocumentType { get; set; }
     }
 
+    public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
+
     public enum DocumentTypeEnum
     {
         ApplicantConsentForm,

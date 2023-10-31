@@ -280,4 +280,15 @@ namespace Spd.Utilities.Dynamics
         Green = 100000003,
         Hazel = 100000004,
     }
+
+    public enum PoliceOfficerRoleOptionSet
+    {
+        AuxiliaryorReserveConstable = 100000000,
+        SheriffDeputySheriff = 100000001,
+        CorrectionsOfficer = 100000002,
+        CourtAppointedBailiff = 100000003,
+        SpecialProvincialOrMunicipalConstable = 100000004,
+        PoliceOfficer = 100000005,
+        Other = 100000006
+    }
 }
