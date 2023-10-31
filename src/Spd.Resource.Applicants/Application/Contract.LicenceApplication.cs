@@ -93,50 +93,6 @@ public enum ApplicationTypeEnum
     Update,
 }
 
-public enum LicenceDocumentTypeEnum
-{
-    DogsSecurityDogValidationCertificate,
-    DogsCertificateOfAdvancedSecurityTraining,
-    RestraintsAdvancedSecurityTrainingCertificate,
-    RestraintsUseOfForceLetter,
-    RestraintsTrainingEquivalent,
-    PoliceBackgroundLetterOfNoConflict,
-    MentalHealthCondition,
-    ProofOfFingerprint,
-    DriversLicence,
-    CanadianFirearmsLicence,
-    BcServicesCard,
-    CertificateOfIndianStatus,
-    GovernmentIssuedPhotoId,
-    PhotoOfYourself,
-    CanadianPassport,
-    BirthCertificate,
-    CanadianCitizenship,
-    PermanentResidentCard,
-    RecordOfLandingDocument,
-    ConfirmationOfPermanentResidenceDocument,
-    WorkPermit,
-    StudyPermit,
-    ValidDocumentToVerifyLegalWorkStatus,
-    CategoryLocksmith_CertificateOfQualification,
-    CategoryLocksmith_ExperienceAndApprenticeship,
-    CategoryLocksmith_ApprovedLocksmithCourse,
-    CategoryPrivateInvestigator_ExperienceAndCourses,
-    CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
-    CategoryPrivateInvestigator_KnowledgeAndExperience,
-    CategoryPrivateInvestigator_CompleteRecognizedTrainingCourse,
-    CategoryPrivateInvestigator_CompleteOtherCoursesOrKnowledge,
-    CategoryPrivateInvestigator_PrivateSecurityTrainingNetworkCompletion,
-    CategoryPrivateInvestigator_OtherCourseCompletion,
-    CategorySecurityAlarmInstaller_TradesQualificationCertificate,
-    CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
-    CategorySecurityConsultant_ReferenceLetters,
-    CategorySecurityConsultant_RecommendationLetters,
-    CategorySecurityGuard_BasicSecurityTrainingCertificate,
-    CategorySecurityGuard_PoliceExperienceOrTraining,
-    CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent
-}
-
 public enum LicenceTermEnum
 {
     NintyDays,

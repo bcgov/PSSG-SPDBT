@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Edm;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Dynamics;
@@ -86,7 +87,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payer)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
-            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
             .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => Enum.Parse<CaseStatusEnum>(s.spd_casestatus)))
@@ -193,6 +194,11 @@ namespace Spd.Resource.Applicants.Application
               .IncludeBase<spd_application, LicenceApplication>();
         }
 
+        private static DateTimeOffset? GetDateTimeOffset(Date? date)
+        {
+            if( date == null) return null;
+            return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
+        }
         private static string? GetPayeeType(int? code)
         {
             if (code == null) return null;
@@ -314,7 +320,7 @@ namespace Spd.Resource.Applicants.Application
         private static Addr GetMailingAddress(LicenceApplication app)
         {
             //if residential address is the same as mailing address, fe will send an empty mailing address
-            if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential) 
+            if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential)
                 return app.MailingAddressData;
             if ((bool)app.IsMailingTheSameAsResidential) return app.ResidentialAddressData;
             return app.MailingAddressData;

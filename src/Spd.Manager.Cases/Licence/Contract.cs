@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Manager.Cases.Screening;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Licence
@@ -8,6 +9,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public Task<WorkerLicenceUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
+        public Task<IEnumerable<LicenceAppFileCreateResponse>> Handle(CreateLicenceAppFileCommand command, CancellationToken ct);
     }
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceUpsertResponse>;
@@ -63,15 +65,6 @@ namespace Spd.Manager.Cases.Licence
         public WorkerLicenceCategoryData[] CategoriesData { get; set; }
     }
 
-    public record FileUploadRequest
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public Documents? Documents { get; set; }
-    }
-
-
-
-
     public record DogsAuthorizationUpsertRequest
     {
         public Guid LicenceApplicationId { get; set; }
@@ -79,7 +72,7 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsDogsPurposeProtection { get; set; }
         public bool? IsDogsPurposeDetectionDrugs { get; set; }
         public bool? IsDogsPurposeDetectionExplosives { get; set; }
-        public Documents? Documents { get; set; }
+        //public Documents? Documents { get; set; }
     }
     public record WorkerLicenceUpsertResponse
     {
@@ -103,15 +96,22 @@ namespace Spd.Manager.Cases.Licence
     public record WorkerLicenceCategoryData
     {
         public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
-        public Documents[]? Documents { get; set; } = null;
+        public LicenceAppFileUploadRequest[]? Documents { get; set; } = null; //tbd
     }
 
-    public record Documents
+    public record CreateLicenceAppFileCommand(LicenceAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<LicenceAppFileCreateResponse>>;
+
+    public record LicenceAppFileUploadRequest(
+        IList<IFormFile> Files,
+        LicenceDocumentTypeCode LicenceDocumentTypeCode = LicenceDocumentTypeCode.BirthCertificate,
+        DateTimeOffset? ExpiryDate = null
+    );
+    public record LicenceAppFileCreateResponse
     {
-        public DocumentTypeCode DocumentTypeCode { get; set; }
-        public IFormFile[] Attachments { get; set; } = Array.Empty<IFormFile>();
-        public DateTimeOffset? ExpiryDate { get; set; }
-    }
+        public Guid DocumentUrlId { get; set; }
+        public DateTimeOffset UploadedDateTime { get; set; }
+        public Guid? ApplicationId { get; set; } = null;
+    };
 
     public record Alias
     {
@@ -136,7 +136,7 @@ namespace Spd.Manager.Cases.Licence
         Update,
     }
 
-    public enum DocumentTypeCode
+    public enum LicenceDocumentTypeCode
     {
         BcServicesCard,
         BirthCertificate,
