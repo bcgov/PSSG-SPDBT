@@ -7,11 +7,13 @@ using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Applicants.Application;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.TempFileStorage;
+using Spd.Resource.Organizations.Identity;
 
 namespace Spd.Manager.Cases.Licence;
-internal class LicenceManager :
+internal partial class LicenceManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
+        IRequestHandler<CreateLicenceAppFileCommand, IEnumerable<LicenceAppFileCreateResponse>>,
         ILicenceManager
 {
     private readonly IApplicationRepository _applicationRepository;
@@ -20,7 +22,7 @@ internal class LicenceManager :
     private readonly IDuplicateCheckEngine _duplicateCheckEngine;
     private readonly IDocumentRepository _documentRepository;
     private readonly IFileStorageService _fileStorageService;
-    private readonly IIncidentRepository _incidentRepository;
+    private readonly IIdentityRepository _identityRepository;
     private readonly ILogger<ILicenceManager> _logger;
 
     public LicenceManager(IApplicationRepository applicationRepository,
@@ -29,7 +31,7 @@ internal class LicenceManager :
         IDuplicateCheckEngine duplicateCheckEngine,
         IDocumentRepository documentUrlRepository,
         IFileStorageService fileStorageService,
-        IIncidentRepository incidentRepository,
+        IIdentityRepository identityRepository,
         ILogger<ILicenceManager> logger)
     {
         _applicationRepository = applicationRepository;
@@ -38,7 +40,7 @@ internal class LicenceManager :
         _duplicateCheckEngine = duplicateCheckEngine;
         _documentRepository = documentUrlRepository;
         _fileStorageService = fileStorageService;
-        _incidentRepository = incidentRepository;
+        _identityRepository = identityRepository;
         _logger = logger;
     }
 
@@ -56,4 +58,7 @@ internal class LicenceManager :
 
         return _mapper.Map<WorkerLicenceResponse>(response);
     }
+
+
+
 }

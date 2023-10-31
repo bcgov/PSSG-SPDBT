@@ -60,6 +60,7 @@ internal class DocumentRepository : IDocumentRepository
         return cmd switch
         {
             CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
+            RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -85,6 +86,16 @@ internal class DocumentRepository : IDocumentRepository
         await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, tag, ct);
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = application.spd_applicationid;
+        return _mapper.Map<DocumentResp>(documenturl);
+    }
+
+    private async Task<DocumentResp> DocumentRemoveAsync(RemoveDocumentCmd cmd, CancellationToken ct)
+    {
+        bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
+        if(documenturl == null) { return null; }
+        documenturl.statecode = DynamicsConstants.StateCode_Inactive;
+        await DeleteFileAsync(documenturl.bcgov_url, ct);
+        await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
@@ -119,6 +130,12 @@ internal class DocumentRepository : IDocumentRepository
                     File: file,
                     FileTag: fileTag
                     ), ct);
+    }
+
+    private async Task DeleteFileAsync(string bcgovUrl, CancellationToken ct)
+    {
+        //todo
+ 
     }
 }
 

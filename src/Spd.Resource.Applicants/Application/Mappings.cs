@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Edm;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Dynamics;
@@ -86,7 +87,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payer)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
-            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
             .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => Enum.Parse<CaseStatusEnum>(s.spd_casestatus)))
@@ -150,9 +151,16 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.spd_residentialaddress1, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine1))
              .ForMember(d => d.spd_residentialaddress2, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine2))
              .ForMember(d => d.spd_residentialcity, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.City))
-             .ForMember(d => d.spd_residentialcountry, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
-             .ForMember(d => d.spd_residentialprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country))
+             .ForMember(d => d.spd_residentialcountry, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country))
+             .ForMember(d => d.spd_residentialprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
              .ForMember(d => d.spd_residentialpostalcode, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.PostalCode))
+             .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => GetYesNo(s.IsPoliceOrPeaceOfficer)))
+             .ForMember(d => d.spd_policebackgroundrole, opt => opt.MapFrom(s => GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
+             .ForMember(d => d.spd_policebackgroundother, opt => opt.MapFrom(s => s.OtherOfficerRole))
+             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => GetYesNo(s.IsTreatedForMHC)))
+             .ForMember(d => d.spd_usephotofrombcsc, opt => opt.MapFrom(s => GetYesNo(s.UseBcServicesCardPhoto)))
+             .ForMember(d => d.spd_requestrestraints, opt => opt.MapFrom(s => GetYesNo(s.CarryAndUseRetraints)))
+             .ForMember(d => d.spd_applicantbornincanada, opt => opt.MapFrom(s => GetYesNo(s.IsBornInCanada)))
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
              .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
              .ReverseMap()
@@ -171,6 +179,12 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => GetHeightUnitCode(s.spd_height)))
              .ForMember(d => d.Weight, opt => opt.MapFrom(s => GetWeightNumber(s.spd_weight)))
              .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => GetWeightUnitCode(s.spd_weight)))
+             .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => GetBool(s.spd_peaceofficer)))
+             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetBool(s.spd_mentalhealthcondition)))
+             .ForMember(d => d.UseBcServicesCardPhoto, opt => opt.MapFrom(s => GetBool(s.spd_usephotofrombcsc)))
+             .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => GetBool(s.spd_requestrestraints)))
+             .ForMember(d => d.IsBornInCanada, opt => opt.MapFrom(s => GetBool(s.spd_applicantbornincanada)))
+             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
              ;
 
             _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
@@ -180,6 +194,11 @@ namespace Spd.Resource.Applicants.Application
               .IncludeBase<spd_application, LicenceApplication>();
         }
 
+        private static DateTimeOffset? GetDateTimeOffset(Date? date)
+        {
+            if( date == null) return null;
+            return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
+        }
         private static string? GetPayeeType(int? code)
         {
             if (code == null) return null;
@@ -301,7 +320,7 @@ namespace Spd.Resource.Applicants.Application
         private static Addr GetMailingAddress(LicenceApplication app)
         {
             //if residential address is the same as mailing address, fe will send an empty mailing address
-            if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential) 
+            if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential)
                 return app.MailingAddressData;
             if ((bool)app.IsMailingTheSameAsResidential) return app.ResidentialAddressData;
             return app.MailingAddressData;
@@ -450,6 +469,19 @@ namespace Spd.Resource.Applicants.Application
                 app.spd_residentialprovince == app.spd_province &&
                 app.spd_residentialcountry == app.spd_country &&
                 app.spd_residentialpostalcode == app.spd_postalcode;
+        }
+
+        private static int? GetPoliceRoleOptionSet(PoliceOfficerRoleEnum? policeRole)
+        {
+            if (policeRole == null)
+                return null;
+            return (int)Enum.Parse<PoliceOfficerRoleOptionSet>(policeRole.ToString());
+        }
+
+        private static PoliceOfficerRoleEnum? GetPoliceRoleEnum(int? optionset)
+        {
+            if (optionset == null) return null;
+            return Enum.Parse<PoliceOfficerRoleEnum>(Enum.GetName(typeof(PoliceOfficerRoleOptionSet), optionset));
         }
     }
 }

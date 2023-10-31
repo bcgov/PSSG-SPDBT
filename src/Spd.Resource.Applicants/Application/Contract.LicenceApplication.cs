@@ -43,6 +43,13 @@ public record LicenceApplication
     public bool? IsMailingTheSameAsResidential { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public MailingAddr? MailingAddressData { get; set; }
+    public bool? IsPoliceOrPeaceOfficer { get; set; }
+    public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
+    public string? OtherOfficerRole { get; set; }
+    public bool? IsTreatedForMHC { get; set; }
+    public bool? UseBcServicesCardPhoto { get; set; }
+    public bool? CarryAndUseRetraints { get; set; }
+    public bool IsBornInCanada { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication;
@@ -86,50 +93,6 @@ public enum ApplicationTypeEnum
     Update,
 }
 
-public enum LicenceDocumentTypeEnum
-{
-    DogsSecurityDogValidationCertificate,
-    DogsCertificateOfAdvancedSecurityTraining,
-    RestraintsAdvancedSecurityTrainingCertificate,
-    RestraintsUseOfForceLetter,
-    RestraintsTrainingEquivalent,
-    PoliceBackgroundLetterOfNoConflict,
-    MentalHealthCondition,
-    ProofOfFingerprint,
-    DriversLicence,
-    CanadianFirearmsLicence,
-    BcServicesCard,
-    CertificateOfIndianStatus,
-    GovernmentIssuedPhotoId,
-    PhotoOfYourself,
-    CanadianPassport,
-    BirthCertificate,
-    CanadianCitizenship,
-    PermanentResidentCard,
-    RecordOfLandingDocument,
-    ConfirmationOfPermanentResidenceDocument,
-    WorkPermit,
-    StudyPermit,
-    ValidDocumentToVerifyLegalWorkStatus,
-    CategoryLocksmith_CertificateOfQualification,
-    CategoryLocksmith_ExperienceAndApprenticeship,
-    CategoryLocksmith_ApprovedLocksmithCourse,
-    CategoryPrivateInvestigator_ExperienceAndCourses,
-    CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
-    CategoryPrivateInvestigator_KnowledgeAndExperience,
-    CategoryPrivateInvestigator_CompleteRecognizedTrainingCourse,
-    CategoryPrivateInvestigator_CompleteOtherCoursesOrKnowledge,
-    CategoryPrivateInvestigator_PrivateSecurityTrainingNetworkCompletion,
-    CategoryPrivateInvestigator_OtherCourseCompletion,
-    CategorySecurityAlarmInstaller_TradesQualificationCertificate,
-    CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
-    CategorySecurityConsultant_ReferenceLetters,
-    CategorySecurityConsultant_RecommendationLetters,
-    CategorySecurityGuard_BasicSecurityTrainingCertificate,
-    CategorySecurityGuard_PoliceExperienceOrTraining,
-    CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent
-}
-
 public enum LicenceTermEnum
 {
     NintyDays,
@@ -148,23 +111,6 @@ public enum PoliceOfficerRoleEnum
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
     Other,
-}
-public enum ProofOfCanadianCitizenshipEnum
-{
-    ValidCanadianPassport,
-    BirthCertificate,
-    SecureCertificateOfIndianStatus,
-}
-
-public enum ProofOfAbilityToWorkInCanadaEnum
-{
-    ValidCanadianCitizenship,
-    ValidPermanentResidentCard,
-    RecordOfLandingDocument,
-    ConfirmationOfPermanentResidenceDocument,
-    WorkPermit,
-    StudyPermit,
-    ValidDocumentToVerifyLegalWorkStatus,
 }
 
 public enum HairColourEnum
