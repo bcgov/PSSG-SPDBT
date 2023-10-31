@@ -43,15 +43,16 @@ export class ErrorInterceptor implements HttpInterceptor {
 
 				// Certain 404s will be handled in the component
 				// TODO fix
-				if (errorResponse.status == 500) {
-					const url = WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.substring(
-						WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.indexOf('/api') + 1,
-						WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.lastIndexOf('/')
-					);
-					if (errorResponse.url?.includes(url)) {
-						return throwError(() => errorResponse);
-					}
+				// if (errorResponse.status == 500) {
+				const url = WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath;
+				// const url = WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath.substring(
+				// 	WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.indexOf('/api') + 1,
+				// 	WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.lastIndexOf('/')
+				// );
+				if (errorResponse.url?.includes(url)) {
+					return throwError(() => errorResponse);
 				}
+				// }
 
 				let message = 'An error has occurred';
 				if (errorResponse.error) {

@@ -596,6 +596,7 @@ export class LicenceApplicationService {
 				const myFile = this.utilService.blobToFile(myBlob, 'test1.doc');
 
 				const defaults: any = {
+					licenceApplicationId: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
 					workerLicenceTypeData: {
 						workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
 					},
@@ -835,6 +836,7 @@ export class LicenceApplicationService {
 				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
 
 				const defaults: any = {
+					licenceApplicationId: '1d186edf-6573-4c34-be26-bac62f87af19',
 					workerLicenceTypeData: {
 						workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
 					},
@@ -1085,6 +1087,7 @@ export class LicenceApplicationService {
 		// } else if (this.hasDocumentsChanged) {
 		// 	return forkJoin([this.saveLicenceDocuments()]);
 		// }
+
 		if (this.hasValueChanged) {
 			return forkJoin([this.saveLicenceBasicInformation()]);
 		}

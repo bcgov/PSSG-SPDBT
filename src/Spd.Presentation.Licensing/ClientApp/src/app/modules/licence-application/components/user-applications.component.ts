@@ -18,7 +18,7 @@ export interface ApplicationResponse {
 }
 
 @Component({
-	selector: 'app-applications-in-progress',
+	selector: 'app-user-applications',
 	template: `
 		<!--  *ngIf="isAuthenticated | async" -->
 		<section class="step-section px-4 py-2">
@@ -33,33 +33,45 @@ export interface ApplicationResponse {
 					</app-alert>
 
 					<div class="mb-4" *ngIf="incompleteApplications.length > 0">
-						<div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div>
+						<!-- <div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div> -->
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of incompleteApplications; let i = index">
 							<div class="row">
-								<div class="col-lg-4">
+								<div class="col-lg-3">
 									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
 										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
-								<div class="col-lg-3">
-									<small class="d-block text-muted mt-2 mt-md-0">Application Type</small>
-									<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
-								</div>
-								<div class="col-lg-2">
-									<small class="d-block text-muted mt-2 mt-md-0">Create Date</small>
-									<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
-								</div>
-								<div class="col-lg-3 text-end">
-									<button mat-flat-button color="primary" class="large w-auto" (click)="onResume(appl)">
-										<mat-icon>double_arrow</mat-icon>Resume
-									</button>
+								<div class="col-lg-9">
+									<div class="row">
+										<div class="col-lg-4">
+											<small class="d-block text-muted mt-2 mt-md-0">Application Type</small>
+											<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
+										</div>
+										<div class="col-lg-4">
+											<small class="d-block text-muted mt-2 mt-md-0">Create Date</small>
+											<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
+										</div>
+										<div class="col-lg-4 text-end">
+											<mat-chip-option [selectable]="false" class="mat-chip-yellow" style="height: 38px; width: 160px;">
+												<mat-icon class="mat-chip-option-icon">cancel</mat-icon>
+												<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Incomplete</span>
+											</mat-chip-option>
+										</div>
+									</div>
+									<div class="row">
+										<div class="offset-lg-8 col-lg-4 text-end">
+											<button mat-flat-button color="primary" class="large mt-2 w-auto" (click)="onResume(appl)">
+												<mat-icon>double_arrow</mat-icon>Resume
+											</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<div class="mb-4" *ngIf="activeApplications.length > 0">
-						<div class="fs-4 fw-light mb-2">Active Licences/Permits</div>
+						<!-- <div class="fs-4 fw-light mb-2">Active Licences/Permits</div> -->
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-2">
@@ -82,9 +94,9 @@ export interface ApplicationResponse {
 											<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
 										</div>
 										<div class="col-lg-3 text-end">
-											<mat-chip-option [selectable]="false" class="mat-chip-green" style="height: 38px; width: 135px;">
-												<mat-icon>check_circle</mat-icon>
-												<span class="my-3 ms-2 fs-6 fw-bold" style="position: relative; top: -6px;">Active</span>
+											<mat-chip-option [selectable]="false" class="mat-chip-green" style="height: 38px; width: 115px;">
+												<mat-icon class="mat-chip-option-icon">check_circle</mat-icon>
+												<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Active</span>
 											</mat-chip-option>
 										</div>
 										<mat-divider class="my-2"></mat-divider>
@@ -147,15 +159,15 @@ export interface ApplicationResponse {
 					</div>
 
 					<div class="mb-4" *ngIf="expiredApplications.length > 0">
-						<div class="fs-4 fw-light mb-2">Expired Licences/Permits</div>
+						<!-- <div class="fs-4 fw-light mb-2">Expired Licences/Permits</div> -->
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
 							<div class="row">
-								<div class="col-lg-2">
+								<div class="col-lg-3">
 									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
 										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
-								<div class="col-lg-10">
+								<div class="col-lg-9">
 									<div class="row">
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
@@ -171,8 +183,8 @@ export interface ApplicationResponse {
 										</div>
 										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-red" style="height: 38px; width: 135px;">
-												<mat-icon>cancel</mat-icon>
-												<span class="my-3 ms-2 fs-6 fw-bold" style="position: relative; top: -6px;">Expired</span>
+												<mat-icon class="mat-chip-option-icon">cancel</mat-icon>
+												<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Expired</span>
 											</mat-chip-option>
 										</div>
 										<!-- <mat-divider class="my-2"></mat-divider> -->
@@ -216,6 +228,16 @@ export interface ApplicationResponse {
 				font-weight: 500;
 			}
 
+			.mat-chip-option-icon {
+				position: relative;
+				top: 2px;
+			}
+
+			.mat-chip-option-text {
+				position: relative;
+				top: -5px;
+			}
+
 			.card-section {
 				background-color: #f6f6f6 !important;
 				border-left: 3px solid #38598a;
@@ -226,7 +248,7 @@ export interface ApplicationResponse {
 		`,
 	],
 })
-export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
+export class UserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 
 	incompleteApplications: Array<ApplicationResponse> = [];
@@ -340,7 +362,7 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 				.loadLicenceNew()
 				.pipe(
 					tap((resp: any) => {
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
 					}),
 					take(1)
 				)
@@ -350,7 +372,7 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 				.loadLicenceNew2()
 				.pipe(
 					tap((resp: any) => {
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
 					}),
 					take(1)
 				)
@@ -408,7 +430,9 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 			.createNewLicence()
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
+					);
 				}),
 				take(1)
 			)

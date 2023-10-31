@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ApplicationTypeComponent } from './components/application-type.component';
-import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
+import { UserApplicationsComponent } from './components/user-applications.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
-import { LicenceWizardComponent } from './components/licence-wizard.component';
+import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
+import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
-import { SoleProprietorComponent } from './components/sole-proprietor.component';
+import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { UpdateAddDogsModalComponent } from './components/update-add-dogs-modal.component';
 import { UpdateAddRestraintsModalComponent } from './components/update-add-restraints-modal.component';
 import { UpdateApplyNameChangeModalComponent } from './components/update-apply-name-change-modal.component';
@@ -59,6 +59,7 @@ import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { ResidentialAddressComponent } from './step-components/residential-address.component';
 import { RestraintsAuthorizationComponent } from './step-components/restraints-authorization.component';
+import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
 import { StepBackgroundComponent } from './step-components/wizard-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/wizard-steps/step-identification.component';
@@ -123,11 +124,11 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		LicenceCategorySecurityAlarmResponseComponent,
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
-		ApplicationsInProgressComponent,
+		UserApplicationsComponent,
 		LoginSelectionComponent,
-		LicenceWizardComponent,
+		SecurityWorkerLicenceWizardComponent,
 		BackgroundInfoComponent,
-		LicenceWizardUpdateComponent,
+		SecurityWorkerLicenceUpdateWizardComponent,
 		StepLicenceUpdatesComponent,
 		StepConfirmMailingAddressComponent,
 		StepConfirmUpdatesComponent,
@@ -137,6 +138,7 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		UpdateAddRestraintsModalComponent,
 		UpdateAddDogsModalComponent,
 		UpdatePhotoModalComponent,
+		SecurityWorkerLicenceApplicationComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

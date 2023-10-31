@@ -138,10 +138,6 @@ export class LicenceSelectionComponent implements OnInit {
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
-		}
-
 		this.imagePaths.forEach((path) => {
 			// Preload the 'icon' images
 			const tmp = new Image();
@@ -158,7 +154,9 @@ export class LicenceSelectionComponent implements OnInit {
 		const isValid = this.isFormValid();
 
 		if (isValid) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION_TYPE));
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.APPLICATION_TYPE)
+			);
 		}
 	}
 

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 @Component({
@@ -154,17 +155,19 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 	],
 })
 export class LoginSelectionComponent {
-	constructor(private router: Router) {}
+	constructor(private router: Router, private authProcessService: AuthProcessService) {}
 
-	onRegisterWithBceid(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+	async onRegisterWithBceid(): Promise<void> {
+		const nextUrl = await this.authProcessService.initializeLicencingBCeID();
+		console.log('nextUrl', nextUrl);
 	}
 
-	onRegisterWithBcServicesCard(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+	async onRegisterWithBcServicesCard(): Promise<void> {
+		const nextUrl = await this.authProcessService.initializeLicencingBCSC();
+		console.log('nextUrl', nextUrl);
 	}
 
 	onContinue(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 	}
 }

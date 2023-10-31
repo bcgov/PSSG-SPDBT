@@ -14,7 +14,7 @@ import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/s
 import { StepReviewComponent } from '../step-components/wizard-steps/step-review.component';
 
 @Component({
-	selector: 'app-licence-wizard',
+	selector: 'app-security-worker-licence-wizard',
 	template: `
 		<ng-container *ngIf="isLoaded$ | async">
 			<div class="row">
@@ -72,18 +72,15 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						</mat-step>
 					</mat-stepper>
 				</div>
-				<div class="col-xl-1 col-lg-12 text-end">
-					<!-- <button mat-flat-button class="large mat-green-button w-auto mt-2" matTooltip="Save & Exit" (click)="onSave()">
-					<mat-icon class="m-0">save</mat-icon>
-				</button> -->
+				<div class="col-xl-1 col-lg-12 text-center">
 					<button
 						mat-fab
 						class="icon-button-large mx-3"
 						color="primary"
 						style="color: white; top: 10px;"
-						matTooltip="Save & Exit"
+						matTooltip="Save and Exit"
 						aria-label="Save and Exit"
-						(click)="onSave()"
+						(click)="onSaveAndExit()"
 					>
 						<mat-icon>exit_to_app</mat-icon>
 					</button>
@@ -101,27 +98,28 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-icon>skip_next</mat-icon>
 					</button>
 
-					<!-- <button
-						*ngIf="isFormValid"
-						mat-raised-button
-						class="large mt-3"
-						color="primary"
-						matTooltip="Go to Review"
-						aria-label="Go to Review"
-						(click)="onGoToReview()"
-					>
+					<div class="m-3">
+						<a class="large" style="top: 10px;" (click)="onSaveAndExit()"> Save and Exit </a>
+					</div>
+					<div class="m-3">
+						<a *ngIf="isFormValid" class="large" style="top: 10px;" (click)="onGoToReview()"> Go to Review </a>
+					</div>
+					<!-- <div class="m-3">
+						<a class="large" style="color: var(--color-red) !important;" (click)="onGoToReview()">
+							Cancel Business Licence Application
+						</a>
+					</div> -->
+
+					<!-- 
 						Next: Review >
-					</button> -->
-					<!-- <button mat-fab color="primary" matTooltip="Save & Exit" aria-label="Save & Exit">
-					<mat-icon>save</mat-icon>
-				</button> -->
+					 -->
 				</div>
 			</div>
 		</ng-container>
 	`,
 	styles: [],
 })
-export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -167,11 +165,11 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	) {}
 
 	ngOnInit(): void {
-		console.log(
-			'LicenceWizardComponent ONINIT',
-			this.licenceApplicationService.initialized,
-			this.licenceApplicationService.licenceModelFormGroup.value
-		);
+		// console.log(
+		// 	'LicenceWizardComponent ONINIT',
+		// 	this.licenceApplicationService.initialized,
+		// 	this.licenceApplicationService.licenceModelFormGroup.value
+		// );
 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
@@ -179,15 +177,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
-			return;
-		}
-
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
-				console.log('LicenceWizardComponent ISLOADED');
-
 				this.step1Complete = this.licenceApplicationService.isStep1Complete();
 				this.step2Complete = this.licenceApplicationService.isStep2Complete();
 				this.step3Complete = this.licenceApplicationService.isStep3Complete();
@@ -201,19 +192,15 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 			.subscribe((_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = true;
 
-				console.log(
+				console.debug(
 					'valueChanges changed flags',
+					'hasValueChanged',
 					this.licenceApplicationService.hasValueChanged,
+					'hasDocumentsChanged',
 					this.licenceApplicationService.hasDocumentsChanged
 				);
 
-				console.log('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
-				// this.licenceApplicationService.hasDocumentsChanged();
-				// console.log('xxx', this.licenceApplicationService.licenceModelFormGroup);
-
-				// Object.keys(this.form.controls).forEach((key) => {
-				// 	console.log(this.form.get(key)?.errors);
-				// });
+				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 	}
@@ -306,7 +293,6 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 					}
 				},
 				error: (error: any) => {
-					// only 404 will be here as an error
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -332,14 +318,14 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		this.stepper.selectedIndex = step;
 	}
 
-	onSave() {
+	onSaveAndExit() {
 		this.licenceApplicationService.saveLicence().subscribe({
 			next: (resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
 				this.licenceApplicationService.hasDocumentsChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 			},
 			error: (error: any) => {
 				// only 404 will be here as an error
@@ -351,7 +337,24 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onGoToReview() {
-		this.stepper.selectedIndex = this.STEP_REVIEW;
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicence().subscribe({
+				next: (resp: any) => {
+					this.licenceApplicationService.hasValueChanged = false;
+					this.licenceApplicationService.hasDocumentsChanged = false;
+
+					this.hotToastService.success('Licence information has been saved');
+					this.stepper.selectedIndex = this.STEP_REVIEW;
+				},
+				error: (error: any) => {
+					// only 404 will be here as an error
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		} else {
+			this.stepper.selectedIndex = this.STEP_REVIEW;
+		}
 	}
 
 	onChildNextStep() {
