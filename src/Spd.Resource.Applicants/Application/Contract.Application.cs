@@ -134,7 +134,7 @@ public record ApplicationResult
     public string? EmailAddress { get; set; }
     public string? JobTitle { get; set; }
     public PayerPreferenceTypeCode? PayeeType { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; } = null;
     public string? ContractedCompanyName { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; } = null!;
     public CaseStatusEnum? CaseStatus { get; set; }
