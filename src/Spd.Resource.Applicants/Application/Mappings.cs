@@ -22,7 +22,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))
             .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
+            .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
             .ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
@@ -131,7 +131,7 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
              .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
              .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
-             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.DateOfBirth))
+             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
              .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
              .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
              .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => GetYesNo(s.HasCriminalHistory)))
@@ -164,6 +164,7 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
              .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
              .ReverseMap()
+             .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
              .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
              .ForMember(d => d.LicenceApplicationId, opt => opt.MapFrom(s => s.spd_applicationid))
              .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
@@ -199,6 +200,13 @@ namespace Spd.Resource.Applicants.Application
             if( date == null) return null;
             return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
         }
+
+        private static Date? GetDate(DateTimeOffset? datetime)
+        {
+            if (datetime == null) return null;
+            return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
+        }
+
         private static string? GetPayeeType(int? code)
         {
             if (code == null) return null;
