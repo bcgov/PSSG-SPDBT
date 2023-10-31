@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Document;
 
 namespace Spd.Manager.Cases.Licence;
 internal class Mappings : Profile
@@ -9,6 +10,7 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceUpsertRequest, SaveLicenceApplicationCmd>();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+        CreateMap<DocumentResp, LicenceAppFileCreateResponse>();
         CreateMap<Address, Addr>()
             .ReverseMap();
         CreateMap<ResidentialAddress, ResidentialAddr>()

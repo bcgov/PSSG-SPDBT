@@ -3,8 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
+using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
+using System.Net;
 using System.Security.Principal;
 
 
@@ -16,12 +21,17 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly ILogger<WorkerLicensingController> _logger;
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
 
-        public WorkerLicensingController(ILogger<WorkerLicensingController> logger, IPrincipal currentUser, IMediator mediator)
+        public WorkerLicensingController(ILogger<WorkerLicensingController> logger, 
+            IPrincipal currentUser, 
+            IMediator mediator,
+            IConfiguration configuration)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         #region bcsc authenticated
@@ -52,64 +62,41 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetWorkerLicenceQuery(id));
         }
 
-        /// <summary>
-        /// Create Security Worker Licence Application police background
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-police-backgroung")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePoliceBackground([FromBody][Required] PoliceBackgroundUpsertRequest licenceCreateRequest)
-        {
-            _logger.LogInformation("Get WorkerLicenceUpsertRequest");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
 
         /// <summary>
-        /// Create Security Worker Licence Application mental health
+        /// Upload licence application files
         /// </summary>
-        /// <param name="licenceCreateRequest"></param>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licences-mental-health")]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Route("api/worker-licence-applications/{id}/files")]
         [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceMentalHealth([FromBody][Required] MentalHealthUpsertRequest mentalHealth)
+        [DisableRequestSizeLimit]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceAppFileCreateResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppFileUploadRequest fileUploadRequest, [FromRoute] Guid id, CancellationToken ct)
         {
-            _logger.LogInformation("Get SaveWorkerLicenceMentalHealth");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
+            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+            if (fileUploadConfig == null)
+                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
 
-        /// <summary>
-        /// Create Security Worker Licence Application fingerprint
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-fingerprint")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceFingerprint([FromBody][Required] ProofOfFingerprintUpsertRequest fingerprint)
-        {
-            _logger.LogInformation("Get SaveWorkerLicenceFingerprint");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
-        /// <summary>
-        /// Create Security Worker Licence Application PhotographOfYourself
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-photograph-of-yourself")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePhotographOfYourself([FromBody][Required] PhotographOfYourselfUpsertRequest fingerprint)
-        {
-            _logger.LogInformation("Get SaveWorkerLicencePhotographOfYourself");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
+            //validation files
+            foreach (IFormFile file in fileUploadRequest.Files)
+            {
+                string? fileexe = FileNameHelper.GetFileExtension(file.FileName);
+                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
+                }
+                long fileSize = file.Length;
+                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
+                }
+            }
+            return await _mediator.Send(new CreateLicenceAppFileCommand(fileUploadRequest, applicantInfo.Sub, id), ct);
         }
         #endregion
 

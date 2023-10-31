@@ -771,7 +771,11 @@ namespace Spd.Manager.Cases.Screening
     }
 
     public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<ApplicantAppFileCreateResponse>>;
-    public record ApplicantAppFileUploadRequest(IList<IFormFile> Files, FileTypeCode FileType = FileTypeCode.StatutoryDeclaration);
+    public record ApplicantAppFileUploadRequest(
+        IList<IFormFile> Files,
+        FileTypeCode FileType = FileTypeCode.StatutoryDeclaration,
+        DateTimeOffset? ExpiryDate = null
+    );
     public record ApplicantAppFileCreateResponse
     {
         public Guid DocumentUrlId { get; set; }
@@ -807,14 +811,14 @@ namespace Spd.Manager.Cases.Screening
         GovtIssuedPhotoID,
         LegalNameChange,
         LegalWorkStatus,
-        LetterOfNoConflict,
+        LetterOfNoConflict, //PoliceBackgroundLetterOfNoConflict
         Locksmith,
         ManualPaymentForm,
-        MentalHealthConditionForm,
+        MentalHealthConditionForm, //MentalHealthCondition
         Passport,
         PaymentReceipt,
         PermanentResidenceCard,
-        Photograph,
+        Photograph, //PhotoOfYourself
         PrivateInvestigator,
         PrivateInvestigatorUnderSupervision,
         SecurityAlarmInstaller,
