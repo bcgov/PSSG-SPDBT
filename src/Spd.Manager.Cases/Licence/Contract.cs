@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Manager.Cases.Screening;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Licence
@@ -12,10 +11,10 @@ namespace Spd.Manager.Cases.Licence
         public Task<IEnumerable<LicenceAppFileCreateResponse>> Handle(CreateLicenceAppFileCommand command, CancellationToken ct);
     }
 
-    public record WorkerLicenceUpsertCommand(WorkerLicenceUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceUpsertResponse>;
+    public record WorkerLicenceUpsertCommand(WorkerLicenceApplicationUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceUpsertResponse>;
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 
-
+    #region anonymous model, one big payload
     public abstract record WorkerLicenceApplication
     {
         public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
@@ -54,23 +53,27 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsTreatedForMHC { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
         public bool? CarryAndUseRetraints { get; set; }
-        public bool IsBornInCanada { get; set; }
-    }
-    public record WorkerLicenceUpsertRequest : WorkerLicenceApplication
-    {
-        public Guid? LicenceApplicationId { get; set; }
-    };
-
-    public record WorkderLicenceApplicationCreateRequest: WorkerLicenceApplication
-    {
-        public WorkerLicenceAppCategoryData[] CategoriesData { get; set; }
+        public bool? IsBornInCanada { get; set; }
+        public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
         public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
+        public MentalHealthDocument? MentalHealthDocument { get; set; }
+        public FingerPrintProofDocument? FingerPrintProofDocument { get; set; }
+        public BornInCanadaDocument? BornInCanadaDocument { get; set; }
+        public AdditionalGovIdDocument? AdditionalGovIdDocument { get; set; }
+        public IdPhotoDocument? IdPhotoDocument { get; set; }
     }
 
+    public record WorkerLicenceApplicationCreateRequest : WorkerLicenceApplication;
+
+    public record WorkerLicenceAppCategoryData
+    {
+        public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
+        public Document[]? Documents { get; set; } = null; 
+    }
     public record Document
     {
         public IList<IFormFile> NewFiles { get; set; }
-        public IList<ExistingDocument> ExistingFiles { get; set; }
+        public IList<ExistingDocument> ExistingDocuments { get; set; }
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; } = LicenceDocumentTypeCode.BirthCertificate;
     }
     public record ExistingDocument
@@ -78,32 +81,20 @@ namespace Spd.Manager.Cases.Licence
         public Guid DocumentUrlId { get; set; }
         public DateTimeOffset UploadedDateTime { get; set; }
     }
-    public record PoliceOfficerDocument: Document;
-
-    public record WorkerLicenceCategoryUpsertRequest
+    public record PoliceOfficerDocument : Document;
+    public record MentalHealthDocument : Document;
+    public record FingerPrintProofDocument : Document;
+    public record BornInCanadaDocument : Document
     {
-        public Guid LicenceApplicationId { get; set; }
-        public WorkerLicenceAppCategoryData[] CategoriesData { get; set; }
-    }
-
-    public record DogsAuthorizationUpsertRequest
+        public DateOnly? ExpiryDate { get; set; }
+    };
+    public record AdditionalGovIdDocument : Document
     {
-        public Guid LicenceApplicationId { get; set; }
-        public bool? UseDogs { get; set; }
-        public bool? IsDogsPurposeProtection { get; set; }
-        public bool? IsDogsPurposeDetectionDrugs { get; set; }
-        public bool? IsDogsPurposeDetectionExplosives { get; set; }
-        //public Documents? Documents { get; set; }
-    }
-    public record WorkerLicenceUpsertResponse
-    {
-        public Guid LicenceApplicationId { get; set; }
-    }
-    public record WorkerLicenceResponse : WorkerLicenceApplication;
+        public DateOnly? ExpiryDate { get; set; }
+    };
+    public record IdPhotoDocument : Document;
     public record ResidentialAddress : Address;
-
     public record MailingAddress : Address;
-
     public abstract record Address
     {
         public string? AddressLine1 { get; set; }
@@ -113,19 +104,44 @@ namespace Spd.Manager.Cases.Licence
         public string? PostalCode { get; set; }
         public string? Province { get; set; }
     }
-
-    public record WorkerLicenceAppCategoryData
+    public record Alias
     {
-        public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
-        public LicenceAppFileUploadRequest[]? Documents { get; set; } = null; //tbd
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
     }
+    #endregion
 
+    #region authenticated user
+    public record WorkerLicenceApplicationUpsertRequest : WorkerLicenceApplicationCreateRequest
+    {
+        public Guid? LicenceApplicationId { get; set; }
+    };
+
+    //public record DogsAuthorizationUpsertRequest
+    //{
+    //    public Guid LicenceApplicationId { get; set; }
+    //    public bool? UseDogs { get; set; }
+    //    public bool? IsDogsPurposeProtection { get; set; }
+    //    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    //    public bool? IsDogsPurposeDetectionExplosives { get; set; }
+    //    //public Documents? Documents { get; set; }
+    //}
+    public record WorkerLicenceUpsertResponse
+    {
+        public Guid LicenceApplicationId { get; set; }
+    }
+    public record WorkerLicenceResponse : WorkerLicenceApplication;
+
+    #endregion
+
+    #region file upload
     public record CreateLicenceAppFileCommand(LicenceAppFileUploadRequest Request, string? BcscId, Guid ApplicationId) : IRequest<IEnumerable<LicenceAppFileCreateResponse>>;
 
     public record LicenceAppFileUploadRequest(
         IList<IFormFile> Files,
         LicenceDocumentTypeCode LicenceDocumentTypeCode = LicenceDocumentTypeCode.BirthCertificate,
-        DateTimeOffset? ExpiryDate = null
     );
     public record LicenceAppFileCreateResponse
     {
@@ -137,14 +153,9 @@ namespace Spd.Manager.Cases.Licence
     {
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
     };
-    public record Alias
-    {
-        public string? GivenName { get; set; }
-        public string? MiddleName1 { get; set; }
-        public string? MiddleName2 { get; set; }
-        public string? Surname { get; set; }
-    }
+    #endregion
 
+    #region shared enums
     public enum WorkerLicenceTypeCode
     {
         SecurityWorkerLicence,
@@ -278,4 +289,5 @@ namespace Spd.Manager.Cases.Licence
         SecurityAlarmSales,
         SecurityConsultant,
     }
+    #endregion
 }

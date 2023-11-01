@@ -7,7 +7,7 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        CreateMap<WorkerLicenceUpsertRequest, SaveLicenceApplicationCmd>();
+        CreateMap<WorkerLicenceApplicationUpsertRequest, SaveLicenceApplicationCmd>();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
         CreateMap<DocumentResp, LicenceAppFileCreateResponse>();

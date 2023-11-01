@@ -43,9 +43,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceUpsertRequest licenceCreateRequest)
+        public async Task<WorkerLicenceUpsertResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceApplicationUpsertRequest licenceCreateRequest)
         {
-            _logger.LogInformation("Get WorkerLicenceUpsertRequest");
+            _logger.LogInformation("Get WorkerLicenceApplicationUpsertRequest");
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest, info.Sub));
         }
@@ -99,23 +99,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new CreateLicenceAppFileCommand(fileUploadRequest, applicantInfo.Sub, id), ct);
         }
 
-        /// <summary>
-        /// Upload licence application files
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/worker-licence-applications/{licenceAppId}/files/")]
-        [HttpPost]
-        [DisableRequestSizeLimit]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceAppFileResponse>> GetLicenceAppFiles([FromRoute] Guid licenceAppId, [FromRoute] LicenceDocumentTypeCode documentTypeCode, CancellationToken ct)
-        {
-            //var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
-            //return await _mediator.Send(new CreateLicenceAppFileCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
-            return null;
-        }
         #endregion
 
         #region anonymous APIs
@@ -126,7 +109,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/anonymous-worker-licences")]
         [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> CreateWorkerLicenceAnonymously([FromBody][Required] WorkerLicenceUpsertRequest licenceCreateRequest)
+        public async Task<WorkerLicenceUpsertResponse> CreateWorkerLicenceAnonymously([FromBody][Required] WorkerLicenceApplicationUpsertRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get CreateWorkerLicenceAnonymously");
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
