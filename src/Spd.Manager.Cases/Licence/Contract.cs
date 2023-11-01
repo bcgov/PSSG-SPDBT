@@ -141,7 +141,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceAppFileUploadRequest(
         IList<IFormFile> Files,
-        LicenceDocumentTypeCode LicenceDocumentTypeCode = LicenceDocumentTypeCode.BirthCertificate,
+        LicenceDocumentTypeCode LicenceDocumentTypeCode = LicenceDocumentTypeCode.BirthCertificate
     );
     public record LicenceAppFileCreateResponse
     {
