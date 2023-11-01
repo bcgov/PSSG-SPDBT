@@ -92,9 +92,9 @@ internal class DocumentRepository : IDocumentRepository
     private async Task<DocumentResp> DocumentRemoveAsync(RemoveDocumentCmd cmd, CancellationToken ct)
     {
         bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
-        if(documenturl == null) { return null; }
+        if (documenturl == null) { return null; }
         documenturl.statecode = DynamicsConstants.StateCode_Inactive;
-        await DeleteFileAsync(documenturl.bcgov_url, ct);
+        await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, (Guid)(documenturl._spd_applicationid_value), ct);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
     }
@@ -132,10 +132,23 @@ internal class DocumentRepository : IDocumentRepository
                     ), ct);
     }
 
-    private async Task DeleteFileAsync(string bcgovUrl, CancellationToken ct)
+    private async Task DeleteFileAsync(Guid docUrlId, Guid applicationId, CancellationToken ct)
     {
-        //todo
- 
+        //set file-classification tag to be deleted
+        FileTag fileTag =
+            new FileTag()
+            {
+                Tags = new List<Utilities.FileStorage.Tag>
+                {
+                    new Utilities.FileStorage.Tag("file-classification", "deleted"),
+                }
+            };
+        await _fileStorageService.HandleCommand(new UpdateTagsCommand(
+            Key: ((Guid)docUrlId).ToString(),
+            Folder: $"spd_application/{applicationId}",
+            FileTag: fileTag
+            ), ct);
+
     }
 }
 

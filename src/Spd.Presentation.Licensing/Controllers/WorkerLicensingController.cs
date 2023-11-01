@@ -23,8 +23,8 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
 
-        public WorkerLicensingController(ILogger<WorkerLicensingController> logger, 
-            IPrincipal currentUser, 
+        public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
+            IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration)
         {
@@ -55,7 +55,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/{id}")]
+        [Route("api/worker-licence-applications/{licenceAppId}")]
         [HttpGet]
         public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid id)
         {
@@ -70,7 +70,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/{id}/files")]
+        [Route("api/worker-licence-applications/{licenceAppId}/files")]
         [HttpPost]
         [DisableRequestSizeLimit]
         [Authorize(Policy = "OnlyBcsc")]
@@ -98,8 +98,27 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             return await _mediator.Send(new CreateLicenceAppFileCommand(fileUploadRequest, applicantInfo.Sub, id), ct);
         }
+
+        /// <summary>
+        /// Upload licence application files
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="licenceAppId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/{licenceAppId}/files/")]
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceAppFileResponse>> GetLicenceAppFiles([FromRoute] Guid licenceAppId, [FromRoute] LicenceDocumentTypeCode documentTypeCode, CancellationToken ct)
+        {
+            //var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
+            //return await _mediator.Send(new CreateLicenceAppFileCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+            return null;
+        }
         #endregion
 
+        #region anonymous APIs
         /// <summary>
         /// Create Security Worker Licence Application Anonymously
         /// </summary>
@@ -112,8 +131,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger.LogInformation("Get CreateWorkerLicenceAnonymously");
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
         }
-
-
+        #endregion
     }
 
 }

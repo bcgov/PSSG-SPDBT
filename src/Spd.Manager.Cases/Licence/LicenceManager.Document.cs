@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Spd.Resource.Applicants.Application;
+﻿using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
-using Spd.Resource.Organizations.Identity;
-using Spd.Resource.Organizations.Registration;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
 using System.Collections.Immutable;
 
@@ -12,23 +10,18 @@ internal partial class LicenceManager
     public async Task<IEnumerable<LicenceAppFileCreateResponse>> Handle(CreateLicenceAppFileCommand command, CancellationToken ct)
     {
         DocumentTypeEnum docEnum = GetDocumentTypeEnum(command.Request.LicenceDocumentTypeCode);
-        ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+        LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.ApplicationId, ct);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
 
         //mark all existing file type files deleted.
-        var docList = await _documentRepository.QueryAsync(new DocumentQry(command.ApplicationId,FileType: docEnum), ct);
-        foreach(var doc in docList.Items)
+        var docList = await _documentRepository.QueryAsync(new DocumentQry(command.ApplicationId, FileType: docEnum), ct);
+        foreach (var doc in docList.Items)
         {
             await _documentRepository.ManageAsync(new RemoveDocumentCmd(doc.DocumentUrlId), ct);
         }
 
-        //get contact
-        var contacts = await _identityRepository.Query(new IdentityQry(command.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-        var contact = contacts.Items.FirstOrDefault();
-        if (contact == null)
-            throw new ArgumentException("No contact found");
-
+        Guid? contactId = app.ContactId;
         //put file to cache
         IList<DocumentResp> docResps = new List<DocumentResp>();
         foreach (var file in command.Request.Files)
@@ -48,7 +41,7 @@ internal partial class LicenceManager
                 TempFile = spdTempFile,
                 ApplicationId = command.ApplicationId,
                 DocumentType = docEnum,
-                SubmittedByApplicantId = contact.ContactId
+                SubmittedByApplicantId = contactId
             }, ct);
             docResps.Add(docResp);
         }

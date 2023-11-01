@@ -18,7 +18,6 @@ namespace Spd.Manager.Cases.Licence
 
     public abstract record WorkerLicenceApplication
     {
-        public Guid? LicenceApplicationId { get; set; }
         public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
         public ApplicationTypeCode? ApplicationTypeCode { get; set; }
         public bool? isSoleProprietor { get; set; }
@@ -57,12 +56,34 @@ namespace Spd.Manager.Cases.Licence
         public bool? CarryAndUseRetraints { get; set; }
         public bool IsBornInCanada { get; set; }
     }
-    public record WorkerLicenceUpsertRequest : WorkerLicenceApplication;
+    public record WorkerLicenceUpsertRequest : WorkerLicenceApplication
+    {
+        public Guid? LicenceApplicationId { get; set; }
+    };
+
+    public record WorkderLicenceApplicationCreateRequest: WorkerLicenceApplication
+    {
+        public WorkerLicenceAppCategoryData[] CategoriesData { get; set; }
+        public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
+    }
+
+    public record Document
+    {
+        public IList<IFormFile> NewFiles { get; set; }
+        public IList<ExistingDocument> ExistingFiles { get; set; }
+        public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; } = LicenceDocumentTypeCode.BirthCertificate;
+    }
+    public record ExistingDocument
+    {
+        public Guid DocumentUrlId { get; set; }
+        public DateTimeOffset UploadedDateTime { get; set; }
+    }
+    public record PoliceOfficerDocument: Document;
 
     public record WorkerLicenceCategoryUpsertRequest
     {
         public Guid LicenceApplicationId { get; set; }
-        public WorkerLicenceCategoryData[] CategoriesData { get; set; }
+        public WorkerLicenceAppCategoryData[] CategoriesData { get; set; }
     }
 
     public record DogsAuthorizationUpsertRequest
@@ -93,13 +114,13 @@ namespace Spd.Manager.Cases.Licence
         public string? Province { get; set; }
     }
 
-    public record WorkerLicenceCategoryData
+    public record WorkerLicenceAppCategoryData
     {
         public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
         public LicenceAppFileUploadRequest[]? Documents { get; set; } = null; //tbd
     }
 
-    public record CreateLicenceAppFileCommand(LicenceAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<LicenceAppFileCreateResponse>>;
+    public record CreateLicenceAppFileCommand(LicenceAppFileUploadRequest Request, string? BcscId, Guid ApplicationId) : IRequest<IEnumerable<LicenceAppFileCreateResponse>>;
 
     public record LicenceAppFileUploadRequest(
         IList<IFormFile> Files,
@@ -112,7 +133,10 @@ namespace Spd.Manager.Cases.Licence
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid? ApplicationId { get; set; } = null;
     };
-
+    public record LicenceAppFileResponse : LicenceAppFileCreateResponse
+    {
+        public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
+    };
     public record Alias
     {
         public string? GivenName { get; set; }

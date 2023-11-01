@@ -1,8 +1,7 @@
-using Spd.Utilities.Shared.ResourceContracts;
+﻿using Spd.Utilities.Shared.ResourceContracts;
 
-namespace Spd.Resource.Applicants.Application;
-
-public partial interface IApplicationRepository
+namespace Spd.Resource.Applicants.LicenceApplication;
+public partial interface ILicenceApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
@@ -20,7 +19,7 @@ public record LicenceApplication
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateTimeOffset DateOfBirth { get; set; }
     public GenderEnum? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
@@ -52,9 +51,15 @@ public record LicenceApplication
     public bool IsBornInCanada { get; set; }
 }
 
-public record SaveLicenceApplicationCmd() : LicenceApplication;
+public record SaveLicenceApplicationCmd() : LicenceApplication
+{
+    public string? BcscGuid { get; set; }
+};
 
-public record LicenceApplicationResp(): LicenceApplication;
+public record LicenceApplicationResp() : LicenceApplication
+{
+    public Guid? ContactId { get; set; }
+};
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
@@ -164,4 +169,3 @@ public enum WorkerCategoryTypeEnum
     SecurityAlarmSales,
     SecurityConsultant,
 }
-

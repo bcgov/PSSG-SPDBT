@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.LicenceApplication;
 
 namespace Spd.Manager.Cases.Licence;
 internal class Mappings : Profile
@@ -18,6 +18,8 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<MailingAddress, MailingAddr>()
             .IncludeBase<Address, Addr>()
+            .ReverseMap();
+        CreateMap<Alias, Spd.Resource.Applicants.LicenceApplication.Alias>()
             .ReverseMap();
     }
 }
