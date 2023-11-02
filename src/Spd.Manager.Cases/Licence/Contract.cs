@@ -1,24 +1,22 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Manager.Cases.Screening;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Licence
 {
     public interface ILicenceManager
     {
-        public Task<WorkerLicenceUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
+        public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
-        public Task<IEnumerable<LicenceAppFileCreateResponse>> Handle(CreateLicenceAppFileCommand command, CancellationToken ct);
+        public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
     }
 
-    public record WorkerLicenceUpsertCommand(WorkerLicenceUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceUpsertResponse>;
+    public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 
-
-    public abstract record WorkerLicenceApplication
+    #region base data model
+    public abstract record WorkerLicenceApp
     {
-        public Guid? LicenceApplicationId { get; set; }
         public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
         public ApplicationTypeCode? ApplicationTypeCode { get; set; }
         public bool? isSoleProprietor { get; set; }
@@ -55,34 +53,41 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsTreatedForMHC { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
         public bool? CarryAndUseRetraints { get; set; }
-        public bool IsBornInCanada { get; set; }
+        public bool? IsBornInCanada { get; set; }
+        public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
+        public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
+        public MentalHealthDocument? MentalHealthDocument { get; set; }
+        public FingerprintProofDocument? FingerPrintProofDocument { get; set; }
+        public BornInCanadaDocument? BornInCanadaDocument { get; set; }
+        public AdditionalGovIdDocument? AdditionalGovIdDocument { get; set; }
+        public IdPhotoDocument? IdPhotoDocument { get; set; }
     }
-    public record WorkerLicenceUpsertRequest : WorkerLicenceApplication;
+    public record WorkerLicenceAppCategoryData
+    {
+        public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
+        public Document[]? Documents { get; set; } = null; 
+    }
+    public record Document
+    {
+        //public IList<IFormFile> NewDocuments { get; set; } //for anonymous user
+        public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
+        public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
+    }
 
-    public record WorkerLicenceCategoryUpsertRequest
+    public record PoliceOfficerDocument : Document;
+    public record MentalHealthDocument : Document;
+    public record FingerprintProofDocument : Document;
+    public record BornInCanadaDocument : Document
     {
-        public Guid LicenceApplicationId { get; set; }
-        public WorkerLicenceCategoryData[] CategoriesData { get; set; }
-    }
-
-    public record DogsAuthorizationUpsertRequest
+        public DateOnly? ExpiryDate { get; set; }
+    };
+    public record AdditionalGovIdDocument : Document
     {
-        public Guid LicenceApplicationId { get; set; }
-        public bool? UseDogs { get; set; }
-        public bool? IsDogsPurposeProtection { get; set; }
-        public bool? IsDogsPurposeDetectionDrugs { get; set; }
-        public bool? IsDogsPurposeDetectionExplosives { get; set; }
-        //public Documents? Documents { get; set; }
-    }
-    public record WorkerLicenceUpsertResponse
-    {
-        public Guid LicenceApplicationId { get; set; }
-    }
-    public record WorkerLicenceResponse : WorkerLicenceApplication;
+        public DateOnly? ExpiryDate { get; set; }
+    };
+    public record IdPhotoDocument : Document;
     public record ResidentialAddress : Address;
-
     public record MailingAddress : Address;
-
     public abstract record Address
     {
         public string? AddressLine1 { get; set; }
@@ -92,27 +97,6 @@ namespace Spd.Manager.Cases.Licence
         public string? PostalCode { get; set; }
         public string? Province { get; set; }
     }
-
-    public record WorkerLicenceCategoryData
-    {
-        public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
-        public LicenceAppFileUploadRequest[]? Documents { get; set; } = null; //tbd
-    }
-
-    public record CreateLicenceAppFileCommand(LicenceAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<LicenceAppFileCreateResponse>>;
-
-    public record LicenceAppFileUploadRequest(
-        IList<IFormFile> Files,
-        LicenceDocumentTypeCode LicenceDocumentTypeCode = LicenceDocumentTypeCode.BirthCertificate,
-        DateTimeOffset? ExpiryDate = null
-    );
-    public record LicenceAppFileCreateResponse
-    {
-        public Guid DocumentUrlId { get; set; }
-        public DateTimeOffset UploadedDateTime { get; set; }
-        public Guid? ApplicationId { get; set; } = null;
-    };
-
     public record Alias
     {
         public string? GivenName { get; set; }
@@ -121,6 +105,61 @@ namespace Spd.Manager.Cases.Licence
         public string? Surname { get; set; }
     }
 
+    public record WorkerLicenceResponse : WorkerLicenceApp
+    {
+        public Guid LicenceAppId { get; set; }
+    }
+    #endregion
+
+    #region authenticated user
+    public record WorkerLicenceAppUpsertRequest : WorkerLicenceApp
+    {
+        public Guid? LicenceAppId { get; set; }
+    };
+
+    //public record DogsAuthorizationUpsertRequest
+    //{
+    //    public Guid LicenceAppId { get; set; }
+    //    public bool? UseDogs { get; set; }
+    //    public bool? IsDogsPurposeProtection { get; set; }
+    //    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    //    public bool? IsDogsPurposeDetectionExplosives { get; set; }
+    //    //public Documents? Documents { get; set; }
+    //}
+    public record WorkerLicenceAppUpsertResponse
+    {
+        public Guid LicenceAppId { get; set; }
+    }
+
+    #endregion
+
+    #region anonymous user
+    public record WorkerLicenceAppCreateRequest : WorkerLicenceApp; //for anonymous user
+    public record WorkerLicenceCreateResponse
+    {
+        public Guid LicenceAppId { get; set; }
+    }
+
+    #endregion
+
+    #region file upload
+    public record CreateLicenceAppDocumentCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicenceAppDocumentResponse>>;
+
+    public record LicenceAppDocumentUploadRequest(
+        IList<IFormFile> Documents,
+        LicenceDocumentTypeCode LicenceDocumentTypeCode
+    );
+    public record LicenceAppDocumentResponse
+    {
+        public Guid DocumentUrlId { get; set; }
+        public DateTimeOffset UploadedDateTime { get; set; }
+        public Guid? LicenceAppId { get; set; } = null;
+        public string? DocumentName { get; set; }
+    };
+
+    #endregion
+
+    #region shared enums
     public enum WorkerLicenceTypeCode
     {
         SecurityWorkerLicence,
@@ -254,4 +293,5 @@ namespace Spd.Manager.Cases.Licence
         SecurityAlarmSales,
         SecurityConsultant,
     }
+    #endregion
 }

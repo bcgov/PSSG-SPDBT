@@ -1,37 +1,23 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Spd.Resource.Applicants.Application;
+﻿using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
-using Spd.Resource.Organizations.Identity;
-using Spd.Resource.Organizations.Registration;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
 using System.Collections.Immutable;
 
 namespace Spd.Manager.Cases.Licence;
 internal partial class LicenceManager
 {
-    public async Task<IEnumerable<LicenceAppFileCreateResponse>> Handle(CreateLicenceAppFileCommand command, CancellationToken ct)
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
         DocumentTypeEnum docEnum = GetDocumentTypeEnum(command.Request.LicenceDocumentTypeCode);
-        ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+        LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, ct);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
 
-        //mark all existing file type files deleted.
-        var docList = await _documentRepository.QueryAsync(new DocumentQry(command.ApplicationId,FileType: docEnum), ct);
-        foreach(var doc in docList.Items)
-        {
-            await _documentRepository.ManageAsync(new RemoveDocumentCmd(doc.DocumentUrlId), ct);
-        }
-
-        //get contact
-        var contacts = await _identityRepository.Query(new IdentityQry(command.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-        var contact = contacts.Items.FirstOrDefault();
-        if (contact == null)
-            throw new ArgumentException("No contact found");
-
+        Guid? contactId = app.ContactId;
         //put file to cache
         IList<DocumentResp> docResps = new List<DocumentResp>();
-        foreach (var file in command.Request.Files)
+        foreach (var file in command.Request.Documents)
         {
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
             SpdTempFile spdTempFile = new()
@@ -46,14 +32,14 @@ internal partial class LicenceManager
             var docResp = await _documentRepository.ManageAsync(new CreateDocumentCmd
             {
                 TempFile = spdTempFile,
-                ApplicationId = command.ApplicationId,
+                ApplicationId = command.AppId,
                 DocumentType = docEnum,
-                SubmittedByApplicantId = contact.ContactId
+                SubmittedByApplicantId = contactId
             }, ct);
             docResps.Add(docResp);
         }
 
-        return _mapper.Map<IEnumerable<LicenceAppFileCreateResponse>>(docResps);
+        return _mapper.Map<IEnumerable<LicenceAppDocumentResponse>>(docResps);
     }
 
     private DocumentTypeEnum GetDocumentTypeEnum(LicenceDocumentTypeCode licenceDocumentTypeCode)
@@ -64,6 +50,11 @@ internal partial class LicenceManager
             throw new ArgumentException("Invalid licenceDocumentTypeCode");
         };
         return docTypeEnum;
+    }
+
+    private LicenceDocumentTypeCode GetlicenceDocumentTypeCode(DocumentTypeEnum documentType)
+    {
+        return LicenceDocumentDictionary.FirstOrDefault(d => d.Value == documentType).Key;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentDictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
@@ -77,7 +68,12 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.MentalHealthCondition, DocumentTypeEnum.MentalHealthConditionForm},
         {LicenceDocumentTypeCode.PermanentResidentCard, DocumentTypeEnum.PermanentResidenceCard},
         {LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, DocumentTypeEnum.LetterOfNoConflict},
-        {LicenceDocumentTypeCode.ProofOfFingerprint, DocumentTypeEnum.FingerprintsPkg},
+        {LicenceDocumentTypeCode.ProofOfFingerprint, DocumentTypeEnum.FingerprintsPkg},//todo: find which to map
+        //{LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.}, //todo: find which to map
+        //{LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.c}, //todo: find which to map
+        //{LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.LegalWorkStatus}, //todo: find which to map
+        //{LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.},//todo: find which to map
+        //{LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.}//todo: find which to map
     }.ToImmutableDictionary();
 
 }
