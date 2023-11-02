@@ -7,11 +7,11 @@ public partial interface ILicenceApplicationRepository
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
 }
 
-public record LicenceApplicationCmdResp(Guid? LicenceApplicationId);
+public record LicenceApplicationCmdResp(Guid? LicenceAppId);
 
 public record LicenceApplication
 {
-    public Guid? LicenceApplicationId { get; set; }
+    public Guid? LicenceAppId { get; set; }
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public bool isSoleProprietor { get; set; }
@@ -19,7 +19,7 @@ public record LicenceApplication
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public DateTimeOffset DateOfBirth { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
     public GenderEnum? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }

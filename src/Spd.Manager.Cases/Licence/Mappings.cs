@@ -7,10 +7,12 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        CreateMap<WorkerLicenceApplicationUpsertRequest, SaveLicenceApplicationCmd>();
-        CreateMap<LicenceApplicationCmdResp, WorkerLicenceUpsertResponse>();
+        CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>();
+        CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
-        CreateMap<DocumentResp, LicenceAppFileCreateResponse>();
+        CreateMap<DocumentResp, LicenceAppDocumentResponse>()
+             .ForMember(d => d.DocumentName, opt => opt.MapFrom(s => s.FileName))
+             .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.ApplicationId));
         CreateMap<Address, Addr>()
             .ReverseMap();
         CreateMap<ResidentialAddress, ResidentialAddr>()

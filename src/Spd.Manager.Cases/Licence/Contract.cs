@@ -6,16 +6,16 @@ namespace Spd.Manager.Cases.Licence
 {
     public interface ILicenceManager
     {
-        public Task<WorkerLicenceUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
+        public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
-        public Task<IEnumerable<LicenceAppFileCreateResponse>> Handle(CreateLicenceAppFileCommand command, CancellationToken ct);
+        public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
     }
 
-    public record WorkerLicenceUpsertCommand(WorkerLicenceApplicationUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceUpsertResponse>;
+    public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 
-    #region anonymous model, one big payload
-    public abstract record WorkerLicenceApplication
+    #region base data model
+    public abstract record WorkerLicenceApp
     {
         public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
         public ApplicationTypeCode? ApplicationTypeCode { get; set; }
@@ -57,14 +57,11 @@ namespace Spd.Manager.Cases.Licence
         public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
         public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
         public MentalHealthDocument? MentalHealthDocument { get; set; }
-        public FingerPrintProofDocument? FingerPrintProofDocument { get; set; }
+        public FingerprintProofDocument? FingerPrintProofDocument { get; set; }
         public BornInCanadaDocument? BornInCanadaDocument { get; set; }
         public AdditionalGovIdDocument? AdditionalGovIdDocument { get; set; }
         public IdPhotoDocument? IdPhotoDocument { get; set; }
     }
-
-    public record WorkerLicenceApplicationCreateRequest : WorkerLicenceApplication;
-
     public record WorkerLicenceAppCategoryData
     {
         public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
@@ -72,18 +69,14 @@ namespace Spd.Manager.Cases.Licence
     }
     public record Document
     {
-        public IList<IFormFile> NewFiles { get; set; }
-        public IList<ExistingDocument> ExistingDocuments { get; set; }
-        public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; } = LicenceDocumentTypeCode.BirthCertificate;
+        //public IList<IFormFile> NewDocuments { get; set; } //for anonymous user
+        public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
+        public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
     }
-    public record ExistingDocument
-    {
-        public Guid DocumentUrlId { get; set; }
-        public DateTimeOffset UploadedDateTime { get; set; }
-    }
+
     public record PoliceOfficerDocument : Document;
     public record MentalHealthDocument : Document;
-    public record FingerPrintProofDocument : Document;
+    public record FingerprintProofDocument : Document;
     public record BornInCanadaDocument : Document
     {
         public DateOnly? ExpiryDate { get; set; }
@@ -111,48 +104,59 @@ namespace Spd.Manager.Cases.Licence
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
     }
+
+    public record WorkerLicenceResponse : WorkerLicenceApp
+    {
+        public Guid LicenceAppId { get; set; }
+    }
     #endregion
 
     #region authenticated user
-    public record WorkerLicenceApplicationUpsertRequest : WorkerLicenceApplicationCreateRequest
+    public record WorkerLicenceAppUpsertRequest : WorkerLicenceApp
     {
-        public Guid? LicenceApplicationId { get; set; }
+        public Guid? LicenceAppId { get; set; }
     };
 
     //public record DogsAuthorizationUpsertRequest
     //{
-    //    public Guid LicenceApplicationId { get; set; }
+    //    public Guid LicenceAppId { get; set; }
     //    public bool? UseDogs { get; set; }
     //    public bool? IsDogsPurposeProtection { get; set; }
     //    public bool? IsDogsPurposeDetectionDrugs { get; set; }
     //    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     //    //public Documents? Documents { get; set; }
     //}
-    public record WorkerLicenceUpsertResponse
+    public record WorkerLicenceAppUpsertResponse
     {
-        public Guid LicenceApplicationId { get; set; }
+        public Guid LicenceAppId { get; set; }
     }
-    public record WorkerLicenceResponse : WorkerLicenceApplication;
+
+    #endregion
+
+    #region anonymous user
+    public record WorkerLicenceAppCreateRequest : WorkerLicenceApp; //for anonymous user
+    public record WorkerLicenceCreateResponse
+    {
+        public Guid LicenceAppId { get; set; }
+    }
 
     #endregion
 
     #region file upload
-    public record CreateLicenceAppFileCommand(LicenceAppFileUploadRequest Request, string? BcscId, Guid ApplicationId) : IRequest<IEnumerable<LicenceAppFileCreateResponse>>;
+    public record CreateLicenceAppDocumentCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicenceAppDocumentResponse>>;
 
-    public record LicenceAppFileUploadRequest(
-        IList<IFormFile> Files,
-        LicenceDocumentTypeCode LicenceDocumentTypeCode = LicenceDocumentTypeCode.BirthCertificate
+    public record LicenceAppDocumentUploadRequest(
+        IList<IFormFile> Documents,
+        LicenceDocumentTypeCode LicenceDocumentTypeCode
     );
-    public record LicenceAppFileCreateResponse
+    public record LicenceAppDocumentResponse
     {
         public Guid DocumentUrlId { get; set; }
         public DateTimeOffset UploadedDateTime { get; set; }
-        public Guid? ApplicationId { get; set; } = null;
+        public Guid? LicenceAppId { get; set; } = null;
+        public string? DocumentName { get; set; }
     };
-    public record LicenceAppFileResponse : LicenceAppFileCreateResponse
-    {
-        public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
-    };
+
     #endregion
 
     #region shared enums

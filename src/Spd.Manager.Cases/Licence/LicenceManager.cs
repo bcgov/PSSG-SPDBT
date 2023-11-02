@@ -8,9 +8,9 @@ using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases.Licence;
 internal partial class LicenceManager :
-        IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceUpsertResponse>,
+        IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
-        IRequestHandler<CreateLicenceAppFileCommand, IEnumerable<LicenceAppFileCreateResponse>>,
+        IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         ILicenceManager
 {
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -35,7 +35,7 @@ internal partial class LicenceManager :
         _logger = logger;
     }
 
-    public async Task<WorkerLicenceUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
         _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
@@ -43,79 +43,51 @@ internal partial class LicenceManager :
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
         await RemoveDeletedFiles(cmd.LicenceUpsertRequest, ct);
-        return _mapper.Map<WorkerLicenceUpsertResponse>(response);
+        return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
     }
 
     public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct)
     {
         var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
         WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
-        var letterOfNoConflicts = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.LetterOfNoConflict).ToList();
-        if (letterOfNoConflicts.Any())
-        {
-            result.PoliceOfficerDocument = new PoliceOfficerDocument
-            {
-                LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-                ExistingDocuments =
-                    letterOfNoConflicts.Select(d => new ExistingDocument()
-                    {
-                        DocumentUrlId = d.DocumentUrlId,
-                        UploadedDateTime = d.UploadedDateTime
-                    }).ToList()
-            };
-        }
-        var mentalHealths = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm).ToList();
-        if (mentalHealths.Any())
-        {
-            result.MentalHealthDocument = new MentalHealthDocument
-            {
-                LicenceDocumentTypeCode = LicenceDocumentTypeCode.MentalHealthCondition,
-                ExistingDocuments =
-                    letterOfNoConflicts.Select(d => new ExistingDocument()
-                    {
-                        DocumentUrlId = d.DocumentUrlId,
-                        UploadedDateTime = d.UploadedDateTime
-                    }).ToList()
-            };
-        }
-        //todo: add more doc
+        await GetDocuments(query.LicenceApplicationId, result, ct);
         return result;
     }
 
-    private async Task RemoveDeletedFiles(WorkerLicenceApplicationUpsertRequest request, CancellationToken ct)
+    private async Task RemoveDeletedFiles(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceApplicationId), ct);
+        if (request.LicenceAppId == null) { return; }
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
         List<Guid> allValidDocGuids = new List<Guid>();
-        if (request.AdditionalGovIdDocument?.ExistingDocuments.Count > 0)
+        if (request.AdditionalGovIdDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.AdditionalGovIdDocument.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.AdditionalGovIdDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.BornInCanadaDocument?.ExistingDocuments.Count > 0)
+        if (request.BornInCanadaDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.BornInCanadaDocument.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.BornInCanadaDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.FingerPrintProofDocument?.ExistingDocuments.Count > 0)
+        if (request.FingerPrintProofDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.FingerPrintProofDocument.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.FingerPrintProofDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.IdPhotoDocument?.ExistingDocuments.Count > 0)
+        if (request.IdPhotoDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.IdPhotoDocument.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.IdPhotoDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.MentalHealthDocument?.ExistingDocuments.Count > 0)
+        if (request.MentalHealthDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.MentalHealthDocument.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.MentalHealthDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.PoliceOfficerDocument?.ExistingDocuments.Count > 0)
+        if (request.PoliceOfficerDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.PoliceOfficerDocument.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.PoliceOfficerDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
         foreach (WorkerLicenceAppCategoryData category in request.CategoryData)
         {
             foreach (Document d in category.Documents)
             {
-                allValidDocGuids.AddRange(d.ExistingDocuments.Select(d => d.DocumentUrlId).ToArray());
+                allValidDocGuids.AddRange(d.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
             }
         }
         var shouldDeleteDocs = existingDocs.Items.Where(i => !allValidDocGuids.Contains(i.DocumentUrlId)).ToList();
@@ -125,4 +97,74 @@ internal partial class LicenceManager :
         }
     }
 
+    private async Task GetDocuments(Guid LicenceAppId, WorkerLicenceResponse result, CancellationToken ct)
+    {
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(LicenceAppId), ct);
+        var letterOfNoConflicts = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.LetterOfNoConflict).ToList();
+        if (letterOfNoConflicts.Any())
+        {
+            result.PoliceOfficerDocument = new PoliceOfficerDocument
+            {
+                LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(letterOfNoConflicts)
+            };
+        }
+        var mentalHealths = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm).ToList();
+        if (mentalHealths.Any())
+        {
+            result.MentalHealthDocument = new MentalHealthDocument
+            {
+                LicenceDocumentTypeCode = LicenceDocumentTypeCode.MentalHealthCondition,
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(mentalHealths)
+            };
+        }
+        var fingerprints = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.FingerprintsPkg).ToList();
+        if (fingerprints.Any())
+        {
+            result.FingerPrintProofDocument = new FingerprintProofDocument
+            {
+                LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint,
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(fingerprints)
+            };
+        }
+
+        var bornInCanadas = existingDocs.Items.Where(d =>
+            d.DocumentType == DocumentTypeEnum.BirthCertificate ||
+            d.DocumentType == DocumentTypeEnum.Passport ||
+            d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard).ToList();
+        //todo: add more documentType condition here when we get the DocumentTypeEnum sorted out.
+        if (bornInCanadas.Any())
+        {
+            result.BornInCanadaDocument = new BornInCanadaDocument
+            {
+                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)bornInCanadas.First().DocumentType),
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(bornInCanadas)
+            };
+        }
+
+        var govIdDocs = existingDocs.Items.Where(d =>
+            d.DocumentType == DocumentTypeEnum.DriverLicense ||
+            d.DocumentType == DocumentTypeEnum.CanadianFirearmsLicense ||
+            d.DocumentType == DocumentTypeEnum.BCServicesCard ||
+            d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard ||
+            d.DocumentType == DocumentTypeEnum.GovtIssuedPhotoID).ToList();
+        if (govIdDocs.Any())
+        {
+            result.AdditionalGovIdDocument = new AdditionalGovIdDocument
+            {
+                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)govIdDocs.First().DocumentType),
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(govIdDocs)
+            };
+        }
+
+        var idPhoto = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.Photograph).ToList();
+        if (idPhoto.Any())
+        {
+            result.IdPhotoDocument = new IdPhotoDocument
+            {
+                LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself,
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(idPhoto)
+            };
+        }
+    }
 }

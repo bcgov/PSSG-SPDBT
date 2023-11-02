@@ -18,13 +18,13 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? app;
-        if (cmd.LicenceApplicationId != null)
+        if (cmd.LicenceAppId != null)
         {
-            app = await _context.GetApplicationById((Guid)cmd.LicenceApplicationId, ct);
+            app = await _context.GetApplicationById((Guid)cmd.LicenceAppId, ct);
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
-            app.spd_applicationid = (Guid)(cmd.LicenceApplicationId);
+            app.spd_applicationid = (Guid)(cmd.LicenceAppId);
             _context.UpdateObject(app);
         }
         else
@@ -184,7 +184,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Where(o =>
             o.firstname == createApplicationCmd.GivenName &&
             o.lastname == createApplicationCmd.Surname &&
-            o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Year, createApplicationCmd.DateOfBirth.Month, createApplicationCmd.DateOfBirth.Day) &&
+            o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
             o.statecode != DynamicsConstants.StateCode_Inactive);
 
         var list = contacts.ToList();

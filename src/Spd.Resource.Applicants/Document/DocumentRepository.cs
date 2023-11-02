@@ -94,7 +94,9 @@ internal class DocumentRepository : IDocumentRepository
         bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
         if (documenturl == null) { return null; }
         documenturl.statecode = DynamicsConstants.StateCode_Inactive;
+        documenturl.statuscode = DynamicsConstants.StatusCode_Inactive;
         await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, (Guid)(documenturl._spd_applicationid_value), ct);
+        _context.UpdateObject(documenturl);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
     }
