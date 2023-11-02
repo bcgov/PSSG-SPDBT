@@ -176,7 +176,9 @@ export class FileUploadComponent implements OnInit {
 
 	@Output() uploadedFile = new EventEmitter<any>();
 	@Output() removeFile = new EventEmitter<any>();
-	@Output() filesChanged = new EventEmitter<any>();
+	@Output() fileChanged = new EventEmitter<any>();
+	@Output() fileAdded = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter<File>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
@@ -216,7 +218,9 @@ export class FileUploadComponent implements OnInit {
 
 			this.files.push(...evt.addedFiles);
 			this.uploadedFile.emit(evt.addedFiles);
-			this.onFilesChanged();
+			this.onFileChanged();
+			this.onFileAdded(addedFile);
+			return;
 		}
 
 		if (evt.rejectedFiles.length > 0) {
@@ -234,18 +238,28 @@ export class FileUploadComponent implements OnInit {
 
 	onRemoveFile(evt: any) {
 		let currentFiles = [...this.files];
-		this.removeFile.emit(this.files.indexOf(evt));
-		currentFiles.splice(this.files.indexOf(evt), 1);
+		const removeFileIndex = this.files.indexOf(evt);
+		this.removeFile.emit(removeFileIndex);
+		currentFiles.splice(removeFileIndex, 1);
 
 		this.files = currentFiles;
-		this.onFilesChanged();
+		this.onFileChanged();
+		this.onFileRemoved(evt);
 	}
 
-	onFilesChanged(): void {
+	onFileChanged(): void {
 		const files = this.files && this.files.length > 0 ? this.files : [];
 		this.control.setValue(files);
 
-		this.filesChanged.emit(true);
+		this.fileChanged.emit(true);
+	}
+
+	onFileAdded(addedFile: File): void {
+		this.fileAdded.emit(addedFile);
+	}
+
+	onFileRemoved(removeFile: File): void {
+		this.fileRemoved.emit(removeFile);
 	}
 
 	removeAllFiles(): void {

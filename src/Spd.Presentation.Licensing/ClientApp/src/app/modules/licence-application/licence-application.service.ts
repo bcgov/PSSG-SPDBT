@@ -1,8 +1,7 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject, forkJoin, Observable, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, take, tap } from 'rxjs';
 import {
 	ApplicationTypeCode,
 	EyeColourCode,
@@ -36,503 +35,18 @@ import {
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-
-export interface LicenceStepperStepComponent {
-	onStepNext(formNumber: string): void;
-	onStepPrevious(): void;
-	onFormValidNextStep(formNumber: string): void;
-	onStepSelectionChange(event: StepperSelectionEvent): void;
-	onGoToNextStep(): void;
-	onGoToFirstStep(): void;
-	onGoToLastStep(): void;
-}
-
-export interface LicenceChildStepperStepComponent {
-	isFormValid(): boolean;
-}
-
-export interface LicenceDocument {
-	Files?: Array<File>;
-	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
-	ExpiryDate?: string;
-}
-
-export enum LicenceDocumentChanged {
-	categoryArmouredCarGuard = 'categoryArmouredCarGuard',
-	categoryFireInvestigator = 'categoryFireInvestigator',
-	categoryLocksmith = 'categoryLocksmith',
-	categoryPrivateInvestigator = 'categoryPrivateInvestigator',
-	categoryPrivateInvestigatorSup = 'categoryPrivateInvestigatorSup',
-	categorySecurityGuard = 'categorySecurityGuard',
-	categorySecurityAlarmInstaller = 'categorySecurityAlarmInstaller',
-	categorySecurityConsultant = 'categorySecurityConsultant',
-	citizenship = 'citizenship',
-	dogsAuthorization = 'dogsAuthorization',
-	restraintsAuthorization = 'restraintsAuthorization',
-	additionalGovermentId = 'additionalGovermentId',
-	mentalHealthConditions = 'mentalHealthConditions',
-	photographOfYourself = 'photographOfYourself',
-	policeBackground = 'policeBackground',
-	proofOfFingerprint = 'proofOfFingerprint',
-}
+import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class LicenceApplicationService {
+export class LicenceApplicationService extends LicenceApplicationHelper {
 	initialized = false;
-
-	booleanTypeCodes = BooleanTypeCode;
 
 	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	hasValueChanged = false;
-	hasDocumentsChanged: LicenceDocumentChanged | null = null;
-
-	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
-		workerLicenceTypeCode: new FormControl('', [Validators.required]),
-	});
-
-	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
-		applicationTypeCode: new FormControl('', [Validators.required]),
-	});
-
-	personalInformationFormGroup = this.formBuilder.group(
-		{
-			oneLegalName: new FormControl(false),
-			givenName: new FormControl(''),
-			middleName1: new FormControl(''),
-			middleName2: new FormControl(''),
-			surname: new FormControl('', [FormControlValidators.required]),
-			genderCode: new FormControl(''),
-			dateOfBirth: new FormControl('', [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'givenName',
-					(form) => form.get('oneLegalName')?.value != true
-				),
-			],
-		}
-	);
-
-	soleProprietorFormGroup = this.formBuilder.group({
-		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-	});
-
-	expiredLicenceFormGroup = this.formBuilder.group(
-		{
-			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceNumber: new FormControl(),
-			expiryDate: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
-
-	licenceTermFormGroup: FormGroup = this.formBuilder.group({
-		licenceTermCode: new FormControl('', [FormControlValidators.required]),
-	});
-
-	aliasesFormGroup: FormGroup = this.formBuilder.group({
-		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
-		aliases: this.formBuilder.array([]),
-	});
-
-	categoryBodyArmourSalesFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryClosedCircuitTelevisionInstallerFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryElectronicLockingDeviceInstallerFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryLocksmithSupFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmInstallerSupFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmMonitorFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmResponseFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmSalesFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityGuardSupFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			documentExpiryDate: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'documentExpiryDate',
-					(form) => form.get('isInclude')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categoryFireInvestigatorFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			fireCourseCertificateAttachments: new FormControl([]),
-			fireVerificationLetterAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'fireCourseCertificateAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'fireVerificationLetterAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-			],
-		}
-	);
-	categoryLocksmithFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categoryPrivateInvestigatorSupFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-			trainingAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'trainingAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-			],
-		}
-	);
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			trainingCode: new FormControl(''),
-			attachments: new FormControl([]),
-			trainingAttachments: new FormControl([]),
-			// fireCourseCertificateAttachments: new FormControl([]),
-			// fireVerificationLetterAttachments: new FormControl([]),
-			// addFireInvestigator: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalRequiredValidator('trainingCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'trainingAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-				// FormGroupValidators.conditionalDefaultRequiredValidator(
-				// 	'fireCourseCertificateAttachments',
-				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-				// ),
-				// FormGroupValidators.conditionalDefaultRequiredValidator(
-				// 	'fireVerificationLetterAttachments',
-				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-				// ),
-			],
-		}
-	);
-	categorySecurityAlarmInstallerFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categorySecurityConsultantFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-			resumeAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'resumeAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-			],
-		}
-	);
-	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-
-	restraintsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
-		{
-			carryAndUseRetraints: new FormControl(''),
-			carryAndUseRetraintsDocument: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'carryAndUseRetraints',
-					(form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'carryAndUseRetraintsDocument',
-					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
-
-	dogsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
-		{
-			useDogs: new FormControl(''),
-			dogsPurposeFormGroup: new FormGroup(
-				{
-					isDogsPurposeProtection: new FormControl(false),
-					isDogsPurposeDetectionDrugs: new FormControl(false),
-					isDogsPurposeDetectionExplosives: new FormControl(false),
-				},
-				FormGroupValidators.atLeastOneCheckboxValidator('useDogs', BooleanTypeCode.Yes)
-			),
-			dogsPurposeDocumentType: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'useDogs',
-					(form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'dogsPurposeDocumentType',
-					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
-
-	policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
-			officerRole: new FormControl(''),
-			otherOfficerRole: new FormControl(''),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'officerRole',
-					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'otherOfficerRole',
-					(form) => form.get('officerRole')?.value == PoliceOfficerRoleCode.Other
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
-
-	mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
-
-	criminalHistoryFormGroup: FormGroup = this.formBuilder.group({
-		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
-	});
-
-	proofOfFingerprintFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl('', [Validators.required]),
-	});
-
-	citizenshipFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isBornInCanada: new FormControl('', [FormControlValidators.required]),
-			proofTypeCode: new FormControl('', [FormControlValidators.required]),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl([], [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) =>
-						form.get('proofOfAbility')?.value == LicenceDocumentTypeCode.WorkPermit ||
-						form.get('proofOfAbility')?.value == LicenceDocumentTypeCode.StudyPermit
-				),
-			],
-		}
-	);
-
-	govIssuedIdFormGroup: FormGroup = this.formBuilder.group({
-		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
-		governmentIssuedPhotoExpiryDate: new FormControl(''),
-		attachments: new FormControl('', [Validators.required]),
-	});
-
-	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
-		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
-		bcDriversLicenceNumber: new FormControl(),
-	});
-
-	characteristicsFormGroup: FormGroup = this.formBuilder.group({
-		hairColourCode: new FormControl('', [FormControlValidators.required]),
-		eyeColourCode: new FormControl('', [FormControlValidators.required]),
-		height: new FormControl('', [FormControlValidators.required]),
-		heightUnitCode: new FormControl('', [FormControlValidators.required]),
-		weight: new FormControl('', [FormControlValidators.required]),
-		weightUnitCode: new FormControl('', [FormControlValidators.required]),
-	});
-
-	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
-		{
-			useBcServicesCardPhoto: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
-				),
-			],
-		}
-	);
-
-	contactInformationFormGroup: FormGroup = this.formBuilder.group({
-		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		contactPhoneNumber: new FormControl('', [Validators.required]),
-	});
-
-	residentialAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		residentialAddressLine1: new FormControl('', [FormControlValidators.required]),
-		residentialAddressLine2: new FormControl(''),
-		residentialCity: new FormControl('', [FormControlValidators.required]),
-		residentialPostalCode: new FormControl('', [FormControlValidators.required]),
-		residentialProvince: new FormControl('', [FormControlValidators.required]),
-		residentialCountry: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(),
-	});
-
-	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
-		{
-			addressSelected: new FormControl(false),
-			mailingAddressLine1: new FormControl(''),
-			mailingAddressLine2: new FormControl(''),
-			mailingCity: new FormControl(''),
-			mailingPostalCode: new FormControl(''),
-			mailingProvince: new FormControl(''),
-			mailingCountry: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'addressSelected',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'mailingAddressLine1',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'mailingCity',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'mailingPostalCode',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'mailingProvince',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'mailingCountry',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
-				),
-			],
-		}
-	);
+	// hasDocumentsChanged: LicenceDocumentChanged | null = null;
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceApplicationId: new FormControl(null),
@@ -580,12 +94,14 @@ export class LicenceApplicationService {
 	});
 
 	constructor(
-		private formBuilder: FormBuilder,
+		formBuilder: FormBuilder,
 		private utilService: UtilService,
 		private configService: ConfigService,
 		private spinnerService: NgxSpinnerService,
 		private workerLicensingService: WorkerLicensingService
-	) {}
+	) {
+		super(formBuilder);
+	}
 
 	reset(): void {
 		this.initialized = false;
@@ -609,6 +125,33 @@ export class LicenceApplicationService {
 				this.spinnerService.hide('loaderSpinner');
 				observer.next(this.licenceModelFormGroup.value);
 			}, 1000);
+		});
+	}
+
+	addUploadDocument(
+		documentCode: LicenceDocumentTypeCode,
+		document: File
+	): Observable<StrictHttpResponse<Array<LicenceAppFileCreateResponse>>> {
+		const doc: LicenceDocument = {
+			Files: [document],
+			LicenceDocumentTypeCode: documentCode,
+		};
+
+		return this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({
+			id: this.licenceModelFormGroup.value.licenceApplicationId,
+			body: doc,
+		});
+	}
+
+	removeUploadDocument(document: File): Observable<StrictHttpResponse<Array<LicenceAppFileCreateResponse>>> {
+		const doc: LicenceDocument = {
+			Files: [document],
+			LicenceDocumentTypeCode: LicenceDocumentTypeCode.BcServicesCard,
+		};
+
+		return this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({
+			id: this.licenceModelFormGroup.value.licenceApplicationId,
+			body: doc,
 		});
 	}
 
@@ -992,7 +535,6 @@ export class LicenceApplicationService {
 		// 	this.workerLicenceTypeFormGroup.valid,
 		// 	this.applicationTypeFormGroup.valid,
 		// 	this.soleProprietorFormGroup.valid,
-		// 	this.personalInformationFormGroup.valid,
 		// 	this.expiredLicenceFormGroup.valid,
 		// 	this.licenceTermFormGroup.valid,
 		// 	this.restraintsAuthorizationFormGroup.valid,
@@ -1020,7 +562,6 @@ export class LicenceApplicationService {
 			this.workerLicenceTypeFormGroup.valid &&
 			this.applicationTypeFormGroup.valid &&
 			this.soleProprietorFormGroup.valid &&
-			this.personalInformationFormGroup.valid &&
 			this.expiredLicenceFormGroup.valid &&
 			this.licenceTermFormGroup.valid &&
 			this.restraintsAuthorizationFormGroup.valid &&
@@ -1065,6 +606,7 @@ export class LicenceApplicationService {
 	isStep3Complete(): boolean {
 		// console.debug(
 		// 	'isStep3Complete',
+		// 	this.personalInformationFormGroup.valid,
 		// 	this.aliasesFormGroup.valid,
 		// 	this.citizenshipFormGroup.valid,
 		// 	this.govIssuedIdFormGroup.valid,
@@ -1077,6 +619,7 @@ export class LicenceApplicationService {
 		// );
 
 		return (
+			this.personalInformationFormGroup.valid &&
 			this.aliasesFormGroup.valid &&
 			this.citizenshipFormGroup.valid &&
 			this.govIssuedIdFormGroup.valid &&
@@ -1100,40 +643,40 @@ export class LicenceApplicationService {
 		return [...updatedList];
 	}
 
-	saveLicence(): any {
-		console.log(
-			'saveLicence',
-			'hasValueChanged',
-			this.hasValueChanged,
-			'hasDocumentsChanged',
-			this.hasDocumentsChanged
-		);
+	saveLicence(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+		// 	console.log(
+		// 		'saveLicence',
+		// 		'hasValueChanged',
+		// 		this.hasValueChanged
+		// 		// 'hasDocumentsChanged',
+		// 		// this.hasDocumentsChanged
+		// 	);
 
-		// if (this.hasValueChanged && this.hasDocumentsChanged) {
-		// 	return forkJoin([this.saveLicenceBasicInformation(), this.saveLicenceDocuments()]);
-		// } else if (this.hasValueChanged) {
+		// 	// if (this.hasValueChanged && this.hasDocumentsChanged) {
+		// 	// 	return forkJoin([this.saveLicenceBasicInformation(), this.saveLicenceDocuments()]);
+		// 	// } else if (this.hasValueChanged) {
 		// 	return forkJoin([this.saveLicenceBasicInformation()]);
-		// } else
-		if (this.hasDocumentsChanged) {
-			return forkJoin([this.saveLicenceDocuments()]);
-		}
+		// 	// } else
+		// 	// if (this.hasDocumentsChanged) {
+		// 	// 	return forkJoin([this.saveLicenceDocuments()]);
+		// 	// }
 
-		// if (this.hasValueChanged) {
-		// 	return forkJoin([this.saveLicenceBasicInformation()]);
+		// 	// if (this.hasValueChanged) {
+		// 	// 	return forkJoin([this.saveLicenceBasicInformation()]);
+		// 	// }
+
+		// 	// this.saveLicenceBasicInformation()
+		// 	// .pipe(
+		// 	// 		map(todo => {
+		// 	// 				return todo
+		// 	// 		}),
+		// 	// 		mergeMap(todo => this.http.get(`https://jsonplaceholder.typicode.com/posts/${todo}/comments`))
+		// 	// ).subscribe(response => {
+		// 	// 		this.mergeMapResult = response;
+		// 	// })
 		// }
 
-		// this.saveLicenceBasicInformation()
-		// .pipe(
-		// 		map(todo => {
-		// 				return todo
-		// 		}),
-		// 		mergeMap(todo => this.http.get(`https://jsonplaceholder.typicode.com/posts/${todo}/comments`))
-		// ).subscribe(response => {
-		// 		this.mergeMapResult = response;
-		// })
-	}
-
-	private saveLicenceBasicInformation(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+		// private saveLicenceBasicInformation(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
 		const formValue = this.licenceModelFormGroup.value;
 		console.debug('saveLicenceBasicInformation licenceModelFormGroup', formValue);
 
@@ -1195,268 +738,268 @@ export class LicenceApplicationService {
 		);
 	}
 
-	private saveLicenceDocuments(): Array<Observable<StrictHttpResponse<Array<LicenceAppFileCreateResponse>>>> {
-		if (!this.hasDocumentsChanged) return [];
+	// private saveLicenceDocuments(): Array<Observable<StrictHttpResponse<Array<LicenceAppFileCreateResponse>>>> {
+	// 	if (!this.hasDocumentsChanged) return [];
 
-		const formValue = this.licenceModelFormGroup.value;
-		console.debug('saveLicenceDocuments licenceModelFormGroup', formValue);
+	// 	const formValue = this.licenceModelFormGroup.value;
+	// 	console.debug('saveLicenceDocuments licenceModelFormGroup', formValue);
 
-		const apis: Array<any> = [];
-		const id = formValue.licenceApplicationId;
+	// 	const apis: Array<any> = [];
+	// 	const id = formValue.licenceApplicationId;
 
-		switch (this.hasDocumentsChanged) {
-			case LicenceDocumentChanged.categoryArmouredCarGuard:
-				apis.push(...this.getCategoryArmouredCarGuard(id, formValue.categoryArmouredCarGuardFormGroup));
-				console.log('apis', apis);
-				// let Files1: Array<File> = [];
-				// if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
-				// 	Files1 = [...formValue.categoryArmouredCarGuardFormGroup.attachments];
-				// }
-				// const doc: LicenceDocument = {
-				// 	Files: Files1,
-				// 	LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
-				// 	ExpiryDate: formValue.categoryArmouredCarGuardFormGroup.documentExpiryDate,
-				// };
-				// apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				break;
-			case LicenceDocumentChanged.categoryFireInvestigator:
-				apis.push(...this.getCategoryFireInvestigator(id, formValue.categoryFireInvestigatorFormGroup));
-				console.log('apis', apis);
-				// let Files2: Array<File> = [];
-				// if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
-				// 	Files2 = [...formValue.categoryFireInvestigatorFormGroup.attachments];
-				// }
-				// if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
-				// 	const doc1: LicenceDocument = {
-				// 		Files: [...formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments],
-				// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
-				// 	};
-				// 	const doc2: LicenceDocument = {
-				// 		Files: [...formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments],
-				// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
-				// 	};
-				// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
-				// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
-				// }
-				break;
-			case LicenceDocumentChanged.categoryLocksmith:
-				if (formValue.categoryLocksmithFormGroup.isInclude) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.categoryLocksmithFormGroup.attachments],
-						LicenceDocumentTypeCode: formValue.categoryLocksmithFormGroup.requirementCode,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.categoryPrivateInvestigator:
-				if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
-					const doc1: LicenceDocument = {
-						Files: [...formValue.categoryPrivateInvestigatorFormGroup.attachments],
-						LicenceDocumentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.requirementCode,
-					};
-					const doc2: LicenceDocument = {
-						Files: [...formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments],
-						LicenceDocumentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.trainingCode,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
-				}
-				break;
-			case LicenceDocumentChanged.categoryPrivateInvestigatorSup:
-				if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-					const doc1: LicenceDocument = {
-						Files: [...formValue.categoryPrivateInvestigatorSupFormGroup.attachments],
-						LicenceDocumentTypeCode: formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
-					};
-					const doc2: LicenceDocument = {
-						Files: [...formValue.categoryPrivateInvestigatorSupFormGroup.trainingAttachments],
-						LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
-				}
-				break;
-			case LicenceDocumentChanged.categorySecurityGuard:
-				if (formValue.categorySecurityGuardFormGroup.isInclude) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.categorySecurityGuardFormGroup.attachments],
-						LicenceDocumentTypeCode: formValue.categorySecurityGuardFormGroup.requirementCode,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.categorySecurityAlarmInstaller:
-				if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.categorySecurityAlarmInstallerFormGroup.attachments],
-						LicenceDocumentTypeCode: formValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.categorySecurityConsultant:
-				if (formValue.categorySecurityConsultantFormGroup.isInclude) {
-					const doc1: LicenceDocument = {
-						Files: [...formValue.categorySecurityConsultantFormGroup.attachments],
-						LicenceDocumentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
-					};
-					const doc2: LicenceDocument = {
-						Files: [...formValue.categorySecurityConsultantFormGroup.resumeAttachments],
-						LicenceDocumentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
-				}
-				break;
-			case LicenceDocumentChanged.citizenship:
-			case LicenceDocumentChanged.additionalGovermentId:
-				if (formValue.citizenshipData.attachments) {
-					const doc1: LicenceDocument = {
-						Files: [...formValue.citizenshipData.attachments],
-						LicenceDocumentTypeCode: formValue.citizenshipData.proofTypeCode,
-						ExpiryDate: formValue.citizenshipData.expiryDate,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
+	// 	switch (this.hasDocumentsChanged) {
+	// 		case LicenceDocumentChanged.categoryArmouredCarGuard:
+	// 			apis.push(...this.getCategoryArmouredCarGuard(id, formValue.categoryArmouredCarGuardFormGroup));
+	// 			console.log('apis', apis);
+	// 			// let Files1: Array<File> = [];
+	// 			// if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
+	// 			// 	Files1 = [...formValue.categoryArmouredCarGuardFormGroup.attachments];
+	// 			// }
+	// 			// const doc: LicenceDocument = {
+	// 			// 	Files: Files1,
+	// 			// 	LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
+	// 			// 	ExpiryDate: formValue.categoryArmouredCarGuardFormGroup.documentExpiryDate,
+	// 			// };
+	// 			// apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			break;
+	// 		case LicenceDocumentChanged.categoryFireInvestigator:
+	// 			apis.push(...this.getCategoryFireInvestigator(id, formValue.categoryFireInvestigatorFormGroup));
+	// 			console.log('apis', apis);
+	// 			// let Files2: Array<File> = [];
+	// 			// if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
+	// 			// 	Files2 = [...formValue.categoryFireInvestigatorFormGroup.attachments];
+	// 			// }
+	// 			// if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
+	// 			// 	const doc1: LicenceDocument = {
+	// 			// 		Files: [...formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments],
+	// 			// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
+	// 			// 	};
+	// 			// 	const doc2: LicenceDocument = {
+	// 			// 		Files: [...formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments],
+	// 			// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
+	// 			// 	};
+	// 			// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
+	// 			// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
+	// 			// }
+	// 			break;
+	// 		case LicenceDocumentChanged.categoryLocksmith:
+	// 			if (formValue.categoryLocksmithFormGroup.isInclude) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.categoryLocksmithFormGroup.attachments],
+	// 					LicenceDocumentTypeCode: formValue.categoryLocksmithFormGroup.requirementCode,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.categoryPrivateInvestigator:
+	// 			if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
+	// 				const doc1: LicenceDocument = {
+	// 					Files: [...formValue.categoryPrivateInvestigatorFormGroup.attachments],
+	// 					LicenceDocumentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.requirementCode,
+	// 				};
+	// 				const doc2: LicenceDocument = {
+	// 					Files: [...formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments],
+	// 					LicenceDocumentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.trainingCode,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.categoryPrivateInvestigatorSup:
+	// 			if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
+	// 				const doc1: LicenceDocument = {
+	// 					Files: [...formValue.categoryPrivateInvestigatorSupFormGroup.attachments],
+	// 					LicenceDocumentTypeCode: formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
+	// 				};
+	// 				const doc2: LicenceDocument = {
+	// 					Files: [...formValue.categoryPrivateInvestigatorSupFormGroup.trainingAttachments],
+	// 					LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.categorySecurityGuard:
+	// 			if (formValue.categorySecurityGuardFormGroup.isInclude) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.categorySecurityGuardFormGroup.attachments],
+	// 					LicenceDocumentTypeCode: formValue.categorySecurityGuardFormGroup.requirementCode,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.categorySecurityAlarmInstaller:
+	// 			if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.categorySecurityAlarmInstallerFormGroup.attachments],
+	// 					LicenceDocumentTypeCode: formValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.categorySecurityConsultant:
+	// 			if (formValue.categorySecurityConsultantFormGroup.isInclude) {
+	// 				const doc1: LicenceDocument = {
+	// 					Files: [...formValue.categorySecurityConsultantFormGroup.attachments],
+	// 					LicenceDocumentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+	// 				};
+	// 				const doc2: LicenceDocument = {
+	// 					Files: [...formValue.categorySecurityConsultantFormGroup.resumeAttachments],
+	// 					LicenceDocumentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.citizenship:
+	// 		case LicenceDocumentChanged.additionalGovermentId:
+	// 			if (formValue.citizenshipData.attachments) {
+	// 				const doc1: LicenceDocument = {
+	// 					Files: [...formValue.citizenshipData.attachments],
+	// 					LicenceDocumentTypeCode: formValue.citizenshipData.proofTypeCode,
+	// 					ExpiryDate: formValue.citizenshipData.expiryDate,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
 
-					const includeAdditionalGovermentIdStepData =
-						(formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes &&
-							formValue.citizenshipData.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-						(formValue.citizenshipData.isBornInCanada == BooleanTypeCode.No &&
-							formValue.citizenshipData.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard);
+	// 				const includeAdditionalGovermentIdStepData =
+	// 					(formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes &&
+	// 						formValue.citizenshipData.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+	// 					(formValue.citizenshipData.isBornInCanada == BooleanTypeCode.No &&
+	// 						formValue.citizenshipData.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard);
 
-					if (includeAdditionalGovermentIdStepData) {
-						const doc2: LicenceDocument = {
-							Files: [...formValue.govIssuedIdData.attachments],
-							LicenceDocumentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
-						};
-						apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
-					} else {
-					}
-				}
-				break;
-			case LicenceDocumentChanged.dogsAuthorization:
-				apis.push(
-					...this.getDogsAuthorization(id, formValue.categorySecurityGuardFormGroup, formValue.dogsAuthorizationData)
-				);
-				console.log('apis', apis);
-				// if (formValue.categorySecurityGuardFormGroup.isInclude) {
-				// 	const doc: LicenceDocument = {
-				// 		Files: [...formValue.dogsAuthorizationData.attachments],
-				// 		LicenceDocumentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
-				// 	};
-				// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				// }
-				break;
-			case LicenceDocumentChanged.restraintsAuthorization:
-				if (formValue.categorySecurityGuardFormGroup.isInclude) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.restraintsAuthorizationData.attachments],
-						LicenceDocumentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.mentalHealthConditions:
-				if (formValue.mentalHealthConditionsData.attachments) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.mentalHealthConditionsData.attachments],
-						LicenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.photographOfYourself:
-				if (formValue.photographOfYourselfData.attachments) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.photographOfYourselfData.attachments],
-						LicenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.policeBackground:
-				const isPoliceOrPeaceOfficer = formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes;
-				if (isPoliceOrPeaceOfficer && formValue.policeBackgroundData.attachments) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.policeBackgroundData.attachments],
-						LicenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-			case LicenceDocumentChanged.proofOfFingerprint:
-				if (formValue.proofOfFingerprintData.attachments) {
-					const doc: LicenceDocument = {
-						Files: [...formValue.proofOfFingerprintData.attachments],
-						LicenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint,
-					};
-					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
-				}
-				break;
-		}
+	// 				if (includeAdditionalGovermentIdStepData) {
+	// 					const doc2: LicenceDocument = {
+	// 						Files: [...formValue.govIssuedIdData.attachments],
+	// 						LicenceDocumentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
+	// 					};
+	// 					apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
+	// 				} else {
+	// 				}
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.dogsAuthorization:
+	// 			apis.push(
+	// 				...this.getDogsAuthorization(id, formValue.categorySecurityGuardFormGroup, formValue.dogsAuthorizationData)
+	// 			);
+	// 			console.log('apis', apis);
+	// 			// if (formValue.categorySecurityGuardFormGroup.isInclude) {
+	// 			// 	const doc: LicenceDocument = {
+	// 			// 		Files: [...formValue.dogsAuthorizationData.attachments],
+	// 			// 		LicenceDocumentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
+	// 			// 	};
+	// 			// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			// }
+	// 			break;
+	// 		case LicenceDocumentChanged.restraintsAuthorization:
+	// 			if (formValue.categorySecurityGuardFormGroup.isInclude) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.restraintsAuthorizationData.attachments],
+	// 					LicenceDocumentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.mentalHealthConditions:
+	// 			if (formValue.mentalHealthConditionsData.attachments) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.mentalHealthConditionsData.attachments],
+	// 					LicenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.photographOfYourself:
+	// 			if (formValue.photographOfYourselfData.attachments) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.photographOfYourselfData.attachments],
+	// 					LicenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.policeBackground:
+	// 			const isPoliceOrPeaceOfficer = formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes;
+	// 			if (isPoliceOrPeaceOfficer && formValue.policeBackgroundData.attachments) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.policeBackgroundData.attachments],
+	// 					LicenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 		case LicenceDocumentChanged.proofOfFingerprint:
+	// 			if (formValue.proofOfFingerprintData.attachments) {
+	// 				const doc: LicenceDocument = {
+	// 					Files: [...formValue.proofOfFingerprintData.attachments],
+	// 					LicenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint,
+	// 				};
+	// 				apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc }));
+	// 			}
+	// 			break;
+	// 	}
 
-		console.debug('*************** documents to save:', apis);
+	// 	console.debug('*************** documents to save:', apis);
 
-		return apis;
-	}
+	// 	return apis;
+	// }
 
-	private getCategoryArmouredCarGuard(id: string, categoryArmouredCarGuardFormGroup: any): Array<any> {
-		let Files: Array<File> = [];
+	// private getCategoryArmouredCarGuard(id: string, categoryArmouredCarGuardFormGroup: any): Array<any> {
+	// 	let Files: Array<File> = [];
 
-		if (categoryArmouredCarGuardFormGroup.isInclude) {
-			Files = [...categoryArmouredCarGuardFormGroup.attachments];
-		}
+	// 	if (categoryArmouredCarGuardFormGroup.isInclude) {
+	// 		Files = [...categoryArmouredCarGuardFormGroup.attachments];
+	// 	}
 
-		const doc: LicenceDocument = {
-			Files: Files,
-			LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
-			ExpiryDate: categoryArmouredCarGuardFormGroup.documentExpiryDate,
-		};
-		return [this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc })];
-	}
+	// 	const doc: LicenceDocument = {
+	// 		Files: Files,
+	// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
+	// 		ExpiryDate: categoryArmouredCarGuardFormGroup.documentExpiryDate,
+	// 	};
+	// 	return [this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc })];
+	// }
 
-	private getCategoryFireInvestigator(id: string, categoryFireInvestigatorFormGroup: any): Array<any> {
-		let Files1: Array<File> = [];
-		let Files2: Array<File> = [];
+	// private getCategoryFireInvestigator(id: string, categoryFireInvestigatorFormGroup: any): Array<any> {
+	// 	let Files1: Array<File> = [];
+	// 	let Files2: Array<File> = [];
 
-		if (categoryFireInvestigatorFormGroup.isInclude) {
-			Files1 = [...categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments];
-			Files2 = [...categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments];
-		}
+	// 	if (categoryFireInvestigatorFormGroup.isInclude) {
+	// 		Files1 = [...categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments];
+	// 		Files2 = [...categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments];
+	// 	}
 
-		const doc1: LicenceDocument = {
-			Files: Files1,
-			LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
-		};
-		const doc2: LicenceDocument = {
-			Files: Files2,
-			LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
-		};
+	// 	const doc1: LicenceDocument = {
+	// 		Files: Files1,
+	// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
+	// 	};
+	// 	const doc2: LicenceDocument = {
+	// 		Files: Files2,
+	// 		LicenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
+	// 	};
 
-		return [
-			this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }),
-			this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }),
-		];
-	}
+	// 	return [
+	// 		this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }),
+	// 		this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }),
+	// 	];
+	// }
 
-	private getDogsAuthorization(
-		id: string,
-		categorySecurityGuardFormGroup: any,
-		dogsAuthorizationData: any
-	): Array<any> {
-		let Files: Array<File> = [];
+	// private getDogsAuthorization(
+	// 	id: string,
+	// 	categorySecurityGuardFormGroup: any,
+	// 	dogsAuthorizationData: any
+	// ): Array<any> {
+	// 	let Files: Array<File> = [];
 
-		if (categorySecurityGuardFormGroup.isInclude) {
-			Files = [...dogsAuthorizationData.attachments];
-		}
+	// 	if (categorySecurityGuardFormGroup.isInclude) {
+	// 		Files = [...dogsAuthorizationData.attachments];
+	// 	}
 
-		const doc: LicenceDocument = {
-			Files: Files,
-			LicenceDocumentTypeCode: dogsAuthorizationData.dogsPurposeDocumentType,
-		};
-		console.log('getDogsAuthorization doc', doc);
-		return [this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc })];
-	}
+	// 	const doc: LicenceDocument = {
+	// 		Files: Files,
+	// 		LicenceDocumentTypeCode: dogsAuthorizationData.dogsPurposeDocumentType,
+	// 	};
+	// 	console.log('getDogsAuthorization doc', doc);
+	// 	return [this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc })];
+	// }
 
 	/*
 	xxxxxxxxxxxxxxx(): any {

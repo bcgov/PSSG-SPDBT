@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PoliceOfficerRoleCode } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode, PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-police-background',
@@ -98,9 +97,11 @@ import {
 													>
 													for more information.
 												</p>
-												<!--			[maxNumberOfFiles]="1" -->
+												<!-- TODO			[maxNumberOfFiles]="1" -->
 												<app-file-upload
-													(filesChanged)="onFilesChanged()"
+													(fileChanged)="onFileChanged()"
+													(fileAdded)="onFileAdded($event)"
+													(fileRemoved)="onFileRemoved($event)"
 													[control]="attachments"
 													[files]="attachments.value"
 												></app-file-upload>
@@ -147,7 +148,11 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.title_confirm;
@@ -158,8 +163,41 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.policeBackground;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.policeBackground;
+	}
+
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+						matchingFile.id = resp[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					},
+				});
+		}
+	}
+
+	onFileRemoved(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
+				.subscribe({
+					next: (resp: any) => {
+						console.log('att', this.form.value);
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file remove', error);
+						this.hotToastService.error('An error occurred during the file remove. Please try again.');
+					},
+				});
+		}
 	}
 
 	isFormValid(): boolean {

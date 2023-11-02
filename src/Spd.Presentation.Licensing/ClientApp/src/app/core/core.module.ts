@@ -6,6 +6,12 @@ import { RouterModule } from '@angular/router';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
+import { AuthProcessService } from './services/auth-process.service';
+import { AuthUserBceidService } from './services/auth-user-bceid.service';
+import { AuthUserBcscService } from './services/auth-user-bcsc.service';
+import { AuthenticationService } from './services/authentication.service';
+import { ConfigService } from './services/config.service';
+import { UtilService } from './services/util.service';
 
 const CORE_COMPONENTS: any[] = [];
 
@@ -13,6 +19,12 @@ const CORE_COMPONENTS: any[] = [];
 	declarations: [...CORE_COMPONENTS],
 	imports: [CommonModule, RouterModule, ReactiveFormsModule],
 	providers: [
+		AuthProcessService,
+		AuthUserBceidService,
+		AuthUserBcscService,
+		AuthenticationService,
+		ConfigService,
+		UtilService,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: ErrorInterceptor,

@@ -5,11 +5,8 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { LocksmithRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-locksmith',
@@ -98,7 +95,7 @@ import {
 				</div>
 				<div class="my-2">
 					<app-file-upload
-						(filesChanged)="onFilesChanged()"
+						(fileChanged)="onFileChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -140,8 +137,8 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'WorkerCategoryTypes');
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryLocksmith;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryLocksmith;
 	}
 
 	isFormValid(): boolean {

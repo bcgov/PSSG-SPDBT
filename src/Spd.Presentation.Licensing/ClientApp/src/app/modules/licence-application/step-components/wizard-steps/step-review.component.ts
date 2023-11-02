@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { LicenceStepperStepComponent } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../licence-application.helper';
 import { SummaryReviewComponent } from '../summary-review.component';
 
 @Component({

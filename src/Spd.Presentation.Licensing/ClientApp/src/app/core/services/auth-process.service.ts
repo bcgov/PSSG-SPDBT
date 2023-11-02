@@ -6,6 +6,7 @@ import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
+import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { UtilService } from './util.service';
 
@@ -24,11 +25,12 @@ export class AuthProcessService {
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private authUserBcscService: AuthUserBcscService,
+		private authUserBceidService: AuthUserBceidService,
 		private router: Router
 	) {}
 
 	//----------------------------------------------------------
-	// * Licencing Portal
+	// * Licencing Portal - BCSC
 	// *
 	async initializeLicencingBCSC(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
@@ -37,6 +39,7 @@ export class AuthProcessService {
 			'initializeLicencingBCSC return',
 			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
 		);
+
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
 			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
@@ -55,6 +58,9 @@ export class AuthProcessService {
 		return Promise.resolve(null);
 	}
 
+	//----------------------------------------------------------
+	// * Licencing Portal - BCeID
+	// *
 	async initializeLicencingBCeID(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
@@ -84,6 +90,7 @@ export class AuthProcessService {
 		// this.utilService.clearAllSessionData();
 
 		this.authUserBcscService.clearUserData();
+		this.authUserBceidService.clearUserData();
 
 		this.notify(false);
 
@@ -96,6 +103,7 @@ export class AuthProcessService {
 		const hasValidAccessToken = this.oauthService.hasValidAccessToken();
 
 		if (!isLoggedIn || !hasValidAccessToken) {
+			this.loggedInUserTokenData = null;
 			this._waitUntilAuthentication$.next(false);
 		} else {
 			const token = this.authenticationService.getToken();

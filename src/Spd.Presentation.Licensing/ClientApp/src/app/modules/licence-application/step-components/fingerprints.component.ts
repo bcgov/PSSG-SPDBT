@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-fingerprints',
@@ -31,7 +28,7 @@ import {
 							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
-								(filesChanged)="onFilesChanged()"
+								(fileChanged)="onFileChanged()"
 								[control]="attachments"
 								[maxNumberOfFiles]="1"
 								[files]="attachments.value"
@@ -66,8 +63,8 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.proofOfFingerprint;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.proofOfFingerprint;
 	}
 
 	isFormValid(): boolean {

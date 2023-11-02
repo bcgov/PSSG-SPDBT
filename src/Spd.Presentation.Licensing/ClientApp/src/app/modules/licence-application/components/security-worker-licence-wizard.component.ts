@@ -26,14 +26,14 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<!-- <mat-step [completed]="step1Complete">
+						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
 								(childNextStep)="onChildNextStep()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
-						</mat-step> -->
+						</mat-step>
 
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
@@ -99,10 +99,12 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 					</button>
 
 					<div class="m-3">
-						<a class="large" style="top: 10px;" (click)="onSaveAndExit()"> Save and Exit </a>
+						<a class="large" style="font-weight: 600;top: 10px;" (click)="onSaveAndExit()"> Save and Exit </a>
 					</div>
 					<div class="m-3">
-						<a *ngIf="isFormValid" class="large" style="top: 10px;" (click)="onGoToReview()"> Go to Review </a>
+						<a *ngIf="isFormValid" class="large" style="font-weight: 600;top: 10px;" (click)="onGoToReview()">
+							Go to Review
+						</a>
 					</div>
 					<!-- <div class="m-3">
 						<a class="large" style="color: var(--color-red) !important;" (click)="onGoToReview()">
@@ -195,9 +197,9 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				console.debug(
 					'valueChanges changed flags',
 					'hasValueChanged',
-					this.licenceApplicationService.hasValueChanged,
-					'hasDocumentsChanged',
-					this.licenceApplicationService.hasDocumentsChanged
+					this.licenceApplicationService.hasValueChanged
+					// 'hasDocumentsChanged',
+					// this.licenceApplicationService.hasDocumentsChanged
 				);
 
 				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
@@ -272,7 +274,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = null;
+					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -322,7 +324,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		this.licenceApplicationService.saveLicence().subscribe({
 			next: (resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
-				this.licenceApplicationService.hasDocumentsChanged = null;
+				//this.licenceApplicationService.hasDocumentsChanged = null;
 
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
@@ -341,7 +343,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = null;
+					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -362,7 +364,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = null;
+					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();

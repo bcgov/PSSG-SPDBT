@@ -44,9 +44,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 				// TODO fix ignore certain errors
 				// if (errorResponse.status == 500) {
 				// const url = WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath;
-				// const url = WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath.substring(
-				// 	WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.indexOf('/api') + 1,
-				// 	WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath.lastIndexOf('/')
+				// const url = WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath.substring(
+				// 	WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath.indexOf('/api') + 1,
+				// 	WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath.lastIndexOf('/')
 				// );
 				// if (errorResponse.url?.includes(url)) {
 				// return throwError(() => errorResponse);

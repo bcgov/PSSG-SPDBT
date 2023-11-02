@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-mental-health-conditions',
@@ -52,7 +49,7 @@ import {
 									<div class="col-12">
 										<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
 										<app-file-upload
-											(filesChanged)="onFilesChanged()"
+											(fileChanged)="onFileChanged()"
 											[control]="attachments"
 											[maxNumberOfFiles]="1"
 											[files]="attachments.value"
@@ -84,8 +81,8 @@ export class MentalHealthConditionsComponent implements LicenceChildStepperStepC
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.mentalHealthConditions;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.mentalHealthConditions;
 	}
 
 	isFormValid(): boolean {

@@ -266,24 +266,24 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
-	// async ngOnInit(): Promise<void> {
-	// 	const identityProviderTypeCode = (this.location.getState() as any).identityProviderTypeCode;
-	// 	console.log('UserApplicationsComponent identityProviderTypeCode', identityProviderTypeCode);
+	async ngOnInit(): Promise<void> {
+		// 	const identityProviderTypeCode = (this.location.getState() as any).identityProviderTypeCode;
+		// 	console.log('UserApplicationsComponent identityProviderTypeCode', identityProviderTypeCode);
 
-	// 	if (identityProviderTypeCode == IdentityProviderTypeCode.BcServicesCard) {
-	// 		const nextRoute = await this.authProcessService.initializeLicencingBCSC();
-	// 		if (nextRoute) {
-	// 			await this.router.navigate([nextRoute]);
-	// 		}
-	// 	} else if (identityProviderTypeCode == IdentityProviderTypeCode.BusinessBceId) {
-	// 		const nextRoute = await this.authProcessService.initializeLicencingBCeID();
-	// 		if (nextRoute) {
-	// 			await this.router.navigate([nextRoute]);
-	// 		}
-	// 	}
-	// }
+		// 	if (identityProviderTypeCode == IdentityProviderTypeCode.BcServicesCard) {
+		const nextRoute = await this.authProcessService.initializeLicencingBCSC();
+		if (nextRoute) {
+			await this.router.navigate([nextRoute]);
+		}
+		// 	} else if (identityProviderTypeCode == IdentityProviderTypeCode.BusinessBceId) {
+		// 		const nextRoute = await this.authProcessService.initializeLicencingBCeID();
+		// 		if (nextRoute) {
+		// 			await this.router.navigate([nextRoute]);
+		// 		}
+		// 	}
+		// }
 
-	ngOnInit(): void {
+		// ngOnInit(): void {
 		this.incompleteApplications = [
 			{
 				id: '1',
@@ -297,7 +297,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 				licenceApplicationId: 'SWL-NWQ3X7Z',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
-				expiresOn: '2023-09-26T19:43:25+00:00',
+				expiresOn: '2023-09-15T19:43:25+00:00',
 			},
 			// {
 			// 	id: '2',
