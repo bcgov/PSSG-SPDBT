@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { IdentityProviderTypeCode } from 'src/app/api/models';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 @Component({
@@ -154,17 +156,23 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 	],
 })
 export class LoginSelectionComponent {
-	constructor(private router: Router) {}
+	constructor(private router: Router, private authProcessService: AuthProcessService) {}
 
-	onRegisterWithBceid(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+	async onRegisterWithBceid(): Promise<void> {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS), {
+			state: { identityProviderTypeCode: IdentityProviderTypeCode.BusinessBceId },
+		});
 	}
 
-	onRegisterWithBcServicesCard(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+	async onRegisterWithBcServicesCard(): Promise<void> {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS), {
+			state: { identityProviderTypeCode: IdentityProviderTypeCode.BcServicesCard },
+		});
 	}
 
 	onContinue(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS), {
+			state: { identityProviderTypeCode: null },
+		});
 	}
 }

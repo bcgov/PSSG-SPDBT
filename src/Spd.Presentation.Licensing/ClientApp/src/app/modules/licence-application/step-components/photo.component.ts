@@ -2,7 +2,11 @@ import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-photo',
@@ -71,6 +75,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 								</app-alert>
 
 								<app-file-upload
+									(filesChanged)="onFilesChanged()"
 									[control]="attachments"
 									[maxNumberOfFiles]="1"
 									[files]="attachments.value"
@@ -104,6 +109,10 @@ export class PhotoComponent implements LicenceChildStepperStepComponent {
 	@Input() isCalledFromModal: boolean = false;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.photographOfYourself;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

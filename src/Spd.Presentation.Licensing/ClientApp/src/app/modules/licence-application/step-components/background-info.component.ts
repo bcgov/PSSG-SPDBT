@@ -159,19 +159,13 @@ export class BackgroundInfoComponent implements LicenceChildStepperStepComponent
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
-	isFormValid(): boolean {
-		this.onFilesChanged();
-
-		this.form.markAllAsTouched();
-		return this.form.valid;
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = null;
 	}
 
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
+	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
