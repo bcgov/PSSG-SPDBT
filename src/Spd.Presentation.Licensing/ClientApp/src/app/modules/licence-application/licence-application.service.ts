@@ -643,6 +643,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return [...updatedList];
 	}
 
+	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+		return this.saveLicence();
+	}
+
 	saveLicence(): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
 		// 	console.log(
 		// 		'saveLicence',

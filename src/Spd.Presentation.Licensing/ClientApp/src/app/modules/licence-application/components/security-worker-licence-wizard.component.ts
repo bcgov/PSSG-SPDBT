@@ -1,10 +1,13 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
@@ -159,6 +162,8 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
+		private authenticationService: AuthenticationService,
 		private breakpointObserver: BreakpointObserver,
 		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
@@ -263,8 +268,8 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					//this.licenceApplicationService.hasDocumentsChanged = null;
@@ -314,10 +319,14 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onSaveAndExit() {
-		this.licenceApplicationService.saveLicence().subscribe({
+		if (!this.authenticationService.isLoggedIn()) {
+			this.exitAndLoseChanges();
+			return;
+		}
+
+		this.licenceApplicationService.saveLicenceStep().subscribe({
 			next: (resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
-				//this.licenceApplicationService.hasDocumentsChanged = null;
 
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
@@ -331,9 +340,28 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		});
 	}
 
+	private exitAndLoseChanges() {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to leave this application? All of your data will be lost.',
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+				}
+			});
+	}
+
 	onGoToReview() {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					//this.licenceApplicationService.hasDocumentsChanged = null;
@@ -353,8 +381,8 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					//this.licenceApplicationService.hasDocumentsChanged = null;

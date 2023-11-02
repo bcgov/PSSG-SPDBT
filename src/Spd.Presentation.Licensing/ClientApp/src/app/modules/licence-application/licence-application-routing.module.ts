@@ -68,7 +68,6 @@ const routes: Routes = [
 			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH,
 				component: UserApplicationsComponent,
-				// children: [{ path: '', component: UserApplicationsComponent }],
 			},
 			{
 				path: LicenceApplicationRoutes.USER_PROFILE,
