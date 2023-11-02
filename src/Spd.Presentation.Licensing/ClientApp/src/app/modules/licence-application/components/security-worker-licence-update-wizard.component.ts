@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 @Component({
-	selector: 'app-licence-wizard-update',
+	selector: 'app-security-worker-licence-update-wizard',
 	template: `
 		<ng-container>
 			<!--  *ngIf="isLoaded$ | async" -->
@@ -74,7 +74,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class LicenceWizardUpdateComponent {
+export class SecurityWorkerLicenceUpdateWizardComponent {
 	orientation: StepperOrientation = 'vertical';
 
 	@ViewChild('stepper') stepper!: MatStepper;
@@ -102,7 +102,7 @@ export class LicenceWizardUpdateComponent {
 	onStepNext(): void {}
 
 	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 	}
 
 	private scrollIntoView(): void {

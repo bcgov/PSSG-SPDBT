@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ApplicationTypeComponent } from './components/application-type.component';
-import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
+import { UserApplicationsComponent } from './components/user-applications.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
-import { LicenceWizardComponent } from './components/licence-wizard.component';
+import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
+import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
-import { SoleProprietorComponent } from './components/sole-proprietor.component';
+import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
 	public static LOGIN_SELECTION = 'login-selection';
-	public static APPLICATIONS_IN_PROGRESS = 'applications-in-progress';
+	public static USER_APPLICATIONS = 'user-applications';
 	public static LICENCE_UPDATE = 'licence-update';
 	public static LICENCE_SELECTION = 'licence-selection';
 	public static APPLICATION_TYPE = 'application-type';
@@ -35,6 +35,11 @@ export class LicenceApplicationRoutes {
 	public static path(route: string | null = null): string {
 		return route ? `/${LicenceApplicationRoutes.MODULE_PATH}/${route}` : `/${LicenceApplicationRoutes.MODULE_PATH}`;
 	}
+	public static pathSecurityWorkerLicence(route: string | null = null): string {
+		return route
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION}`;
+	}
 }
 
 const routes: Routes = [
@@ -47,32 +52,31 @@ const routes: Routes = [
 				component: LoginSelectionComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS,
-				component: ApplicationsInProgressComponent,
+				path: LicenceApplicationRoutes.USER_APPLICATIONS,
+				component: UserApplicationsComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.USER_PROFILE,
 				component: UserProfileComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.LICENCE_SELECTION,
-				component: LicenceSelectionComponent,
-			},
-			{
-				path: LicenceApplicationRoutes.APPLICATION_TYPE,
-				component: ApplicationTypeComponent,
-			},
-			{
-				path: LicenceApplicationRoutes.SOLE_PROPRIETOR,
-				component: SoleProprietorComponent,
+				path: LicenceApplicationRoutes.APPLICATION,
+				component: SecurityWorkerLicenceApplicationComponent,
+				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_SELECTION,
+						component: LicenceSelectionComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.APPLICATION_TYPE,
+						component: ApplicationTypeComponent,
+					},
+					{ path: '', component: SecurityWorkerLicenceWizardComponent },
+				],
 			},
 			{
 				path: LicenceApplicationRoutes.LICENCE_UPDATE,
-				component: LicenceWizardUpdateComponent,
-			},
-			{
-				path: LicenceApplicationRoutes.APPLICATION,
-				component: LicenceWizardComponent,
+				component: SecurityWorkerLicenceUpdateWizardComponent,
 			},
 			{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },

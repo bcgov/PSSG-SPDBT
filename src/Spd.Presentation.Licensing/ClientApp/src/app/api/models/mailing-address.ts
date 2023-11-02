@@ -3,7 +3,6 @@
 export interface MailingAddress {
   addressLine1?: null | string;
   addressLine2?: null | string;
-  addressSelected?: boolean;
   city?: null | string;
   country?: null | string;
   postalCode?: null | string;

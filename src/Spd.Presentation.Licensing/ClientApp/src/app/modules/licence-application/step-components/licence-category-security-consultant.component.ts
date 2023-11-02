@@ -4,7 +4,11 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityConsultantRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-consultant',
@@ -38,6 +42,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 			<div class="my-2">
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="resumeAttachments"
 					[maxNumberOfFiles]="10"
 					#resumeAttachmentsRef
@@ -105,6 +110,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -136,6 +142,10 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categorySecurityConsultant;
 	}
 
 	isFormValid(): boolean {

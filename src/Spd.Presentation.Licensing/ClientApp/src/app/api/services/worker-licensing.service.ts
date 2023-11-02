@@ -9,10 +9,8 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { MentalHealthUpsertRequest } from '../models/mental-health-upsert-request';
-import { PhotographOfYourselfUpsertRequest } from '../models/photograph-of-yourself-upsert-request';
-import { PoliceBackgroundUpsertRequest } from '../models/police-background-upsert-request';
-import { ProofOfFingerprintUpsertRequest } from '../models/proof-of-fingerprint-upsert-request';
+import { LicenceAppFileCreateResponse } from '../models/licence-app-file-create-response';
+import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { WorkerLicenceResponse } from '../models/worker-licence-response';
 import { WorkerLicenceUpsertRequest } from '../models/worker-licence-upsert-request';
 import { WorkerLicenceUpsertResponse } from '../models/worker-licence-upsert-response';
@@ -151,30 +149,36 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiWorkerLicencesPoliceBackgroungPost
+   * Path part for operation apiWorkerLicenceApplicationsIdFilesPost
    */
-  static readonly ApiWorkerLicencesPoliceBackgroungPostPath = '/api/worker-licences-police-backgroung';
+  static readonly ApiWorkerLicenceApplicationsIdFilesPostPath = '/api/worker-licence-applications/{id}/files';
 
   /**
-   * Create Security Worker Licence Application police background.
+   * Upload licence application files.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicencesPoliceBackgroungPost()` instead.
+   * To access only the response body, use `apiWorkerLicenceApplicationsIdFilesPost()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiWorkerLicencesPoliceBackgroungPost$Response(params: {
-    body: PoliceBackgroundUpsertRequest
+  apiWorkerLicenceApplicationsIdFilesPost$Response(params: {
+    id: string;
+    body?: {
+'Files'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+'ExpiryDate'?: string;
+}
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+): Observable<StrictHttpResponse<Array<LicenceAppFileCreateResponse>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicencesPoliceBackgroungPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath, 'post');
     if (params) {
-      rb.body(params.body, 'application/*+json');
+      rb.path('id', params.id, {"style":"simple"});
+      rb.body(params.body, 'multipart/form-data');
     }
 
     return this.http.request(rb.build({
@@ -184,213 +188,35 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceUpsertResponse>;
+        return r as StrictHttpResponse<Array<LicenceAppFileCreateResponse>>;
       })
     );
   }
 
   /**
-   * Create Security Worker Licence Application police background.
+   * Upload licence application files.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicencesPoliceBackgroungPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsIdFilesPost$Response()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiWorkerLicencesPoliceBackgroungPost(params: {
-    body: PoliceBackgroundUpsertRequest
+  apiWorkerLicenceApplicationsIdFilesPost(params: {
+    id: string;
+    body?: {
+'Files'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+'ExpiryDate'?: string;
+}
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceUpsertResponse> {
+): Observable<Array<LicenceAppFileCreateResponse>> {
 
-    return this.apiWorkerLicencesPoliceBackgroungPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceUpsertResponse>) => r.body as WorkerLicenceUpsertResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiWorkerLicencesMentalHealthPost
-   */
-  static readonly ApiWorkerLicencesMentalHealthPostPath = '/api/worker-licences-mental-health';
-
-  /**
-   * Create Security Worker Licence Application mental health.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicencesMentalHealthPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiWorkerLicencesMentalHealthPost$Response(params: {
-    body: MentalHealthUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicencesMentalHealthPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceUpsertResponse>;
-      })
-    );
-  }
-
-  /**
-   * Create Security Worker Licence Application mental health.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicencesMentalHealthPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiWorkerLicencesMentalHealthPost(params: {
-    body: MentalHealthUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<WorkerLicenceUpsertResponse> {
-
-    return this.apiWorkerLicencesMentalHealthPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceUpsertResponse>) => r.body as WorkerLicenceUpsertResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiWorkerLicencesFingerprintPost
-   */
-  static readonly ApiWorkerLicencesFingerprintPostPath = '/api/worker-licences-fingerprint';
-
-  /**
-   * Create Security Worker Licence Application fingerprint.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicencesFingerprintPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiWorkerLicencesFingerprintPost$Response(params: {
-    body: ProofOfFingerprintUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicencesFingerprintPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceUpsertResponse>;
-      })
-    );
-  }
-
-  /**
-   * Create Security Worker Licence Application fingerprint.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicencesFingerprintPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiWorkerLicencesFingerprintPost(params: {
-    body: ProofOfFingerprintUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<WorkerLicenceUpsertResponse> {
-
-    return this.apiWorkerLicencesFingerprintPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceUpsertResponse>) => r.body as WorkerLicenceUpsertResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiWorkerLicencesPhotographOfYourselfPost
-   */
-  static readonly ApiWorkerLicencesPhotographOfYourselfPostPath = '/api/worker-licences-photograph-of-yourself';
-
-  /**
-   * Create Security Worker Licence Application PhotographOfYourself.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicencesPhotographOfYourselfPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiWorkerLicencesPhotographOfYourselfPost$Response(params: {
-    body: PhotographOfYourselfUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicencesPhotographOfYourselfPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceUpsertResponse>;
-      })
-    );
-  }
-
-  /**
-   * Create Security Worker Licence Application PhotographOfYourself.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicencesPhotographOfYourselfPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiWorkerLicencesPhotographOfYourselfPost(params: {
-    body: PhotographOfYourselfUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<WorkerLicenceUpsertResponse> {
-
-    return this.apiWorkerLicencesPhotographOfYourselfPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceUpsertResponse>) => r.body as WorkerLicenceUpsertResponse)
+    return this.apiWorkerLicenceApplicationsIdFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppFileCreateResponse>>) => r.body as Array<LicenceAppFileCreateResponse>)
     );
   }
 

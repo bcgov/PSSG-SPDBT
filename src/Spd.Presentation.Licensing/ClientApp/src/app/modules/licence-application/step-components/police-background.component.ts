@@ -3,7 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-police-background',
@@ -94,10 +98,10 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 													>
 													for more information.
 												</p>
-
+												<!--			[maxNumberOfFiles]="1" -->
 												<app-file-upload
+													(filesChanged)="onFilesChanged()"
 													[control]="attachments"
-													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
 												></app-file-upload>
 												<mat-error
@@ -152,6 +156,10 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 
 	onEditInformation(): void {
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.policeBackground;
 	}
 
 	isFormValid(): boolean {

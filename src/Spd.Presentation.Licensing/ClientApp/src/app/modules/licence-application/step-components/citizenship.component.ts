@@ -7,7 +7,11 @@ import {
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-citizenship',
@@ -99,6 +103,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
 											</ng-template>
 											<app-file-upload
+												(filesChanged)="onFilesChanged()"
 												[control]="attachments"
 												[maxNumberOfFiles]="1"
 												[files]="attachments.value"
@@ -135,6 +140,10 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.citizenship;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

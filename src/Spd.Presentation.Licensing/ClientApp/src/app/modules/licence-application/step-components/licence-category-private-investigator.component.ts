@@ -9,7 +9,11 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-private-investigator',
@@ -116,6 +120,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -205,6 +210,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 						>
 					</div>
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="trainingAttachments"
 						[maxNumberOfFiles]="10"
 						#trainingAttachmentsRef
@@ -267,6 +273,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 				<div class="my-2">
 					<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
 					<app-file-upload
+										(filesChanged)="onFilesChanged()"
 						[maxNumberOfFiles]="10"
 						#fireCourseCertificateAttachmentsRef
 						[files]="fireCourseCertificateAttachments.value"
@@ -287,6 +294,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 				<div class="my-2">
 					<div class="text-minor-heading mb-2">Upload a verification letter:</div>
 					<app-file-upload
+										(filesChanged)="onFilesChanged()"
 						[maxNumberOfFiles]="10"
 						#fireVerificationLetterAttachmentsRef
 						[files]="fireVerificationLetterAttachments.value"
@@ -322,6 +330,10 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigator;
 	}
 
 	isFormValid(): boolean {
