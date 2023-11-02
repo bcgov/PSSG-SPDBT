@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ManagerContract;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -50,10 +51,15 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/biz-licence/whoami")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<ApplicantProfileResponse?> BizLicenceWhoami()
+        public async Task<OrgUserProfileResponse?> BizLicenceWhoami()
         {
             var info = _currentUser.GetBceidUserIdentityInfo();
-            return null;
+            return new OrgUserProfileResponse
+            {
+                IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
+                UserDisplayName= info.DisplayName,
+                UserGuid= info.UserGuid
+            };
         }
     }
 }
