@@ -14,13 +14,6 @@ internal partial class LicenceManager
         if (app == null)
             throw new ArgumentException("Invalid application Id");
 
-        //mark all existing file type files deleted.
-        var docList = await _documentRepository.QueryAsync(new DocumentQry(command.ApplicationId, FileType: docEnum), ct);
-        foreach (var doc in docList.Items)
-        {
-            await _documentRepository.ManageAsync(new RemoveDocumentCmd(doc.DocumentUrlId), ct);
-        }
-
         Guid? contactId = app.ContactId;
         //put file to cache
         IList<DocumentResp> docResps = new List<DocumentResp>();
