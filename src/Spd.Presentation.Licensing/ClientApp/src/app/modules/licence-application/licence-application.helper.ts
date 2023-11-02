@@ -20,9 +20,8 @@ export interface LicenceChildStepperStepComponent {
 }
 
 export interface LicenceDocument {
-	Files?: Array<File>;
+	Documents?: Array<File>;
 	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
-	ExpiryDate?: string;
 }
 
 export enum LicenceDocumentChanged {

@@ -1,28 +1,39 @@
 /* tslint:disable */
 /* eslint-disable */
+import { AdditionalGovIdDocument } from './additional-gov-id-document';
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
+import { BornInCanadaDocument } from './born-in-canada-document';
 import { EyeColourCode } from './eye-colour-code';
+import { FingerprintProofDocument } from './fingerprint-proof-document';
 import { GenderCode } from './gender-code';
 import { HairColourCode } from './hair-colour-code';
 import { HeightUnitCode } from './height-unit-code';
+import { IdPhotoDocument } from './id-photo-document';
 import { LicenceTermCode } from './licence-term-code';
 import { MailingAddress } from './mailing-address';
+import { MentalHealthDocument } from './mental-health-document';
+import { PoliceOfficerDocument } from './police-officer-document';
 import { PoliceOfficerRoleCode } from './police-officer-role-code';
 import { ResidentialAddress } from './residential-address';
 import { WeightUnitCode } from './weight-unit-code';
+import { WorkerLicenceAppCategoryData } from './worker-licence-app-category-data';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
-export interface WorkerLicenceUpsertRequest {
+export interface WorkerLicenceAppUpsertRequest {
+  additionalGovIdDocument?: AdditionalGovIdDocument;
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
+  bornInCanadaDocument?: BornInCanadaDocument;
   carryAndUseRetraints?: null | boolean;
+  categoryData?: null | Array<WorkerLicenceAppCategoryData>;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
   expiredLicenceNumber?: null | string;
   expiryDate?: null | string;
   eyeColourCode?: EyeColourCode;
+  fingerPrintProofDocument?: FingerprintProofDocument;
   genderCode?: GenderCode;
   givenName?: null | string;
   hairColourCode?: HairColourCode;
@@ -32,18 +43,21 @@ export interface WorkerLicenceUpsertRequest {
   hasPreviousName?: null | boolean;
   height?: number;
   heightUnitCode?: HeightUnitCode;
-  isBornInCanada?: boolean;
+  idPhotoDocument?: IdPhotoDocument;
+  isBornInCanada?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isSoleProprietor?: null | boolean;
   isTreatedForMHC?: null | boolean;
-  licenceApplicationId?: null | string;
+  licenceAppId?: null | string;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;
+  mentalHealthDocument?: MentalHealthDocument;
   middleName1?: null | string;
   middleName2?: null | string;
   oneLegalName?: null | boolean;
   otherOfficerRole?: null | string;
+  policeOfficerDocument?: PoliceOfficerDocument;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;

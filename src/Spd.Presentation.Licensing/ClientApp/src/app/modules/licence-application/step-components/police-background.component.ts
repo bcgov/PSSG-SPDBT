@@ -177,6 +177,7 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 						matchingFile.id = resp[0].documentUrlId;
 					},
 					error: (error: any) => {
+						// TODO what error codes to handle here?
 						console.log('An error occurred during file upload', error);
 						this.hotToastService.error('An error occurred during the file upload. Please try again.');
 					},
@@ -193,6 +194,7 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 						console.log('att', this.form.value);
 					},
 					error: (error: any) => {
+						// TODO what error codes to handle here?
 						console.log('An error occurred during file remove', error);
 						this.hotToastService.error('An error occurred during the file remove. Please try again.');
 					},

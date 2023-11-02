@@ -293,6 +293,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					}
 				},
 				error: (error: any) => {
+					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -332,7 +333,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
 			},
 			error: (error: any) => {
-				// only 404 will be here as an error
 				// TODO what error codes to handle here?
 				console.log('An error occurred during save', error);
 				this.hotToastService.error('An error occurred during the save. Please try again.');
@@ -370,7 +370,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					this.stepper.selectedIndex = this.STEP_REVIEW;
 				},
 				error: (error: any) => {
-					// only 404 will be here as an error
+					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -391,7 +391,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					this.goToChildNextStep();
 				},
 				error: (error: any) => {
-					// only 404 will be here as an error
+					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
