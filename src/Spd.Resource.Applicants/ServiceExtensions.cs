@@ -7,6 +7,7 @@ using Spd.Resource.Applicants.DocumentTemplate;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Applicants.Invoice;
 using Spd.Resource.Applicants.Licence;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Hosting;
@@ -27,6 +28,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<IDocumentTemplateRepository, DocumentTemplateRepository>();
             configurationServices.Services.AddTransient<IPortalUserRepository, PortalUserRepository>();
             configurationServices.Services.AddTransient<ILicenceRepository, LicenceRepository>();
+            configurationServices.Services.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
         }
     }
 }
