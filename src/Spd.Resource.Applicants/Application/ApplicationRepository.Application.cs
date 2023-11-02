@@ -119,6 +119,7 @@ internal partial class ApplicationRepository : IApplicationRepository
     {
         var application = _context.spd_applications
             .Expand(i => i.spd_OrganizationId)
+            .Expand(i => i.spd_ApplicantId_contact)
             .Where(r => r.spd_applicationid == query.ApplicationId)
             .FirstOrDefault();
         return _mapper.Map<ApplicationResult>(application);
