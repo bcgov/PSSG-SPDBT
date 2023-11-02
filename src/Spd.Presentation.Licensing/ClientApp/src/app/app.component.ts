@@ -5,7 +5,7 @@ import { filter, map } from 'rxjs';
 @Component({
 	selector: 'app-root',
 	template: `
-		<body class="d-flex flex-column h-100">
+		<body class="mat-typography d-flex flex-column h-100">
 			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
 			<app-header [title]="title"></app-header>
 

@@ -1,15 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-user-applications-unauth',
-  template: `
-    <p>
-      user-applications-unauth works!
-    </p>
-  `,
-  styles: [
-  ]
+	selector: 'app-user-applications-unauth',
+	template: ` <router-outlet></router-outlet> `,
+	styles: [],
 })
-export class UserApplicationsUnauthComponent {
-
-}
+export class UserApplicationsUnauthComponent {}

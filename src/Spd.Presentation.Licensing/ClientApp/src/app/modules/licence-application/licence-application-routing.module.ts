@@ -1,23 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ApplicationTypeComponent } from './components/application-type.component';
-import { UserApplicationsComponent } from './components/user-applications.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
-import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
+import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
+import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
+import { UserApplicationsBceidComponent } from './components/user-applications-bceid.component';
+import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
+import { UserApplicationsComponent } from './components/user-applications.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
 	public static LOGIN_SELECTION = 'login-selection';
-	public static USER_APPLICATIONS = 'user-applications';
+	public static USER_APPLICATIONS_BCSC = 'user-applications';
+	public static USER_APPLICATIONS_BCEID = 'user-applications-bceid';
+	public static USER_APPLICATIONS_UNAUTH = 'user-applications-unauth';
 	public static LICENCE_UPDATE = 'licence-update';
 	public static LICENCE_SELECTION = 'licence-selection';
 	public static APPLICATION_TYPE = 'application-type';
@@ -52,8 +56,19 @@ const routes: Routes = [
 				component: LoginSelectionComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.USER_APPLICATIONS,
+				path: LicenceApplicationRoutes.USER_APPLICATIONS_BCSC,
+				component: UserApplicationsBcscComponent,
+				children: [{ path: '', component: UserApplicationsComponent }],
+			},
+			{
+				path: LicenceApplicationRoutes.USER_APPLICATIONS_BCEID,
+				component: UserApplicationsBceidComponent,
+				children: [{ path: '', component: UserApplicationsComponent }],
+			},
+			{
+				path: LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH,
 				component: UserApplicationsComponent,
+				// children: [{ path: '', component: UserApplicationsComponent }],
 			},
 			{
 				path: LicenceApplicationRoutes.USER_PROFILE,

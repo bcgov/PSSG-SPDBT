@@ -37,12 +37,12 @@ export class AuthProcessService {
 
 		console.debug(
 			'initializeLicencingBCSC return',
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC)
 		);
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC)
 		);
 		console.debug('initializeLicencingBCSC nextUrl', nextUrl);
 
@@ -64,15 +64,23 @@ export class AuthProcessService {
 	async initializeLicencingBCeID(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
+		console.debug(
+			'initializeLicencingBCeID return',
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)
+		);
+
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)
 		);
 		console.debug('initializeLicencingBCeID nextUrl', nextUrl);
 
 		if (nextUrl) {
-			this.notify(true);
-			return Promise.resolve(nextUrl);
+			const success = await this.authUserBceidService.whoAmIAsync();
+			this.notify(success);
+
+			const nextRoute = decodeURIComponent(nextUrl);
+			return Promise.resolve(nextRoute);
 		}
 
 		this.notify(false);

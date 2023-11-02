@@ -44,7 +44,6 @@ export class ConfigService {
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.bcscConfiguration!;
-
 		const bcscConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
@@ -62,7 +61,6 @@ export class ConfigService {
 		if (this.configs) {
 			return of(this.configs);
 		}
-
 		return this.configurationService.apiConfigurationGet().pipe(
 			tap((resp: ConfigurationResponse) => {
 				this.configs = { ...resp };

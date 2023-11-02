@@ -5,7 +5,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
@@ -162,16 +161,10 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
 		private licenceApplicationService: LicenceApplicationService,
-		private authProcessService: AuthProcessService,
 		private hotToastService: HotToastService
 	) {}
 
 	ngOnInit(): void {
-		// console.log(
-		// 	'LicenceWizardComponent ONINIT',
-		// 	this.licenceApplicationService.initialized,
-		// 	this.licenceApplicationService.licenceModelFormGroup.value
-		// );
 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
@@ -327,7 +320,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				//this.licenceApplicationService.hasDocumentsChanged = null;
 
 				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
 			},
 			error: (error: any) => {
 				// only 404 will be here as an error
