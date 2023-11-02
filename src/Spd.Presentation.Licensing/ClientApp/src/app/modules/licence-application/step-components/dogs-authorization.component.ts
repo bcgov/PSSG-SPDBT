@@ -2,7 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode, DogDocumentTypes } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-dogs-authorization',
@@ -132,7 +136,7 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 	}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.dogsAuthorization;
 	}
 
 	isFormValid(): boolean {

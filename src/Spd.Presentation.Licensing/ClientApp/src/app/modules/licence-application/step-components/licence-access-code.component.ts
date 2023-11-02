@@ -60,10 +60,6 @@ export class LicenceAccessCodeComponent implements LicenceChildStepperStepCompon
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
-	}
-
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;

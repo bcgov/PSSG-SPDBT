@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -53,14 +54,14 @@ export interface ApplicationResponse {
 										</div>
 										<div class="col-lg-4 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-yellow" style="height: 38px; width: 160px;">
-												<mat-icon class="mat-chip-option-icon">cancel</mat-icon>
+												<mat-icon class="mat-chip-option-icon">warning</mat-icon>
 												<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Incomplete</span>
 											</mat-chip-option>
 										</div>
 									</div>
 									<div class="row">
 										<div class="offset-lg-8 col-lg-4 text-end">
-											<button mat-flat-button color="primary" class="large mt-2 w-auto" (click)="onResume(appl)">
+											<button mat-flat-button color="primary" class="large mt-3 w-auto" (click)="onResume(appl)">
 												<mat-icon>double_arrow</mat-icon>Resume
 											</button>
 										</div>
@@ -258,6 +259,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
 	constructor(
+		private location: Location,
 		private router: Router,
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
@@ -265,10 +267,19 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 	) {}
 
 	// async ngOnInit(): Promise<void> {
-	// 	const nextRoute = await this.authProcessService.initializeLicencing();
+	// 	const identityProviderTypeCode = (this.location.getState() as any).identityProviderTypeCode;
+	// 	console.log('UserApplicationsComponent identityProviderTypeCode', identityProviderTypeCode);
 
-	// 	if (nextRoute) {
-	// 		await this.router.navigate([nextRoute]);
+	// 	if (identityProviderTypeCode == IdentityProviderTypeCode.BcServicesCard) {
+	// 		const nextRoute = await this.authProcessService.initializeLicencingBCSC();
+	// 		if (nextRoute) {
+	// 			await this.router.navigate([nextRoute]);
+	// 		}
+	// 	} else if (identityProviderTypeCode == IdentityProviderTypeCode.BusinessBceId) {
+	// 		const nextRoute = await this.authProcessService.initializeLicencingBCeID();
+	// 		if (nextRoute) {
+	// 			await this.router.navigate([nextRoute]);
+	// 		}
 	// 	}
 	// }
 

@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-fire-investigator',
@@ -81,7 +85,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryFireInvestigator;
 	}
 
 	isFormValid(): boolean {

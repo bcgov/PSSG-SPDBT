@@ -79,6 +79,7 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			console.log('HeaderComponent', isLoggedIn);
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;

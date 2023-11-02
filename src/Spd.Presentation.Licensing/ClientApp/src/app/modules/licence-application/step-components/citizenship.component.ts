@@ -7,7 +7,11 @@ import {
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-citizenship',
@@ -138,7 +142,7 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.citizenship;
 	}
 
 	isFormValid(): boolean {

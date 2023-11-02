@@ -104,7 +104,8 @@ export class FileUploadHelper {
 								<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
 									<ngx-dropzone-label>
 										<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-										<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+										<span>{{ file.name }} </span>
+										<!-- ({{ getFileSize(file.size) }} KB) -->
 									</ngx-dropzone-label>
 								</ngx-dropzone-preview>
 							</div>

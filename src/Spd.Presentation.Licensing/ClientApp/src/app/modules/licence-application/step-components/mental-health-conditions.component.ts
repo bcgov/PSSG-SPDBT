@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-mental-health-conditions',
@@ -81,7 +85,7 @@ export class MentalHealthConditionsComponent implements LicenceChildStepperStepC
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.mentalHealthConditions;
 	}
 
 	isFormValid(): boolean {

@@ -26,14 +26,14 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<mat-step [completed]="step1Complete">
+						<!-- <mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
 								(childNextStep)="onChildNextStep()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
-						</mat-step>
+						</mat-step> -->
 
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
@@ -272,7 +272,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = false;
+					this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -322,7 +322,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		this.licenceApplicationService.saveLicence().subscribe({
 			next: (resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
-				this.licenceApplicationService.hasDocumentsChanged = false;
+				this.licenceApplicationService.hasDocumentsChanged = null;
 
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
@@ -341,7 +341,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = false;
+					this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -362,7 +362,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = false;
+					this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();

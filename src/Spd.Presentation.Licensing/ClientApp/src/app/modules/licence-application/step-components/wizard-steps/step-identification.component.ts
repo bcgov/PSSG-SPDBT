@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { DocumentTypeCode } from 'src/app/api/models';
+import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
@@ -310,9 +310,9 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
-				form.value.proofTypeCode != DocumentTypeCode.CanadianPassport) ||
+				form.value.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
 			(form.value.isBornInCanada == BooleanTypeCode.No &&
-				form.value.proofOfAbility != DocumentTypeCode.PermanentResidentCard)
+				form.value.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}
 }

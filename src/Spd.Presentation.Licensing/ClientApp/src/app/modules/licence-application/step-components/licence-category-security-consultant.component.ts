@@ -4,7 +4,11 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityConsultantRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-consultant',
@@ -141,7 +145,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categorySecurityConsultant;
 	}
 
 	isFormValid(): boolean {

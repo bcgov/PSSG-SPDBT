@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-fingerprints',
@@ -63,7 +67,7 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.proofOfFingerprint;
 	}
 
 	isFormValid(): boolean {

@@ -160,7 +160,7 @@ export class BackgroundInfoComponent implements LicenceChildStepperStepComponent
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = true;
+		this.licenceApplicationService.hasDocumentsChanged = null;
 	}
 
 	isFormValid(): boolean {
