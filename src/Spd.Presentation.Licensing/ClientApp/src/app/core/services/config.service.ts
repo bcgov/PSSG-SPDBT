@@ -14,9 +14,32 @@ export class ConfigService {
 	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
 
 	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
+		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
+			return this.getBceidConfig(redirectUri).then((config) => {
+				this.oauthService.configure(config);
+				this.oauthService.setupAutomaticSilentRefresh();
+			});
+		}
+
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
 		});
+	}
+
+	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
+		const resp = this.configs?.oidcConfiguration!;
+		const bceIdConfig = {
+			issuer: resp.issuer!,
+			clientId: resp.clientId!,
+			redirectUri,
+			responseType: resp.responseType!,
+			scope: resp.scope!,
+			showDebugInformation: true,
+			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+			customQueryParams: { kc_idp_hint: 'bceidbusiness' },
+		};
+		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
+		return bceIdConfig;
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {

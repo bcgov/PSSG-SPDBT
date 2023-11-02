@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum DocumentTypeCode {
+export enum LicenceDocumentTypeCode {
   BcServicesCard = 'BcServicesCard',
   BirthCertificate = 'BirthCertificate',
   CanadianCitizenship = 'CanadianCitizenship',

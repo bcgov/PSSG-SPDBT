@@ -1,13 +1,9 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { DocumentTypeCode } from 'src/app/api/models';
+import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import {
-	LicenceApplicationService,
-	LicenceSaveTypeCode,
-	LicenceStepperStepComponent,
-} from '../../licence-application.service';
+import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { AliasesComponent } from '../aliases.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
@@ -222,7 +218,7 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<LicenceSaveTypeCode> = new EventEmitter<LicenceSaveTypeCode>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(PersonalInformationComponent) personalInformationComponent!: PersonalInformationComponent;
 	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
@@ -258,17 +254,7 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
-
-		switch (formNumber) {
-			case this.STEP_CITIZENSHIP:
-			case this.STEP_ADDITIONAL_GOV_ID:
-			case this.STEP_PHOTO:
-				saveTypeCode = LicenceSaveTypeCode.PhotoCitizenshipGovIssuedId;
-				break;
-		}
-
-		this.childNextStep.emit(saveTypeCode);
+		this.childNextStep.emit(true);
 	}
 
 	onGoToNextStep() {
@@ -324,9 +310,9 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
-				form.value.proofTypeCode != DocumentTypeCode.CanadianPassport) ||
+				form.value.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
 			(form.value.isBornInCanada == BooleanTypeCode.No &&
-				form.value.proofOfAbility != DocumentTypeCode.PermanentResidentCard)
+				form.value.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}
 }
