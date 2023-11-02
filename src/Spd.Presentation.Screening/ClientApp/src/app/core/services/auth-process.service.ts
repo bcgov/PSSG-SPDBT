@@ -252,10 +252,11 @@ export class AuthProcessService {
 		const authInfo = await this.authenticationService.tryLogin(this.identityProvider, OrgRegistrationRoutes.path());
 		console.debug('tryInitializeOrgReg', authInfo);
 
+		const identityClaims = this.oauthService.getIdentityClaims();
 		const isValidLogin = this.checkLoginIdentityIsValid(
 			authInfo.loggedIn,
 			this.identityProvider,
-			this.oauthService.getIdentityClaims()['preferred_username']
+			identityClaims ? identityClaims['preferred_username'] : undefined
 		);
 
 		if (!isValidLogin) {
