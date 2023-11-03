@@ -89,5 +89,9 @@ namespace Spd.Resource.Applicants.Document
         StatutoryDeclarationPkg,
         ValidationCertificate,
         OpportunityToRespond,
+        WorkPermit,
+        StudyPermit,
+        RecordOfLandingDocument,
+        ConfirmationOfPermanentResidenceDocument
     }
 }
