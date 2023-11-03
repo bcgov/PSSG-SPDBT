@@ -4,7 +4,11 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityAlarmInstallerRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-alarm-installer',
@@ -70,6 +74,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -100,6 +105,10 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmInstaller, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categorySecurityAlarmInstaller;
 	}
 
 	isFormValid(): boolean {

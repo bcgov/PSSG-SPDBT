@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from 'src/app/api/models';
@@ -93,26 +93,22 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class ApplicationTypeComponent implements OnInit {
+export class ApplicationTypeComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
 
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
-		}
-	}
-
 	onStepPrevious(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
+		);
 	}
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.SOLE_PROPRIETOR));
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
 		}
 	}
 

@@ -2,7 +2,11 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GovernmentIssuedPhotoIdTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-additional-gov-id',
@@ -49,6 +53,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 									<div class="col-12">
 										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
 										<app-file-upload
+											(filesChanged)="onFilesChanged()"
 											[maxNumberOfFiles]="1"
 											[control]="attachments"
 											[files]="attachments.value"
@@ -81,6 +86,10 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 	form: FormGroup = this.licenceApplicationService.govIssuedIdFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.additionalGovermentId;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

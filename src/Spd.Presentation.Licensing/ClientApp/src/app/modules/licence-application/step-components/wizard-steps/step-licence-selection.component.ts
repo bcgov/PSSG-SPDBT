@@ -4,28 +4,45 @@ import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import {
-	LicenceApplicationService,
-	LicenceSaveTypeCode,
-	LicenceStepperStepComponent,
-} from '../../licence-application.service';
+import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
 import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceTermComponent } from '../licence-term.component';
 import { RestraintsAuthorizationComponent } from '../restraints-authorization.component';
+import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 @Component({
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-checklist></app-checklist>
+				<app-sole-proprietor></app-sole-proprietor>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
+						>
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-checklist></app-checklist>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
@@ -123,6 +140,7 @@ import { RestraintsAuthorizationComponent } from '../restraints-authorization.co
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepLicenceSelectionComponent implements LicenceStepperStepComponent {
+	readonly STEP_SOLE_PROPRIETOR = '1';
 	readonly STEP_ACCESS_CODE = '2';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
@@ -132,7 +150,10 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<LicenceSaveTypeCode> = new EventEmitter<LicenceSaveTypeCode>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+	@ViewChild(SoleProprietorComponent)
+	soleProprietorComponent!: SoleProprietorComponent;
 
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
@@ -166,23 +187,16 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 	}
 
 	onStepPrevious(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.SOLE_PROPRIETOR));
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.SOLE_PROPRIETOR)
+		);
 	}
 
 	onFormValidNextStep(formNumber: string): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
-
-		switch (formNumber) {
-			case this.STEP_LICENCE_CATEGORY:
-			case this.STEP_RESTRAINTS:
-			case this.STEP_DOGS:
-				saveTypeCode = LicenceSaveTypeCode.CategoriesDogsRestraints;
-		}
-
-		this.childNextStep.emit(saveTypeCode);
+		this.childNextStep.emit(true);
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
@@ -203,6 +217,8 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 
 	private dirtyForm(step: string): boolean {
 		switch (step) {
+			case this.STEP_SOLE_PROPRIETOR:
+				return this.soleProprietorComponent.isFormValid();
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();
 			case this.STEP_LICENCE_EXPIRED:

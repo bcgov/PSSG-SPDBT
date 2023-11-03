@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { LicenceSaveTypeCode, LicenceStepperStepComponent } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../licence-application.service';
 import { CriminalHistoryComponent } from '../criminal-history.component';
 import { FingerprintsComponent } from '../fingerprints.component';
 import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
@@ -129,7 +129,7 @@ export class StepBackgroundComponent implements LicenceStepperStepComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<LicenceSaveTypeCode> = new EventEmitter<LicenceSaveTypeCode>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	constructor() {}
 
@@ -163,17 +163,7 @@ export class StepBackgroundComponent implements LicenceStepperStepComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
-
-		switch (formNumber) {
-			case this.STEP_POLICE_BACKGROUND:
-			case this.STEP_MENTAL_HEALTH_CONDITIONS:
-			case this.STEP_FINGERPRINTS:
-				saveTypeCode = LicenceSaveTypeCode.MentalHealthPoliceFingerprints;
-				break;
-		}
-
-		this.childNextStep.emit(saveTypeCode);
+		this.childNextStep.emit(true);
 	}
 
 	private dirtyForm(step: string): boolean {

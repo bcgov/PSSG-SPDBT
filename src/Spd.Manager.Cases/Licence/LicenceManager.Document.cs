@@ -1,4 +1,4 @@
-﻿using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.TempFileStorage;

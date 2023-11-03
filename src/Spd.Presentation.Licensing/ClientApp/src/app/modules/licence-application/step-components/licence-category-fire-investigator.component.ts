@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceChildStepperStepComponent,
+	LicenceDocumentChanged,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-fire-investigator',
@@ -28,6 +32,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 			<div class="my-2">
 				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="fireCourseCertificateAttachments"
 					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
@@ -48,6 +53,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 			<div class="mt-3 mb-2">
 				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="fireVerificationLetterAttachments"
 					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef
@@ -76,6 +82,10 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.FireInvestigator, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryFireInvestigator;
 	}
 
 	isFormValid(): boolean {
