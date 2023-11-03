@@ -61,6 +61,7 @@ internal class DocumentRepository : IDocumentRepository
         {
             CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
             RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
+            UpdateDocumentExpiryDateCmd c => await UpdateDocumentExpiryDateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -96,6 +97,17 @@ internal class DocumentRepository : IDocumentRepository
         documenturl.statecode = DynamicsConstants.StateCode_Inactive;
         documenturl.statuscode = DynamicsConstants.StatusCode_Inactive;
         await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, (Guid)(documenturl._spd_applicationid_value), ct);
+        _context.UpdateObject(documenturl);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<DocumentResp>(documenturl);
+    }
+
+    private async Task<DocumentResp> UpdateDocumentExpiryDateAsync(UpdateDocumentExpiryDateCmd cmd, CancellationToken ct)
+    {
+        bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
+        if (documenturl == null) { return null; }
+        documenturl.spd_expirydate = cmd.ExpiryDate == null ? null : 
+            new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
         _context.UpdateObject(documenturl);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
