@@ -38,7 +38,7 @@ namespace Spd.Manager.Cases.Licence
         public string? BcDriversLicenceNumber { get; set; }
         public HairColourCode? HairColourCode { get; set; }
         public EyeColourCode? EyeColourCode { get; set; }
-        public int Height { get; set; }
+        public int? Height { get; set; }
         public HeightUnitCode? HeightUnitCode { get; set; }
         public int? Weight { get; set; }
         public WeightUnitCode? WeightUnitCode { get; set; }

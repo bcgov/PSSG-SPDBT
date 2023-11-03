@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Edm;
 using Spd.Resource.Applicants.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
@@ -18,7 +19,8 @@ namespace Spd.Resource.Applicants.Document
             .ForMember(d => d.CaseId, opt => opt.MapFrom(s => s._bcgov_caseid_value))
             .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s._spd_applicationid_value))
             .ForMember(d => d.ReportId, opt => opt.MapFrom(s => s._spd_pdfreportid_value))
-            .ForMember(d => d.FileName, opt => opt.MapFrom(s => s.bcgov_filename));
+            .ForMember(d => d.FileName, opt => opt.MapFrom(s => s.bcgov_filename))
+            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => GetDateOnly(s.spd_expirydate)));
 
             _ = CreateMap<SpdTempFile, bcgov_documenturl>()
             .ForMember(d => d.bcgov_documenturlid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -35,6 +37,12 @@ namespace Spd.Resource.Applicants.Document
                 .FirstOrDefault(t => (t.Value == documenturl._bcgov_tag1id_value || t.Value == documenturl._bcgov_tag2id_value || t.Value == documenturl._bcgov_tag3id_value)).Key;
             if (docType == null) { return null; }
             return Enum.Parse<DocumentTypeEnum>(docType);
+        }
+
+        private static DateOnly? GetDateOnly(Date? date)
+        {
+            if (date == null) return null;
+            return new DateOnly(date.Value.Year, date.Value.Month, date.Value.Day);
         }
     }
 }
