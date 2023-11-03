@@ -312,8 +312,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
 															<div class="text-data">
 																<span
-																	*ngIf="officerRole != policeOfficerRoleCodes.Other; else otherPoliceOfficerRole"
-																	>{{ officerRole | options : 'PoliceOfficerRoleTypes' | default }}</span
+																	*ngIf="
+																		policeOfficerRoleCode != policeOfficerRoleCodes.Other;
+																		else otherPoliceOfficerRole
+																	"
+																	>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
 																>
 																<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
 															</div>
@@ -833,8 +836,8 @@ export class SummaryReviewComponent {
 	get isPoliceOrPeaceOfficer(): string {
 		return this.licenceModelData.policeBackgroundData.isPoliceOrPeaceOfficer ?? '';
 	}
-	get officerRole(): string {
-		return this.licenceModelData.policeBackgroundData.officerRole ?? '';
+	get policeOfficerRoleCode(): string {
+		return this.licenceModelData.policeBackgroundData.policeOfficerRoleCode ?? '';
 	}
 	get otherOfficerRole(): string {
 		return this.licenceModelData.policeBackgroundData.otherOfficerRole ?? '';

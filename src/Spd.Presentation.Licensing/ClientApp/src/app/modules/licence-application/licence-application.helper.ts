@@ -335,19 +335,19 @@ export abstract class LicenceApplicationHelper {
 	policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
-			officerRole: new FormControl(''),
+			policeOfficerRoleCode: new FormControl(''),
 			otherOfficerRole: new FormControl(''),
 			attachments: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'officerRole',
+					'policeOfficerRoleCode',
 					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'otherOfficerRole',
-					(form) => form.get('officerRole')?.value == PoliceOfficerRoleCode.Other
+					(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',

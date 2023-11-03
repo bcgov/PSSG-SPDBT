@@ -53,17 +53,19 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<div class="row mt-2">
 											<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12">
 												<mat-form-field>
-													<mat-select formControlName="officerRole">
+													<mat-select formControlName="policeOfficerRoleCode" [errorStateMatcher]="matcher">
 														<mat-option *ngFor="let item of policeOfficerRoleTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
-													<mat-error *ngIf="form.get('officerRole')?.hasError('required')">This is required</mat-error>
+													<mat-error *ngIf="form.get('policeOfficerRoleCode')?.hasError('required')"
+														>This is required</mat-error
+													>
 												</mat-form-field>
 											</div>
 											<div
 												class="col-xl-5 col-lg-12 col-md-12 col-sm-12"
-												*ngIf="officerRole.value == policeOfficerRoleCodes.Other"
+												*ngIf="policeOfficerRoleCode.value == policeOfficerRoleCodes.Other"
 											>
 												<mat-form-field>
 													<mat-label>Describe Role</mat-label>
@@ -211,8 +213,8 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		return this.form.get('isPoliceOrPeaceOfficer') as FormControl;
 	}
 
-	get officerRole(): FormControl {
-		return this.form.get('officerRole') as FormControl;
+	get policeOfficerRoleCode(): FormControl {
+		return this.form.get('policeOfficerRoleCode') as FormControl;
 	}
 
 	get attachments(): FormControl {

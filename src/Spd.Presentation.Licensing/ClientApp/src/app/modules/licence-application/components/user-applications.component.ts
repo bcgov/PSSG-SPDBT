@@ -11,7 +11,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 export interface ApplicationResponse {
 	id?: string;
-	licenceApplicationId?: string;
+	licenceAppId?: string;
 	workerLicenceTypeCode?: WorkerLicenceTypeCode;
 	applicationTypeCode?: ApplicationTypeCode;
 	expiresOn?: null | string;
@@ -87,7 +87,7 @@ export interface ApplicationResponse {
 										<div class="row">
 											<div class="col-lg-3">
 												<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
-												<div class="text-data">{{ appl.licenceApplicationId }}</div>
+												<div class="text-data">{{ appl.licenceAppId }}</div>
 											</div>
 											<div class="col-lg-3">
 												<small class="d-block text-muted mt-2 mt-md-0">Licence Term</small>
@@ -179,7 +179,7 @@ export interface ApplicationResponse {
 										<div class="row">
 											<div class="col-lg-3">
 												<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
-												<div class="text-data">{{ appl.licenceApplicationId }}</div>
+												<div class="text-data">{{ appl.licenceAppId }}</div>
 											</div>
 											<div class="col-lg-3">
 												<small class="d-block text-muted mt-2 mt-md-0">Licence Term</small>
@@ -278,14 +278,14 @@ export class UserApplicationsComponent implements OnInit {
 		this.incompleteApplications = [
 			{
 				id: '1',
-				licenceApplicationId: 'SWL-NWQ3X7Y',
+				licenceAppId: 'SWL-NWQ3X7Y',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			{
 				id: '11',
-				licenceApplicationId: 'SWL-NWQ3X7Z',
+				licenceAppId: 'SWL-NWQ3X7Z',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-15T19:43:25+00:00',
@@ -295,7 +295,7 @@ export class UserApplicationsComponent implements OnInit {
 		this.activeApplications = [
 			{
 				id: '1',
-				licenceApplicationId: 'SWL-NWQ3X7Y',
+				licenceAppId: 'SWL-NWQ3X7Y',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
@@ -305,7 +305,7 @@ export class UserApplicationsComponent implements OnInit {
 		this.expiredApplications = [
 			{
 				id: '1',
-				licenceApplicationId: 'SWL-NWQ3AB7Y',
+				licenceAppId: 'SWL-NWQ3AB7Y',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2022-09-26T19:43:25+00:00',

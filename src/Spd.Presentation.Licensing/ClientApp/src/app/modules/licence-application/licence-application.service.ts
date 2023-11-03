@@ -49,7 +49,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	// hasDocumentsChanged: LicenceDocumentChanged | null = null;
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceApplicationId: new FormControl(null),
+		licenceAppId: new FormControl(null),
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		soleProprietorData: this.soleProprietorFormGroup,
@@ -138,7 +138,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
-			licenceAppId: this.licenceModelFormGroup.value.licenceApplicationId,
+			licenceAppId: this.licenceModelFormGroup.value.licenceAppId,
 			body: doc,
 		});
 	}
@@ -150,7 +150,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
-			licenceAppId: this.licenceModelFormGroup.value.licenceApplicationId,
+			licenceAppId: this.licenceModelFormGroup.value.licenceAppId,
 			body: doc,
 		});
 	}
@@ -164,7 +164,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const myFile = this.utilService.blobToFile(myBlob, 'test1.doc', '8f3fd6f3-afa4-4d5c-a4b8-ee9e29d1ed2b');
 
 				const defaults: any = {
-					licenceApplicationId: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
+					licenceAppId: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
 					workerLicenceTypeData: {
 						workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
 					},
@@ -208,7 +208,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					},
 					policeBackgroundData: {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-						officerRole: PoliceOfficerRoleCode.Other,
+						policeOfficerRoleCode: PoliceOfficerRoleCode.Other,
 						otherOfficerRole: 'testRole',
 						attachments: [myFile],
 					},
@@ -402,7 +402,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
 
 				const defaults: any = {
-					licenceApplicationId: '1d186edf-6573-4c34-be26-bac62f87af19',
+					licenceAppId: '1d186edf-6573-4c34-be26-bac62f87af19',
 					workerLicenceTypeData: {
 						workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
 					},
@@ -694,46 +694,71 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const personalInformationData = { ...formValue.personalInformationData };
 		const residentialAddressData = { ...formValue.residentialAddressData };
 		const mailingAddressData = { ...formValue.mailingAddressData };
+		const citizenshipData = { ...formValue.citizenshipData };
+		const policeBackgroundData = { ...formValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...formValue.mentalHealthConditionsData };
+		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
 		const body: WorkerLicenceAppUpsertRequest = {
-			licenceApplicationId: formValue.licenceApplicationId,
+			licenceAppId: formValue.licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			//-----------------------------------
 			isSoleProprietor: this.booleanTypeToBoolean(soleProprietorData.isSoleProprietor),
-			// hasPreviousName: this.booleanTypeToBoolean(formValue.aliasesData.previousNameFlag),
-			// aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
+			//-----------------------------------
+			hasPreviousName: this.booleanTypeToBoolean(formValue.aliasesData.previousNameFlag),
+			aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
+			//-----------------------------------
 			hasBcDriversLicence: this.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
 			bcDriversLicenceNumber:
 				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
 					? bcDriversLicenceData.bcDriversLicenceNumber
 					: null,
+			//-----------------------------------
 			...contactInformationData,
+			//-----------------------------------
 			hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
 			expiredLicenceNumber:
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiryDate : null,
+			//-----------------------------------
 			...characteristicsData,
-			// ...personalInformationData,
-			genderCode: personalInformationData.genderCode, //TODO update when dateofBirth saves
-			givenName: personalInformationData.givenName,
-			oneLegalName: personalInformationData.oneLegalName,
-			middleName1: personalInformationData.middleName1,
-			middleName2: personalInformationData.middleName2,
-			surname: personalInformationData.surname,
-			// dateOfBirth: personalInformationData.dateOfBirth,
+			//-----------------------------------
+			...personalInformationData,
+			//-----------------------------------
 			hasCriminalHistory: this.booleanTypeToBoolean(formValue.criminalHistoryData.hasCriminalHistory),
+			//-----------------------------------
 			licenceTermCode: formValue.licenceTermData.licenceTermCode,
+			//-----------------------------------
 			isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
 			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
 				? residentialAddressData
 				: mailingAddressData,
 			residentialAddressData,
+			//-----------------------------------
+			isBornInCanada: this.booleanTypeToBoolean(citizenshipData.isBornInCanada),
+			// additionalGovIdDocument?: AdditionalGovIdDocument;
+			// bornInCanadaDocument?: BornInCanadaDocument;
+			//-----------------------------------
+			// fingerPrintProofDocument?: FingerprintProofDocument;
+			//-----------------------------------
+			useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			// idPhotoDocument?: IdPhotoDocument;
+			//-----------------------------------
+			isTreatedForMHC: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			// mentalHealthDocument?: MentalHealthDocument;
+			//-----------------------------------
+			isPoliceOrPeaceOfficer: this.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
+			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			// policeOfficerDocument?: PoliceOfficerDocument;
+			//-----------------------------------
 		};
 		return this.workerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
-				if (!formValue.licenceApplicationId) {
-					this.licenceModelFormGroup.patchValue({ licenceApplicationId: res.body.licenceAppId }, { emitEvent: false });
+				if (!formValue.licenceAppId) {
+					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId }, { emitEvent: false });
 				}
 			})
 		);
@@ -752,7 +777,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	// 	console.debug('saveLicenceDocuments licenceModelFormGroup', formValue);
 
 	// 	const apis: Array<any> = [];
-	// 	const id = formValue.licenceApplicationId;
+	// 	const id = formValue.licenceAppId;
 
 	// 	switch (this.hasDocumentsChanged) {
 	// 		case LicenceDocumentChanged.categoryArmouredCarGuard:
@@ -1281,7 +1306,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const expiredLicenceData: ExpiredLicenceData = { ...formValue.expiredLicenceData };
 
-		const licenceApplicationId = formValue.licenceApplicationId;
+		const licenceAppId = formValue.licenceAppId;
 
 		const licenceTermData: LicenceTermData = { ...formValue.licenceTermData };
 
@@ -1366,7 +1391,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			dogsAuthorizationData,
 			expiredLicenceData,
 			govIssuedIdData,
-			licenceApplicationId,
+			licenceAppId,
 			licenceTermData,
 			workerLicenceTypeData,
 			mailingAddressData,
@@ -1395,7 +1420,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const mailingAddressData = { ...formValue.mailingAddressData };
 
 		const body: WorkerLicenceUpsertRequest = {
-			// licenceApplicationId: formValue.applicationTypeData.licenceApplicationId,
+			// licenceAppId: formValue.applicationTypeData.licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			isSoleProprietor: soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
@@ -1439,7 +1464,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// return this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body });
 
 		// const body2: ProofOfFingerprintUpsertRequest = {
-		// 	licenceApplicationId: '',
+		// 	licenceAppId: '',
 		// };
 		// const proofOfFingerprintDocs: LicenceDocument = {
 		// 	files: [...formValue.proofOfFingerprintData.attachments],
