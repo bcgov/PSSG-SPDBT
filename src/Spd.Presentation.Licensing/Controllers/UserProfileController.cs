@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
-using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using System.Security.Principal;
 
@@ -57,8 +56,8 @@ namespace Spd.Presentation.Licensing.Controllers
             return new OrgUserProfileResponse
             {
                 IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
-                UserDisplayName= info.DisplayName,
-                UserGuid= info.UserGuid
+                UserDisplayName = info.DisplayName,
+                UserGuid = info.UserGuid
             };
         }
     }

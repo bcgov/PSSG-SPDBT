@@ -30,6 +30,7 @@ namespace Spd.Resource.Applicants.Document
         public Guid? ApplicationId { get; set; } = null;
         public Guid? CaseId { get; set; } = null;
         public Guid? ReportId { get; set; } = null;
+        public DateOnly? ExpiryDate { get; set; } = null;
     }
 
     public abstract record DocumentCmd;
@@ -43,7 +44,7 @@ namespace Spd.Resource.Applicants.Document
     }
 
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
-
+    public record UpdateDocumentExpiryDateCmd(Guid DocumentUrlId, DateOnly? ExpiryDate): DocumentCmd;
     public enum DocumentTypeEnum
     {
         ApplicantConsentForm,
