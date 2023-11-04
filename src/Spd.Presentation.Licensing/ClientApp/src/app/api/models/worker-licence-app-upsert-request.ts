@@ -41,7 +41,7 @@ export interface WorkerLicenceAppUpsertRequest {
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
   hasPreviousName?: null | boolean;
-  height?: number;
+  height?: null | number;
   heightUnitCode?: HeightUnitCode;
   idPhotoDocument?: IdPhotoDocument;
   isBornInCanada?: null | boolean;

@@ -354,6 +354,7 @@ export class UserApplicationsComponent implements OnInit {
 					take(1)
 				)
 				.subscribe();
+
 			// } else if (appl.id == '2') {
 			// 	this.licenceApplicationService
 			// 		.loadLicenceRenewal()

@@ -44,15 +44,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="text-minor-heading mb-2">Address information:</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
-									<input
-										matInput
-										formControlName="residentialAddressLine1"
-										[errorStateMatcher]="matcher"
-										maxlength="100"
-									/>
-									<mat-error *ngIf="form.get('residentialAddressLine1')?.hasError('required')"
-										>This is required</mat-error
-									>
+									<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
+									<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 						</div>
@@ -61,7 +54,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 								<mat-form-field>
 									<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput formControlName="residentialAddressLine2" maxlength="100" />
+									<input matInput formControlName="addressLine2" maxlength="100" />
 								</mat-form-field>
 							</div>
 						</div>
@@ -69,8 +62,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>City</mat-label>
-									<input matInput formControlName="residentialCity" maxlength="100" />
-									<mat-error *ngIf="form.get('residentialCity')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="city" maxlength="100" />
+									<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-12">
@@ -78,13 +71,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<mat-label>Postal/Zip Code</mat-label>
 									<input
 										matInput
-										formControlName="residentialPostalCode"
+										formControlName="postalCode"
 										oninput="this.value = this.value.toUpperCase()"
 										maxlength="20"
 									/>
-									<mat-error *ngIf="form.get('residentialPostalCode')?.hasError('required')"
-										>This is required</mat-error
-									>
+									<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 						</div>
@@ -92,15 +83,15 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Province/State</mat-label>
-									<input matInput formControlName="residentialProvince" maxlength="100" />
-									<mat-error *ngIf="form.get('residentialProvince')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="province" maxlength="100" />
+									<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Country</mat-label>
-									<input matInput formControlName="residentialCountry" maxlength="100" />
-									<mat-error *ngIf="form.get('residentialCountry')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="country" maxlength="100" />
+									<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 						</div>
@@ -132,12 +123,12 @@ export class ResidentialAddressComponent implements LicenceChildStepperStepCompo
 		if (!address) {
 			this.form.patchValue({
 				addressSelected: false,
-				residentialAddressLine1: '',
-				residentialAddressLine2: '',
-				residentialCity: '',
-				residentialPostalCode: '',
-				residentialProvince: '',
-				residentialCountry: '',
+				addressLine1: '',
+				addressLine2: '',
+				city: '',
+				postalCode: '',
+				province: '',
+				country: '',
 			});
 			return;
 		}
@@ -145,12 +136,12 @@ export class ResidentialAddressComponent implements LicenceChildStepperStepCompo
 		const { countryCode, provinceCode, postalCode, line1, line2, city } = address;
 		this.form.patchValue({
 			addressSelected: true,
-			residentialAddressLine1: line1,
-			residentialAddressLine2: line2,
-			residentialCity: city,
-			residentialPostalCode: postalCode,
-			residentialProvince: provinceCode,
-			residentialCountry: countryCode,
+			addressLine1: line1,
+			addressLine2: line2,
+			city: city,
+			postalCode: postalCode,
+			province: provinceCode,
+			country: countryCode,
 		});
 	}
 

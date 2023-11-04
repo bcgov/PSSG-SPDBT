@@ -330,7 +330,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				this.licenceApplicationService.hasValueChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
 			},
 			error: (error: any) => {
 				// TODO what error codes to handle here?
@@ -354,7 +354,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
 				}
 			});
 	}

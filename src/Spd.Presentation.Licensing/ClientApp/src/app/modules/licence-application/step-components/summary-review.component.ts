@@ -957,44 +957,44 @@ export class SummaryReviewComponent {
 	}
 
 	get residentialAddressLine1(): string {
-		return this.licenceModelData.residentialAddressData?.residentialAddressLine1 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.licenceModelData.residentialAddressData?.residentialAddressLine2 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.licenceModelData.residentialAddressData?.residentialCity ?? '';
+		return this.licenceModelData.residentialAddressData?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.licenceModelData.residentialAddressData?.residentialPostalCode ?? '';
+		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.licenceModelData.residentialAddressData?.residentialProvince ?? '';
+		return this.licenceModelData.residentialAddressData?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.licenceModelData.residentialAddressData?.residentialCountry ?? '';
+		return this.licenceModelData.residentialAddressData?.country ?? '';
 	}
 	get isMailingTheSameAsResidential(): string {
 		return this.licenceModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.licenceModelData.mailingAddressData?.mailingAddressLine1 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.licenceModelData.mailingAddressData?.mailingAddressLine2 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.licenceModelData.mailingAddressData?.mailingCity ?? '';
+		return this.licenceModelData.mailingAddressData?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.licenceModelData.mailingAddressData?.mailingPostalCode ?? '';
+		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.licenceModelData.mailingAddressData?.mailingProvince ?? '';
+		return this.licenceModelData.mailingAddressData?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.licenceModelData.mailingAddressData?.mailingCountry ?? '';
+		return this.licenceModelData.mailingAddressData?.country ?? '';
 	}
 	get categoryList(): Array<SelectOptions> {
 		const list: Array<SelectOptions> = [];

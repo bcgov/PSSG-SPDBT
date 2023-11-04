@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable, take, tap } from 'rxjs';
 import {
 	ApplicationTypeCode,
+	BornInCanadaDocument,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -16,6 +17,7 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
+	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
@@ -262,21 +264,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					residentialAddressData: {
 						addressSelected: true,
 						isMailingTheSameAsResidential: false,
-						residentialAddressLine1: '123-720 Commonwealth Rd',
-						residentialAddressLine2: '',
-						residentialCity: 'Kelowna',
-						residentialCountry: 'Canada',
-						residentialPostalCode: 'V4V 1R8',
-						residentialProvince: 'British Columbia',
+						addressLine1: '123-720 Commonwealth Rd',
+						addressLine2: '',
+						city: 'Kelowna',
+						country: 'Canada',
+						postalCode: 'V4V 1R8',
+						province: 'British Columbia',
 					},
 					mailingAddressData: {
 						addressSelected: true,
-						mailingAddressLine1: '777-798 Richmond St W',
-						mailingAddressLine2: '',
-						mailingCity: 'Toronto',
-						mailingCountry: 'Canada',
-						mailingPostalCode: 'M6J 3P3',
-						mailingProvince: 'Ontario',
+						addressLine1: '777-798 Richmond St W',
+						addressLine2: '',
+						city: 'Toronto',
+						country: 'Canada',
+						postalCode: 'M6J 3P3',
+						province: 'Ontario',
 					},
 					categoryArmouredCarGuardFormGroup: {
 						isInclude: true,
@@ -393,9 +395,127 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		});
 	}
 
-	loadLicenceNew2(): Observable<any> {
-		this.spinnerService.show('loaderSpinner');
+	loadLicenceNew2(): Observable<WorkerLicenceResponse> {
+		// this.spinnerService.show('loaderSpinner');
 
+		return this.workerLicensingService
+			.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5' })
+			.pipe(
+				tap((resp: any) => {
+					const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData };
+					const applicationTypeData = { applicationTypeCode: resp.applicationTypeData };
+					const soleProprietorData = {
+						isSoleProprietor: resp.soleProprietorData ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					};
+					const expiredLicenceData = {
+						hasExpiredLicence: resp.hasExpiredLicence ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+						expiredLicenceNumber: resp.expiredLicenceNumber,
+						expiryDate: resp.expiryDate,
+					};
+					const licenceTermData = {
+						licenceTermCode: resp.licenceTermCode,
+					};
+					const policeBackgroundData = {
+						isPoliceOrPeaceOfficer: resp.isPoliceOrPeaceOfficer ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+						policeOfficerRoleCode: resp.policeOfficerRoleCode,
+						otherOfficerRole: resp.otherOfficerRole,
+						// attachments: [myFile],
+					};
+					const bcDriversLicenceData = {
+						hasBcDriversLicence: resp.hasBcDriversLicence ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+						bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
+					};
+					const mentalHealthConditionsData = {
+						isTreatedForMHC: resp.isTreatedForMHC ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+						// attachments: [myFile],
+					};
+					const criminalHistoryData = {
+						hasCriminalHistory: resp.hasCriminalHistory ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					};
+					const aliasesData = {
+						previousNameFlag: resp.previousNameFlag ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					};
+					const personalInformationData = {
+						oneLegalName: resp.oneLegalName,
+						givenName: resp.givenName,
+						middleName1: resp.middleName1,
+						middleName2: resp.middleName2,
+						surname: resp.surname,
+						genderCode: resp.genderCode,
+						dateOfBirth: resp.dateOfBirth,
+					};
+					// const contactInformationData = { ...formValue.contactInformationData };
+					// const characteristicsData = { ...formValue.characteristicsData };
+					// const residentialAddressData = { ...formValue.residentialAddressData };
+					// const mailingAddressData = { ...formValue.mailingAddressData };
+					// const citizenshipData = { ...formValue.citizenshipData };
+					// const photographOfYourselfData = { ...formValue.photographOfYourselfData };
+
+					const citizenshipData = {
+						isBornInCanada: resp.isBornInCanada ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+						proofTypeCode: resp.proofTypeCode,
+						// expiryDate: resp.
+						// attachments: [myFile],
+					};
+
+					const govIssuedIdData = {
+						governmentIssuedPhotoTypeCode: resp.governmentIssuedPhotoTypeCode,
+						// attachments: [myFile],
+					};
+					const characteristicsData = {
+						hairColourCode: HairColourCode.Black,
+						eyeColourCode: EyeColourCode.Blue,
+						height: '100',
+						heightUnitCode: HeightUnitCode.Inches,
+						weight: '75',
+						weightUnitCode: WeightUnitCode.Kilograms,
+					};
+
+					const photographOfYourselfData = {
+						useBcServicesCardPhoto: resp.useBcServicesCardPhoto ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+						// attachments: [myFile],
+					};
+
+					const contactInformationData = {
+						contactEmailAddress: resp.contactEmailAddress,
+						contactPhoneNumber: resp.contactPhoneNumber,
+					};
+
+					const residentialAddressData = { ...resp.residentialAddressData };
+					residentialAddressData.addressSelected = !!residentialAddressData.addressLine1;
+
+					const mailingAddressData = { ...resp.mailingAddressData };
+					mailingAddressData.addressSelected = !!mailingAddressData.addressLine1;
+
+					this.licenceModelFormGroup.patchValue({
+						workerLicenceTypeData,
+						applicationTypeData,
+						soleProprietorData,
+						expiredLicenceData,
+						licenceTermData,
+						policeBackgroundData,
+						bcDriversLicenceData,
+						mentalHealthConditionsData,
+						criminalHistoryData,
+						aliasesData,
+						personalInformationData,
+						characteristicsData,
+						citizenshipData,
+						govIssuedIdData,
+						photographOfYourselfData,
+						contactInformationData,
+						residentialAddressData: { ...residentialAddressData },
+						mailingAddressData: { ...mailingAddressData },
+					});
+					console.log('loadLicenceNew2 resp', resp);
+					console.log('loadLicenceNew2 this.licenceModelFormGroup', this.licenceModelFormGroup.value);
+
+					this.initialized = true;
+				}),
+				take(1)
+			);
+
+		/*
 		return new Observable((observer) => {
 			setTimeout(() => {
 				const myBlob = new Blob();
@@ -479,12 +599,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					residentialAddressData: {
 						addressSelected: true,
 						isMailingTheSameAsResidential: true,
-						residentialAddressLine1: '123-720 Commonwealth Rd',
-						residentialAddressLine2: '',
-						residentialCity: 'Kelowna',
-						residentialCountry: 'Canada',
-						residentialPostalCode: 'V4V 1R8',
-						residentialProvince: 'British Columbia',
+						addressLine1: '123-720 Commonwealth Rd',
+						addressLine2: '',
+						city: 'Kelowna',
+						country: 'Canada',
+						postalCode: 'V4V 1R8',
+						province: 'British Columbia',
 					},
 					// categorySecurityAlarmInstallerFormGroup: {
 					// 	isInclude: true,
@@ -526,7 +646,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				observer.next(defaults);
 			}, 1000);
-		});
+			
+		});*/
 	}
 
 	isStep1Complete(): boolean {
@@ -684,6 +805,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const formValue = this.licenceModelFormGroup.value;
 		console.debug('saveLicenceBasicInformation licenceModelFormGroup', formValue);
 
+		const licenceAppId = formValue.licenceAppId;
 		const workerLicenceTypeData = { ...formValue.workerLicenceTypeData };
 		const applicationTypeData = { ...formValue.applicationTypeData };
 		const soleProprietorData = { ...formValue.soleProprietorData };
@@ -699,8 +821,61 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const mentalHealthConditionsData = { ...formValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
+		let bornInCanadaDocument: BornInCanadaDocument | null = null;
+
+		if (citizenshipData.attachments) {
+			const bornInCanadaDocuments: Array<LicenceAppDocumentResponse> = [];
+			console.log('citizenshipData.attachments', citizenshipData.attachments);
+			citizenshipData.attachments.forEach((doc: any) => {
+				console.log('citizenshipData.doc', doc);
+				const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
+					documentName: doc.name,
+					documentUrlId: doc.id,
+					licenceAppId,
+				};
+				console.log('citizenshipData.licenceAppDocumentResponse', licenceAppDocumentResponse);
+				bornInCanadaDocuments.push(licenceAppDocumentResponse);
+			});
+			bornInCanadaDocument = {
+				documentResponses: bornInCanadaDocuments,
+				expiryDate: null,
+				licenceDocumentTypeCode: citizenshipData.proofTypeCode,
+			};
+			console.log('citizenshipData.bornInCanadaDocument', bornInCanadaDocument);
+
+			// bornInCanadaDocuments
+			// LicenceAppDocumentResponse {
+			// 	documentName?: null | string;
+			// 	documentUrlId?: string;
+			// 	licenceAppId?: null | string;
+			// 	uploadedDateTime?: string;
+			// }
+
+			// const doc1: LicenceAppDocumentResponse = {
+			// 	Documents: [...formValue.citizenshipData.attachments],
+			// 	LicenceDocumentTypeCode: formValue.citizenshipData.proofTypeCode,
+			// 	ExpiryDate: formValue.citizenshipData.expiryDate,
+			// };
+			// apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
+
+			// const includeAdditionalGovermentIdStepData =
+			// 	(formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes &&
+			// 		formValue.citizenshipData.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			// 	(formValue.citizenshipData.isBornInCanada == BooleanTypeCode.No &&
+			// 		formValue.citizenshipData.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard);
+
+			// if (includeAdditionalGovermentIdStepData) {
+			// 	const doc2: LicenceDocument = {
+			// 		Documents: [...formValue.govIssuedIdData.attachments],
+			// 		LicenceDocumentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
+			// 	};
+			// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
+			// } else {
+			// }
+		}
+
 		const body: WorkerLicenceAppUpsertRequest = {
-			licenceAppId: formValue.licenceAppId,
+			licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------

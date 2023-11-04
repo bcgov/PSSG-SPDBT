@@ -441,24 +441,24 @@ export abstract class LicenceApplicationHelper {
 
 	residentialAddressFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		residentialAddressLine1: new FormControl('', [FormControlValidators.required]),
-		residentialAddressLine2: new FormControl(''),
-		residentialCity: new FormControl('', [FormControlValidators.required]),
-		residentialPostalCode: new FormControl('', [FormControlValidators.required]),
-		residentialProvince: new FormControl('', [FormControlValidators.required]),
-		residentialCountry: new FormControl('', [FormControlValidators.required]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
 		isMailingTheSameAsResidential: new FormControl(),
 	});
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{
 			addressSelected: new FormControl(false),
-			mailingAddressLine1: new FormControl(''),
-			mailingAddressLine2: new FormControl(''),
-			mailingCity: new FormControl(''),
-			mailingPostalCode: new FormControl(''),
-			mailingProvince: new FormControl(''),
-			mailingCountry: new FormControl(''),
+			addressLine1: new FormControl(''),
+			addressLine2: new FormControl(''),
+			city: new FormControl(''),
+			postalCode: new FormControl(''),
+			province: new FormControl(''),
+			country: new FormControl(''),
 		},
 		{
 			validators: [
