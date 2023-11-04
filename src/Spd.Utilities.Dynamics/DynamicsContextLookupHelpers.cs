@@ -127,6 +127,10 @@ namespace Spd.Utilities.Dynamics
             {"ClearanceLetter", Guid.Parse("90ea957e-a426-ee11-b844-00505683fbf4")},
             {"PaymentReceipt", Guid.Parse("d5fec490-3e2b-ee11-b845-00505683fbf4")},
             {"ManualPaymentForm", Guid.Parse("be79f9af-3e2b-ee11-b845-00505683fbf4")},
+            {"StudyPermit", Guid.Parse("80ef082a-eb79-ee11-b846-00505683fbf4")},
+            {"WorkPermit", Guid.Parse("f455ca0e-eb79-ee11-b846-00505683fbf4")},
+            {"RecordOfLandingDocument", Guid.Parse("542c89dc-ea79-ee11-b846-00505683fbf4")},
+            {"ConfirmationOfPermanentResidenceDocument", Guid.Parse("10cd7d86-ea79-ee11-b846-00505683fbf4")},
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)

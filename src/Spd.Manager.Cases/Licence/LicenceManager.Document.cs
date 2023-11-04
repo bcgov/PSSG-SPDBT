@@ -137,8 +137,14 @@ internal partial class LicenceManager
         var bornInCanadas = existingDocs.Items.Where(d =>
             d.DocumentType == DocumentTypeEnum.BirthCertificate ||
             d.DocumentType == DocumentTypeEnum.Passport ||
-            d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard).ToList();
-        //todo: add more documentType condition here when we get the DocumentTypeEnum sorted out.
+            d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard ||
+            d.DocumentType == DocumentTypeEnum.CanadianCitizenship ||
+            d.DocumentType == DocumentTypeEnum.PermanentResidenceCard ||
+            d.DocumentType == DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument ||
+            d.DocumentType == DocumentTypeEnum.RecordOfLandingDocument ||
+            d.DocumentType == DocumentTypeEnum.WorkPermit ||
+            d.DocumentType == DocumentTypeEnum.StudyPermit ||
+            d.DocumentType == DocumentTypeEnum.LegalWorkStatus).ToList();
         if (bornInCanadas.Any())
         {
             result.BornInCanadaDocument = new BornInCanadaDocument
@@ -203,11 +209,11 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.PermanentResidentCard, DocumentTypeEnum.PermanentResidenceCard},
         {LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, DocumentTypeEnum.LetterOfNoConflict},
         {LicenceDocumentTypeCode.ProofOfFingerprint, DocumentTypeEnum.ConfirmationOfFingerprints},
-        //{LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.}, //todo: find which to map
-        //{LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.c}, //todo: find which to map
-        //{LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.LegalWorkStatus}, //todo: find which to map
-        //{LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.},//todo: find which to map
-        //{LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.}//todo: find which to map
+        {LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.RecordOfLandingDocument}, 
+        {LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument}, 
+        {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.WorkPermit}, 
+        {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
+        {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.LegalWorkStatus}
     }.ToImmutableDictionary();
 
 }
