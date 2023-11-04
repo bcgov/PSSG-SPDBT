@@ -56,6 +56,8 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
+
+        ProcessCategories(cmd.CategoryData, spd_application);
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp(app.spd_applicationid);
     }
@@ -71,6 +73,18 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return _mapper.Map<LicenceApplicationResp>(app);
     }
 
+    private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
+    {
+        app.spd_application_spd_licencecategory
+        foreach (var c in categories) 
+        {
+            var cat = _context.LookupLicenceCategory(c.WorkerCategoryTypeCode.ToString());
+            if (cat != null)
+            {
+                _context.AddLink(app, nameof(spd_application.spd_application_spd_licencecategory), cat);
+            }
+        }
+    }
     private void LinkServiceType(WorkerLicenceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");

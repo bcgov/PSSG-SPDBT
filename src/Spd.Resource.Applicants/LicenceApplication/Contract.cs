@@ -49,6 +49,12 @@ public record LicenceApplication
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRetraints { get; set; }
     public bool IsBornInCanada { get; set; }
+    public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
+}
+
+public record WorkerLicenceAppCategory
+{
+    public WorkerCategoryTypeEnum WorkerCategoryTypeCode { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
