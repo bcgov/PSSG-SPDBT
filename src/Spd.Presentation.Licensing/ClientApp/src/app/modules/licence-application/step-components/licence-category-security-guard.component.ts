@@ -4,11 +4,8 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityGuardRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-guard',
@@ -71,7 +68,7 @@ import {
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload
-						(filesChanged)="onFilesChanged()"
+						(fileChanged)="onFileChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -112,8 +109,8 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityGuard, 'WorkerCategoryTypes');
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categorySecurityGuard;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categorySecurityGuard;
 	}
 
 	isFormValid(): boolean {

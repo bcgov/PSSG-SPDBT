@@ -209,7 +209,7 @@ export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
 
 export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'BC Services Card', code: LicenceDocumentTypeCode.BcServicesCard },
-	{ desc: 'Canadian Firearms License', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
+	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
 	{ desc: 'Certificate of Indian Status', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
 	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Valid Government Issued Photo ID', code: LicenceDocumentTypeCode.GovernmentIssuedPhotoId },

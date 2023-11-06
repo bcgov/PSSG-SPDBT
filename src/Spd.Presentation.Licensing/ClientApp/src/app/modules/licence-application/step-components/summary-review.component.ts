@@ -312,8 +312,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
 															<div class="text-data">
 																<span
-																	*ngIf="officerRole != policeOfficerRoleCodes.Other; else otherPoliceOfficerRole"
-																	>{{ officerRole | options : 'PoliceOfficerRoleTypes' | default }}</span
+																	*ngIf="
+																		policeOfficerRoleCode != policeOfficerRoleCodes.Other;
+																		else otherPoliceOfficerRole
+																	"
+																	>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
 																>
 																<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
 															</div>
@@ -447,7 +450,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="row mt-0">
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-																<div class="text-data">{{ isBornInCanada }}</div>
+																<div class="text-data">{{ isCanadianCitizen }}</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -833,8 +836,8 @@ export class SummaryReviewComponent {
 	get isPoliceOrPeaceOfficer(): string {
 		return this.licenceModelData.policeBackgroundData.isPoliceOrPeaceOfficer ?? '';
 	}
-	get officerRole(): string {
-		return this.licenceModelData.policeBackgroundData.officerRole ?? '';
+	get policeOfficerRoleCode(): string {
+		return this.licenceModelData.policeBackgroundData.policeOfficerRoleCode ?? '';
 	}
 	get otherOfficerRole(): string {
 		return this.licenceModelData.policeBackgroundData.otherOfficerRole ?? '';
@@ -884,11 +887,11 @@ export class SummaryReviewComponent {
 	}
 
 	get proofOfFingerprintAttachments(): File[] {
-		return this.licenceModelData.proofOfFingerprintData.attachments ?? [];
+		return this.licenceModelData.fingerprintProofData.attachments ?? [];
 	}
 
-	get isBornInCanada(): string {
-		return this.licenceModelData.citizenshipData.isBornInCanada ?? '';
+	get isCanadianCitizen(): string {
+		return this.licenceModelData.citizenshipData.isCanadianCitizen ?? '';
 	}
 	get proofTypeCode(): string {
 		return this.licenceModelData.citizenshipData.proofTypeCode ?? '';
@@ -904,13 +907,13 @@ export class SummaryReviewComponent {
 	}
 
 	get governmentIssuedPhotoTypeCode(): string {
-		return this.licenceModelData.govIssuedIdData.governmentIssuedPhotoTypeCode ?? '';
+		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoTypeCode ?? '';
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		return this.licenceModelData.govIssuedIdData.governmentIssuedPhotoExpiryDate ?? '';
+		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoExpiryDate ?? '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
-		return this.licenceModelData.govIssuedIdData.attachments ?? [];
+		return this.licenceModelData.additionalGovIdData.attachments ?? [];
 	}
 
 	get hasBcDriversLicence(): string {
@@ -954,44 +957,44 @@ export class SummaryReviewComponent {
 	}
 
 	get residentialAddressLine1(): string {
-		return this.licenceModelData.residentialAddressData?.residentialAddressLine1 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.licenceModelData.residentialAddressData?.residentialAddressLine2 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.licenceModelData.residentialAddressData?.residentialCity ?? '';
+		return this.licenceModelData.residentialAddressData?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.licenceModelData.residentialAddressData?.residentialPostalCode ?? '';
+		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.licenceModelData.residentialAddressData?.residentialProvince ?? '';
+		return this.licenceModelData.residentialAddressData?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.licenceModelData.residentialAddressData?.residentialCountry ?? '';
+		return this.licenceModelData.residentialAddressData?.country ?? '';
 	}
 	get isMailingTheSameAsResidential(): string {
 		return this.licenceModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.licenceModelData.mailingAddressData?.mailingAddressLine1 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.licenceModelData.mailingAddressData?.mailingAddressLine2 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.licenceModelData.mailingAddressData?.mailingCity ?? '';
+		return this.licenceModelData.mailingAddressData?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.licenceModelData.mailingAddressData?.mailingPostalCode ?? '';
+		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.licenceModelData.mailingAddressData?.mailingProvince ?? '';
+		return this.licenceModelData.mailingAddressData?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.licenceModelData.mailingAddressData?.mailingCountry ?? '';
+		return this.licenceModelData.mailingAddressData?.country ?? '';
 	}
 	get categoryList(): Array<SelectOptions> {
 		const list: Array<SelectOptions> = [];

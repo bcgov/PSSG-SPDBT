@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
+import { OrgUserProfileResponse } from '../models/org-user-profile-response';
 
 @Injectable({
   providedIn: 'root',
@@ -101,7 +102,7 @@ export class UserProfileService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
+): Observable<StrictHttpResponse<OrgUserProfileResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiBizLicenceWhoamiGetPath, 'get');
     if (params) {
@@ -114,7 +115,7 @@ export class UserProfileService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
+        return r as StrictHttpResponse<OrgUserProfileResponse>;
       })
     );
   }
@@ -133,10 +134,10 @@ export class UserProfileService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<ApplicantProfileResponse> {
+): Observable<OrgUserProfileResponse> {
 
     return this.apiBizLicenceWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
+      map((r: StrictHttpResponse<OrgUserProfileResponse>) => r.body as OrgUserProfileResponse)
     );
   }
 

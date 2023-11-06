@@ -53,19 +53,19 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsTreatedForMHC { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
         public bool? CarryAndUseRetraints { get; set; }
-        public bool? IsBornInCanada { get; set; }
+        public bool? IsCanadianCitizen { get; set; }
         public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
         public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
         public MentalHealthDocument? MentalHealthDocument { get; set; }
-        public FingerprintProofDocument? FingerPrintProofDocument { get; set; }
-        public BornInCanadaDocument? BornInCanadaDocument { get; set; }
+        public FingerprintProofDocument? FingerprintProofDocument { get; set; }
+        public CitizenshipDocument? CitizenshipDocument { get; set; }
         public AdditionalGovIdDocument? AdditionalGovIdDocument { get; set; }
         public IdPhotoDocument? IdPhotoDocument { get; set; }
     }
     public record WorkerLicenceAppCategoryData
     {
         public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
-        public Document[]? Documents { get; set; } = null; 
+        public Document[]? Documents { get; set; } = null;
     }
     public record Document
     {
@@ -77,7 +77,7 @@ namespace Spd.Manager.Cases.Licence
     public record PoliceOfficerDocument : Document;
     public record MentalHealthDocument : Document;
     public record FingerprintProofDocument : Document;
-    public record BornInCanadaDocument : Document
+    public record CitizenshipDocument : Document
     {
         public DateOnly? ExpiryDate { get; set; }
     };

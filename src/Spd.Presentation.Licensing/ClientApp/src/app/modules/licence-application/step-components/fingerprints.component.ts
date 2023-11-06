@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode } from 'src/app/api/models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-fingerprints',
@@ -31,7 +31,7 @@ import {
 							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
-								(filesChanged)="onFilesChanged()"
+								(fileAdded)="onFileAdded($event)"
 								[control]="attachments"
 								[maxNumberOfFiles]="1"
 								[files]="attachments.value"
@@ -62,12 +62,27 @@ import {
 	styles: [],
 })
 export class FingerprintsComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.proofOfFingerprintFormGroup;
+	form: FormGroup = this.licenceApplicationService.fingerprintProofFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.proofOfFingerprint;
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				},
+			});
+		}
 	}
 
 	isFormValid(): boolean {
