@@ -9,11 +9,11 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { LicenceAppFileCreateResponse } from '../models/licence-app-file-create-response';
+import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
+import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
+import { WorkerLicenceAppUpsertResponse } from '../models/worker-licence-app-upsert-response';
 import { WorkerLicenceResponse } from '../models/worker-licence-response';
-import { WorkerLicenceUpsertRequest } from '../models/worker-licence-upsert-request';
-import { WorkerLicenceUpsertResponse } from '../models/worker-licence-upsert-response';
 
 @Injectable({
   providedIn: 'root',
@@ -42,11 +42,11 @@ export class WorkerLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiWorkerLicenceApplicationsPost$Response(params: {
-    body: WorkerLicenceUpsertRequest
+    body: WorkerLicenceAppUpsertRequest
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsPostPath, 'post');
     if (params) {
@@ -60,7 +60,7 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
       })
     );
   }
@@ -76,42 +76,42 @@ export class WorkerLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiWorkerLicenceApplicationsPost(params: {
-    body: WorkerLicenceUpsertRequest
+    body: WorkerLicenceAppUpsertRequest
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceUpsertResponse> {
+): Observable<WorkerLicenceAppUpsertResponse> {
 
     return this.apiWorkerLicenceApplicationsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceUpsertResponse>) => r.body as WorkerLicenceUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
     );
   }
 
   /**
-   * Path part for operation apiWorkerLicenceApplicationsIdGet
+   * Path part for operation apiWorkerLicenceApplicationsLicenceAppIdGet
    */
-  static readonly ApiWorkerLicenceApplicationsIdGetPath = '/api/worker-licence-applications/{id}';
+  static readonly ApiWorkerLicenceApplicationsLicenceAppIdGetPath = '/api/worker-licence-applications/{licenceAppId}';
 
   /**
-   * Create Security Worker Licence Application.
+   * Get Security Worker Licence Application.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicenceApplicationsIdGet()` instead.
+   * To access only the response body, use `apiWorkerLicenceApplicationsLicenceAppIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiWorkerLicenceApplicationsIdGet$Response(params: {
-    id: string;
+  apiWorkerLicenceApplicationsLicenceAppIdGet$Response(params: {
+    licenceAppId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<WorkerLicenceResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsIdGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdGetPath, 'get');
     if (params) {
-      rb.path('id', params.id, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
     }
 
     return this.http.request(rb.build({
@@ -127,31 +127,31 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Create Security Worker Licence Application.
+   * Get Security Worker Licence Application.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsLicenceAppIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiWorkerLicenceApplicationsIdGet(params: {
-    id: string;
+  apiWorkerLicenceApplicationsLicenceAppIdGet(params: {
+    licenceAppId: string;
   },
   context?: HttpContext
 
 ): Observable<WorkerLicenceResponse> {
 
-    return this.apiWorkerLicenceApplicationsIdGet$Response(params,context).pipe(
+    return this.apiWorkerLicenceApplicationsLicenceAppIdGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceResponse>) => r.body as WorkerLicenceResponse)
     );
   }
 
   /**
-   * Path part for operation apiWorkerLicenceApplicationsIdFilesPost
+   * Path part for operation apiWorkerLicenceApplicationsLicenceAppIdFilesPost
    */
-  static readonly ApiWorkerLicenceApplicationsIdFilesPostPath = '/api/worker-licence-applications/{id}/files';
+  static readonly ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath = '/api/worker-licence-applications/{licenceAppId}/files';
 
   /**
    * Upload licence application files.
@@ -159,25 +159,24 @@ export class WorkerLicensingService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicenceApplicationsIdFilesPost()` instead.
+   * To access only the response body, use `apiWorkerLicenceApplicationsLicenceAppIdFilesPost()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiWorkerLicenceApplicationsIdFilesPost$Response(params: {
-    id: string;
+  apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response(params: {
+    licenceAppId: string;
     body?: {
-'Files'?: Array<Blob>;
+'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-'ExpiryDate'?: string;
 }
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Array<LicenceAppFileCreateResponse>>> {
+): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath, 'post');
     if (params) {
-      rb.path('id', params.id, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
       rb.body(params.body, 'multipart/form-data');
     }
 
@@ -188,7 +187,7 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceAppFileCreateResponse>>;
+        return r as StrictHttpResponse<Array<LicenceAppDocumentResponse>>;
       })
     );
   }
@@ -199,24 +198,23 @@ export class WorkerLicensingService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsIdFilesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiWorkerLicenceApplicationsIdFilesPost(params: {
-    id: string;
+  apiWorkerLicenceApplicationsLicenceAppIdFilesPost(params: {
+    licenceAppId: string;
     body?: {
-'Files'?: Array<Blob>;
+'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-'ExpiryDate'?: string;
 }
   },
   context?: HttpContext
 
-): Observable<Array<LicenceAppFileCreateResponse>> {
+): Observable<Array<LicenceAppDocumentResponse>> {
 
-    return this.apiWorkerLicenceApplicationsIdFilesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppFileCreateResponse>>) => r.body as Array<LicenceAppFileCreateResponse>)
+    return this.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>) => r.body as Array<LicenceAppDocumentResponse>)
     );
   }
 
@@ -236,11 +234,11 @@ export class WorkerLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAnonymousWorkerLicencesPost$Response(params: {
-    body: WorkerLicenceUpsertRequest
+    body: WorkerLicenceAppUpsertRequest
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath, 'post');
     if (params) {
@@ -254,7 +252,7 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
       })
     );
   }
@@ -270,14 +268,14 @@ export class WorkerLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAnonymousWorkerLicencesPost(params: {
-    body: WorkerLicenceUpsertRequest
+    body: WorkerLicenceAppUpsertRequest
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceUpsertResponse> {
+): Observable<WorkerLicenceAppUpsertResponse> {
 
     return this.apiAnonymousWorkerLicencesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceUpsertResponse>) => r.body as WorkerLicenceUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
     );
   }
 

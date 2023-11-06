@@ -3,7 +3,8 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../licence-application.helper';
+import { LicenceApplicationService } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { AliasesComponent } from '../aliases.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
@@ -309,9 +310,9 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 	get showAdditionalGovermentIdStep(): boolean {
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
-			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
+			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 				form.value.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(form.value.isBornInCanada == BooleanTypeCode.No &&
+			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
 				form.value.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}

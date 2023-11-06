@@ -6,7 +6,8 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-background-info',
@@ -101,7 +102,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 											for more information.
 										</p>
 
-										<app-file-upload [maxNumberOfFiles]="1" onFilesChanged></app-file-upload>
+										<app-file-upload [maxNumberOfFiles]="1" onFileChanged></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -159,8 +160,8 @@ export class BackgroundInfoComponent implements LicenceChildStepperStepComponent
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = null;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = null;
 	}
 
 	isFormValid(): boolean {

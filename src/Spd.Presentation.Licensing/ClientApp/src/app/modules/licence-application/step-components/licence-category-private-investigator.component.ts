@@ -9,11 +9,8 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-private-investigator',
@@ -120,7 +117,7 @@ import {
 
 				<div class="my-2">
 					<app-file-upload
-						(filesChanged)="onFilesChanged()"
+						(fileChanged)="onFileChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -210,7 +207,7 @@ import {
 						>
 					</div>
 					<app-file-upload
-						(filesChanged)="onFilesChanged()"
+						(fileChanged)="onFileChanged()"
 						[control]="trainingAttachments"
 						[maxNumberOfFiles]="10"
 						#trainingAttachmentsRef
@@ -273,11 +270,11 @@ import {
 				<div class="my-2">
 					<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
 					<app-file-upload
-										(filesChanged)="onFilesChanged()"
+										(fileChanged)="onFileChanged()"
 						[maxNumberOfFiles]="10"
 						#fireCourseCertificateAttachmentsRef
 						[files]="fireCourseCertificateAttachments.value"
-						(filesChanged)="onFireCertFilesChanged()"
+						(fileChanged)="onFireCertFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
@@ -294,11 +291,11 @@ import {
 				<div class="my-2">
 					<div class="text-minor-heading mb-2">Upload a verification letter:</div>
 					<app-file-upload
-										(filesChanged)="onFilesChanged()"
+										(fileChanged)="onFileChanged()"
 						[maxNumberOfFiles]="10"
 						#fireVerificationLetterAttachmentsRef
 						[files]="fireVerificationLetterAttachments.value"
-						(filesChanged)="onFireLetterFilesChanged()"
+						(fileChanged)="onFireLetterFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
@@ -332,8 +329,8 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigator;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigator;
 	}
 
 	isFormValid(): boolean {

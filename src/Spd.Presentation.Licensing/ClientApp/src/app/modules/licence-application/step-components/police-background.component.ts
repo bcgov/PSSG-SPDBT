@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PoliceOfficerRoleCode } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode, PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-police-background',
@@ -54,17 +53,19 @@ import {
 										<div class="row mt-2">
 											<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12">
 												<mat-form-field>
-													<mat-select formControlName="officerRole">
+													<mat-select formControlName="policeOfficerRoleCode" [errorStateMatcher]="matcher">
 														<mat-option *ngFor="let item of policeOfficerRoleTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
-													<mat-error *ngIf="form.get('officerRole')?.hasError('required')">This is required</mat-error>
+													<mat-error *ngIf="form.get('policeOfficerRoleCode')?.hasError('required')"
+														>This is required</mat-error
+													>
 												</mat-form-field>
 											</div>
 											<div
 												class="col-xl-5 col-lg-12 col-md-12 col-sm-12"
-												*ngIf="officerRole.value == policeOfficerRoleCodes.Other"
+												*ngIf="policeOfficerRoleCode.value == policeOfficerRoleCodes.Other"
 											>
 												<mat-form-field>
 													<mat-label>Describe Role</mat-label>
@@ -98,10 +99,10 @@ import {
 													>
 													for more information.
 												</p>
-												<!--			[maxNumberOfFiles]="1" -->
 												<app-file-upload
-													(filesChanged)="onFilesChanged()"
+													(fileAdded)="onFileAdded($event)"
 													[control]="attachments"
+													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
 												></app-file-upload>
 												<mat-error
@@ -147,7 +148,11 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.title_confirm;
@@ -158,8 +163,21 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.policeBackground;
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					},
+				});
+		}
 	}
 
 	isFormValid(): boolean {
@@ -171,8 +189,8 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		return this.form.get('isPoliceOrPeaceOfficer') as FormControl;
 	}
 
-	get officerRole(): FormControl {
-		return this.form.get('officerRole') as FormControl;
+	get policeOfficerRoleCode(): FormControl {
+		return this.form.get('policeOfficerRoleCode') as FormControl;
 	}
 
 	get attachments(): FormControl {

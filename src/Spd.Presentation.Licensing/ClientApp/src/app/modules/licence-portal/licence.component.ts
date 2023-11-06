@@ -116,7 +116,7 @@ export class LicenceComponent {
 	// ) {}
 
 	// async ngOnInit(): Promise<void> {
-	// 	const nextRoute = await this.authProcessService.initializeCrrp();
+	// 	const nextRoute = await this.authProcessService.initializeBCSC();
 	// 	console.log('initialize nextRoute', nextRoute);
 
 	// 	if (nextRoute) {

@@ -1,24 +1,25 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ApplicationTypeComponent } from './components/application-type.component';
-import { UserApplicationsComponent } from './components/user-applications.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
-import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
+import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
+import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
 import { UpdateAddDogsModalComponent } from './components/update-add-dogs-modal.component';
 import { UpdateAddRestraintsModalComponent } from './components/update-add-restraints-modal.component';
 import { UpdateApplyNameChangeModalComponent } from './components/update-apply-name-change-modal.component';
 import { UpdateLicenceCategoryModalComponent } from './components/update-licence-category-modal.component';
 import { UpdatePhotoModalComponent } from './components/update-photo-modal.component';
+import { UserApplicationsComponent } from './components/user-applications.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
+import { LicenceApplicationService } from './licence-application.service';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
 import { AliasesComponent } from './step-components/aliases.component';
 import { BackgroundInfoComponent } from './step-components/background-info.component';
@@ -68,6 +69,9 @@ import { StepReviewComponent } from './step-components/wizard-steps/step-review.
 import { StepConfirmMailingAddressComponent } from './step-components/wizard-update-steps/step-confirm-mailing-address.component';
 import { StepConfirmUpdatesComponent } from './step-components/wizard-update-steps/step-confirm-updates.component';
 import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
+import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
+import { UserApplicationsBceidComponent } from './components/user-applications-bceid.component';
+import { UserApplicationsUnauthComponent } from './components/user-applications-unauth.component';
 
 @NgModule({
 	declarations: [
@@ -139,7 +143,11 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		UpdateAddDogsModalComponent,
 		UpdatePhotoModalComponent,
 		SecurityWorkerLicenceApplicationComponent,
+  UserApplicationsBcscComponent,
+  UserApplicationsBceidComponent,
+  UserApplicationsUnauthComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
+	providers: [LicenceApplicationService],
 })
 export class LicenceApplicationModule {}
