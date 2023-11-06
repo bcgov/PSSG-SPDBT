@@ -111,6 +111,8 @@ $spd-theme: mat.define-light-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($spd-theme);
+// @include mat.typography-hierarchy($spd-theme);
+// @include mat.all-component-typographies($spd-theme);
 
 :root {
 	--color-white: #fff;
@@ -152,7 +154,7 @@ html, body { height: 100%; }
 body { 
   margin: 0; 
   background-color: var(--color-primary-lightest);
-	font-family: 'BCSans', 'Noto Sans', Arial, sans-serif;
+  font-family: 'BCSans', 'Noto Sans', Arial, sans-serif;
 }
 
 .step {

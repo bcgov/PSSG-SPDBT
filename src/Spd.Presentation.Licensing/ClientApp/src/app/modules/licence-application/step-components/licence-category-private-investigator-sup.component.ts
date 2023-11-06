@@ -5,11 +5,8 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { PrivateInvestigatorSupRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-private-investigator-sup',
@@ -88,7 +85,7 @@ import {
 
 				<div class="my-2">
 					<app-file-upload
-						(filesChanged)="onFilesChanged()"
+						(fileChanged)="onFileChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -136,7 +133,7 @@ import {
 
 			<div class="my-2">
 				<app-file-upload
-					(filesChanged)="onFilesChanged()"
+					(fileChanged)="onFileChanged()"
 					[control]="trainingAttachments"
 					[maxNumberOfFiles]="10"
 					#trainingAttachmentsRef
@@ -173,8 +170,8 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 		);
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigatorSup;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigatorSup;
 	}
 
 	isFormValid(): boolean {

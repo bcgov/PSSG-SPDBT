@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-contact-information',

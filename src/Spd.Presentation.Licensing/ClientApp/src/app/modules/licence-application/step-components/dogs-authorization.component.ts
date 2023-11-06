@@ -2,11 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode, DogDocumentTypes } from 'src/app/core/code-types/model-desc.models';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-dogs-authorization',
@@ -92,7 +89,7 @@ import {
 
 								<div class="my-2">
 									<app-file-upload
-										(filesChanged)="onFilesChanged()"
+										(fileChanged)="onFileChanged()"
 										[control]="attachments"
 										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
@@ -135,8 +132,8 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 		}
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.dogsAuthorization;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.dogsAuthorization;
 	}
 
 	isFormValid(): boolean {

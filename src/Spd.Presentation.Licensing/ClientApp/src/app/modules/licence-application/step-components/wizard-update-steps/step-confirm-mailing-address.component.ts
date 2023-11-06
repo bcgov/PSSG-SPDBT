@@ -41,8 +41,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								<div class="text-minor-heading mb-2">Address information:</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
-									<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" maxlength="100" />
-									<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
+									<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 						</div>
@@ -51,7 +51,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 								<mat-form-field>
 									<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput formControlName="mailingAddressLine2" maxlength="100" />
+									<input matInput formControlName="addressLine2" maxlength="100" />
 								</mat-form-field>
 							</div>
 						</div>
@@ -59,8 +59,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>City</mat-label>
-									<input matInput formControlName="mailingCity" maxlength="100" />
-									<mat-error *ngIf="form.get('mailingCity')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="city" maxlength="100" />
+									<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-12">
@@ -68,11 +68,11 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 									<mat-label>Postal/Zip Code</mat-label>
 									<input
 										matInput
-										formControlName="mailingPostalCode"
+										formControlName="postalCode"
 										oninput="this.value = this.value.toUpperCase()"
 										maxlength="20"
 									/>
-									<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 						</div>
@@ -80,15 +80,15 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Province/State</mat-label>
-									<input matInput formControlName="mailingProvince" maxlength="100" />
-									<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="province" maxlength="100" />
+									<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Country</mat-label>
-									<input matInput formControlName="mailingCountry" maxlength="100" />
-									<mat-error *ngIf="form.get('mailingCountry')?.hasError('required')">This is required</mat-error>
+									<input matInput formControlName="country" maxlength="100" />
+									<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
 						</div>
@@ -105,12 +105,12 @@ export class StepConfirmMailingAddressComponent {
 
 	form: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
-		mailingAddressLine2: new FormControl(''),
-		mailingCity: new FormControl('', [FormControlValidators.required]),
-		mailingPostalCode: new FormControl('', [FormControlValidators.required]),
-		mailingProvince: new FormControl('', [FormControlValidators.required]),
-		mailingCountry: new FormControl('', [FormControlValidators.required]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
 	});
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
@@ -121,12 +121,12 @@ export class StepConfirmMailingAddressComponent {
 		if (!address) {
 			this.form.patchValue({
 				addressSelected: false,
-				mailingAddressLine1: '',
-				mailingAddressLine2: '',
-				mailingCity: '',
-				mailingPostalCode: '',
-				mailingProvince: '',
-				mailingCountry: '',
+				addressLine1: '',
+				addressLine2: '',
+				city: '',
+				postalCode: '',
+				province: '',
+				country: '',
 			});
 			return;
 		}
@@ -134,12 +134,12 @@ export class StepConfirmMailingAddressComponent {
 		const { countryCode, provinceCode, postalCode, line1, line2, city } = address;
 		this.form.patchValue({
 			addressSelected: true,
-			mailingAddressLine1: line1,
-			mailingAddressLine2: line2,
-			mailingCity: city,
-			mailingPostalCode: postalCode,
-			mailingProvince: provinceCode,
-			mailingCountry: countryCode,
+			addressLine1: line1,
+			addressLine2: line2,
+			city: city,
+			postalCode: postalCode,
+			province: provinceCode,
+			country: countryCode,
 		});
 	}
 

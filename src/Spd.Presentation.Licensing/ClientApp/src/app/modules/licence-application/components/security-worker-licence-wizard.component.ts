@@ -1,11 +1,13 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
@@ -26,14 +28,14 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<!-- <mat-step [completed]="step1Complete">
+						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
 								(childNextStep)="onChildNextStep()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
-						</mat-step> -->
+						</mat-step>
 
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
@@ -99,10 +101,12 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 					</button>
 
 					<div class="m-3">
-						<a class="large" style="top: 10px;" (click)="onSaveAndExit()"> Save and Exit </a>
+						<a class="large" style="font-weight: 600;top: 10px;" (click)="onSaveAndExit()"> Save and Exit </a>
 					</div>
 					<div class="m-3">
-						<a *ngIf="isFormValid" class="large" style="top: 10px;" (click)="onGoToReview()"> Go to Review </a>
+						<a *ngIf="isFormValid" class="large" style="font-weight: 600;top: 10px;" (click)="onGoToReview()">
+							Go to Review
+						</a>
 					</div>
 					<!-- <div class="m-3">
 						<a class="large" style="color: var(--color-red) !important;" (click)="onGoToReview()">
@@ -158,18 +162,14 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
+		private authenticationService: AuthenticationService,
 		private breakpointObserver: BreakpointObserver,
 		private licenceApplicationService: LicenceApplicationService,
-		private authProcessService: AuthProcessService,
 		private hotToastService: HotToastService
 	) {}
 
 	ngOnInit(): void {
-		// console.log(
-		// 	'LicenceWizardComponent ONINIT',
-		// 	this.licenceApplicationService.initialized,
-		// 	this.licenceApplicationService.licenceModelFormGroup.value
-		// );
 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
@@ -195,9 +195,9 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				console.debug(
 					'valueChanges changed flags',
 					'hasValueChanged',
-					this.licenceApplicationService.hasValueChanged,
-					'hasDocumentsChanged',
-					this.licenceApplicationService.hasDocumentsChanged
+					this.licenceApplicationService.hasValueChanged
+					// 'hasDocumentsChanged',
+					// this.licenceApplicationService.hasDocumentsChanged
 				);
 
 				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
@@ -268,11 +268,11 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = null;
+					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -293,6 +293,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					}
 				},
 				error: (error: any) => {
+					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -319,16 +320,19 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onSaveAndExit() {
-		this.licenceApplicationService.saveLicence().subscribe({
+		if (!this.authenticationService.isLoggedIn()) {
+			this.exitAndLoseChanges();
+			return;
+		}
+
+		this.licenceApplicationService.saveLicenceStep().subscribe({
 			next: (resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
-				this.licenceApplicationService.hasDocumentsChanged = null;
 
 				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
 			},
 			error: (error: any) => {
-				// only 404 will be here as an error
 				// TODO what error codes to handle here?
 				console.log('An error occurred during save', error);
 				this.hotToastService.error('An error occurred during the save. Please try again.');
@@ -336,18 +340,37 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		});
 	}
 
+	private exitAndLoseChanges() {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to leave this application? All of your data will be lost.',
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+				}
+			});
+	}
+
 	onGoToReview() {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = null;
+					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.stepper.selectedIndex = this.STEP_REVIEW;
 				},
 				error: (error: any) => {
-					// only 404 will be here as an error
+					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -358,17 +381,17 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.licenceApplicationService.hasDocumentsChanged = null;
+					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();
 				},
 				error: (error: any) => {
-					// only 404 will be here as an error
+					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},

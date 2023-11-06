@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
 import { GovernmentIssuedPhotoIdTypes } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-additional-gov-id',
@@ -22,7 +22,7 @@ import {
 									<div class="col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Select other ID (can be from another country)</mat-label>
-											<mat-select formControlName="governmentIssuedPhotoTypeCode">
+											<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
@@ -53,7 +53,7 @@ import {
 									<div class="col-12">
 										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
 										<app-file-upload
-											(filesChanged)="onFilesChanged()"
+											(fileAdded)="onFileAdded($event)"
 											[maxNumberOfFiles]="1"
 											[control]="attachments"
 											[files]="attachments.value"
@@ -83,17 +83,39 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.licenceApplicationService.govIssuedIdFormGroup;
+	form: FormGroup = this.licenceApplicationService.additionalGovIdFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.additionalGovermentId;
+	constructor(
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
+
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(this.governmentIssuedPhotoTypeCode.value, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get governmentIssuedPhotoTypeCode(): FormControl {
+		return this.form.get('governmentIssuedPhotoTypeCode') as FormControl;
 	}
 
 	get attachments(): FormControl {
