@@ -3,11 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	LicenceApplicationService,
-	LicenceChildStepperStepComponent,
-	LicenceDocumentChanged,
-} from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-armoured-car-guard',
@@ -26,7 +23,7 @@ import {
 			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate:</div>
 			<div class="my-2">
 				<app-file-upload
-					(filesChanged)="onFilesChanged()"
+					(fileChanged)="onFileChanged()"
 					[maxNumberOfFiles]="10"
 					[control]="attachments"
 					[files]="attachments.value"
@@ -74,8 +71,8 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
 	}
 
-	onFilesChanged(): void {
-		this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryArmouredCarGuard;
+	onFileChanged(): void {
+		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryArmouredCarGuard;
 	}
 
 	isFormValid(): boolean {

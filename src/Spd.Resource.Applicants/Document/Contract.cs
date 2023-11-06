@@ -44,7 +44,7 @@ namespace Spd.Resource.Applicants.Document
     }
 
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
-    public record UpdateDocumentExpiryDateCmd(Guid DocumentUrlId, DateOnly? ExpiryDate): DocumentCmd;
+    public record UpdateDocumentExpiryDateCmd(Guid DocumentUrlId, DateOnly? ExpiryDate) : DocumentCmd;
     public enum DocumentTypeEnum
     {
         ApplicantConsentForm,
@@ -59,7 +59,7 @@ namespace Spd.Resource.Applicants.Document
         BodyArmourRationale,
         BusinessInsurance,
         CanadianCitizenship,
-        CanadianFirearmsLicense,
+        CanadianFirearmsLicence,
         CanadianNativeStatusCard,
         CertificateOfAdvancedSecurityTraining,
         ClearanceLetter,

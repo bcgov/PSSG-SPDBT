@@ -51,7 +51,7 @@ export class FileUploadHelper {
 			fileType = fileInfo as DocumentTypeCode;
 		else fileType = FileUploadHelper.getFileDocumentType(typeof fileInfo === 'string' ? fileInfo : fileInfo?.type);
 
-		let fileIcon = { icon: 'insert-drive-file', label: 'File' };
+		let fileIcon = { icon: 'insert_drive_file', label: 'File' };
 		if (fileType) fileIcon = this._FILE_ICONS[fileType];
 
 		return fileIcon;
@@ -87,7 +87,8 @@ export class FileUploadHelper {
 						<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
 							<ngx-dropzone-label>
 								<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-								<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+								<span>{{ file.name }}</span>
+								<!-- ({{ getFileSize(file.size) }} KB) -->
 							</ngx-dropzone-label>
 						</ngx-dropzone-preview>
 
@@ -176,7 +177,9 @@ export class FileUploadComponent implements OnInit {
 
 	@Output() uploadedFile = new EventEmitter<any>();
 	@Output() removeFile = new EventEmitter<any>();
-	@Output() filesChanged = new EventEmitter<any>();
+	@Output() fileChanged = new EventEmitter<any>();
+	@Output() fileAdded = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter<File>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
@@ -216,7 +219,9 @@ export class FileUploadComponent implements OnInit {
 
 			this.files.push(...evt.addedFiles);
 			this.uploadedFile.emit(evt.addedFiles);
-			this.onFilesChanged();
+			this.onFileChanged();
+			this.onFileAdded(addedFile);
+			return;
 		}
 
 		if (evt.rejectedFiles.length > 0) {
@@ -234,18 +239,35 @@ export class FileUploadComponent implements OnInit {
 
 	onRemoveFile(evt: any) {
 		let currentFiles = [...this.files];
-		this.removeFile.emit(this.files.indexOf(evt));
-		currentFiles.splice(this.files.indexOf(evt), 1);
+		const removeFileIndex = this.files.indexOf(evt);
+		this.removeFile.emit(removeFileIndex);
+		currentFiles.splice(removeFileIndex, 1);
 
 		this.files = currentFiles;
-		this.onFilesChanged();
+		this.onFileChanged();
+		this.onFileRemoved(evt);
 	}
 
-	onFilesChanged(): void {
+	removeFailedFile(file: File) {
+		let currentFiles = [...this.files];
+		const removeFileIndex = this.files.indexOf(file);
+		currentFiles.splice(removeFileIndex, 1);
+		this.files = currentFiles;
+	}
+
+	onFileChanged(): void {
 		const files = this.files && this.files.length > 0 ? this.files : [];
 		this.control.setValue(files);
 
-		this.filesChanged.emit(true);
+		this.fileChanged.emit(true);
+	}
+
+	onFileAdded(addedFile: File): void {
+		this.fileAdded.emit(addedFile);
+	}
+
+	onFileRemoved(removeFile: File): void {
+		this.fileRemoved.emit(removeFile);
 	}
 
 	removeAllFiles(): void {
