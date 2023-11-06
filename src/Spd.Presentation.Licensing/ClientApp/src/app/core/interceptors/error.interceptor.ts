@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { UserProfileService } from 'src/app/api/services';
+import { UserProfileService, WorkerLicensingService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 
@@ -28,29 +28,15 @@ export class ErrorInterceptor implements HttpInterceptor {
 					return throwError(() => new Error('Access denied'));
 				}
 
-				// Certain 404s will be handled in the component
+				// WorkerLicensingService errors will be handled in the component
+				const url = WorkerLicensingService.ApiWorkerLicenceApplicationsPostPath;
 				// if (errorResponse.status == 404) {
-				// 	const orgAccessCodeGet = OrgService.ApiOrgsAccessCodeAccessCodeGetPath.substring(
-				// 		OrgService.ApiOrgsAccessCodeAccessCodeGetPath.indexOf('/api') + 1,
-				// 		OrgService.ApiOrgsAccessCodeAccessCodeGetPath.lastIndexOf('/')
-				// 	);
-				// 	if (errorResponse.url?.includes(orgAccessCodeGet)) {
-				// 		return throwError(() => errorResponse);
-				// 	}
+				if (errorResponse.url?.includes(url)) {
+					return throwError(() => errorResponse);
+				}
 				// }
 
-				// Certain 404s will be handled in the component
-				// TODO fix ignore certain errors
-				// if (errorResponse.status == 500) {
-				// const url = WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath;
-				// const url = WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath.substring(
-				// 	WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath.indexOf('/api') + 1,
-				// 	WorkerLicensingService.ApiWorkerLicenceApplicationsIdFilesPostPath.lastIndexOf('/')
-				// );
-				// if (errorResponse.url?.includes(url)) {
-				// return throwError(() => errorResponse);
-				// }
-				// }
+				WorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath;
 
 				let message = 'An error has occurred';
 				if (errorResponse.error) {

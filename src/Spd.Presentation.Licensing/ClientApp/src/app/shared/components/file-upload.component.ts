@@ -47,11 +47,12 @@ export class FileUploadHelper {
 	public static getFileIcon(documentType: DocumentTypeCode): IconType;
 	public static getFileIcon(fileInfo: File | string | DocumentTypeCode): IconType {
 		let fileType: DocumentTypeCode;
+		// console.log('getFileIcon', fileInfo);
 		if (typeof fileInfo === 'string' && Object.values(DocumentTypeCode).includes(fileInfo as DocumentTypeCode))
 			fileType = fileInfo as DocumentTypeCode;
 		else fileType = FileUploadHelper.getFileDocumentType(typeof fileInfo === 'string' ? fileInfo : fileInfo?.type);
 
-		let fileIcon = { icon: 'insert-drive-file', label: 'File' };
+		let fileIcon = { icon: 'insert_drive_file', label: 'File' };
 		if (fileType) fileIcon = this._FILE_ICONS[fileType];
 
 		return fileIcon;
@@ -87,7 +88,8 @@ export class FileUploadHelper {
 						<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
 							<ngx-dropzone-label>
 								<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-								<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+								<span>{{ file.name }}</span>
+								<!-- ({{ getFileSize(file.size) }} KB) -->
 							</ngx-dropzone-label>
 						</ngx-dropzone-preview>
 

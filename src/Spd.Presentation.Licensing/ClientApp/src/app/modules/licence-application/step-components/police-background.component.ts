@@ -101,9 +101,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</p>
 												<!-- TODO			[maxNumberOfFiles]="1" -->
 												<app-file-upload
-													(fileChanged)="onFileChanged()"
 													(fileAdded)="onFileAdded($event)"
-													(fileRemoved)="onFileRemoved($event)"
 													[control]="attachments"
 													[files]="attachments.value"
 												></app-file-upload>
@@ -165,40 +163,20 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.policeBackground;
-	}
-
 	onFileAdded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
 				.subscribe({
 					next: (resp: any) => {
+						console.log('resp', resp);
 						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-						matchingFile.id = resp[0].documentUrlId;
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+						console.log('matchingFile', matchingFile);
 					},
 					error: (error: any) => {
-						// TODO what error codes to handle here?
 						console.log('An error occurred during file upload', error);
 						this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					},
-				});
-		}
-	}
-
-	onFileRemoved(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService
-				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
-				.subscribe({
-					next: (resp: any) => {
-						console.log('att', this.form.value);
-					},
-					error: (error: any) => {
-						// TODO what error codes to handle here?
-						console.log('An error occurred during file remove', error);
-						this.hotToastService.error('An error occurred during the file remove. Please try again.');
 					},
 				});
 		}
