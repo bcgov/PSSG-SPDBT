@@ -155,6 +155,7 @@ namespace Spd.Manager.Cases.Licence
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid? LicenceAppId { get; set; } = null;
         public string? DocumentName { get; set; }
+        public string? DocumentExtension { get; set; }
     };
 
     #endregion

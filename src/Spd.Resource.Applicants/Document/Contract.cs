@@ -23,6 +23,7 @@ namespace Spd.Resource.Applicants.Document
     public record DocumentResp
     {
         public string? FileName { get; set; }
+        public string? FileExtension { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid DocumentUrlId { get; set; }

@@ -13,5 +13,11 @@ public static class FileNameHelper
         }
         return null;
     }
+
+    public static string? GetFileExtensionWithoutDot(string fileExtension)
+    {
+        if (fileExtension == null) return null;
+        return fileExtension.Replace(".", string.Empty);
+    }
 }
 
