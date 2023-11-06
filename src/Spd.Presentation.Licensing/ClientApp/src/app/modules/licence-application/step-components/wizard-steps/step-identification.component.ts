@@ -310,9 +310,9 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 	get showAdditionalGovermentIdStep(): boolean {
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
-			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
+			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 				form.value.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(form.value.isBornInCanada == BooleanTypeCode.No &&
+			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
 				form.value.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}

@@ -376,13 +376,13 @@ export abstract class LicenceApplicationHelper {
 		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
 	});
 
-	proofOfFingerprintFormGroup: FormGroup = this.formBuilder.group({
+	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
 	});
 
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isBornInCanada: new FormControl('', [FormControlValidators.required]),
+			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
 			proofTypeCode: new FormControl('', [FormControlValidators.required]),
 			expiryDate: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
@@ -399,7 +399,7 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	govIssuedIdFormGroup: FormGroup = this.formBuilder.group({
+	additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
 		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
 		governmentIssuedPhotoExpiryDate: new FormControl(''),
 		attachments: new FormControl('', [Validators.required]),

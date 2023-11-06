@@ -47,7 +47,6 @@ export class FileUploadHelper {
 	public static getFileIcon(documentType: DocumentTypeCode): IconType;
 	public static getFileIcon(fileInfo: File | string | DocumentTypeCode): IconType {
 		let fileType: DocumentTypeCode;
-		// console.log('getFileIcon', fileInfo);
 		if (typeof fileInfo === 'string' && Object.values(DocumentTypeCode).includes(fileInfo as DocumentTypeCode))
 			fileType = fileInfo as DocumentTypeCode;
 		else fileType = FileUploadHelper.getFileDocumentType(typeof fileInfo === 'string' ? fileInfo : fileInfo?.type);
@@ -247,6 +246,13 @@ export class FileUploadComponent implements OnInit {
 		this.files = currentFiles;
 		this.onFileChanged();
 		this.onFileRemoved(evt);
+	}
+
+	removeFailedFile(file: File) {
+		let currentFiles = [...this.files];
+		const removeFileIndex = this.files.indexOf(file);
+		currentFiles.splice(removeFileIndex, 1);
+		this.files = currentFiles;
 	}
 
 	onFileChanged(): void {

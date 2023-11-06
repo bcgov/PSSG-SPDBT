@@ -99,10 +99,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 													>
 													for more information.
 												</p>
-												<!-- TODO			[maxNumberOfFiles]="1" -->
 												<app-file-upload
 													(fileAdded)="onFileAdded($event)"
 													[control]="attachments"
+													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
 												></app-file-upload>
 												<mat-error
@@ -169,10 +169,8 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
 				.subscribe({
 					next: (resp: any) => {
-						console.log('resp', resp);
 						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 						matchingFile.documentUrlId = resp.body[0].documentUrlId;
-						console.log('matchingFile', matchingFile);
 					},
 					error: (error: any) => {
 						console.log('An error occurred during file upload', error);

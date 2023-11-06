@@ -48,7 +48,7 @@ public record LicenceApplication
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRetraints { get; set; }
-    public bool IsBornInCanada { get; set; }
+    public bool IsCanadianCitizen { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication

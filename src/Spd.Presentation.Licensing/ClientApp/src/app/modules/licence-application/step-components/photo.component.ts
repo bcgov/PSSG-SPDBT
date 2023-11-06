@@ -13,12 +13,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<app-step-title
 					*ngIf="!isCalledFromModal"
 					title="Upload a photograph of yourself"
-					subtitle="I accept using this BC Services Card photo on my license."
+					subtitle="I accept using this BC Services Card photo on my licence."
 				></app-step-title>
 				<app-step-title
 					class="fs-7"
 					*ngIf="isCalledFromModal"
-					title="Did you want to use your BC Services Card photo on your license?"
+					title="Did you want to use your BC Services Card photo on your licence?"
 					subtitle="If not, you will be allowed upload a new photo."
 				></app-step-title>
 				<div class="step-container">

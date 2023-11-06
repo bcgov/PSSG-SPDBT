@@ -44,11 +44,11 @@ internal partial class LicenceManager
 
     private async Task UpdateDocumentsExpiryDate(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
-        if (request.BornInCanadaDocument != null)
+        if (request.CitizenshipDocument != null)
         {
-            foreach (LicenceAppDocumentResponse doc in request.BornInCanadaDocument.DocumentResponses)
+            foreach (LicenceAppDocumentResponse doc in request.CitizenshipDocument.DocumentResponses)
             {
-                await _documentRepository.ManageAsync(new UpdateDocumentExpiryDateCmd(doc.DocumentUrlId, request.BornInCanadaDocument.ExpiryDate), ct);
+                await _documentRepository.ManageAsync(new UpdateDocumentExpiryDateCmd(doc.DocumentUrlId, request.CitizenshipDocument.ExpiryDate), ct);
             }
         }
         if (request.AdditionalGovIdDocument != null)
@@ -69,13 +69,13 @@ internal partial class LicenceManager
         {
             allValidDocGuids.AddRange(request.AdditionalGovIdDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.BornInCanadaDocument?.DocumentResponses.Count > 0)
+        if (request.CitizenshipDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.BornInCanadaDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.CitizenshipDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
-        if (request.FingerPrintProofDocument?.DocumentResponses.Count > 0)
+        if (request.FingerprintProofDocument?.DocumentResponses.Count > 0)
         {
-            allValidDocGuids.AddRange(request.FingerPrintProofDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
+            allValidDocGuids.AddRange(request.FingerprintProofDocument.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
         }
         if (request.IdPhotoDocument?.DocumentResponses.Count > 0)
         {
@@ -127,7 +127,7 @@ internal partial class LicenceManager
         var fingerprints = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.ConfirmationOfFingerprints).ToList();
         if (fingerprints.Any())
         {
-            result.FingerPrintProofDocument = new FingerprintProofDocument
+            result.FingerprintProofDocument = new FingerprintProofDocument
             {
                 LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint,
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(fingerprints)
@@ -147,7 +147,7 @@ internal partial class LicenceManager
             d.DocumentType == DocumentTypeEnum.LegalWorkStatus).ToList();
         if (bornInCanadas.Any())
         {
-            result.BornInCanadaDocument = new BornInCanadaDocument
+            result.CitizenshipDocument = new CitizenshipDocument
             {
                 LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)bornInCanadas[0].DocumentType),
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(bornInCanadas),
@@ -157,7 +157,7 @@ internal partial class LicenceManager
 
         var govIdDocs = existingDocs.Items.Where(d =>
             d.DocumentType == DocumentTypeEnum.DriverLicense ||
-            d.DocumentType == DocumentTypeEnum.CanadianFirearmsLicense ||
+            d.DocumentType == DocumentTypeEnum.CanadianFirearmsLicence ||
             d.DocumentType == DocumentTypeEnum.BCServicesCard ||
             d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard ||
             d.DocumentType == DocumentTypeEnum.GovtIssuedPhotoID).ToList();
@@ -209,9 +209,9 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.PermanentResidentCard, DocumentTypeEnum.PermanentResidenceCard},
         {LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, DocumentTypeEnum.LetterOfNoConflict},
         {LicenceDocumentTypeCode.ProofOfFingerprint, DocumentTypeEnum.ConfirmationOfFingerprints},
-        {LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.RecordOfLandingDocument}, 
-        {LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument}, 
-        {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.WorkPermit}, 
+        {LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.RecordOfLandingDocument},
+        {LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument},
+        {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.WorkPermit},
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
         {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.LegalWorkStatus}
     }.ToImmutableDictionary();

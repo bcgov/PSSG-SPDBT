@@ -115,9 +115,9 @@ export class UtilService {
 		}
 	}
 
-	blobToFile(theBlob: Blob, fileName: string, id: string | null = null): File {
+	blobToFile(theBlob: Blob, fileName: string, documentUrlId: string | null = null): File {
 		const b: any = theBlob;
-		b.id = id;
+		b.documentUrlId = documentUrlId;
 		b.name = fileName;
 		b.lastModifiedDate = new Date();
 

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -49,7 +52,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-12">
 										<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
 										<app-file-upload
-											(fileChanged)="onFileChanged()"
+											(fileAdded)="onFileAdded($event)"
 											[control]="attachments"
 											[maxNumberOfFiles]="1"
 											[files]="attachments.value"
@@ -79,10 +82,25 @@ export class MentalHealthConditionsComponent implements LicenceChildStepperStepC
 
 	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.mentalHealthConditions;
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				},
+			});
+		}
 	}
 
 	isFormValid(): boolean {

@@ -6,7 +6,7 @@ export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationTypeCode } from './models/application-type-code';
 export { BcscConfiguration } from './models/bcsc-configuration';
 export { BooleanTypeCode } from './models/boolean-type-code';
-export { BornInCanadaDocument } from './models/born-in-canada-document';
+export { CitizenshipDocument } from './models/citizenship-document';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { Document } from './models/document';

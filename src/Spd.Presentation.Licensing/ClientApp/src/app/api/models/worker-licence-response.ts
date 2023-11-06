@@ -3,7 +3,7 @@
 import { AdditionalGovIdDocument } from './additional-gov-id-document';
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
-import { BornInCanadaDocument } from './born-in-canada-document';
+import { CitizenshipDocument } from './citizenship-document';
 import { EyeColourCode } from './eye-colour-code';
 import { FingerprintProofDocument } from './fingerprint-proof-document';
 import { GenderCode } from './gender-code';
@@ -24,16 +24,16 @@ export interface WorkerLicenceResponse {
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
-  bornInCanadaDocument?: BornInCanadaDocument;
   carryAndUseRetraints?: null | boolean;
   categoryData?: null | Array<WorkerLicenceAppCategoryData>;
+  citizenshipDocument?: CitizenshipDocument;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
   expiredLicenceNumber?: null | string;
   expiryDate?: null | string;
   eyeColourCode?: EyeColourCode;
-  fingerPrintProofDocument?: FingerprintProofDocument;
+  fingerprintProofDocument?: FingerprintProofDocument;
   genderCode?: GenderCode;
   givenName?: null | string;
   hairColourCode?: HairColourCode;
@@ -44,7 +44,7 @@ export interface WorkerLicenceResponse {
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
   idPhotoDocument?: IdPhotoDocument;
-  isBornInCanada?: null | boolean;
+  isCanadianCitizen?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isSoleProprietor?: null | boolean;

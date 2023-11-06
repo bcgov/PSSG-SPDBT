@@ -450,7 +450,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="row mt-0">
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-																<div class="text-data">{{ isBornInCanada }}</div>
+																<div class="text-data">{{ isCanadianCitizen }}</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -887,11 +887,11 @@ export class SummaryReviewComponent {
 	}
 
 	get proofOfFingerprintAttachments(): File[] {
-		return this.licenceModelData.proofOfFingerprintData.attachments ?? [];
+		return this.licenceModelData.fingerprintProofData.attachments ?? [];
 	}
 
-	get isBornInCanada(): string {
-		return this.licenceModelData.citizenshipData.isBornInCanada ?? '';
+	get isCanadianCitizen(): string {
+		return this.licenceModelData.citizenshipData.isCanadianCitizen ?? '';
 	}
 	get proofTypeCode(): string {
 		return this.licenceModelData.citizenshipData.proofTypeCode ?? '';
@@ -907,13 +907,13 @@ export class SummaryReviewComponent {
 	}
 
 	get governmentIssuedPhotoTypeCode(): string {
-		return this.licenceModelData.govIssuedIdData.governmentIssuedPhotoTypeCode ?? '';
+		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoTypeCode ?? '';
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		return this.licenceModelData.govIssuedIdData.governmentIssuedPhotoExpiryDate ?? '';
+		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoExpiryDate ?? '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
-		return this.licenceModelData.govIssuedIdData.attachments ?? [];
+		return this.licenceModelData.additionalGovIdData.attachments ?? [];
 	}
 
 	get hasBcDriversLicence(): string {
