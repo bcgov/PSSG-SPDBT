@@ -40,10 +40,10 @@ namespace Spd.Resource.Applicants.Document
             return Enum.Parse<DocumentTypeEnum>(docType);
         }
 
-        private static DateOnly? GetDateOnly(Date? date)
+        private static DateTimeOffset? GetDateOnly(Date? date)
         {
             if (date == null) return null;
-            return new DateOnly(date.Value.Year, date.Value.Month, date.Value.Day);
+            return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
         }
     }
 }

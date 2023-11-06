@@ -79,11 +79,11 @@ namespace Spd.Manager.Cases.Licence
     public record FingerprintProofDocument : Document;
     public record CitizenshipDocument : Document
     {
-        public DateOnly? ExpiryDate { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
     };
     public record AdditionalGovIdDocument : Document
     {
-        public DateOnly? ExpiryDate { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
     };
     public record IdPhotoDocument : Document;
     public record ResidentialAddress : Address;
