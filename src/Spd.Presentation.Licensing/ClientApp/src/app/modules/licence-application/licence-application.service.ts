@@ -11,6 +11,7 @@ import {
 	GenderCode,
 	HairColourCode,
 	HeightUnitCode,
+	IdPhotoDocument,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
@@ -22,7 +23,7 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -36,7 +37,7 @@ import {
 	SecurityConsultantRequirementCode,
 	SecurityGuardRequirementCode,
 	SelectOptions,
-	WorkerCategoryTypes,
+	WorkerCategoryTypes
 } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -489,23 +490,43 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						attachments: citizenshipDataAttachments,
 					};
 
+					const additionalGovIdAttachments: Array<File> = [];
+					if (resp.additionalGovIdDocument?.documentResponses) {
+						const documentResponses = [...resp.additionalGovIdDocument.documentResponses];
+						documentResponses.forEach((item: LicenceAppDocumentResponse) => {
+							const aBlob = new Blob();
+							const aFile = this.utilService.blobToFile(aBlob, item.documentName!, item.documentUrlId);
+							additionalGovIdAttachments.push(aFile);
+						});
+					}
 					const additionalGovIdData = {
-						// TODO fix governmentIssuedPhotoTypeCode: resp.governmentIssuedPhotoTypeCode,
-						// attachments: [myFile],
+						governmentIssuedPhotoTypeCode: resp.additionalGovIdDocument?.licenceDocumentTypeCode,
+						attachments: additionalGovIdAttachments,
 					};
+
+					
 
 					const characteristicsData = {
 						hairColourCode: resp.hairColourCode,
 						eyeColourCode: resp.eyeColourCode,
-						height: resp.height,
+						height: resp.height ? resp.height + '' : null,
 						heightUnitCode: resp.heightUnitCode,
-						weight: resp.weight,
+						weight: resp.weight ? resp.weight + '' : null,
 						weightUnitCode: resp.weightUnitCode,
 					};
 
+					const photographOfYourselfAttachments: Array<File> = [];
+					if (resp.idPhotoDocument?.documentResponses) {
+						const documentResponses = [...resp.idPhotoDocument.documentResponses];
+						documentResponses.forEach((item: LicenceAppDocumentResponse) => {
+							const aBlob = new Blob();
+							const aFile = this.utilService.blobToFile(aBlob, item.documentName!, item.documentUrlId);
+							photographOfYourselfAttachments.push(aFile);
+						});
+					}
 					const photographOfYourselfData = {
 						useBcServicesCardPhoto: resp.useBcServicesCardPhoto ? BooleanTypeCode.Yes : BooleanTypeCode.No,
-						// attachments: [myFile],
+						attachments: photographOfYourselfAttachments,
 					};
 
 					const contactInformationData = {
@@ -727,57 +748,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const mentalHealthConditionsData = { ...formValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
-		// if (citizenshipData.attachments) {
-		// 	const bornInCanadaDocuments: Array<LicenceAppDocumentResponse> = [];
-		// 	console.log('citizenshipData.attachments', citizenshipData.attachments);
-		// 	citizenshipData.attachments.forEach((doc: any) => {
-		// 		console.log('citizenshipData.doc', doc);
-		// 		const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
-		// 			documentName: doc.name,
-		// 			documentUrlId: doc.id,
-		// 			licenceAppId,
-		// 		};
-		// 		console.log('citizenshipData.licenceAppDocumentResponse', licenceAppDocumentResponse);
-		// 		bornInCanadaDocuments.push(licenceAppDocumentResponse);
-		// 	});
-		// 	citizenshipDocument = {
-		// 		documentResponses: bornInCanadaDocuments,
-		// 		expiryDate: null,
-		// 		licenceDocumentTypeCode: citizenshipData.proofTypeCode,
-		// 	};
-		// 	console.log('citizenshipData.citizenshipDocument', citizenshipDocument);
-
-		// 	// bornInCanadaDocuments
-		// 	// LicenceAppDocumentResponse {
-		// 	// 	documentName?: null | string;
-		// 	// 	documentUrlId?: string;
-		// 	// 	licenceAppId?: null | string;
-		// 	// 	uploadedDateTime?: string;
-		// 	// }
-
-		// 	// const doc1: LicenceAppDocumentResponse = {
-		// 	// 	Documents: [...formValue.citizenshipData.attachments],
-		// 	// 	LicenceDocumentTypeCode: formValue.citizenshipData.proofTypeCode,
-		// 	// 	ExpiryDate: formValue.citizenshipData.expiryDate,
-		// 	// };
-		// 	// apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc1 }));
-
-		// 	// const includeAdditionalGovermentIdStepData =
-		// 	// 	(formValue.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
-		// 	// 		formValue.citizenshipData.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-		// 	// 	(formValue.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
-		// 	// 		formValue.citizenshipData.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard);
-
-		// 	// if (includeAdditionalGovermentIdStepData) {
-		// 	// 	const doc2: LicenceDocument = {
-		// 	// 		Documents: [...formValue.additionalGovIdData.attachments],
-		// 	// 		LicenceDocumentTypeCode: formValue.additionalGovIdData.governmentIssuedPhotoTypeCode,
-		// 	// 	};
-		// 	// 	apis.push(this.workerLicensingService.apiWorkerLicenceApplicationsIdFilesPost$Response({ id, body: doc2 }));
-		// 	// } else {
-		// 	// }
-		// }
-
 		let policeOfficerDocument: PoliceOfficerDocument | null = null;
 		if (policeBackgroundData.attachments) {
 			const policeOfficerDocuments: Array<LicenceAppDocumentResponse> = [];
@@ -860,6 +830,23 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			};
 		}
 
+
+
+		let idPhotoDocument: IdPhotoDocument | null = null;
+		if (photographOfYourselfData.attachments) {
+			const photographOfYourselfDocuments: Array<LicenceAppDocumentResponse> = [];
+			photographOfYourselfData.attachments.forEach((doc: any) => {
+				photographOfYourselfDocuments.push({
+					documentUrlId: doc.documentUrlId,
+				});
+			});
+			idPhotoDocument = {
+				documentResponses: photographOfYourselfDocuments,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+			};
+		}
+
+
 		const body: WorkerLicenceAppUpsertRequest = {
 			licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
@@ -904,7 +891,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			fingerprintProofDocument,
 			//-----------------------------------
 			useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
-			// idPhotoDocument?: IdPhotoDocument;
+			idPhotoDocument,
 			//-----------------------------------
 			isTreatedForMHC: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
 			mentalHealthDocument,
