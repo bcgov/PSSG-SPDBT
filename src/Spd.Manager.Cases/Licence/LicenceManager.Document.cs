@@ -91,9 +91,12 @@ internal partial class LicenceManager
         }
         foreach (WorkerLicenceAppCategoryData category in request.CategoryData)
         {
-            foreach (Document d in category.Documents)
+            if (category.Documents != null)
             {
-                allValidDocGuids.AddRange(d.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
+                foreach (Document d in category.Documents)
+                {
+                    allValidDocGuids.AddRange(d.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
+                }
             }
         }
         //mark all valid doc active.
@@ -220,7 +223,8 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument},
         {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.WorkPermit},
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
-        {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.LegalWorkStatus}
+        {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.LegalWorkStatus},
+        {LicenceDocumentTypeCode.PhotoOfYourself, DocumentTypeEnum.Photograph},
     }.ToImmutableDictionary();
 
 }
