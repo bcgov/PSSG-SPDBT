@@ -178,6 +178,44 @@ namespace Spd.Utilities.Dynamics
         }
         #endregion
 
+        #region worker licence category
+        public static readonly ImmutableDictionary<string, Guid> LicenceCategoryDictionary = new Dictionary<string, Guid>()
+        {
+            {"ArmouredCarGuard", Guid.Parse("41f0a63c-3a62-ee11-b843-005056830319")},
+            {"ElectronicLockingDeviceInstaller", Guid.Parse("43f0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityAlarmInstallerUnderSupervision", Guid.Parse("45f0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityAlarmInstaller", Guid.Parse("47f0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityAlarmMonitor", Guid.Parse("49f0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityAlarmResponse", Guid.Parse("4bf0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityAlarmSales", Guid.Parse("4df0a63c-3a62-ee11-b843-005056830319")},
+            {"ClosedCircuitTelevisionInstaller", Guid.Parse("4ff0a63c-3a62-ee11-b843-005056830319")},
+            {"LocksmithUnderSupervision", Guid.Parse("51f0a63c-3a62-ee11-b843-005056830319")},
+            {"Locksmith", Guid.Parse("53f0a63c-3a62-ee11-b843-005056830319")}, 
+            {"PrivateInvestigatorUnderSupervision", Guid.Parse("55f0a63c-3a62-ee11-b843-005056830319")},
+            {"PrivateInvestigator", Guid.Parse("57f0a63c-3a62-ee11-b843-005056830319")},
+            {"FireInvestigator", Guid.Parse("59f0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityConsultant", Guid.Parse("5bf0a63c-3a62-ee11-b843-005056830319")}, 
+            {"SecurityGuardUnderSupervision", Guid.Parse("5df0a63c-3a62-ee11-b843-005056830319")},
+            {"SecurityGuard", Guid.Parse("5ff0a63c-3a62-ee11-b843-005056830319")},
+            {"BodyArmourSales", Guid.Parse("61f0a63c-3a62-ee11-b843-005056830319")},
+        }.ToImmutableDictionary();
+
+        public static spd_licencecategory? LookupLicenceCategory(this DynamicsContext context, string? key)
+        {
+            if (key == null) return null;
+            var keyExisted = LicenceCategoryDictionary.TryGetValue(key, out Guid guid);
+            if (!keyExisted) return null;
+            return context.spd_licencecategories
+                .Where(s => s.spd_licencecategoryid == guid)
+                .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefault();
+        }
+
+        public static string LookupLicenceCategoryKey(Guid? licenceCategoryId)
+        {
+            return LicenceCategoryDictionary.FirstOrDefault(s => s.Value == licenceCategoryId).Key;
+        }
+        #endregion
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)
         {
             try

@@ -1,4 +1,4 @@
-﻿using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
 public partial interface ILicenceApplicationRepository
@@ -48,7 +48,13 @@ public record LicenceApplication
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRetraints { get; set; }
+    public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
     public bool IsCanadianCitizen { get; set; }
+}
+
+public record WorkerLicenceAppCategory
+{
+    public WorkerCategoryTypeEnum WorkerCategoryTypeCode { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication

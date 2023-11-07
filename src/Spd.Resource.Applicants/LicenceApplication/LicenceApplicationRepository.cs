@@ -20,7 +20,9 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         spd_application? app;
         if (cmd.LicenceAppId != null)
         {
-            app = await _context.GetApplicationById((Guid)cmd.LicenceAppId, ct);
+            app = _context.spd_applications
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
@@ -56,6 +58,8 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
+
+        ProcessCategories(cmd.CategoryData, app);
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp(app.spd_applicationid);
     }
@@ -64,6 +68,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     {
         var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
             .Expand(a => a.spd_ApplicantId_contact)
+            .Expand(a => a.spd_application_spd_licencecategory)
             .Where(a => a.spd_applicationid == licenceApplicationId).SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");
@@ -71,6 +76,26 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return _mapper.Map<LicenceApplicationResp>(app);
     }
 
+    private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
+    {
+        foreach (var c in categories)
+        {
+            var cat = _context.LookupLicenceCategory(c.WorkerCategoryTypeCode.ToString());
+            if (cat != null && !app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
+            {
+                _context.AddLink(app, nameof(spd_application.spd_application_spd_licencecategory), cat);
+            }
+        }
+        foreach (var appCategory in app.spd_application_spd_licencecategory)
+        {
+            var code = DynamicsContextLookupHelpers.LookupLicenceCategoryKey(appCategory.spd_licencecategoryid);
+            //if categories do not contain cat
+            if (!categories.Any(c => c.WorkerCategoryTypeCode.ToString() == code))
+            {
+                _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+            }
+        }
+    }
     private void LinkServiceType(WorkerLicenceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
