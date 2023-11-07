@@ -107,6 +107,42 @@ export class AuthProcessService {
 		}
 	}
 
+	public logoutBcsc(): void {
+		const bcscIssuer = this.authenticationService.getBcscIssuer();
+		const claims = this.oauthService.getIdentityClaims();
+		// console.debug(
+		// 	'logoutBcsc oauthService.issuer',
+		// 	this.oauthService.issuer,
+		// 	'claims issuer',
+		// 	claims?.['iss'],
+		// 	'bcscIssuer',
+		// 	bcscIssuer
+		// );
+		// if (claims && claims['iss'] !== this.oauthService.issuer) {
+		if (claims && claims['iss'] === bcscIssuer) {
+			// console.debug('logoutBcsc', location.origin);
+			this.oauthService.logOut({ redirectUrl: location.origin });
+		}
+	}
+
+	public logoutBceid(): void {
+		const bcscIssuer = this.authenticationService.getBcscIssuer();
+		const claims = this.oauthService.getIdentityClaims();
+		// console.debug(
+		// 	'logoutBceid oauthService.issuer',
+		// 	this.oauthService.issuer,
+		// 	'claims issuer',
+		// 	claims?.['iss'],
+		// 	'bcscIssuer',
+		// 	bcscIssuer
+		// );
+		// if (claims && claims['iss'] !== this.oauthService.issuer) {
+		if (claims && claims['iss'] !== bcscIssuer) {
+			// console.debug('logoutBceid', location.origin);
+			this.oauthService.logOut({ redirectUrl: location.origin });
+		}
+	}
+
 	private notify(isLoggedIn: boolean): void {
 		const hasValidAccessToken = this.oauthService.hasValidAccessToken();
 

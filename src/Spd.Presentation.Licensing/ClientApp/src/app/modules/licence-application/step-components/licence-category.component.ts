@@ -76,7 +76,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
 												>
@@ -109,7 +108,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
 												>
@@ -147,7 +145,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
 												>
@@ -186,7 +183,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
 												>
@@ -222,7 +218,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
 												>
@@ -256,7 +251,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
 												>
@@ -290,7 +284,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
 												>
@@ -327,7 +320,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
 												>
@@ -366,7 +358,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
 												>
@@ -403,7 +394,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
 												>
@@ -443,7 +433,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
 												>
@@ -480,7 +469,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
 												>
@@ -517,7 +505,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
 												>
@@ -553,7 +540,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
 												>
@@ -589,7 +575,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
 												>
@@ -623,7 +608,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
 												>
@@ -658,7 +642,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
 												>

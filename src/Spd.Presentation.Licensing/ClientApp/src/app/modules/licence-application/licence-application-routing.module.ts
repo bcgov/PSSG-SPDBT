@@ -12,6 +12,7 @@ import { SecurityWorkerLicenceUpdateWizardComponent } from './components/securit
 import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
 import { UserApplicationsBceidComponent } from './components/user-applications-bceid.component';
 import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
+import { UserApplicationsUnauthComponent } from './components/user-applications-unauth.component';
 import { UserApplicationsComponent } from './components/user-applications.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
@@ -67,7 +68,7 @@ const routes: Routes = [
 			},
 			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH,
-				component: UserApplicationsComponent,
+				component: UserApplicationsUnauthComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.USER_PROFILE,

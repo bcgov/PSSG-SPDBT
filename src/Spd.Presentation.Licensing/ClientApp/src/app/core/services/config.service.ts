@@ -57,6 +57,11 @@ export class ConfigService {
 		return bcscConfig;
 	}
 
+	public getBcscIssuer(): string | null {
+		const resp = this.configs?.bcscConfiguration!;
+		return resp.issuer ?? null;
+	}
+
 	public getConfigs(): Observable<ConfigurationResponse> {
 		if (this.configs) {
 			return of(this.configs);

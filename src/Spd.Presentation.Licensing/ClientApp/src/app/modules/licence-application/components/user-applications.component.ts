@@ -276,13 +276,13 @@ export class UserApplicationsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.incompleteApplications = [
-			{
-				id: '1',
-				licenceAppId: 'SWL-NWQ3X7Y',
-				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-				applicationTypeCode: ApplicationTypeCode.New,
-				expiresOn: '2023-09-26T19:43:25+00:00',
-			},
+			// {
+			// 	id: '1',
+			// 	licenceAppId: 'SWL-NWQ3X7Y',
+			// 	workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			// 	applicationTypeCode: ApplicationTypeCode.New,
+			// 	expiresOn: '2023-09-26T19:43:25+00:00',
+			// },
 			{
 				id: '11',
 				licenceAppId: 'SWL-NWQ3X7Z',
@@ -334,61 +334,61 @@ export class UserApplicationsComponent implements OnInit {
 	onResume(appl: ApplicationResponse): void {
 		this.licenceApplicationService.reset();
 
-		if (appl.id == '1') {
-			this.licenceApplicationService
-				.loadLicenceNew()
-				.pipe(
-					tap((resp: any) => {
-						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
-					}),
-					take(1)
-				)
-				.subscribe();
-		} else if (appl.id == '11') {
-			this.licenceApplicationService
-				.loadLicenceNew2()
-				.pipe(
-					tap((resp: any) => {
-						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
-					}),
-					take(1)
-				)
-				.subscribe();
+		// if (appl.id == '1') {
+		// 	this.licenceApplicationService
+		// 		.loadLicenceNew()
+		// 		.pipe(
+		// 			tap((resp: any) => {
+		// 				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
+		// 			}),
+		// 			take(1)
+		// 		)
+		// 		.subscribe();
+		// } else if (appl.id == '11') {
+		this.licenceApplicationService
+			.loadLicenceNew2()
+			.pipe(
+				tap((resp: any) => {
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
+				}),
+				take(1)
+			)
+			.subscribe();
 
-			// } else if (appl.id == '2') {
-			// 	this.licenceApplicationService
-			// 		.loadLicenceRenewal()
-			// 		.pipe(
-			// 			tap((resp: any) => {
-			// 				console.log('after2', resp);
-			// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
-			// } else if (appl.id == '3') {
-			// 	this.licenceApplicationService
-			// 		.loadLicenceReplacement()
-			// 		.pipe(
-			// 			tap((resp: any) => {
-			// 				console.log('after2', resp);
-			// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
-			// } else if (appl.id == '4') {
-			// 	this.licenceApplicationService
-			// 		.loadLicenceUpdate()
-			// 		.pipe(
-			// 			tap((resp: any) => {
-			// 				console.log('after2', resp);
-			// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
-		}
+		// } else if (appl.id == '2') {
+		// 	this.licenceApplicationService
+		// 		.loadLicenceRenewal()
+		// 		.pipe(
+		// 			tap((resp: any) => {
+		// 				console.log('after2', resp);
+		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+		// 			}),
+		// 			take(1)
+		// 		)
+		// 		.subscribe();
+		// } else if (appl.id == '3') {
+		// 	this.licenceApplicationService
+		// 		.loadLicenceReplacement()
+		// 		.pipe(
+		// 			tap((resp: any) => {
+		// 				console.log('after2', resp);
+		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+		// 			}),
+		// 			take(1)
+		// 		)
+		// 		.subscribe();
+		// } else if (appl.id == '4') {
+		// 	this.licenceApplicationService
+		// 		.loadLicenceUpdate()
+		// 		.pipe(
+		// 			tap((resp: any) => {
+		// 				console.log('after2', resp);
+		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+		// 			}),
+		// 			take(1)
+		// 		)
+		// 		.subscribe();
+		// }
 	}
 
 	onUpdate(appl: ApplicationResponse): void {

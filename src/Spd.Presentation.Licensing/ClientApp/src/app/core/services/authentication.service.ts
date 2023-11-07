@@ -117,6 +117,10 @@ export class AuthenticationService {
 		return Promise.resolve(null);
 	}
 
+	public getBcscIssuer(): string | null {
+		return this.configService.getBcscIssuer();
+	}
+
 	//----------------------------------------------------------
 	// *
 	// *

@@ -11,6 +11,8 @@ export class UserApplicationsBceidComponent implements OnInit {
 	constructor(private router: Router, private authProcessService: AuthProcessService) {}
 
 	async ngOnInit(): Promise<void> {
+		this.authProcessService.logoutBcsc();
+
 		const nextRoute = await this.authProcessService.initializeLicencingBCeID();
 		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
