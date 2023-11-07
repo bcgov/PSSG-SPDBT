@@ -96,6 +96,13 @@ internal partial class LicenceManager
                 allValidDocGuids.AddRange(d.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
             }
         }
+        //mark all valid doc active.
+        foreach (Guid docUrlId in allValidDocGuids)
+        {
+            await _documentRepository.ManageAsync(new ReactivateDocumentCmd(docUrlId), ct);
+        }
+
+        //remove all docs that need to be deleted.
         var shouldDeleteDocs = existingDocs.Items.Where(i => !allValidDocGuids.Contains(i.DocumentUrlId)).ToList();
         foreach (DocumentResp doc in shouldDeleteDocs)
         {

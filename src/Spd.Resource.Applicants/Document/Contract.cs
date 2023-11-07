@@ -23,6 +23,7 @@ namespace Spd.Resource.Applicants.Document
     public record DocumentResp
     {
         public string? FileName { get; set; }
+        public string? FileExtension { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid DocumentUrlId { get; set; }
@@ -30,7 +31,7 @@ namespace Spd.Resource.Applicants.Document
         public Guid? ApplicationId { get; set; } = null;
         public Guid? CaseId { get; set; } = null;
         public Guid? ReportId { get; set; } = null;
-        public DateOnly? ExpiryDate { get; set; } = null;
+        public DateTimeOffset? ExpiryDate { get; set; } = null;
     }
 
     public abstract record DocumentCmd;
@@ -44,7 +45,8 @@ namespace Spd.Resource.Applicants.Document
     }
 
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
-    public record UpdateDocumentExpiryDateCmd(Guid DocumentUrlId, DateOnly? ExpiryDate) : DocumentCmd;
+    public record ReactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
+    public record UpdateDocumentExpiryDateCmd(Guid DocumentUrlId, DateTimeOffset? ExpiryDate) : DocumentCmd;
     public enum DocumentTypeEnum
     {
         ApplicantConsentForm,

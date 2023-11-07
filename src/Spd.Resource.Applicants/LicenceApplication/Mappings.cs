@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Edm;
-using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.Shared.Tools;
@@ -31,8 +28,8 @@ internal class Mappings : Profile
         .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine1))
         .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine2))
         .ForMember(d => d.address1_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).City))
-        .ForMember(d => d.address1_postalcode,opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).PostalCode))
-        .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s=>GetMailingAddress(s) == null ? null : GetMailingAddress(s).Province))
+        .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).PostalCode))
+        .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Province))
         .ForMember(d => d.address1_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Country));
 
         _ = CreateMap<LicenceApplication, spd_application>()
@@ -97,7 +94,12 @@ internal class Mappings : Profile
          .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => GetBool(s.spd_requestrestraints)))
          .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => GetBool(s.spd_applicantbornincanada)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
+         .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
          ;
+
+        _ = CreateMap<spd_licencecategory, WorkerLicenceAppCategory>()
+          .ForMember(d => d.WorkerCategoryTypeCode,
+          opt => opt.MapFrom(s => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(s.spd_licencecategoryid))));
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
           .IncludeBase<LicenceApplication, spd_application>();

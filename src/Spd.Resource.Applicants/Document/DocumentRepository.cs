@@ -61,9 +61,21 @@ internal class DocumentRepository : IDocumentRepository
         {
             CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
             RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
+            ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
             UpdateDocumentExpiryDateCmd c => await UpdateDocumentExpiryDateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
+    }
+
+    private async Task<DocumentResp> DocumentReactivateAsync(ReactivateDocumentCmd cmd, CancellationToken ct)
+    {
+        bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
+        if (documenturl == null) { return null; }
+        documenturl.statecode = DynamicsConstants.StateCode_Active;
+        documenturl.statuscode = DynamicsConstants.StatusCode_Active;
+        _context.UpdateObject(documenturl);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<DocumentResp>(documenturl);
     }
 
     private async Task<DocumentResp> DocumentCreateAsync(CreateDocumentCmd cmd, CancellationToken ct)
