@@ -19,6 +19,7 @@ namespace Spd.Resource.Applicants.PortalUser
         public Guid? OrganizationId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public bool? IsPSA { get; set; }
     }
 
     public record PortalUserQry
