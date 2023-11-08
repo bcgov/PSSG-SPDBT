@@ -17,7 +17,6 @@
     {
         public string MinistryName { get; set; }
         public string MinistryCode { get; set; }
-        public bool IsPSA { get; set; }
     }
     public enum RequesterAccountTypeEnum
     {
