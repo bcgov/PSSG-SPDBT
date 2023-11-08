@@ -3,12 +3,14 @@
 namespace Spd.Utilities.LogonUser;
 public static class ClaimsPrincipleExtension
 {
-    public static void UpdateUserClaims(this ClaimsPrincipal claimsPrincipal, string userId, string orgId, string? role)
+    public static void UpdateUserClaims(this ClaimsPrincipal claimsPrincipal, string userId, string orgId, string? role, bool? isPSA = null)
     {
         AddUpdateClaim(claimsPrincipal, IPrincipalExtensions.SPD_USERID, userId);
         AddUpdateClaim(claimsPrincipal, IPrincipalExtensions.SPD_ORGID, orgId);
-        if(role != null)
+        if (role != null)
             AddUpdateClaim(claimsPrincipal, ClaimTypes.Role, role);
+        if (isPSA != null)
+            AddUpdateClaim(claimsPrincipal, IPrincipalExtensions.SPD_IDIR_IsPSA, isPSA.ToString());
     }
 
     public static void AddUpdateClaim(this ClaimsPrincipal claimsPrincipal, string key, string value)

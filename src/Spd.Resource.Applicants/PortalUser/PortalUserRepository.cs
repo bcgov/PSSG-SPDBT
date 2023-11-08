@@ -79,7 +79,7 @@ internal class PortalUserRepository : IPortalUserRepository
             _context.SetLink(portalUser, nameof(portalUser.spd_IdentityId), identity);
         }
         await _context.SaveChangesAsync();
-        return new PortalUserResp() { Id = c.Id };
+        return _mapper.Map<PortalUserResp>(portalUser);
     }
 
     private async Task<PortalUserResp> CreatePortalUserAsync(CreatePortalUserCmd c, CancellationToken ct)
@@ -106,11 +106,7 @@ internal class PortalUserRepository : IPortalUserRepository
         if (identity != null)
             _context.SetLink(portaluser, nameof(portaluser.spd_IdentityId), identity);
         await _context.SaveChangesAsync(ct);
-        return new PortalUserResp()
-        {
-            Id = (Guid)portaluser.spd_portaluserid,
-            OrganizationId = c.OrgId
-        };
+        return _mapper.Map<PortalUserResp>(portaluser);
     }
 }
 

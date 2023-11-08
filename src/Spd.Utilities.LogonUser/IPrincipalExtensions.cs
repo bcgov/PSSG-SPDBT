@@ -18,6 +18,7 @@ namespace Spd.Utilities.LogonUser
         public static readonly string SPD_ORGID = "spd_orgid";
         public static readonly string ISSUER = "iss";
         public static readonly string SUB = "sub";
+        public static readonly string SPD_IDIR_IsPSA = "SPD_IDIR_IsPSA";
         public static bool IsAuthenticated(this IPrincipal principal)
         {
             var claimPrincipal = ValidatePrincipal(principal);
@@ -26,7 +27,8 @@ namespace Spd.Utilities.LogonUser
 
         public static string? GetIssuer(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ISSUER);
         public static string? GetUserId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_USERID);
-        public static bool IsPSA(this IPrincipal principal) => false;
+        public static bool IsPSA(this IPrincipal principal) => 
+            ValidatePrincipal(principal).GetClaimValue(SPD_IDIR_IsPSA)==null? false : Boolean.Parse(ValidatePrincipal(principal).GetClaimValue(SPD_IDIR_IsPSA));
         public static string? GetUserRole(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Role);
 
         public static BcscIdentityInfo GetBcscUserIdentityInfo(this IPrincipal principal)

@@ -184,7 +184,6 @@ namespace Spd.Manager.Membership.UserProfile
                 response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
                 response.IsFirstTimeLogin = isFirstTimeLogin;
-                response.IsPSA = idirDetail?.IsPSA ?? false;
                 //todo: temp hardcode
                 response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
                 return response;
