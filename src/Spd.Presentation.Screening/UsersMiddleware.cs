@@ -152,7 +152,7 @@ namespace Spd.Utilities.LogonUser
             }
             logger.LogDebug($"ProcessIdirUser -{idirUserProfile}");
             if (idirUserProfile.UserId != null)
-                context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff");
+                context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff", idirUserProfile.IsPSA);
             return true;
         }
 
