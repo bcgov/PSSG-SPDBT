@@ -725,7 +725,7 @@ export class SummaryReviewComponent {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {
@@ -733,7 +733,7 @@ export class SummaryReviewComponent {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	get workerLicenceTypeCode(): string {
@@ -847,9 +847,6 @@ export class SummaryReviewComponent {
 		return this.licenceModelData.policeBackgroundData.attachments ?? [];
 	}
 
-	get oneLegalName(): string {
-		return this.licenceModelData.personalInformationData.oneLegalName ?? '';
-	}
 	get givenName(): string {
 		return this.licenceModelData.personalInformationData.givenName ?? '';
 	}

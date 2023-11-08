@@ -2,6 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceStepperStepComponent } from '../../licence-application.helper';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { CriminalHistoryComponent } from '../criminal-history.component';
@@ -18,7 +19,12 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_POLICE_BACKGROUND)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -48,7 +54,12 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -78,7 +89,12 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -108,7 +124,9 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_FINGERPRINTS)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_FINGERPRINTS)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -150,8 +168,10 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	readonly STEP_FINGERPRINTS = '4';
 	readonly STEP_BACKGROUND_INFO = '5';
 
+	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
+	isLoggedIn = false;
 	isFormValid = false;
 
 	showStepPoliceBackground: boolean = true;
@@ -175,7 +195,10 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
@@ -185,9 +208,16 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 			.subscribe((_resp: any) => {
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
+
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+			}
+		);
 	}
 
 	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 

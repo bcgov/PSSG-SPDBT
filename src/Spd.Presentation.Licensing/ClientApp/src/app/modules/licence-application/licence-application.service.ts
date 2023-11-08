@@ -441,7 +441,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					};
 
 					const personalInformationData = {
-						oneLegalName: resp.oneLegalName,
+						// oneLegalName: resp.oneLegalName,
 						givenName: resp.givenName,
 						middleName1: resp.middleName1,
 						middleName2: resp.middleName2,

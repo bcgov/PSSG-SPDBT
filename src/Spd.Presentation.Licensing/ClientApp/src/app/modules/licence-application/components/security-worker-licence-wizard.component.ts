@@ -154,9 +154,8 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			.subscribe((_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = true;
 
-				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
-
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
 			});
 	}
 
@@ -239,7 +238,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					}
 				},
 				error: (error: any) => {
-					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -279,7 +277,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
 			},
 			error: (error: any) => {
-				// TODO what error codes to handle here?
 				console.log('An error occurred during save', error);
 				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
@@ -316,7 +313,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					this.stepper.selectedIndex = this.STEP_REVIEW;
 				},
 				error: (error: any) => {
-					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
@@ -337,7 +333,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					this.goToChildNextStep();
 				},
 				error: (error: any) => {
-					// TODO what error codes to handle here?
 					console.log('An error occurred during save', error);
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},

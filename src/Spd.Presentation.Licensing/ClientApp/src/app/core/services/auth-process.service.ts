@@ -30,6 +30,74 @@ export class AuthProcessService {
 	) {}
 
 	//----------------------------------------------------------
+	// * Try - BCSC
+	// *
+	async tryInitializeBCSC(): Promise<boolean | null> {
+		// this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		const authInfo = await this.authenticationService.tryLogin(
+			IdentityProviderTypeCode.BcServicesCard,
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC)
+		);
+		console.debug('tryInitializeBCSC', authInfo);
+
+		const identityClaims = this.oauthService.getIdentityClaims();
+		const isValidLogin = this.checkLoginIdentityIsValid(
+			authInfo.loggedIn,
+			IdentityProviderTypeCode.BcServicesCard,
+			identityClaims ? identityClaims['preferred_username'] : undefined
+		);
+
+		if (!isValidLogin) {
+			return Promise.resolve(null);
+		}
+
+		if (authInfo.loggedIn) {
+			this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+			this.notify(true);
+			return Promise.resolve(true);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Try - BCeID
+	// *
+	async tryInitializeBCeID(): Promise<boolean | null> {
+		// this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
+
+		const authInfo = await this.authenticationService.tryLogin(
+			IdentityProviderTypeCode.BusinessBceId,
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)
+		);
+		console.debug('tryInitializeBCeID', authInfo);
+
+		const identityClaims = this.oauthService.getIdentityClaims();
+		const isValidLogin = this.checkLoginIdentityIsValid(
+			authInfo.loggedIn,
+			IdentityProviderTypeCode.BusinessBceId,
+			identityClaims ? identityClaims['preferred_username'] : undefined
+		);
+
+		if (!isValidLogin) {
+			this.logout();
+			this.notify(false);
+			return Promise.resolve(null);
+		}
+
+		if (authInfo.loggedIn) {
+			this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
+			this.notify(true);
+			return Promise.resolve(true);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
 	// * Licencing Portal - BCSC
 	// *
 	async initializeLicencingBCSC(): Promise<string | null> {
@@ -95,7 +163,6 @@ export class AuthProcessService {
 
 		this.identityProvider = null;
 		this.oauthService.logOut();
-		// this.utilService.clearAllSessionData();
 
 		this.authUserBcscService.clearUserData();
 		this.authUserBceidService.clearUserData();
@@ -110,17 +177,7 @@ export class AuthProcessService {
 	public logoutBcsc(): void {
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
-		// console.debug(
-		// 	'logoutBcsc oauthService.issuer',
-		// 	this.oauthService.issuer,
-		// 	'claims issuer',
-		// 	claims?.['iss'],
-		// 	'bcscIssuer',
-		// 	bcscIssuer
-		// );
-		// if (claims && claims['iss'] !== this.oauthService.issuer) {
 		if (claims && claims['iss'] === bcscIssuer) {
-			// console.debug('logoutBcsc', location.origin);
 			this.oauthService.logOut({ redirectUrl: location.origin });
 		}
 	}
@@ -128,17 +185,7 @@ export class AuthProcessService {
 	public logoutBceid(): void {
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
-		// console.debug(
-		// 	'logoutBceid oauthService.issuer',
-		// 	this.oauthService.issuer,
-		// 	'claims issuer',
-		// 	claims?.['iss'],
-		// 	'bcscIssuer',
-		// 	bcscIssuer
-		// );
-		// if (claims && claims['iss'] !== this.oauthService.issuer) {
 		if (claims && claims['iss'] !== bcscIssuer) {
-			// console.debug('logoutBceid', location.origin);
 			this.oauthService.logOut({ redirectUrl: location.origin });
 		}
 	}
@@ -155,5 +202,26 @@ export class AuthProcessService {
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}
+	}
+
+	//----------------------------------------------------------
+	// * check that loginType matches oauthservice login type
+	// *
+	private checkLoginIdentityIsValid(
+		isLoggedIn: boolean,
+		loginType: IdentityProviderTypeCode,
+		preferredUsername: string | undefined
+	): boolean {
+		if (!isLoggedIn) return true;
+
+		let isValid = false;
+		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
+			isValid = preferredUsername?.endsWith('bceidbusiness') ?? false;
+		} else {
+			// IdentityProviderTypeCode.BcServicesCard
+			isValid = !preferredUsername;
+		}
+
+		return isValid;
 	}
 }

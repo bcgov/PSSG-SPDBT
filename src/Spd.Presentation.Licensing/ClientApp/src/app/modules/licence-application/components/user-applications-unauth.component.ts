@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/internal/operators/take';
 import { tap } from 'rxjs/internal/operators/tap';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -27,8 +28,28 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class UserApplicationsUnauthComponent {
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+export class UserApplicationsUnauthComponent implements OnInit {
+	constructor(
+		private router: Router,
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
+
+	async ngOnInit(): Promise<void> {
+		const tryResultBCSC = await this.authProcessService.tryInitializeBCSC();
+		console.debug('tryResultBCSC', tryResultBCSC);
+		if (tryResultBCSC) {
+			this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC)]);
+			return;
+		}
+
+		const tryResultBCeID = await this.authProcessService.tryInitializeBCeID();
+		console.debug('tryResultBCeID', tryResultBCeID);
+		if (tryResultBCeID) {
+			this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)]);
+			return;
+		}
+	}
 
 	onCreateNew(): void {
 		this.licenceApplicationService.reset();

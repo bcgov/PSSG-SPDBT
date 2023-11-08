@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceStepperStepComponent } from '../../licence-application.helper';
 import { LicenceApplicationService } from '../../licence-application.service';
@@ -57,7 +58,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_EXPIRED)">
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_EXPIRED)" *ngIf="isLoggedIn">
 							Save and Exit
 						</button>
 					</div>
@@ -87,7 +88,12 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_CATEGORY)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -117,7 +123,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_RESTRAINTS)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_RESTRAINTS)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -138,7 +146,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_DOGS)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_DOGS)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -159,7 +169,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_TERM)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_TERM)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -188,8 +200,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	readonly STEP_RESTRAINTS = '9';
 	readonly STEP_LICENCE_TERM = '7';
 
+	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
+	isLoggedIn = false;
 	isFormValid = false;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -223,7 +237,11 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authProcessService: AuthProcessService,
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
@@ -233,9 +251,16 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 			.subscribe((_resp: any) => {
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
+
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+			}
+		);
 	}
 
 	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 

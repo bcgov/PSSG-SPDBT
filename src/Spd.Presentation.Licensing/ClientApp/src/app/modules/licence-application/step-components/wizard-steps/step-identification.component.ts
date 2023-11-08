@@ -4,6 +4,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceStepperStepComponent } from '../../licence-application.helper';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
@@ -26,7 +27,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_PERSONAL_INFORMATION)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_PERSONAL_INFORMATION)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -56,7 +62,9 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_ALIASES)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_ALIASES)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -77,7 +85,9 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_CITIZENSHIP)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_CITIZENSHIP)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -98,7 +108,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_ADDITIONAL_GOV_ID)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_ADDITIONAL_GOV_ID)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -128,7 +143,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -158,7 +178,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -188,7 +213,9 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_PHOTO)">Save and Exit</button>
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_PHOTO)" *ngIf="isLoggedIn">
+							Save and Exit
+						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -209,7 +236,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -239,7 +271,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_MAILING_ADDRESS)">
+						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_MAILING_ADDRESS)" *ngIf="isLoggedIn">
 							Save and Exit
 						</button>
 					</div>
@@ -269,7 +301,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_CONTACT_INFORMATION)">
+						<button
+							mat-flat-button
+							class="large mb-2"
+							(click)="onSaveAndExit(STEP_CONTACT_INFORMATION)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -305,8 +342,10 @@ export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceSt
 	readonly STEP_MAILING_ADDRESS = '8';
 	readonly STEP_CONTACT_INFORMATION = '9';
 
+	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
+	isLoggedIn = false;
 	isFormValid = false;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -329,7 +368,10 @@ export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceSt
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
@@ -339,9 +381,16 @@ export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceSt
 			.subscribe((_resp: any) => {
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
+
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+			}
+		);
 	}
 
 	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
