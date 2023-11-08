@@ -109,12 +109,12 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     private void LinkExpiredLicence(string? expiredLicenceNumber, DateTimeOffset? expiryDate, spd_application app)
     {
         if (expiredLicenceNumber == null || expiryDate == null) return;
-        var licence = _context.spd_licenses.Where(l => l.spd_licensenumber == expiredLicenceNumber
-            && l.spd_licenceexpirydate == expiryDate.Value.Date)
+        var licence = _context.spd_licences.Where(l => l.spd_licencenumber == expiredLicenceNumber
+            && l.spd_expirydate == expiryDate.Value.Date)
             .FirstOrDefault();
         if (licence != null)
         {
-            _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicense), licence);
+            _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
         }
     }
 
