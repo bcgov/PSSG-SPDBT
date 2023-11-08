@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { HeightUnitCode } from 'src/app/api/models';
 import {
 	EyeColourTypes,
 	HairColourTypes,
@@ -42,19 +43,31 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<mat-error *ngIf="form.get('eyeColourCode')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-6 col-lg-6 col-md-12">
+							</div>
+							<div class="row">
+								<div class="text-minor-heading mb-2">Height</div>
+								<div
+									class="col-lg-6 col-md-12 col-sm-12"
+									[ngClass]="heightUnitCode.value == heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
+								>
 									<mat-form-field>
-										<mat-label>Height</mat-label>
-										<input matInput formControlName="height" mask="009" />
+										<mat-label>
+											Number
+											<span *ngIf="heightUnitCode.value == heightUnitCodes.Inches"> of Feet</span>
+										</mat-label>
+										<input matInput formControlName="height" mask="099" />
 										<mat-error *ngIf="form.get('height')?.hasError('required')"> This is required </mat-error>
 										<mat-error *ngIf="form.get('height')?.hasError('mask')">
-											This must be a 2 or 3 digit whole number
+											This must be a 1 to 3 digit whole number
 										</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-6 col-lg-6 col-md-12">
+								<div
+									class="col-lg-6 col-md-12 col-sm-12"
+									[ngClass]="heightUnitCode.value == heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
+								>
 									<mat-form-field>
-										<mat-label>Height Units</mat-label>
+										<mat-label>Units</mat-label>
 										<mat-select formControlName="heightUnitCode">
 											<mat-option *ngFor="let item of heightUnitTypes" [value]="item.code">
 												{{ item.desc }}
@@ -63,9 +76,22 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<mat-error *ngIf="form.get('heightUnitCode')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
+								<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="heightUnitCode.value == heightUnitCodes.Inches">
+									<mat-form-field>
+										<mat-label>Number of Inches</mat-label>
+										<input matInput formControlName="heightInches" mask="09" />
+										<!-- <mat-error *ngIf="form.get('heightInches')?.hasError('required')"> This is required </mat-error> -->
+										<mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
+											This must be a 1 or 2 digit whole number
+										</mat-error>
+									</mat-form-field>
+								</div>
+							</div>
+							<div class="row">
+								<div class="text-minor-heading mb-2">Weight</div>
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
-										<mat-label>Weight</mat-label>
+										<mat-label>Number</mat-label>
 										<input matInput formControlName="weight" [errorStateMatcher]="matcher" mask="009" />
 										<mat-error *ngIf="form.get('weight')?.hasError('required')"> This is required </mat-error>
 										<mat-error *ngIf="form.get('weight')?.hasError('mask')">
@@ -75,7 +101,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								</div>
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
-										<mat-label>Weight Units</mat-label>
+										<mat-label>Units</mat-label>
 										<mat-select formControlName="weightUnitCode">
 											<mat-option *ngFor="let item of weightUnitTypes" [value]="item.code">
 												{{ item.desc }}
@@ -98,6 +124,7 @@ export class HeightAndWeightComponent implements LicenceChildStepperStepComponen
 	eyeColourTypes = EyeColourTypes;
 	heightUnitTypes = HeightUnitTypes;
 	weightUnitTypes = WeightUnitTypes;
+	heightUnitCodes = HeightUnitCode;
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
@@ -107,5 +134,9 @@ export class HeightAndWeightComponent implements LicenceChildStepperStepComponen
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get heightUnitCode(): FormControl {
+		return this.form.get('heightUnitCode') as FormControl;
 	}
 }

@@ -7,6 +7,7 @@ import {
 	CitizenshipDocument,
 	Document,
 	FingerprintProofDocument,
+	HeightUnitCode,
 	IdPhotoDocument,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -475,11 +476,19 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						attachments: additionalGovIdAttachments,
 					};
 
+					let height = resp.height ? resp.height + '' : null;
+					let heightInches = '';
+					if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
+						height = Math.trunc(resp.height / 12) + '';
+						heightInches = (resp.height % 12) + '';
+					}
+
 					const characteristicsData = {
 						hairColourCode: resp.hairColourCode,
 						eyeColourCode: resp.eyeColourCode,
-						height: resp.height ? resp.height + '' : null,
+						height,
 						heightUnitCode: resp.heightUnitCode,
+						heightInches,
 						weight: resp.weight ? resp.weight + '' : null,
 						weightUnitCode: resp.weightUnitCode,
 					};
@@ -836,8 +845,28 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const categoryData: Array<WorkerLicenceAppCategoryData> = [];
 
 		if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
+			let documents: Array<Document> = [];
+			if (formValue.categoryArmouredCarGuardFormGroup.attachments) {
+				const categoryArmouredCarGuardDocuments: Array<LicenceAppDocumentResponse> = [];
+
+				formValue.categoryArmouredCarGuardFormGroup.attachments.forEach((doc: any) => {
+					const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
+						documentUrlId: doc.documentUrlId,
+					};
+					categoryArmouredCarGuardDocuments.push(licenceAppDocumentResponse);
+				});
+
+				const categoryArmouredCarGuardDocument = {
+					documentResponses: categoryArmouredCarGuardDocuments,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				};
+				documents.push(categoryArmouredCarGuardDocument);
+			}
+
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.ArmouredCarGuard,
+				documents: documents,
+				//xxxxxxxxxxxx
 			});
 		}
 
@@ -862,12 +891,33 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.FireInvestigator,
+				//xxxxxxxxxxxx
 			});
 		}
 
 		if (formValue.categoryLocksmithFormGroup.isInclude) {
+			let documents: Array<Document> = [];
+			if (formValue.categoryLocksmithFormGroup.attachments) {
+				const categoryLocksmithDocuments: Array<LicenceAppDocumentResponse> = [];
+
+				formValue.categoryLocksmithFormGroup.attachments.forEach((doc: any) => {
+					const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
+						documentUrlId: doc.documentUrlId,
+					};
+					categoryLocksmithDocuments.push(licenceAppDocumentResponse);
+				});
+
+				const categoryLocksmithDocument = {
+					documentResponses: categoryLocksmithDocuments,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				};
+				documents.push(categoryLocksmithDocument);
+			}
+
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.Locksmith,
+				documents,
+				//xxxxxxxxxxxx
 			});
 		}
 
@@ -880,18 +930,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigator,
+				//xxxxxxxxxxxx
 			});
 		}
 
 		if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+				//xxxxxxxxxxxx
 			});
 		}
 
 		if (formValue.categorySecurityGuardFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuard,
+				//xxxxxxxxxxxx
 			});
 		}
 
@@ -904,6 +957,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstaller,
+				//xxxxxxxxxxxx
 			});
 		}
 
@@ -934,6 +988,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categorySecurityConsultantFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityConsultant,
+				//xxxxxxxxxxxx
 			});
 		}
 
@@ -1031,6 +1086,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				documentResponses: photographOfYourselfDocuments,
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
 			};
+		}
+
+		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
+			const ft: number = +characteristicsData.height;
+			const inch: number = +characteristicsData.heightInches;
+			characteristicsData.height = String(ft * 12 + inch);
 		}
 
 		const body: WorkerLicenceAppUpsertRequest = {

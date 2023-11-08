@@ -415,6 +415,7 @@ export abstract class LicenceApplicationHelper {
 		eyeColourCode: new FormControl('', [FormControlValidators.required]),
 		height: new FormControl('', [FormControlValidators.required]),
 		heightUnitCode: new FormControl('', [FormControlValidators.required]),
+		heightInches: new FormControl(''),
 		weight: new FormControl('', [FormControlValidators.required]),
 		weightUnitCode: new FormControl('', [FormControlValidators.required]),
 	});

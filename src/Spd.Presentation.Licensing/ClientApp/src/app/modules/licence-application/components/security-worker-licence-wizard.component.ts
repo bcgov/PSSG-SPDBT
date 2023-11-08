@@ -6,6 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
@@ -32,6 +33,8 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
 								(childNextStep)="onChildNextStep()"
+								(saveAndExit)="onSaveAndExit()"
+								(nextReview)="onGoToReview()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
@@ -41,6 +44,8 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
 								(childNextStep)="onChildNextStep()"
+								(saveAndExit)="onSaveAndExit()"
+								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -51,6 +56,8 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
 								(childNextStep)="onChildNextStep()"
+								(saveAndExit)="onSaveAndExit()"
+								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -74,50 +81,6 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						</mat-step>
 					</mat-stepper>
 				</div>
-				<div class="col-xl-1 col-lg-12 text-center">
-					<button
-						mat-fab
-						class="icon-button-large mx-3"
-						color="primary"
-						style="color: white; top: 10px;"
-						matTooltip="Save and Exit"
-						aria-label="Save and Exit"
-						(click)="onSaveAndExit()"
-					>
-						<mat-icon>exit_to_app</mat-icon>
-					</button>
-					<!--TODO   && stepper.selectedIndex != STEP_REVIEW -->
-					<button
-						*ngIf="isFormValid"
-						mat-fab
-						class="icon-button-large m-3"
-						color="primary"
-						style="color: white; top: 10px;"
-						matTooltip="Go to Review"
-						aria-label="Go to Review"
-						(click)="onGoToReview()"
-					>
-						<mat-icon>skip_next</mat-icon>
-					</button>
-
-					<div class="m-3">
-						<a class="large" style="font-weight: 600;top: 10px;" (click)="onSaveAndExit()"> Save and Exit </a>
-					</div>
-					<div class="m-3">
-						<a *ngIf="isFormValid" class="large" style="font-weight: 600;top: 10px;" (click)="onGoToReview()">
-							Go to Review
-						</a>
-					</div>
-					<!-- <div class="m-3">
-						<a class="large" style="color: var(--color-red) !important;" (click)="onGoToReview()">
-							Cancel Business Licence Application
-						</a>
-					</div> -->
-
-					<!-- 
-						Next: Review >
-					 -->
-				</div>
 			</div>
 		</ng-container>
 	`,
@@ -136,7 +99,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 
 	orientation: StepperOrientation = 'vertical';
 
-	// hasValueChanged = false;
 	isFormValid = false;
 
 	step1Complete = false;
@@ -192,15 +154,8 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			.subscribe((_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = true;
 
-				console.debug(
-					'valueChanges changed flags',
-					'hasValueChanged',
-					this.licenceApplicationService.hasValueChanged
-					// 'hasDocumentsChanged',
-					// this.licenceApplicationService.hasDocumentsChanged
-				);
-
 				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
+
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 	}
@@ -223,10 +178,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
-		if (event.selectedIndex == 3) {
-			console.log('onStepSelectionChange', event);
-		}
-
 		switch (event.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
@@ -241,8 +192,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				this.stepReviewComponent?.onGoToFirstStep();
 				break;
 		}
-
-		// 	this.scrollIntoView();
 	}
 
 	onScrollIntoView(): void {
@@ -250,8 +199,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		// this.saveIfChanged();
-
 		stepper.previous();
 
 		switch (stepper.selectedIndex) {
@@ -272,7 +219,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -354,7 +300,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+					this.router.navigate([AppRoutes.LANDING]);
 				}
 			});
 	}

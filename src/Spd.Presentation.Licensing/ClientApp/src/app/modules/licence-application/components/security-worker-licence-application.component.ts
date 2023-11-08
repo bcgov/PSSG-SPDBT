@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class SecurityWorkerLicenceApplicationComponent {
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+			this.router.navigate([AppRoutes.LANDING]);
 			return;
 		}
 	}

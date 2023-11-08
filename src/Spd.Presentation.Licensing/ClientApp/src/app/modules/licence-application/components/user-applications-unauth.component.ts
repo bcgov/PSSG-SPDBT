@@ -15,7 +15,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<app-alert type="info">
-						Did you know that you were signed in, you could save partial applications and continue later?
+						Did you know that if you were signed in, you could save partial applications and complete them later?
 					</app-alert>
 
 					<button mat-flat-button color="primary" class="large w-auto my-4" (click)="onCreateNew()">

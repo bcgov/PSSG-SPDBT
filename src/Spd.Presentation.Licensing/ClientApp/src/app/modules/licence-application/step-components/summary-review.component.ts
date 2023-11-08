@@ -486,6 +486,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<div class="text-data">
 																	{{ height }}
 																	{{ heightUnitCode | options : 'HeightUnitTypes' }}
+																	{{ heightInches }}
 																</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
@@ -931,6 +932,9 @@ export class SummaryReviewComponent {
 	}
 	get height(): string {
 		return this.licenceModelData.characteristicsData.height ?? '';
+	}
+	get heightInches(): string {
+		return this.licenceModelData.characteristicsData.heightInches ?? '';
 	}
 	get heightUnitCode(): string {
 		return this.licenceModelData.characteristicsData.heightUnitCode ?? '';

@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper, StepperOrientation } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { AppRoutes } from 'src/app/app-routing.module';
 
 @Component({
 	selector: 'app-security-worker-licence-update-wizard',
@@ -102,7 +102,7 @@ export class SecurityWorkerLicenceUpdateWizardComponent {
 	onStepNext(): void {}
 
 	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+		this.router.navigate([AppRoutes.LANDING]);
 	}
 
 	private scrollIntoView(): void {
