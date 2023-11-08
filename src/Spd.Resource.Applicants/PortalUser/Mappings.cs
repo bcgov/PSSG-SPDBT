@@ -11,6 +11,7 @@ namespace Spd.Resource.Applicants.PortalUser
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
+            .ForMember(d => d.IsPSA, opt => opt.MapFrom(s => s.spd_surname)) //todo, change to correct mapping field
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portaluser> ()
