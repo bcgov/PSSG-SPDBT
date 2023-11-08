@@ -58,7 +58,6 @@ namespace Spd.Utilities.Payment
                 {
                     MinistryCode = accountDetailResp.account.internalIdentity.organizationCode.value,
                     MinistryName = accountDetailResp.account.internalIdentity.company.value,
-                    IsPSA = groupResp.groupList.Any(g => g.groupGuid.value.ToString() == "PSA-group-guid")
                 };
             }
             catch (Exception ex)

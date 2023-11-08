@@ -68,7 +68,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => GetYesNo(s.IsTreatedForMHC)))
          .ForMember(d => d.spd_usephotofrombcsc, opt => opt.MapFrom(s => GetYesNo(s.UseBcServicesCardPhoto)))
          .ForMember(d => d.spd_requestrestraints, opt => opt.MapFrom(s => GetYesNo(s.CarryAndUseRetraints)))
-         .ForMember(d => d.spd_applicantbornincanada, opt => opt.MapFrom(s => GetYesNo(s.IsCanadianCitizen)))
+         .ForMember(d => d.spd_canadiancitizen, opt => opt.MapFrom(s => GetYesNo(s.IsCanadianCitizen)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
          .ReverseMap()
@@ -92,7 +92,7 @@ internal class Mappings : Profile
          .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetBool(s.spd_mentalhealthcondition)))
          .ForMember(d => d.UseBcServicesCardPhoto, opt => opt.MapFrom(s => GetBool(s.spd_usephotofrombcsc)))
          .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => GetBool(s.spd_requestrestraints)))
-         .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => GetBool(s.spd_applicantbornincanada)))
+         .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => GetBool(s.spd_canadiancitizen)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
          .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
          ;
