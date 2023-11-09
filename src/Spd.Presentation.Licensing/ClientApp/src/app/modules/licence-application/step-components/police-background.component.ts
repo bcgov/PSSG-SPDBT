@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceDocumentTypeCode, PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -100,7 +101,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 													for more information.
 												</p>
 												<app-file-upload
-													(fileAdded)="onFileAdded($event)"
+													(fileUploaded)="onFileUploaded($event)"
+													(fileRemoved)="onFileRemoved()"
 													[control]="attachments"
 													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
@@ -148,6 +150,8 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
 	constructor(
 		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService,
@@ -163,7 +167,7 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
@@ -175,9 +179,14 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 					error: (error: any) => {
 						console.log('An error occurred during file upload', error);
 						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadComponent.removeFailedFile(file);
 					},
 				});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {
