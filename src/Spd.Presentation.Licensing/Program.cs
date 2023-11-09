@@ -1,5 +1,6 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Configuration;
+using Spd.Presentation.Licensing;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
@@ -70,6 +71,7 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
+app.UseMiddleware<UsersMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(

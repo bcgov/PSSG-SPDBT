@@ -41,7 +41,7 @@ internal partial class LicenceManager :
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         saveCmd.BcscGuid = cmd.BcscGuid;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
-        await UpdateDocumentsExpiryDate(cmd.LicenceUpsertRequest, ct);
+        await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
     }
