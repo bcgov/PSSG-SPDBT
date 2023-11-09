@@ -51,8 +51,9 @@ internal partial class LicenceManager
         {
             foreach (LicenceAppDocumentResponse doc in request.CitizenshipDocument.DocumentResponses)
             {
-                DocumentTypeEnum tag = GetDocumentTypeEnum(request.CitizenshipDocument.LicenceDocumentTypeCode);
-                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.CitizenshipDocument.ExpiryDate, null, tag), ct);
+                DocumentTypeEnum tag1 = DocumentTypeEnum.CitizenshipDocument; //indicate which screen in fe
+                DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.CitizenshipDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.CitizenshipDocument.ExpiryDate, tag1, tag2), ct);
             }
         }
         //govid
@@ -60,8 +61,9 @@ internal partial class LicenceManager
         {
             foreach (LicenceAppDocumentResponse doc in request.AdditionalGovIdDocument.DocumentResponses)
             {
-                DocumentTypeEnum tag = GetDocumentTypeEnum(request.AdditionalGovIdDocument.LicenceDocumentTypeCode);
-                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.AdditionalGovIdDocument.ExpiryDate, null, tag), ct);
+                DocumentTypeEnum tag1 = DocumentTypeEnum.AdditionalGovIdDocument;
+                DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.AdditionalGovIdDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.AdditionalGovIdDocument.ExpiryDate, tag1, tag2), ct);
             }
         }
         //policy officer
@@ -69,6 +71,7 @@ internal partial class LicenceManager
         {
             foreach (LicenceAppDocumentResponse doc in request.PoliceOfficerDocument.DocumentResponses)
             {
+                DocumentTypeEnum tag1 = DocumentTypeEnum.PoliceOfficerDocument;
                 DocumentTypeEnum tag = GetDocumentTypeEnum(request.PoliceOfficerDocument.LicenceDocumentTypeCode);
                 await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
             }
@@ -78,8 +81,9 @@ internal partial class LicenceManager
         {
             foreach (LicenceAppDocumentResponse doc in request.MentalHealthDocument.DocumentResponses)
             {
-                DocumentTypeEnum tag = GetDocumentTypeEnum(request.MentalHealthDocument.LicenceDocumentTypeCode);
-                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+                DocumentTypeEnum tag1 = DocumentTypeEnum.MentalHealthDocument;
+                DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.MentalHealthDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
             }
         }
         //fingerproof
@@ -87,28 +91,33 @@ internal partial class LicenceManager
         {
             foreach (LicenceAppDocumentResponse doc in request.FingerprintProofDocument.DocumentResponses)
             {
-                DocumentTypeEnum tag = GetDocumentTypeEnum(request.FingerprintProofDocument.LicenceDocumentTypeCode);
-                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+                DocumentTypeEnum tag1 = DocumentTypeEnum.FingerprintProofDocument;
+                DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.FingerprintProofDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
             }
         }
         //id photo
-        if (request.FingerprintProofDocument != null)
+        if (request.IdPhotoDocument != null)
         {
             foreach (LicenceAppDocumentResponse doc in request.IdPhotoDocument.DocumentResponses)
             {
-                DocumentTypeEnum tag = GetDocumentTypeEnum(request.IdPhotoDocument.LicenceDocumentTypeCode);
-                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+                DocumentTypeEnum tag1 = DocumentTypeEnum.IdPhotoDocument;
+                DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.IdPhotoDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
             }
         }
         //category
         foreach (WorkerLicenceAppCategoryData category in request.CategoryData)
         {
-            foreach (Document d in category.Documents)
+            if (category.Documents != null)
             {
-                foreach (var doc in d.DocumentResponses)
+                foreach (Document d in category.Documents)
                 {
-                    (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(d.LicenceDocumentTypeCode);
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, d.ExpiryDate, tag1, tag2), ct);
+                    foreach (var doc in d.DocumentResponses)
+                    {
+                        (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(d.LicenceDocumentTypeCode);
+                        await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, d.ExpiryDate, tag1, tag2), ct);
+                    }
                 }
             }
         }
@@ -170,25 +179,25 @@ internal partial class LicenceManager
     private async Task GetDocumentsAsync(Guid LicenceAppId, WorkerLicenceResponse result, CancellationToken ct)
     {
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(LicenceAppId), ct);
-        var letterOfNoConflicts = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.LetterOfNoConflict).ToList();
-        if (letterOfNoConflicts.Any())
+        var policeDocs = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument).ToList();
+        if (policeDocs.Any())
         {
             result.PoliceOfficerDocument = new PoliceOfficerDocument
             {
-                LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(letterOfNoConflicts)
+                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)policeDocs[0].DocumentType2),
+                DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(policeDocs)
             };
         }
-        var mentalHealths = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm).ToList();
+        var mentalHealths = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.MentalHealthDocument).ToList();
         if (mentalHealths.Any())
         {
             result.MentalHealthDocument = new MentalHealthDocument
             {
-                LicenceDocumentTypeCode = LicenceDocumentTypeCode.MentalHealthCondition,
+                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)mentalHealths[0].DocumentType2),
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(mentalHealths)
             };
         }
-        var fingerprints = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.ConfirmationOfFingerprints).ToList();
+        var fingerprints = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.FingerprintProofDocument).ToList();
         if (fingerprints.Any())
         {
             result.FingerprintProofDocument = new FingerprintProofDocument
@@ -198,17 +207,7 @@ internal partial class LicenceManager
             };
         }
 
-        var bornInCanadas = existingDocs.Items.Where(d =>
-            d.DocumentType == DocumentTypeEnum.BirthCertificate ||
-            d.DocumentType == DocumentTypeEnum.Passport ||
-            d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard ||
-            d.DocumentType == DocumentTypeEnum.CanadianCitizenship ||
-            d.DocumentType == DocumentTypeEnum.PermanentResidenceCard ||
-            d.DocumentType == DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument ||
-            d.DocumentType == DocumentTypeEnum.RecordOfLandingDocument ||
-            d.DocumentType == DocumentTypeEnum.WorkPermit ||
-            d.DocumentType == DocumentTypeEnum.StudyPermit ||
-            d.DocumentType == DocumentTypeEnum.LegalWorkStatus).ToList();
+        var bornInCanadas = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.CitizenshipDocument).ToList();
         if (bornInCanadas.Any())
         {
             result.CitizenshipDocument = new CitizenshipDocument
@@ -219,12 +218,7 @@ internal partial class LicenceManager
             };
         }
 
-        var govIdDocs = existingDocs.Items.Where(d =>
-            d.DocumentType == DocumentTypeEnum.DriverLicense ||
-            d.DocumentType == DocumentTypeEnum.CanadianFirearmsLicence ||
-            d.DocumentType == DocumentTypeEnum.BCServicesCard ||
-            d.DocumentType == DocumentTypeEnum.CanadianNativeStatusCard ||
-            d.DocumentType == DocumentTypeEnum.GovtIssuedPhotoID).ToList();
+        var govIdDocs = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.AdditionalGovIdDocument).ToList();
         if (govIdDocs.Any())
         {
             result.AdditionalGovIdDocument = new AdditionalGovIdDocument
@@ -235,7 +229,7 @@ internal partial class LicenceManager
             };
         }
 
-        var idPhoto = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.Photograph).ToList();
+        var idPhoto = existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.IdPhotoDocument).ToList();
         if (idPhoto.Any())
         {
             result.IdPhotoDocument = new IdPhotoDocument
@@ -244,6 +238,40 @@ internal partial class LicenceManager
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(idPhoto)
             };
         }
+
+        List<WorkerCategoryTypeCode> categoryContainFiles = new List<WorkerCategoryTypeCode>() {
+            WorkerCategoryTypeCode.ArmouredCarGuard,
+            WorkerCategoryTypeCode.FireInvestigator,
+            WorkerCategoryTypeCode.Locksmith,
+            WorkerCategoryTypeCode.PrivateInvestigator,
+            WorkerCategoryTypeCode.SecurityAlarmInstaller,
+            WorkerCategoryTypeCode.SecurityConsultant,
+            WorkerCategoryTypeCode.SecurityGuard
+        };
+        if (result.CategoryData != null)
+        {
+            foreach (var categoryData in result.CategoryData)
+            {
+                if (categoryContainFiles.Contains(categoryData.WorkerCategoryTypeCode))
+                {
+                    var docType = Enum.Parse<DocumentTypeEnum>(categoryData.WorkerCategoryTypeCode.ToString());
+                    var catFiles = existingDocs.Items.Where(d => d.DocumentType == docType).ToList();
+                    List<DocumentTypeEnum?> docType2s = catFiles.Select(f => f.DocumentType2).Distinct().ToList();
+                    List<Document> docs = new List<Document>();
+                    foreach (var type in docType2s)
+                    {
+                        Document d = new Document();
+                        LicenceDocumentTypeCode code = Enum.Parse<LicenceDocumentTypeCode>("Category" + docType.ToString() + "_" + type.ToString());
+                        d.LicenceDocumentTypeCode = code;
+                        d.DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(catFiles.Where(c => c.DocumentType2 == type).ToList());
+                        d.ExpiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
+                        docs.Add(d);
+                    }
+                    categoryData.Documents = docs.ToArray();
+                }
+            }
+        }
+
     }
 
     private DocumentTypeEnum GetDocumentTypeEnum(LicenceDocumentTypeCode licenceDocumentTypeCode)
@@ -292,6 +320,26 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
         {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.LegalWorkStatus},
         {LicenceDocumentTypeCode.PhotoOfYourself, DocumentTypeEnum.Photograph},
+        {LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate, DocumentTypeEnum.AuthorizationToCarryCertificate},
+        {LicenceDocumentTypeCode.CategoryFireInvestigator_CourseCertificate, DocumentTypeEnum.CourseCertificate},
+        {LicenceDocumentTypeCode.CategoryLocksmith_CertificateOfQualification, DocumentTypeEnum.CertificateOfQualification},
+        {LicenceDocumentTypeCode.CategoryLocksmith_ExperienceAndApprenticeship, DocumentTypeEnum.ExperienceAndApprenticeship},
+        {LicenceDocumentTypeCode.CategoryLocksmith_ApprovedLocksmithCourse, DocumentTypeEnum.ApprovedLocksmithCourse},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigator_ExperienceAndCourses, DocumentTypeEnum.ExperienceAndCourses},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining, DocumentTypeEnum.TenYearsPoliceExperienceAndTraining},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigator_KnowledgeAndExperience, DocumentTypeEnum.KnowledgeAndExperience},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingRecognizedCourse, DocumentTypeEnum.TrainingRecognizedCourse},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge, DocumentTypeEnum.TrainingOtherCoursesOrKnowledge},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion, DocumentTypeEnum.PrivateSecurityTrainingNetworkCompletion},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion, DocumentTypeEnum.OtherCourseCompletion},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_Training, DocumentTypeEnum.Training},
+        {LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_TradesQualificationCertificate, DocumentTypeEnum.TradesQualificationCertificate},
+        {LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent, DocumentTypeEnum.ExperienceOrTrainingEquivalent},
+        {LicenceDocumentTypeCode.CategorySecurityConsultant_ExperienceLetters, DocumentTypeEnum.ExperienceLetters},
+        {LicenceDocumentTypeCode.CategorySecurityConsultant_RecommendationLetters, DocumentTypeEnum.RecommendationLetters},
+        {LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCertificate, DocumentTypeEnum.BasicSecurityTrainingCertificate},
+        {LicenceDocumentTypeCode.CategorySecurityGuard_PoliceExperienceOrTraining, DocumentTypeEnum.PoliceExperienceOrTraining},
+        {LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent, DocumentTypeEnum.BasicSecurityTrainingCourseEquivalent},
     }.ToImmutableDictionary();
 
 }

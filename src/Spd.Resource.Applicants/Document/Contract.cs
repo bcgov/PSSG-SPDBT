@@ -25,6 +25,7 @@ namespace Spd.Resource.Applicants.Document
         public string? FileName { get; set; }
         public string? FileExtension { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } = null;
+        public DocumentTypeEnum? DocumentType2 { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid DocumentUrlId { get; set; }
         public Guid? ClearanceId { get; set; } = null;
@@ -50,6 +51,7 @@ namespace Spd.Resource.Applicants.Document
     public record UpdateDocumentCmd(Guid DocumentUrlId, DateTimeOffset? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
     public enum DocumentTypeEnum
     {
+        AdditionalGovIdDocument,
         ApplicantConsentForm,
         ApplicantInformation,
         ApprovedLocksmithCourse,
@@ -70,6 +72,7 @@ namespace Spd.Resource.Applicants.Document
         CanadianNativeStatusCard,
         CertificateOfAdvancedSecurityTraining,
         CertificateOfQualification,
+        CitizenshipDocument,
         ClearanceLetter,
         ConfirmationLetterFromSuperiorOfficer,
         ConfirmationOfFingerprints,
@@ -82,19 +85,23 @@ namespace Spd.Resource.Applicants.Document
         ExperienceAndCourses,
         ExperienceLetters,
         ExperienceOrTrainingEquivalent,
+        FingerprintProofDocument,
         FingerprintsPkg,
         FireInvestigator,
         GovtIssuedPhotoID,
+        IdPhotoDocument,
         KnowledgeAndExperience,
         LegalNameChange,
         LegalWorkStatus,
         LetterOfNoConflict,
         Locksmith,
         ManualPaymentForm,
+        MentalHealthDocument,
         MentalHealthConditionForm,
         PaymentReceipt,
         Passport,
         PermanentResidenceCard,
+        PoliceOfficerDocument,
         PoliceExperienceOrTraining,
         Photograph,
         PrivateInvestigator,

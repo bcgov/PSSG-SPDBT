@@ -18,7 +18,7 @@ internal class DocumentRepository : IDocumentRepository
         IFileStorageService fileStorageService,
         ITempFileStorageService tempFileService)
     {
-        _context = ctx.Create();
+        _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
         _fileStorageService = fileStorageService;
         _tempFileService = tempFileService;
@@ -88,12 +88,12 @@ internal class DocumentRepository : IDocumentRepository
         documenturl.bcgov_url = $"spd_application/{cmd.ApplicationId}";
         _context.AddTobcgov_documenturls(documenturl);
         _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
-        if(cmd.DocumentType != null)
+        if (cmd.DocumentType != null)
         {
             var tag = _context.LookupTag(cmd.DocumentType.ToString());
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
-        }        
-        if(cmd.DocumentType2 != null)
+        }
+        if (cmd.DocumentType2 != null)
         {
             var tag2 = _context.LookupTag(cmd.DocumentType2.ToString());
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag2Id), tag2);
@@ -124,17 +124,27 @@ internal class DocumentRepository : IDocumentRepository
 
     private async Task<DocumentResp> UpdateDocumentAsync(UpdateDocumentCmd cmd, CancellationToken ct)
     {
-        bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
+        bcgov_documenturl? documenturl = _context.bcgov_documenturls
+            .Expand(d => d.bcgov_Tag1Id)
+            .Expand(d => d.bcgov_Tag2Id)
+            .Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
         if (documenturl == null) { return null; }
-        documenturl.spd_expirydate = cmd.ExpiryDate == null ? null : 
+        documenturl.spd_expirydate = cmd.ExpiryDate == null ? null :
             new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
-        if(cmd.Tag1 != null)
+        if (cmd.Tag1 != null)
         {
+            //have to detach and save, then do update again. becuase of "The version of the existing record doesn't match the RowVersion property provided."
+            _context.DetachLink(documenturl, nameof(documenturl.bcgov_Tag1Id), documenturl.bcgov_Tag1Id);
+            _context.UpdateObject(documenturl);
+            await _context.SaveChangesAsync(ct);
             var tag1 = _context.LookupTag(cmd.Tag1.ToString());
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag1);
         }
         if (cmd.Tag2 != null)
         {
+            _context.DetachLink(documenturl, nameof(documenturl.bcgov_Tag2Id), documenturl.bcgov_Tag2Id);
+            _context.UpdateObject(documenturl);
+            await _context.SaveChangesAsync(ct);
             var tag2 = _context.LookupTag(cmd.Tag2.ToString());
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag2Id), tag2);
         }

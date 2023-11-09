@@ -142,7 +142,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceAppDocumentUploadRequest(
         IList<IFormFile> Documents,
-        LicenceDocumentTypeCode? LicenceDocumentTypeCode
+        LicenceDocumentTypeCode LicenceDocumentTypeCode
     );
     public record LicenceAppDocumentResponse
     {

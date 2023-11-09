@@ -13,6 +13,7 @@ namespace Spd.Resource.Applicants.Document
         {
             _ = CreateMap<bcgov_documenturl, DocumentResp>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType(s)))
+            .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2(s)))
             .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.bcgov_receiveddate))
             .ForMember(d => d.DocumentUrlId, opt => opt.MapFrom(s => s.bcgov_documenturlid))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value))
@@ -35,7 +36,15 @@ namespace Spd.Resource.Applicants.Document
         private static DocumentTypeEnum? GetDocumentType(bcgov_documenturl documenturl)
         {
             string? docType = DynamicsContextLookupHelpers.BcGovTagDictionary
-                .FirstOrDefault(t => (t.Value == documenturl._bcgov_tag1id_value || t.Value == documenturl._bcgov_tag2id_value || t.Value == documenturl._bcgov_tag3id_value)).Key;
+                .FirstOrDefault(t => t.Value == documenturl._bcgov_tag1id_value).Key;
+            if (docType == null) { return null; }
+            return Enum.Parse<DocumentTypeEnum>(docType);
+        }
+
+        private static DocumentTypeEnum? GetDocumentType2(bcgov_documenturl documenturl)
+        {
+            string? docType = DynamicsContextLookupHelpers.BcGovTagDictionary
+                .FirstOrDefault(t => t.Value == documenturl._bcgov_tag2id_value).Key;
             if (docType == null) { return null; }
             return Enum.Parse<DocumentTypeEnum>(docType);
         }

@@ -20809,6 +20809,7 @@
         <NavigationProperty Name="spd_licence_spd_application_ControllingMember" Type="Collection(mscrm.spd_application)" Partner="spd_ControllingMemberId" />
         <NavigationProperty Name="spd_licence_spd_application_CurrentExpired" Type="Collection(mscrm.spd_application)" Partner="spd_CurrentExpiredLicenceId" />
         <NavigationProperty Name="spd_spd_licence_spd_submission" Type="Collection(mscrm.spd_submission)" Partner="spd_ExpiredLicenceId" />
+        <NavigationProperty Name="spd_licence_spd_submission_ApplicantSWLNumber" Type="Collection(mscrm.spd_submission)" Partner="spd_ApplicantSWLNumberId" />
       </EntityType>
       <EntityType Name="spd_organizationtype" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -21669,10 +21670,12 @@
         <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_licenceterm" Type="Edm.Int32" />
+        <Property Name="spd_residentialaddress2" Type="Edm.String" Unicode="false" />
         <Property Name="spd_aliassecondmiddlename2" Type="Edm.String" Unicode="false" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
         <Property Name="spd_licenceapplicationtype" Type="Edm.Int32" />
+        <Property Name="spd_fingerprintsonrecord" Type="Edm.Int32" />
         <Property Name="spd_requestrestraints" Type="Edm.Int32" />
         <Property Name="spd_aliasmiddlename1" Type="Edm.String" Unicode="false" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
@@ -21682,7 +21685,8 @@
         <Property Name="_organizationid_value" Type="Edm.Guid" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="spd_businesstype" Type="Edm.Int32" />
-        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_height" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_city" Type="Edm.String" Unicode="false" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_declaration" Type="Edm.Boolean" />
         <Property Name="spd_country" Type="Edm.String" Unicode="false" />
@@ -21696,10 +21700,11 @@
         <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
         <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
         <Property Name="spd_weight" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_aliasfirstname1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
         <Property Name="spd_submissionid" Type="Edm.Guid" />
         <Property Name="spd_sex" Type="Edm.Int32" />
-        <Property Name="spd_height" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_residentialaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_residentialcountry" Type="Edm.String" Unicode="false" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_criminalhistory" Type="Edm.Int32" />
@@ -21712,7 +21717,9 @@
         <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_applicantswlnumberid_value" Type="Edm.Guid" />
         <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_aliasfirstname1" Type="Edm.String" Unicode="false" />
         <Property Name="spd_policebackgroundrole" Type="Edm.Int32" />
         <Property Name="spd_consent" Type="Edm.Boolean" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
@@ -21720,6 +21727,7 @@
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
         <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_residentialprovince" Type="Edm.String" Unicode="false" />
         <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_aliasfirstname3" Type="Edm.String" Unicode="false" />
         <Property Name="spd_peaceofficer" Type="Edm.Int32" />
@@ -21729,9 +21737,10 @@
         <Property Name="spd_aliassurname1" Type="Edm.String" Unicode="false" />
         <Property Name="spd_mentalhealthcondition" Type="Edm.Int32" />
         <Property Name="spd_requestdogs" Type="Edm.Int32" />
+        <Property Name="spd_residentialcity" Type="Edm.String" Unicode="false" />
         <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_city" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_residentialpostalcode" Type="Edm.String" Unicode="false" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="spd_submissionnumber" Type="Edm.String" Unicode="false" />
@@ -21767,6 +21776,9 @@
         </NavigationProperty>
         <NavigationProperty Name="spd_ExpiredLicenceId" Type="mscrm.spd_licence" Nullable="false" Partner="spd_spd_licence_spd_submission">
           <ReferentialConstraint Property="_spd_expiredlicenceid_value" ReferencedProperty="spd_licenceid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_ApplicantSWLNumberId" Type="mscrm.spd_licence" Nullable="false" Partner="spd_licence_spd_submission_ApplicantSWLNumber">
+          <ReferentialConstraint Property="_spd_applicantswlnumberid_value" ReferencedProperty="spd_licenceid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="subject" BaseType="mscrm.crmbaseentity">
@@ -37427,6 +37439,7 @@
           <NavigationPropertyBinding Path="spd_licence_spd_application_ControllingMember" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_licence_spd_application_CurrentExpired" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_spd_licence_spd_submission" Target="spd_submissions" />
+          <NavigationPropertyBinding Path="spd_licence_spd_submission_ApplicantSWLNumber" Target="spd_submissions" />
         </EntitySet>
         <EntitySet Name="spd_organizationtypes" EntityType="Microsoft.Dynamics.CRM.spd_organizationtype">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -37712,6 +37725,7 @@
           <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
           <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_ExpiredLicenceId" Target="spd_licences" />
+          <NavigationPropertyBinding Path="spd_ApplicantSWLNumberId" Target="spd_licences" />
         </EntitySet>
         <EntitySet Name="subjects" EntityType="Microsoft.Dynamics.CRM.subject">
           <NavigationPropertyBinding Path="subject_products" Target="products" />
