@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { GovernmentIssuedPhotoIdTypes } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -49,24 +50,27 @@ import { LicenceApplicationService } from '../licence-application.service';
 										</mat-form-field>
 									</div>
 								</div>
-								<div class="row mb-2">
-									<div class="col-12">
-										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
-										<app-file-upload
-											(fileAdded)="onFileAdded($event)"
-											[maxNumberOfFiles]="1"
-											[control]="attachments"
-											[files]="attachments.value"
-										></app-file-upload>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-												form.get('attachments')?.invalid &&
-												form.get('attachments')?.hasError('required')
-											"
-											>This is required</mat-error
-										>
+								<div *ngIf="governmentIssuedPhotoTypeCode.value" @showHideTriggerSlideAnimation>
+									<div class="row mb-2">
+										<div class="col-12">
+											<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
+											<app-file-upload
+												(fileUploaded)="onFileUploaded($event)"
+												(fileRemoved)="onFileRemoved()"
+												[maxNumberOfFiles]="1"
+												[control]="attachments"
+												[files]="attachments.value"
+											></app-file-upload>
+											<mat-error
+												class="mat-option-error"
+												*ngIf="
+													(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+													form.get('attachments')?.invalid &&
+													form.get('attachments')?.hasError('required')
+												"
+												>This is required</mat-error
+											>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -77,6 +81,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class AdditionalGovIdComponent implements LicenceChildStepperStepComponent {
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
@@ -93,7 +98,7 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 		private hotToastService: HotToastService
 	) {}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(this.governmentIssuedPhotoTypeCode.value, file).subscribe({
 				next: (resp: any) => {
@@ -107,6 +112,10 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

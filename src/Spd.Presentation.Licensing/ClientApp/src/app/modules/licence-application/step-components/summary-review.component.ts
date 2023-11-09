@@ -454,11 +454,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	<span *ngIf="proofTypeCode">
-																		{{ proofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+																	<span *ngIf="canadianCitizenProofTypeCode">
+																		{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
 																	</span>
-																	<span *ngIf="proofOfAbility">
-																		{{ proofOfAbility | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+																	<span *ngIf="notCanadianCitizenProofTypeCode">
+																		{{
+																			notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes'
+																		}}
 																	</span>
 																</div>
 																<div class="text-data">
@@ -486,6 +488,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<div class="text-data">
 																	{{ height }}
 																	{{ heightUnitCode | options : 'HeightUnitTypes' }}
+																	{{ heightInches }}
 																</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
@@ -724,7 +727,7 @@ export class SummaryReviewComponent {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {
@@ -732,7 +735,7 @@ export class SummaryReviewComponent {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	get workerLicenceTypeCode(): string {
@@ -846,9 +849,6 @@ export class SummaryReviewComponent {
 		return this.licenceModelData.policeBackgroundData.attachments ?? [];
 	}
 
-	get oneLegalName(): string {
-		return this.licenceModelData.personalInformationData.oneLegalName ?? '';
-	}
 	get givenName(): string {
 		return this.licenceModelData.personalInformationData.givenName ?? '';
 	}
@@ -893,8 +893,11 @@ export class SummaryReviewComponent {
 	get isCanadianCitizen(): string {
 		return this.licenceModelData.citizenshipData.isCanadianCitizen ?? '';
 	}
-	get proofTypeCode(): string {
-		return this.licenceModelData.citizenshipData.proofTypeCode ?? '';
+	get canadianCitizenProofTypeCode(): string {
+		return this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? '';
+	}
+	get notCanadianCitizenProofTypeCode(): string {
+		return this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? '';
 	}
 	get proofOfAbility(): string {
 		return this.licenceModelData.citizenshipData.proofOfAbility ?? '';
@@ -931,6 +934,9 @@ export class SummaryReviewComponent {
 	}
 	get height(): string {
 		return this.licenceModelData.characteristicsData.height ?? '';
+	}
+	get heightInches(): string {
+		return this.licenceModelData.characteristicsData.heightInches ?? '';
 	}
 	get heightUnitCode(): string {
 		return this.licenceModelData.characteristicsData.heightUnitCode ?? '';

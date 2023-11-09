@@ -10,8 +10,8 @@ import { LoginSelectionComponent } from './components/login-selection.component'
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
 import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
-import { UserApplicationsBceidComponent } from './components/user-applications-bceid.component';
 import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
+import { UserApplicationsUnauthComponent } from './components/user-applications-unauth.component';
 import { UserApplicationsComponent } from './components/user-applications.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
@@ -19,9 +19,8 @@ import { LicenceApplicationComponent } from './licence-application.component';
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
 	public static LOGIN_SELECTION = 'login-selection';
-	public static USER_APPLICATIONS_BCSC = 'user-applications';
-	public static USER_APPLICATIONS_BCEID = 'user-applications-bceid';
-	public static USER_APPLICATIONS_UNAUTH = 'user-applications-unauth';
+	public static USER_APPLICATIONS = 'user-applications';
+	public static USER_APPLICATIONS_UNAUTH = 'user-applications-basic';
 	public static LICENCE_UPDATE = 'licence-update';
 	public static LICENCE_SELECTION = 'licence-selection';
 	public static APPLICATION_TYPE = 'application-type';
@@ -56,18 +55,13 @@ const routes: Routes = [
 				component: LoginSelectionComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.USER_APPLICATIONS_BCSC,
+				path: LicenceApplicationRoutes.USER_APPLICATIONS,
 				component: UserApplicationsBcscComponent,
 				children: [{ path: '', component: UserApplicationsComponent }],
 			},
 			{
-				path: LicenceApplicationRoutes.USER_APPLICATIONS_BCEID,
-				component: UserApplicationsBceidComponent,
-				children: [{ path: '', component: UserApplicationsComponent }],
-			},
-			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH,
-				component: UserApplicationsComponent,
+				component: UserApplicationsUnauthComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.USER_PROFILE,

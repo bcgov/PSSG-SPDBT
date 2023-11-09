@@ -76,7 +76,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
 												>
@@ -109,7 +108,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
 												>
@@ -147,7 +145,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
 												>
@@ -186,7 +183,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
 												>
@@ -222,7 +218,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
 												>
@@ -256,7 +251,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
 												>
@@ -290,7 +284,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
 												>
@@ -327,7 +320,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
 												>
@@ -366,7 +358,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
 												>
@@ -403,7 +394,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
 												>
@@ -443,7 +433,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
 												>
@@ -480,7 +469,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
 												>
@@ -517,7 +505,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
 												>
@@ -553,7 +540,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
 												>
@@ -589,7 +575,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
 												>
@@ -623,7 +608,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
 												>
@@ -658,7 +642,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<button
 													mat-stroked-button
 													class="w-auto float-end"
-													style="color: var(--color-red);"
 													aria-label="Remove category"
 													(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
 												>
@@ -811,6 +794,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 				if (response) {
 					switch (code) {
 						case WorkerCategoryTypeCode.ArmouredCarGuard:
+							this.categoryArmouredCarGuardFormGroup.reset();
 							this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.BodyArmourSales:
@@ -823,27 +807,33 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 							this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.FireInvestigator:
+							this.categoryFireInvestigatorFormGroup.reset();
 							this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.Locksmith:
+							this.categoryLocksmithFormGroup.reset();
 							this.categoryLocksmithFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
 							this.categoryLocksmithSupFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.PrivateInvestigator:
+							this.categoryPrivateInvestigatorFormGroup.reset();
 							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+							this.categoryPrivateInvestigatorSupFormGroup.reset();
 							this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityGuard:
+							this.categorySecurityGuardFormGroup.reset();
 							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 							this.categorySecurityGuardSupFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+							this.categorySecurityAlarmInstallerFormGroup.reset();
 							this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
@@ -859,11 +849,11 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 							this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityConsultant:
+							this.categorySecurityConsultantFormGroup.reset();
 							this.categorySecurityConsultantFormGroup.patchValue({ isInclude: false });
 							break;
 					}
 
-					// this.setValidCategoryList();
 					this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 					this.isDirtyAndInvalid = false;
 				}

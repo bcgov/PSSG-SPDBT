@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from 'src/app/api/models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -29,7 +32,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="my-2">
 				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
-					(fileChanged)="onFileChanged()"
+					(fileUploaded)="onFileCertificateAdded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[control]="fireCourseCertificateAttachments"
 					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
@@ -50,7 +54,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="mt-3 mb-2">
 				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
-					(fileChanged)="onFileChanged()"
+					(fileUploaded)="onFileVerificationAdded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[control]="fireVerificationLetterAttachments"
 					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef
@@ -75,14 +80,62 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	form: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
 	title = '';
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadCertificateComponent!: FileUploadComponent;
+	@ViewChild('fireVerificationLetterAttachmentsRef') fileUploadVerificationComponent!: FileUploadComponent;
+
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private authenticationService: AuthenticationService,
+		private hotToastService: HotToastService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.FireInvestigator, 'WorkerCategoryTypes');
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryFireInvestigator;
+	onFileCertificateAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.fireCourseCertificateAttachments.value.find(
+							(item: File) => item.name == file.name
+						);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadCertificateComponent.removeFailedFile(file);
+					},
+				});
+		}
+	}
+
+	onFileVerificationAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.fireVerificationLetterAttachments.value.find(
+							(item: File) => item.name == file.name
+						);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadVerificationComponent.removeFailedFile(file);
+					},
+				});
+		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

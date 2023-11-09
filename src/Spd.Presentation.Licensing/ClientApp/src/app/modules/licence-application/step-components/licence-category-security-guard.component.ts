@@ -1,8 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityGuardRequirementCode } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -68,7 +71,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload
-						(fileChanged)="onFileChanged()"
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -103,14 +107,37 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 
 	securityGuardRequirementCodes = SecurityGuardRequirementCode;
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private authenticationService: AuthenticationService,
+		private hotToastService: HotToastService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityGuard, 'WorkerCategoryTypes');
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categorySecurityGuard;
+	onFileUploaded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

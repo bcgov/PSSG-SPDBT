@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 @Component({
@@ -155,14 +154,14 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 	],
 })
 export class LoginSelectionComponent {
-	constructor(private router: Router, private authProcessService: AuthProcessService) {}
+	constructor(private router: Router) {}
 
 	async onRegisterWithBceid(): Promise<void> {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
+		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
 	}
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 	}
 
 	onContinue(): void {

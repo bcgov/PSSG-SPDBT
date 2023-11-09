@@ -1,7 +1,11 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceStepperStepComponent } from '../../licence-application.helper';
+import { LicenceApplicationService } from '../../licence-application.service';
 import { SummaryReviewComponent } from '../summary-review.component';
 
 @Component({
@@ -47,11 +51,28 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 
 	@ViewChild(SummaryReviewComponent) summaryReviewComponent!: SummaryReviewComponent;
 
+	constructor(
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
+
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
 	}
 
-	onPayNow(): void {}
+	onPayNow(): void {
+		this.licenceApplicationService.saveLicenceStep().subscribe({
+			next: (resp: any) => {
+				this.hotToastService.success('Your licence has been successfully submitted');
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
 
 	onGoToStep(step: number): void {
 		this.goToStep.emit(step);
