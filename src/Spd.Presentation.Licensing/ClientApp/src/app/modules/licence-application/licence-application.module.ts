@@ -15,6 +15,8 @@ import { UpdateAddRestraintsModalComponent } from './components/update-add-restr
 import { UpdateApplyNameChangeModalComponent } from './components/update-apply-name-change-modal.component';
 import { UpdateLicenceCategoryModalComponent } from './components/update-licence-category-modal.component';
 import { UpdatePhotoModalComponent } from './components/update-photo-modal.component';
+import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
+import { UserApplicationsUnauthComponent } from './components/user-applications-unauth.component';
 import { UserApplicationsComponent } from './components/user-applications.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
@@ -69,9 +71,6 @@ import { StepReviewComponent } from './step-components/wizard-steps/step-review.
 import { StepConfirmMailingAddressComponent } from './step-components/wizard-update-steps/step-confirm-mailing-address.component';
 import { StepConfirmUpdatesComponent } from './step-components/wizard-update-steps/step-confirm-updates.component';
 import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
-import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
-import { UserApplicationsBceidComponent } from './components/user-applications-bceid.component';
-import { UserApplicationsUnauthComponent } from './components/user-applications-unauth.component';
 
 @NgModule({
 	declarations: [
@@ -143,9 +142,8 @@ import { UserApplicationsUnauthComponent } from './components/user-applications-
 		UpdateAddDogsModalComponent,
 		UpdatePhotoModalComponent,
 		SecurityWorkerLicenceApplicationComponent,
-  UserApplicationsBcscComponent,
-  UserApplicationsBceidComponent,
-  UserApplicationsUnauthComponent,
+		UserApplicationsBcscComponent,
+		UserApplicationsUnauthComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

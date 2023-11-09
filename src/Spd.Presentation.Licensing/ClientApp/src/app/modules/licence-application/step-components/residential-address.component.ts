@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -12,12 +14,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title
-					title="Confirm your residential address"
-					subtitle="This is the address from your BC Services Card. If you need to make any updates, visit <a href='https://www.addresschange.gov.bc.ca/' target='_blank'>addresschange.gov.bc.ca</a>"
-				></app-step-title>
+				<app-step-title title="Confirm your residential address" [subtitle]="subtitle"></app-step-title>
 				<form [formGroup]="form" novalidate>
-					<div class="row">
+					<div class="row" *ngIf="!isLoggedIn">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<app-address-form-autocomplete
 								(autocompleteAddress)="onAddressAutocomplete($event)"
@@ -109,15 +108,58 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class ResidentialAddressComponent implements LicenceChildStepperStepComponent {
+export class ResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 
+	readonly subtitle_unauth_new = 'This is the address where you currently live';
+	readonly subtitle_auth_new =
+		'This is the address from your BC Services Card. If you need to make any updates, visit <a href="https://www.addresschange.gov.bc.ca/" target="_blank">addresschange.gov.bc.ca</a>';
+
+	subtitle = '';
+
+	isLoggedIn = false;
+
+	authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
+
+	ngOnInit(): void {
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+				if (isLoggedIn) {
+					this.subtitle = this.subtitle_auth_new;
+
+					this.addressLine1.disable({ emitEvent: false });
+					this.addressLine2.disable({ emitEvent: false });
+					this.city.disable({ emitEvent: false });
+					this.postalCode.disable({ emitEvent: false });
+					this.province.disable({ emitEvent: false });
+					this.country.disable({ emitEvent: false });
+				} else {
+					this.subtitle = this.subtitle_unauth_new;
+
+					this.addressLine1.enable();
+					this.addressLine2.enable();
+					this.city.enable();
+					this.postalCode.enable();
+					this.province.enable();
+					this.country.enable();
+				}
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+	}
 
 	onAddressAutocomplete(address: Address): void {
 		if (!address) {
@@ -154,5 +196,24 @@ export class ResidentialAddressComponent implements LicenceChildStepperStepCompo
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get addressLine1(): FormControl {
+		return this.form.get('addressLine1') as FormControl;
+	}
+	get addressLine2(): FormControl {
+		return this.form.get('addressLine2') as FormControl;
+	}
+	get city(): FormControl {
+		return this.form.get('city') as FormControl;
+	}
+	get postalCode(): FormControl {
+		return this.form.get('postalCode') as FormControl;
+	}
+	get province(): FormControl {
+		return this.form.get('province') as FormControl;
+	}
+	get country(): FormControl {
+		return this.form.get('country') as FormControl;
 	}
 }
