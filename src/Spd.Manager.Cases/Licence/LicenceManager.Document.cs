@@ -212,7 +212,7 @@ internal partial class LicenceManager
         {
             result.CitizenshipDocument = new CitizenshipDocument
             {
-                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)bornInCanadas[0].DocumentType),
+                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)bornInCanadas[0].DocumentType2),
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(bornInCanadas),
                 ExpiryDate = bornInCanadas[0].ExpiryDate
             };

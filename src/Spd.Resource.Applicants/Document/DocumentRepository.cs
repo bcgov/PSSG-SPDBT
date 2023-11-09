@@ -18,7 +18,7 @@ internal class DocumentRepository : IDocumentRepository
         IFileStorageService fileStorageService,
         ITempFileStorageService tempFileService)
     {
-        _context = ctx.CreateChangeOverwrite();
+        _context = ctx.Create();
         _mapper = mapper;
         _fileStorageService = fileStorageService;
         _tempFileService = tempFileService;
