@@ -454,11 +454,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	<span *ngIf="proofTypeCode">
-																		{{ proofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+																	<span *ngIf="canadianCitizenProofTypeCode">
+																		{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
 																	</span>
-																	<span *ngIf="proofOfAbility">
-																		{{ proofOfAbility | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+																	<span *ngIf="notCanadianCitizenProofTypeCode">
+																		{{
+																			notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes'
+																		}}
 																	</span>
 																</div>
 																<div class="text-data">
@@ -891,8 +893,11 @@ export class SummaryReviewComponent {
 	get isCanadianCitizen(): string {
 		return this.licenceModelData.citizenshipData.isCanadianCitizen ?? '';
 	}
-	get proofTypeCode(): string {
-		return this.licenceModelData.citizenshipData.proofTypeCode ?? '';
+	get canadianCitizenProofTypeCode(): string {
+		return this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? '';
+	}
+	get notCanadianCitizenProofTypeCode(): string {
+		return this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? '';
 	}
 	get proofOfAbility(): string {
 		return this.licenceModelData.citizenshipData.proofOfAbility ?? '';

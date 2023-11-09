@@ -274,7 +274,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				this.licenceApplicationService.hasValueChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

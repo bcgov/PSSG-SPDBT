@@ -157,11 +157,11 @@ export class LoginSelectionComponent {
 	constructor(private router: Router) {}
 
 	async onRegisterWithBceid(): Promise<void> {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
+		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
 	}
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 	}
 
 	onContinue(): void {

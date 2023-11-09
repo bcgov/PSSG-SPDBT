@@ -56,24 +56,24 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<div class="col-lg-6 col-md-12">
 											<ng-container *ngIf="isCanadianCitizen.value == booleanTypeCodes.Yes; else notCanadianCitizen">
 												<mat-form-field>
-													<mat-select formControlName="proofTypeCode">
+													<mat-select formControlName="canadianCitizenProofTypeCode">
 														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
-													<mat-error *ngIf="form.get('proofTypeCode')?.hasError('required')">
+													<mat-error *ngIf="form.get('canadianCitizenProofTypeCode')?.hasError('required')">
 														This is required
 													</mat-error>
 												</mat-form-field>
 											</ng-container>
 											<ng-template #notCanadianCitizen>
 												<mat-form-field>
-													<mat-select formControlName="proofTypeCode" [errorStateMatcher]="matcher">
+													<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 														<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
-													<mat-error *ngIf="form.get('proofTypeCode')?.hasError('required')">
+													<mat-error *ngIf="form.get('notCanadianCitizenProofTypeCode')?.hasError('required')">
 														This is required
 													</mat-error>
 												</mat-form-field>
@@ -94,31 +94,41 @@ import { LicenceApplicationService } from '../licence-application.service';
 											</mat-form-field>
 										</div>
 									</div>
-									<div class="row mb-2">
-										<div class="col-12">
-											<ng-container
-												*ngIf="isCanadianCitizen.value == booleanTypeCodes.Yes; else notCanadianCitizenTitle"
-											>
-												<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
-											</ng-container>
-											<ng-template #notCanadianCitizenTitle>
-												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
-											</ng-template>
-											<app-file-upload
-												(fileAdded)="onFileAdded($event)"
-												[control]="attachments"
-												[maxNumberOfFiles]="1"
-												[files]="attachments.value"
-											></app-file-upload>
-											<mat-error
-												class="mat-option-error"
-												*ngIf="
-													(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-													form.get('attachments')?.invalid &&
-													form.get('attachments')?.hasError('required')
-												"
-												>This is required</mat-error
-											>
+									<div
+										*ngIf="
+											(isCanadianCitizen.value == booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
+											(isCanadianCitizen.value == booleanTypeCodes.No && notCanadianCitizenProofTypeCode.value)
+										"
+										@showHideTriggerSlideAnimation
+									>
+										<div class="row mb-2">
+											<div class="col-12">
+												<ng-container
+													*ngIf="isCanadianCitizen.value == booleanTypeCodes.Yes; else notCanadianCitizenTitle"
+												>
+													<div class="text-minor-heading mb-2">
+														Upload a photo of your proof of Canadian citizenship:
+													</div>
+												</ng-container>
+												<ng-template #notCanadianCitizenTitle>
+													<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
+												</ng-template>
+												<app-file-upload
+													(fileAdded)="onFileAdded($event)"
+													[control]="attachments"
+													[maxNumberOfFiles]="1"
+													[files]="attachments.value"
+												></app-file-upload>
+												<mat-error
+													class="mat-option-error"
+													*ngIf="
+														(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+														form.get('attachments')?.invalid &&
+														form.get('attachments')?.hasError('required')
+													"
+													>This is required</mat-error
+												>
+											</div>
 										</div>
 									</div>
 								</ng-container>
@@ -151,7 +161,11 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 
 	onFileAdded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.addUploadDocument(this.proofTypeCode.value, file).subscribe({
+			const proofTypeCode =
+				this.isCanadianCitizen.value == BooleanTypeCode.Yes
+					? this.canadianCitizenProofTypeCode.value
+					: this.notCanadianCitizenProofTypeCode.value;
+			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 					matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -174,8 +188,12 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 		return this.form.get('isCanadianCitizen') as FormControl;
 	}
 
-	get proofTypeCode(): FormControl {
-		return this.form.get('proofTypeCode') as FormControl;
+	get canadianCitizenProofTypeCode(): FormControl {
+		return this.form.get('canadianCitizenProofTypeCode') as FormControl;
+	}
+
+	get notCanadianCitizenProofTypeCode(): FormControl {
+		return this.form.get('notCanadianCitizenProofTypeCode') as FormControl;
 	}
 
 	get attachments(): FormControl {

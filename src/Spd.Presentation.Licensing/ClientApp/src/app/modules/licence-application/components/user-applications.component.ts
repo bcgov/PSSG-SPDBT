@@ -346,7 +346,7 @@ export class UserApplicationsComponent implements OnInit {
 		// 		.subscribe();
 		// } else if (appl.id == '11') {
 		this.licenceApplicationService
-			.loadLicenceNew2()
+			.loadExistingLicence('fc0c10a3-b6e6-4460-ac80-9b516f3e02a5')
 			.pipe(
 				tap((resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());

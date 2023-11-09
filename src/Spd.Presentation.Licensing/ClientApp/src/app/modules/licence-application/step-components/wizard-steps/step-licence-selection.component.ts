@@ -58,7 +58,12 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_EXPIRED)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -76,7 +81,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_LICENCE_EXPIRED)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_LICENCE_EXPIRED)">
 							Next: Review
 						</button>
 					</div>
@@ -90,7 +95,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
 							*ngIf="isLoggedIn"
 						>
@@ -111,7 +116,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_LICENCE_CATEGORY)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_LICENCE_CATEGORY)">
 							Next: Review
 						</button>
 					</div>
@@ -123,7 +128,12 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_RESTRAINTS)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_RESTRAINTS)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -136,7 +146,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_RESTRAINTS)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESTRAINTS)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -146,7 +158,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_DOGS)" *ngIf="isLoggedIn">
+						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_DOGS)" *ngIf="isLoggedIn">
 							Save and Exit
 						</button>
 					</div>
@@ -159,7 +171,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_DOGS)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_DOGS)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -169,7 +183,12 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_LICENCE_TERM)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_LICENCE_TERM)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -182,7 +201,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_LICENCE_TERM)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_LICENCE_TERM)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -205,6 +226,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	isLoggedIn = false;
 	isFormValid = false;
+	// licenceAppId: string | null = null;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -250,6 +272,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+				//TODO hide previous when already saved licence
+				// console.log('xxxxxxxxxxxxx', this.licenceApplicationService.licenceModelFormGroup);
+				// this.licenceAppId = this.licenceApplicationService.licenceModelFormGroup.controls['licenceAppId'].value;
+				//
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(

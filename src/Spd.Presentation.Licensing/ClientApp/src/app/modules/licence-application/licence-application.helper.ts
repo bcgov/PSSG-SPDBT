@@ -208,9 +208,6 @@ export abstract class LicenceApplicationHelper {
 			trainingCode: new FormControl(''),
 			attachments: new FormControl([]),
 			trainingAttachments: new FormControl([]),
-			// fireCourseCertificateAttachments: new FormControl([]),
-			// fireVerificationLetterAttachments: new FormControl([]),
-			// addFireInvestigator: new FormControl(''),
 		},
 		{
 			validators: [
@@ -221,14 +218,6 @@ export abstract class LicenceApplicationHelper {
 					'trainingAttachments',
 					(form) => form.get('isInclude')?.value
 				),
-				// FormGroupValidators.conditionalDefaultRequiredValidator(
-				// 	'fireCourseCertificateAttachments',
-				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-				// ),
-				// FormGroupValidators.conditionalDefaultRequiredValidator(
-				// 	'fireVerificationLetterAttachments',
-				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-				// ),
 			],
 		}
 	);
@@ -384,17 +373,26 @@ export abstract class LicenceApplicationHelper {
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
-			proofTypeCode: new FormControl('', [FormControlValidators.required]),
+			canadianCitizenProofTypeCode: new FormControl(''),
+			notCanadianCitizenProofTypeCode: new FormControl(''),
 			expiryDate: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'canadianCitizenProofTypeCode',
+					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'notCanadianCitizenProofTypeCode',
+					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.No
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
 					(form) =>
-						form.get('proofOfAbility')?.value == LicenceDocumentTypeCode.WorkPermit ||
-						form.get('proofOfAbility')?.value == LicenceDocumentTypeCode.StudyPermit
+						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
+						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit
 				),
 			],
 		}

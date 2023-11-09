@@ -164,14 +164,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse"
+							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse"
 						>
 							You must have completed a recognized training course
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorTrainingCodes.CompleteOtherCoursesOrKnowledge"
+							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge"
 						>
 							You must provide proof of completion of courses or knowledge in the areas of:
 							<ul>
@@ -202,10 +202,19 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div *ngIf="trainingCode.value" @showHideTriggerSlideAnimation>
 				<div class="my-2">
 					<div class="fs-6 fw-bold mb-2">
-						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse">
+						<span
+							*ngIf="
+								trainingCode.value ==
+								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse
+							"
+						>
 							Upload a copy of your course certificate:
 						</span>
-						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteOtherCoursesOrKnowledge"
+						<span
+							*ngIf="
+								trainingCode.value ==
+								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge
+							"
 							>Upload document(s) providing proof of course completion or equivalent knowledge:</span
 						>
 					</div>

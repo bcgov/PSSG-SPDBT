@@ -13,9 +13,19 @@ button.mdc-button {
     font-size: 1rem;
   }
 
+  &.bordered {
+    border: 1px solid;
+    border-color: var(--mdc-outlined-button-outline-color, rgba(0, 0, 0, 0.12));
+  }
+
   &.medium {
     height: 42px;
     font-size: .9rem;
+  }
+
+  &.large {
+    height: 46px;
+    font-size: 1rem;
   }
 }
 

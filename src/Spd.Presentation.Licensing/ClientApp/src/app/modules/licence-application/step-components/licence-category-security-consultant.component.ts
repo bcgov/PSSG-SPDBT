@@ -138,7 +138,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 
 	securityConsultantRequirementCodes = SecurityConsultantRequirementCode;
 
-	@ViewChild('resumeattachmentsRef') fileUploadResumeComponent!: FileUploadComponent;
+	@ViewChild('resumeAttachmentsRef') fileUploadResumeComponent!: FileUploadComponent;
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 
 	constructor(

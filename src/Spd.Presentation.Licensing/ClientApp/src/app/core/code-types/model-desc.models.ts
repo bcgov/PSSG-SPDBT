@@ -70,10 +70,17 @@ export const PrivateInvestigatorRequirementCode: Record<PrivateInvestigatorRequi
 		LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining,
 };
 
-export enum PrivateInvestigatorTrainingCode {
-	CompleteRecognizedTrainingCourse = 'CompleteRecognizedTrainingCourse',
-	CompleteOtherCoursesOrKnowledge = 'CompleteOtherCoursesOrKnowledge',
-}
+type PrivateInvestigatorTrainingCodeSubset = Extract<
+	LicenceDocumentTypeCode,
+	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse
+	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge
+>;
+export const PrivateInvestigatorTrainingCode: Record<PrivateInvestigatorTrainingCodeSubset, string> = {
+	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse]:
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse,
+	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge]:
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge,
+};
 
 type PrivateInvestigatorSupRequirementCodeSubset = Extract<
 	LicenceDocumentTypeCode,

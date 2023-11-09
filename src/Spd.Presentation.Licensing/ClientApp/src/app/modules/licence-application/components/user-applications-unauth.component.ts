@@ -36,19 +36,20 @@ export class UserApplicationsUnauthComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
+		this.authProcessService.logoutBceid();
+
 		const tryResultBCSC = await this.authProcessService.tryInitializeBCSC();
-		console.debug('tryResultBCSC', tryResultBCSC);
 		if (tryResultBCSC) {
-			this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC)]);
+			this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)]);
 			return;
 		}
 
-		const tryResultBCeID = await this.authProcessService.tryInitializeBCeID();
-		console.debug('tryResultBCeID', tryResultBCeID);
-		if (tryResultBCeID) {
-			this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)]);
-			return;
-		}
+		// const tryResultBCeID = await this.authProcessService.tryInitializeBCeID();
+		// console.debug('tryResultBCeID', tryResultBCeID);
+		// if (tryResultBCeID) {
+		// 	this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)]);
+		// 	return;
+		// }
 	}
 
 	onCreateNew(): void {

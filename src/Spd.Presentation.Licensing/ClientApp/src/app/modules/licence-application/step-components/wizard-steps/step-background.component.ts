@@ -21,7 +21,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
 							*ngIf="isLoggedIn"
 						>
@@ -42,7 +42,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_POLICE_BACKGROUND)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_POLICE_BACKGROUND)">
 							Next: Review
 						</button>
 					</div>
@@ -56,7 +56,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
 							*ngIf="isLoggedIn"
 						>
@@ -77,7 +77,12 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -91,7 +96,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
 							*ngIf="isLoggedIn"
 						>
@@ -112,7 +117,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_CRIMINAL_HISTORY)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CRIMINAL_HISTORY)">
 							Next: Review
 						</button>
 					</div>
@@ -124,7 +129,12 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_FINGERPRINTS)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -137,7 +147,9 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_FINGERPRINTS)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_FINGERPRINTS)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -147,7 +159,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large bordered mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_BACKGROUND_INFO)">

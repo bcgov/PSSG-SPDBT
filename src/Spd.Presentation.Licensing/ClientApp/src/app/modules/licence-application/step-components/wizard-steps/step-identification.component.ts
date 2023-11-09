@@ -29,7 +29,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_PERSONAL_INFORMATION)"
 							*ngIf="isLoggedIn"
 						>
@@ -50,7 +50,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_PERSONAL_INFORMATION)">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onNextReview(STEP_PERSONAL_INFORMATION)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -62,7 +67,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_ALIASES)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_ALIASES)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -75,7 +85,9 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_ALIASES)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ALIASES)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -85,7 +97,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_CITIZENSHIP)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -98,7 +115,9 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -110,7 +129,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_ADDITIONAL_GOV_ID)"
 							*ngIf="isLoggedIn"
 						>
@@ -131,7 +150,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_ADDITIONAL_GOV_ID)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ADDITIONAL_GOV_ID)">
 							Next: Review
 						</button>
 					</div>
@@ -145,7 +164,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
 							*ngIf="isLoggedIn"
 						>
@@ -166,7 +185,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
 							Next: Review
 						</button>
 					</div>
@@ -180,7 +199,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)"
 							*ngIf="isLoggedIn"
 						>
@@ -201,7 +220,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)">
 							Next: Review
 						</button>
 					</div>
@@ -213,7 +232,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_PHOTO)" *ngIf="isLoggedIn">
+						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_PHOTO)" *ngIf="isLoggedIn">
 							Save and Exit
 						</button>
 					</div>
@@ -226,7 +245,9 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_PHOTO)">Next: Review</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PHOTO)">
+							Next: Review
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -238,7 +259,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
 							*ngIf="isLoggedIn"
 						>
@@ -259,7 +280,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
 							Next: Review
 						</button>
 					</div>
@@ -271,7 +292,12 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button class="large mb-2" (click)="onSaveAndExit(STEP_MAILING_ADDRESS)" *ngIf="isLoggedIn">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_MAILING_ADDRESS)"
+							*ngIf="isLoggedIn"
+						>
 							Save and Exit
 						</button>
 					</div>
@@ -289,7 +315,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
 							Next: Review
 						</button>
 					</div>
@@ -303,7 +329,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
-							class="large mb-2"
+							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_CONTACT_INFORMATION)"
 							*ngIf="isLoggedIn"
 						>
@@ -314,8 +340,19 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_CONTACT_INFORMATION)">
+						<button
+							mat-flat-button
+							color="primary"
+							color="primary"
+							class="large mb-2"
+							(click)="onStepNext(STEP_CONTACT_INFORMATION)"
+						>
 							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CONTACT_INFORMATION)">
+							Next: Review
 						</button>
 					</div>
 				</div>
@@ -478,9 +515,9 @@ export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceSt
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-				form.value.proofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
 			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-				form.value.proofOfAbility != LicenceDocumentTypeCode.PermanentResidentCard)
+				form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}
 }
