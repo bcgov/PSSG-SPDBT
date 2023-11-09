@@ -62,7 +62,7 @@ internal class DocumentRepository : IDocumentRepository
             CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
             RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
             ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
-            UpdateDocumentExpiryDateCmd c => await UpdateDocumentExpiryDateAsync(c, ct),
+            UpdateDocumentCmd c => await UpdateDocumentAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -85,18 +85,26 @@ internal class DocumentRepository : IDocumentRepository
             throw new ArgumentException("invalid application id");
 
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(cmd.TempFile);
-        var tag = _context.LookupTag(cmd.DocumentType.ToString());
         documenturl.bcgov_url = $"spd_application/{cmd.ApplicationId}";
         _context.AddTobcgov_documenturls(documenturl);
         _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
-        _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
+        if(cmd.DocumentType != null)
+        {
+            var tag = _context.LookupTag(cmd.DocumentType.ToString());
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
+        }        
+        if(cmd.DocumentType2 != null)
+        {
+            var tag2 = _context.LookupTag(cmd.DocumentType2.ToString());
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag2Id), tag2);
+        }
         if (cmd.SubmittedByApplicantId != null)
         {
             contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
             _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
         }
 
-        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, tag, ct);
+        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, null, ct);
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = application.spd_applicationid;
         return _mapper.Map<DocumentResp>(documenturl);
@@ -114,12 +122,22 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task<DocumentResp> UpdateDocumentExpiryDateAsync(UpdateDocumentExpiryDateCmd cmd, CancellationToken ct)
+    private async Task<DocumentResp> UpdateDocumentAsync(UpdateDocumentCmd cmd, CancellationToken ct)
     {
         bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
         if (documenturl == null) { return null; }
         documenturl.spd_expirydate = cmd.ExpiryDate == null ? null : 
             new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
+        if(cmd.Tag1 != null)
+        {
+            var tag1 = _context.LookupTag(cmd.Tag1.ToString());
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag1);
+        }
+        if (cmd.Tag2 != null)
+        {
+            var tag2 = _context.LookupTag(cmd.Tag2.ToString());
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag2Id), tag2);
+        }
         _context.UpdateObject(documenturl);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);

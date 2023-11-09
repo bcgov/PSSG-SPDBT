@@ -72,19 +72,14 @@ namespace Spd.Manager.Cases.Licence
         //public IList<IFormFile> NewDocuments { get; set; } //for anonymous user
         public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
     }
 
     public record PoliceOfficerDocument : Document;
     public record MentalHealthDocument : Document;
     public record FingerprintProofDocument : Document;
-    public record CitizenshipDocument : Document
-    {
-        public DateTimeOffset? ExpiryDate { get; set; }
-    };
-    public record AdditionalGovIdDocument : Document
-    {
-        public DateTimeOffset? ExpiryDate { get; set; }
-    };
+    public record CitizenshipDocument : Document;
+    public record AdditionalGovIdDocument : Document;
     public record IdPhotoDocument : Document;
     public record ResidentialAddress : Address;
     public record MailingAddress : Address;
@@ -147,7 +142,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceAppDocumentUploadRequest(
         IList<IFormFile> Documents,
-        LicenceDocumentTypeCode LicenceDocumentTypeCode
+        LicenceDocumentTypeCode? LicenceDocumentTypeCode
     );
     public record LicenceAppDocumentResponse
     {

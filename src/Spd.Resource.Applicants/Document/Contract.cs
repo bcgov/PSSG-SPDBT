@@ -41,37 +41,51 @@ namespace Spd.Resource.Applicants.Document
         public SpdTempFile TempFile { get; set; }
         public Guid ApplicationId { get; set; }
         public Guid? SubmittedByApplicantId { get; set; }
-        public DocumentTypeEnum DocumentType { get; set; }
+        public DocumentTypeEnum? DocumentType { get; set; } //tag1
+        public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
     }
 
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record ReactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
-    public record UpdateDocumentExpiryDateCmd(Guid DocumentUrlId, DateTimeOffset? ExpiryDate) : DocumentCmd;
+    public record UpdateDocumentCmd(Guid DocumentUrlId, DateTimeOffset? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
     public enum DocumentTypeEnum
     {
         ApplicantConsentForm,
         ApplicantInformation,
+        ApprovedLocksmithCourse,
         ArmouredCarGuard,
         ArmouredVehiclePurpose,
         ArmouredVehicleRationale,
+        AuthorizationToCarryCertificate,
         BCCompaniesRegistrationVerification,
         BCServicesCard,
         BirthCertificate,
         BodyArmourPurpose,
         BodyArmourRationale,
         BusinessInsurance,
+        BasicSecurityTrainingCertificate,
+        BasicSecurityTrainingCourseEquivalent,
         CanadianCitizenship,
         CanadianFirearmsLicence,
         CanadianNativeStatusCard,
         CertificateOfAdvancedSecurityTraining,
+        CertificateOfQualification,
         ClearanceLetter,
         ConfirmationLetterFromSuperiorOfficer,
         ConfirmationOfFingerprints,
-        FingerprintsPkg,
+        ConfirmationOfPermanentResidenceDocument,
+        CourseCertificate,
         ConvictedOffence,
         CriminalCharges,
         DriverLicense,
+        ExperienceAndApprenticeship,
+        ExperienceAndCourses,
+        ExperienceLetters,
+        ExperienceOrTrainingEquivalent,
+        FingerprintsPkg,
+        FireInvestigator,
         GovtIssuedPhotoID,
+        KnowledgeAndExperience,
         LegalNameChange,
         LegalWorkStatus,
         LetterOfNoConflict,
@@ -81,19 +95,28 @@ namespace Spd.Resource.Applicants.Document
         PaymentReceipt,
         Passport,
         PermanentResidenceCard,
+        PoliceExperienceOrTraining,
         Photograph,
         PrivateInvestigator,
         PrivateInvestigatorUnderSupervision,
+        PrivateSecurityTrainingNetworkCompletion,
+        RecommendationLetters,
         SecurityAlarmInstaller,
         SecurityConsultant,
         SecurityGuard,
         StatutoryDeclaration,
         StatutoryDeclarationPkg,
-        ValidationCertificate,
-        OpportunityToRespond,
-        WorkPermit,
         StudyPermit,
-        RecordOfLandingDocument,
-        ConfirmationOfPermanentResidenceDocument
+        TenYearsPoliceExperienceAndTraining,
+        TradesQualificationCertificate,
+        Training,
+        TrainingRecognizedCourse,
+        TrainingOtherCoursesOrKnowledge,
+        ValidationCertificate,
+        VerificationLetter,
+        OpportunityToRespond,
+        OtherCourseCompletion,
+        WorkPermit,
+        RecordOfLandingDocument
     }
 }

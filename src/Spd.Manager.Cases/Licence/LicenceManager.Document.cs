@@ -9,7 +9,9 @@ internal partial class LicenceManager
 {
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
-        DocumentTypeEnum docEnum = GetDocumentTypeEnum(command.Request.LicenceDocumentTypeCode);
+        DocumentTypeEnum? docEnum = null;
+        if (command.Request.LicenceDocumentTypeCode != null)
+            docEnum = GetDocumentTypeEnum((LicenceDocumentTypeCode)command.Request.LicenceDocumentTypeCode);
         LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, ct);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
@@ -42,20 +44,72 @@ internal partial class LicenceManager
         return _mapper.Map<IEnumerable<LicenceAppDocumentResponse>>(docResps);
     }
 
-    private async Task UpdateDocumentsExpiryDate(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
+    private async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
+        //citizenship
         if (request.CitizenshipDocument != null)
         {
             foreach (LicenceAppDocumentResponse doc in request.CitizenshipDocument.DocumentResponses)
             {
-                await _documentRepository.ManageAsync(new UpdateDocumentExpiryDateCmd(doc.DocumentUrlId, request.CitizenshipDocument.ExpiryDate), ct);
+                DocumentTypeEnum tag = GetDocumentTypeEnum(request.CitizenshipDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.CitizenshipDocument.ExpiryDate, null, tag), ct);
             }
         }
+        //govid
         if (request.AdditionalGovIdDocument != null)
         {
             foreach (LicenceAppDocumentResponse doc in request.AdditionalGovIdDocument.DocumentResponses)
             {
-                await _documentRepository.ManageAsync(new UpdateDocumentExpiryDateCmd(doc.DocumentUrlId, request.AdditionalGovIdDocument.ExpiryDate), ct);
+                DocumentTypeEnum tag = GetDocumentTypeEnum(request.AdditionalGovIdDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.AdditionalGovIdDocument.ExpiryDate, null, tag), ct);
+            }
+        }
+        //policy officer
+        if (request.PoliceOfficerDocument != null)
+        {
+            foreach (LicenceAppDocumentResponse doc in request.PoliceOfficerDocument.DocumentResponses)
+            {
+                DocumentTypeEnum tag = GetDocumentTypeEnum(request.PoliceOfficerDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+            }
+        }
+        //mental health
+        if (request.MentalHealthDocument != null)
+        {
+            foreach (LicenceAppDocumentResponse doc in request.MentalHealthDocument.DocumentResponses)
+            {
+                DocumentTypeEnum tag = GetDocumentTypeEnum(request.MentalHealthDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+            }
+        }
+        //fingerproof
+        if (request.FingerprintProofDocument != null)
+        {
+            foreach (LicenceAppDocumentResponse doc in request.FingerprintProofDocument.DocumentResponses)
+            {
+                DocumentTypeEnum tag = GetDocumentTypeEnum(request.FingerprintProofDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+            }
+        }
+        //id photo
+        if (request.FingerprintProofDocument != null)
+        {
+            foreach (LicenceAppDocumentResponse doc in request.IdPhotoDocument.DocumentResponses)
+            {
+                DocumentTypeEnum tag = GetDocumentTypeEnum(request.IdPhotoDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+            }
+        }
+        //category
+        foreach (WorkerLicenceAppCategoryData category in request.CategoryData)
+        {
+            foreach (Document d in category.Documents)
+            {
+                foreach (var doc in d.DocumentResponses)
+                {
+                    (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(d.LicenceDocumentTypeCode);
+                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, d.ExpiryDate, tag1, tag2), ct);
+                }
             }
         }
     }
@@ -200,6 +254,19 @@ internal partial class LicenceManager
             throw new ArgumentException("Invalid licenceDocumentTypeCode");
         };
         return docTypeEnum;
+    }
+
+    private (DocumentTypeEnum?, DocumentTypeEnum?) GetDocumentTypeEnums(LicenceDocumentTypeCode licenceDocumentTypeCode)
+    {
+        string[] strs = licenceDocumentTypeCode.ToString().Split("_");
+        if (strs.Length != 2)
+        {
+            return (null, null);
+        };
+        string cat = strs[0].Replace("Category", string.Empty);
+        DocumentTypeEnum documentType1 = Enum.Parse<DocumentTypeEnum>(cat);
+        DocumentTypeEnum documentType2 = Enum.Parse<DocumentTypeEnum>(strs[1]);
+        return (documentType1, documentType2);
     }
 
     private LicenceDocumentTypeCode GetlicenceDocumentTypeCode(DocumentTypeEnum documentType)
