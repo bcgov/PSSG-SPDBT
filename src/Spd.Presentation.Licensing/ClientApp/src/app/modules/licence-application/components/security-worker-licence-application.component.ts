@@ -13,7 +13,7 @@ export class SecurityWorkerLicenceApplicationComponent {
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC));
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
 			return;
 		}
 	}

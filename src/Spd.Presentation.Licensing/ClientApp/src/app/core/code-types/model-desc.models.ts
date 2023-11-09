@@ -47,10 +47,12 @@ type LocksmithRequirementCodeSubset = Extract<
 	| LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship
 >;
 export const LocksmithRequirementCode: Record<LocksmithRequirementCodeSubset, string> = {
-	[LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse]: 'CategoryLocksmithApprovedLocksmithCourse',
-	[LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification]: 'CategoryLocksmithCertificateOfQualification',
+	[LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse]:
+		LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse,
+	[LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification]:
+		LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification,
 	[LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship]:
-		'CategoryLocksmithExperienceAndApprenticeship',
+		LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship,
 };
 
 type PrivateInvestigatorRequirementCodeSubset = Extract<
@@ -61,17 +63,24 @@ type PrivateInvestigatorRequirementCodeSubset = Extract<
 >;
 export const PrivateInvestigatorRequirementCode: Record<PrivateInvestigatorRequirementCodeSubset, string> = {
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses]:
-		'CategoryPrivateInvestigatorExperienceAndCourses',
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses,
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience]:
-		'CategoryPrivateInvestigatorKnowledgeAndExperience',
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience,
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining]:
-		'CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining',
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining,
 };
 
-export enum PrivateInvestigatorTrainingCode {
-	CompleteRecognizedTrainingCourse = 'CompleteRecognizedTrainingCourse',
-	CompleteOtherCoursesOrKnowledge = 'CompleteOtherCoursesOrKnowledge',
-}
+type PrivateInvestigatorTrainingCodeSubset = Extract<
+	LicenceDocumentTypeCode,
+	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse
+	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge
+>;
+export const PrivateInvestigatorTrainingCode: Record<PrivateInvestigatorTrainingCodeSubset, string> = {
+	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse]:
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse,
+	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge]:
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge,
+};
 
 type PrivateInvestigatorSupRequirementCodeSubset = Extract<
 	LicenceDocumentTypeCode,
@@ -81,11 +90,11 @@ type PrivateInvestigatorSupRequirementCodeSubset = Extract<
 >;
 export const PrivateInvestigatorSupRequirementCode: Record<PrivateInvestigatorSupRequirementCodeSubset, string> = {
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion]:
-		'CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion',
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion,
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion]:
-		'CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion',
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion,
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining]:
-		'CategoryPrivateInvestigatorUnderSupervisionTraining',
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
 };
 
 type SecurityAlarmInstallerRequirementCodeSubset = Extract<
@@ -95,9 +104,9 @@ type SecurityAlarmInstallerRequirementCodeSubset = Extract<
 >;
 export const SecurityAlarmInstallerRequirementCode: Record<SecurityAlarmInstallerRequirementCodeSubset, string> = {
 	[LicenceDocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent]:
-		'CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent',
+		LicenceDocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent,
 	[LicenceDocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate]:
-		'CategorySecurityAlarmInstallerTradesQualificationCertificate',
+		LicenceDocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate,
 };
 
 type SecurityConsultantRequirementCodeSubset = Extract<
@@ -106,9 +115,10 @@ type SecurityConsultantRequirementCodeSubset = Extract<
 	| LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters
 >;
 export const SecurityConsultantRequirementCode: Record<SecurityConsultantRequirementCodeSubset, string> = {
-	[LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters]: 'CategorySecurityConsultantExperienceLetters',
+	[LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters]:
+		LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
 	[LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters]:
-		'CategorySecurityConsultantRecommendationLetters',
+		LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters,
 };
 
 type SecurityGuardRequirementCodeSubset = Extract<
@@ -119,11 +129,11 @@ type SecurityGuardRequirementCodeSubset = Extract<
 >;
 export const SecurityGuardRequirementCode: Record<SecurityGuardRequirementCodeSubset, string> = {
 	[LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate]:
-		'CategorySecurityGuardBasicSecurityTrainingCertificate',
+		LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate,
 	[LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent]:
-		'CategorySecurityGuardBasicSecurityTrainingCourseEquivalent',
+		LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent,
 	[LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining]:
-		'CategorySecurityGuardPoliceExperienceOrTraining',
+		LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining,
 };
 
 // ============================================================
@@ -234,7 +244,7 @@ export const EyeColourTypes: SelectOptions[] = [
 
 export const HeightUnitTypes: SelectOptions[] = [
 	{ desc: 'Centimeters', code: HeightUnitCode.Centimeters },
-	{ desc: 'Inches', code: HeightUnitCode.Inches },
+	{ desc: 'Feet', code: HeightUnitCode.Inches },
 ];
 
 export const WeightUnitTypes: SelectOptions[] = [

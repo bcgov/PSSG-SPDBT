@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
@@ -7,6 +8,8 @@ import {
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorTrainingCode,
 } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -117,7 +120,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 				<div class="my-2">
 					<app-file-upload
-						(fileChanged)="onFileChanged()"
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -161,14 +165,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse"
+							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse"
 						>
 							You must have completed a recognized training course
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorTrainingCodes.CompleteOtherCoursesOrKnowledge"
+							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge"
 						>
 							You must provide proof of completion of courses or knowledge in the areas of:
 							<ul>
@@ -199,15 +203,25 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div *ngIf="trainingCode.value" @showHideTriggerSlideAnimation>
 				<div class="my-2">
 					<div class="fs-6 fw-bold mb-2">
-						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse">
+						<span
+							*ngIf="
+								trainingCode.value ==
+								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse
+							"
+						>
 							Upload a copy of your course certificate:
 						</span>
-						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteOtherCoursesOrKnowledge"
+						<span
+							*ngIf="
+								trainingCode.value ==
+								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge
+							"
 							>Upload document(s) providing proof of course completion or equivalent knowledge:</span
 						>
 					</div>
 					<app-file-upload
-						(fileChanged)="onFileChanged()"
+						(fileUploaded)="onFileTrainingAdded($event)"
+						(fileRemoved)="onFileRemoved()"
 						[control]="trainingAttachments"
 						[maxNumberOfFiles]="10"
 						#trainingAttachmentsRef
@@ -323,14 +337,54 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	privateInvestigatorRequirementCodes = PrivateInvestigatorRequirementCode;
 	privateInvestigatorTrainingCodes = PrivateInvestigatorTrainingCode;
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
+	@ViewChild('trainingattachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
+
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private authenticationService: AuthenticationService,
+		private hotToastService: HotToastService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigator;
+	onFileUploaded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
+	}
+
+	onFileTrainingAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(this.trainingCode.value, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.trainingAttachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadTrainingComponent.removeFailedFile(file);
+				},
+			});
+		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {
@@ -346,23 +400,23 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 		return this.form.get('attachments') as FormControl;
 	}
 
-	public get trainingAttachments(): FormControl {
-		return this.form.get('trainingAttachments') as FormControl;
-	}
-
-	public get fireCourseCertificateAttachments(): FormControl {
-		return this.form.get('fireCourseCertificateAttachments') as FormControl;
-	}
-
-	public get fireVerificationLetterAttachments(): FormControl {
-		return this.form.get('fireVerificationLetterAttachments') as FormControl;
-	}
-
 	public get trainingCode(): FormControl {
 		return this.form.get('trainingCode') as FormControl;
 	}
 
-	public get addFireInvestigator(): FormControl {
-		return this.form.get('addFireInvestigator') as FormControl;
+	public get trainingAttachments(): FormControl {
+		return this.form.get('trainingAttachments') as FormControl;
 	}
+
+	// public get fireCourseCertificateAttachments(): FormControl {
+	// 	return this.form.get('fireCourseCertificateAttachments') as FormControl;
+	// }
+
+	// public get fireVerificationLetterAttachments(): FormControl {
+	// 	return this.form.get('fireVerificationLetterAttachments') as FormControl;
+	// }
+
+	// public get addFireInvestigator(): FormControl {
+	// 	return this.form.get('addFireInvestigator') as FormControl;
+	// }
 }

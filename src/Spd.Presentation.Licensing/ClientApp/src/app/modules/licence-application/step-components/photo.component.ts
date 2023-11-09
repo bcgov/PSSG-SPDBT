@@ -1,7 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -72,7 +76,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 								</app-alert>
 
 								<app-file-upload
-									(fileChanged)="onFileChanged()"
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
 									[control]="attachments"
 									[maxNumberOfFiles]="1"
 									[files]="attachments.value"
@@ -105,10 +110,32 @@ export class PhotoComponent implements LicenceChildStepperStepComponent {
 
 	@Input() isCalledFromModal: boolean = false;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.photographOfYourself;
+	constructor(
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
+
+	onFileUploaded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

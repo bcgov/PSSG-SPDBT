@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from 'src/app/api/models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -23,7 +26,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate:</div>
 			<div class="my-2">
 				<app-file-upload
-					(fileChanged)="onFileChanged()"
+					(fileUploaded)="onFileUploaded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[maxNumberOfFiles]="10"
 					[control]="attachments"
 					[files]="attachments.value"
@@ -65,14 +69,39 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private authenticationService: AuthenticationService,
+		private licenceApplicationService: LicenceApplicationService,
+		private hotToastService: HotToastService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryArmouredCarGuard;
+	onFileUploaded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadComponent.removeFailedFile(file);
+					},
+				});
+		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {
