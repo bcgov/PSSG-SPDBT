@@ -92,7 +92,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 								<div class="my-2">
 									<app-file-upload
-										(fileAdded)="onFileAdded($event)"
+										(fileUploaded)="onFileUploaded($event)"
+										(fileRemoved)="onFileRemoved()"
 										[control]="attachments"
 										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
@@ -141,7 +142,7 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 		}
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(this.dogsPurposeDocumentType.value, file).subscribe({
 				next: (resp: any) => {
@@ -155,6 +156,10 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

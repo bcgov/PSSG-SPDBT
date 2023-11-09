@@ -88,7 +88,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 				<div class="my-2">
 					<app-file-upload
-						(fileAdded)="onFileAdded($event)"
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -136,7 +137,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 			<div class="my-2">
 				<app-file-upload
-					(fileAdded)="onFileTrainingAdded($event)"
+					(fileUploaded)="onFileTrainingAdded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[control]="trainingAttachments"
 					[maxNumberOfFiles]="10"
 					#trainingAttachmentsRef
@@ -181,7 +183,7 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 		);
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {
@@ -213,6 +215,10 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 					},
 				});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

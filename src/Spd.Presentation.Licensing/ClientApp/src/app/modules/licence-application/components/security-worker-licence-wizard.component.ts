@@ -154,6 +154,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			.subscribe((_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = true;
 
+				console.debug('*******valueChanges to TRUE');
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
 			});
@@ -222,7 +223,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 					this.hotToastService.success('Licence information has been saved');
 
 					if (stepper?.selected) stepper.selected.completed = true;
-
 					stepper.next();
 
 					switch (stepper.selectedIndex) {
@@ -307,7 +307,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -327,7 +326,6 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					//this.licenceApplicationService.hasDocumentsChanged = null;
 
 					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();

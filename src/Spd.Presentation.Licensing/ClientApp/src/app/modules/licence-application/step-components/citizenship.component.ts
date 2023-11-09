@@ -114,7 +114,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
 												</ng-template>
 												<app-file-upload
-													(fileAdded)="onFileAdded($event)"
+													(fileUploaded)="onFileUploaded($event)"
+													(fileRemoved)="onFileRemoved()"
 													[control]="attachments"
 													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
@@ -159,7 +160,7 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 		private hotToastService: HotToastService
 	) {}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			const proofTypeCode =
 				this.isCanadianCitizen.value == BooleanTypeCode.Yes
@@ -177,6 +178,10 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

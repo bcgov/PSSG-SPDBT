@@ -55,7 +55,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<div class="col-12">
 											<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
 											<app-file-upload
-												(fileAdded)="onFileAdded($event)"
+												(fileUploaded)="onFileUploaded($event)"
+												(fileRemoved)="onFileRemoved()"
 												[maxNumberOfFiles]="1"
 												[control]="attachments"
 												[files]="attachments.value"
@@ -97,7 +98,7 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 		private hotToastService: HotToastService
 	) {}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(this.governmentIssuedPhotoTypeCode.value, file).subscribe({
 				next: (resp: any) => {
@@ -111,6 +112,10 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

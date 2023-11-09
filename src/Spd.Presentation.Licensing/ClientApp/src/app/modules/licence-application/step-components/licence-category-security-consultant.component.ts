@@ -42,7 +42,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 			<div class="my-2">
 				<app-file-upload
-					(fileAdded)="onFileResumeAdded($event)"
+					(fileUploaded)="onFileResumeAdded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[control]="resumeAttachments"
 					[maxNumberOfFiles]="10"
 					#resumeAttachmentsRef
@@ -110,7 +111,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 				<div class="my-2">
 					<app-file-upload
-						(fileAdded)="onFileAdded($event)"
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -170,7 +172,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 		}
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {
@@ -185,6 +187,11 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 			});
 		}
 	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;

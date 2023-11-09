@@ -53,7 +53,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-12">
 										<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
 										<app-file-upload
-											(fileAdded)="onFileAdded($event)"
+											(fileUploaded)="onFileUploaded($event)"
+											(fileRemoved)="onFileRemoved()"
 											[control]="attachments"
 											[maxNumberOfFiles]="1"
 											[files]="attachments.value"
@@ -91,7 +92,7 @@ export class MentalHealthConditionsComponent implements LicenceChildStepperStepC
 		private hotToastService: HotToastService
 	) {}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
 				next: (resp: any) => {
@@ -105,6 +106,10 @@ export class MentalHealthConditionsComponent implements LicenceChildStepperStepC
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

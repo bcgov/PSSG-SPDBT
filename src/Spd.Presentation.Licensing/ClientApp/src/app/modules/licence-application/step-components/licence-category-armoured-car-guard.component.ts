@@ -26,7 +26,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate:</div>
 			<div class="my-2">
 				<app-file-upload
-					(fileAdded)="onFileAdded($event)"
+					(fileUploaded)="onFileUploaded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[maxNumberOfFiles]="10"
 					[control]="attachments"
 					[files]="attachments.value"
@@ -81,7 +82,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate, file)
@@ -97,6 +98,10 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 					},
 				});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

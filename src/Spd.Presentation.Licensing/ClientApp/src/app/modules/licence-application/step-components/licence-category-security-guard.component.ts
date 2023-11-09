@@ -71,7 +71,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload
-						(fileAdded)="onFileAdded($event)"
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -119,7 +120,7 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityGuard, 'WorkerCategoryTypes');
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {
@@ -133,6 +134,10 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

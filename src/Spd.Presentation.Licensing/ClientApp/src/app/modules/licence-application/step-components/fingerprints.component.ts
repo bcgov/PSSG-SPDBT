@@ -32,7 +32,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
-								(fileAdded)="onFileAdded($event)"
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
 								[control]="attachments"
 								[maxNumberOfFiles]="1"
 								[files]="attachments.value"
@@ -73,7 +74,7 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 		private hotToastService: HotToastService
 	) {}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
 				next: (resp: any) => {
@@ -87,6 +88,10 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

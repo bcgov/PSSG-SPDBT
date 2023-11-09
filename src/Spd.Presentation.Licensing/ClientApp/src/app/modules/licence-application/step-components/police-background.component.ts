@@ -101,7 +101,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 													for more information.
 												</p>
 												<app-file-upload
-													(fileAdded)="onFileAdded($event)"
+													(fileUploaded)="onFileUploaded($event)"
+													(fileRemoved)="onFileRemoved()"
 													[control]="attachments"
 													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
@@ -166,7 +167,7 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
 	}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
@@ -182,6 +183,10 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 					},
 				});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

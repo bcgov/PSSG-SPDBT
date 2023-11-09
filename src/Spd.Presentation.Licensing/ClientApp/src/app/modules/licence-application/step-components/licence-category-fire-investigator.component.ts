@@ -32,7 +32,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="my-2">
 				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
-					(fileAdded)="onFileCertificateAdded($event)"
+					(fileUploaded)="onFileCertificateAdded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[control]="fireCourseCertificateAttachments"
 					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
@@ -53,7 +54,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="mt-3 mb-2">
 				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
-					(fileAdded)="onFileVerificationAdded($event)"
+					(fileUploaded)="onFileVerificationAdded($event)"
+					(fileRemoved)="onFileRemoved()"
 					[control]="fireVerificationLetterAttachments"
 					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef
@@ -130,6 +132,10 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 					},
 				});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

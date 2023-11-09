@@ -186,11 +186,8 @@ export class FileUploadComponent implements OnInit {
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept
 
-	@Output() uploadedFile = new EventEmitter<any>();
-	@Output() removeFile = new EventEmitter<any>();
-	@Output() fileChanged = new EventEmitter<any>();
-	@Output() fileAdded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter<any>();
+	@Output() fileUploaded = new EventEmitter<File>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
@@ -208,6 +205,8 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onUploadFile(evt: any) {
+		console.log('evt.addedFiles', evt.addedFiles);
+		console.log('this.files', this.files);
 		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
@@ -228,10 +227,9 @@ export class FileUploadComponent implements OnInit {
 				return;
 			}
 
+			console.log('adding file', evt.addedFiles);
 			this.files.push(...evt.addedFiles);
-			this.uploadedFile.emit(evt.addedFiles);
-			this.onFileChanged();
-			this.onFileAdded(addedFile);
+			this.onFileUploaded(addedFile);
 			return;
 		}
 
@@ -249,36 +247,22 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onRemoveFile(evt: any) {
-		let currentFiles = [...this.files];
 		const removeFileIndex = this.files.indexOf(evt);
-		this.removeFile.emit(removeFileIndex);
-		currentFiles.splice(removeFileIndex, 1);
 
-		this.files = currentFiles;
-		this.onFileChanged();
-		this.onFileRemoved(evt);
+		this.files.splice(removeFileIndex, 1);
+		this.fileRemoved.emit();
+		// this.removeFile.emit(removeFileIndex);
+		// this.onFileChanged();
+		// this.onFileRemoved(evt);
 	}
 
 	removeFailedFile(file: File) {
-		let currentFiles = [...this.files];
 		const removeFileIndex = this.files.indexOf(file);
-		currentFiles.splice(removeFileIndex, 1);
-		this.files = currentFiles;
+		this.files.splice(removeFileIndex, 1);
 	}
 
-	onFileChanged(): void {
-		const files = this.files && this.files.length > 0 ? this.files : [];
-		this.control.setValue(files);
-
-		this.fileChanged.emit(true);
-	}
-
-	onFileAdded(addedFile: File): void {
-		this.fileAdded.emit(addedFile);
-	}
-
-	onFileRemoved(removeFile: File): void {
-		this.fileRemoved.emit(removeFile);
+	onFileUploaded(addedFile: File): void {
+		this.fileUploaded.emit(addedFile);
 	}
 
 	removeAllFiles(): void {

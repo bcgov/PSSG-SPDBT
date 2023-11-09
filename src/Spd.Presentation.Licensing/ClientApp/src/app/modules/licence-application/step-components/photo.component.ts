@@ -76,7 +76,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 								</app-alert>
 
 								<app-file-upload
-									(fileAdded)="onFileAdded($event)"
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
 									[control]="attachments"
 									[maxNumberOfFiles]="1"
 									[files]="attachments.value"
@@ -117,7 +118,7 @@ export class PhotoComponent implements LicenceChildStepperStepComponent {
 		private hotToastService: HotToastService
 	) {}
 
-	onFileAdded(file: File): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
 				next: (resp: any) => {
@@ -131,6 +132,10 @@ export class PhotoComponent implements LicenceChildStepperStepComponent {
 				},
 			});
 		}
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {
