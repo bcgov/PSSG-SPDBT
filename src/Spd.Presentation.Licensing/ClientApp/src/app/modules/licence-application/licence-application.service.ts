@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject, Observable, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, take, tap } from 'rxjs';
 import {
 	AdditionalGovIdDocument,
 	CitizenshipDocument,
@@ -22,6 +22,7 @@ import {
 import { WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
@@ -84,6 +85,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	constructor(
 		formBuilder: FormBuilder,
+		private authUserBcscService: AuthUserBcscService,
 		private utilService: UtilService,
 		private configService: ConfigService,
 		private spinnerService: NgxSpinnerService,
@@ -105,16 +107,41 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	createNewLicence(): Observable<any> {
 		this.spinnerService.show('loaderSpinner');
 
-		return new Observable((observer) => {
-			setTimeout(() => {
-				this.licenceModelFormGroup.reset();
-				console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
+		// return new Observable((observer) => {
+		// setTimeout(() => {
+		this.licenceModelFormGroup.reset();
+		console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
 
-				this.initialized = true;
-				this.spinnerService.hide('loaderSpinner');
-				observer.next(this.licenceModelFormGroup.value);
-			}, 200);
-		});
+		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+		if (bcscUserWhoamiProfile) {
+			this.licenceModelFormGroup.patchValue({
+				personalInformationData: {
+					// oneLegalName: false,
+					givenName: bcscUserWhoamiProfile.firstName, //TODO populate defaults with BCSC data
+					middleName1: 'TODO',
+					middleName2: 'TODO',
+					surname: bcscUserWhoamiProfile.lastName,
+					dateOfBirth: '2009-10-07T00:00:00+00:00',
+				},
+				residentialAddressData: {
+					addressSelected: true,
+					isMailingTheSameAsResidential: false,
+					addressLine1: 'TODO',
+					addressLine2: '',
+					city: 'TODO',
+					country: 'TODO',
+					postalCode: 'V4V 1R8',
+					province: 'British Columbia',
+				},
+			});
+		}
+
+		this.initialized = true;
+		this.spinnerService.hide('loaderSpinner');
+		// observer.next(this.licenceModelFormGroup.value);
+		return of(this.licenceModelFormGroup.value);
+		// 	}, 200);
+		// });
 	}
 
 	addUploadDocument(
@@ -608,16 +635,19 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								break;
 							case WorkerCategoryTypeCode.SecurityGuard:
 								const attachments3: Array<File> = [];
+								let requirementCode = '';
 								category.documents?.forEach((doc: Document) => {
 									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 										const aFile = this.utilService.dummyFile(item);
 										attachments3.push(aFile);
 									});
+									requirementCode = doc.licenceDocumentTypeCode ?? '';
 								});
 								categorySecurityGuardFormGroup = {
+									//xxxxxxxxxxxxxxxxxxxxx
 									isInclude: true,
 									attachments: attachments3,
-									// 	requirementCode: SecurityGuardRequirementCode.CategorySecurityGuard_BasicSecurityTrainingCertificate,
+									requirementCode,
 								};
 								break;
 							case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
@@ -821,7 +851,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	saveLicence(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		const formValue = this.licenceModelFormGroup.value;
+		const formValue = this.licenceModelFormGroup.getRawValue();
 		console.debug('SAVE saveLicenceBasicInformation licenceModelFormGroup', formValue);
 
 		const licenceAppId = formValue.licenceAppId;
@@ -866,7 +896,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.ArmouredCarGuard,
 				documents: documents,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
+				//TODO  needs expiryDate
 			});
 		}
 
@@ -891,7 +922,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.FireInvestigator,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
 			});
 		}
 
@@ -917,7 +948,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.Locksmith,
 				documents,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
 			});
 		}
 
@@ -930,21 +961,40 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigator,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
 			});
 		}
 
 		if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
 			});
 		}
+		//xxxxxxxxxxxxxxxxxxxxx
+		const categorySecurityGuardFormGroup = formValue.categorySecurityGuardFormGroup;
+		if (categorySecurityGuardFormGroup.isInclude) {
+			let documents: Array<Document> = [];
+			if (categorySecurityGuardFormGroup.attachments) {
+				const categorySecurityGuardDocuments: Array<LicenceAppDocumentResponse> = [];
 
-		if (formValue.categorySecurityGuardFormGroup.isInclude) {
+				categorySecurityGuardFormGroup.attachments.forEach((doc: any) => {
+					const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
+						documentUrlId: doc.documentUrlId,
+					};
+					categorySecurityGuardDocuments.push(licenceAppDocumentResponse);
+				});
+
+				const categorySecurityGuardDocument = {
+					documentResponses: categorySecurityGuardDocuments,
+					licenceDocumentTypeCode: categorySecurityGuardFormGroup.requirementCode,
+				};
+				documents.push(categorySecurityGuardDocument);
+			}
+
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuard,
-				//xxxxxxxxxxxx
+				documents: documents,
 			});
 		}
 
@@ -957,7 +1007,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstaller,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
 			});
 		}
 
@@ -988,7 +1038,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (formValue.categorySecurityConsultantFormGroup.isInclude) {
 			categoryData.push({
 				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityConsultant,
-				//xxxxxxxxxxxx
+				//TODO xxxxxxxxxxxx
 			});
 		}
 

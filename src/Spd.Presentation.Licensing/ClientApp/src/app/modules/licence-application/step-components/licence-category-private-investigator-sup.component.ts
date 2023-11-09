@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { PrivateInvestigatorSupRequirementCode } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -85,7 +88,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 				<div class="my-2">
 					<app-file-upload
-						(fileChanged)="onFileChanged()"
+						(fileAdded)="onFileAdded($event)"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -133,7 +136,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 			<div class="my-2">
 				<app-file-upload
-					(fileChanged)="onFileChanged()"
+					(fileAdded)="onFileTrainingAdded($event)"
 					[control]="trainingAttachments"
 					[maxNumberOfFiles]="10"
 					#trainingAttachmentsRef
@@ -161,7 +164,15 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 
 	privateInvestigatorSupRequirementCodes = PrivateInvestigatorSupRequirementCode;
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
+	@ViewChild('trainingAttachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
+
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private authenticationService: AuthenticationService,
+		private hotToastService: HotToastService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(
@@ -170,8 +181,38 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 		);
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.categoryPrivateInvestigatorSup;
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
+	}
+
+	onFileTrainingAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.trainingAttachments.value.find((item: File) => item.name == file.name);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadTrainingComponent.removeFailedFile(file);
+					},
+				});
+		}
 	}
 
 	isFormValid(): boolean {

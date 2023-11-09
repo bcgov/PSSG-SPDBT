@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
@@ -8,6 +8,7 @@ import {
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -140,6 +141,8 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 
 	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
 	constructor(
 		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService,
@@ -156,6 +159,7 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 				error: (error: any) => {
 					console.log('An error occurred during file upload', error);
 					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
 				},
 			});
 		}

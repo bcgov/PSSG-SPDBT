@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -67,6 +68,8 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 
 	matcher = new FormErrorStateMatcher();
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
 	constructor(
 		private optionsPipe: OptionsPipe,
 		private authenticationService: AuthenticationService,
@@ -90,6 +93,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 					error: (error: any) => {
 						console.log('An error occurred during file upload', error);
 						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadComponent.removeFailedFile(file);
 					},
 				});
 		}

@@ -1,7 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode, DogDocumentTypes } from 'src/app/core/code-types/model-desc.models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -89,7 +92,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 								<div class="my-2">
 									<app-file-upload
-										(fileChanged)="onFileChanged()"
+										(fileAdded)="onFileAdded($event)"
 										[control]="attachments"
 										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
@@ -122,7 +125,13 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 
 	@Input() isCalledFromModal: boolean = false;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(
+		private authenticationService: AuthenticationService,
+		private hotToastService: HotToastService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		if (this.isCalledFromModal) {
@@ -132,8 +141,20 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 		}
 	}
 
-	onFileChanged(): void {
-		//this.licenceApplicationService.hasDocumentsChanged = LicenceDocumentChanged.dogsAuthorization;
+	onFileAdded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.licenceApplicationService.addUploadDocument(this.dogsPurposeDocumentType.value, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
 	}
 
 	isFormValid(): boolean {
@@ -143,6 +164,10 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 
 	get useDogs(): FormControl {
 		return this.form.get('useDogs') as FormControl;
+	}
+
+	get dogsPurposeDocumentType(): FormControl {
+		return this.form.get('dogsPurposeDocumentType') as FormControl;
 	}
 
 	get attachments(): FormControl {

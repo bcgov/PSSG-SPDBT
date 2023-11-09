@@ -318,11 +318,6 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button class="large mb-2" (click)="onNextReview(STEP_CONTACT_INFORMATION)">
-							Next: Review
-						</button>
-					</div>
 				</div>
 			</mat-step>
 		</mat-stepper>

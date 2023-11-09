@@ -39,9 +39,10 @@ export class AuthProcessService {
 			IdentityProviderTypeCode.BcServicesCard,
 			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCSC)
 		);
-		console.debug('tryInitializeBCSC', authInfo);
 
 		const identityClaims = this.oauthService.getIdentityClaims();
+		console.debug('tryInitializeBCSC', authInfo, identityClaims);
+
 		const isValidLogin = this.checkLoginIdentityIsValid(
 			authInfo.loggedIn,
 			IdentityProviderTypeCode.BcServicesCard,
@@ -72,9 +73,10 @@ export class AuthProcessService {
 			IdentityProviderTypeCode.BusinessBceId,
 			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)
 		);
-		console.debug('tryInitializeBCeID', authInfo);
 
 		const identityClaims = this.oauthService.getIdentityClaims();
+		console.debug('tryInitializeBCeID', authInfo, identityClaims);
+
 		const isValidLogin = this.checkLoginIdentityIsValid(
 			authInfo.loggedIn,
 			IdentityProviderTypeCode.BusinessBceId,
