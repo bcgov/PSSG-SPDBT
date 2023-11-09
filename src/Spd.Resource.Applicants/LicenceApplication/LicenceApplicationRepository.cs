@@ -58,7 +58,9 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
-
+        await _context.SaveChangesAsync(); 
+        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
+        //then update category.
         ProcessCategories(cmd.CategoryData, app);
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp(app.spd_applicationid);
