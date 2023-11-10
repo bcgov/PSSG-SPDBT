@@ -24,7 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Security Worker login, for security worker portal
+        /// Security Worker whoami, for security worker portal
         /// return 204 No Content when there is no contact found with this BCSC.
         /// </summary>
         /// <returns></returns>
@@ -34,7 +34,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<ApplicantProfileResponse?> SecurityWorkerWhoami()
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
-            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            var response = await _mediator.Send(new ManageApplicantProfileCommand(info));
             if (response == null)
             {
                 //applicant does not exist.
@@ -43,6 +43,25 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Security Worker whoami, for security worker portal
+        /// return 204 No Content when there is no contact found with this BCSC.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/security-worker/login")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<ApplicantProfileResponse?> SecurityWorkerLogin()
+        {
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            var response = await _mediator.Send(new ManageApplicantProfileCommand(info));
+            if (response == null)
+            {
+                //applicant does not exist.
+                return null;
+            }
+            return response;
+        }
         /// <summary>
         /// Biz bceid login, for biz licence
         /// </summary>

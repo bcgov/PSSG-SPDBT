@@ -21,7 +21,8 @@ namespace Spd.Resource.Applicants.Contact
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.lastname, opt => opt.MapFrom(s => s.LastName))
-            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => s.Gender))
+            .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDate(s.BirthDate)))
+            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.Gender)))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2));

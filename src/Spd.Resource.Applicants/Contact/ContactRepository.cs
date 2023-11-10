@@ -71,8 +71,8 @@ internal class ContactRepository : IContactRepository
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid identity.");
             }
         }
-        //if (identity != null)
-        //    _context.SetLink(contact, nameof(contact.spd_IdentityId), identity);
+        if (identity != null)
+            _context.AddLink(contact, nameof(contact.spd_contact_spd_identity), identity);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<ContactResp>(contact);
     }

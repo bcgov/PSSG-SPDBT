@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Membership.OrgRegistration;
+using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
@@ -17,6 +18,7 @@ namespace Spd.Manager.Membership.UserProfile
     internal class UserProfileManager
         : IRequestHandler<GetCurrentUserProfileQuery, OrgUserProfileResponse>,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
+        IRequestHandler<ManageApplicantProfileCommand, ApplicantProfileResponse>,
         IRequestHandler<ManageIdirUserCommand, IdirUserProfileResponse>,
         IRequestHandler<GetIdirUserProfileQuery, IdirUserProfileResponse>,
         IUserProfileManager
@@ -26,6 +28,7 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IOrgRepository _orgRepository;
         private readonly IOrgRegistrationRepository _orgRegistrationRepository;
         private readonly IPortalUserRepository _portalUserRepository;
+        private readonly IContactRepository _contactRepository;
         private readonly IBCeIDService _bceidService;
         private readonly IMapper _mapper;
         private readonly ILogger<IUserProfileManager> _logger;
@@ -37,6 +40,7 @@ namespace Spd.Manager.Membership.UserProfile
             IOrgRegistrationRepository orgRegistrationRepository,
             IBCeIDService bceidService,
             IPortalUserRepository portalUserRepository,
+            IContactRepository contactRepository,
             IMapper mapper,
             ILogger<IUserProfileManager> logger)
         {
@@ -48,6 +52,7 @@ namespace Spd.Manager.Membership.UserProfile
             _orgRegistrationRepository = orgRegistrationRepository;
             _bceidService = bceidService;
             _portalUserRepository = portalUserRepository;
+            _contactRepository = contactRepository;
         }
 
         public async Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
@@ -123,13 +128,19 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<ApplicantProfileResponse> Handle(ManageApplicantProfileCommand cmd, CancellationToken ct)
         {
+            //testing code-remove later
+            cmd.BcscIdentityInfo.Sub = "ZJOBEJ5ZFMQXUH3NF66GRNSMB22YYWPA";
+            //testing code
+
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-            if(result == null) //first time to use system
+
+            if (result == null || !result.Items.Any()) //first time to use system
             {
                 //add identity
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-                //_contactRepository.Manage
-                //add contact
+                CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
+                createContactCmd.IdentityId = id.Id;
+                await _contactRepository.ManageAsync(createContactCmd, ct);
                 //add address
             }
             else

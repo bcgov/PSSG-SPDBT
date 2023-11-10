@@ -1,3 +1,5 @@
+using Spd.Utilities.Shared.ResourceContracts;
+
 namespace Spd.Resource.Applicants.Contact
 {
     public interface IContactRepository
@@ -43,7 +45,7 @@ namespace Spd.Resource.Applicants.Contact
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public DateTimeOffset BirthDate { get; set; }
-        public string? Gender { get; set; }
+        public GenderEnum? Gender { get; set; }
 
     };
     public record UpdateContactCmd : ContactCmd
@@ -55,7 +57,6 @@ namespace Spd.Resource.Applicants.Contact
         public string? DisplayName { get; set; }
 
         public string Sub { get; set; } = null!;
-        public string? Issuer { get; set; }
 
     }
 

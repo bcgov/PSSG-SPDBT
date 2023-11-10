@@ -5,15 +5,15 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Applicants.PortalUser;
-internal class ContactRepository : IPortalUserRepository
+internal class PortalUserRepository : IPortalUserRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
-    private readonly ILogger<ContactRepository> _logger;
+    private readonly ILogger<PortalUserRepository> _logger;
 
-    public ContactRepository(IDynamicsContextFactory ctx,
+    public PortalUserRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
-        ILogger<ContactRepository> logger)
+        ILogger<PortalUserRepository> logger)
     {
         _context = ctx.Create();
         _mapper = mapper;
