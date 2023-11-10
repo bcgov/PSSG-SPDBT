@@ -72,8 +72,8 @@ internal partial class LicenceManager
             foreach (LicenceAppDocumentResponse doc in request.PoliceOfficerDocument.DocumentResponses)
             {
                 DocumentTypeEnum tag1 = DocumentTypeEnum.PoliceOfficerDocument;
-                DocumentTypeEnum tag = GetDocumentTypeEnum(request.PoliceOfficerDocument.LicenceDocumentTypeCode);
-                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, null, tag), ct);
+                DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.PoliceOfficerDocument.LicenceDocumentTypeCode);
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
             }
         }
         //mental health
@@ -223,7 +223,7 @@ internal partial class LicenceManager
         {
             result.AdditionalGovIdDocument = new AdditionalGovIdDocument
             {
-                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)govIdDocs.First().DocumentType),
+                LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)govIdDocs.First().DocumentType2),
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(govIdDocs),
                 ExpiryDate = govIdDocs[0].ExpiryDate
             };
@@ -307,6 +307,7 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.BcServicesCard, DocumentTypeEnum.BCServicesCard},
         {LicenceDocumentTypeCode.BirthCertificate, DocumentTypeEnum.BirthCertificate},
         {LicenceDocumentTypeCode.CanadianCitizenship, DocumentTypeEnum.CanadianCitizenship},
+        {LicenceDocumentTypeCode.CanadianFirearmsLicence, DocumentTypeEnum.CanadianFirearmsLicence},
         {LicenceDocumentTypeCode.CanadianPassport, DocumentTypeEnum.Passport},
         {LicenceDocumentTypeCode.CertificateOfIndianStatus, DocumentTypeEnum.CanadianNativeStatusCard},
         {LicenceDocumentTypeCode.DriversLicence, DocumentTypeEnum.DriverLicense},
