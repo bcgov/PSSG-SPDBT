@@ -246,10 +246,10 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onRemoveFile(evt: any) {
-		const removeFileIndex = this.files.indexOf(evt);
-
-		this.files.splice(removeFileIndex, 1);
-		this.filesUpdated();
+		this.removeFailedFile(evt);
+		// const removeFileIndex = this.files.indexOf(evt);
+		// this.files.splice(removeFileIndex, 1);
+		// this.filesUpdated();
 
 		this.fileRemoved.emit();
 	}
