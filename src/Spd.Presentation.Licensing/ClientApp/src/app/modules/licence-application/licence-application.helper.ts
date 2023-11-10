@@ -398,11 +398,37 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
-		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
-		governmentIssuedPhotoExpiryDate: new FormControl(''),
-		attachments: new FormControl('', [Validators.required]),
-	});
+	additionalGovIdFormGroup: FormGroup = this.formBuilder.group(
+		{
+			governmentIssuedPhotoTypeCode: new FormControl(''),
+			governmentIssuedPhotoExpiryDate: new FormControl(''),
+			attachments: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'governmentIssuedPhotoTypeCode',
+					(form) =>
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.CanadianPassport) ||
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) =>
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.CanadianPassport) ||
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+			],
+		}
+	);
 
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
 		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),

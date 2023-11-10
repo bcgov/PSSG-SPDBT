@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
+import { LicenceDocumentTypeCode, PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -909,13 +909,27 @@ export class SummaryReviewComponent {
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
 
+	get showAdditionalGovIdData(): boolean {
+		return (
+			(this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
+				this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode !=
+					LicenceDocumentTypeCode.CanadianPassport) ||
+			(this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
+				this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
+					LicenceDocumentTypeCode.PermanentResidentCard)
+		);
+	}
+
 	get governmentIssuedPhotoTypeCode(): string {
+		if (!this.showAdditionalGovIdData) return '';
 		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoTypeCode ?? '';
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
+		if (!this.showAdditionalGovIdData) return '';
 		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoExpiryDate ?? '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
+		if (!this.showAdditionalGovIdData) return [];
 		return this.licenceModelData.additionalGovIdData.attachments ?? [];
 	}
 

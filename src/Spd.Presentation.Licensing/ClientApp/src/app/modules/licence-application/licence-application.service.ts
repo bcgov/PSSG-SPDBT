@@ -961,6 +961,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				expiryDate: additionalGovIdData.expiryDate,
 				licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
 			};
+		} else {
+			this.additionalGovIdFormGroup.reset();
 		}
 
 		let idPhotoDocument: IdPhotoDocument | null = null;

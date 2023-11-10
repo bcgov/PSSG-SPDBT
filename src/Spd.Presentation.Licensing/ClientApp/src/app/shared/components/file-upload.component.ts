@@ -205,8 +205,6 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onUploadFile(evt: any) {
-		console.log('evt.addedFiles', evt.addedFiles);
-		console.log('this.files', this.files);
 		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
@@ -227,8 +225,9 @@ export class FileUploadComponent implements OnInit {
 				return;
 			}
 
-			console.log('adding file', evt.addedFiles);
 			this.files.push(...evt.addedFiles);
+			this.filesUpdated();
+
 			this.onFileUploaded(addedFile);
 			return;
 		}
@@ -247,26 +246,22 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onRemoveFile(evt: any) {
-		const removeFileIndex = this.files.indexOf(evt);
+		this.removeFailedFile(evt);
+		// const removeFileIndex = this.files.indexOf(evt);
+		// this.files.splice(removeFileIndex, 1);
+		// this.filesUpdated();
 
-		this.files.splice(removeFileIndex, 1);
 		this.fileRemoved.emit();
-		// this.removeFile.emit(removeFileIndex);
-		// this.onFileChanged();
-		// this.onFileRemoved(evt);
-	}
-
-	removeFailedFile(file: File) {
-		const removeFileIndex = this.files.indexOf(file);
-		this.files.splice(removeFileIndex, 1);
 	}
 
 	onFileUploaded(addedFile: File): void {
 		this.fileUploaded.emit(addedFile);
 	}
 
-	removeAllFiles(): void {
-		this.files = [];
+	removeFailedFile(file: File) {
+		const removeFileIndex = this.files.indexOf(file);
+		this.files.splice(removeFileIndex, 1);
+		this.filesUpdated();
 	}
 
 	getFileType(file: File): DocumentTypeCode {
@@ -282,5 +277,10 @@ export class FileUploadComponent implements OnInit {
 
 		if (size < 1) return 'Less than 1';
 		else return size;
+	}
+
+	private filesUpdated(): void {
+		const files = this.files && this.files.length > 0 ? this.files : [];
+		this.control.setValue(files);
 	}
 }
