@@ -121,6 +121,27 @@ namespace Spd.Manager.Membership.UserProfile
             return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
         }
 
+        public async Task<ApplicantProfileResponse> Handle(ManageApplicantProfileCommand cmd, CancellationToken ct)
+        {
+            var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            if(result == null) //first time to use system
+            {
+                //add identity
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                //_contactRepository.Manage
+                //add contact
+                //add address
+            }
+            else
+            {
+                Identity id = result.Items.FirstOrDefault();
+                //update contact
+                //update address
+            }
+            
+            return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
+        }
+
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
             IDIRUserDetailResult? idirDetail = (IDIRUserDetailResult?)await _bceidService.HandleQuery(new IDIRUserDetailQuery()

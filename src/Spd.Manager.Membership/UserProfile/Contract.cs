@@ -1,6 +1,7 @@
 using MediatR;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Manager.Membership.OrgUser;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
@@ -9,6 +10,7 @@ namespace Spd.Manager.Membership.UserProfile
     {
         public Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
+        public Task<ApplicantProfileResponse> Handle(ManageApplicantProfileCommand request, CancellationToken ct); //used for worker licensing portal
         public Task<IdirUserProfileResponse?> Handle(GetIdirUserProfileQuery request, CancellationToken ct); //used for query idir user if user is already existing in spd
         public Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand command, CancellationToken ct); //used for whoami, which will register idir user to spd.
     }
@@ -81,6 +83,7 @@ namespace Spd.Manager.Membership.UserProfile
         public string? LastName { get; set; } // which is contact lastname
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
     }
+    public record ManageApplicantProfileCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantProfileResponse>;
     #endregion
 
     #region IdirUserProfile
