@@ -102,7 +102,7 @@ namespace Spd.Utilities.Dynamics
             {"BasicSecurityTrainingCertificate", Guid.Parse("218de034-d47d-ee11-b846-00505683fbf4")},
             {"BasicSecurityTrainingCourseEquivalent", Guid.Parse("aaf10b62-d47d-ee11-b846-00505683fbf4")},
             {"CanadianCitizenship", Guid.Parse("c5bc7549-0cea-ed11-b840-005056830319")},
-            {"CanadianFirearmsLicense", Guid.Parse("cdbc7549-0cea-ed11-b840-005056830319")},
+            {"CanadianFirearmsLicence", Guid.Parse("cdbc7549-0cea-ed11-b840-005056830319")},
             {"CanadianNativeStatusCard", Guid.Parse("cfbc7549-0cea-ed11-b840-005056830319")},
             {"CertificateOfAdvancedSecurityTraining", Guid.Parse("f7bc7549-0cea-ed11-b840-005056830319")},
             {"CertificateOfQualification", Guid.Parse("5b8d11f4-d37d-ee11-b846-00505683fbf4") },
