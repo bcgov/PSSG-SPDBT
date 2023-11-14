@@ -242,6 +242,7 @@ internal partial class LicenceManager
         List<WorkerCategoryTypeCode> categoryContainFiles = new List<WorkerCategoryTypeCode>() {
             WorkerCategoryTypeCode.ArmouredCarGuard,
             WorkerCategoryTypeCode.FireInvestigator,
+            WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
             WorkerCategoryTypeCode.Locksmith,
             WorkerCategoryTypeCode.PrivateInvestigator,
             WorkerCategoryTypeCode.SecurityAlarmInstaller,
