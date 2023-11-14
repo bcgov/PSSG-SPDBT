@@ -22,7 +22,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))
             .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
+            .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDate(s.DateOfBirth)))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
             .ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
@@ -41,7 +41,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
-            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
             .ForMember(d => d.spd_employeeid, opt => opt.MapFrom(s => s.EmployeeId))
             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationStatusOptionSet.PaymentPending : ApplicationStatusOptionSet.ApplicantVerification));
 
@@ -61,7 +61,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.jobtitle, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.JobTitle)))
-            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
             .ForMember(d => d.gendercode, opt => opt.Ignore())
             .ForMember(d => d.birthdate, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
@@ -87,7 +87,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payer)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
-            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateTimeOffset(s.spd_dateofbirth)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
             .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => Enum.Parse<CaseStatusEnum>(s.spd_casestatus)))
@@ -125,34 +125,10 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
         }
 
-        private static DateTimeOffset? GetDateTimeOffset(Date? date)
-        {
-            if( date == null) return null;
-            return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
-        }
-
-        private static Date? GetDate(DateTimeOffset? datetime)
-        {
-            if (datetime == null) return null;
-            return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
-        }
-
         private static string? GetPayeeType(int? code)
         {
             if (code == null) return null;
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
-        }
-
-        private static int? GetGender(GenderEnum? code)
-        {
-            if (code == null) return (int)GenderOptionSet.U;
-            return (int)Enum.Parse<GenderOptionSet>(code.ToString());
-        }
-
-        private static GenderEnum? GetGenderEnum(int? optionset)
-        {
-            if (optionset == null) return null;
-            return Enum.Parse<GenderEnum>(Enum.GetName(typeof(GenderOptionSet), optionset));
         }
 
         private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
@@ -178,17 +154,6 @@ namespace Spd.Resource.Applicants.Application
             if (code == null) return ScreenTypeEnum.Staff;
             return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
         }
-        private static int? GetYesNo(bool? value)
-        {
-            if (value == null) return null;
-            return value.Value ? (int)YesNoOptionSet.Yes : (int)YesNoOptionSet.No;
-        }
 
-        private static bool? GetBool(int? value)
-        {
-            if (value == null) return null;
-            if (value == (int)YesNoOptionSet.Yes) return true;
-            return false;
-        }
     }
 }

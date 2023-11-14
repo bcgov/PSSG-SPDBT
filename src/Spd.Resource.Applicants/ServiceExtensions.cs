@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
@@ -29,6 +30,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<IPortalUserRepository, PortalUserRepository>();
             configurationServices.Services.AddTransient<ILicenceRepository, LicenceRepository>();
             configurationServices.Services.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
+            configurationServices.Services.AddTransient<IContactRepository, ContactRepository>();
         }
     }
 }
