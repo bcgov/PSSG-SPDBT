@@ -12,6 +12,20 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="step">
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
 
+				<div class="row">
+					<div class="col-md-8 col-sm-12 mx-auto">
+						<app-alert type="warning">
+							If you want to apply for both at the same time, you will need your
+							<a
+								class="large"
+								href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"
+								target="_blank"
+								>Business BCeID</a
+							>
+						</app-alert>
+					</div>
+				</div>
+
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
 						<div class="row">

@@ -2,6 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { PoliceOfficerRoleCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceStepperStepComponent } from '../../licence-application.helper';
 import { LicenceApplicationService } from '../../licence-application.service';
@@ -17,7 +18,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			<mat-step>
 				<app-police-background></app-police-background>
 
-				<div class="row mt-4">
+				<div class="row mt-4" *ngIf="policeOfficerRoleCode != policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -180,6 +181,8 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	readonly STEP_FINGERPRINTS = '4';
 	readonly STEP_BACKGROUND_INFO = '5';
 
+	policeOfficerRoleCodes = PoliceOfficerRoleCode;
+
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -294,5 +297,10 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 			// 	return this.backgroundInfoComponent.isFormValid();
 		}
 		return false;
+	}
+
+	get policeOfficerRoleCode(): string {
+		const form = this.licenceApplicationService.policeBackgroundFormGroup;
+		return form.value.policeOfficerRoleCode;
 	}
 }

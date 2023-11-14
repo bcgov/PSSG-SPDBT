@@ -113,10 +113,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	createNewLicence(): Observable<any> {
-		// this.spinnerService.show('loaderSpinner');
-
-		// return new Observable((observer) => {
-		// setTimeout(() => {
 		this.licenceModelFormGroup.reset();
 		console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
 
@@ -124,32 +120,28 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (bcscUserWhoamiProfile) {
 			this.licenceModelFormGroup.patchValue({
 				personalInformationData: {
-					// oneLegalName: false,
-					givenName: bcscUserWhoamiProfile.firstName, //TODO populate defaults with BCSC data
-					middleName1: 'TODO',
-					middleName2: 'TODO',
+					givenName: bcscUserWhoamiProfile.firstName,
+					middleName1: bcscUserWhoamiProfile.middleName1,
+					middleName2: bcscUserWhoamiProfile.middleName2,
 					surname: bcscUserWhoamiProfile.lastName,
-					dateOfBirth: '2009-10-07T00:00:00+00:00',
+					dateOfBirth: bcscUserWhoamiProfile.birthDate,
+					genderCode: bcscUserWhoamiProfile.gender,
 				},
-				residentialAddressData: {
-					addressSelected: true,
-					isMailingTheSameAsResidential: false,
-					addressLine1: 'TODO',
-					addressLine2: '',
-					city: 'TODO',
-					country: 'TODO',
-					postalCode: 'V4V 1R8',
-					province: 'British Columbia',
-				},
+				// residentialAddressData: { //TODO populate defaults with BCSC data
+				// 	addressSelected: true,
+				// 	isMailingTheSameAsResidential: false,
+				// 	addressLine1: 'TODO',
+				// 	addressLine2: '',
+				// 	city: 'TODO',
+				// 	country: 'TODO',
+				// 	postalCode: 'V4V 1R8',
+				// 	province: 'British Columbia',
+				// },
 			});
 		}
 
 		this.initialized = true;
-		// this.spinnerService.hide('loaderSpinner');
-		// observer.next(this.licenceModelFormGroup.value);
 		return of(this.licenceModelFormGroup.value);
-		// 	}, 200);
-		// });
 	}
 
 	/**
@@ -184,10 +176,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 				const soleProprietorData = {
-					isSoleProprietor: resp.isSoleProprietor ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
 				};
 				const expiredLicenceData = {
-					hasExpiredLicence: resp.hasExpiredLicence ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					hasExpiredLicence: BooleanTypeCode.No, // TODO remove hardcoding this.booleanToBooleanType(resp.hasExpiredLicence),
 					//TODO expired licence fix
 					// expiredLicenceNumber: resp.expiredLicenceNumber,
 					// expiryDate: resp.expiryDate,
@@ -204,14 +196,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const policeBackgroundData = {
-					isPoliceOrPeaceOfficer: resp.isPoliceOrPeaceOfficer ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
 					policeOfficerRoleCode: resp.policeOfficerRoleCode,
 					otherOfficerRole: resp.otherOfficerRole,
 					attachments: policeBackgroundDataAttachments,
 				};
 
 				const bcDriversLicenceData = {
-					hasBcDriversLicence: resp.hasBcDriversLicence ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
 					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 				};
 
@@ -234,16 +226,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const mentalHealthConditionsData = {
-					isTreatedForMHC: resp.isTreatedForMHC ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
 					attachments: mentalHealthConditionsDataAttachments,
 				};
 
 				const criminalHistoryData = {
-					hasCriminalHistory: resp.hasCriminalHistory ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
 				};
 
 				const aliasesData = {
-					previousNameFlag: resp.hasPreviousName ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					previousNameFlag: this.booleanToBooleanType(resp.hasPreviousName),
 				};
 
 				const personalInformationData = {
@@ -264,7 +256,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const citizenshipData = {
-					isCanadianCitizen: resp.isCanadianCitizen ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? resp.citizenshipDocument?.licenceDocumentTypeCode
 						: null,
@@ -312,7 +304,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const photographOfYourselfData = {
-					useBcServicesCardPhoto: resp.useBcServicesCardPhoto ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
 					attachments: photographOfYourselfAttachments,
 				};
 
@@ -435,9 +427,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 									licenceDocumentTypeCodePrivateInvestigator ==
 										PrivateInvestigatorTrainingCode.CategoryPrivateInvestigator_TrainingRecognizedCourse
 								) {
-									requirementCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
-								} else {
 									trainingCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
+								} else {
+									requirementCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
 								}
 								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 									const aFile = this.utilService.dummyFile(item);
@@ -1352,5 +1344,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		if (value == BooleanTypeCode.Yes) return true;
 		return false;
+	}
+
+	/**
+	 * Convert boolean to BooleanTypeCode
+	 * @param value
+	 * @returns
+	 */
+	private booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
+		const isBooleanType = typeof value === 'boolean';
+		if (!isBooleanType) return null;
+
+		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 }
