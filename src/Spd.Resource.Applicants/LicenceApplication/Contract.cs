@@ -49,7 +49,7 @@ public record LicenceApplication
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRetraints { get; set; }
     public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
-    public bool IsCanadianCitizen { get; set; }
+    public bool? IsCanadianCitizen { get; set; }
 }
 
 public record WorkerLicenceAppCategory

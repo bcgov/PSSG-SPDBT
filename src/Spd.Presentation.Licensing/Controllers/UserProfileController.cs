@@ -24,7 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Security Worker login, for security worker portal
+        /// Security Worker whoami, for security worker portal
         /// return 204 No Content when there is no contact found with this BCSC.
         /// </summary>
         /// <returns></returns>
@@ -43,6 +43,23 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Security Worker whoami, for security worker portal
+        /// return 204 No Content when there is no contact found with this BCSC.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/security-worker/login")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<ApplicantProfileResponse?> SecurityWorkerLogin()
+        {
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            var response = await _mediator.Send(new ManageApplicantProfileCommand(info));
+            
+            response.Sub = info.Sub;
+            response.IdentityProviderTypeCode = IdentityProviderTypeCode.BcServicesCard;
+            return response;
+        }
         /// <summary>
         /// Biz bceid login, for biz licence
         /// </summary>
