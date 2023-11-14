@@ -276,13 +276,6 @@ export class UserApplicationsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.incompleteApplications = [
-			// {
-			// 	id: '1',
-			// 	licenceAppId: 'SWL-NWQ3X7Y',
-			// 	workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-			// 	applicationTypeCode: ApplicationTypeCode.New,
-			// 	expiresOn: '2023-09-26T19:43:25+00:00',
-			// },
 			{
 				id: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
 				licenceAppId: 'SWL-NWQ3X7Z',
@@ -291,7 +284,7 @@ export class UserApplicationsComponent implements OnInit {
 				expiresOn: '2023-09-15T19:43:25+00:00',
 			},
 			{
-				id: '19cc2bf8-6e54-409d-9d17-574cc74ecd2f',
+				id: '5a1bcc48-4eab-40c9-a820-ff6846b42d29',
 				licenceAppId: 'SWL-CBC3X7Z',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,

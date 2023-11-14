@@ -81,7 +81,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										</div>
 										<div class="col-lg-6 col-md-12">
 											<mat-form-field>
-												<mat-label>Expiry Date</mat-label>
+												<mat-label>Document Expiry Date</mat-label>
 												<input
 													matInput
 													[matDatepicker]="picker"

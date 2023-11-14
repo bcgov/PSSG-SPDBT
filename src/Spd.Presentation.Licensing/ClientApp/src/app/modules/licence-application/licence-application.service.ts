@@ -113,10 +113,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	createNewLicence(): Observable<any> {
-		// this.spinnerService.show('loaderSpinner');
-
-		// return new Observable((observer) => {
-		// setTimeout(() => {
 		this.licenceModelFormGroup.reset();
 		console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
 
@@ -124,32 +120,28 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (bcscUserWhoamiProfile) {
 			this.licenceModelFormGroup.patchValue({
 				personalInformationData: {
-					// oneLegalName: false,
-					givenName: bcscUserWhoamiProfile.firstName, //TODO populate defaults with BCSC data
-					middleName1: 'TODO',
-					middleName2: 'TODO',
+					givenName: bcscUserWhoamiProfile.firstName,
+					middleName1: bcscUserWhoamiProfile.middleName1,
+					middleName2: bcscUserWhoamiProfile.middleName2,
 					surname: bcscUserWhoamiProfile.lastName,
-					dateOfBirth: '2009-10-07T00:00:00+00:00',
+					dateOfBirth: bcscUserWhoamiProfile.birthDate,
+					genderCode: bcscUserWhoamiProfile.gender,
 				},
-				residentialAddressData: {
-					addressSelected: true,
-					isMailingTheSameAsResidential: false,
-					addressLine1: 'TODO',
-					addressLine2: '',
-					city: 'TODO',
-					country: 'TODO',
-					postalCode: 'V4V 1R8',
-					province: 'British Columbia',
-				},
+				// residentialAddressData: { //TODO populate defaults with BCSC data
+				// 	addressSelected: true,
+				// 	isMailingTheSameAsResidential: false,
+				// 	addressLine1: 'TODO',
+				// 	addressLine2: '',
+				// 	city: 'TODO',
+				// 	country: 'TODO',
+				// 	postalCode: 'V4V 1R8',
+				// 	province: 'British Columbia',
+				// },
 			});
 		}
 
 		this.initialized = true;
-		// this.spinnerService.hide('loaderSpinner');
-		// observer.next(this.licenceModelFormGroup.value);
 		return of(this.licenceModelFormGroup.value);
-		// 	}, 200);
-		// });
 	}
 
 	/**
@@ -187,7 +179,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
 				};
 				const expiredLicenceData = {
-					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+					hasExpiredLicence: BooleanTypeCode.No, // TODO remove hardcoding this.booleanToBooleanType(resp.hasExpiredLicence),
 					//TODO expired licence fix
 					// expiredLicenceNumber: resp.expiredLicenceNumber,
 					// expiryDate: resp.expiryDate,
@@ -435,9 +427,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 									licenceDocumentTypeCodePrivateInvestigator ==
 										PrivateInvestigatorTrainingCode.CategoryPrivateInvestigator_TrainingRecognizedCourse
 								) {
-									requirementCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
-								} else {
 									trainingCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
+								} else {
+									requirementCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
 								}
 								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 									const aFile = this.utilService.dummyFile(item);

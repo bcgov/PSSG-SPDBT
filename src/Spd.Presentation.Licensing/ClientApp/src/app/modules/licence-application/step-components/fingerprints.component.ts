@@ -18,52 +18,58 @@ import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.c
 					title="Upload proof of fingerprinting request"
 					subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
 				></app-step-title>
-				<div class="step-container row mt-2 mb-4">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<form [formGroup]="form" novalidate>
-							<p>
-								Scan or take a photo of the tear-off section on page 2 of the
-								<a
-									href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-									target="_blank"
-									>Request for Fingerprinting</a
-								>
-								form.
-								<button
-									mat-icon-button
-									color="primary"
-									(click)="onShowSampleTearOffModal()"
-									aria-label="View sample fingerprint tear-off section"
-								>
-									<mat-icon>info</mat-icon>
-								</button>
-							</p>
-							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="1"
-								[files]="attachments.value"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>Your fingerprints must be taken to continue to verify your identity.<br /><br />
-								Download the
-								<a
-									href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-									target="_blank"
-									>Request for Fingerprinting</a
-								>
-								form, take it to a fingerprinting agency (such as your local police department), and complete this
-								application when you have documentation.
-							</mat-error>
-						</form>
+				<div class="step-container mt-2 mb-4">
+					<div class="row mt-2">
+						<div class="offset-md-2 col-md-7 col-sm-12">
+							Scan or take a photo of the tear-off section on page 2 of the
+							<a
+								href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
+								target="_blank"
+								>Request for Fingerprinting</a
+							>
+							form.
+						</div>
+						<div class="col-md-1 col-sm-12 text-end">
+							<button
+								mat-icon-button
+								color="primary"
+								(click)="onShowSampleTearOffModal()"
+								aria-label="View sample fingerprint tear-off section"
+							>
+								<mat-icon>info</mat-icon>
+							</button>
+						</div>
+					</div>
+					<div class="row my-4">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<form [formGroup]="form" novalidate>
+								<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[control]="attachments"
+									[maxNumberOfFiles]="1"
+									[files]="attachments.value"
+								></app-file-upload>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+										form.get('attachments')?.invalid &&
+										form.get('attachments')?.hasError('required')
+									"
+									>Your fingerprints must be taken to continue to verify your identity.<br /><br />
+									Download the
+									<a
+										href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
+										target="_blank"
+										>Request for Fingerprinting</a
+									>
+									form, take it to a fingerprinting agency (such as your local police department), and complete this
+									application when you have documentation.
+								</mat-error>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
