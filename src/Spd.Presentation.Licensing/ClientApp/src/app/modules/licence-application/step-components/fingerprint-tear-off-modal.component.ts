@@ -1,0 +1,29 @@
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app-fingerprint-tear-off-modal',
+	template: `
+		<div mat-dialog-title>
+			Sample Tear-off Section
+			<mat-divider></mat-divider>
+		</div>
+		<div mat-dialog-content>
+			<img class="image mt-4" src="/assets/fingerprint-tear-off.svg" />
+		</div>
+		<div mat-dialog-actions>
+			<div class="row m-0 w-100">
+				<div class="offset-lg-9 col-lg-3 offset-md-8 col-md-4 col-sm-12 mb-2">
+					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
+				</div>
+			</div>
+		</div>
+	`,
+	styles: [
+		`
+			.image {
+				width: 100%;
+			}
+		`,
+	],
+})
+export class FingerprintTearOffModalComponent {}
