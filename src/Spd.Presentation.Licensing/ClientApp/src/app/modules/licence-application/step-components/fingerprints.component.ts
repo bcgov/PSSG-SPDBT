@@ -1,11 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
+import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.component';
 
 @Component({
 	selector: 'app-fingerprints',
@@ -26,10 +28,16 @@ import { LicenceApplicationService } from '../licence-application.service';
 									target="_blank"
 									>Request for Fingerprinting</a
 								>
-								form
-								<mat-icon class="info-icon" matTooltip="TODO"> info </mat-icon>
+								form.
+								<button
+									mat-icon-button
+									color="primary"
+									(click)="onShowSampleTearOffModal()"
+									aria-label="View sample fingerprint tear-off section"
+								>
+									<mat-icon>info</mat-icon>
+								</button>
 							</p>
-							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
 								(fileUploaded)="onFileUploaded($event)"
@@ -69,6 +77,7 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
+		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
@@ -92,6 +101,10 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 
 	onFileRemoved(): void {
 		this.licenceApplicationService.hasValueChanged = true;
+	}
+
+	onShowSampleTearOffModal(): void {
+		this.dialog.open(FingerprintTearOffModalComponent);
 	}
 
 	isFormValid(): boolean {

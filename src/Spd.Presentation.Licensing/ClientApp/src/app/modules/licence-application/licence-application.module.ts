@@ -32,6 +32,7 @@ import { ConsentAndDeclarationComponent } from './step-components/consent-and-de
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { CriminalHistoryComponent } from './step-components/criminal-history.component';
 import { DogsAuthorizationComponent } from './step-components/dogs-authorization.component';
+import { FingerprintTearOffModalComponent } from './step-components/fingerprint-tear-off-modal.component';
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
@@ -144,6 +145,7 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		SecurityWorkerLicenceApplicationComponent,
 		UserApplicationsBcscComponent,
 		UserApplicationsUnauthComponent,
+		FingerprintTearOffModalComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

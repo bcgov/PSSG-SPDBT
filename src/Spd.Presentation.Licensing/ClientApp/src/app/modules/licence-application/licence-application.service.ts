@@ -184,10 +184,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 				const soleProprietorData = {
-					isSoleProprietor: resp.isSoleProprietor ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
 				};
 				const expiredLicenceData = {
-					hasExpiredLicence: resp.hasExpiredLicence ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
 					//TODO expired licence fix
 					// expiredLicenceNumber: resp.expiredLicenceNumber,
 					// expiryDate: resp.expiryDate,
@@ -204,14 +204,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const policeBackgroundData = {
-					isPoliceOrPeaceOfficer: resp.isPoliceOrPeaceOfficer ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
 					policeOfficerRoleCode: resp.policeOfficerRoleCode,
 					otherOfficerRole: resp.otherOfficerRole,
 					attachments: policeBackgroundDataAttachments,
 				};
 
 				const bcDriversLicenceData = {
-					hasBcDriversLicence: resp.hasBcDriversLicence ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
 					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 				};
 
@@ -234,16 +234,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const mentalHealthConditionsData = {
-					isTreatedForMHC: resp.isTreatedForMHC ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
 					attachments: mentalHealthConditionsDataAttachments,
 				};
 
 				const criminalHistoryData = {
-					hasCriminalHistory: resp.hasCriminalHistory ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
 				};
 
 				const aliasesData = {
-					previousNameFlag: resp.hasPreviousName ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					previousNameFlag: this.booleanToBooleanType(resp.hasPreviousName),
 				};
 
 				const personalInformationData = {
@@ -264,7 +264,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const citizenshipData = {
-					isCanadianCitizen: resp.isCanadianCitizen ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? resp.citizenshipDocument?.licenceDocumentTypeCode
 						: null,
@@ -312,7 +312,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 				const photographOfYourselfData = {
-					useBcServicesCardPhoto: resp.useBcServicesCardPhoto ? BooleanTypeCode.Yes : BooleanTypeCode.No,
+					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
 					attachments: photographOfYourselfAttachments,
 				};
 
@@ -1352,5 +1352,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		if (value == BooleanTypeCode.Yes) return true;
 		return false;
+	}
+
+	/**
+	 * Convert boolean to BooleanTypeCode
+	 * @param value
+	 * @returns
+	 */
+	private booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
+		const isBooleanType = typeof value === 'boolean';
+		if (!isBooleanType) return null;
+
+		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 }

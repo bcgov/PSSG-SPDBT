@@ -284,15 +284,29 @@ export class UserApplicationsComponent implements OnInit {
 			// 	expiresOn: '2023-09-26T19:43:25+00:00',
 			// },
 			{
-				id: '11',
+				id: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
 				licenceAppId: 'SWL-NWQ3X7Z',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-15T19:43:25+00:00',
 			},
+			{
+				id: '19cc2bf8-6e54-409d-9d17-574cc74ecd2f',
+				licenceAppId: 'SWL-CBC3X7Z',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
+				expiresOn: '2023-11-15T19:43:25+00:00',
+			},
 		];
 
 		this.activeApplications = [
+			{
+				id: '1',
+				licenceAppId: 'SWL-NWQ3X7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
+				expiresOn: '2023-09-26T19:43:25+00:00',
+			},
 			{
 				id: '1',
 				licenceAppId: 'SWL-NWQ3X7Y',
@@ -334,19 +348,8 @@ export class UserApplicationsComponent implements OnInit {
 	onResume(appl: ApplicationResponse): void {
 		this.licenceApplicationService.reset();
 
-		// if (appl.id == '1') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceNew()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else if (appl.id == '11') {
 		this.licenceApplicationService
-			.loadExistingLicence('fc0c10a3-b6e6-4460-ac80-9b516f3e02a5')
+			.loadExistingLicence(appl.id!)
 			.pipe(
 				tap((resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
@@ -354,41 +357,6 @@ export class UserApplicationsComponent implements OnInit {
 				take(1)
 			)
 			.subscribe();
-
-		// } else if (appl.id == '2') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceRenewal()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				console.log('after2', resp);
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else if (appl.id == '3') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceReplacement()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				console.log('after2', resp);
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else if (appl.id == '4') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceUpdate()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				console.log('after2', resp);
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// }
 	}
 
 	onUpdate(appl: ApplicationResponse): void {

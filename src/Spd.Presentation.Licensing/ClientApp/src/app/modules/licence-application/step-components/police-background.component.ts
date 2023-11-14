@@ -82,6 +82,15 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</mat-form-field>
 											</div>
 										</div>
+
+										<app-alert
+											type="danger"
+											*ngIf="policeOfficerRoleCode.value == policeOfficerRoleCodes.PoliceOfficer"
+										>
+											A member of a police force may not hold a security worker licence. Your application for a security
+											worker licence will NOT be accepted.
+										</app-alert>
+
 										<div class="row mt-2">
 											<div class="col-12">
 												<div class="text-minor-heading mb-2">
