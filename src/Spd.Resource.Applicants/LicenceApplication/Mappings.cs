@@ -19,7 +19,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))
         .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
         .ForMember(d => d.emailaddress1, opt => opt.Ignore())
-        .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+        .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
         .ForMember(d => d.gendercode, opt => opt.Ignore())
         .ForMember(d => d.birthdate, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
         .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.ContactPhoneNumber))
@@ -40,9 +40,9 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
          .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
          .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
-         .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+         .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
          .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
-         .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => GetYesNo(s.HasCriminalHistory)))
+         .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
          .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
          .ForMember(d => d.spd_applicanthaircolour, opt => opt.MapFrom(s => GetHairColor(s.HairColourCode)))
          .ForMember(d => d.spd_applicanteyecolour, opt => opt.MapFrom(s => GetEyeColor(s.EyeColourCode)))
@@ -62,13 +62,13 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_residentialcountry, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country))
          .ForMember(d => d.spd_residentialprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
          .ForMember(d => d.spd_residentialpostalcode, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.PostalCode))
-         .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => GetYesNo(s.IsPoliceOrPeaceOfficer)))
+         .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsPoliceOrPeaceOfficer)))
          .ForMember(d => d.spd_policebackgroundrole, opt => opt.MapFrom(s => GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
          .ForMember(d => d.spd_policebackgroundother, opt => opt.MapFrom(s => s.OtherOfficerRole))
-         .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => GetYesNo(s.IsTreatedForMHC)))
-         .ForMember(d => d.spd_usephotofrombcsc, opt => opt.MapFrom(s => GetYesNo(s.UseBcServicesCardPhoto)))
-         .ForMember(d => d.spd_requestrestraints, opt => opt.MapFrom(s => GetYesNo(s.CarryAndUseRetraints)))
-         .ForMember(d => d.spd_canadiancitizen, opt => opt.MapFrom(s => GetYesNo(s.IsCanadianCitizen)))
+         .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
+         .ForMember(d => d.spd_usephotofrombcsc, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseBcServicesCardPhoto)))
+         .ForMember(d => d.spd_requestrestraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.CarryAndUseRetraints)))
+         .ForMember(d => d.spd_canadiancitizen, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsCanadianCitizen)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
          .ReverseMap()
@@ -76,9 +76,9 @@ internal class Mappings : Profile
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
-         .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => GetGenderEnum(s.spd_sex)))
+         .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => GetLicenceTermEnum(s.spd_licenceterm)))
-         .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetBool(s.spd_criminalhistory)))
+         .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
          .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => GetHairColorEnum(s.spd_applicanthaircolour)))
          .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => GetEyeColorEnum(s.spd_applicanteyecolour)))
          .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => GetMailingAddressData(s)))
@@ -88,11 +88,11 @@ internal class Mappings : Profile
          .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => GetHeightUnitCode(s.spd_height)))
          .ForMember(d => d.Weight, opt => opt.MapFrom(s => GetWeightNumber(s.spd_weight)))
          .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => GetWeightUnitCode(s.spd_weight)))
-         .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => GetBool(s.spd_peaceofficer)))
-         .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetBool(s.spd_mentalhealthcondition)))
-         .ForMember(d => d.UseBcServicesCardPhoto, opt => opt.MapFrom(s => GetBool(s.spd_usephotofrombcsc)))
-         .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => GetBool(s.spd_requestrestraints)))
-         .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => GetBool(s.spd_canadiancitizen)))
+         .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
+         .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
+         .ForMember(d => d.UseBcServicesCardPhoto, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_usephotofrombcsc)))
+         .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
+         .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_canadiancitizen)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
          .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
          ;
@@ -128,17 +128,7 @@ internal class Mappings : Profile
         return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
     }
 
-    private static int? GetGender(GenderEnum? code)
-    {
-        if (code == null) return (int)GenderOptionSet.U;
-        return (int)Enum.Parse<GenderOptionSet>(code.ToString());
-    }
 
-    private static GenderEnum? GetGenderEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<GenderEnum>(Enum.GetName(typeof(GenderOptionSet), optionset));
-    }
 
     private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
     {
@@ -183,19 +173,6 @@ internal class Mappings : Profile
     {
         if (optionset == null) return null;
         return Enum.Parse<LicenceTermEnum>(Enum.GetName(typeof(LicenceTermOptionSet), optionset));
-    }
-
-    private static int? GetYesNo(bool? value)
-    {
-        if (value == null) return null;
-        return value.Value ? (int)YesNoOptionSet.Yes : (int)YesNoOptionSet.No;
-    }
-
-    private static bool? GetBool(int? value)
-    {
-        if (value == null) return null;
-        if (value == (int)YesNoOptionSet.Yes) return true;
-        return false;
     }
 
     private static int? GetHairColor(HairColourEnum? code)
