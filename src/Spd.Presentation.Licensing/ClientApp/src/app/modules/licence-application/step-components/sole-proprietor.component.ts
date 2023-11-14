@@ -14,7 +14,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 				<div class="row">
 					<div class="col-md-8 col-sm-12 mx-auto">
-						<app-alert type="info">
+						<app-alert type="warning">
 							If you want to apply for both at the same time, you will need your
 							<a
 								class="large"

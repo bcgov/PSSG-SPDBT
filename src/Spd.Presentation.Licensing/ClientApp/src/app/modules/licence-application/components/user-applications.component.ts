@@ -32,6 +32,10 @@ export interface ApplicationResponse {
 							fee?
 						</app-alert>
 
+						<app-alert type="warning">
+							Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
+						</app-alert>
+
 						<div class="mb-4" *ngIf="incompleteApplications.length > 0">
 							<!-- <div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div> -->
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of incompleteApplications; let i = index">
@@ -55,10 +59,10 @@ export interface ApplicationResponse {
 												<mat-chip-option
 													[selectable]="false"
 													class="mat-chip-yellow"
-													style="height: 38px; width: 160px;"
+													style="height: 38px; width: 115px;"
 												>
 													<mat-icon class="mat-chip-option-icon">warning</mat-icon>
-													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Incomplete</span>
+													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Draft</span>
 												</mat-chip-option>
 											</div>
 										</div>
