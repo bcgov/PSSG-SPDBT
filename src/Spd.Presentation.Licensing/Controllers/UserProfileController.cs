@@ -34,7 +34,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<ApplicantProfileResponse?> SecurityWorkerWhoami()
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
-            var response = await _mediator.Send(new ManageApplicantProfileCommand(info));
+            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
             if (response == null)
             {
                 //applicant does not exist.
@@ -55,11 +55,9 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
             var response = await _mediator.Send(new ManageApplicantProfileCommand(info));
-            if (response == null)
-            {
-                //applicant does not exist.
-                return null;
-            }
+            
+            response.Sub = info.Sub;
+            response.IdentityProviderTypeCode = IdentityProviderTypeCode.BcServicesCard;
             return response;
         }
         /// <summary>

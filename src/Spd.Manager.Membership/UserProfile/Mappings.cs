@@ -22,7 +22,9 @@ namespace Spd.Manager.Membership.UserProfile
                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
 
             CreateMap<Identity, ApplicantProfileResponse>()
-                .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId));
+                .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId))
+                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress))
+            ;
 
             CreateMap<PortalUserResp, IdirUserProfileResponse>()
                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId))
@@ -31,13 +33,22 @@ namespace Spd.Manager.Membership.UserProfile
 
             CreateMap<ManageApplicantProfileCommand, CreateContactCmd>()
                .ForMember(d => d.Sub, opt => opt.MapFrom(s => s.BcscIdentityInfo.Sub))
+               .IncludeBase<ManageApplicantProfileCommand, ContactCmd>();
+
+            CreateMap<ManageApplicantProfileCommand, UpdateContactCmd>()
+                .IncludeBase<ManageApplicantProfileCommand, ContactCmd>();
+
+            CreateMap<ManageApplicantProfileCommand, ContactCmd>()
                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.BcscIdentityInfo.FirstName))
                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.BcscIdentityInfo.LastName))
                .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.BcscIdentityInfo.Email))
                .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName1))
                .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName2))
-               .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => new DateTimeOffset(s.BcscIdentityInfo.BirthDate.Year, s.BcscIdentityInfo.BirthDate.Month, s.BcscIdentityInfo.BirthDate.Day, 0,0,0, TimeSpan.Zero)))
+               .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => new DateTimeOffset(s.BcscIdentityInfo.BirthDate.Year, s.BcscIdentityInfo.BirthDate.Month, s.BcscIdentityInfo.BirthDate.Day, 0, 0, 0, TimeSpan.Zero)))
                .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnum(s.BcscIdentityInfo.Gender)));
+
+            CreateMap<ContactResp, ApplicantProfileResponse>()
+               .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id));
         }
 
         public static GenderEnum? GetGenderEnum(string? bscsGender)

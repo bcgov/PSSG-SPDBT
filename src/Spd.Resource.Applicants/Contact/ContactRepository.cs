@@ -48,10 +48,17 @@ internal class ContactRepository : IContactRepository
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact contact = await _context.GetContactById(c.Id, ct);
-        spd_identity? identity = null;
-        if (c.FirstName != null) contact.firstname = c.FirstName;
-        if (c.LastName != null) contact.lastname = c.LastName;
-        if (c.EmailAddress != null) contact.emailaddress1 = c.EmailAddress;
+        contact newContact = _mapper.Map<contact>(c);
+        //when we found name is different than current one, need to put current one to alias.
+        if (!NameIsSame(contact, newContact))
+        {
+            //put old name to alias
+
+            //update current contact
+            _mapper.Map(c, contact);
+        }
+        //todo: when we found address is different, need to put current address to previous address.
+        contact.spd_middlename2 = null;
         _context.UpdateObject(contact);
         await _context.SaveChangesAsync();
         return _mapper.Map<ContactResp>(contact);
@@ -71,10 +78,21 @@ internal class ContactRepository : IContactRepository
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid identity.");
             }
         }
+        //two saveChanges because "Associate of 1:N navigation property with Create of Update is not supported in CRM"
+        await _context.SaveChangesAsync(ct);
         if (identity != null)
             _context.AddLink(contact, nameof(contact.spd_contact_spd_identity), identity);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<ContactResp>(contact);
+    }
+
+    private bool NameIsSame(contact original, contact newContact)
+    {
+        return (original.firstname == newContact.firstname
+            && original.lastname == newContact.lastname
+            && original.spd_middlename1 == newContact.spd_middlename1
+            && original.spd_middlename2 == newContact.spd_middlename2);
+
     }
 }
 

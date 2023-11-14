@@ -81,6 +81,12 @@ namespace Spd.Manager.Membership.UserProfile
         public Guid ApplicantId { get; set; } //which is contact id in db
         public string? FirstName { get; set; } // which is contact firstname
         public string? LastName { get; set; } // which is contact lastname
+        public string? Email { get; set; }
+        public GenderCode? Gender { get; set; }
+        public string Sub { get; set; } = null!;
+        public DateTimeOffset BirthDate { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
     }
     public record ManageApplicantProfileCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantProfileResponse>;

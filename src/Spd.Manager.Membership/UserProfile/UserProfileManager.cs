@@ -128,10 +128,7 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<ApplicantProfileResponse> Handle(ManageApplicantProfileCommand cmd, CancellationToken ct)
         {
-            //testing code-remove later
-            cmd.BcscIdentityInfo.Sub = "ZJOBEJ5ZFMQXUH3NF66GRNSMB22YYWPA";
-            //testing code
-
+            ContactResp contactResp = null;
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
 
             if (result == null || !result.Items.Any()) //first time to use system
@@ -140,17 +137,31 @@ namespace Spd.Manager.Membership.UserProfile
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
                 CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                 createContactCmd.IdentityId = id.Id;
-                await _contactRepository.ManageAsync(createContactCmd, ct);
+                contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 //add address
             }
             else
             {
                 Identity id = result.Items.FirstOrDefault();
-                //update contact
+                if (id.ContactId != null)
+                {
+                    //depends on requirement, probably update later when user select "yes" in user profile for licensing portal.
+                    UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
+                    updateContactCmd.Id = (Guid)id.ContactId;
+                    updateContactCmd.IdentityId = id.Id;
+                    contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+                }
+                else
+                {
+                    //there is identity, but no contact
+                    CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
+                    createContactCmd.IdentityId = id.Id;
+                    contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
+                }
                 //update address
             }
             
-            return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
+            return _mapper.Map<ApplicantProfileResponse>(contactResp);
         }
 
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
