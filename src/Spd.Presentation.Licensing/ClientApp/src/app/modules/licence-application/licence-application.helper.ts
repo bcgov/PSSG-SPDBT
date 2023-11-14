@@ -54,26 +54,14 @@ export abstract class LicenceApplicationHelper {
 		applicationTypeCode: new FormControl('', [Validators.required]),
 	});
 
-	personalInformationFormGroup = this.formBuilder.group(
-		{
-			// oneLegalName: new FormControl(false),
-			givenName: new FormControl(''),
-			middleName1: new FormControl(''),
-			middleName2: new FormControl(''),
-			surname: new FormControl('', [FormControlValidators.required]),
-			genderCode: new FormControl(''),
-			dateOfBirth: new FormControl('', [Validators.required]),
-			// check1: new FormControl({ '', disabled: true }),
-		}
-		// {
-		// 	validators: [
-		// 		FormGroupValidators.conditionalRequiredValidator(
-		// 			'givenName',
-		// 			(form) => form.get('oneLegalName')?.value != true
-		// 		),
-		// 	],
-		// }
-	);
+	personalInformationFormGroup = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		genderCode: new FormControl(''),
+		dateOfBirth: new FormControl('', [Validators.required]),
+	});
 
 	soleProprietorFormGroup = this.formBuilder.group({
 		isSoleProprietor: new FormControl('', [FormControlValidators.required]),

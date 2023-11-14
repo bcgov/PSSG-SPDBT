@@ -32,6 +32,10 @@ export interface ApplicationResponse {
 							fee?
 						</app-alert>
 
+						<app-alert type="warning">
+							Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
+						</app-alert>
+
 						<div class="mb-4" *ngIf="incompleteApplications.length > 0">
 							<!-- <div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div> -->
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of incompleteApplications; let i = index">
@@ -55,10 +59,10 @@ export interface ApplicationResponse {
 												<mat-chip-option
 													[selectable]="false"
 													class="mat-chip-yellow"
-													style="height: 38px; width: 160px;"
+													style="height: 38px; width: 115px;"
 												>
 													<mat-icon class="mat-chip-option-icon">warning</mat-icon>
-													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Incomplete</span>
+													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Draft</span>
 												</mat-chip-option>
 											</div>
 										</div>
@@ -276,23 +280,30 @@ export class UserApplicationsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.incompleteApplications = [
-			// {
-			// 	id: '1',
-			// 	licenceAppId: 'SWL-NWQ3X7Y',
-			// 	workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-			// 	applicationTypeCode: ApplicationTypeCode.New,
-			// 	expiresOn: '2023-09-26T19:43:25+00:00',
-			// },
 			{
-				id: '11',
+				id: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
 				licenceAppId: 'SWL-NWQ3X7Z',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-15T19:43:25+00:00',
 			},
+			{
+				id: '5a1bcc48-4eab-40c9-a820-ff6846b42d29',
+				licenceAppId: 'SWL-CBC3X7Z',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
+				expiresOn: '2023-11-15T19:43:25+00:00',
+			},
 		];
 
 		this.activeApplications = [
+			{
+				id: '1',
+				licenceAppId: 'SWL-NWQ3X7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
+				expiresOn: '2023-09-26T19:43:25+00:00',
+			},
 			{
 				id: '1',
 				licenceAppId: 'SWL-NWQ3X7Y',
@@ -334,19 +345,8 @@ export class UserApplicationsComponent implements OnInit {
 	onResume(appl: ApplicationResponse): void {
 		this.licenceApplicationService.reset();
 
-		// if (appl.id == '1') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceNew()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else if (appl.id == '11') {
 		this.licenceApplicationService
-			.loadExistingLicence('fc0c10a3-b6e6-4460-ac80-9b516f3e02a5')
+			.loadExistingLicence(appl.id!)
 			.pipe(
 				tap((resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
@@ -354,41 +354,6 @@ export class UserApplicationsComponent implements OnInit {
 				take(1)
 			)
 			.subscribe();
-
-		// } else if (appl.id == '2') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceRenewal()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				console.log('after2', resp);
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else if (appl.id == '3') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceReplacement()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				console.log('after2', resp);
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else if (appl.id == '4') {
-		// 	this.licenceApplicationService
-		// 		.loadLicenceUpdate()
-		// 		.pipe(
-		// 			tap((resp: any) => {
-		// 				console.log('after2', resp);
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// }
 	}
 
 	onUpdate(appl: ApplicationResponse): void {
