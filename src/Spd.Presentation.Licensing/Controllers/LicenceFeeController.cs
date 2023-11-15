@@ -35,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<LicenceFeeListResponse> GetLicenceFee([FromRoute][Required] string licenceNumber)
         {
-            return await _mediator.Send(new GetLicenceFeeQuery(licenceNumber));
+            return await _mediator.Send(new GetLicenceFeeListQuery(licenceNumber));
         }
     }
 }

@@ -120,7 +120,7 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
 
         _ = CreateMap<spd_licencefee, LicenceFeeResp>()
-         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => s.spd_term))
+         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => GetLicenceTermEnum(s.spd_term)))
          .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.spd_amount));
     }
 

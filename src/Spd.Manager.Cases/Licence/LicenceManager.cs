@@ -12,7 +12,7 @@ internal partial class LicenceManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetLicenceLookupQuery, LicenceLookupResponse>,
-        IRequestHandler<GetLicenceFeeQuery, LicenceFeeListResponse>,
+        IRequestHandler<GetLicenceFeeListQuery, LicenceFeeListResponse>,
         ILicenceManager
 {
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -64,11 +64,15 @@ internal partial class LicenceManager :
         return result;
     }
 
-    public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeQuery query, CancellationToken ct)
+    public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeListQuery query, CancellationToken ct)
     {
-        var response = await _licenceAppRepository.GetLicenceFeeAsync(query.LicenceNumber, ct);
+        var fees = await _licenceAppRepository.GetLicenceFeeAsync(query.LicenceNumber, ct);
+        var feeResps = _mapper.Map<IEnumerable<LicenceFeeResponse>>(fees.LicenceFees);
 
-        LicenceFeeListResponse result = _mapper.Map<LicenceFeeListResponse>(response);
-        return result;
+        return new LicenceFeeListResponse
+        {
+            LicenceFees = feeResps
+
+        };
     }
 }

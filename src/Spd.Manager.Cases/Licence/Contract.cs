@@ -181,7 +181,7 @@ namespace Spd.Manager.Cases.Licence
         public IEnumerable<LicenceFeeResponse> LicenceFees { get; set; } = Array.Empty<LicenceFeeResponse>();
     }
 
-    public record GetLicenceFeeQuery(string LicenceNumber) : IRequest<LicenceFeeListResponse>;
+    public record GetLicenceFeeListQuery(string LicenceNumber) : IRequest<LicenceFeeListResponse>;
 
     #endregion
 

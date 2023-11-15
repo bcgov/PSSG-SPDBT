@@ -88,10 +88,14 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
 
     public async Task<LicenceFeeListResp> GetLicenceFeeAsync(string licenceNumber, CancellationToken ct)
     {
-        var app = await _context.spd_licencefees.SingleOrDefaultAsync(ct);
-        //if (app == null) return new LicenceFeeListResp();
+        IQueryable<spd_licencefee> fees = _context.spd_licencefees
+            .Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
-        return _mapper.Map<LicenceFeeListResp>(app);
+        var result = fees.ToList();
+        var response = new LicenceFeeListResp();
+        var list = _mapper.Map<IEnumerable<LicenceFeeResp>>(result);
+        response.LicenceFees = list;
+        return response;
     }
 
     private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
