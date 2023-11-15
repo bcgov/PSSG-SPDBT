@@ -353,12 +353,19 @@ internal partial class LicenceManager
             LicenceDocumentTypeCode.WorkPermit,
             LicenceDocumentTypeCode.StudyPermit,
             LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus,
-            LicenceDocumentTypeCode.CanadianCitizenship
         };
 
     public static List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CanadianPassport,
             LicenceDocumentTypeCode.BirthCertificate,
             LicenceDocumentTypeCode.CertificateOfIndianStatus,
+        };
+
+    public static List<LicenceDocumentTypeCode> GovIdCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.DriversLicence,
+            LicenceDocumentTypeCode.CanadianFirearmsLicence,
+            LicenceDocumentTypeCode.BcServicesCard,
+            LicenceDocumentTypeCode.CertificateOfIndianStatus,
+            LicenceDocumentTypeCode.GovernmentIssuedPhotoId
         };
 }
