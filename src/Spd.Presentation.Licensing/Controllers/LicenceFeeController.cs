@@ -33,9 +33,9 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licence-fee/{licenceNumber}")]
         [HttpGet]
-        public async Task<LicenceLookupResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber)
+        public async Task<LicenceFeeListResponse> GetLicenceFee([FromRoute][Required] string licenceNumber)
         {
-            return await _mediator.Send(new GetLicenceLookupQuery(licenceNumber));
+            return await _mediator.Send(new GetLicenceFeeQuery(licenceNumber));
         }
     }
 }

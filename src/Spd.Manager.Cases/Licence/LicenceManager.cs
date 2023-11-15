@@ -12,7 +12,7 @@ internal partial class LicenceManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetLicenceLookupQuery, LicenceLookupResponse>,
-        IRequestHandler<GetLicenceFeeQuery, LicenceFeeResponse>,
+        IRequestHandler<GetLicenceFeeQuery, LicenceFeeListResponse>,
         ILicenceManager
 {
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -58,21 +58,21 @@ internal partial class LicenceManager :
 
     public async Task<LicenceLookupResponse> Handle(GetLicenceLookupQuery query, CancellationToken ct)
     {
-        var response = await _licenceAppRepository.GetLicenceLookupAsync(query.LicenceId, ct);
+        var response = await _licenceAppRepository.GetLicenceLookupAsync(query.LicenceNumber, ct);
         // if (response == null)
-        //    throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the licence");
+        //     throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the licence");
 
         LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response);
         return result;
     }
 
-    public async Task<LicenceFeeResponse> Handle(GetLicenceFeeQuery query, CancellationToken ct)
+    public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeQuery query, CancellationToken ct)
     {
-        var response = await _licenceAppRepository.GetLicenceFeeAsync(query.LicenceId, ct);
+        var response = await _licenceAppRepository.GetLicenceFeeAsync(query.LicenceNumber, ct);
         // if (response == null)
         //    throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the licence");
 
-        LicenceFeeResponse result = _mapper.Map<LicenceFeeResponse>(response);
+        LicenceFeeListResponse result = _mapper.Map<LicenceFeeListResponse>(response);
         return result;
     }
 }

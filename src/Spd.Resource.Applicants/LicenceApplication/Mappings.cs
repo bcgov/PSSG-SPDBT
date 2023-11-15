@@ -115,17 +115,16 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ReverseMap();
 
-        _ = CreateMap<spd_application, LicenceLookupResp>()
-         .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_name))
-         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
-         .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
-         .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname));
+        _ = CreateMap<spd_licence, LicenceLookupResp>()
+         .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
+         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
+         //.ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_LicenceHolder_account.name))
+         //.ForMember(d => d.Surname, opt => opt.MapFrom(s => s._spd_licenceholder_value))
+         ;
 
-        _ = CreateMap<spd_application, LicenceFeeResp>()
-         .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_name))
-         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
-         .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
-         .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname));
+        _ = CreateMap<spd_licencefee, LicenceFeeResp>()
+         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => s.spd_term))
+         .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.spd_amount));
     }
 
     private static DateTimeOffset? GetDateTimeOffset(Date? date)

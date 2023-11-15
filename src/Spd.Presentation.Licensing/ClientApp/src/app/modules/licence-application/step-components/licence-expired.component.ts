@@ -1,11 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { distinctUntilChanged, EMPTY, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { LicenceLookupResponse } from 'src/app/api/models';
+import { LicenceLookupService } from 'src/app/api/services';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
+@UntilDestroy({ checkProperties: true })
 @Component({
 	selector: 'app-licence-expired',
 	template: `
@@ -51,6 +57,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<mat-label>Expired Licence Number</mat-label>
 												<input
 													matInput
+													type="search"
 													formControlName="expiredLicenceNumber"
 													maxlength="20"
 													[errorStateMatcher]="matcher"
@@ -87,7 +94,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceExpiredComponent implements LicenceChildStepperStepComponent {
+export class LicenceExpiredComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	maxDate = new Date();
@@ -95,7 +102,40 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private licenceLookupService: LicenceLookupService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
+
+	ngOnInit(): void {
+		this.expiredLicenceNumber.valueChanges
+			.pipe(
+				untilDestroyed(this),
+				distinctUntilChanged(),
+				switchMap((value: string) => {
+					console.log('LicenceExpiredComponent value', value);
+					return value ? this.find(value) : EMPTY;
+				})
+			)
+			.subscribe((response: LicenceLookupResponse) => {
+				console.log('LicenceExpiredComponent response', response);
+				if (response) {
+					console.log('valid licence');
+				} else {
+					console.log('NOT valid licence');
+				}
+			});
+	}
+
+	public find(licenceNumber: string): Observable<LicenceLookupResponse> {
+		if (!licenceNumber || licenceNumber.trim().length == 0) return EMPTY;
+
+		return this.licenceLookupService
+			.apiLicenceLookupLicenceNumberGet({
+				licenceNumber,
+			})
+			.pipe();
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -104,5 +144,9 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 
 	get hasExpiredLicence(): FormControl {
 		return this.form.get('hasExpiredLicence') as FormControl;
+	}
+
+	get expiredLicenceNumber(): FormControl {
+		return this.form.get('expiredLicenceNumber') as FormControl;
 	}
 }

@@ -2,8 +2,6 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
 internal class LicenceApplicationRepository : ILicenceApplicationRepository
@@ -80,22 +78,24 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return _mapper.Map<LicenceApplicationResp>(app);
     }
 
-    public async Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceId, CancellationToken ct)
+    public async Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceNumber, CancellationToken ct)
     {
-        var app = await _context.spd_applications
-            .Where(a => a.spd_name == licenceId).SingleOrDefaultAsync(ct);
-        if (app == null) throw new ApiException(HttpStatusCode.NotFound, "licence not found");
+        var app = await _context.spd_licences
+            .Where(a => a.spd_licencenumber == licenceNumber).SingleOrDefaultAsync(ct);
+        if (app == null)
+            //throw new ArgumentException("invalid app id");
+            return null;
+        // throw new ApiException(HttpStatusCode.NotFound, "licence not found");
 
         return _mapper.Map<LicenceLookupResp>(app);
     }
 
-    public async Task<LicenceFeeResp> GetLicenceFeeAsync(string licenceId, CancellationToken ct)
+    public async Task<LicenceFeeListResp> GetLicenceFeeAsync(string licenceNumber, CancellationToken ct)
     {
-        var app = await _context.spd_applications
-            .Where(a => a.spd_name == licenceId).SingleOrDefaultAsync(ct);
-        if (app == null) throw new ApiException(HttpStatusCode.NotFound, "licence not found");
+        var app = await _context.spd_licencefees.SingleOrDefaultAsync(ct);
+        if (app == null) return new LicenceFeeListResp();
 
-        return _mapper.Map<LicenceFeeResp>(app);
+        return _mapper.Map<LicenceFeeListResp>(app);
     }
 
     private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)

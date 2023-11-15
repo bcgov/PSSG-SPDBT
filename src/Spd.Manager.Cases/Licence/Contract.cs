@@ -160,13 +160,13 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceLookupResponse
     {
-        public string? LicenceId { get; set; } = null;
+        public string? LicenceNumber { get; set; } = null;
         public string? GivenName { get; set; }
         public string? Surname { get; set; }
         public DateTimeOffset ExpiryDate { get; set; }
     };
 
-    public record GetLicenceLookupQuery(string LicenceId) : IRequest<LicenceLookupResponse>;
+    public record GetLicenceLookupQuery(string LicenceNumber) : IRequest<LicenceLookupResponse>;
 
     #endregion
 
@@ -174,13 +174,16 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceFeeResponse
     {
-        public string? LicenceId { get; set; } = null;
-        public string? GivenName { get; set; }
-        public string? Surname { get; set; }
-        public DateTimeOffset ExpiryDate { get; set; }
+        public LicenceTermCode? LicenceTermCode { get; set; }
+        public int? Amount { get; set; }
     };
 
-    public record GetLicenceFeeQuery(string LicenceId) : IRequest<LicenceFeeResponse>;
+    public record LicenceFeeListResponse
+    {
+        public IEnumerable<LicenceFeeResponse> LicenceFees { get; set; } = Array.Empty<LicenceFeeResponse>();
+    }
+
+    public record GetLicenceFeeQuery(string LicenceNumber) : IRequest<LicenceFeeListResponse>;
 
     #endregion
 

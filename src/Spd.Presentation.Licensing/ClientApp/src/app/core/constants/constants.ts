@@ -34,6 +34,9 @@ export const SPD_CONSTANTS = {
 			'.htm',
 		],
 	},
+	api: {
+		debounceTime: 500, // milliseconds
+	},
 	maxNumberOfAliases: 3,
 	// sessionStorage: {
 	// 	organizationRegStateKey: 'state',
