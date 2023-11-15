@@ -11,6 +11,7 @@ internal partial class LicenceManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
+        IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
         ILicenceManager
 {
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -52,5 +53,13 @@ internal partial class LicenceManager :
         WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
         await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
         return result;
+    }
+
+    public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct)
+    {
+        //var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
+        //WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
+        //await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
+        //return result;
     }
 }

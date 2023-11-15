@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
 using Spd.Manager.Cases.Screening;
+using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
@@ -109,7 +110,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Submit Security Worker Licence Application
         /// </summary>
-        /// <param name="licenceCreateRequest"></param>
+        /// <param name="WorkerLicenceAppSubmitRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/submit")]
         [Authorize(Policy = "OnlyBcsc")]
@@ -126,6 +127,20 @@ namespace Spd.Presentation.Licensing.Controllers
             //return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceSubmitRequest, info.Sub));
         }
 
+        /// <summary>
+        /// Get List of draft or InProgress Security Worker Licence Application
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<List<WorkerLicenceAppListResponse>> GetLicenceApplications(CancellationToken ct)
+        {
+            _logger.LogInformation("Get GetLicenceApplications");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            return await _mediator.Send(new GetWorkerLicenceAppListQuery(response.ApplicantId));
+        }
         #endregion
 
         #region anonymous APIs
