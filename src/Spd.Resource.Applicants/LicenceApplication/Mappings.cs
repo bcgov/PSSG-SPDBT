@@ -117,10 +117,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<spd_licence, LicenceLookupResp>()
          .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
-         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
-         //.ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_LicenceHolder_account.name))
-         //.ForMember(d => d.Surname, opt => opt.MapFrom(s => s._spd_licenceholder_value))
-         ;
+         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
 
         _ = CreateMap<spd_licencefee, LicenceFeeResp>()
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => s.spd_term))

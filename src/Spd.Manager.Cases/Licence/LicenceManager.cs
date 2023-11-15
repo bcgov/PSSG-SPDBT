@@ -59,8 +59,6 @@ internal partial class LicenceManager :
     public async Task<LicenceLookupResponse> Handle(GetLicenceLookupQuery query, CancellationToken ct)
     {
         var response = await _licenceAppRepository.GetLicenceLookupAsync(query.LicenceNumber, ct);
-        // if (response == null)
-        //     throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the licence");
 
         LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response);
         return result;
@@ -69,8 +67,6 @@ internal partial class LicenceManager :
     public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeQuery query, CancellationToken ct)
     {
         var response = await _licenceAppRepository.GetLicenceFeeAsync(query.LicenceNumber, ct);
-        // if (response == null)
-        //    throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the licence");
 
         LicenceFeeListResponse result = _mapper.Map<LicenceFeeListResponse>(response);
         return result;

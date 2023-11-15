@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { distinctUntilChanged, EMPTY, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { EMPTY, Observable } from 'rxjs';
 import { LicenceLookupResponse } from 'src/app/api/models';
 import { LicenceLookupService } from 'src/app/api/services';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
-@UntilDestroy({ checkProperties: true })
 @Component({
 	selector: 'app-licence-expired',
 	template: `
@@ -50,24 +49,49 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 								<div class="text-minor-heading mb-2">Expired licence information:</div>
-								<ng-container>
-									<div class="row mt-2">
-										<div class="col-lg-6 col-md-12 col-sm-12">
-											<mat-form-field>
-												<mat-label>Expired Licence Number</mat-label>
-												<input
-													matInput
-													type="search"
-													formControlName="expiredLicenceNumber"
-													maxlength="20"
-													[errorStateMatcher]="matcher"
-												/>
-												<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"
-													>This is required</mat-error
-												>
-											</mat-form-field>
-										</div>
-										<div class="col-lg-6 col-md-12 col-sm-12">
+								<div class="row mt-2">
+									<div class="col-lg-8 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>Expired Licence Number</mat-label>
+											<input
+												matInput
+												type="search"
+												formControlName="expiredLicenceNumber"
+												maxlength="20"
+												[errorStateMatcher]="matcher"
+												(keydown.enter)="onSearchKeyDown($event)"
+											/>
+											<button
+												mat-button
+												matSuffix
+												mat-flat-button
+												aria-label="search"
+												(click)="onSearch()"
+												class="search-icon-button"
+											>
+												<mat-icon>search</mat-icon>
+											</button>
+											<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')">
+												This is required
+											</mat-error>
+										</mat-form-field>
+
+										<!-- 
+												placeholder="Search expired licence number"<mat-form-field>
+											<mat-label>Expired Licence Number</mat-label>
+											<input
+												matInput
+												type="search"
+												formControlName="expiredLicenceNumber"
+												maxlength="20"
+												[errorStateMatcher]="matcher"
+											/>
+											<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"
+												>This is required</mat-error
+											>
+										</mat-form-field> -->
+									</div>
+									<!-- <div class="col-lg-6 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Expiry Date</mat-label>
 												<input
@@ -81,9 +105,21 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 												<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
 											</mat-form-field>
-										</div>
-									</div>
-								</ng-container>
+										</div> -->
+
+									<ng-container *ngIf="isAfterSearch">
+										<app-alert type="info" icon="check_circle" *ngIf="!isNotFound && isExpired">
+											This is a valid expired licence with an expiry date of
+											{{ expiryDate.value | date : constants.date.dateFormat }}.
+										</app-alert>
+										<app-alert type="warning" *ngIf="!isNotFound && !isExpired">
+											The licence number is a valid licence but it has not expired.
+										</app-alert>
+										<app-alert type="danger" icon="error" *ngIf="isNotFound">
+											This licence number does not match any existing licences.
+										</app-alert>
+									</ng-container>
+								</div>
 							</div>
 						</div>
 					</form>
@@ -94,8 +130,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceExpiredComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
+	constants = SPD_CONSTANTS;
+
+	isAfterSearch = !!this.expiryDate.value;
+	isNotFound = false;
+	isExpired = false;
 
 	maxDate = new Date();
 	matcher = new FormErrorStateMatcher();
@@ -103,29 +144,10 @@ export class LicenceExpiredComponent implements OnInit, LicenceChildStepperStepC
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
 
 	constructor(
+		private utilService: UtilService,
 		private licenceLookupService: LicenceLookupService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
-
-	ngOnInit(): void {
-		this.expiredLicenceNumber.valueChanges
-			.pipe(
-				untilDestroyed(this),
-				distinctUntilChanged(),
-				switchMap((value: string) => {
-					console.log('LicenceExpiredComponent value', value);
-					return value ? this.find(value) : EMPTY;
-				})
-			)
-			.subscribe((response: LicenceLookupResponse) => {
-				console.log('LicenceExpiredComponent response', response);
-				if (response) {
-					console.log('valid licence');
-				} else {
-					console.log('NOT valid licence');
-				}
-			});
-	}
 
 	public find(licenceNumber: string): Observable<LicenceLookupResponse> {
 		if (!licenceNumber || licenceNumber.trim().length == 0) return EMPTY;
@@ -135,6 +157,42 @@ export class LicenceExpiredComponent implements OnInit, LicenceChildStepperStepC
 				licenceNumber,
 			})
 			.pipe();
+	}
+
+	onSearchKeyDown(searchEvent: any): void {
+		const searchString = searchEvent.target.value;
+		this.performSearch(searchString);
+	}
+
+	onSearch(): void {
+		this.performSearch(this.expiredLicenceNumber.value);
+	}
+
+	private performSearch(licenceNumber: string) {
+		this.isAfterSearch = false;
+		this.isNotFound = false;
+		this.isExpired = false;
+
+		this.form.patchValue({ expiryDate: null });
+
+		if (!licenceNumber || licenceNumber.trim().length == 0) return;
+
+		return this.licenceLookupService
+			.apiLicenceLookupLicenceNumberGet({
+				licenceNumber,
+			})
+			.pipe()
+			.subscribe((response: LicenceLookupResponse) => {
+				if (response?.expiryDate) {
+					this.isExpired = !this.utilService.getIsFutureDate(response.expiryDate);
+					if (this.isExpired) {
+						this.form.patchValue({ expiryDate: response.expiryDate });
+					}
+				} else {
+					this.isNotFound = true;
+				}
+				this.isAfterSearch = true;
+			});
 	}
 
 	isFormValid(): boolean {
@@ -148,5 +206,9 @@ export class LicenceExpiredComponent implements OnInit, LicenceChildStepperStepC
 
 	get expiredLicenceNumber(): FormControl {
 		return this.form.get('expiredLicenceNumber') as FormControl;
+	}
+
+	get expiryDate(): FormControl {
+		return this.form.get('expiryDate') as FormControl;
 	}
 }

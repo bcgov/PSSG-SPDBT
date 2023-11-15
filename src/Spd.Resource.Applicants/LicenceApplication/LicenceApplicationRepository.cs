@@ -82,10 +82,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     {
         var app = await _context.spd_licences
             .Where(a => a.spd_licencenumber == licenceNumber).SingleOrDefaultAsync(ct);
-        if (app == null)
-            //throw new ArgumentException("invalid app id");
-            return null;
-        // throw new ApiException(HttpStatusCode.NotFound, "licence not found");
 
         return _mapper.Map<LicenceLookupResp>(app);
     }
@@ -93,7 +89,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     public async Task<LicenceFeeListResp> GetLicenceFeeAsync(string licenceNumber, CancellationToken ct)
     {
         var app = await _context.spd_licencefees.SingleOrDefaultAsync(ct);
-        if (app == null) return new LicenceFeeListResp();
+        //if (app == null) return new LicenceFeeListResp();
 
         return _mapper.Map<LicenceFeeListResp>(app);
     }

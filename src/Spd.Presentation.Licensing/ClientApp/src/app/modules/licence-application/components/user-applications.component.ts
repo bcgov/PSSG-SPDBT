@@ -27,7 +27,7 @@ export interface ApplicationResponse {
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<ng-container *ngIf="isAuthenticated | async">
-						<app-alert type="info">
+						<app-alert type="info" icon="info">
 							We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
 							fee?
 						</app-alert>

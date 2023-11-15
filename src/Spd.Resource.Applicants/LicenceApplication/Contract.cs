@@ -74,8 +74,6 @@ public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 public record LicenceLookupResp()
 {
     public string? LicenceNumber { get; set; } = null;
-    public string? GivenName { get; set; }
-    public string? Surname { get; set; }
     public DateTimeOffset ExpiryDate { get; set; }
 }
 
