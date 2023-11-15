@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
@@ -112,6 +113,7 @@ namespace Spd.Manager.Cases.Licence
         public Guid? LicenceAppId { get; set; }
     };
 
+    public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
     //public record DogsAuthorizationUpsertRequest
     //{
     //    public Guid LicenceAppId { get; set; }
@@ -288,6 +290,47 @@ namespace Spd.Manager.Cases.Licence
         SecurityAlarmResponse,
         SecurityAlarmSales,
         SecurityConsultant,
+    }
+    #endregion
+
+    #region validation
+    public class WorkerLicenceAppSubmitRequestValidator : AbstractValidator<WorkerLicenceAppSubmitRequest>
+    {
+        public static List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.PermanentResidentCard,
+            LicenceDocumentTypeCode.RecordOfLandingDocument,
+            LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
+            LicenceDocumentTypeCode.WorkPermit,
+            LicenceDocumentTypeCode.StudyPermit,
+            LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus
+        };
+        public WorkerLicenceAppSubmitRequestValidator()
+        {
+            RuleFor(r => r.LicenceAppId)
+                    .NotEmpty();
+
+            RuleFor(r => r.WorkerLicenceTypeCode)
+                    .NotEmpty();
+
+            RuleFor(r => r.ApplicationTypeCode)
+                .NotEmpty();
+
+            RuleFor(r => r.isSoleProprietor).NotEmpty();
+            RuleFor(r => r.Surname).NotEmpty();
+            RuleFor(r => r.DateOfBirth).NotEmpty();
+            RuleFor(r => r.GenderCode).NotEmpty();
+            RuleFor(r => r.LicenceTermCode).NotEmpty();
+            RuleFor(r => r.HasExpiredLicence).NotEmpty();
+            RuleFor(r => r.ExpiredLicenceNumber).NotEmpty().When(r => r.HasExpiredLicence == true);
+            RuleFor(r => r.IsCanadianCitizen).NotEmpty();
+            RuleFor(r => r.CitizenshipDocument).NotEmpty();
+            RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
+            RuleFor(r => r.PoliceOfficerRoleCode).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
+            //RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode).NotEmpty();
+            //RuleFor(r => r.CitizenshipDocument.DocumentResponses.Count()).GreaterThan(0);
+            //RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode).Must(WorkProofCodes.Contains(r.CitizenshipDocument.LicenceDocumentTypeCode));
+
+        }
     }
     #endregion
 }
