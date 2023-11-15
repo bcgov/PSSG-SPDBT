@@ -114,6 +114,18 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ReverseMap();
+
+        _ = CreateMap<spd_application, LicenceLookupResp>()
+         .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_name))
+         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
+         .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
+         .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname));
+
+        _ = CreateMap<spd_application, LicenceFeeResp>()
+         .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_name))
+         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
+         .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
+         .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname));
     }
 
     private static DateTimeOffset? GetDateTimeOffset(Date? date)

@@ -5,6 +5,8 @@ public partial interface ILicenceApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
+    public Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceId, CancellationToken cancellationToken);
+    public Task<LicenceFeeResp> GetLicenceFeeAsync(string licenceId, CancellationToken cancellationToken);
 }
 
 public record LicenceApplicationCmdResp(Guid? LicenceAppId);
@@ -68,6 +70,22 @@ public record LicenceApplicationResp() : LicenceApplication
 };
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
+
+public record LicenceLookupResp()
+{
+    public string? LicenceId { get; set; } = null;
+    public string? GivenName { get; set; }
+    public string? Surname { get; set; }
+    public DateTimeOffset ExpiryDate { get; set; }
+}
+
+public record LicenceFeeResp()
+{
+    public string? LicenceId { get; set; } = null;
+    public string? GivenName { get; set; }
+    public string? Surname { get; set; }
+    public DateTimeOffset ExpiryDate { get; set; }
+}
 
 public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;

@@ -9,6 +9,7 @@ namespace Spd.Manager.Cases.Licence
         public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
         public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
+        public Task<LicenceLookupResponse> Handle(GetLicenceLookupQuery query, CancellationToken ct);
     }
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
@@ -152,6 +153,34 @@ namespace Spd.Manager.Cases.Licence
         public string? DocumentName { get; set; }
         public string? DocumentExtension { get; set; }
     };
+
+    #endregion
+
+    #region licence lookup
+
+    public record LicenceLookupResponse
+    {
+        public string? LicenceId { get; set; } = null;
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
+        public DateTimeOffset ExpiryDate { get; set; }
+    };
+
+    public record GetLicenceLookupQuery(string LicenceId) : IRequest<LicenceLookupResponse>;
+
+    #endregion
+
+    #region licence fee
+
+    public record LicenceFeeResponse
+    {
+        public string? LicenceId { get; set; } = null;
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
+        public DateTimeOffset ExpiryDate { get; set; }
+    };
+
+    public record GetLicenceFeeQuery(string LicenceId) : IRequest<LicenceFeeResponse>;
 
     #endregion
 

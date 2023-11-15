@@ -13,6 +13,7 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+        CreateMap<LicenceLookupResp, LicenceLookupResponse>();
         CreateMap<DocumentResp, LicenceAppDocumentResponse>()
              .ForMember(d => d.DocumentExtension, opt => opt.MapFrom(s => s.FileExtension))
              .ForMember(d => d.DocumentName, opt => opt.MapFrom(s => s.FileName))

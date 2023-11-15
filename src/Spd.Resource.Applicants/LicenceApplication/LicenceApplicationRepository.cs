@@ -2,6 +2,8 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
 internal class LicenceApplicationRepository : ILicenceApplicationRepository
@@ -58,7 +60,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
-        await _context.SaveChangesAsync(); 
+        await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         ProcessCategories(cmd.CategoryData, app);
@@ -76,6 +78,24 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             throw new ArgumentException("invalid app id");
 
         return _mapper.Map<LicenceApplicationResp>(app);
+    }
+
+    public async Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceId, CancellationToken ct)
+    {
+        var app = await _context.spd_applications
+            .Where(a => a.spd_name == licenceId).SingleOrDefaultAsync(ct);
+        if (app == null) throw new ApiException(HttpStatusCode.NotFound, "licence not found");
+
+        return _mapper.Map<LicenceLookupResp>(app);
+    }
+
+    public async Task<LicenceFeeResp> GetLicenceFeeAsync(string licenceId, CancellationToken ct)
+    {
+        var app = await _context.spd_applications
+            .Where(a => a.spd_name == licenceId).SingleOrDefaultAsync(ct);
+        if (app == null) throw new ApiException(HttpStatusCode.NotFound, "licence not found");
+
+        return _mapper.Map<LicenceFeeResp>(app);
     }
 
     private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
