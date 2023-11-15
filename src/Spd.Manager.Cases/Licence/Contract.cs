@@ -296,14 +296,6 @@ namespace Spd.Manager.Cases.Licence
     #region validation
     public class WorkerLicenceAppSubmitRequestValidator : AbstractValidator<WorkerLicenceAppSubmitRequest>
     {
-        public static List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
-            LicenceDocumentTypeCode.PermanentResidentCard,
-            LicenceDocumentTypeCode.RecordOfLandingDocument,
-            LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
-            LicenceDocumentTypeCode.WorkPermit,
-            LicenceDocumentTypeCode.StudyPermit,
-            LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus
-        };
         public WorkerLicenceAppSubmitRequestValidator()
         {
             RuleFor(r => r.LicenceAppId)
@@ -326,9 +318,13 @@ namespace Spd.Manager.Cases.Licence
             RuleFor(r => r.CitizenshipDocument).NotEmpty();
             RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
             RuleFor(r => r.PoliceOfficerRoleCode).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
-            //RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode).NotEmpty();
-            //RuleFor(r => r.CitizenshipDocument.DocumentResponses.Count()).GreaterThan(0);
-            //RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode).Must(WorkProofCodes.Contains(r.CitizenshipDocument.LicenceDocumentTypeCode));
+            RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode)
+                .Must(c => LicenceManager.WorkProofCodes.Contains(c))
+                .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == false);
+            RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode)
+                .Must(c => LicenceManager.CitizenshipProofCodes.Contains(c))
+                .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == true);
+            //todo: add more validation when the ui design settled.
 
         }
     }

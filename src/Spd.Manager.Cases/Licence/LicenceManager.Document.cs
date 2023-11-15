@@ -346,4 +346,19 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
     }.ToImmutableDictionary();
 
+    public static List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.PermanentResidentCard,
+            LicenceDocumentTypeCode.RecordOfLandingDocument,
+            LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
+            LicenceDocumentTypeCode.WorkPermit,
+            LicenceDocumentTypeCode.StudyPermit,
+            LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus,
+            LicenceDocumentTypeCode.CanadianCitizenship
+        };
+
+    public static List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CanadianPassport,
+            LicenceDocumentTypeCode.BirthCertificate,
+            LicenceDocumentTypeCode.CertificateOfIndianStatus,
+        };
 }
