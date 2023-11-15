@@ -327,7 +327,9 @@ namespace Spd.Manager.Cases.Licence
             RuleFor(r => r.PoliceOfficerDocument).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
             RuleFor(r => r.PoliceOfficerDocument.LicenceDocumentTypeCode)
                 .Must(c => c == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
-                .When(r => r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerDocument != null);
+                .When(r => r.IsPoliceOrPeaceOfficer !=null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerDocument != null);
+            RuleFor(r => r.OtherOfficerRole).NotEmpty()
+                .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode != null && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
 
             //mental health
             RuleFor(r => r.IsTreatedForMHC).NotEmpty();
