@@ -16,7 +16,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
-    public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<List<WorkerLicenceAppListResponse>>;
+    public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
     #region base data model
     public abstract record WorkerLicenceApp

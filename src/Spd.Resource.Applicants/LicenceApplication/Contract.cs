@@ -10,7 +10,7 @@ public partial interface ILicenceApplicationRepository
     public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
 }
 
-public record LicenceAppQuery(Guid? ApplicantId, WorkerLicenceTypeEnum? WorkerLicenceTypeCode, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
+public record LicenceAppQuery(Guid ApplicantId, List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
 public record LicenceApplicationCmdResp(Guid? LicenceAppId);
 
 public record LicenceApplication
@@ -79,7 +79,7 @@ public record LicenceAppListResp
     public DateTimeOffset? SubmittedOn { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public string CaseNumber { get; set; }
-    public ApplicationPortalStatusEnum ApplicationStatusCode { get; set; }
+    public ApplicationPortalStatusEnum ApplicationPortalStatusCode { get; set; }
 }
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);

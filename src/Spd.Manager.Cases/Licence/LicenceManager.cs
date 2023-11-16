@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Engine.Validation;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
@@ -57,10 +58,28 @@ internal partial class LicenceManager :
 
     public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct)
     {
-        //var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
-        //WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
-        //await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
-        //return result;
-        return null;
+        LicenceAppQuery q = new LicenceAppQuery
+        (
+            query.ApplicantId,
+            new List<WorkerLicenceTypeEnum> 
+            {
+                WorkerLicenceTypeEnum.ArmouredVehiclePermit,
+                WorkerLicenceTypeEnum.BodyArmourPermit,
+                WorkerLicenceTypeEnum.SecurityWorkerLicence,
+            },
+            new List<ApplicationPortalStatusEnum> 
+            {
+                ApplicationPortalStatusEnum.Draft,
+                ApplicationPortalStatusEnum.AwaitingThirdParty,
+                ApplicationPortalStatusEnum.AwaitingPayment,
+                ApplicationPortalStatusEnum.Incomplete,
+                ApplicationPortalStatusEnum.InProgress,
+                ApplicationPortalStatusEnum.AwaitingApplicant,
+                ApplicationPortalStatusEnum.UnderAssessment,
+                ApplicationPortalStatusEnum.VerifyIdentity
+            }
+        );
+        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
 }

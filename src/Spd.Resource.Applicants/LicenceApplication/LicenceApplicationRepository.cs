@@ -81,21 +81,21 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     public async Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken)
     {
         IQueryable<spd_application> apps = _context.spd_applications.Expand(a => a.spd_ServiceTypeId);
+        apps = apps.Where(a => a._spd_applicantid_value == qry.ApplicantId);
+        var applist = apps.ToList();
 
-        if (qry.ApplicantId != null)
-            apps = apps.Where(a => a.spd_applicationid == qry.ApplicantId);
-
-        if (qry.WorkerLicenceTypeCode != null)
+        if (qry.ValidWorkerLicenceTypeCodes != null && qry.ValidWorkerLicenceTypeCodes.Any())
         {
-            spd_servicetype? servicetype = _context.LookupServiceType(qry.WorkerLicenceTypeCode.ToString());
-            apps = apps.Where(a => a._spd_servicetypeid_value == servicetype.spd_servicetypeid);
+            List<Guid?> serviceTypeGuid = qry.ValidWorkerLicenceTypeCodes.Select(c => _context.LookupServiceType(c.ToString()).spd_servicetypeid).ToList();
+            applist = applist.Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value)).ToList();
         }
 
         if(qry.ValidPortalStatus != null && qry.ValidPortalStatus.Any())
         {
-
+            List<int> portalStatusInt = qry.ValidPortalStatus.Select(s => (int)Enum.Parse<ApplicationPortalStatus>(s.ToString())).ToList();
+            applist = applist.Where(a => portalStatusInt.Contains((int)a.spd_portalstatus)).ToList();
         }
-        return _mapper.Map<IList<LicenceAppListResp>>(apps);
+        return _mapper.Map<IList<LicenceAppListResp>>(applist);
 
     }
 

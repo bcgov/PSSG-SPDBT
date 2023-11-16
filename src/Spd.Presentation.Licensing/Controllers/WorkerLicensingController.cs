@@ -131,14 +131,19 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Get List of draft or InProgress Security Worker Licence Application
         /// </summary>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/submit")]
+        [Route("api/worker-licence-applications")]
         [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<List<WorkerLicenceAppListResponse>> GetLicenceApplications(CancellationToken ct)
+        [HttpGet]
+        public async Task<IEnumerable<WorkerLicenceAppListResponse>> GetLicenceApplications(CancellationToken ct)
         {
             _logger.LogInformation("Get GetLicenceApplications");
             var info = _currentUser.GetBcscUserIdentityInfo();
             var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            if(response == null)
+            {
+                //no contact found for this person
+                return Array.Empty<WorkerLicenceAppListResponse>();
+            }
             return await _mediator.Send(new GetWorkerLicenceAppListQuery(response.ApplicantId));
         }
         #endregion
