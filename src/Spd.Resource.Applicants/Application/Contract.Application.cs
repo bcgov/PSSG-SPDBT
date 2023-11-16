@@ -331,6 +331,7 @@ public enum ApplicationPortalStatusEnum
     ClosedNoConsent,
     CancelledByApplicant,
     CancelledByOrganization,
+    Completed
 }
 
 public enum ApplicationPortalStatisticsCd

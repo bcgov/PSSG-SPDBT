@@ -27,5 +27,6 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<Alias, Spd.Resource.Applicants.LicenceApplication.Alias>()
             .ReverseMap();
+        CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
     }
 }
