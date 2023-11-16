@@ -78,29 +78,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return _mapper.Map<LicenceApplicationResp>(app);
     }
 
-    public async Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceNumber, CancellationToken ct)
-    {
-        var app = await _context.spd_licences
-            .Where(a => a.spd_licencenumber == licenceNumber).SingleOrDefaultAsync(ct);
-
-        return _mapper.Map<LicenceLookupResp>(app);
-    }
-
-    public async Task<LicenceFeeListResp> GetLicenceFeeAsync(WorkerLicenceTypeEnum workerLicenceTypeCode, CancellationToken ct)
-    {
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(workerLicenceTypeCode.ToString(), out Guid stGuid);
-
-        IQueryable<spd_licencefee> fees = _context.spd_licencefees.Expand(a => a.spd_ServiceTypeId)
-            .Where(d => d._spd_servicetypeid_value == stGuid && d.statecode != DynamicsConstants.StateCode_Inactive);
-
-        var result = fees.ToList();
-        var list = _mapper.Map<IEnumerable<LicenceFeeResp>>(result);
-
-        var response = new LicenceFeeListResp();
-        response.LicenceFees = list;
-        return response;
-    }
-
     private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
     {
         foreach (var c in categories)

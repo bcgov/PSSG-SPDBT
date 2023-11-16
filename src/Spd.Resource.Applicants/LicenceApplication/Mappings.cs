@@ -119,11 +119,6 @@ internal class Mappings : Profile
          .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
          .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
-
-        _ = CreateMap<spd_licencefee, LicenceFeeResp>()
-         .ForMember(d => d.BusinessTypeCode, opt => opt.MapFrom(s => GetBusinessTypeEnum(s.spd_businesstype)))
-         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => GetLicenceTermEnum(s.spd_term)))
-         .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.spd_amount));
     }
 
     private static DateTimeOffset? GetDateTimeOffset(Date? date)
@@ -187,6 +182,12 @@ internal class Mappings : Profile
     {
         if (optionset == null) return null;
         return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
+    }
+
+    private static WorkerLicenceTypeEnum? GetWorkerLicenceTypeEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<WorkerLicenceTypeEnum>(Enum.GetName(typeof(WorkerLicenceTypeOptionSet), optionset));
     }
 
     private static int? GetHairColor(HairColourEnum? code)

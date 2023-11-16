@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.TempFileStorage;
@@ -26,6 +27,13 @@ internal class LicenceRepository : ILicenceRepository
         return null;
     }
 
+    public async Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceNumber, CancellationToken ct)
+    {
+        var app = await _context.spd_licences
+            .Where(a => a.spd_licencenumber == licenceNumber).SingleOrDefaultAsync(ct);
+
+        return _mapper.Map<LicenceLookupResp>(app);
+    }
 
 
 }

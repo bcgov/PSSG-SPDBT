@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.LicenceApplication;
+using Spd.Resource.Applicants.LicenceFee;
 
 namespace Spd.Manager.Cases.Licence;
 internal class Mappings : Profile

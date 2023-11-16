@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { LicenceFeeListResponse } from '../models/licence-fee-list-response';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 
 @Injectable({
   providedIn: 'root',
@@ -23,9 +24,9 @@ export class LicenceFeeService extends BaseService {
   }
 
   /**
-   * Path part for operation apiLicenceFeeLicenceNumberGet
+   * Path part for operation apiLicenceFeeWorkerLicenceTypeCodeGet
    */
-  static readonly ApiLicenceFeeLicenceNumberGetPath = '/api/licence-fee/{licenceNumber}';
+  static readonly ApiLicenceFeeWorkerLicenceTypeCodeGetPath = '/api/licence-fee/{workerLicenceTypeCode}';
 
   /**
    * Get licence fee.
@@ -33,20 +34,20 @@ export class LicenceFeeService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiLicenceFeeLicenceNumberGet()` instead.
+   * To access only the response body, use `apiLicenceFeeWorkerLicenceTypeCodeGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiLicenceFeeLicenceNumberGet$Response(params: {
-    licenceNumber: string;
+  apiLicenceFeeWorkerLicenceTypeCodeGet$Response(params: {
+    workerLicenceTypeCode: WorkerLicenceTypeCode;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<LicenceFeeListResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, LicenceFeeService.ApiLicenceFeeLicenceNumberGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, LicenceFeeService.ApiLicenceFeeWorkerLicenceTypeCodeGetPath, 'get');
     if (params) {
-      rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
+      rb.path('workerLicenceTypeCode', params.workerLicenceTypeCode, {"style":"simple"});
     }
 
     return this.http.request(rb.build({
@@ -67,18 +68,18 @@ export class LicenceFeeService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiLicenceFeeLicenceNumberGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiLicenceFeeWorkerLicenceTypeCodeGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiLicenceFeeLicenceNumberGet(params: {
-    licenceNumber: string;
+  apiLicenceFeeWorkerLicenceTypeCodeGet(params: {
+    workerLicenceTypeCode: WorkerLicenceTypeCode;
   },
   context?: HttpContext
 
 ): Observable<LicenceFeeListResponse> {
 
-    return this.apiLicenceFeeLicenceNumberGet$Response(params,context).pipe(
+    return this.apiLicenceFeeWorkerLicenceTypeCodeGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<LicenceFeeListResponse>) => r.body as LicenceFeeListResponse)
     );
   }

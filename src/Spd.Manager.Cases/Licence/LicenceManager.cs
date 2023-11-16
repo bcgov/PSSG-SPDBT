@@ -3,7 +3,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
+using Spd.Resource.Applicants.LicenceFee;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases.Licence;
@@ -15,21 +17,28 @@ internal partial class LicenceManager :
         IRequestHandler<GetLicenceFeeListQuery, LicenceFeeListResponse>,
         ILicenceManager
 {
+    private readonly ILicenceRepository _licenceRepository;
     private readonly ILicenceApplicationRepository _licenceAppRepository;
+    private readonly ILicenceFeeRepository _licenceFeeRepository;
     private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
     private readonly IDuplicateCheckEngine _duplicateCheckEngine;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
 
-    public LicenceManager(ILicenceApplicationRepository licenceAppRepository,
+    public LicenceManager(
+        ILicenceRepository licenceRepository,
+        ILicenceApplicationRepository licenceAppRepository,
+        ILicenceFeeRepository licenceFeeRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
         IDuplicateCheckEngine duplicateCheckEngine,
         IDocumentRepository documentUrlRepository,
         ILogger<ILicenceManager> logger)
     {
+        _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
+        _licenceFeeRepository = licenceFeeRepository;
         _tempFile = tempFile;
         _mapper = mapper;
         _duplicateCheckEngine = duplicateCheckEngine;
@@ -54,25 +63,5 @@ internal partial class LicenceManager :
         WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
         await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
         return result;
-    }
-
-    public async Task<LicenceLookupResponse> Handle(GetLicenceLookupQuery query, CancellationToken ct)
-    {
-        var response = await _licenceAppRepository.GetLicenceLookupAsync(query.LicenceNumber, ct);
-
-        LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response);
-        return result;
-    }
-
-    public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeListQuery query, CancellationToken ct)
-    {
-        var fees = await _licenceAppRepository.GetLicenceFeeAsync((WorkerLicenceTypeEnum)query.WorkerLicenceTypeCode, ct);
-        var feeResps = _mapper.Map<IEnumerable<LicenceFeeResponse>>(fees.LicenceFees);
-
-        return new LicenceFeeListResponse
-        {
-            LicenceFees = feeResps
-
-        };
     }
 }

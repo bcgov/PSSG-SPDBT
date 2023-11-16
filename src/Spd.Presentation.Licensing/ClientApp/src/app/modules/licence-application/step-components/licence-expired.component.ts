@@ -75,45 +75,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 												This is required
 											</mat-error>
 										</mat-form-field>
-
-										<!-- 
-												placeholder="Search expired licence number"<mat-form-field>
-											<mat-label>Expired Licence Number</mat-label>
-											<input
-												matInput
-												type="search"
-												formControlName="expiredLicenceNumber"
-												maxlength="20"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"
-												>This is required</mat-error
-											>
-										</mat-form-field> -->
 									</div>
-									<!-- <div class="col-lg-6 col-md-12 col-sm-12">
-											<mat-form-field>
-												<mat-label>Expiry Date</mat-label>
-												<input
-													matInput
-													[matDatepicker]="picker"
-													formControlName="expiryDate"
-													[max]="maxDate"
-													[errorStateMatcher]="matcher"
-												/>
-												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-												<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
-											</mat-form-field>
-										</div> -->
-
 									<ng-container *ngIf="isAfterSearch">
 										<app-alert type="info" icon="check_circle" *ngIf="!isNotFound && isExpired">
 											This is a valid expired licence with an expiry date of
 											{{ expiryDate.value | date : constants.date.dateFormat }}.
 										</app-alert>
 										<app-alert type="warning" *ngIf="!isNotFound && !isExpired">
-											The licence number is a valid licence but it has not expired.
+											The licence is still valid. Please renew it when you get your renewal notice in the mail.
 										</app-alert>
 										<app-alert type="danger" icon="error" *ngIf="isNotFound">
 											This licence number does not match any existing licences.
@@ -134,14 +103,14 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 	booleanTypeCodes = BooleanTypeCode;
 	constants = SPD_CONSTANTS;
 
-	isAfterSearch = !!this.expiryDate.value;
-	isNotFound = false;
-	isExpired = false;
-
 	maxDate = new Date();
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
+
+	isAfterSearch = this.form && this.expiryDate && this.expiryDate.value;
+	isNotFound = false;
+	isExpired = false;
 
 	constructor(
 		private utilService: UtilService,
@@ -173,7 +142,7 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 		this.isNotFound = false;
 		this.isExpired = false;
 
-		this.form.patchValue({ expiryDate: null });
+		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
 
 		if (!licenceNumber || licenceNumber.trim().length == 0) return;
 
@@ -186,7 +155,7 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 				if (response?.expiryDate) {
 					this.isExpired = !this.utilService.getIsFutureDate(response.expiryDate);
 					if (this.isExpired) {
-						this.form.patchValue({ expiryDate: response.expiryDate });
+						this.form.patchValue({ expiredLicenceId: response.licenceId, expiryDate: response.expiryDate });
 					}
 				} else {
 					this.isNotFound = true;
