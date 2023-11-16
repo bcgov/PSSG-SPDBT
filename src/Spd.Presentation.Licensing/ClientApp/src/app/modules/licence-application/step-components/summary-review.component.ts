@@ -753,7 +753,6 @@ export class SummaryReviewComponent {
 	get categoryArmouredCarGuardAttachments(): File[] {
 		return this.licenceModelData.categoryArmouredCarGuardFormGroup.attachments ?? [];
 	}
-
 	get categoryFireInvestigatorCertificateAttachments(): File[] {
 		return this.licenceModelData.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments ?? [];
 	}
