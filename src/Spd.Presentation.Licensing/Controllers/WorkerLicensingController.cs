@@ -1,8 +1,10 @@
 
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
+using Spd.Manager.Cases.Screening;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
@@ -11,6 +13,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Net;
 using System.Security.Principal;
+using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -22,16 +26,19 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
+        private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
             IMediator mediator,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
+            _wslSubmitValidator = wslSubmitValidator;
         }
 
         #region bcsc authenticated
@@ -74,7 +81,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         [DisableRequestSizeLimit]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute]Guid licenceAppId, CancellationToken ct)
+        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
         {
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
             if (fileUploadConfig == null)
@@ -97,6 +104,26 @@ namespace Spd.Presentation.Licensing.Controllers
                 }
             }
             return await _mediator.Send(new CreateLicenceAppDocumentCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+        }
+
+        /// <summary>
+        /// Submit Security Worker Licence Application
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppSubmitRequest licenceSubmitRequest, CancellationToken ct)
+        {
+            var validateResult = await _wslSubmitValidator.ValidateAsync(licenceSubmitRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            //temp: todo: process submit command
+            return null;
+            //return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceSubmitRequest, info.Sub));
         }
 
         #endregion
