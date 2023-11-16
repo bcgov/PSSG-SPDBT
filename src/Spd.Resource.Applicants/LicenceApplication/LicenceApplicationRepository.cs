@@ -58,7 +58,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
-        await _context.SaveChangesAsync(); 
+        await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         ProcessCategories(cmd.CategoryData, app);
@@ -76,6 +76,27 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             throw new ArgumentException("invalid app id");
 
         return _mapper.Map<LicenceApplicationResp>(app);
+    }
+
+    public async Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken)
+    {
+        IQueryable<spd_application> apps = _context.spd_applications.Expand(a => a.spd_ServiceTypeId);
+        apps = apps.Where(a => a._spd_applicantid_value == qry.ApplicantId);
+        var applist = apps.ToList();
+
+        if (qry.ValidWorkerLicenceTypeCodes != null && qry.ValidWorkerLicenceTypeCodes.Any())
+        {
+            List<Guid?> serviceTypeGuid = qry.ValidWorkerLicenceTypeCodes.Select(c => _context.LookupServiceType(c.ToString()).spd_servicetypeid).ToList();
+            applist = applist.Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value)).ToList();
+        }
+
+        if(qry.ValidPortalStatus != null && qry.ValidPortalStatus.Any())
+        {
+            List<int> portalStatusInt = qry.ValidPortalStatus.Select(s => (int)Enum.Parse<ApplicationPortalStatus>(s.ToString())).ToList();
+            applist = applist.Where(a => portalStatusInt.Contains((int)a.spd_portalstatus)).ToList();
+        }
+        return _mapper.Map<IList<LicenceAppListResp>>(applist);
+
     }
 
     private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
