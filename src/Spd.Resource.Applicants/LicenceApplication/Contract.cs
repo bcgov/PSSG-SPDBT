@@ -69,12 +69,6 @@ public record LicenceApplicationResp() : LicenceApplication
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
-public record LicenceLookupResp()
-{
-    public Guid? LicenceId { get; set; }
-    public string? LicenceNumber { get; set; } = null;
-    public DateTimeOffset ExpiryDate { get; set; }
-}
 
 public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;

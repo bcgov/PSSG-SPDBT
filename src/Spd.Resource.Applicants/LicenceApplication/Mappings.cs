@@ -34,7 +34,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<LicenceApplication, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-         .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
+         .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
          .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
          .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
@@ -75,9 +75,9 @@ internal class Mappings : Profile
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
-         .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
+         .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
-         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => GetLicenceTermEnum(s.spd_licenceterm)))
+         .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
          .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => GetHairColorEnum(s.spd_applicanthaircolour)))
          .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => GetEyeColorEnum(s.spd_applicanteyecolour)))
@@ -114,11 +114,6 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ReverseMap();
-
-        _ = CreateMap<spd_licence, LicenceLookupResp>()
-         .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
-         .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
-         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
     }
 
     private static DateTimeOffset? GetDateTimeOffset(Date? date)
@@ -139,55 +134,10 @@ internal class Mappings : Profile
         return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
     }
 
-    private static int? GetLicenceApplicationTypeOptionSet(ApplicationTypeEnum? applicationType)
-    {
-        if (applicationType == null)
-            return null;
-        return applicationType switch
-        {
-            ApplicationTypeEnum.Update => (int)LicenceApplicationTypeOptionSet.Update,
-            ApplicationTypeEnum.Replacement => (int)LicenceApplicationTypeOptionSet.Replacement,
-            ApplicationTypeEnum.New => (int)LicenceApplicationTypeOptionSet.New_Expired,
-            ApplicationTypeEnum.Renewal => (int)LicenceApplicationTypeOptionSet.Renewal,
-            _ => throw new ArgumentException("invalid application type code")
-        };
-    }
-
-    private static ApplicationTypeEnum? GetLicenceApplicationTypeEnum(int? applicationTypeOptionSet)
-    {
-        if (applicationTypeOptionSet == null)
-            return null;
-        return applicationTypeOptionSet switch
-        {
-            (int)LicenceApplicationTypeOptionSet.Update => ApplicationTypeEnum.Update,
-            (int)LicenceApplicationTypeOptionSet.Replacement => ApplicationTypeEnum.Replacement,
-            (int)LicenceApplicationTypeOptionSet.New_Expired => ApplicationTypeEnum.New,
-            (int)LicenceApplicationTypeOptionSet.Renewal => ApplicationTypeEnum.Renewal,
-            _ => throw new ArgumentException("invalid int application type option set")
-        };
-    }
     private static int? GetLicenceTerm(LicenceTermEnum? code)
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
-    }
-
-    private static LicenceTermEnum? GetLicenceTermEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<LicenceTermEnum>(Enum.GetName(typeof(LicenceTermOptionSet), optionset));
-    }
-
-    private static BusinessTypeEnum? GetBusinessTypeEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
-    }
-
-    private static WorkerLicenceTypeEnum? GetWorkerLicenceTypeEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<WorkerLicenceTypeEnum>(Enum.GetName(typeof(WorkerLicenceTypeOptionSet), optionset));
     }
 
     private static int? GetHairColor(HairColourEnum? code)

@@ -13,7 +13,7 @@ internal partial class LicenceManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
-        IRequestHandler<GetLicenceLookupQuery, LicenceLookupResponse>,
+        IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
         IRequestHandler<GetLicenceFeeListQuery, LicenceFeeListResponse>,
         ILicenceManager
 {

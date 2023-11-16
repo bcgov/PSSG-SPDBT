@@ -35,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<LicenceLookupResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber)
         {
-            return await _mediator.Send(new GetLicenceLookupQuery(licenceNumber));
+            return await _mediator.Send(new LicenceLookupQuery(licenceNumber));
         }
     }
 }

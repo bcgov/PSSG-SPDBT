@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
 
@@ -14,7 +15,7 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
-        CreateMap<LicenceLookupResp, LicenceLookupResponse>();
+        CreateMap<LicenceResp, LicenceLookupResponse>();
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
         CreateMap<DocumentResp, LicenceAppDocumentResponse>()
              .ForMember(d => d.DocumentExtension, opt => opt.MapFrom(s => s.FileExtension))

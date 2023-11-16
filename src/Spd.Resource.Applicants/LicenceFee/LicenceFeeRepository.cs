@@ -11,11 +11,9 @@ internal class LicenceFeeRepository : ILicenceFeeRepository
 
     public LicenceFeeRepository(IDynamicsContextFactory ctx, IMapper mapper)
     {
-        _context = ctx.CreateChangeOverwrite();
+        _context = ctx.Create();
         _mapper = mapper;
     }
-
-
 
     public async Task<LicenceFeeListResp> GetLicenceFeeAsync(WorkerLicenceTypeEnum workerLicenceTypeCode, CancellationToken cancellationToken)
     {
