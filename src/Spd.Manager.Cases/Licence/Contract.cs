@@ -160,6 +160,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceLookupResponse
     {
+        public Guid? LicenceId { get; set; } = null;
         public string? LicenceNumber { get; set; } = null;
         public DateTimeOffset ExpiryDate { get; set; }
     };
@@ -172,6 +173,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record LicenceFeeResponse
     {
+        public BusinessTypeCode? BusinessTypeCode { get; set; }
         public LicenceTermCode? LicenceTermCode { get; set; }
         public int? Amount { get; set; }
     };
@@ -181,7 +183,7 @@ namespace Spd.Manager.Cases.Licence
         public IEnumerable<LicenceFeeResponse> LicenceFees { get; set; } = Array.Empty<LicenceFeeResponse>();
     }
 
-    public record GetLicenceFeeListQuery(string LicenceNumber) : IRequest<LicenceFeeListResponse>;
+    public record GetLicenceFeeListQuery(WorkerLicenceTypeCode WorkerLicenceTypeCode) : IRequest<LicenceFeeListResponse>;
 
     #endregion
 
@@ -255,6 +257,15 @@ namespace Spd.Manager.Cases.Licence
         TwoYears,
         ThreeYears,
         FiveYears
+    }
+
+    public enum BusinessTypeCode
+    {
+        NonRegisteredSoleProprietor,
+        NonRegisteredPartnership,
+        RegisteredSoleProprietor,
+        RegisteredPartnership,
+        Corporation
     }
 
     public enum PoliceOfficerRoleCode

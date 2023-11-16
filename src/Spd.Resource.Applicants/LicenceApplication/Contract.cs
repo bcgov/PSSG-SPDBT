@@ -6,7 +6,7 @@ public partial interface ILicenceApplicationRepository
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
     public Task<LicenceLookupResp> GetLicenceLookupAsync(string licenceNumber, CancellationToken cancellationToken);
-    public Task<LicenceFeeListResp> GetLicenceFeeAsync(string licenceNumber, CancellationToken cancellationToken);
+    public Task<LicenceFeeListResp> GetLicenceFeeAsync(WorkerLicenceTypeEnum workerLicenceTypeCode, CancellationToken cancellationToken);
 }
 
 public record LicenceApplicationCmdResp(Guid? LicenceAppId);
@@ -73,12 +73,14 @@ public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
 public record LicenceLookupResp()
 {
+    public Guid? LicenceId { get; set; }
     public string? LicenceNumber { get; set; } = null;
     public DateTimeOffset ExpiryDate { get; set; }
 }
 
 public record LicenceFeeResp()
 {
+    public BusinessTypeEnum? BusinessTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public int? Amount { get; set; }
 }
@@ -130,6 +132,15 @@ public enum LicenceTermEnum
     TwoYears,
     ThreeYears,
     FiveYears
+}
+
+public enum BusinessTypeEnum
+{
+    NonRegisteredSoleProprietor,
+    NonRegisteredPartnership,
+    RegisteredSoleProprietor,
+    RegisteredPartnership,
+    Corporation
 }
 
 public enum PoliceOfficerRoleEnum

@@ -116,10 +116,12 @@ internal class Mappings : Profile
           .ReverseMap();
 
         _ = CreateMap<spd_licence, LicenceLookupResp>()
+         .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
          .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
 
         _ = CreateMap<spd_licencefee, LicenceFeeResp>()
+         .ForMember(d => d.BusinessTypeCode, opt => opt.MapFrom(s => GetBusinessTypeEnum(s.spd_businesstype)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => GetLicenceTermEnum(s.spd_term)))
          .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.spd_amount));
     }
@@ -135,8 +137,6 @@ internal class Mappings : Profile
         if (datetime == null) return null;
         return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
     }
-
-
 
     private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
     {
@@ -181,6 +181,12 @@ internal class Mappings : Profile
     {
         if (optionset == null) return null;
         return Enum.Parse<LicenceTermEnum>(Enum.GetName(typeof(LicenceTermOptionSet), optionset));
+    }
+
+    private static BusinessTypeEnum? GetBusinessTypeEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
     }
 
     private static int? GetHairColor(HairColourEnum? code)
