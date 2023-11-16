@@ -169,7 +169,8 @@ namespace Spd.Utilities.Dynamics
         ClosedNoResponse = 100000011,
         ClosedNoConsent = 100000012,
         CancelledByApplicant = 100000014,
-        CancelledByOrganization = 100000013
+        CancelledByOrganization = 100000013,
+        Completed = 100000015,
     }
 
     public enum BcGovOriginCode

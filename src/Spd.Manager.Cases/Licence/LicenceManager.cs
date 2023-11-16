@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Engine.Validation;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
@@ -15,6 +16,7 @@ internal partial class LicenceManager :
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
         IRequestHandler<GetLicenceFeeListQuery, LicenceFeeListResponse>,
+        IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -63,5 +65,32 @@ internal partial class LicenceManager :
         WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
         await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
         return result;
+    }
+
+    public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct)
+    {
+        LicenceAppQuery q = new LicenceAppQuery
+        (
+            query.ApplicantId,
+            new List<WorkerLicenceTypeEnum> 
+            {
+                WorkerLicenceTypeEnum.ArmouredVehiclePermit,
+                WorkerLicenceTypeEnum.BodyArmourPermit,
+                WorkerLicenceTypeEnum.SecurityWorkerLicence,
+            },
+            new List<ApplicationPortalStatusEnum> 
+            {
+                ApplicationPortalStatusEnum.Draft,
+                ApplicationPortalStatusEnum.AwaitingThirdParty,
+                ApplicationPortalStatusEnum.AwaitingPayment,
+                ApplicationPortalStatusEnum.Incomplete,
+                ApplicationPortalStatusEnum.InProgress,
+                ApplicationPortalStatusEnum.AwaitingApplicant,
+                ApplicationPortalStatusEnum.UnderAssessment,
+                ApplicationPortalStatusEnum.VerifyIdentity
+            }
+        );
+        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
 }

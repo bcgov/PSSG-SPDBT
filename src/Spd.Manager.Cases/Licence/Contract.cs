@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Manager.Cases.Screening;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Licence
@@ -9,6 +10,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
+        public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
         public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
         public Task<LicenceLookupResponse> Handle(LicenceLookupQuery query, CancellationToken ct);
         public Task<LicenceFeeListResponse> Handle(GetLicenceFeeListQuery query, CancellationToken ct);
@@ -16,6 +18,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
+    public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
     #region base data model
     public abstract record WorkerLicenceApp
@@ -106,6 +109,17 @@ namespace Spd.Manager.Cases.Licence
     public record WorkerLicenceResponse : WorkerLicenceApp
     {
         public Guid LicenceAppId { get; set; }
+    }
+
+    public record WorkerLicenceAppListResponse
+    {
+        public Guid LicenceAppId { get; set; }
+        public WorkerLicenceTypeCode ServiceTypeCode { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset? SubmittedOn { get; set; }
+        public ApplicationTypeCode ApplicationTypeCode { get; set; }
+        public string CaseNumber { get; set; }
+        public ApplicationStatusCode ApplicationStatusCode { get; set; }
     }
     #endregion
 
