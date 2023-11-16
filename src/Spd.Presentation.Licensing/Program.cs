@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Configuration;
 using Spd.Presentation.Licensing;
@@ -46,6 +48,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddValidatorsFromAssemblies(assemblies);
 builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 builder.Services.AddDistributedMemoryCache();
