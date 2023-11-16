@@ -1,3 +1,5 @@
+using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Delegates;
 using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
@@ -5,8 +7,10 @@ public partial interface ILicenceApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
+    public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
 }
 
+public record LicenceAppQuery(Guid? ApplicantId, WorkerLicenceTypeEnum? WorkerLicenceTypeCode, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
 public record LicenceApplicationCmdResp(Guid? LicenceAppId);
 
 public record LicenceApplication
@@ -66,6 +70,17 @@ public record LicenceApplicationResp() : LicenceApplication
 {
     public Guid? ContactId { get; set; }
 };
+
+public record LicenceAppListResp
+{
+    public Guid LicenceAppId { get; set; }
+    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset? SubmittedOn { get; set; }
+    public ApplicationTypeEnum ApplicationTypeCode { get; set; }
+    public string CaseNumber { get; set; }
+    public ApplicationPortalStatusEnum ApplicationStatusCode { get; set; }
+}
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 

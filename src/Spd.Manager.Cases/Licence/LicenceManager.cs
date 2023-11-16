@@ -61,5 +61,6 @@ internal partial class LicenceManager :
         //WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
         //await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
         //return result;
+        return null;
     }
 }
