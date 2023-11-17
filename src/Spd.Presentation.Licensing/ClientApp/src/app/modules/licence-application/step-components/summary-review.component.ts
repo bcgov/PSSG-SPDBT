@@ -79,7 +79,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
-														<div class="text-data">---</div>
+														<div class="text-data">
+															{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+														</div>
 													</div>
 												</div>
 
@@ -795,6 +797,16 @@ export class SummaryReviewComponent {
 
 	get licenceTermCode(): string {
 		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+	}
+	get licenceFee(): number | null {
+		if (!this.licenceTermCode) {
+			return null;
+		}
+
+		const feeItem = this.licenceApplicationService
+			.getLicenceTermsAndFees()
+			.find((item) => item.licenceTermCode == this.licenceTermCode);
+		return feeItem?.amount ?? null;
 	}
 
 	get hasExpiredLicence(): string {

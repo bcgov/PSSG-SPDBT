@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, of, take, tap } from 'rxjs';
 import {
 	AdditionalGovIdDocument,
+	BusinessTypeCode,
 	CitizenshipDocument,
 	Document,
 	FingerprintProofDocument,
@@ -10,6 +11,8 @@ import {
 	IdPhotoDocument,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
+	LicenceFeeListResponse,
+	LicenceFeeResponse,
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
@@ -17,8 +20,9 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
+	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
-import { WorkerLicensingService } from 'src/app/api/services';
+import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import {
 	BooleanTypeCode,
@@ -37,6 +41,8 @@ import { LicenceApplicationHelper, LicenceDocument } from './licence-application
 export class LicenceApplicationService extends LicenceApplicationHelper {
 	initialized = false;
 	hasValueChanged = false;
+
+	licenceFees: Array<LicenceFeeResponse> = [];
 
 	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -90,9 +96,32 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private utilService: UtilService,
 		private configService: ConfigService,
+		private licenceFeeService: LicenceFeeService,
 		private workerLicensingService: WorkerLicensingService
 	) {
 		super(formBuilder);
+
+		this.licenceFeeService
+			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
+			.pipe()
+			.subscribe((resp: LicenceFeeListResponse) => {
+				this.licenceFees = resp.licenceFees ?? [];
+			});
+	}
+
+	getLicenceTermsAndFees() {
+		const workerLicenceTypeCode = this.licenceModelFormGroup.value.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
+		const applicationTypeCode = this.licenceModelFormGroup.value.applicationTypeData?.applicationTypeCode ?? '';
+		// const businessTypeCode = //TODO what to do about business type code??
+		// 	this.licenceModelFormGroup.value.businessTypeCode ?? BusinessTypeCode.NonRegisteredPartnership;
+
+		const fees = this.licenceFees?.filter(
+			(item) =>
+				item.workerLicenceTypeCode == workerLicenceTypeCode &&
+				item.businessTypeCode == BusinessTypeCode.NonRegisteredPartnership &&
+				item.applicationTypeCode == applicationTypeCode
+		);
+		return [...fees];
 	}
 
 	/**
@@ -998,6 +1027,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
 			expiredLicenceNumber:
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
+			expiredLicenceId:
+				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
 			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiryDate : null,
 			//-----------------------------------
 			...characteristicsData,

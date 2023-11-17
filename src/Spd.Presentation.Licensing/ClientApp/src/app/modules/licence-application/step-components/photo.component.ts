@@ -68,7 +68,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									the camera, against a plain, white background. It must be from within the last year.
 								</p>
 
-								<app-alert type="warning" icon="info" *ngIf="!isCalledFromModal">
+								<app-alert type="warning" *ngIf="!isCalledFromModal">
 									<div>
 										Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
 										application's processing time.

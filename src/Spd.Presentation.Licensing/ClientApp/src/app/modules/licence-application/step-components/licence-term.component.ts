@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LicenceTermCode } from 'src/app/api/models';
+import { LicenceFeeResponse } from 'src/app/api/models';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -14,13 +14,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
 							<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
-								<mat-radio-button class="radio-label" [value]="termCodes.NintyDays">90 Days ($60)</mat-radio-button>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="termCodes.OneYear">1 Year ($120)</mat-radio-button>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="termCodes.TwoYears">2 Years ($180)</mat-radio-button>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="termCodes.ThreeYears">3 Years ($240)</mat-radio-button>
+								<ng-container *ngFor="let term of termCodes; let i = index; let last = last">
+									<mat-radio-button class="radio-label" [value]="term.licenceTermCode">
+										{{ term.licenceTermCode | options : 'LicenceTermTypes' }} ({{
+											term.amount | currency : 'CAD' : 'symbol-narrow' : '1.0'
+										}})
+									</mat-radio-button>
+									<mat-divider *ngIf="!last" class="my-2"></mat-divider>
+								</ng-container>
 							</mat-radio-group>
 							<mat-error
 								class="mat-option-error"
@@ -39,12 +40,16 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class LicenceTermComponent implements LicenceChildStepperStepComponent {
-	termCodes = LicenceTermCode;
+export class LicenceTermComponent implements OnInit, LicenceChildStepperStepComponent {
+	termCodes: Array<LicenceFeeResponse> = [];
 
 	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.termCodes = this.licenceApplicationService.getLicenceTermsAndFees();
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

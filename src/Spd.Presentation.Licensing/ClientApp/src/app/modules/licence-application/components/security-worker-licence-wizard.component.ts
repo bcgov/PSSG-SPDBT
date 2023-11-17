@@ -141,9 +141,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
-				this.step1Complete = this.licenceApplicationService.isStep1Complete();
-				this.step2Complete = this.licenceApplicationService.isStep2Complete();
-				this.step3Complete = this.licenceApplicationService.isStep3Complete();
+				this.updateCompleteStatus();
 
 				this.isLoaded$.next(true);
 			},
@@ -303,38 +301,66 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
-				next: (resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
+		console.log(
+			'onGoToReview',
+			this.licenceApplicationService.hasValueChanged,
+			this.authenticationService.isLoggedIn()
+		);
 
-					this.hotToastService.success('Licence information has been saved');
-					this.stepper.selectedIndex = this.STEP_REVIEW;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during save', error);
-					this.hotToastService.error('An error occurred during the save. Please try again.');
-				},
-			});
+		if (this.authenticationService.isLoggedIn()) {
+			if (this.licenceApplicationService.hasValueChanged) {
+				this.licenceApplicationService.saveLicenceStep().subscribe({
+					next: (_resp: any) => {
+						this.licenceApplicationService.hasValueChanged = false;
+						this.updateCompleteStatus();
+
+						this.hotToastService.success('Licence information has been saved');
+
+						setTimeout(() => {
+							// hack... does not navigate without the timeout
+							this.stepper.selectedIndex = this.STEP_REVIEW;
+						}, 250);
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+						this.hotToastService.error('An error occurred during the save. Please try again.');
+					},
+				});
+			} else {
+				this.stepper.selectedIndex = this.STEP_REVIEW;
+			}
 		} else {
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
 	}
 
-	onChildNextStep() {
-		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
-				next: (resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.licenceApplicationService.isStep1Complete();
+		this.step2Complete = this.licenceApplicationService.isStep2Complete();
+		this.step3Complete = this.licenceApplicationService.isStep3Complete();
 
-					this.hotToastService.success('Licence information has been saved');
-					this.goToChildNextStep();
-				},
-				error: (error: any) => {
-					console.log('An error occurred during save', error);
-					this.hotToastService.error('An error occurred during the save. Please try again.');
-				},
-			});
+		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+	}
+
+	onChildNextStep() {
+		if (this.authenticationService.isLoggedIn()) {
+			if (this.licenceApplicationService.hasValueChanged) {
+				this.licenceApplicationService.saveLicenceStep().subscribe({
+					next: (_resp: any) => {
+						this.licenceApplicationService.hasValueChanged = false;
+						this.updateCompleteStatus();
+
+						this.hotToastService.success('Licence information has been saved');
+						this.goToChildNextStep();
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+						this.hotToastService.error('An error occurred during the save. Please try again.');
+					},
+				});
+			} else {
+				this.goToChildNextStep();
+			}
 		} else {
 			this.goToChildNextStep();
 		}

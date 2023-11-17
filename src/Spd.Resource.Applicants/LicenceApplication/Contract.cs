@@ -84,6 +84,7 @@ public record LicenceAppListResp
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
+
 public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;
 public abstract record Addr
@@ -126,6 +127,15 @@ public enum LicenceTermEnum
     TwoYears,
     ThreeYears,
     FiveYears
+}
+
+public enum BusinessTypeEnum
+{
+    NonRegisteredSoleProprietor,
+    NonRegisteredPartnership,
+    RegisteredSoleProprietor,
+    RegisteredPartnership,
+    Corporation
 }
 
 public enum PoliceOfficerRoleEnum

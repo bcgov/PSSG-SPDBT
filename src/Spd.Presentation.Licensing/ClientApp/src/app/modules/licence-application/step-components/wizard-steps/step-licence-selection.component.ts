@@ -313,7 +313,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.SOLE_PROPRIETOR)
+			LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.APPLICATION_TYPE)
 		);
 	}
 

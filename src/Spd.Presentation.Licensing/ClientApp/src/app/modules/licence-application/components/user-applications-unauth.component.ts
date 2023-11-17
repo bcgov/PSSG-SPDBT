@@ -15,7 +15,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<h2 class="my-3 fw-normal">Security Licences & Permits</h2>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-alert type="info">
+					<app-alert type="info" icon="info">
 						Did you know that if you were signed in, you could save partial applications and complete them later?
 					</app-alert>
 
