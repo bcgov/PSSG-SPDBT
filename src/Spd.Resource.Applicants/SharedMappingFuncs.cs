@@ -1,4 +1,5 @@
 ﻿using Microsoft.OData.Edm;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -39,5 +40,45 @@ internal static class SharedMappingFuncs
     {
         if (datetime == null) return null;
         return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
+    }
+
+    internal static LicenceTermEnum? GetLicenceTermEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<LicenceTermEnum>(Enum.GetName(typeof(LicenceTermOptionSet), optionset));
+    }
+
+    internal static BusinessTypeEnum? GetBusinessTypeEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
+    }
+
+    internal static ApplicationTypeEnum? GetLicenceApplicationTypeEnum(int? applicationTypeOptionSet)
+    {
+        if (applicationTypeOptionSet == null)
+            return null;
+        return applicationTypeOptionSet switch
+        {
+            (int)LicenceApplicationTypeOptionSet.Update => ApplicationTypeEnum.Update,
+            (int)LicenceApplicationTypeOptionSet.Replacement => ApplicationTypeEnum.Replacement,
+            (int)LicenceApplicationTypeOptionSet.New_Expired => ApplicationTypeEnum.New,
+            (int)LicenceApplicationTypeOptionSet.Renewal => ApplicationTypeEnum.Renewal,
+            _ => throw new ArgumentException("invalid int application type option set")
+        };
+    }
+
+    internal static int? GetLicenceApplicationTypeOptionSet(ApplicationTypeEnum? applicationType)
+    {
+        if (applicationType == null)
+            return null;
+        return applicationType switch
+        {
+            ApplicationTypeEnum.Update => (int)LicenceApplicationTypeOptionSet.Update,
+            ApplicationTypeEnum.Replacement => (int)LicenceApplicationTypeOptionSet.Replacement,
+            ApplicationTypeEnum.New => (int)LicenceApplicationTypeOptionSet.New_Expired,
+            ApplicationTypeEnum.Renewal => (int)LicenceApplicationTypeOptionSet.Renewal,
+            _ => throw new ArgumentException("invalid application type code")
+        };
     }
 }

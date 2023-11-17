@@ -85,6 +85,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 										<app-alert
 											type="danger"
+											icon="error"
 											*ngIf="policeOfficerRoleCode.value == policeOfficerRoleCodes.PoliceOfficer"
 										>
 											A member of a police force may not hold a security worker licence. Your application for a security

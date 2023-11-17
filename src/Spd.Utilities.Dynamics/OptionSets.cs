@@ -263,6 +263,22 @@ namespace Spd.Utilities.Dynamics
         FiveYears = 100000004
     }
 
+    public enum BusinessTypeOptionSet
+    {
+        NonRegisteredSoleProprietor = 100000000,
+        NonRegisteredPartnership = 100000001,
+        RegisteredSoleProprietor = 100000002,
+        RegisteredPartnership = 100000003,
+        Corporation = 100000004
+    }
+
+    public enum WorkerLicenceTypeOptionSet
+    {
+        SecurityWorkerLicence = 100000000,
+        ArmouredVehiclePermit = 100000001,
+        BodyArmourPermit = 100000002
+    }
+
     public enum HairColorOptionSet
     {
         Black = 100000000,

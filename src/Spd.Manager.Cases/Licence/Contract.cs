@@ -12,6 +12,8 @@ namespace Spd.Manager.Cases.Licence
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
         public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
         public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
+        public Task<LicenceLookupResponse> Handle(LicenceLookupQuery query, CancellationToken ct);
+        public Task<LicenceFeeListResponse> Handle(GetLicenceFeeListQuery query, CancellationToken ct);
     }
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
@@ -171,6 +173,39 @@ namespace Spd.Manager.Cases.Licence
 
     #endregion
 
+    #region licence lookup
+
+    public record LicenceLookupResponse
+    {
+        public Guid? LicenceId { get; set; } = null;
+        public string? LicenceNumber { get; set; } = null;
+        public DateTimeOffset ExpiryDate { get; set; }
+    };
+
+    public record LicenceLookupQuery(string LicenceNumber) : IRequest<LicenceLookupResponse>;
+
+    #endregion
+
+    #region licence fee
+
+    public record LicenceFeeResponse
+    {
+        public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+        public BusinessTypeCode? BusinessTypeCode { get; set; }
+        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+        public LicenceTermCode? LicenceTermCode { get; set; }
+        public int? Amount { get; set; }
+    };
+
+    public record LicenceFeeListResponse
+    {
+        public IEnumerable<LicenceFeeResponse> LicenceFees { get; set; } = Array.Empty<LicenceFeeResponse>();
+    }
+
+    public record GetLicenceFeeListQuery(WorkerLicenceTypeCode WorkerLicenceTypeCode) : IRequest<LicenceFeeListResponse>;
+
+    #endregion
+
     #region shared enums
     public enum WorkerLicenceTypeCode
     {
@@ -241,6 +276,15 @@ namespace Spd.Manager.Cases.Licence
         TwoYears,
         ThreeYears,
         FiveYears
+    }
+
+    public enum BusinessTypeCode
+    {
+        NonRegisteredSoleProprietor,
+        NonRegisteredPartnership,
+        RegisteredSoleProprietor,
+        RegisteredPartnership,
+        Corporation
     }
 
     public enum PoliceOfficerRoleCode
@@ -341,7 +385,7 @@ namespace Spd.Manager.Cases.Licence
             RuleFor(r => r.PoliceOfficerDocument).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
             RuleFor(r => r.PoliceOfficerDocument.LicenceDocumentTypeCode)
                 .Must(c => c == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
-                .When(r => r.IsPoliceOrPeaceOfficer !=null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerDocument != null);
+                .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerDocument != null);
             RuleFor(r => r.OtherOfficerRole).NotEmpty()
                 .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode != null && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
 

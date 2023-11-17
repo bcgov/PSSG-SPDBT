@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
 
 namespace Spd.Resource.Applicants.Licence
 {
@@ -7,8 +8,12 @@ namespace Spd.Resource.Applicants.Licence
         public Mappings()
         {
 
-        }
+            _ = CreateMap<spd_licence, LicenceResp>()
+             .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
+             .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
+             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
 
+        }
 
     }
 }

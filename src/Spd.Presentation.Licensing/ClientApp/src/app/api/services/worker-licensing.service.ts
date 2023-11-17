@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
+import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
 import { WorkerLicenceAppUpsertResponse } from '../models/worker-licence-app-upsert-response';
 import { WorkerLicenceResponse } from '../models/worker-licence-response';
@@ -215,6 +216,67 @@ export class WorkerLicensingService extends BaseService {
 
     return this.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>) => r.body as Array<LicenceAppDocumentResponse>)
+    );
+  }
+
+  /**
+   * Path part for operation apiWorkerLicenceApplicationsSubmitPost
+   */
+  static readonly ApiWorkerLicenceApplicationsSubmitPostPath = '/api/worker-licence-applications/submit';
+
+  /**
+   * Submit Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsSubmitPost$Response(params: {
+    body: WorkerLicenceAppSubmitRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsSubmitPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+      })
+    );
+  }
+
+  /**
+   * Submit Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsSubmitPost(params: {
+    body: WorkerLicenceAppSubmitRequest
+  },
+  context?: HttpContext
+
+): Observable<WorkerLicenceAppUpsertResponse> {
+
+    return this.apiWorkerLicenceApplicationsSubmitPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
     );
   }
 

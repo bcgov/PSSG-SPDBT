@@ -71,12 +71,17 @@ export abstract class LicenceApplicationHelper {
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
 			expiredLicenceNumber: new FormControl(),
+			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'expiredLicenceId',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
