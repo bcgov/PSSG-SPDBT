@@ -49,6 +49,12 @@ export class UtilService {
 		return today;
 	}
 
+	getIsFutureDate(aDate: string): boolean {
+		const today = new Date();
+		const otherDate = new Date(aDate);
+		return otherDate.getTime() > today.getTime();
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 

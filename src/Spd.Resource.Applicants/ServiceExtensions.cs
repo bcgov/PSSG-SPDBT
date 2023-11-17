@@ -9,6 +9,7 @@ using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Applicants.Invoice;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
+using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Hosting;
@@ -30,6 +31,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<IPortalUserRepository, PortalUserRepository>();
             configurationServices.Services.AddTransient<ILicenceRepository, LicenceRepository>();
             configurationServices.Services.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
+            configurationServices.Services.AddTransient<ILicenceFeeRepository, LicenceFeeRepository>();
             configurationServices.Services.AddTransient<IContactRepository, ContactRepository>();
         }
     }

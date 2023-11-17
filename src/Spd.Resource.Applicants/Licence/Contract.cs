@@ -6,12 +6,17 @@ namespace Spd.Resource.Applicants.Licence
         public Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken cancellationToken);
     }
 
-    public record LicenceQry(Guid? LicenceId = null);
+    public record LicenceQry(Guid? LicenceId = null, string? LicenceNumber = null);
     public record LicenceListResp
     {
         public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
     }
 
-    public record LicenceResp(Guid? LicenceId);
     public abstract record LicenceCmd;
+    public record LicenceResp()
+    {
+        public Guid? LicenceId { get; set; }
+        public string? LicenceNumber { get; set; } = null;
+        public DateTimeOffset ExpiryDate { get; set; }
+    }
 }
