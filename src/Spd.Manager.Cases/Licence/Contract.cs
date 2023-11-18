@@ -468,7 +468,6 @@ namespace Spd.Manager.Cases.Licence
                 }
                 return true;
             })
-            //.WithMessage("the categories should not coexist.")
             .When(c => c.CategoryData != null);
         }
 
