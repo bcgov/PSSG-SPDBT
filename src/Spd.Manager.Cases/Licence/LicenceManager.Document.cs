@@ -322,7 +322,6 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingRecognizedCourse, DocumentTypeEnum.TrainingRecognizedCourse},
         {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge, DocumentTypeEnum.TrainingOtherCoursesOrKnowledge},
         {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion, DocumentTypeEnum.PrivateSecurityTrainingNetworkCompletion},
-        {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion, DocumentTypeEnum.OtherCourseCompletion},
         {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_Training, DocumentTypeEnum.Training},
         {LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_TradesQualificationCertificate, DocumentTypeEnum.TradesQualificationCertificate},
         {LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent, DocumentTypeEnum.ExperienceOrTrainingEquivalent},
@@ -367,5 +366,45 @@ internal partial class LicenceManager
             LicenceDocumentTypeCode.BcServicesCard,
             LicenceDocumentTypeCode.CertificateOfIndianStatus,
             LicenceDocumentTypeCode.GovernmentIssuedPhotoId
+        };
+
+    public static List<LicenceDocumentTypeCode> SecurityGuardDocCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCertificate,
+            LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
+            LicenceDocumentTypeCode.CategorySecurityGuard_PoliceExperienceOrTraining,
+        };
+
+    public static List<LicenceDocumentTypeCode> SecurityAlarmInstallerCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
+            LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_TradesQualificationCertificate,
+        };
+
+    public static List<LicenceDocumentTypeCode> LockSmithCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategoryLocksmith_ApprovedLocksmithCourse,
+            LicenceDocumentTypeCode.CategoryLocksmith_CertificateOfQualification,
+            LicenceDocumentTypeCode.CategoryLocksmith_ExperienceAndApprenticeship
+        };
+
+    public static List<LicenceDocumentTypeCode> PrivateInvestigatorUnderSupervisionCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
+            LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_Training,
+        };
+
+    public static List<LicenceDocumentTypeCode> PrivateInvestigatorCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategoryPrivateInvestigator_ExperienceAndCourses,
+            LicenceDocumentTypeCode.CategoryPrivateInvestigator_KnowledgeAndExperience,
+            LicenceDocumentTypeCode.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
+            LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge,
+            LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingRecognizedCourse
+        };
+
+    public static List<LicenceDocumentTypeCode> FireInvestigatorCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategoryFireInvestigator_CourseCertificate,
+            LicenceDocumentTypeCode.CategoryFireInvestigator_VerificationLetter,
+        };
+
+    public static List<LicenceDocumentTypeCode> SecurityConsultantCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategorySecurityConsultant_ExperienceLetters,
+            LicenceDocumentTypeCode.CategorySecurityConsultant_RecommendationLetters,
         };
 }
