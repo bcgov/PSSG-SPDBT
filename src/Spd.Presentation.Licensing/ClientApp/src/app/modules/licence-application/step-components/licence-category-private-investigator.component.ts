@@ -29,7 +29,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses"
 						>
 							a) Two years of documented experience providing the services of a private investigator or private
@@ -45,7 +44,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="
 								privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining
 							"
@@ -62,7 +60,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_KnowledgeAndExperience"
 						>
 							c) Knowledge and experience equivalent to that which would be obtained under paragraph (a) above.
@@ -164,14 +161,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse"
 						>
 							You must have completed a recognized training course
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge"
 						>
 							You must provide proof of completion of courses or knowledge in the areas of:

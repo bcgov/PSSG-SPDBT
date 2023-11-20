@@ -105,7 +105,6 @@ import { LicenceChildStepperStepComponent } from '../licence-application.helper'
 	styles: [
 		`
 			.checklist-label {
-				font-weight: 600;
 				color: var(--color-primary);
 				line-height: initial;
 			}

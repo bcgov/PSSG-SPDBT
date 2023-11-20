@@ -5,10 +5,10 @@ import { Component, Input } from '@angular/core';
 	template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
-				<div class="title mb-4">
-					<div [innerHtml]="title"></div>
-					<div class="fs-6 mt-2" *ngIf="subtitle" [innerHtml]="subtitle"></div>
-					<div class="fs-6 mt-2 text-start" *ngIf="info" [innerHtml]="info"></div>
+				<div class="title lh-sm mb-4">
+					<div class="fs-3" [innerHtml]="title"></div>
+					<div class="fs-6 mt-4" *ngIf="subtitle" [innerHtml]="subtitle"></div>
+					<div class="fs-6 mt-4 text-start" *ngIf="info" [innerHtml]="info"></div>
 				</div>
 				<mat-divider *ngIf="showDivider" class="mat-divider-main mb-4"></mat-divider>
 			</div>
@@ -17,8 +17,6 @@ import { Component, Input } from '@angular/core';
 	styles: [
 		`
 			.title {
-				font-size: 1.7em;
-				font-weight: 400;
 				text-align: center;
 				color: var(--color-primary);
 			}

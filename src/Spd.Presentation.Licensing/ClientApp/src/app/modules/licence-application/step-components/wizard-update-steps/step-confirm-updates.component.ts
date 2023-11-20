@@ -52,7 +52,7 @@ import { Component } from '@angular/core';
 			}
 
 			.text-label {
-				font-size: 0.8rem !important;
+				font-size: 0.9rem !important;
 			}
 		`,
 	],

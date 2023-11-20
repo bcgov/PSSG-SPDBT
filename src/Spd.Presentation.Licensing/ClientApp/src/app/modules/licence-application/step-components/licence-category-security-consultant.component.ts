@@ -64,15 +64,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<div>
 					You must meet the following experience requirements:
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
-						<mat-radio-button
-							class="radio-label"
-							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters"
-						>
+						<mat-radio-button [value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters">
 							Written reference letters from previous employers (must be on company letterhead, dated and signed)
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters"
 						>
 							Clients verifying your experience

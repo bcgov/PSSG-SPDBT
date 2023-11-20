@@ -7,11 +7,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-licence-category-security-alarm-installer-sup',
 	template: `
-		<form [formGroup]="form" class="text-center my-4" novalidate>
-			<mat-checkbox class="w-auto" checked="true">
-				<span class="fw-semibold" style="color: black;">{{ title }} </span>
-			</mat-checkbox>
-		</form>
+		<div class="row my-4">
+			<div class="col-12 text-center">
+				<mat-icon style="vertical-align: sub;" class="me-2">check_box</mat-icon>{{ title }}
+			</div>
+		</div>
 	`,
 	styles: [],
 })
