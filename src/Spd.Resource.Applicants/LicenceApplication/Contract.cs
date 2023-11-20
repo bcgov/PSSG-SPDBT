@@ -27,7 +27,7 @@ public record LicenceApplication
     public GenderEnum? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
-    public DateTimeOffset? ExpiryDate { get; set; }
+    public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
@@ -69,6 +69,7 @@ public record SaveLicenceApplicationCmd() : LicenceApplication
 public record LicenceApplicationResp() : LicenceApplication
 {
     public Guid? ContactId { get; set; }
+    public DateTimeOffset? ExpiryDate { get; set; }
 };
 
 public record LicenceAppListResp
