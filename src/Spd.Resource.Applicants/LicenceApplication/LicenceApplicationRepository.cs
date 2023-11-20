@@ -57,7 +57,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             }
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -130,10 +130,10 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
     }
 
-    private void LinkExpiredLicence(string? expiredLicenceNumber, DateTimeOffset? expiryDate, spd_application app)
+    private void LinkExpiredLicence(Guid? expiredLicenceId, spd_application app)
     {
-        if (expiredLicenceNumber == null || expiryDate == null) return;
-        var licence = _context.spd_licences.Where(l => l.spd_licencenumber == expiredLicenceNumber).FirstOrDefault();
+        if (expiredLicenceId == null) return;
+        var licence = _context.spd_licences.Where(l => l.spd_licenceid == expiredLicenceId).FirstOrDefault();
         if (licence != null)
         {
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);

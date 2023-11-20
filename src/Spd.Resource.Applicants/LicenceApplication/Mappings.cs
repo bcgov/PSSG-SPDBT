@@ -101,8 +101,8 @@ internal class Mappings : Profile
          .ForMember(d => d.HasPreviousName, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_haspreviousnames)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
          .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
-         .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
-         //.ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
+         .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId.spd_licenceid))
+         .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          ;
 
         _ = CreateMap<spd_licencecategory, WorkerLicenceAppCategory>()
@@ -114,6 +114,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<spd_application, LicenceApplicationResp>()
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
+          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId.spd_expirydate))
           .IncludeBase<spd_application, LicenceApplication>();
 
         _ = CreateMap<spd_application, LicenceAppListResp>()
