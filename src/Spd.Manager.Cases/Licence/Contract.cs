@@ -36,7 +36,7 @@ namespace Spd.Manager.Cases.Licence
         public GenderCode? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
         public string? ExpiredLicenceNumber { get; set; }
-        public DateTimeOffset? ExpiryDate { get; set; }
+        public Guid? ExpiredLicenceId { get; set; }
         public bool? HasExpiredLicence { get; set; }
         public LicenceTermCode? LicenceTermCode { get; set; }
         public bool? HasCriminalHistory { get; set; }
@@ -111,6 +111,7 @@ namespace Spd.Manager.Cases.Licence
     public record WorkerLicenceResponse : WorkerLicenceApp
     {
         public Guid LicenceAppId { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
     }
 
     public record WorkerLicenceAppListResponse
