@@ -1,4 +1,5 @@
 export {
+	ApplicationStatusTypes,
 	ApplicationTypes,
 	BooleanTypes,
 	CountryTypes,

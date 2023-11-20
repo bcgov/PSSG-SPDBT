@@ -112,7 +112,6 @@ import { LicenceChildStepperStepComponent } from '../licence-application.helper'
 
 			.checklist-info {
 				margin-left: 3em;
-				font-size: 0.9em;
 			}
 		`,
 	],

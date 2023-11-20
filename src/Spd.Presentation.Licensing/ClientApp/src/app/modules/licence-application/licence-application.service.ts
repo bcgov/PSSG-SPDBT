@@ -208,10 +208,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
 				};
 				const expiredLicenceData = {
-					hasExpiredLicence: BooleanTypeCode.No, // TODO remove hardcoding this.booleanToBooleanType(resp.hasExpiredLicence),
-					//TODO expired licence fix
-					// expiredLicenceNumber: resp.expiredLicenceNumber,
-					// expiryDate: resp.expiryDate,
+					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+					expiredLicenceNumber: resp.expiredLicenceNumber,
+					expiryDate: resp.expiryDate,
+					// expiredLicenceId: resp.expiredLicenceId,
 				};
 				const licenceTermData = {
 					licenceTermCode: resp.licenceTermCode,

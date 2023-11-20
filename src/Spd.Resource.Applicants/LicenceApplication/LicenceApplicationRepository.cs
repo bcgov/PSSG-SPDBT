@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
@@ -90,12 +90,12 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             applist = applist.Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value)).ToList();
         }
 
-        if(qry.ValidPortalStatus != null && qry.ValidPortalStatus.Any())
+        if (qry.ValidPortalStatus != null && qry.ValidPortalStatus.Any())
         {
             List<int> portalStatusInt = qry.ValidPortalStatus.Select(s => (int)Enum.Parse<ApplicationPortalStatus>(s.ToString())).ToList();
             applist = applist.Where(a => portalStatusInt.Contains((int)a.spd_portalstatus)).ToList();
         }
-        return _mapper.Map<IList<LicenceAppListResp>>(applist);
+        return _mapper.Map<IList<LicenceAppListResp>>(applist.OrderByDescending(o => o.createdon));
 
     }
 

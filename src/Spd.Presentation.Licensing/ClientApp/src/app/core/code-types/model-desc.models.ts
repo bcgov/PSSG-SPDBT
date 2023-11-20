@@ -1,4 +1,5 @@
 import {
+	ApplicationStatusCode,
 	ApplicationTypeCode,
 	EyeColourCode,
 	GenderCode,
@@ -152,6 +153,15 @@ export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
 	{ desc: 'Replacement', code: ApplicationTypeCode.Replacement },
 	{ desc: 'Update', code: ApplicationTypeCode.Update },
+];
+
+export const ApplicationStatusTypes: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationStatusCode.Draft },
+	{ desc: 'Payment Pending', code: ApplicationStatusCode.PaymentPending },
+	{ desc: 'Incomplete', code: ApplicationStatusCode.Incomplete },
+	{ desc: 'Applicant Verification', code: ApplicationStatusCode.ApplicantVerification },
+	{ desc: 'Submitted', code: ApplicationStatusCode.Submitted },
+	{ desc: 'Cancelled', code: ApplicationStatusCode.Cancelled },
 ];
 
 export const GenderTypes: SelectOptions[] = [

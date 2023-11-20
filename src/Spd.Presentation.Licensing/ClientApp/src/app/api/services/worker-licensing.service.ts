@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
+import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
 import { WorkerLicenceAppUpsertResponse } from '../models/worker-licence-app-upsert-response';
@@ -25,6 +26,64 @@ export class WorkerLicensingService extends BaseService {
     http: HttpClient
   ) {
     super(config, http);
+  }
+
+  /**
+   * Path part for operation apiWorkerLicenceApplicationsGet
+   */
+  static readonly ApiWorkerLicenceApplicationsGetPath = '/api/worker-licence-applications';
+
+  /**
+   * Get List of draft or InProgress Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiWorkerLicenceApplicationsGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<WorkerLicenceAppListResponse>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<WorkerLicenceAppListResponse>>;
+      })
+    );
+  }
+
+  /**
+   * Get List of draft or InProgress Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiWorkerLicenceApplicationsGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<Array<WorkerLicenceAppListResponse>> {
+
+    return this.apiWorkerLicenceApplicationsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<WorkerLicenceAppListResponse>>) => r.body as Array<WorkerLicenceAppListResponse>)
+    );
   }
 
   /**
