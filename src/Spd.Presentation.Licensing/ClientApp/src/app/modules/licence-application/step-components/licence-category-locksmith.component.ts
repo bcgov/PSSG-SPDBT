@@ -92,7 +92,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
-						[maxNumberOfFiles]="10"
+						[maxNumberOfFiles]="2"
 						[files]="attachments.value"
 					></app-file-upload>
 					<mat-error

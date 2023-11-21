@@ -662,10 +662,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [
 		`
-			.category-title {
-				font-size: 1.3em;
-				font-weight: 400;
-				color: var(--color-primary);
+			.title {
+				padding-bottom: 2px;
 			}
 		`,
 	],

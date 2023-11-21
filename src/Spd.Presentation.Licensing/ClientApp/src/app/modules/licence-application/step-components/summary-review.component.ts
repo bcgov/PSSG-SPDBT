@@ -432,13 +432,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<ng-container *ngIf="previousNameFlag == booleanTypeCodes.Yes">
-															<div class="mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
-																<div class="text-data">
-																	<div *ngFor="let alias of aliases; let i = index" class="mt-lg-2">
-																		{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																		{{ alias.surname }}
-																	</div>
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
+															<div class="text-data">
+																<div
+																	*ngFor="let alias of aliases; let i = index; let first = first"
+																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
+																>
+																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
+																	{{ alias.surname }}
 																</div>
 															</div>
 														</ng-container>
@@ -660,8 +661,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 			}
 
 			.text-data {
-				font-size: 1rem !important;
-				font-weight: 600 !important;
+				font-size: 1.1rem !important;
+				font-weight: 500 !important;
 				color: var(--color-primary);
 			}
 
