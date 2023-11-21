@@ -88,8 +88,18 @@ namespace Spd.Manager.Membership.UserProfile
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
+        public Address? ResidentialAddress { get; set; }
     }
     public record ManageApplicantProfileCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantProfileResponse>;
+    public record Address
+    {
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
+    }
     #endregion
 
     #region IdirUserProfile
