@@ -322,7 +322,7 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingRecognizedCourse, DocumentTypeEnum.TrainingRecognizedCourse},
         {LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge, DocumentTypeEnum.TrainingOtherCoursesOrKnowledge},
         {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion, DocumentTypeEnum.PrivateSecurityTrainingNetworkCompletion},
-        {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_Training, DocumentTypeEnum.Training},
+        {LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion, DocumentTypeEnum.OtherCourseCompletion},
         {LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_TradesQualificationCertificate, DocumentTypeEnum.TradesQualificationCertificate},
         {LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent, DocumentTypeEnum.ExperienceOrTrainingEquivalent},
         {LicenceDocumentTypeCode.CategorySecurityConsultant_ExperienceLetters, DocumentTypeEnum.ExperienceLetters},
@@ -387,7 +387,7 @@ internal partial class LicenceManager
 
     public static List<LicenceDocumentTypeCode> PrivateInvestigatorUnderSupervisionCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
-            LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_Training,
+            LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion,
         };
 
     public static List<LicenceDocumentTypeCode> PrivateInvestigatorCodes = new List<LicenceDocumentTypeCode> {
