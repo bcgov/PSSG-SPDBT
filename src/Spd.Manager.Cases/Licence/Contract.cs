@@ -1,7 +1,9 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Spd.Manager.Cases.Screening;
+using Spd.Utilities.Shared.Exceptions;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Licence
@@ -243,7 +245,6 @@ namespace Spd.Manager.Cases.Licence
         CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge,
         CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
         CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion,
-        CategoryPrivateInvestigatorUnderSupervision_Training,
         CategorySecurityAlarmInstaller_TradesQualificationCertificate,
         CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
         CategorySecurityConsultant_ExperienceLetters,
@@ -355,7 +356,7 @@ namespace Spd.Manager.Cases.Licence
     #region validation
     public class WorkerLicenceAppSubmitRequestValidator : AbstractValidator<WorkerLicenceAppSubmitRequest>
     {
-        public WorkerLicenceAppSubmitRequestValidator()
+        public WorkerLicenceAppSubmitRequestValidator(IConfiguration configuration)
         {
             RuleFor(r => r.LicenceAppId).NotEmpty();
             RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
@@ -402,29 +403,32 @@ namespace Spd.Manager.Cases.Licence
             RuleFor(r => r.CitizenshipDocument).NotEmpty();
             RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode)
                 .Must(c => LicenceManager.WorkProofCodes.Contains(c))
-                .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == false);
+                .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen != null && r.IsCanadianCitizen == false);
             RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode)
                 .Must(c => LicenceManager.CitizenshipProofCodes.Contains(c))
-                .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == true);
+                .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen != null && r.IsCanadianCitizen == true);
             RuleFor(r => r.CitizenshipDocument.ExpiryDate)
                 .NotEmpty()
                 .Must(d => d > DateTimeOffset.Now)
                 .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == false && (r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit || r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit));
 
-            //additional gov id
+            ////additional gov id
             RuleFor(r => r.AdditionalGovIdDocument)
                 .NotEmpty()
-                .Must(c => LicenceManager.GovIdCodes.Contains(c.LicenceDocumentTypeCode))
                 .When(r => r.CitizenshipDocument != null && (r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CanadianPassport && r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.PermanentResidentCard));
+            RuleFor(r => r.AdditionalGovIdDocument)
+                .Must(c => LicenceManager.GovIdCodes.Contains(c.LicenceDocumentTypeCode))
+                .When(r => r.AdditionalGovIdDocument != null && r.CitizenshipDocument != null && (r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CanadianPassport && r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.PermanentResidentCard));
 
             //fingerprint
             RuleFor(r => r.FingerprintProofDocument).NotEmpty();
             RuleFor(r => r.FingerprintProofDocument.LicenceDocumentTypeCode)
-                .Must(c => c == LicenceDocumentTypeCode.ProofOfFingerprint);
+                .Must(c => c == LicenceDocumentTypeCode.ProofOfFingerprint)
+                .When(r => r.FingerprintProofDocument != null);
 
             //photo
             RuleFor(r => r.UseBcServicesCardPhoto).NotEmpty();
-            RuleFor(r => r.IdPhotoDocument).NotEmpty().When(r => r.UseBcServicesCardPhoto == false);
+            RuleFor(r => r.IdPhotoDocument).NotEmpty().When(r => r.UseBcServicesCardPhoto != null && r.UseBcServicesCardPhoto == false);
             RuleFor(r => r.IdPhotoDocument.LicenceDocumentTypeCode)
                 .Must(c => c == LicenceDocumentTypeCode.PhotoOfYourself)
                 .When(r => r.UseBcServicesCardPhoto == false && r.IdPhotoDocument != null);
@@ -439,7 +443,75 @@ namespace Spd.Manager.Cases.Licence
 
             //category
             RuleFor(r => r.CategoryData).NotEmpty().Must(d => d.Count() > 0 && d.Count() < 7);
+            var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
+            if (invalidCategoryMatrix == null)
+                throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
+
+            RuleForEach(r => r.CategoryData).SetValidator(new WorkerLicenceAppCategoryDataValidator());
+            RuleFor(r => r.CategoryData).Must(c =>
+            {
+                foreach (var catData in c)
+                {
+                    var invalidCodes = invalidCategoryMatrix.GetValueOrDefault(catData.WorkerCategoryTypeCode);
+                    if (invalidCodes != null)
+                    {
+                        foreach (var cat in c)
+                        {
+                            if (cat.WorkerCategoryTypeCode != catData.WorkerCategoryTypeCode)
+                            {
+                                if (invalidCodes.Contains(cat.WorkerCategoryTypeCode))
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            })
+            .When(c => c.CategoryData != null);
         }
+
+        public class WorkerLicenceAppCategoryDataValidator : AbstractValidator<WorkerLicenceAppCategoryData>
+        {
+            public WorkerLicenceAppCategoryDataValidator()
+            {
+                RuleFor(c => c.Documents).Must(d => d.Count() == 1
+                    && d.Any(doc => LicenceManager.SecurityGuardDocCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard);
+                RuleFor(c => c.Documents).Must(d => d == null || d.Count() == 0)
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuardUnderSupervision
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmMonitor
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmResponse
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmSales
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.LocksmithUnderSupervision
+                    || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.BodyArmourSales);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 1
+                    && d.Any(doc => (doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ArmouredCarGuard);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 1
+                    && d.Any(doc => LicenceManager.SecurityAlarmInstallerCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmInstaller);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 1
+                    && d.Any(doc => LicenceManager.LockSmithCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.Locksmith);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 1
+                    && d.Any(doc => LicenceManager.PrivateInvestigatorUnderSupervisionCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 2
+                    && d.Any(doc => LicenceManager.PrivateInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigator);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 2
+                    && d.Any(doc => LicenceManager.FireInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.FireInvestigator);
+                RuleFor(c => c.Documents).Must(d => d.Count() == 2
+                    && d.Any(doc => LicenceManager.SecurityConsultantCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityConsultant);
+            }
+        }
+        #endregion
     }
-    #endregion
 }
