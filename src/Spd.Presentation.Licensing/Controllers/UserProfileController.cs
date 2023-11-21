@@ -6,6 +6,7 @@ using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.ManagerContract;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -34,12 +35,29 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<ApplicantProfileResponse?> SecurityWorkerWhoami()
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
-            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
-            if (response == null)
+            //todo: we do not know what to do yet.
+            //var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            //temp code, just return the data from bcsc
+            ApplicantProfileResponse response = new ApplicantProfileResponse()
             {
-                //applicant does not exist.
-                return null;
-            }
+                BirthDate = new DateTimeOffset(info.BirthDate.Year, info.BirthDate.Month, info.BirthDate.Day, 0, 0, 0, TimeSpan.Zero),
+                Email = info.Email,
+                FirstName = info.FirstName,
+                Gender = info.Gender switch
+                {
+                    "female" => GenderCode.F,
+                    "male" => GenderCode.M,
+                    "diverse" => GenderCode.U,
+                    _ => null,
+                },
+                IdentityProviderTypeCode = IdentityProviderTypeCode.BcServicesCard,
+                LastName = info.LastName,
+                MiddleName1 = info.MiddleName1,
+                MiddleName2 = info.MiddleName2,
+                Sub = info.Sub,
+                ResidentialAddress = GetAddressFromStr(info.Address)
+            };
+
             return response;
         }
 
@@ -55,9 +73,10 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
             var response = await _mediator.Send(new ManageApplicantProfileCommand(info));
-            
+
             response.Sub = info.Sub;
             response.IdentityProviderTypeCode = IdentityProviderTypeCode.BcServicesCard;
+            response.ResidentialAddress = GetAddressFromStr(info.Address);
             return response;
         }
         /// <summary>
@@ -77,5 +96,40 @@ namespace Spd.Presentation.Licensing.Controllers
                 UserGuid = info.UserGuid
             };
         }
+
+        private Address? GetAddressFromStr(string? jsonStr)
+        {
+            if (jsonStr == null) return null;
+            try
+            {
+                var serializeOptions = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+                var result = JsonSerializer.Deserialize<BcscAddress>(jsonStr, serializeOptions);
+                return new Address()
+                {
+                    AddressLine1 = result?.Street_address,
+                    City = result.Locality,
+                    Country = result.Country,
+                    PostalCode = result.Postal_code,
+                    Province = result.Region,
+                };
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+    }
+
+    internal class BcscAddress
+    {
+        public string? Street_address { get; set; }
+        public string? Country { get; set; }
+        public string? Locality { get; set; } //city
+        public string? Postal_code { get; set; }
+        public string? Region { get; set; } //province
     }
 }
