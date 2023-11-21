@@ -102,13 +102,18 @@ namespace Spd.Presentation.Licensing.Controllers
             if (jsonStr == null) return null;
             try
             {
-                var result = JsonSerializer.Deserialize<BcscAddress>(jsonStr);
+                var serializeOptions = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+                var result = JsonSerializer.Deserialize<BcscAddress>(jsonStr, serializeOptions);
                 return new Address()
                 {
                     AddressLine1 = result?.Street_address,
                     City = result.Locality,
                     Country = result.Country,
-                    PostalCode = result.Postal_Code,
+                    PostalCode = result.Postal_code,
                     Province = result.Region,
                 };
             }
@@ -124,7 +129,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public string? Street_address { get; set; }
         public string? Country { get; set; }
         public string? Locality { get; set; } //city
-        public string? Postal_Code { get; set; }
+        public string? Postal_code { get; set; }
         public string? Region { get; set; } //province
     }
 }
