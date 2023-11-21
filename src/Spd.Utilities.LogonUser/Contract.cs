@@ -13,6 +13,7 @@ public class BcscIdentityInfo
     public string? Issuer { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
+    public string? Address { get; set; }
 }
 
 public class BceidIdentityInfo

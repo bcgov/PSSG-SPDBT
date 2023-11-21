@@ -53,6 +53,7 @@ namespace Spd.Utilities.LogonUser
                 FirstName = claim.GetClaimValue("given_name"),
                 LastName = claim.GetClaimValue("family_name"),
                 Gender = claim.GetClaimValue("gender"),
+                Address = claim.GetClaimValue("address"),
                 Sub = sub,
                 EmailVerified = claim.GetClaimValue("email_verified") == null ? null : bool.Parse(claim.GetClaimValue("email_verified")),
                 MiddleName1 = middleName.Item1,
