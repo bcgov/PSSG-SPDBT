@@ -1,4 +1,5 @@
 export { AdditionalGovIdDocument } from './models/additional-gov-id-document';
+export { Address } from './models/address';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { Alias } from './models/alias';

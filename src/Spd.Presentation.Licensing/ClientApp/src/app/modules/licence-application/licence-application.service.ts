@@ -156,16 +156,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					dateOfBirth: bcscUserWhoamiProfile.birthDate,
 					genderCode: bcscUserWhoamiProfile.gender,
 				},
-				// residentialAddressData: { //TODO populate defaults with BCSC data
-				// 	addressSelected: true,
-				// 	isMailingTheSameAsResidential: false,
-				// 	addressLine1: 'TODO',
-				// 	addressLine2: '',
-				// 	city: 'TODO',
-				// 	country: 'TODO',
-				// 	postalCode: 'V4V 1R8',
-				// 	province: 'British Columbia',
-				// },
+				residentialAddressData: {
+					//TODO populate defaults with BCSC data
+					addressSelected: true,
+					isMailingTheSameAsResidential: false,
+					addressLine1: 'TODO',
+					addressLine2: '',
+					city: 'TODO',
+					country: 'TODO',
+					postalCode: 'V4V 1R8',
+					province: 'British Columbia',
+				},
 			});
 		}
 
@@ -211,7 +212,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
 					expiredLicenceNumber: resp.expiredLicenceNumber,
 					expiryDate: resp.expiryDate,
-					// expiredLicenceId: resp.expiredLicenceId,
+					expiredLicenceId: resp.expiredLicenceId,
 				};
 				const licenceTermData = {
 					licenceTermCode: resp.licenceTermCode,
