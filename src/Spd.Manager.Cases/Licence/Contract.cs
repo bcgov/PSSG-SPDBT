@@ -439,8 +439,6 @@ namespace Spd.Manager.Cases.Licence
 
             //category
             RuleFor(r => r.CategoryData).NotEmpty().Must(d => d.Count() > 0 && d.Count() < 7);
-
-
         }
     }
     #endregion
