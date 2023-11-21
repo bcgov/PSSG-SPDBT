@@ -49,8 +49,8 @@ namespace Spd.Presentation.Licensing.Controllers
             };
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
 
-            var invalidMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
-            if (invalidMatrix == null)
+            var invalidCategoryMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
+            if (invalidCategoryMatrix == null)
                 throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
             return await Task.FromResult(new ConfigurationResponse()
@@ -58,7 +58,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 OidcConfiguration = oidcResp,
                 RecaptchaConfiguration = recaptchaResp,
                 BcscConfiguration = bcscConfig,
-                InvalidWorkerLicenceCategoryMatrixConfiguration = invalidMatrix
+                InvalidWorkerLicenceCategoryMatrixConfiguration = invalidCategoryMatrix
             });
         }
     }
