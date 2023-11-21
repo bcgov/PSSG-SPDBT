@@ -244,6 +244,7 @@ namespace Spd.Manager.Cases.Licence
         CategoryPrivateInvestigator_TrainingRecognizedCourse,
         CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge,
         CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
+        CategoryPrivateInvestigatorUnderSupervision_Training,
         CategorySecurityAlarmInstaller_TradesQualificationCertificate,
         CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
         CategorySecurityConsultant_ExperienceLetters,
