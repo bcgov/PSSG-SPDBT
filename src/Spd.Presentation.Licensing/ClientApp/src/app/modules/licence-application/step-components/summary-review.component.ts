@@ -160,15 +160,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 																>
 																	{{ doc.name }}
 																</div>
-
-																<div
-																	*ngFor="
-																		let doc of categoryPrivateInvestigatorUnderSupervisionTrainingAttachments;
-																		let i = index
-																	"
-																>
-																	{{ doc.name }}
-																</div>
 															</div>
 														</div>
 
@@ -791,9 +782,6 @@ export class SummaryReviewComponent {
 	}
 	get categoryPrivateInvestigatorUnderSupervisionAttachments(): File[] {
 		return this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.attachments ?? [];
-	}
-	get categoryPrivateInvestigatorUnderSupervisionTrainingAttachments(): File[] {
-		return this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.trainingAttachments ?? [];
 	}
 
 	get licenceTermCode(): string {

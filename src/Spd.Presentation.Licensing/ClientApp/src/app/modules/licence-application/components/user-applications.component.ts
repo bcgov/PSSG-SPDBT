@@ -368,7 +368,7 @@ export class UserApplicationsComponent implements OnInit {
 		this.licenceApplicationService.reset();
 
 		this.licenceApplicationService
-			.loadExistingLicence(appl.licenceAppId!)
+			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
 				tap((resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());

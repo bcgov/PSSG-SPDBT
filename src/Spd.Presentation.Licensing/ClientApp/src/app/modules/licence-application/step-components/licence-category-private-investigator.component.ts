@@ -134,24 +134,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						>This is required</mat-error
 					>
 				</div>
-				<!-- <div class="row" *ngIf="requirementCode.value == 'b'">
-										<div class="col-lg-4 col-md-12 col-sm-12">
-											<mat-form-field>
-												<mat-label>Document Expiry Date</mat-label>
-												<input
-													matInput
-													[matDatepicker]="picker"
-													formControlName="documentExpiryDate"
-													[errorStateMatcher]="matcher"
-												/>
-												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-												<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')"
-													>This is required</mat-error
-												>
-											</mat-form-field>
-										</div>
-									</div> -->
 			</div>
 
 			<div class="alert alert-category d-flex mt-4" role="alert">
