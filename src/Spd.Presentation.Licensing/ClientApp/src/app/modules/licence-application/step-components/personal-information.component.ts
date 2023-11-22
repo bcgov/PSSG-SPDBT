@@ -11,7 +11,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-personal-information',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 				<div class="step-container row">

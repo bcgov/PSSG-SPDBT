@@ -12,7 +12,7 @@ import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.c
 @Component({
 	selector: 'app-fingerprints',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Upload proof of fingerprinting request"

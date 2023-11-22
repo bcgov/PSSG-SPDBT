@@ -11,7 +11,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-mental-health-conditions',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Have you been treated for any of the following Mental Health Conditions?"

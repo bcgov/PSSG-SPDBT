@@ -10,7 +10,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-licence-category',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section p-3'">
+		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
 				<app-step-title
 					title="Which categories of Security Worker Licence are you applying for?"

@@ -5,7 +5,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 @Component({
 	selector: 'app-login-selection',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">

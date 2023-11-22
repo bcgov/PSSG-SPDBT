@@ -45,6 +45,7 @@ export class ConfigService {
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.bcscConfiguration!;
 		const bcscConfig = {
+			requestAccessToken: true,
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
 			redirectUri,
@@ -52,6 +53,10 @@ export class ConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			strictDiscoveryDocumentValidation: false,
+			customQueryParams: {
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				acr_values: 'idp:bcsc',
+			},
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;

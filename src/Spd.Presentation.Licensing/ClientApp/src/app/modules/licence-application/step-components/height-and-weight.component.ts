@@ -14,7 +14,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-height-and-weight',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Provide identifying information"></app-step-title>
 				<div class="step-container row">
