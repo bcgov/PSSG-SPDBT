@@ -1,4 +1,5 @@
 import {
+	ApplicationStatusCode,
 	ApplicationTypeCode,
 	EyeColourCode,
 	GenderCode,
@@ -84,17 +85,14 @@ export const PrivateInvestigatorTrainingCode: Record<PrivateInvestigatorTraining
 
 type PrivateInvestigatorSupRequirementCodeSubset = Extract<
 	LicenceDocumentTypeCode,
-	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion
 	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion
-	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining
+	| LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion
 >;
 export const PrivateInvestigatorSupRequirementCode: Record<PrivateInvestigatorSupRequirementCodeSubset, string> = {
-	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion]:
-		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion,
 	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion]:
 		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion,
-	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining]:
-		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
+	[LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion]:
+		LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion,
 };
 
 type SecurityAlarmInstallerRequirementCodeSubset = Extract<
@@ -152,6 +150,15 @@ export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
 	{ desc: 'Replacement', code: ApplicationTypeCode.Replacement },
 	{ desc: 'Update', code: ApplicationTypeCode.Update },
+];
+
+export const ApplicationStatusTypes: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationStatusCode.Draft },
+	{ desc: 'Payment Pending', code: ApplicationStatusCode.PaymentPending },
+	{ desc: 'Incomplete', code: ApplicationStatusCode.Incomplete },
+	{ desc: 'Applicant Verification', code: ApplicationStatusCode.ApplicantVerification },
+	{ desc: 'Submitted', code: ApplicationStatusCode.Submitted },
+	{ desc: 'Cancelled', code: ApplicationStatusCode.Cancelled },
 ];
 
 export const GenderTypes: SelectOptions[] = [

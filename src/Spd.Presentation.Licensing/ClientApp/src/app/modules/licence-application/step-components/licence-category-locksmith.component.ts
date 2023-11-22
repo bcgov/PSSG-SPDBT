@@ -25,10 +25,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					apprenticeship or course:
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
-						<mat-radio-button
-							class="radio-label"
-							[value]="locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse"
-						>
+						<mat-radio-button [value]="locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
 							A Locksmith Certificate of Qualification
 							<mat-icon
 								class="info-icon"
@@ -38,10 +35,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button
-							class="radio-label"
-							[value]="locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
-						>
+						<mat-radio-button [value]="locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship">
 							Two years experience of full-time employment as a locksmith under the supervision of a locksmith security
 							worker licensee, and proof of successful completion of an approved apprenticeship program
 							<mat-icon
@@ -52,10 +46,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button
-							class="radio-label"
-							[value]="locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification"
-						>
+						<mat-radio-button [value]="locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification">
 							Proof of successful completion of an approved locksmithing course, proof of experience in full-time
 							employment as a locksmith under the supervision of a locksmith security worker licensee, and a letter of
 							recommendation and certification from your employer indicating that you are qualified to perform the
@@ -101,7 +92,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
-						[maxNumberOfFiles]="10"
+						[maxNumberOfFiles]="2"
 						[files]="attachments.value"
 					></app-file-upload>
 					<mat-error
@@ -117,14 +108,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 			</div>
 		</form>
 	`,
-	styles: [
-		`
-			.category-radio-group > .radio-label .mdc-label {
-				font-size: initial;
-				color: initial;
-			}
-		`,
-	],
+	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildStepperStepComponent {

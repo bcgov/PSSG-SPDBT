@@ -6,7 +6,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	selector: 'app-licence-payment-fail',
 	template: `
 		<div class="container mt-4">
-			<section class="step-section p-3">
+			<section class="step-section">
 				<app-payment-fail
 					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
 					(backRoute)="onBackRoute()"

@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-background-info',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Confirm your background information"

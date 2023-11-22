@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-user-profile',
 	template: `
-		<section class="step-section px-4 py-2">
+		<section class="step-section">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<h2 class="my-3 fw-normal">User Profile</h2>

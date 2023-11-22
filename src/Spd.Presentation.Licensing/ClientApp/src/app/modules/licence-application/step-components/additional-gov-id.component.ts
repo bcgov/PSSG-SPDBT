@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-additional-gov-id',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Provide an additional piece of government-issued photo ID"></app-step-title>
 				<div class="step-container">

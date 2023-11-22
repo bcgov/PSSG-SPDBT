@@ -7,7 +7,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-criminal-history',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title>
 				<div class="step-container row">

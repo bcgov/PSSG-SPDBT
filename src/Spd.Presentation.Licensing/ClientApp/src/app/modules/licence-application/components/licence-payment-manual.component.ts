@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 	selector: 'app-licence-payment-manual',
 	template: `
 		<div class="container mt-4">
-			<section class="step-section p-3">
+			<section class="step-section">
 				<app-payment-manual (downloadManualPaymentForm)="onDownloadManualPaymentForm()"></app-payment-manual>
 			</section>
 		</div>

@@ -5,7 +5,7 @@ import { LicenceChildStepperStepComponent } from '../licence-application.helper'
 @Component({
 	selector: 'app-checklist',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Checklist"
@@ -105,14 +105,12 @@ import { LicenceChildStepperStepComponent } from '../licence-application.helper'
 	styles: [
 		`
 			.checklist-label {
-				font-weight: 600;
 				color: var(--color-primary);
 				line-height: initial;
 			}
 
 			.checklist-info {
 				margin-left: 3em;
-				font-size: 0.9em;
 			}
 		`,
 	],

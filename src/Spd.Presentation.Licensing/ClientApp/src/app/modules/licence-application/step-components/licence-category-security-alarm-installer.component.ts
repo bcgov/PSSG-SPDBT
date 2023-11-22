@@ -23,7 +23,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="
 								securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
 							"
@@ -32,7 +31,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="
 								securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
 							"
@@ -77,7 +75,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
-						[maxNumberOfFiles]="10"
+						[maxNumberOfFiles]="1"
 						[files]="attachments.value"
 					></app-file-upload>
 					<mat-error
