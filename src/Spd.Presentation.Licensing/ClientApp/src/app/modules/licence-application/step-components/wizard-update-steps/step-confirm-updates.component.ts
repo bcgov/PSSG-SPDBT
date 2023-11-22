@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-step-confirm-updates',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Confirm the updates for your licence or permit"></app-step-title>
 
@@ -52,7 +52,7 @@ import { Component } from '@angular/core';
 			}
 
 			.text-label {
-				font-size: 0.8rem !important;
+				font-size: 0.9rem !important;
 			}
 		`,
 	],

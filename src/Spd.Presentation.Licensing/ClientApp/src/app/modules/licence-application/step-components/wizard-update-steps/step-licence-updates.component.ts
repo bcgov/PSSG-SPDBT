@@ -34,7 +34,7 @@ export interface UpdateOptionListData {
 @Component({
 	selector: 'app-step-licence-updates',
 	template: `
-		<section class="step-section p-3 pb-4">
+		<section class="step-section pb-4">
 			<div class="step">
 				<app-step-title
 					title="Update your Licence or Permit"

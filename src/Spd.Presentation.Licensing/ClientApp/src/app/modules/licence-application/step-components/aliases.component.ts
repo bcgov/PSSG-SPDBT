@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-aliases',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Do you have any previous names?"></app-step-title>
 				<div class="step-container">

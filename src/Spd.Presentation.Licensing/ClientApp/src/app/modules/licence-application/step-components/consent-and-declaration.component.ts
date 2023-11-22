@@ -5,7 +5,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-consent-and-declaration',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Consent and Declaration"></app-step-title>

@@ -8,7 +8,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-licence-selection',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="What licence or permit are you applying for?"></app-step-title>
 
@@ -22,7 +22,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityBusinessLicence)"
 											[ngClass]="{ 'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
 										>
-											<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
+											<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 												<div class="box__image d-none d-md-block">
 													<img class="box__image__item" [src]="image1" />
 												</div>
@@ -38,7 +38,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
 										}"
 									>
-										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
+										<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image2" />
 											</div>
@@ -54,7 +54,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
 										}"
 									>
-										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
+										<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image3" />
 											</div>
@@ -70,7 +70,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit
 										}"
 									>
-										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
+										<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image4" />
 											</div>

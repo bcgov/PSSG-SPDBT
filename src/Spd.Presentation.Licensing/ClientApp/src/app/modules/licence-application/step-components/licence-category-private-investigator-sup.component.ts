@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
-import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { PrivateInvestigatorSupRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -19,13 +19,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-6 fw-bold mb-2">Experience:</div>
-					To qualify for a private investigator under supervision licence, you must meet one of the following experience
+					<div class="fs-6 fw-bold mb-2">Training:</div>
+					To qualify for a Private Investigator Under Supervision licence, you must meet one of the following training
 					requirements:
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="
 								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
 							"
@@ -35,7 +34,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="
 								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
 							"
@@ -74,7 +72,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
 						"
 					>
-						Upload proof of course and exam completion:
+						Upload proof of course completion:
 					</span>
 					<span
 						*ngIf="
@@ -91,7 +89,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
-						[maxNumberOfFiles]="10"
+						[maxNumberOfFiles]="1"
 						#attachmentsRef
 						[files]="attachments.value"
 					></app-file-upload>
@@ -105,54 +103,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						>This is required</mat-error
 					>
 				</div>
-
-				<!-- <div class="row" *ngIf="requirement.value == 'a'">
-										<div class="col-lg-4 col-md-12 col-sm-12">
-											<mat-form-field>
-												<mat-label>Document Expiry Date</mat-label>
-												<input
-													matInput
-													[matDatepicker]="picker"
-													formControlName="documentExpiryDate"
-													[errorStateMatcher]="matcher"
-												/>
-												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-												<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')"
-													>This is required</mat-error
-												>
-											</mat-form-field>
-										</div>
-									</div> -->
-			</div>
-
-			<div class="alert alert-category d-flex mt-4" role="alert">
-				<div>
-					<div class="fs-6 fw-bold mb-2">Training:</div>
-					You must provide proof of successfully completing any of the above two listed course requirements.
-				</div>
-			</div>
-
-			<div class="fs-6 fw-bold mb-2">Upload proof of course completion:</div>
-
-			<div class="my-2">
-				<app-file-upload
-					(fileUploaded)="onFileTrainingAdded($event)"
-					(fileRemoved)="onFileRemoved()"
-					[control]="trainingAttachments"
-					[maxNumberOfFiles]="10"
-					#trainingAttachmentsRef
-					[files]="trainingAttachments.value"
-				></app-file-upload>
-				<mat-error
-					class="mat-option-error"
-					*ngIf="
-						(form.get('trainingAttachments')?.dirty || form.get('trainingAttachments')?.touched) &&
-						form.get('trainingAttachments')?.invalid &&
-						form.get('trainingAttachments')?.hasError('required')
-					"
-					>This is required</mat-error
-				>
 			</div>
 		</form>
 	`,
@@ -167,7 +117,6 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	privateInvestigatorSupRequirementCodes = PrivateInvestigatorSupRequirementCode;
 
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
-	@ViewChild('trainingAttachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
 
 	constructor(
 		private optionsPipe: OptionsPipe,
@@ -199,24 +148,6 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 		}
 	}
 
-	onFileTrainingAdded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService
-				.addUploadDocument(LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining, file)
-				.subscribe({
-					next: (resp: any) => {
-						const matchingFile = this.trainingAttachments.value.find((item: File) => item.name == file.name);
-						matchingFile.documentUrlId = resp.body[0].documentUrlId;
-					},
-					error: (error: any) => {
-						console.log('An error occurred during file upload', error);
-						this.hotToastService.error('An error occurred during the file upload. Please try again.');
-						this.fileUploadTrainingComponent.removeFailedFile(file);
-					},
-				});
-		}
-	}
-
 	onFileRemoved(): void {
 		this.licenceApplicationService.hasValueChanged = true;
 	}
@@ -232,9 +163,5 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 
 	public get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-
-	public get trainingAttachments(): FormControl {
-		return this.form.get('trainingAttachments') as FormControl;
 	}
 }

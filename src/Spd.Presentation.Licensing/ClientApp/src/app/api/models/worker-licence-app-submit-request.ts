@@ -30,8 +30,8 @@ export interface WorkerLicenceAppSubmitRequest {
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
+  expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
-  expiryDate?: null | string;
   eyeColourCode?: EyeColourCode;
   fingerprintProofDocument?: FingerprintProofDocument;
   genderCode?: GenderCode;

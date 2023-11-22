@@ -9,7 +9,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-bc-driver-licence',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Do you have a BC Driver's Licence?"

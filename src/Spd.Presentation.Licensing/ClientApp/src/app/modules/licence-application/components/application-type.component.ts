@@ -8,7 +8,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-application-type',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="What type of Security Worker Licence are you applying for?"></app-step-title>
 				<div class="step-container row">

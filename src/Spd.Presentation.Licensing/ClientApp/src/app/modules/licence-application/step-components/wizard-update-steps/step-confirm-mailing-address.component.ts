@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 @Component({
 	selector: 'app-step-confirm-mailing-address',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Confirm your mailing address"></app-step-title>
 
