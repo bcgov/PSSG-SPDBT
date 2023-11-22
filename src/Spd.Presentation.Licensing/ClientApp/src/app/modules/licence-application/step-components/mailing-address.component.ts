@@ -10,7 +10,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-mailing-address',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Provide your mailing address"

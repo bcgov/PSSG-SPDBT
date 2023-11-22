@@ -11,7 +11,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-dogs-authorization',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section p-3'">
+		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
 				<app-step-title
 					*ngIf="!isCalledFromModal"

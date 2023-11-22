@@ -23,22 +23,17 @@ import { LicenceApplicationService } from '../licence-application.service';
 					experience requirements:
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingCertificate"
 						>
 							Basic Security Training Certificate issued by the Justice Institute of British Columbia (JIBC)
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button
-							class="radio-label"
-							[value]="securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining"
-						>
+						<mat-radio-button [value]="securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining">
 							Proof of training or experience providing general duties as a Canadian police officer, correctional
 							officer, sheriff, auxiliary, reserve, or border service officer
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="securityGuardRequirementCodes.CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent"
 						>
 							Certificate equivalent to the Basic Security Training course offered by JIBC
@@ -74,7 +69,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
-						[maxNumberOfFiles]="10"
+						[maxNumberOfFiles]="2"
 						[files]="attachments.value"
 					></app-file-upload>
 					<mat-error
@@ -90,14 +85,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 			</div>
 		</form>
 	`,
-	styles: [
-		`
-			.category-radio-group > .radio-label .mdc-label {
-				font-size: initial;
-				color: initial;
-			}
-		`,
-	],
+	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 	encapsulation: ViewEncapsulation.None,
 })

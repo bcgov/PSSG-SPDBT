@@ -14,7 +14,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-licence-expired',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Do you have an expired licence?"
@@ -48,6 +48,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						>
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+
 								<div class="text-minor-heading mb-2">Expired licence information:</div>
 								<div class="row mt-2">
 									<div class="col-lg-8 col-md-12 col-sm-12">
@@ -77,14 +78,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 										</mat-form-field>
 									</div>
 									<ng-container *ngIf="isAfterSearch">
-										<app-alert type="info" icon="check_circle" *ngIf="!isNotFound && isExpired">
+										<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
 											This is a valid expired licence with an expiry date of
 											{{ expiryDate.value | date : constants.date.dateFormat }}.
 										</app-alert>
-										<app-alert type="warning" *ngIf="!isNotFound && !isExpired">
+										<app-alert type="warning" *ngIf="isFound && !isExpired">
 											The licence is still valid. Please renew it when you get your renewal notice in the mail.
 										</app-alert>
-										<app-alert type="danger" icon="error" *ngIf="isNotFound">
+										<app-alert type="danger" icon="error" *ngIf="!isFound">
 											This licence number does not match any existing licences.
 										</app-alert>
 									</ng-container>
@@ -108,9 +109,9 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
 
-	isAfterSearch = this.form && this.expiryDate && this.expiryDate.value;
-	isNotFound = false;
-	isExpired = false;
+	isAfterSearch = !!(this.form && this.expiryDate && this.expiryDate.value);
+	isFound = !!(this.form && this.expiredLicenceId && this.expiredLicenceId.value);
+	isExpired = this.isExpiredDate;
 
 	constructor(
 		private utilService: UtilService,
@@ -139,7 +140,7 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 
 	private performSearch(licenceNumber: string) {
 		this.isAfterSearch = false;
-		this.isNotFound = false;
+		this.isFound = false;
 		this.isExpired = false;
 
 		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
@@ -151,14 +152,13 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 				licenceNumber,
 			})
 			.pipe()
-			.subscribe((response: LicenceLookupResponse) => {
-				if (response?.expiryDate) {
-					this.isExpired = !this.utilService.getIsFutureDate(response.expiryDate);
+			.subscribe((resp: LicenceLookupResponse) => {
+				this.isFound = !!resp?.expiryDate;
+				if (resp?.expiryDate) {
+					this.isExpired = !this.utilService.getIsFutureDate(resp.expiryDate);
 					if (this.isExpired) {
-						this.form.patchValue({ expiredLicenceId: response.licenceId, expiryDate: response.expiryDate });
+						this.form.patchValue({ expiredLicenceId: resp.licenceId, expiryDate: resp.expiryDate });
 					}
-				} else {
-					this.isNotFound = true;
 				}
 				this.isAfterSearch = true;
 			});
@@ -169,12 +169,24 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 		return this.form.valid;
 	}
 
+	get isExpiredDate(): boolean {
+		if (!this.expiryDate) {
+			return false;
+		}
+
+		return !this.utilService.getIsFutureDate(this.expiryDate.value);
+	}
+
 	get hasExpiredLicence(): FormControl {
 		return this.form.get('hasExpiredLicence') as FormControl;
 	}
 
 	get expiredLicenceNumber(): FormControl {
 		return this.form.get('expiredLicenceNumber') as FormControl;
+	}
+
+	get expiredLicenceId(): FormControl {
+		return this.form.get('expiredLicenceId') as FormControl;
 	}
 
 	get expiryDate(): FormControl {

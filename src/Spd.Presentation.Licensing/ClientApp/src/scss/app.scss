@@ -71,21 +71,24 @@ $spd-yellow: (
 
 @import "@bcgov/bc-sans/css/BCSans.css";
 
-$fonts: (
-  header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-  body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+$font-family-sans-serif: "BC Sans", "Noto Sans", "Verdana", "Arial", "sans serif"; 
+
+$spd-body-1: mat.define-typography-level(
+  $font-family: $font-family-sans-serif,
+  $font-weight: 400,
+  $font-size: 16px,
+  $line-height: 1,
+  $letter-spacing: normal,
 );
 
-@function theme-font($font) {
-  @return map-get($fonts, $font);
-}
-
 $spd-typography: mat.define-typography-config(
-  $font-family: theme-font(body),
-  $body-1: mat.define-typography-level(16px, 28px, 400),
+  $font-family: $font-family-sans-serif,
+  $body-1: mat.define-typography-level(16px, 24px, 400),
+  $body-2: mat.define-typography-level(16px, 24px, 400),
 );
 
 @include mat.core(); 
+@include mat.all-component-typographies($spd-typography);
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
@@ -108,11 +111,7 @@ $spd-theme: mat.define-light-theme((
 ));
 
 // Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
 @include mat.all-component-themes($spd-theme);
-// @include mat.typography-hierarchy($spd-theme);
-// @include mat.all-component-typographies($spd-theme);
 
 :root {
 	--color-white: #fff;
@@ -154,7 +153,6 @@ html, body { height: 100%; }
 body { 
   margin: 0; 
   background-color: var(--color-primary-lightest);
-  font-family: 'BCSans', 'Noto Sans', Arial, sans-serif;
 }
 
 .step {
@@ -301,6 +299,7 @@ a {
 }
 
 .step-section {
+  padding: 1.25rem!important;
   border-radius: 4px;
   background-color: #fff;
   border: 1px solid var(--color-grey-lighter);

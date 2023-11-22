@@ -29,7 +29,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses"
 						>
 							a) Two years of documented experience providing the services of a private investigator or private
@@ -45,7 +44,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="
 								privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining
 							"
@@ -62,7 +60,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_KnowledgeAndExperience"
 						>
 							c) Knowledge and experience equivalent to that which would be obtained under paragraph (a) above.
@@ -137,24 +134,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 						>This is required</mat-error
 					>
 				</div>
-				<!-- <div class="row" *ngIf="requirementCode.value == 'b'">
-										<div class="col-lg-4 col-md-12 col-sm-12">
-											<mat-form-field>
-												<mat-label>Document Expiry Date</mat-label>
-												<input
-													matInput
-													[matDatepicker]="picker"
-													formControlName="documentExpiryDate"
-													[errorStateMatcher]="matcher"
-												/>
-												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-												<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')"
-													>This is required</mat-error
-												>
-											</mat-form-field>
-										</div>
-									</div> -->
 			</div>
 
 			<div class="alert alert-category d-flex mt-4" role="alert">
@@ -164,14 +143,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse"
 						>
 							You must have completed a recognized training course
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
-							class="radio-label"
 							[value]="privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge"
 						>
 							You must provide proof of completion of courses or knowledge in the areas of:

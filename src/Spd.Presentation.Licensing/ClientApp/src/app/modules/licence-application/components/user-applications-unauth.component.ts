@@ -9,7 +9,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-user-applications-unauth',
 	template: `
-		<section class="step-section px-4 py-2">
+		<section class="step-section">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<h2 class="my-3 fw-normal">Security Licences & Permits</h2>

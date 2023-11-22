@@ -8,7 +8,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-sole-proprietor',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
 
