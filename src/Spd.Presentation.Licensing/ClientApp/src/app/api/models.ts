@@ -1,8 +1,10 @@
 export { AdditionalGovIdDocument } from './models/additional-gov-id-document';
+export { Address } from './models/address';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { Alias } from './models/alias';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
+export { ApplicationStatusCode } from './models/application-status-code';
 export { ApplicationTypeCode } from './models/application-type-code';
 export { BcscConfiguration } from './models/bcsc-configuration';
 export { BooleanTypeCode } from './models/boolean-type-code';
@@ -40,6 +42,7 @@ export { UserInfoMsgTypeCode } from './models/user-info-msg-type-code';
 export { WeightUnitCode } from './models/weight-unit-code';
 export { WorkerCategoryTypeCode } from './models/worker-category-type-code';
 export { WorkerLicenceAppCategoryData } from './models/worker-licence-app-category-data';
+export { WorkerLicenceAppListResponse } from './models/worker-licence-app-list-response';
 export { WorkerLicenceAppSubmitRequest } from './models/worker-licence-app-submit-request';
 export { WorkerLicenceAppUpsertRequest } from './models/worker-licence-app-upsert-request';
 export { WorkerLicenceAppUpsertResponse } from './models/worker-licence-app-upsert-response';

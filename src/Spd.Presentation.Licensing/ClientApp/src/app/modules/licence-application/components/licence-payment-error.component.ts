@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 	selector: 'app-licence-payment-error',
 	template: `
 		<div class="container mt-4">
-			<section class="step-section p-3">
+			<section class="step-section">
 				<app-payment-error></app-payment-error>
 			</section>
 		</div>

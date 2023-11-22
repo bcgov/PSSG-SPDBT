@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-residential-address',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Confirm your residential address" [subtitle]="subtitle"></app-step-title>
 				<form [formGroup]="form" novalidate>

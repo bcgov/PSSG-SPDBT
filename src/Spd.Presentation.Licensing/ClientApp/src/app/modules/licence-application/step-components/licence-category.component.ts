@@ -10,7 +10,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 @Component({
 	selector: 'app-licence-category',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section p-3'">
+		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
 				<app-step-title
 					title="Which categories of Security Worker Licence are you applying for?"
@@ -662,10 +662,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [
 		`
-			.category-title {
-				font-size: 1.3em;
-				font-weight: 400;
-				color: var(--color-primary);
+			.title {
+				padding-bottom: 2px;
 			}
 		`,
 	],

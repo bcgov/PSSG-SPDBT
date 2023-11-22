@@ -181,16 +181,11 @@ export abstract class LicenceApplicationHelper {
 			isInclude: new FormControl(false),
 			requirementCode: new FormControl(''),
 			attachments: new FormControl([]),
-			trainingAttachments: new FormControl([]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'trainingAttachments',
-					(form) => form.get('isInclude')?.value
-				),
 			],
 		}
 	);
@@ -466,7 +461,7 @@ export abstract class LicenceApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [FormControlValidators.required]),
 		country: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(),
+		isMailingTheSameAsResidential: new FormControl(false),
 	});
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
@@ -483,27 +478,27 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressSelected',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingAddressLine1',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingCity',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingPostalCode',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingProvince',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingCountry',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 			],
 		}

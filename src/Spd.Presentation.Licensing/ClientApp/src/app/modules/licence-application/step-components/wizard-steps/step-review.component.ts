@@ -62,7 +62,7 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 	}
 
 	onPayNow(): void {
-		this.licenceApplicationService.saveLicenceStep().subscribe({
+		this.licenceApplicationService.submitLicence().subscribe({
 			next: (resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
