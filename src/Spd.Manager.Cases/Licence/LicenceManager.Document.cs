@@ -9,9 +9,7 @@ internal partial class LicenceManager
 {
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
-        DocumentTypeEnum? docEnum = null;
-        if (command.Request.LicenceDocumentTypeCode != null)
-            docEnum = GetDocumentTypeEnum((LicenceDocumentTypeCode)command.Request.LicenceDocumentTypeCode);
+        DocumentTypeEnum? docEnum = GetDocumentTypeEnum(command.Request.LicenceDocumentTypeCode);
         LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, ct);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
@@ -120,6 +118,26 @@ internal partial class LicenceManager
                     }
                 }
             }
+            if (category is SecurityGuardWorkerLicenceAppCategoryData)
+            {
+                SecurityGuardWorkerLicenceAppCategoryData sgCategory = (SecurityGuardWorkerLicenceAppCategoryData)category;
+                if (sgCategory.RestraintsAuthorizationData.Document != null)
+                {
+                    (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(sgCategory.RestraintsAuthorizationData.Document.LicenceDocumentTypeCode);
+                    foreach (var doc in sgCategory.RestraintsAuthorizationData.Document.DocumentResponses)
+                    {
+                        await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
+                    }
+                }
+                if (sgCategory.DogsAuthorizationData.Document != null)
+                {
+                    (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(sgCategory.DogsAuthorizationData.Document.LicenceDocumentTypeCode);
+                    foreach (var doc in sgCategory.DogsAuthorizationData.Document.DocumentResponses)
+                    {
+                        await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
+                    }
+                }
+            }
         }
     }
 
@@ -159,6 +177,18 @@ internal partial class LicenceManager
                 foreach (Document d in category.Documents)
                 {
                     allValidDocGuids.AddRange(d.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
+                }
+            }
+            if (category is SecurityGuardWorkerLicenceAppCategoryData)
+            {
+                SecurityGuardWorkerLicenceAppCategoryData sgCategory = (SecurityGuardWorkerLicenceAppCategoryData)category;
+                if (sgCategory.RestraintsAuthorizationData.Document != null)
+                {
+                    allValidDocGuids.AddRange(sgCategory.RestraintsAuthorizationData.Document.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
+                }
+                if (sgCategory.DogsAuthorizationData.Document != null)
+                {
+                    allValidDocGuids.AddRange(sgCategory.DogsAuthorizationData.Document.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
                 }
             }
         }
@@ -259,6 +289,8 @@ internal partial class LicenceManager
                     var catFiles = existingDocs.Items.Where(d => d.DocumentType == docType).ToList();
                     List<DocumentTypeEnum?> docType2s = catFiles.Select(f => f.DocumentType2).Distinct().ToList();
                     List<Document> docs = new List<Document>();
+                    Document? dogDoc = null;
+                    Document? restraintsDoc = null;
                     foreach (var type in docType2s)
                     {
                         Document d = new Document();
@@ -266,9 +298,29 @@ internal partial class LicenceManager
                         d.LicenceDocumentTypeCode = code;
                         d.DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(catFiles.Where(c => c.DocumentType2 == type).ToList());
                         d.ExpiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
-                        docs.Add(d);
+
+                        if (type == DocumentTypeEnum.DogCertificate)
+                        {
+                            dogDoc = d;
+                        }
+                        else if (type == DocumentTypeEnum.UseForceEmployerLetter
+                            || type == DocumentTypeEnum.UseForceEmployerLetterASTEquivalent
+                            || type == DocumentTypeEnum.ASTCertificate)
+                        {
+                            restraintsDoc = d;
+                        }
+                        else
+                        {
+                            docs.Add(d);
+                        }
                     }
                     categoryData.Documents = docs.ToArray();
+                    if (categoryData.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard)
+                    {
+                        SecurityGuardWorkerLicenceAppCategoryData sgCat = (SecurityGuardWorkerLicenceAppCategoryData)categoryData;
+                        sgCat.DogsAuthorizationData.Document = dogDoc;
+                        sgCat.RestraintsAuthorizationData.Document = restraintsDoc;
+                    }
                 }
             }
         }
@@ -343,9 +395,13 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.RecordOfLandingDocument},
         {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.WorkPermit},
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
+        {LicenceDocumentTypeCode.CategorySecurityGuard_DogCertificate, DocumentTypeEnum.DogCertificate },
+        {LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetter },
+        {LicenceDocumentTypeCode.CategorySecurityGuard_ASTCertificate, DocumentTypeEnum.ASTCertificate },
+        {LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent }
     }.ToImmutableDictionary();
 
-    public static List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.PermanentResidentCard,
             LicenceDocumentTypeCode.RecordOfLandingDocument,
             LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
@@ -354,13 +410,13 @@ internal partial class LicenceManager
             LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus,
         };
 
-    public static List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CanadianPassport,
             LicenceDocumentTypeCode.BirthCertificate,
             LicenceDocumentTypeCode.CertificateOfIndianStatus,
         };
 
-    public static List<LicenceDocumentTypeCode> GovIdCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> GovIdCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.DriversLicence,
             LicenceDocumentTypeCode.CanadianFirearmsLicence,
             LicenceDocumentTypeCode.BcServicesCard,
@@ -368,29 +424,29 @@ internal partial class LicenceManager
             LicenceDocumentTypeCode.GovernmentIssuedPhotoId
         };
 
-    public static List<LicenceDocumentTypeCode> SecurityGuardDocCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> SecurityGuardDocCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCertificate,
             LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
             LicenceDocumentTypeCode.CategorySecurityGuard_PoliceExperienceOrTraining,
         };
 
-    public static List<LicenceDocumentTypeCode> SecurityAlarmInstallerCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> SecurityAlarmInstallerCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
             LicenceDocumentTypeCode.CategorySecurityAlarmInstaller_TradesQualificationCertificate,
         };
 
-    public static List<LicenceDocumentTypeCode> LockSmithCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> LockSmithCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategoryLocksmith_ApprovedLocksmithCourse,
             LicenceDocumentTypeCode.CategoryLocksmith_CertificateOfQualification,
             LicenceDocumentTypeCode.CategoryLocksmith_ExperienceAndApprenticeship
-        };
+    };
 
-    public static List<LicenceDocumentTypeCode> PrivateInvestigatorUnderSupervisionCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> PrivateInvestigatorUnderSupervisionCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
             LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion,
         };
 
-    public static List<LicenceDocumentTypeCode> PrivateInvestigatorCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> PrivateInvestigatorCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategoryPrivateInvestigator_ExperienceAndCourses,
             LicenceDocumentTypeCode.CategoryPrivateInvestigator_KnowledgeAndExperience,
             LicenceDocumentTypeCode.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
@@ -398,13 +454,19 @@ internal partial class LicenceManager
             LicenceDocumentTypeCode.CategoryPrivateInvestigator_TrainingRecognizedCourse
         };
 
-    public static List<LicenceDocumentTypeCode> FireInvestigatorCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> FireInvestigatorCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategoryFireInvestigator_CourseCertificate,
             LicenceDocumentTypeCode.CategoryFireInvestigator_VerificationLetter,
         };
 
-    public static List<LicenceDocumentTypeCode> SecurityConsultantCodes = new List<LicenceDocumentTypeCode> {
+    public static readonly List<LicenceDocumentTypeCode> SecurityConsultantCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CategorySecurityConsultant_ExperienceLetters,
             LicenceDocumentTypeCode.CategorySecurityConsultant_RecommendationLetters,
+        };
+
+    public static readonly List<LicenceDocumentTypeCode> RequestConstraintsCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CategorySecurityGuard_ASTCertificate,
+            LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter,
+            LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent
         };
 }
