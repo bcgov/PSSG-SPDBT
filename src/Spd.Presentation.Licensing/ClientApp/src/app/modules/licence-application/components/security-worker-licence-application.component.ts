@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -8,7 +8,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	template: ` <router-outlet></router-outlet> `,
 	styles: [],
 })
-export class SecurityWorkerLicenceApplicationComponent {
+export class SecurityWorkerLicenceApplicationComponent implements OnInit {
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {

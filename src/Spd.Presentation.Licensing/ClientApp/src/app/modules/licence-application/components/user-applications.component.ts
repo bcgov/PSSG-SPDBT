@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable @angular-eslint/template/click-events-have-key-events */
+/* eslint-disable @angular-eslint/template/click-events-have-key-events */
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription, take, tap } from 'rxjs';
@@ -137,7 +139,14 @@ export interface ApplicationResponse {
 												<div class="text-data">Authorization to use dogs</div>
 												<div>Expires on Nov 23, 2023</div>
 												<div>
-													<a class="large" (click)="onUpdateAuthorization()"> Update Authorization </a>
+													<a
+														class="large"
+														tabindex="0"
+														(click)="onUpdateAuthorization()"
+														(keypress)="onUpdateAuthorization()"
+													>
+														Update Authorization
+													</a>
 												</div>
 											</div>
 											<mat-divider class="my-2"></mat-divider>
@@ -278,7 +287,7 @@ export interface ApplicationResponse {
 		`,
 	],
 })
-export class UserApplicationsComponent implements OnInit {
+export class UserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 
@@ -374,6 +383,7 @@ export class UserApplicationsComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					// TODO
 				}
 			});
 	}
@@ -384,7 +394,7 @@ export class UserApplicationsComponent implements OnInit {
 		this.licenceApplicationService
 			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
-				tap((resp: any) => {
+				tap((_resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
 				}),
 				take(1),
@@ -392,13 +402,13 @@ export class UserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onUpdate(appl: ApplicationResponse): void {
+	onUpdate(_appl: ApplicationResponse): void {
 		this.licenceApplicationService.reset();
 
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE));
 	}
 
-	onReapply(appl: ApplicationResponse): void {
+	onReapply(_appl: ApplicationResponse): void {
 		this.licenceApplicationService.reset();
 	}
 

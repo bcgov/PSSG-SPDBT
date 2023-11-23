@@ -27,15 +27,15 @@ export class ConfigService {
 	}
 
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.oidcConfiguration!;
+		const resp = this.configs?.oidcConfiguration ?? {};
 		const bceIdConfig = {
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
+			issuer: resp.issuer ?? '',
+			clientId: resp.clientId ?? '',
 			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
+			responseType: resp.responseType ?? '',
+			scope: resp.scope ?? '',
 			showDebugInformation: true,
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+			postLogoutRedirectUri: resp.postLogoutRedirectUri ?? '',
 			customQueryParams: { kc_idp_hint: 'bceidbusiness' },
 		};
 		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
@@ -43,27 +43,23 @@ export class ConfigService {
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.bcscConfiguration!;
+		const resp = this.configs?.bcscConfiguration ?? {};
 		const bcscConfig = {
 			requestAccessToken: true,
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
+			issuer: resp.issuer ?? '',
+			clientId: resp.clientId ?? '',
 			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
+			responseType: resp.responseType ?? '',
+			scope: resp.scope ?? '',
 			showDebugInformation: true,
 			strictDiscoveryDocumentValidation: false,
-			customQueryParams: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				acr_values: 'idp:bcsc',
-			},
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;
 	}
 
 	public getBcscIssuer(): string | null {
-		const resp = this.configs?.bcscConfiguration!;
+		const resp = this.configs?.bcscConfiguration??{};
 		return resp.issuer ?? null;
 	}
 

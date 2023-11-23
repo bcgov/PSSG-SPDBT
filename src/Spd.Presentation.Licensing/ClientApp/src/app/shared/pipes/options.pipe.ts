@@ -1,16 +1,16 @@
-import { Pipe } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Pipe({ name: 'options', pure: true })
-export class OptionsPipe {
+export class OptionsPipe implements PipeTransform {
 	constructor(private utilService: UtilService) {}
 
 	transform(
 		input: string | boolean | null | undefined,
 		codeTableName: keyof typeof CodeDescTypes,
-		defaultValue: string = ''
+		defaultValue = ''
 	): string {
 		if (typeof input == 'boolean') {
 			return input ? BooleanTypeCode.Yes : BooleanTypeCode.No;

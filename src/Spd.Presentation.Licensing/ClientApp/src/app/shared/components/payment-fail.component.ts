@@ -41,7 +41,7 @@ import { Router } from '@angular/router';
 
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-fail.png" />
+				<img class="payment__image__item" src="/assets/payment-fail.png"  alt="Payment fail"/>
 			</div>
 		</div>
 
@@ -67,14 +67,14 @@ import { Router } from '@angular/router';
 			</ng-container>
 
 			<ng-template #paymentFailed>
-				<ng-container *ngIf="numberOfAttemptsRemaining == 0; else remainingAttempts">
+				<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 						<div class="lead fs-4 mt-4">
 							Your application has been submitted, but it won't be processed until payment is received.
 						</div>
 						<div class="lead fs-4 my-4">
 							Please download and complete the
-							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the
+							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keypress)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the
 							form to submit payment to the Security Programs Division.
 						</div>
 					</div>
@@ -85,11 +85,11 @@ import { Router } from '@angular/router';
 						<div class="lead fs-4 mt-4">
 							Please ensure the information you entered is correct and try again, or use a different credit card. You
 							have
-							{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining == 1 ? '' : 's' }}.
+							{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
 						</div>
 						<div class="lead fs-4 my-4">
 							Alternatively, you can download the
-							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
+							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keypress)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
 							instructions to submit it to the Security Programs Division.
 						</div>
 					</div>
@@ -106,7 +106,7 @@ import { Router } from '@angular/router';
 	],
 })
 export class PaymentFailComponent implements OnInit {
-	isBackRoute: boolean = false;
+	isBackRoute = false;
 	payBySecureLink = true;
 
 	@Input() isCancelledPaymentFlow = false;

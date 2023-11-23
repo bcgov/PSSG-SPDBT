@@ -12,7 +12,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 						<div class="row">
 							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
 								<div class="login-title fs-4 mt-2 mb-3">
-									<img class="image" src="/assets/security-business-licence.png" />
+									<img class="image" src="/assets/security-business-licence.png"  alt="Security business licence"/>
 									<div>Log in to manage your<br /><strong>security business licence:</strong></div>
 								</div>
 
@@ -65,7 +65,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 							</div>
 							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
 								<div class="login-title fs-4  mt-2 mb-3">
-									<img class="image" src="/assets/security-worker-licence.png" />
+									<img class="image" src="/assets/security-worker-licence.png"  alt="Security worker licence" />
 									<div>Log in to manage your<br /><strong>security worker licence:</strong></div>
 								</div>
 
@@ -116,7 +116,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 										features available to registered users.
 									</p>
 									<p class="mx-3 mt-2">
-										<a class="fw-bold" (click)="onContinue()"> Continue without a BC Services Card </a>
+										<a class="fw-bold" tabindex="0" (click)="onContinue()" (keypress)="onContinue()"> Continue without a BC Services Card </a>
 									</p>
 								</div>
 							</div>
@@ -148,6 +148,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 			}
 
 			.image {
+				margin-right: 1rem;
 				height: 3em;
 			}
 		`,

@@ -25,7 +25,7 @@ export interface FilterQueryList {
 	value: any;
 }
 
-const FILTER_QUERY_DELIMITER: string = ',';
+const FILTER_QUERY_DELIMITER = ',';
 
 @Component({
 	selector: 'app-base-filter',
