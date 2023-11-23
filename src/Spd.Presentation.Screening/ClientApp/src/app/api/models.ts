@@ -1,4 +1,5 @@
 export { ActionResult } from './models/action-result';
+export { Address } from './models/address';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { AliasCreateRequest } from './models/alias-create-request';
