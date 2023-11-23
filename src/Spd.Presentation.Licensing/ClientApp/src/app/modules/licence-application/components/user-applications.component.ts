@@ -37,34 +37,34 @@ export interface ApplicationResponse {
 							Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
 						</app-alert>
 
+						<app-alert type="danger" [boldText]="true" icon="error">
+							You haven't submitted your licence application yet. It will expire on Jan 12, 2024
+						</app-alert>
+
 						<div class="mb-4" *ngIf="draftApplications.length > 0">
 							<!-- <div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div> -->
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of draftApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-3">
 										<div class="fs-5" style="color: var(--color-primary);">
-											{{ appl.serviceTypeCode | options : 'WorkerLicenceTypes' }}
+											{{ appl.serviceTypeCode | options: 'WorkerLicenceTypes' }}
 										</div>
 									</div>
 									<div class="col-lg-9">
 										<div class="row">
 											<div class="col-lg-4">
 												<div class="d-block text-muted mt-2 mt-md-0">Application Type</div>
-												<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
+												<div class="text-data">{{ appl.applicationTypeCode | options: 'ApplicationTypes' }}</div>
 											</div>
 											<div class="col-lg-4">
 												<div class="d-block text-muted mt-2 mt-md-0">Create Date</div>
-												<div class="text-data">{{ appl.createdOn | date : constants.date.formalDateFormat }}</div>
+												<div class="text-data">{{ appl.createdOn | date: constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-4 text-end">
-												<mat-chip-option
-													[selectable]="false"
-													class="mat-chip-yellow"
-													style="height: 38px; width: 115px;"
-												>
-													<mat-icon class="mat-chip-option-icon">warning</mat-icon>
-													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">{{
-														appl.applicationStatusCode | options : 'ApplicationStatusTypes'
+												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-yellow">
+													<mat-icon class="appl-chip-option-item">warning</mat-icon>
+													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">{{
+														appl.applicationStatusCode | options: 'ApplicationStatusTypes'
 													}}</span>
 												</mat-chip-option>
 											</div>
@@ -91,7 +91,7 @@ export interface ApplicationResponse {
 								<div class="row">
 									<div class="col-lg-2">
 										<div class="fs-5" style="color: var(--color-primary);">
-											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+											{{ appl.workerLicenceTypeCode | options: 'WorkerLicenceTypes' }}
 										</div>
 									</div>
 									<div class="col-lg-10">
@@ -106,16 +106,12 @@ export interface ApplicationResponse {
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Application Type</div>
-												<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
+												<div class="text-data">{{ appl.applicationTypeCode | options: 'ApplicationTypes' }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
-												<mat-chip-option
-													[selectable]="false"
-													class="mat-chip-green"
-													style="height: 38px; width: 115px;"
-												>
-													<mat-icon class="mat-chip-option-icon">check_circle</mat-icon>
-													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Active</span>
+												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
+													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Active</span>
 												</mat-chip-option>
 											</div>
 											<mat-divider class="my-2"></mat-divider>
@@ -124,7 +120,7 @@ export interface ApplicationResponse {
 										<div class="row mb-2">
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-												<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
+												<div class="text-data">{{ appl.expiresOn | date: constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-4">
 												<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
@@ -183,7 +179,7 @@ export interface ApplicationResponse {
 								<div class="row">
 									<div class="col-lg-3">
 										<h3 class="fs-4 fw-normal" style="color: var(--color-primary);">
-											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+											{{ appl.workerLicenceTypeCode | options: 'WorkerLicenceTypes' }}
 										</h3>
 									</div>
 									<div class="col-lg-9">
@@ -198,15 +194,14 @@ export interface ApplicationResponse {
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-												<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
+												<div class="text-data">{{ appl.expiresOn | date: constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
-												<mat-chip-option [selectable]="false" class="mat-chip-red" style="height: 38px; width: 135px;">
-													<mat-icon class="mat-chip-option-icon">cancel</mat-icon>
-													<span class="mat-chip-option-text my-3 ms-2 fs-6 fw-bold">Expired</span>
+												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
+													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
+													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Expired</span>
 												</mat-chip-option>
 											</div>
-											<!-- <mat-divider class="my-2"></mat-divider> -->
 										</div>
 										<!-- <div class="row mb-2">
 										<div class="col-12 text-end">
@@ -221,9 +216,24 @@ export interface ApplicationResponse {
 						</div>
 					</ng-container>
 
-					<button mat-flat-button color="primary" class="large w-auto my-4" (click)="onCreateNew()">
-						Apply for a New Licence or Permit
-					</button>
+					<div class="card-section mb-3 px-4 py-3">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="text-data">You don't have any active licences</div>
+							</div>
+							<div class="col-lg-6 text-end">
+								<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
+									Apply for a New Licence or Permit
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<app-alert type="info" [showBorder]="false" icon="">
+						Do you have a security licence but it's not showing here?
+						<a href="https://id.gov.bc.ca/account/" target="_blank">Connect a current or expired licence</a> to your
+						account
+					</app-alert>
 
 					<!-- <button
 						mat-flat-button
@@ -249,9 +259,13 @@ export interface ApplicationResponse {
 				font-weight: 500;
 			}
 
-			.mat-chip-option-text {
-				position: relative;
-				top: -5px;
+			.appl-chip-option {
+				height: 35px;
+				width: 115px;
+			}
+
+			.appl-chip-option-item {
+				vertical-align: text-bottom;
 			}
 
 			.card-section {
@@ -280,7 +294,7 @@ export class UserApplicationsComponent implements OnInit {
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
 		private workerLicensingService: WorkerLicensingService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationService: LicenceApplicationService,
 	) {}
 
 	ngOnInit(): void {
@@ -294,7 +308,7 @@ export class UserApplicationsComponent implements OnInit {
 							this.draftApplications = resp;
 						});
 				}
-			}
+			},
 		);
 
 		// this.draftApplications = [
@@ -373,7 +387,7 @@ export class UserApplicationsComponent implements OnInit {
 				tap((resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
 				}),
-				take(1)
+				take(1),
 			)
 			.subscribe();
 	}
@@ -396,10 +410,10 @@ export class UserApplicationsComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
+						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION),
 					);
 				}),
-				take(1)
+				take(1),
 			)
 			.subscribe();
 	}
