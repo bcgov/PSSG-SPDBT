@@ -116,8 +116,8 @@ export const ApplicationPortalStatusTypes: SelectOptions[] = [
 	{ desc: 'Closed - Judicial Review', code: ApplicationPortalStatusCode.ClosedJudicialReview },
 	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
 	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
-	{ desc: 'Cancelled by Organization', code: ApplicationPortalStatusCode.CancelledByOrganization },
-	{ desc: 'Cancelled by Applicant', code: ApplicationPortalStatusCode.CancelledByApplicant },
+	{ desc: 'Cancelled by Org.', code: ApplicationPortalStatusCode.CancelledByOrganization },
+	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
 ];
 
 export const CountryTypes: SelectOptions[] = [
