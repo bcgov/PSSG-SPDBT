@@ -452,7 +452,3 @@ ngx-dropzone-remove-badge {
     color: white !important;
   }
 }
-mat-chip {
-  height: auto; // overrides default height 1px
-  line-height: 1.1em; // keeps chip from "squaring out" at one line
-}
