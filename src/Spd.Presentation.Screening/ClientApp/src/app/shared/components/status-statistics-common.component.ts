@@ -17,13 +17,13 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class=" fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.VerifyIdentity] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.InProgress] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
 					</div>
 					<div
 						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
@@ -32,25 +32,25 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingApplicant] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
 					</div>
 				</div>
 			</div>
@@ -62,7 +62,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
 					</div>
 					<div
 						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
@@ -71,25 +71,25 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedJudicialReview] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedJudicialReview) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedJudicialReview) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedNoResponse] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedNoConsent] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.CancelledByApplicant] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
 					</div>
 				</div>
 			</div>

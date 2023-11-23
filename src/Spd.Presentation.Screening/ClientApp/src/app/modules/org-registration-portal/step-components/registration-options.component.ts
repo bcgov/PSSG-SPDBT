@@ -75,7 +75,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									to registered users.
 								</p>
 							</div>
-							<div class="step-container__box__footer p-4" style="padding-top: 3.7rem!important;">
+							<div class="step-container__box__footer p-4" style="padding-top: 5.7rem!important;">
 								<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
 									Continue without Business BCeID
 								</button>
