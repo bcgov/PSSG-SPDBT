@@ -33,7 +33,7 @@ export class CaptchaV2Component implements OnInit {
 	siteKey = '';
 
 	constructor(private configService: ConfigService) {
-		this.siteKey = this.configService.configs?.recaptchaConfiguration?.key ?? '';
+		this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;
 	}
 
 	ngOnInit() {
