@@ -266,7 +266,7 @@ export class PssoaComponent implements OnInit {
 		this.orgData = orgData;
 
 		for (let i = 0; i <= 2; i++) {
-			let step = this.stepper.steps.get(i);
+			const step = this.stepper.steps.get(i);
 			if (step) {
 				step.completed = true;
 			}
@@ -281,7 +281,7 @@ export class PssoaComponent implements OnInit {
 		// make these steps uneditable...
 		// so that after save, user cannot navigate to any of these steps
 		for (let i = 0; i <= 4; i++) {
-			let step = this.stepper.steps.get(i);
+			const step = this.stepper.steps.get(i);
 			if (step) {
 				step.editable = false;
 			}
@@ -297,7 +297,7 @@ export class PssoaComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsPost({ body })
 				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
+				.subscribe((_res: ApplicationCreateResponse) => {
 					this.stepper.next();
 				});
 		} else {
@@ -305,7 +305,7 @@ export class PssoaComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsAnonymousPost({ body })
 				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
+				.subscribe((_res: ApplicationCreateResponse) => {
 					this.stepper.next();
 				});
 		}

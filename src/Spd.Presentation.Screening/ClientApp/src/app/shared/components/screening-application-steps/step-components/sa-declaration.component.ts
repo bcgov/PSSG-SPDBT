@@ -112,7 +112,7 @@ export class SaDeclarationComponent implements OnInit, CrcFormStepComponent {
 				validators: [
 					FormGroupValidators.conditionalDefaultRequiredValidator(
 						'agreeToShareCrc',
-						(form) => data.shareableCrcExists ?? false
+						(_form) => data.shareableCrcExists ?? false
 					),
 				],
 			}

@@ -70,7 +70,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
 							<mat-label>Organization Phone Number</mat-label>
-							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
@@ -249,9 +249,9 @@ export class OrganizationProfileComponent implements OnInit {
 	isNotVolunteerOrg = false;
 	crrpRoutes = CrrpRoutes;
 
-	editable: boolean = true;
-	viewOnly: boolean = true;
-	displayLicenseesQuestion: boolean = true;
+	editable = true;
+	viewOnly = true;
+	displayLicenseesQuestion = true;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
@@ -279,7 +279,7 @@ export class OrganizationProfileComponent implements OnInit {
 					'licenseesNeedVulnerableSectorScreening',
 					() => this.displayLicenseesQuestion
 				),
-				FormGroupValidators.conditionalRequiredValidator('payerPreference', (form) => this.isNotVolunteerOrg ?? false),
+				FormGroupValidators.conditionalRequiredValidator('payerPreference', (_form) => this.isNotVolunteerOrg ?? false),
 			],
 		}
 	);

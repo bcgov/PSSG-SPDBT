@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
@@ -27,7 +27,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 					</div>
 					<div
 						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
-						*ngIf="portal == portalTypeCodes.Crrp"
+						*ngIf="portal === portalTypeCodes.Crrp"
 					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
@@ -66,7 +66,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 					</div>
 					<div
 						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
-						*ngIf="portal == portalTypeCodes.Crrp"
+						*ngIf="portal === portalTypeCodes.Crrp"
 					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedJudicialReview] ?? 0 }}
@@ -113,7 +113,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class StatusStatisticsCommonComponent {
+export class StatusStatisticsCommonComponent implements OnInit {
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 	applicationStatistics!: { [key: string]: number | null };
 

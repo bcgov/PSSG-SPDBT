@@ -27,10 +27,10 @@ export interface ExpiredClearanceResponse extends ClearanceAccessResponse {
 }
 
 export class ExpiringChecksFilter {
-	search: string = '';
-	applicantName: string = '';
-	expiresOn: string = '';
-	contractedCompanyName: string = '';
+	search = '';
+	applicantName = '';
+	expiresOn = '';
+	contractedCompanyName = '';
 }
 
 export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string> = {
@@ -274,7 +274,9 @@ export class ExpiringChecksComponent implements OnInit {
 		this.loadList();
 	}
 
-	onPayNow(): void {}
+	onPayNow(): void {
+		//empty
+	}
 
 	onSearchKeyDown(searchEvent: any): void {
 		const searchString = searchEvent.target.value;

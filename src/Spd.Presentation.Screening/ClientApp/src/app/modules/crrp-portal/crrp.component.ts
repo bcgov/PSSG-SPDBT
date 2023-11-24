@@ -39,7 +39,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
 					>
-						<a [routerLink]="[crrpRoutes.path(crrpRoutes.HOME)]" class="nav-link d-flex text-white w-100">
+						<a tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.HOME)]" class="nav-link d-flex text-white w-100">
 							<span class="d-none d-sm-inline mx-3 mt-2">Menu</span>
 						</a>
 						<hr class="d-none d-sm-inline w-100 text-white" />

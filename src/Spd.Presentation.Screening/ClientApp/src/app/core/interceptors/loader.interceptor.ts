@@ -12,7 +12,7 @@ export class LoaderInterceptor implements HttpInterceptor {
 	constructor(private spinnerService: NgxSpinnerService) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-		let isIncluded = includedURLs.some((regexp) => regexp.test(request.url));
+		const isIncluded = includedURLs.some((regexp) => regexp.test(request.url));
 
 		// If the URL is NOT in the included list then DO NOT show the loading spinner.
 		if (!isIncluded) {

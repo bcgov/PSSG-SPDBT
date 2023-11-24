@@ -90,7 +90,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 	encapsulation: ViewEncapsulation.None,
 })
 export class SaStepTermsAndCondComponent {
-	agreeToShareCrc: boolean = false; // default and also, does not apply to PSSO
+	agreeToShareCrc = false; // default and also, does not apply to PSSO
 
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
@@ -162,7 +162,7 @@ export class SaStepTermsAndCondComponent {
 		this.previousStepperStep.emit(true);
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 

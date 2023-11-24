@@ -16,19 +16,27 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							<table class="ml-5 mb-5" style="text-align: left;">
 								<tr class="mb-2">
 									<td class="pr-2 pb-2">
-										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
+										<img
+											class="step-container__box__title__checkbox"
+											src="/assets/checkbox.svg"
+											alt="SkSkip the identity confirmation step with your employerip"
+										/>
 									</td>
 									<td>Skip the identity confirmation step with your employer</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
-										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
+										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" alt="Apply faster" />
 									</td>
 									<td>Apply faster</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
-										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
+										<img
+											class="step-container__box__title__checkbox"
+											src="/assets/checkbox.svg"
+											alt="See your application progress in real time"
+										/>
 									</td>
 									<td>See your application progress in real time</td>
 								</tr>

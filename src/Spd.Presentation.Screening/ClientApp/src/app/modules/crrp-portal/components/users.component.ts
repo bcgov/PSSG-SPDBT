@@ -33,7 +33,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 					</h2>
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
-					<div class="text-end" *ngIf="isAllowedAddContact == true; else addNotAllowed">
+					<div class="text-end" *ngIf="isAllowedAddContact === true; else addNotAllowed">
 						<button mat-flat-button class="large w-auto mat-green-button mb-2" (click)="onAddUser()">Add User</button>
 					</div>
 					<ng-template #addNotAllowed>
@@ -52,14 +52,12 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let user">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status">
-									<ng-container *ngIf="user.isActive; else notactive">
-										<mat-chip-option [selectable]="false" class="mat-chip-green"> Active </mat-chip-option>
-									</ng-container>
-									<ng-template #notactive>
-										<mat-chip-option [selectable]="false" class="mat-chip-yellow"> Pending </mat-chip-option>
-									</ng-template>
-								</mat-chip-listbox>
+								<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="user.isActive; else notactive">
+									Active
+								</mat-chip-row>
+								<ng-template #notactive>
+									<mat-chip-row aria-label="Status" class="mat-chip-yellow"> Pending </mat-chip-row>
+								</ng-template>
 							</mat-cell>
 						</ng-container>
 
@@ -200,9 +198,9 @@ export class UsersComponent implements OnInit {
 	appConstants = SPD_CONSTANTS;
 	authorizationTypes = ContactAuthorizationTypes;
 
-	showAddArea: boolean = false;
-	isAllowedAddContact: boolean = false;
-	isAllowedAddPrimary: boolean = false;
+	showAddArea = false;
+	isAllowedAddContact = false;
+	isAllowedAddPrimary = false;
 
 	usersList: OrgUserResponse[] = [];
 

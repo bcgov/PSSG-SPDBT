@@ -51,7 +51,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						</app-alert>
 					</div>
 				</div>
-				<div class="row" *ngIf="validationErrs.length == 0">
+				<div class="row" *ngIf="validationErrs.length === 0">
 					<div class="col-lg-8 col-md-12 col-sm-12">
 						<app-alert type="success" icon="check_circle"> File upload succeeded </app-alert>
 					</div>

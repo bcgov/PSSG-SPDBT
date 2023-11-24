@@ -51,10 +51,10 @@ export class ErrorInterceptor implements HttpInterceptor {
 				}
 
 				let message = 'An error has occurred';
-				let title = errorResponse.statusText ?? 'Unexpected Error';
+				// let title = errorResponse.statusText ?? 'Unexpected Error';
 				if (errorResponse.error) {
 					if (errorResponse.error?.errors) {
-						title = errorResponse.error.title;
+						// title = errorResponse.error.title;
 						message = '<ul>';
 						for (const key in errorResponse.error?.errors) {
 							const value = errorResponse.error?.errors[key];

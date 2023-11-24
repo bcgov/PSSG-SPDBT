@@ -23,7 +23,7 @@ export interface BceidOrgResponse extends OrgResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthUserBceidService {
 	loginType: IdentityProviderTypeCode | null = null;
-	isAllowedGenericUpload: boolean = false;
+	isAllowedGenericUpload = false;
 
 	bceidUserOrgProfile: BceidOrgResponse | null = null;
 	bceidUserInfoProfile: UserInfo | null = null;

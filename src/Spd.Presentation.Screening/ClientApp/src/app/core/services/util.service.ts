@@ -187,10 +187,10 @@ export class UtilService {
 	}
 
 	getDateString(date: Date): string {
-		let d = new Date(date),
-			month = '' + (d.getMonth() + 1),
-			day = '' + d.getDate(),
-			year = d.getFullYear();
+		const d = new Date(date);
+		let month = '' + (d.getMonth() + 1);
+		let day = '' + d.getDate();
+		const year = d.getFullYear();
 
 		if (month.length < 2) month = '0' + month;
 		if (day.length < 2) day = '0' + day;
@@ -227,7 +227,7 @@ export class UtilService {
 	 * within a <section> scroll to the section instead.
 	 */
 	public scrollToErrorSection(): void {
-		let firstElementWithError =
+		const firstElementWithError =
 			document.querySelector('mat-form-field.ng-invalid') ||
 			document.querySelector('mat-radio-group.ng-invalid') ||
 			document.querySelector('mat-checkbox.ng-invalid');
@@ -249,7 +249,7 @@ export class UtilService {
 	 * Scroll to a material form checkbox field that is invalid.
 	 */
 	public scrollToCheckbox(): void {
-		let firstElementWithError = document.querySelector('mat-checkbox.ng-invalid');
+		const firstElementWithError = document.querySelector('mat-checkbox.ng-invalid');
 
 		if (firstElementWithError) {
 			this.scrollTo(firstElementWithError);
@@ -261,7 +261,7 @@ export class UtilService {
 	//------------------------------------
 	// Sort
 
-	private compareByString(a: any, b: any, ascending: boolean = true) {
+	private compareByString(a: any, b: any, ascending = true) {
 		if (ascending) {
 			if (a < b) {
 				return -1;
@@ -280,7 +280,7 @@ export class UtilService {
 		return 0;
 	}
 
-	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending: boolean = true) {
+	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending = true) {
 		const aUpper = a ? a.toUpperCase() : '';
 		const bUpper = b ? b.toUpperCase() : '';
 		return this.compareByString(aUpper, bUpper, ascending);

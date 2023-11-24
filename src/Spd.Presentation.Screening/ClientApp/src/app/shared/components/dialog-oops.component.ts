@@ -10,7 +10,12 @@ export interface DialogOopsOptions {
 	template: `
 		<mat-dialog-content>
 			<div class="d-flex justify-content-center">
-				<img class="error-image" src="/assets/something-went-wrong.png" (error)="onHandleMissingImage($event)" />
+				<img
+					class="error-image"
+					src="/assets/something-went-wrong.png"
+					(error)="onHandleMissingImage($event)"
+					alt="Something went wrong"
+				/>
 			</div>
 			<h2 class="mt-2">Oops! Something went wrong</h2>
 			<p>Looks like something went wrong on our end. Please try again later.</p>

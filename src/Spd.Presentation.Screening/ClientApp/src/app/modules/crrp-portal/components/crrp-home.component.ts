@@ -23,9 +23,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				<div class="col-xxl-8 col-xl-10 col-lg-10 col-md-12 col-sm-12">
 					<div class="row box-row gy-4">
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.CRIMINAL_RECORD_CHECKS)]">
+							<div
+								class="box mx-auto"
+								tabindex="-1"
+								[routerLink]="[crrpRoutes.path(crrpRoutes.CRIMINAL_RECORD_CHECKS)]"
+							>
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/new_screening.png" />
+									<img class="box__image__item" src="/assets/dashboard/new_screening.png" alt="New Screening" />
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
@@ -42,9 +46,9 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						</div>
 
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]">
+							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/screening_status.png" />
+									<img class="box__image__item" src="/assets/dashboard/screening_status.png" alt="Screening Status" />
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
@@ -61,9 +65,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						</div>
 
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.EXPIRING_CHECKS)]">
+							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.EXPIRING_CHECKS)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/expired_screenings.png" />
+									<img
+										class="box__image__item"
+										src="/assets/dashboard/expired_screenings.png"
+										alt="Expired Screenings"
+									/>
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
@@ -85,9 +93,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12"
 							*ngIf="authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false"
 						>
-							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]">
+							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
+									<img
+										class="box__image__item"
+										src="/assets/dashboard/outstanding_payments.png"
+										alt="Outstanding Payments"
+									/>
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
@@ -106,20 +118,20 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						</div>
 
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.USERS)]">
+							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.USERS)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" />
+									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" alt="Users or Profile" />
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
 										<div class="mb-auto p-2 pt-0 bd-highlight">
-											<h4 *ngIf="userPrimary == true">Manage authorized users</h4>
-											<h4 *ngIf="userPrimary == false">Update profile</h4>
+											<h4 *ngIf="userPrimary === true">Manage authorized users</h4>
+											<h4 *ngIf="userPrimary === false">Update profile</h4>
 										</div>
 										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 50px;" *ngIf="userPrimary == true">Add or remove team members</div>
-												<div style="height: 50px;" *ngIf="userPrimary == false">Edit your personal information</div>
+												<div style="height: 50px;" *ngIf="userPrimary === true">Add or remove team members</div>
+												<div style="height: 50px;" *ngIf="userPrimary === false">Edit your personal information</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -129,9 +141,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						</div>
 
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]">
+							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/applicant_identity.png" />
+									<img
+										class="box__image__item"
+										src="/assets/dashboard/applicant_identity.png"
+										alt="Applicant Identity"
+									/>
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
@@ -305,10 +321,10 @@ export class CrrpHomeComponent implements OnInit {
 	crrpRoutes = CrrpRoutes;
 
 	userPrimary: boolean | null = null;
-	awaitingPaymentCount: number = 0;
-	verifyIdentityCount: number = 0;
-	completedClearedCount: number = 0;
-	riskFoundCount: number = 0;
+	awaitingPaymentCount = 0;
+	verifyIdentityCount = 0;
+	completedClearedCount = 0;
+	riskFoundCount = 0;
 
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 

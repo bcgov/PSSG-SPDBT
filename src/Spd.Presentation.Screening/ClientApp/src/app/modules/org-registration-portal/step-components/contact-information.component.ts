@@ -62,7 +62,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 									matInput
 									formControlName="contactPhoneNumber"
 									[mask]="phoneMask"
-									[showMaskTyped]="true"
+									[showMaskTyped]="false"
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>

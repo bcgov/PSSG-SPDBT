@@ -23,7 +23,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 	styles: [],
 })
 export class SecurityScreeningPaymentFailComponent implements OnInit {
-	numberOfAttemptsRemaining: number = 0;
+	numberOfAttemptsRemaining = 0;
 	payment: PaymentResponse | null = null;
 
 	constructor(

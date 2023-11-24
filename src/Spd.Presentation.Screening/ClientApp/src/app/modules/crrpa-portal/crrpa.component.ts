@@ -304,7 +304,7 @@ export class CrrpaComponent implements OnInit {
 		this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe(
 			(_resp: ShareableClearanceResponse) => {
 				for (let i = 0; i <= 2; i++) {
-					let step = this.stepper.steps.get(i);
+					const step = this.stepper.steps.get(i);
 					if (step) {
 						step.completed = true;
 					}
@@ -321,7 +321,7 @@ export class CrrpaComponent implements OnInit {
 		// make these steps uneditable...
 		// so that after save, user cannot navigate to any of these steps
 		for (let i = 0; i <= 4; i++) {
-			let step = this.stepper.steps.get(i);
+			const step = this.stepper.steps.get(i);
 			if (step) {
 				step.editable = false;
 			}

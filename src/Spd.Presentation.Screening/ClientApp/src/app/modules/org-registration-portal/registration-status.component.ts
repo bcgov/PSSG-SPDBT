@@ -16,7 +16,7 @@ import { OrgRegistrationRoutes } from './org-registration-routing.module';
 					<table class="mt-4">
 						<tr
 							[ngClass]="
-								status == orgRegistrationStatusCodes.ApplicationSubmitted ? 'point__active' : 'point__inactive'
+								status === orgRegistrationStatusCodes.ApplicationSubmitted ? 'point__active' : 'point__inactive'
 							"
 						>
 							<td>
@@ -24,7 +24,7 @@ import { OrgRegistrationRoutes } from './org-registration-routing.module';
 							</td>
 							<td class="px-4">
 								<div class="fs-4 mb-2">Application submitted</div>
-								<p class="fw-normal" *ngIf="status == orgRegistrationStatusCodes.ApplicationSubmitted">
+								<p class="fw-normal" *ngIf="status === orgRegistrationStatusCodes.ApplicationSubmitted">
 									If we need any more information, we’ll contact you.
 								</p>
 							</td>
@@ -34,13 +34,13 @@ import { OrgRegistrationRoutes } from './org-registration-routing.module';
 								<mat-divider vertical class="divider"></mat-divider>
 							</td>
 						</tr>
-						<tr [ngClass]="status == orgRegistrationStatusCodes.InProgress ? 'point__active' : 'point__inactive'">
+						<tr [ngClass]="status === orgRegistrationStatusCodes.InProgress ? 'point__active' : 'point__inactive'">
 							<td>
 								<mat-icon>task_alt</mat-icon>
 							</td>
 							<td class="px-4">
 								<div class="fs-4 mb-2">In progress</div>
-								<p class="fw-normal" *ngIf="status == orgRegistrationStatusCodes.InProgress">
+								<p class="fw-normal" *ngIf="status === orgRegistrationStatusCodes.InProgress">
 									If we need any more information, we’ll contact you.
 								</p>
 							</td>

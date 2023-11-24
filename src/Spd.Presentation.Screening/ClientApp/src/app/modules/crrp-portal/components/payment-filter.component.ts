@@ -4,11 +4,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
 export class PaymentFilter {
-	search: string = '';
-	fromDate: string = '';
-	toDate: string = '';
-	paid: string = '';
-	notPaid: string = '';
+	search = '';
+	fromDate = '';
+	toDate = '';
+	paid = '';
+	notPaid = '';
 }
 
 export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
@@ -110,7 +110,7 @@ export class PaymentFilterComponent extends BaseFilterComponent {
 	}
 
 	private constructFilterList(formGroupValue: PaymentFilter): FilterQueryList[] {
-		let filterList: FilterQueryList[] = [];
+		const filterList: FilterQueryList[] = [];
 
 		if (formGroupValue.fromDate) {
 			const date = new Date(formGroupValue.fromDate);
