@@ -39,7 +39,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 				<div class="lead fs-4 my-4">
 					Please download and complete the
-					<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keypress)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the form to
+					<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keydown)="onKeydownDownloadManualPaymentForm($event)">Manual Payment Form</a> then follow the instructions on the form to
 					submit payment to the Security Programs Division.
 				</div>
 			</div>
@@ -65,6 +65,12 @@ export class PaymentManualComponent implements OnInit {
 
 	onDownloadManualPaymentForm(): void {
 		this.downloadManualPaymentForm.emit();
+	}
+
+	onKeydownDownloadManualPaymentForm(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onDownloadManualPaymentForm();
 	}
 
 	onBack(): void {

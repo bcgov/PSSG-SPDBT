@@ -74,7 +74,7 @@ import { Router } from '@angular/router';
 						</div>
 						<div class="lead fs-4 my-4">
 							Please download and complete the
-							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keypress)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the
+							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keydown)="onKeydownDownloadManualPaymentForm($event)">Manual Payment Form</a> then follow the instructions on the
 							form to submit payment to the Security Programs Division.
 						</div>
 					</div>
@@ -89,7 +89,7 @@ import { Router } from '@angular/router';
 						</div>
 						<div class="lead fs-4 my-4">
 							Alternatively, you can download the
-							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keypress)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
+							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keydown)="onKeydownDownloadManualPaymentForm($event)">Manual Payment Form</a>. Fill it out, and follow the
 							instructions to submit it to the Security Programs Division.
 						</div>
 					</div>
@@ -155,6 +155,12 @@ export class PaymentFailComponent implements OnInit {
 
 	onDownloadManualPaymentForm(): void {
 		this.downloadManualPaymentForm.emit();
+	}
+
+	onKeydownDownloadManualPaymentForm(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onDownloadManualPaymentForm();
 	}
 
 	onPayNow(): void {

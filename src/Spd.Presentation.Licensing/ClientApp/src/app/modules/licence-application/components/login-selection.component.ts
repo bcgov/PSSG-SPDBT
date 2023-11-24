@@ -116,7 +116,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 										features available to registered users.
 									</p>
 									<p class="mx-3 mt-2">
-										<a class="fw-bold" tabindex="0" (click)="onContinue()" (keypress)="onContinue()"> Continue without a BC Services Card </a>
+										<a class="fw-bold" tabindex="0" (click)="onContinue()" (keydown)="onKeydownContinue($event)"> Continue without a BC Services Card </a>
 									</p>
 								</div>
 							</div>
@@ -167,5 +167,11 @@ export class LoginSelectionComponent {
 
 	onContinue(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+	}
+
+	onKeydownContinue(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onContinue();
 	}
 }

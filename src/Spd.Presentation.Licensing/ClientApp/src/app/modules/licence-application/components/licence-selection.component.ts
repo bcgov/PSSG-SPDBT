@@ -34,7 +34,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityWorkerLicence)"
-										(keypress)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityWorkerLicence)"
+										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.SecurityWorkerLicence)"
 										[ngClass]="{
 											'active-selection-main': workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence
 										}"
@@ -51,7 +51,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.ArmouredVehiclePermit)"
-										(keypress)="onLicenceTypeChange(workerLicenceTypeCodes.ArmouredVehiclePermit)"
+										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.ArmouredVehiclePermit)"
 										[ngClass]="{
 											'active-selection-main': workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit
 										}"
@@ -68,7 +68,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
-										(keypress)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
+										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.BodyArmourPermit)"
 										[ngClass]="{
 											'active-selection-main': workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit
 										}"
@@ -166,6 +166,12 @@ export class LicenceSelectionComponent implements OnInit {
 		this.workerLicenceTypeCode = _val;
 
 		this.isFormValid();
+	}
+
+	onKeydownLicenceTypeChange(event: KeyboardEvent, _val: WorkerLicenceTypeCode) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onLicenceTypeChange(_val);
 	}
 
 	isFormValid(): boolean {

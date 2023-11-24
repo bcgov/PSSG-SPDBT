@@ -143,7 +143,7 @@ export interface ApplicationResponse {
 														class="large"
 														tabindex="0"
 														(click)="onUpdateAuthorization()"
-														(keypress)="onUpdateAuthorization()"
+														(keydown)="onKeydownUpdateAuthorization($event)"
 													>
 														Update Authorization
 													</a>
@@ -386,6 +386,12 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 					// TODO
 				}
 			});
+	}
+
+	onKeydownUpdateAuthorization(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onUpdateAuthorization();
 	}
 
 	onResume(appl: WorkerLicenceAppListResponse): void {
