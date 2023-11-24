@@ -5,7 +5,7 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
 	ProofOfAbilityToWorkInCanadaTypes,
-	ProofOfCanadianCitizenshipTypes,
+	ProofOfCanadianCitizenshipTypes
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -44,7 +44,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-								<ng-container *ngIf="isCanadianCitizen.value == booleanTypeCodes.Yes; else notCanadianCitizenHeading">
+								<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
 									<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload:</div>
 								</ng-container>
 								<ng-template #notCanadianCitizenHeading>
@@ -54,7 +54,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<ng-container>
 									<div class="row my-2">
 										<div class="col-lg-6 col-md-12">
-											<ng-container *ngIf="isCanadianCitizen.value == booleanTypeCodes.Yes; else notCanadianCitizen">
+											<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 												<mat-form-field>
 													<mat-select formControlName="canadianCitizenProofTypeCode">
 														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
@@ -96,15 +96,15 @@ import { LicenceApplicationService } from '../licence-application.service';
 									</div>
 									<div
 										*ngIf="
-											(isCanadianCitizen.value == booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
-											(isCanadianCitizen.value == booleanTypeCodes.No && notCanadianCitizenProofTypeCode.value)
+											(isCanadianCitizen.value === booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
+											(isCanadianCitizen.value === booleanTypeCodes.No && notCanadianCitizenProofTypeCode.value)
 										"
 										@showHideTriggerSlideAnimation
 									>
 										<div class="row mb-2">
 											<div class="col-12">
 												<ng-container
-													*ngIf="isCanadianCitizen.value == booleanTypeCodes.Yes; else notCanadianCitizenTitle"
+													*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
 												>
 													<div class="text-minor-heading mb-2">
 														Upload a photo of your proof of Canadian citizenship:

@@ -80,7 +80,7 @@ export class Address {
 						<mat-label>Country</mat-label>
 						<mat-select formControlName="country">
 							<mat-option *ngFor="let ctry of countryList" [value]="ctry.code">
-								<span [ngClass]="{ 'text-option fw-semibold': ctry.code == 'CAN' || ctry.code == 'USA' }">{{
+								<span [ngClass]="{ 'text-option fw-semibold': ctry.code === 'CAN' || ctry.code === 'USA' }">{{
 									ctry.desc
 								}}</span>
 							</mat-option>

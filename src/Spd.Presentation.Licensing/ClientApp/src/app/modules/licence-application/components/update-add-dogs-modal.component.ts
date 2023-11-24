@@ -1,8 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { LicenceApplicationService } from '../licence-application.service';
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
-export interface DogAuthorizationDialogData {}
+// export interface DogAuthorizationDialogData {}
 
 @Component({
 	selector: 'app-update-add-dogs-modal',
@@ -30,8 +29,8 @@ export interface DogAuthorizationDialogData {}
 export class UpdateAddDogsModalComponent {
 	constructor(
 		private dialogRef: MatDialogRef<UpdateAddDogsModalComponent>,
-		private licenceApplicationService: LicenceApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: DogAuthorizationDialogData
+		// private licenceApplicationService: LicenceApplicationService,
+		// @Inject(MAT_DIALOG_DATA) public dialogData: DogAuthorizationDialogData
 	) {}
 
 	onSave(): void {

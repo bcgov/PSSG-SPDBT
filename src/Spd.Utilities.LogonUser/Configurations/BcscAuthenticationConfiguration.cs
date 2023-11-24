@@ -17,7 +17,7 @@ namespace Spd.Utilities.LogonUser.Configurations
 
         public const string AuthSchemeName = "Bcsc";
         public string ResponseType { get; set; } = "code";
-        public string Scope { get; set; } = "openid profile email offline_access address";
+        public string Scope { get; set; } = "openid profile email address";
         public string ClientId { get; set; } = null!;
         public string PostLogoutRedirectUri { get; set; } = null;
     }

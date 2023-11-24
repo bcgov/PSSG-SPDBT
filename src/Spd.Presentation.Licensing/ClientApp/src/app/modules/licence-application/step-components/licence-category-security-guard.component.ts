@@ -55,7 +55,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<div
 					class="fs-6 fw-bold mb-2"
 					*ngIf="
-						requirementCode.value == securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining;
+						requirementCode.value === securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining;
 						else uploadcopy
 					"
 				>

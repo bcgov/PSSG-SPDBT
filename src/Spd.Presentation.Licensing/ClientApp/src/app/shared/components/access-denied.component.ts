@@ -1,5 +1,4 @@
-import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
 	selector: 'app-access-denied',
@@ -54,13 +53,4 @@ import { Component, OnInit } from '@angular/core';
 		`,
 	],
 })
-export class AccessDeniedComponent implements OnInit {
-	// userInfoMsgType: UserInfoMsgTypeCode | null = null;
-	// userInfoMsgTypeCodes = UserInfoMsgTypeCode;
-
-	constructor(private location: Location) {}
-
-	ngOnInit(): void {
-		// this.userInfoMsgType = (this.location.getState() as any).userInfoMsgType;
-	}
-}
+export class AccessDeniedComponent  {}

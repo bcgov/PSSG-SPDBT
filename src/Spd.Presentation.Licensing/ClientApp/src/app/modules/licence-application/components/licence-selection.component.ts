@@ -31,48 +31,51 @@ import { LicenceApplicationService } from '../licence-application.service';
 										</div>
 									</div> -->
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
-									<div
+									<div tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityWorkerLicence)"
+										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.SecurityWorkerLicence)"
 										[ngClass]="{
-											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
+											'active-selection-main': workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence
 										}"
 									>
 										<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
-												<img class="box__image__item" [src]="image2" />
+												<img class="box__image__item" [src]="image2" alt="Security Worker Licence" />
 											</div>
 											Security Worker Licence
 										</div>
 									</div>
 								</div>
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
-									<div
+									<div tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.ArmouredVehiclePermit)"
+										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.ArmouredVehiclePermit)"
 										[ngClass]="{
-											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
+											'active-selection-main': workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit
 										}"
 									>
 										<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
-												<img class="box__image__item" [src]="image3" />
+												<img class="box__image__item" [src]="image3" alt="Armoured Vehicle Permit" />
 											</div>
 											Permit to operate an armoured vehicle
 										</div>
 									</div>
 								</div>
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
-									<div
+									<div tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
+										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.BodyArmourPermit)"
 										[ngClass]="{
-											'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit
+											'active-selection-main': workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit
 										}"
 									>
 										<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
-												<img class="box__image__item" [src]="image4" />
+												<img class="box__image__item" [src]="image4" alt="Body Armour Permit" />
 											</div>
 											Permit to possess body armour
 										</div>
@@ -101,12 +104,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 				&__image {
 					margin-top: 1.5em;
 					margin-bottom: 1.5em;
-					border-radius: 50%;
 					font: 32px Arial, sans-serif;
 
 					&__item {
 						height: 3em;
-						/* max-width: 4em; */
 					}
 				}
 
@@ -165,6 +166,12 @@ export class LicenceSelectionComponent implements OnInit {
 		this.workerLicenceTypeCode = _val;
 
 		this.isFormValid();
+	}
+
+	onKeydownLicenceTypeChange(event: KeyboardEvent, _val: WorkerLicenceTypeCode) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onLicenceTypeChange(_val);
 	}
 
 	isFormValid(): boolean {

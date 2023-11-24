@@ -63,7 +63,7 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 
 	onPayNow(): void {
 		this.licenceApplicationService.submitLicence().subscribe({
-			next: (resp: any) => {
+			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
 			},
@@ -78,15 +78,15 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 		this.goToStep.emit(step);
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 
-	onStepNext(formNumber: string): void {
+	onStepNext(_formNumber: string): void {
 		// unused
 	}
 
-	onFormValidNextStep(formNumber: string): void {
+	onFormValidNextStep(_formNumber: string): void {
 		// unused
 	}
 
