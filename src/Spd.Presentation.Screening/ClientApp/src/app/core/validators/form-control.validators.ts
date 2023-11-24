@@ -67,7 +67,7 @@ export class FormControlValidators {
 	 * @description
 	 * Checks the form control value is a float.
 	 */
-	public static float(control: AbstractControl, precision: number = 2): ValidationErrors | null {
+	public static float(control: AbstractControl, _precision = 2): ValidationErrors | null {
 		if (!control.value) {
 			return null;
 		}

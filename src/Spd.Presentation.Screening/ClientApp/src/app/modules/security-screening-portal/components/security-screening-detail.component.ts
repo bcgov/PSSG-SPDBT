@@ -76,11 +76,9 @@ import {
 
 			<h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
 				{{ application.orgName }}
-				<mat-chip-listbox aria-label="Status" class="ms-4">
-					<mat-chip-option [selectable]="false" [ngClass]="applicationPortalStatusClass">
-						{{ application.status | options : 'ApplicationPortalStatusTypes' }}
-					</mat-chip-option>
-				</mat-chip-listbox>
+				<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass">
+					{{ application.status | options : 'ApplicationPortalStatusTypes' }}
+				</mat-chip-row>
 			</h3>
 
 			<div class="row mt-2 mb-4">
@@ -220,7 +218,7 @@ import {
 	],
 })
 export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
-	isNotAwaitingPayment: boolean = false;
+	isNotAwaitingPayment = false;
 	applicantName = '';
 	applicationPortalStatusClass = '';
 	documentHistoryExists = false;

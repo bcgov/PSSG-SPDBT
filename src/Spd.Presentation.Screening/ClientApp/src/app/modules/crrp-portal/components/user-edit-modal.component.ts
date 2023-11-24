@@ -63,7 +63,7 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
-							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
@@ -94,7 +94,7 @@ export interface UserDialogData {
 export class UserEditModalComponent implements OnInit {
 	authorizationTypes = ContactAuthorizationTypes;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
-	title: string = '';
+	title = '';
 	isEdit = false;
 	form: FormGroup = this.formBuilder.group(
 		{

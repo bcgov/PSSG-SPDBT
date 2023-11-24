@@ -20,16 +20,24 @@ export class OrganizationOptionsModel {
 								<ng-container *ngFor="let option of options; let i = index">
 									<div
 										class="col-lg-4 col-md-4 col-sm-6 mb-3"
-										[ngClass]="registrationTypeCode == registrationTypeCodes.Employee ? 'col-lg-4' : 'col-lg-3'"
+										[ngClass]="registrationTypeCode === registrationTypeCodes.Employee ? 'col-lg-4' : 'col-lg-3'"
 									>
 										<div
+											tabindex="0"
 											class="step-container__box"
 											(click)="onDataChange(option.code)"
-											[ngClass]="{ 'active-selection-border': currentOrganizationTypeCode == option.code }"
+											(keydown)="onKeyDown($event, option.code)"
+											[ngClass]="{ 'active-selection-border': currentOrganizationTypeCode === option.code }"
 										>
 											<ng-container *ngIf="option.showHelp; else noHelp">
 												<div class="step-container__box__info">
-													<mat-icon class="larger-icon" (click)="onViewHelp(option, $event)">close</mat-icon>
+													<mat-icon
+														class="larger-icon"
+														tabindex="0"
+														(click)="onViewHelp(option, $event)"
+														(keydown)="onKeyDownViewHelp(option, $event)"
+														>close</mat-icon
+													>
 												</div>
 												<div class="px-2 pb-3">
 													{{ option.helpText }}
@@ -37,14 +45,19 @@ export class OrganizationOptionsModel {
 											</ng-container>
 											<ng-template #noHelp>
 												<div class="step-container__box__info" style="height: 38px">
-													<mat-icon class="larger-icon" *ngIf="option.helpText" (click)="onViewHelp(option, $event)"
+													<mat-icon
+														class="larger-icon"
+														*ngIf="option.helpText"
+														tabindex="0"
+														(click)="onViewHelp(option, $event)"
+														(keydown)="onKeyDownViewHelp(option, $event)"
 														>help_outline</mat-icon
 													>
 												</div>
 
-												<ng-container *ngIf="currentOrganizationTypeCode != option.code; else selectedIcon">
+												<ng-container *ngIf="currentOrganizationTypeCode !== option.code; else selectedIcon">
 													<div class="card-icon-container d-none d-md-block">
-														<img class="card-icon-container__icon" [src]="option.icon" />
+														<img class="card-icon-container__icon" [src]="option.icon" [alt]="option.text" />
 													</div>
 													<div class="px-2 pb-3">
 														{{ option.text }}
@@ -53,7 +66,7 @@ export class OrganizationOptionsModel {
 
 												<ng-template #selectedIcon>
 													<div class="card-icon-container d-none d-md-block">
-														<img class="card-icon-container__icon" [src]="option.selectedIcon" />
+														<img class="card-icon-container__icon" [src]="option.selectedIcon" [alt]="option.text" />
 													</div>
 													<div class="px-2 pb-3">
 														{{ option.text }}
@@ -66,7 +79,9 @@ export class OrganizationOptionsModel {
 							</div>
 
 							<div class="none-apply">
-								<a (click)="onNoneApply()">None of these descriptions apply to my organization</a>
+								<a tabindex="0" (click)="onNoneApply()" (keydown)="onKeyDownNoneApply($event)"
+									>None of these descriptions apply to my organization</a
+								>
 							</div>
 
 							<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
@@ -102,7 +117,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	employeeOrganizationTypeCode: EmployeeOrganizationTypeCode | null = null;
 	volunteerOrganizationTypeCode: VolunteerOrganizationTypeCode | null = null;
 	isDirtyAndInvalid = false;
-	selectedIconImages = new Array();
+	selectedIconImages: Array<any> = [];
 
 	registrationTypeCodes = RegistrationTypeCode;
 
@@ -308,6 +323,12 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		this.isDirtyAndInvalid = !isValid;
 	}
 
+	onKeyDown(event: KeyboardEvent, _val: EmployeeOrganizationTypeCode | VolunteerOrganizationTypeCode) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onDataChange(_val);
+	}
+
 	getDataToSave(): OrganizationOptionsModel {
 		return {
 			employeeOrganizationTypeCode: this.employeeOrganizationTypeCode,
@@ -337,11 +358,23 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		event.stopPropagation();
 	}
 
+	onKeyDownViewHelp(option: any, event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onViewHelp(option, event);
+	}
+
 	onNoneApply(): void {
 		this.employeeOrganizationTypeCode = null;
 		this.volunteerOrganizationTypeCode = null;
 
 		this.noneApply.emit(true);
+	}
+
+	onKeyDownNoneApply(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onNoneApply();
 	}
 
 	get currentOrganizationTypeCode(): string {

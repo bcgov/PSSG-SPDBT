@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 	`,
 	styles: [],
 })
-export class CrrpaPaymentErrorComponent {
+export class CrrpaPaymentErrorComponent implements OnInit {
 	constructor(private authProcessService: AuthProcessService) {}
 
 	async ngOnInit(): Promise<void> {

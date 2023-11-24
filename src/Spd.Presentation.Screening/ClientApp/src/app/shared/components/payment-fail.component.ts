@@ -43,7 +43,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-fail.png" />
+				<img class="payment__image__item" src="/assets/payment-fail.png" alt="Payment fail" />
 			</div>
 		</div>
 
@@ -81,22 +81,31 @@ import { AppRoutes } from 'src/app/app-routing.module';
 						</div>
 						<div class="lead fs-5 my-4">
 							Alternatively, you can download the
-							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
-							instructions to submit it to the Security Programs Division.
+							<a
+								tabindex="0"
+								(click)="onDownloadManualPaymentForm()"
+								(keydown)="onKeyDownDownloadManualPaymentForm($event)"
+								>Manual Payment Form</a
+							>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
 						</div>
 					</div>
 				</ng-container>
 
 				<ng-template #notSecureLink>
-					<ng-container *ngIf="numberOfAttemptsRemaining == 0; else remainingAttempts">
+					<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
 						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 							<div class="lead fs-5 mt-4">
 								Your application has been submitted, but it won't be processed until payment is received.
 							</div>
 							<div class="lead fs-5 my-4">
 								Please download and complete the
-								<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the
-								form to submit payment to the Security Programs Division.
+								<a
+									tabindex="0"
+									(click)="onDownloadManualPaymentForm()"
+									(keydown)="onKeyDownDownloadManualPaymentForm($event)"
+									>Manual Payment Form</a
+								>
+								then follow the instructions on the form to submit payment to the Security Programs Division.
 							</div>
 						</div>
 					</ng-container>
@@ -106,12 +115,16 @@ import { AppRoutes } from 'src/app/app-routing.module';
 							<div class="lead fs-5 mt-4">
 								Please ensure the information you entered is correct and try again, or use a different credit card. You
 								have
-								{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining == 1 ? '' : 's' }}.
+								{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
 							</div>
 							<div class="lead fs-5 my-4">
 								Alternatively, you can download the
-								<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
-								instructions to submit it to the Security Programs Division.
+								<a
+									tabindex="0"
+									(click)="onDownloadManualPaymentForm()"
+									(keydown)="onKeyDownDownloadManualPaymentForm($event)"
+									>Manual Payment Form</a
+								>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
 							</div>
 						</div>
 					</ng-template>
@@ -128,7 +141,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 	],
 })
 export class PaymentFailComponent implements OnInit {
-	isBackRoute: boolean = false;
+	isBackRoute = false;
 
 	@Input() isPayBySecureLink = false;
 	@Input() isCancelledPaymentFlow = false;
@@ -177,6 +190,12 @@ export class PaymentFailComponent implements OnInit {
 
 	onDownloadManualPaymentForm(): void {
 		this.downloadManualPaymentForm.emit();
+	}
+
+	onKeyDownDownloadManualPaymentForm(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onDownloadManualPaymentForm();
 	}
 
 	onPayNow(): void {

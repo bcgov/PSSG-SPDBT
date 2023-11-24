@@ -36,11 +36,11 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						</div>
 					</div>
 
-					<div class="row mt-4" *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
+					<div class="row mt-4" *ngIf="hasPhoneOrEmail.value === booleanTypeCodes.Yes">
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
 							<div class="text-minor-heading fw-semibold mb-2">Shared Inbox Information</div>
-							<ng-container *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
+							<ng-container *ngIf="hasPhoneOrEmail.value === booleanTypeCodes.Yes">
 								<div class="row mt-2">
 									<div class="col-lg-6 col-md-12 col-sm-12">
 										<mat-form-field>
@@ -66,7 +66,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 												matInput
 												formControlName="genericPhoneNumber"
 												[mask]="phoneMask"
-												[showMaskTyped]="true"
+												[showMaskTyped]="false"
 												required
 												[errorStateMatcher]="matcher"
 											/>
