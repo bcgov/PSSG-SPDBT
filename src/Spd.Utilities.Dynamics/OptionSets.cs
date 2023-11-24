@@ -308,4 +308,11 @@ namespace Spd.Utilities.Dynamics
         PoliceOfficer = 100000005,
         Other = 100000006
     }
+
+    public enum RequestDogPurposeOptionSet
+    {
+        DetectionDrugs = 100000001,
+        DetectionExplosives = 100000002,
+        Protection = 100000000
+    }
 }

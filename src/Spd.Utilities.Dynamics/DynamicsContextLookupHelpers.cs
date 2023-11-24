@@ -159,6 +159,10 @@ namespace Spd.Utilities.Dynamics
             {"OtherCourseCompletion", Guid.Parse("9a06c71e-d47d-ee11-b846-00505683fbf4") },
             {"WorkPermit", Guid.Parse("f455ca0e-eb79-ee11-b846-00505683fbf4")},
             {"RecordOfLandingDocument", Guid.Parse("542c89dc-ea79-ee11-b846-00505683fbf4")},
+            {"DogCertificate",  Guid.Parse("5c8a778d-4b8a-ee11-b848-00505683fbf4")},
+            {"ASTCertificate",  Guid.Parse("25ce92a9-4b8a-ee11-b848-00505683fbf")}, //advanced Security training certificate
+            {"UseForceEmployerLetter",  Guid.Parse("f3368269-4f8a-ee11-b848-00505683fbf4")},
+            {"UseForceEmployerLetterASTEquivalent",  Guid.Parse("08594985-4f8a-ee11-b848-00505683fbf4")}
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)
@@ -173,7 +177,7 @@ namespace Spd.Utilities.Dynamics
 
         #region service type
         public static readonly ImmutableDictionary<string, Guid> ServiceTypeGuidDictionary = new Dictionary<string, Guid>()
-        {
+        {  
             {"PSSO", Guid.Parse("f093141b-1e9d-ed11-b83d-00505683fbf4")},
             {"CRRP_EMPLOYEE", Guid.Parse("f193141b-1e9d-ed11-b83d-00505683fbf4")},
             {"CRRP_VOLUNTEER", Guid.Parse("a2834126-1e9d-ed11-b83d-00505683fbf4")},
@@ -192,12 +196,20 @@ namespace Spd.Utilities.Dynamics
         public static spd_servicetype? LookupServiceType(this DynamicsContext context, string? key)
         {
             if (key == null) return null;
-            var keyExisted = ServiceTypeGuidDictionary.TryGetValue(key, out Guid guid);
-            if (!keyExisted) return null;
-            return context.spd_servicetypes
-                .Where(s => s.spd_servicetypeid == guid)
-                .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
-                .FirstOrDefault();
+            try
+            {
+                var keyExisted = ServiceTypeGuidDictionary.TryGetValue(key, out Guid guid);
+
+                if (!keyExisted) return null;
+                return context.spd_servicetypes
+                    .Where(s => s.spd_servicetypeid == guid)
+                    .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
+                    .FirstOrDefault();
+            }catch(Exception e)
+            {
+                string str = e.Message;
+                return null;
+            }
         }
 
         public static string LookupServiceTypeKey(Guid? serviceTypeId)

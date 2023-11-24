@@ -74,11 +74,11 @@ namespace Spd.Manager.Cases.Licence
     {
         public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
         public Document[]? Documents { get; set; } = null;
-    }
-    public record SecurityGuardWorkerLicenceAppCategoryData : WorkerLicenceAppCategoryData
-    {
-        public DogsAuthorizationData DogsAuthorizationData { get; set; }
-        public RestraintsAuthorizationData RestraintsAuthorizationData { get; set; }
+        public bool? UseDogs { get; set; }
+        public bool? IsDogsPurposeProtection { get; set; }
+        public bool? IsDogsPurposeDetectionDrugs { get; set; }
+        public bool? IsDogsPurposeDetectionExplosives { get; set; }
+        public bool? UseCarryRestraints { get; set; }
     }
 
     public record Document
@@ -139,20 +139,6 @@ namespace Spd.Manager.Cases.Licence
     };
 
     public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
-    public record DogsAuthorizationData
-    {
-        public bool? UseDogs { get; set; }
-        public bool? IsDogsPurposeProtection { get; set; }
-        public bool? IsDogsPurposeDetectionDrugs { get; set; }
-        public bool? IsDogsPurposeDetectionExplosives { get; set; }
-        public Document? Document { get; set; } //document type should be: CategorySecurityGuard_DogCertificate
-    }
-
-    public record RestraintsAuthorizationData
-    {
-        public bool? UseCarryRestraints { get; set; }
-        public Document? Document { get; set; } 
-    }
 
     public record WorkerLicenceAppUpsertResponse
     {

@@ -118,26 +118,6 @@ internal partial class LicenceManager
                     }
                 }
             }
-            if (category is SecurityGuardWorkerLicenceAppCategoryData)
-            {
-                SecurityGuardWorkerLicenceAppCategoryData sgCategory = (SecurityGuardWorkerLicenceAppCategoryData)category;
-                if (sgCategory.RestraintsAuthorizationData.Document != null)
-                {
-                    (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(sgCategory.RestraintsAuthorizationData.Document.LicenceDocumentTypeCode);
-                    foreach (var doc in sgCategory.RestraintsAuthorizationData.Document.DocumentResponses)
-                    {
-                        await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
-                    }
-                }
-                if (sgCategory.DogsAuthorizationData.Document != null)
-                {
-                    (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(sgCategory.DogsAuthorizationData.Document.LicenceDocumentTypeCode);
-                    foreach (var doc in sgCategory.DogsAuthorizationData.Document.DocumentResponses)
-                    {
-                        await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
-                    }
-                }
-            }
         }
     }
 
@@ -177,18 +157,6 @@ internal partial class LicenceManager
                 foreach (Document d in category.Documents)
                 {
                     allValidDocGuids.AddRange(d.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
-                }
-            }
-            if (category is SecurityGuardWorkerLicenceAppCategoryData)
-            {
-                SecurityGuardWorkerLicenceAppCategoryData sgCategory = (SecurityGuardWorkerLicenceAppCategoryData)category;
-                if (sgCategory.RestraintsAuthorizationData.Document != null)
-                {
-                    allValidDocGuids.AddRange(sgCategory.RestraintsAuthorizationData.Document.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
-                }
-                if (sgCategory.DogsAuthorizationData.Document != null)
-                {
-                    allValidDocGuids.AddRange(sgCategory.DogsAuthorizationData.Document.DocumentResponses.Select(d => d.DocumentUrlId).ToArray());
                 }
             }
         }
@@ -289,8 +257,6 @@ internal partial class LicenceManager
                     var catFiles = existingDocs.Items.Where(d => d.DocumentType == docType).ToList();
                     List<DocumentTypeEnum?> docType2s = catFiles.Select(f => f.DocumentType2).Distinct().ToList();
                     List<Document> docs = new List<Document>();
-                    Document? dogDoc = null;
-                    Document? restraintsDoc = null;
                     foreach (var type in docType2s)
                     {
                         Document d = new Document();
@@ -298,29 +264,9 @@ internal partial class LicenceManager
                         d.LicenceDocumentTypeCode = code;
                         d.DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(catFiles.Where(c => c.DocumentType2 == type).ToList());
                         d.ExpiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
-
-                        if (type == DocumentTypeEnum.DogCertificate)
-                        {
-                            dogDoc = d;
-                        }
-                        else if (type == DocumentTypeEnum.UseForceEmployerLetter
-                            || type == DocumentTypeEnum.UseForceEmployerLetterASTEquivalent
-                            || type == DocumentTypeEnum.ASTCertificate)
-                        {
-                            restraintsDoc = d;
-                        }
-                        else
-                        {
-                            docs.Add(d);
-                        }
+                        docs.Add(d);
                     }
                     categoryData.Documents = docs.ToArray();
-                    if (categoryData.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard)
-                    {
-                        SecurityGuardWorkerLicenceAppCategoryData sgCat = (SecurityGuardWorkerLicenceAppCategoryData)categoryData;
-                        sgCat.DogsAuthorizationData.Document = dogDoc;
-                        sgCat.RestraintsAuthorizationData.Document = restraintsDoc;
-                    }
                 }
             }
         }

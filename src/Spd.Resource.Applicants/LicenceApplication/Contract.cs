@@ -51,9 +51,12 @@ public record LicenceApplication
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
-    public bool? CarryAndUseRetraints { get; set; }
     public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
+    public bool? CarryAndUseRetraints { get; set; }
     public bool? IsCanadianCitizen { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
 }
 
 public record WorkerLicenceAppCategory
