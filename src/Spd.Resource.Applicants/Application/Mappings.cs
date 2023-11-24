@@ -1,12 +1,10 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.OData.Edm;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.Shared.Tools;
-using System.Text.RegularExpressions;
 
 namespace Spd.Resource.Applicants.Application
 {

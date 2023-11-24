@@ -32,6 +32,7 @@ public record LicenceApplication
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
+    public bool? UseDogs { get; set; }
     public Alias[]? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
@@ -52,6 +53,9 @@ public record LicenceApplication
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRetraints { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
     public bool? IsCanadianCitizen { get; set; }
 }
