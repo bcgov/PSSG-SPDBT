@@ -21,7 +21,7 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from 'src/app/api/models';
 import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -29,7 +29,7 @@ import {
 	BooleanTypeCode,
 	PrivateInvestigatorTrainingCode,
 	SelectOptions,
-	WorkerCategoryTypes,
+	WorkerCategoryTypes
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -404,7 +404,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				resp.categoryData?.forEach((category: WorkerLicenceAppCategoryData) => {
 					switch (category.workerCategoryTypeCode) {
-						case WorkerCategoryTypeCode.ArmouredCarGuard:
+						case WorkerCategoryTypeCode.ArmouredCarGuard: {
 							const attachmentsArmouredCarGuard: Array<File> = [];
 
 							category.documents?.forEach((doc: Document) => {
@@ -420,6 +420,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								attachments: attachmentsArmouredCarGuard,
 							};
 							break;
+						}
 						case WorkerCategoryTypeCode.BodyArmourSales:
 							categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
 							break;
@@ -429,7 +430,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
 							categoryElectronicLockingDeviceInstallerFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.FireInvestigator:
+						case WorkerCategoryTypeCode.FireInvestigator: {
 							const attachments1FireInvestigator: Array<File> = [];
 							const attachments2FireInvestigator: Array<File> = [];
 
@@ -454,7 +455,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								fireVerificationLetterAttachments: attachments2FireInvestigator,
 							};
 							break;
-						case WorkerCategoryTypeCode.Locksmith:
+						}
+						case WorkerCategoryTypeCode.Locksmith: {
 							const attachmentsLocksmith: Array<File> = [];
 							let requirementCodeLocksmith = '';
 
@@ -471,10 +473,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								attachments: attachmentsLocksmith,
 							};
 							break;
+						}
 						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
 							categoryLocksmithSupFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.PrivateInvestigator:
+						case WorkerCategoryTypeCode.PrivateInvestigator: {
 							const attachments1PrivateInvestigator: Array<File> = [];
 							const attachments2PrivateInvestigator: Array<File> = [];
 							let requirementCodePrivateInvestigator = '';
@@ -515,12 +518,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								trainingAttachments: attachments2PrivateInvestigator,
 							};
 							break;
-						case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+						}
+						case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision: {
 							const attachments1PrivateInvestigatorUnderSupervision: Array<File> = [];
 							let requirementCodePrivateInvestigatorUnderSupervision = '';
 
 							category.documents?.forEach((doc: Document) => {
-								const licenceDocumentTypeCodePrivateInvestigatorUnderSupervision = doc.licenceDocumentTypeCode ?? '';
 								requirementCodePrivateInvestigatorUnderSupervision = doc.licenceDocumentTypeCode ?? '';
 
 								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
@@ -536,7 +539,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								attachments: attachments1PrivateInvestigatorUnderSupervision,
 							};
 							break;
-						case WorkerCategoryTypeCode.SecurityGuard:
+						}
+						case WorkerCategoryTypeCode.SecurityGuard: {
 							const attachmentsSecurityGuard: Array<File> = [];
 							let requirementCodeSecurityGuard = '';
 
@@ -554,10 +558,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								attachments: attachmentsSecurityGuard,
 							};
 							break;
+						}
 						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 							categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+						case WorkerCategoryTypeCode.SecurityAlarmInstaller:{
 							const attachmentsSecurityAlarmInstaller: Array<File> = [];
 							let requirementCodeSecurityAlarmInstaller = '';
 
@@ -575,6 +580,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								attachments: attachmentsSecurityAlarmInstaller,
 							};
 							break;
+						}
 						case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
 							categorySecurityAlarmInstallerSupFormGroup = { isInclude: true, checkbox: true };
 							break;
@@ -587,7 +593,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						case WorkerCategoryTypeCode.SecurityAlarmSales:
 							categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.SecurityConsultant:
+						case WorkerCategoryTypeCode.SecurityConsultant:{
 							const attachments1SecurityConsultant: Array<File> = [];
 							const attachments2SecurityConsultant: Array<File> = [];
 							let requirementCodeSecurityConsultant = '';
@@ -621,6 +627,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 								resumeAttachments: attachments1SecurityConsultant,
 							};
 							break;
+						}
 					}
 				});
 
@@ -794,7 +801,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	getValidCategoryList(categoryList: string[]): SelectOptions<string>[] {
-		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
+		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration ?? {};
 		let updatedList = [...WorkerCategoryTypes];
 
 		categoryList.forEach((item) => {

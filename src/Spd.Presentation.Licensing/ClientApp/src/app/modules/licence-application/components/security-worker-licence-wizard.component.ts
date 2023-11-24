@@ -105,8 +105,8 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	step2Complete = false;
 	step3Complete = false;
 
-	isReplacement: boolean = false;
-	isNotReplacement: boolean = false;
+	isReplacement = false;
+	isNotReplacement = false;
 
 	@ViewChild(StepLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepLicenceSelectionComponent;
@@ -215,7 +215,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
-				next: (resp: any) => {
+				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 
 					this.hotToastService.success('Licence information has been saved');
@@ -268,7 +268,7 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		}
 
 		this.licenceApplicationService.saveLicenceStep().subscribe({
-			next: (resp: any) => {
+			next: (_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');

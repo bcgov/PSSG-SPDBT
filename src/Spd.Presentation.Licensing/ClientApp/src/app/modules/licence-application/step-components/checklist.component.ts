@@ -36,7 +36,7 @@ import { LicenceChildStepperStepComponent } from '../licence-application.helper'
 							</mat-checkbox>
 							<p class="checklist-info">
 								Some categories of security workers, such as security guards, require proof of training or experience.
-								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>​ about the types of
+								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp;about the types of
 								documents we accept for each security worker category.
 							</p>
 

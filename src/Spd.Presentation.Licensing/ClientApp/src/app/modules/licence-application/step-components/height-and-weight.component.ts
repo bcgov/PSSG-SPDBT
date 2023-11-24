@@ -5,7 +5,7 @@ import {
 	EyeColourTypes,
 	HairColourTypes,
 	HeightUnitTypes,
-	WeightUnitTypes,
+	WeightUnitTypes
 } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -48,12 +48,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="text-minor-heading mb-2">Height</div>
 								<div
 									class="col-lg-6 col-md-12 col-sm-12"
-									[ngClass]="heightUnitCode.value == heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
+									[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
 								>
 									<mat-form-field>
 										<mat-label>
 											Number
-											<span *ngIf="heightUnitCode.value == heightUnitCodes.Inches"> of Feet</span>
+											<span *ngIf="heightUnitCode.value === heightUnitCodes.Inches"> of Feet</span>
 										</mat-label>
 										<input matInput formControlName="height" mask="099" />
 										<mat-error *ngIf="form.get('height')?.hasError('required')"> This is required </mat-error>
@@ -64,7 +64,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								</div>
 								<div
 									class="col-lg-6 col-md-12 col-sm-12"
-									[ngClass]="heightUnitCode.value == heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
+									[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
 								>
 									<mat-form-field>
 										<mat-label>Units</mat-label>
@@ -76,7 +76,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<mat-error *ngIf="form.get('heightUnitCode')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="heightUnitCode.value == heightUnitCodes.Inches">
+								<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="heightUnitCode.value === heightUnitCodes.Inches">
 									<mat-form-field>
 										<mat-label>Number of Inches</mat-label>
 										<input matInput formControlName="heightInches" mask="09" />

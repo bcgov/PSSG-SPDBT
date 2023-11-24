@@ -41,9 +41,12 @@ export class AuthenticationService {
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
 
-		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-			state: returnRoute,
-		});
+		const isLoggedIn = await this.oauthService
+			.loadDiscoveryDocumentAndLogin({
+				state: returnRoute,
+			})
+			.then((_) => this.oauthService.hasValidAccessToken())
+			.catch((_) => false);
 
 		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 

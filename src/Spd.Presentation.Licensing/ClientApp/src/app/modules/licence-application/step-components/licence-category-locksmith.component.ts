@@ -67,11 +67,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="fs-6 fw-bold mb-2">
-					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification">
+					<span *ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification">
 						Upload a copy of your certificate:
 					</span>
 					<span
-						*ngIf="requirementCode.value == locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
+						*ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
 					>
 						Upload a letter of recommendation:
 						<div class="fw-normal mb-2">
@@ -79,7 +79,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							apprenticeship program, other than that provided by the <i>Industry Training Authority</i>.
 						</div>
 					</span>
-					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
+					<span *ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
 						Upload a letter of recommendation:
 						<div class="fw-normal mb-2">
 							This letter must be on company letterhead, proof of experience, and proof of successful completion of an
