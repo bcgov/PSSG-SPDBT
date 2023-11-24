@@ -61,6 +61,7 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsTreatedForMHC { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
         public bool? CarryAndUseRetraints { get; set; }
+        public bool? UseDogs { get; set; }
         public bool? IsDogsPurposeProtection { get; set; }
         public bool? IsDogsPurposeDetectionDrugs { get; set; }
         public bool? IsDogsPurposeDetectionExplosives { get; set; }

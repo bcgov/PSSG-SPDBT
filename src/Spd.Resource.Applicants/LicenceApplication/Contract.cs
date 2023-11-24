@@ -32,6 +32,7 @@ public record LicenceApplication
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
+    public bool? UseDogs { get; set; }
     public Alias[]? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
