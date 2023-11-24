@@ -37,5 +37,7 @@ export class ScreeningChecksComponent implements OnInit {
 		this.orgId = orgId;
 	}
 
-	onAddScreeningRequest(): void {}
+	onAddScreeningRequest(): void {
+		//empty
+	}
 }

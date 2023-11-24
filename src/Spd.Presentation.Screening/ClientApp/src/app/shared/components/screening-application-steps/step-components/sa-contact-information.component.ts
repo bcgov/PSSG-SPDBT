@@ -73,7 +73,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									formControlName="phoneNumber"
 									[errorStateMatcher]="matcher"
 									[mask]="phoneMask"
-									[showMaskTyped]="true"
+									[showMaskTyped]="false"
 								/>
 								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>

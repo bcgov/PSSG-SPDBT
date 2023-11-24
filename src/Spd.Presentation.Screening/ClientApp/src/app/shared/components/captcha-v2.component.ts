@@ -30,7 +30,7 @@ export class CaptchaV2Component implements OnInit {
 	captchaForm: FormGroup = new FormGroup({
 		token: new FormControl('', FormControlValidators.required),
 	});
-	siteKey: string = '';
+	siteKey = '';
 
 	constructor(private configService: ConfigService) {
 		this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;

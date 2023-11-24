@@ -33,7 +33,7 @@ import { CrcFormStepComponent } from '../screening-application.model';
 						</div>
 					</div>
 
-					<div class="row mt-4" *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
+					<div class="row mt-4" *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
 							<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
@@ -180,7 +180,7 @@ export class SaPreviousNameComponent implements OnInit, CrcFormStepComponent {
 	}
 
 	getDataToSave(): any {
-		let dataToSave = { ...this.form.value };
+		const dataToSave = { ...this.form.value };
 		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
 			dataToSave.aliases = [];
 		}

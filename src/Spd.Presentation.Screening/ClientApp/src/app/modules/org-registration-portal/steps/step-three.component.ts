@@ -136,7 +136,7 @@ export class StepThreeComponent {
 	readonly STEP_SCREENINGS_QUESTION = 12;
 	readonly STEP_PAYMENT_QUESTION = 13;
 
-	showStepPaymentQuestion: boolean = false;
+	showStepPaymentQuestion = false;
 
 	private _registrationTypeCode: RegistrationTypeCode | null = null;
 	@Input() set registrationTypeCode(value: RegistrationTypeCode | null) {
@@ -203,7 +203,7 @@ export class StepThreeComponent {
 		this.childstepper.next();
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 

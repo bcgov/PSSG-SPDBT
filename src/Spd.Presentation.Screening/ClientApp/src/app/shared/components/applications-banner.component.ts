@@ -19,6 +19,6 @@ export class ApplicationsBannerComponent {
 	bannerMessage = '';
 
 	constructor(private configService: ConfigService) {
-		this.bannerMessage = this.configService.configs?.bannerMessage!;
+		this.bannerMessage = this.configService.configs?.bannerMessage ?? '';
 	}
 }

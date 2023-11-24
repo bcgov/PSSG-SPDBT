@@ -7,12 +7,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
 export class ScreeningStatusFilter {
-	search: string = '';
-	applications: string = 'MY'; // MY vs ALL Applications
+	search = '';
+	applications = 'MY'; // MY vs ALL Applications
 	statuses: string[] = [];
-	applicantName: string = '';
-	createdOn: string = '';
-	contractedCompanyName: string = '';
+	applicantName = '';
+	createdOn = '';
+	contractedCompanyName = '';
 }
 
 export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, string> = {
@@ -151,7 +151,7 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	}
 
 	private constructFilterList(formGroupValue: ScreeningStatusFilter): FilterQueryList[] {
-		let filterList: FilterQueryList[] = [];
+		const filterList: FilterQueryList[] = [];
 
 		if (formGroupValue.statuses?.length > 0) {
 			filterList.push({

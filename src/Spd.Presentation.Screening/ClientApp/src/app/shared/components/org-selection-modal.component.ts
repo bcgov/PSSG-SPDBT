@@ -23,7 +23,7 @@ export interface OrgSelectionDialogData {
 export class OrgSelectionModalComponent implements OnInit {
 	selectedOrg: any = null;
 	userInfos: Array<UserInfo> = [];
-	title: string = 'Organization selection';
+	title = 'Organization selection';
 
 	constructor(
 		private dialogRef: MatDialogRef<OrgSelectionModalComponent>,

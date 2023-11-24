@@ -45,11 +45,11 @@ export class SaStepApplSubmittedComponent {
 		this.nextStepperStep.emit(true);
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 
-	private dirtyForm(step: number): boolean {
+	private dirtyForm(_step: number): boolean {
 		return true;
 	}
 }
