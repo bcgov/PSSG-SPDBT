@@ -61,6 +61,10 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsTreatedForMHC { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
         public bool? CarryAndUseRetraints { get; set; }
+        public bool? UseDogs { get; set; }
+        public bool? IsDogsPurposeProtection { get; set; }
+        public bool? IsDogsPurposeDetectionDrugs { get; set; }
+        public bool? IsDogsPurposeDetectionExplosives { get; set; }
         public bool? IsCanadianCitizen { get; set; }
         public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
         public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
@@ -77,7 +81,6 @@ namespace Spd.Manager.Cases.Licence
     }
     public record Document
     {
-        //public IList<IFormFile> NewDocuments { get; set; } //for anonymous user
         public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
         public DateTimeOffset? ExpiryDate { get; set; }
@@ -133,15 +136,7 @@ namespace Spd.Manager.Cases.Licence
     };
 
     public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
-    //public record DogsAuthorizationUpsertRequest
-    //{
-    //    public Guid LicenceAppId { get; set; }
-    //    public bool? UseDogs { get; set; }
-    //    public bool? IsDogsPurposeProtection { get; set; }
-    //    public bool? IsDogsPurposeDetectionDrugs { get; set; }
-    //    public bool? IsDogsPurposeDetectionExplosives { get; set; }
-    //    //public Documents? Documents { get; set; }
-    //}
+
     public record WorkerLicenceAppUpsertResponse
     {
         public Guid LicenceAppId { get; set; }
@@ -252,6 +247,10 @@ namespace Spd.Manager.Cases.Licence
         CategorySecurityGuard_BasicSecurityTrainingCertificate,
         CategorySecurityGuard_PoliceExperienceOrTraining,
         CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
+        CategorySecurityGuard_DogCertificate,
+        CategorySecurityGuard_ASTCertificate,
+        CategorySecurityGuard_UseForceEmployerLetter,
+        CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
         CertificateOfIndianStatus,
         ConfirmationOfPermanentResidenceDocument,
         DocumentToVerifyLegalWorkStatus,

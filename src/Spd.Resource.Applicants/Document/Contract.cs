@@ -124,6 +124,10 @@ namespace Spd.Resource.Applicants.Document
         OpportunityToRespond,
         OtherCourseCompletion,
         WorkPermit,
-        RecordOfLandingDocument
+        RecordOfLandingDocument,
+        DogCertificate,
+        ASTCertificate,
+        UseForceEmployerLetter,
+        UseForceEmployerLetterASTEquivalent,
     }
 }
