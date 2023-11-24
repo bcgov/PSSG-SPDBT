@@ -66,7 +66,7 @@ a {
 
 // STEPPER 
 .mat-stepper-horizontal, .mat-stepper-vertical {
-  background-color: var(--color-primary-lightest);
+  background-color: var(--color-primary-lightest) !important;
 }
 
 .mat-horizontal-content-container {

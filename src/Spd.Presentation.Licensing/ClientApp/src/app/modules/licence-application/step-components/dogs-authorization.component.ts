@@ -38,7 +38,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							</div>
 						</div>
 
-						<div class="row" *ngIf="useDogs.value == booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div class="row" *ngIf="useDogs.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 							<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
 								<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
 
@@ -124,7 +124,7 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 
 	form: FormGroup = this.licenceApplicationService.dogsAuthorizationFormGroup;
 
-	@Input() isCalledFromModal: boolean = false;
+	@Input() isCalledFromModal = false;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

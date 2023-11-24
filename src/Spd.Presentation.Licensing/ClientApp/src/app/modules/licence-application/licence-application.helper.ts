@@ -264,7 +264,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'carryAndUseRetraints',
-					(form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
+					(_form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'carryAndUseRetraintsDocument',
@@ -296,7 +296,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'useDogs',
-					(form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
+					(_form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'dogsPurposeDocumentType',
@@ -396,7 +396,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'governmentIssuedPhotoTypeCode',
-					(form) =>
+					(_form) =>
 						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
 							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
 								LicenceDocumentTypeCode.CanadianPassport) ||
@@ -406,7 +406,7 @@ export abstract class LicenceApplicationHelper {
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) =>
+					(_form) =>
 						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
 							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
 								LicenceDocumentTypeCode.CanadianPassport) ||
@@ -478,27 +478,27 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressSelected',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingAddressLine1',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingCity',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingPostalCode',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingProvince',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'mailingCountry',
-					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 			],
 		}

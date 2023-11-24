@@ -48,7 +48,7 @@ export interface AddressDialogData {
 export class AddressModalComponent implements OnInit {
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
-	title: string = 'Address selection';
+	title = 'Address selection';
 
 	constructor(
 		private dialogRef: MatDialogRef<AddressModalComponent>,

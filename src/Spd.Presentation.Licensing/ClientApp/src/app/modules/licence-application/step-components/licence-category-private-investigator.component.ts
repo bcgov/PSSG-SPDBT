@@ -6,7 +6,7 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
 	PrivateInvestigatorRequirementCode,
-	PrivateInvestigatorTrainingCode,
+	PrivateInvestigatorTrainingCode
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -81,7 +81,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<div class="fs-6 fw-bold">
 					<span
 						*ngIf="
-							requirementCode.value ==
+							requirementCode.value ===
 							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses
 						"
 					>
@@ -98,7 +98,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					</span>
 					<span
 						*ngIf="
-							requirementCode.value ==
+							requirementCode.value ===
 							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining
 						"
 					>
@@ -107,7 +107,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					</span>
 					<span
 						*ngIf="
-							requirementCode.value ==
+							requirementCode.value ===
 							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_KnowledgeAndExperience
 						"
 					>
@@ -182,7 +182,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<div class="fs-6 fw-bold mb-2">
 						<span
 							*ngIf="
-								trainingCode.value ==
+								trainingCode.value ===
 								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingRecognizedCourse
 							"
 						>
@@ -190,7 +190,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</span>
 						<span
 							*ngIf="
-								trainingCode.value ==
+								trainingCode.value ===
 								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge
 							"
 							>Upload document(s) providing proof of course completion or equivalent knowledge:</span

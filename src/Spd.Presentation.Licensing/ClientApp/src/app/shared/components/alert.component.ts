@@ -7,7 +7,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	template: `
 		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getType()">
 			<mat-icon class="d-none d-lg-block alert-icon me-3" *ngIf="icon">{{ icon }}</mat-icon>
-			<div style="width: fit-content;">
+			<div style="width: fit-content;" [ngClass]="getText()">
 				<ng-content #alertContent> </ng-content>
 			</div>
 		</div>
@@ -18,7 +18,6 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				color: #0c5460;
 				background-color: #eef8fa;
 				border-color: #eef8fa;
-				border-left: 3px solid #0c5460;
 				border-radius: 0;
 
 				.content {
@@ -26,28 +25,41 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				}
 			}
 
+			.alert-info-border {
+				border-left: 3px solid #0c5460;
+			}
+
 			.alert-success {
 				color: #155724;
 				background-color: #e8f5eb;
 				border-color: #e8f5eb;
-				border-left: 3px solid #155724;
 				border-radius: 0;
+			}
+
+			.alert-success-border {
+				border-left: 3px solid #155724;
 			}
 
 			.alert-warning {
 				color: #856404;
 				background-color: #fff9e5;
 				border-color: #fff9e5;
-				border-left: 3px solid #856404;
 				border-radius: 0;
+			}
+
+			.alert-warning-border {
+				border-left: 3px solid #856404;
 			}
 
 			.alert-danger {
 				color: #721c24;
 				background-color: #fceded;
 				border-color: #fceded;
-				border-left: 3px solid #721c24;
 				border-radius: 0;
+			}
+
+			.alert-danger-border {
+				border-left: 3px solid #721c24;
 			}
 		`,
 	],
@@ -55,10 +67,19 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 export class AlertComponent {
 	@Input() public type: AlertType = 'warning';
 	@Input() public icon: string | null = 'warning';
+	@Input() public showBorder: boolean | null = true;
+	@Input() public boldText: boolean | null = false;
 
 	@ContentChild('alertContent') alertContent!: ElementRef;
 
 	public getType(): string {
+		if (this.showBorder) {
+			return `alert-${this.type} alert-${this.type}-border`;
+		}
 		return `alert-${this.type}`;
+	}
+
+	public getText(): string {
+		return this.boldText ? 'fs-7 fw-bold' : '';
 	}
 }
