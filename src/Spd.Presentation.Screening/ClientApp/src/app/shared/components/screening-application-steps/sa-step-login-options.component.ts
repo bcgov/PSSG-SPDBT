@@ -36,7 +36,7 @@ export class SaStepLoginOptionsComponent {
 		this.nextStepperStep.emit(true);
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 

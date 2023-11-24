@@ -18,7 +18,7 @@ export type AlertType = 'success' | 'warning' | 'danger';
 })
 export class AlertComponent {
 	@Input() public type: AlertType = 'warning';
-	@Input() public icon: string = 'warning';
+	@Input() public icon = 'warning';
 
 	@ContentChild('alertContent') alertContent!: ElementRef;
 

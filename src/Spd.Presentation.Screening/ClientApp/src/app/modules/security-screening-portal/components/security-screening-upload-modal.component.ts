@@ -66,7 +66,7 @@ export class SecurityScreeningUploadModalComponent implements OnInit {
 				body,
 			})
 			.pipe()
-			.subscribe((resp) => {
+			.subscribe((_resp) => {
 				this.dialogRef.close({
 					success: true,
 				});

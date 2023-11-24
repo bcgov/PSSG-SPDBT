@@ -19,8 +19,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 	) {}
 
 	private checkUrl(url: string): boolean {
-		let isIncluded = includedURLs.some((regexp) => regexp.test(url));
-		return isIncluded;
+		return includedURLs.some((regexp) => regexp.test(url)); //isIncluded
 	}
 
 	public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

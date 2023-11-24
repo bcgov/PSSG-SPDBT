@@ -97,7 +97,7 @@ export class OrgAccessComponent {
 			next: (resp) => {
 				this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crrpaOrgData: resp.body } });
 			},
-			error: (error) => {
+			error: (_error) => {
 				// only 404 will be here as an error
 				this.errorMessage = 'This access code is not valid';
 			},

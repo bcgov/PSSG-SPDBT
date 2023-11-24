@@ -18,7 +18,7 @@ import { SecurityScreeningRoutes } from './modules/security-screening-portal/sec
 			<button mat-flat-button color="primary" class="large my-2" (click)="goToCrrp()">Business BCeID Account</button>
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToPsso()">IDIR Account</button>
 			<p class="mt-4 mb-0">Need to register an account with the Criminal Records Review Program?</p>
-			<a (click)="goToOrgRegistration()"> Register now </a>
+			<a tabindex="0" (click)="goToOrgRegistration()" (keydown)="onKeyDownOrgRegistration($event)"> Register now </a>
 		</section>
 
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto my-4 p-4">
@@ -52,5 +52,11 @@ export class LandingComponent {
 
 	goToOrgRegistration(): void {
 		this.router.navigateByUrl(OrgRegistrationRoutes.path());
+	}
+
+	onKeyDownOrgRegistration(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.goToOrgRegistration();
 	}
 }

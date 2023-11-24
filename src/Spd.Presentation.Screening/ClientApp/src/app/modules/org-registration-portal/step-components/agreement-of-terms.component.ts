@@ -6,7 +6,7 @@ import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class AgreementOfTermsModel {
-	agreeToTermsAndConditions: string = '';
+	agreeToTermsAndConditions = '';
 	recaptcha: string | null = null;
 }
 

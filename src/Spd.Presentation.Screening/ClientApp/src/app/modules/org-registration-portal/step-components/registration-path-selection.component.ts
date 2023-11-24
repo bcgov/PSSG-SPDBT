@@ -1,3 +1,5 @@
+/* eslint-disable @angular-eslint/template/click-events-have-key-events */
+/* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Output } from '@angular/core';
 import { RegistrationTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -15,13 +17,21 @@ export class RegistrationPathSelectionModel {
 				<div class="step-container row">
 					<div class="offset-xl-3 col-xl-3 offset-lg-2 col-lg-4 offset-md-1 col-md-5 col-sm-6 mb-3">
 						<div
+							tabindex="0"
 							class="step-container__box"
 							(click)="onDataChange(registrationTypeCodes.Employee)"
-							[ngClass]="{ 'active-selection-main': registrationTypeCode == registrationTypeCodes.Employee }"
+							(keydown)="onKeyDown($event, registrationTypeCodes.Employee)"
+							[ngClass]="{ 'active-selection-main': registrationTypeCode === registrationTypeCodes.Employee }"
 						>
 							<ng-container *ngIf="displayHelp; else employeesHelp">
 								<div class="step-container__box__info">
-									<mat-icon class="main-icon" (click)="onViewHelp($event)">help_outline</mat-icon>
+									<mat-icon
+										class="main-icon"
+										tabindex="0"
+										(click)="onViewHelp($event)"
+										(keydown)="onKeyDownViewHelp($event)"
+										>help_outline</mat-icon
+									>
 								</div>
 								<div class="step-container__box__title  pt-0 pt-sm-5 pb-0 pb-sm-5 mb-5">
 									<mat-icon class="step-container__box__title__icon">groups</mat-icon>
@@ -30,7 +40,13 @@ export class RegistrationPathSelectionModel {
 							</ng-container>
 							<ng-template #employeesHelp>
 								<div class="step-container__box__info">
-									<mat-icon class="main-icon" (click)="onViewHelp($event)">close</mat-icon>
+									<mat-icon
+										class="main-icon"
+										tabindex="0"
+										(click)="onViewHelp($event)"
+										(keydown)="onKeyDownViewHelp($event)"
+										>close</mat-icon
+									>
 								</div>
 								<div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4">
 									<div class="step-container__box__help-title mb-2">Employees Include...</div>
@@ -55,13 +71,21 @@ export class RegistrationPathSelectionModel {
 					</div>
 					<div class="col-xl-3 col-lg-4 col-md-5 col-sm-6 mb-3">
 						<div
+							tabindex="0"
 							class="step-container__box"
 							(click)="onDataChange(registrationTypeCodes.Volunteer)"
-							[ngClass]="{ 'active-selection-main': registrationTypeCode == registrationTypeCodes.Volunteer }"
+							(keydown)="onKeyDown($event, registrationTypeCodes.Volunteer)"
+							[ngClass]="{ 'active-selection-main': registrationTypeCode === registrationTypeCodes.Volunteer }"
 						>
 							<ng-container *ngIf="displayHelp; else volunteersHelp">
 								<div class="step-container__box__info">
-									<mat-icon class="main-icon" (click)="onViewHelp($event)">help_outline</mat-icon>
+									<mat-icon
+										class="main-icon"
+										tabindex="0"
+										(click)="onViewHelp($event)"
+										(keydown)="onKeyDownViewHelp($event)"
+										>help_outline</mat-icon
+									>
 								</div>
 								<div class="step-container__box__title  pt-0 pt-sm-5 pb-0 pb-sm-5 mb-5">
 									<mat-icon class="step-container__box__title__icon">diversity_3</mat-icon>
@@ -70,7 +94,13 @@ export class RegistrationPathSelectionModel {
 							</ng-container>
 							<ng-template #volunteersHelp>
 								<div class="step-container__box__info">
-									<mat-icon class="main-icon" (click)="onViewHelp($event)">close</mat-icon>
+									<mat-icon
+										class="main-icon"
+										tabindex="0"
+										(click)="onViewHelp($event)"
+										(keydown)="onKeyDownViewHelp($event)"
+										>close</mat-icon
+									>
 								</div>
 								<div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4">
 									<div class="step-container__box__help-title mb-2">Volunteers Include...</div>
@@ -127,9 +157,21 @@ export class RegistrationPathSelectionComponent implements RegistrationFormStepC
 		this.isDirtyAndInvalid = !isValid;
 	}
 
+	onKeyDown(event: KeyboardEvent, _val: RegistrationTypeCode) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onDataChange(_val);
+	}
+
 	onViewHelp(event: any): void {
 		this.displayHelp = !this.displayHelp;
 		event.stopPropagation();
+	}
+
+	onKeyDownViewHelp(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onViewHelp(event);
 	}
 
 	getDataToSave(): RegistrationPathSelectionModel {

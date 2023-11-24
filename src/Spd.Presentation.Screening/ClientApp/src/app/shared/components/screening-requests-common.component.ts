@@ -22,7 +22,7 @@ import {
 } from './screening-request-add-common-modal.component';
 
 export class ScreeningCheckFilter {
-	search: string = '';
+	search = '';
 }
 
 export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string> = {
@@ -83,7 +83,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 									class="error-icon"
 									[matTooltip]="application.errorMsg"
 									matTooltipClass="error-tooltip"
-									*ngIf="application.status == applicationInviteStatusCodes.Failed"
+									*ngIf="application.status === applicationInviteStatusCodes.Failed"
 								>
 									error
 								</mat-icon>

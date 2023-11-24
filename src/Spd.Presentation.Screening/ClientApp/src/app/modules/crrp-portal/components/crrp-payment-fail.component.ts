@@ -27,7 +27,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	styles: [],
 })
 export class CrrpPaymentFailComponent implements OnInit {
-	numberOfAttemptsRemaining: number = 0;
+	numberOfAttemptsRemaining = 0;
 	payment: PaymentResponse | null = null;
 
 	constructor(
