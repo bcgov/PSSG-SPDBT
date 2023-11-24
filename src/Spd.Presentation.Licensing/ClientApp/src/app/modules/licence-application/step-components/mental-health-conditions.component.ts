@@ -38,7 +38,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							</div>
 						</div>
 
-						<div class="row my-4" *ngIf="isTreatedForMHC.value == booleanTypeCodes.Yes">
+						<div class="row my-4" *ngIf="isTreatedForMHC.value === booleanTypeCodes.Yes">
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 								<p>

@@ -39,7 +39,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								>
 							</div>
 						</div>
-						<div *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
+						<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
 							<div class="row">
 								<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>

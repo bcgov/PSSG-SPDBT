@@ -93,7 +93,7 @@ export class FileUploadHelper {
 			</ngx-dropzone-label>
 
 			<ng-container *ngIf="files">
-				<ng-container *ngIf="files.length == 1">
+				<ng-container *ngIf="files.length === 1">
 					<ng-container *ngFor="let file of files">
 						<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
 							<ngx-dropzone-label>
@@ -174,14 +174,14 @@ export class FileUploadHelper {
 	],
 })
 export class FileUploadComponent implements OnInit {
-	multiple: boolean = false; // prevent multiple at one time
+	multiple = false; // prevent multiple at one time
 
 	@Input() control!: FormControl;
 
-	@Input() message: string = '';
-	@Input() expandable: boolean = true;
-	@Input() disableClick: boolean = false;
-	@Input() isReadOnly: boolean = false;
+	@Input() message = '';
+	@Input() expandable = true;
+	@Input() disableClick = false;
+	@Input() isReadOnly = false;
 	@Input() files: Array<File> = [];
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept

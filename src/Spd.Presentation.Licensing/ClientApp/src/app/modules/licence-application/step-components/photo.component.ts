@@ -29,7 +29,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<form [formGroup]="form" novalidate>
 						<div class="row mb-2">
 							<div class="col-12 text-center">
-								<img src="/assets/sample-photo.svg" />
+								<img src="/assets/sample-photo.svg" alt="Photograph of yourself"/>
 							</div>
 						</div>
 
@@ -54,7 +54,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 						<div
 							class="row my-2"
-							*ngIf="useBcServicesCardPhoto.value == booleanTypeCodes.No"
+							*ngIf="useBcServicesCardPhoto.value === booleanTypeCodes.No"
 							@showHideTriggerSlideAnimation
 						>
 							<div
@@ -108,7 +108,7 @@ export class PhotoComponent implements LicenceChildStepperStepComponent {
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
 
-	@Input() isCalledFromModal: boolean = false;
+	@Input() isCalledFromModal = false;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

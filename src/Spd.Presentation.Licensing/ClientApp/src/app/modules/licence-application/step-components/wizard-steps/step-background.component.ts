@@ -18,7 +18,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			<mat-step>
 				<app-police-background></app-police-background>
 
-				<div class="row mt-4" *ngIf="policeOfficerRoleCode != policeOfficerRoleCodes.PoliceOfficer">
+				<div class="row mt-4" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -189,11 +189,11 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	isLoggedIn = false;
 	isFormValid = false;
 
-	showStepPoliceBackground: boolean = true;
-	showStepMentalHealth: boolean = true;
-	showStepCriminalHistory: boolean = true;
-	showStepFingerprints: boolean = true;
-	showStepBackgroundInfo: boolean = true;
+	showStepPoliceBackground = true;
+	showStepMentalHealth = true;
+	showStepCriminalHistory = true;
+	showStepFingerprints = true;
+	showStepBackgroundInfo = true;
 
 	@ViewChild(PoliceBackgroundComponent) policeBackgroundComponent!: PoliceBackgroundComponent;
 	@ViewChild(MentalHealthConditionsComponent) mentalHealthConditionsComponent!: MentalHealthConditionsComponent;
@@ -236,7 +236,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 

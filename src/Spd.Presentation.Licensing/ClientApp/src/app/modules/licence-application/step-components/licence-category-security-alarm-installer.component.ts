@@ -54,7 +54,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<div class="fs-6 fw-bold mb-2">
 					<span
 						*ngIf="
-							requirementCode.value ==
+							requirementCode.value ===
 							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
 						"
 					>
@@ -62,7 +62,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					</span>
 					<span
 						*ngIf="
-							requirementCode.value ==
+							requirementCode.value ===
 							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
 						"
 					>

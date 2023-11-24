@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util.service';
 
@@ -54,11 +53,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 						[hidePageSize]="true"
 						[pageIndex]="tablePaginator.pageIndex"
 						[pageSize]="tablePaginator.pageSize"
-						[length]="tablePaginator.length"
-						(page)="onPageChanged($event)"
+						[length]="tablePaginator.length"					
 						aria-label="Select page"
 					>
 					</mat-paginator>
+					<!-- 	(page)="onPageChanged($event)" -->
 				</div>
 			</div>
 		</section>
@@ -79,5 +78,4 @@ export class SubmittedApplicationsComponent implements OnInit {
 		];
 	}
 
-	onPageChanged(page: PageEvent): void {}
 }

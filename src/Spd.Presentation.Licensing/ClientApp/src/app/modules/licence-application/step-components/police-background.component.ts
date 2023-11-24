@@ -47,7 +47,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									>
 								</div>
 
-								<div class="row my-4" *ngIf="isPoliceOrPeaceOfficer.value == booleanTypeCodes.Yes">
+								<div class="row my-4" *ngIf="isPoliceOrPeaceOfficer.value === booleanTypeCodes.Yes">
 									<div class="offset-md-2 col-md-8 col-sm-12">
 										<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 										<div class="text-minor-heading mb-2">Your current role:</div>
@@ -66,7 +66,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											</div>
 											<div
 												class="col-xl-5 col-lg-12 col-md-12 col-sm-12"
-												*ngIf="policeOfficerRoleCode.value == policeOfficerRoleCodes.Other"
+												*ngIf="policeOfficerRoleCode.value === policeOfficerRoleCodes.Other"
 											>
 												<mat-form-field>
 													<mat-label>Describe Role</mat-label>
@@ -86,7 +86,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										<app-alert
 											type="danger"
 											icon="error"
-											*ngIf="policeOfficerRoleCode.value == policeOfficerRoleCodes.PoliceOfficer"
+											*ngIf="policeOfficerRoleCode.value === policeOfficerRoleCodes.PoliceOfficer"
 										>
 											A member of a police force may not hold a security worker licence. Your application for a security
 											worker licence will NOT be accepted.
