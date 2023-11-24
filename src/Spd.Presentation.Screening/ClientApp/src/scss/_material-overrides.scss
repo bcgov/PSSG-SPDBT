@@ -144,9 +144,24 @@ button.mat-green-button {
   width: 100%;
 }
 
-mat-label {  
+.mdc-text-field--disabled .mdc-floating-label {
   color: var(--color-grey-dark);
-  font-weight: 600;
+}
+
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color:  var(--color-red)!important;// var(--mdc-theme-error, #f44336)!important;
+}
+
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
+   color: var(--color-grey-dark);
+}
+
+// mat-label {  
+//   color: var(--color-grey-dark);
+//   font-weight: 600;
+// }
+.mat-mdc-chip-action-label, .mat-mdc-chip-action {
+  cursor: pointer;
 }
 
 .mat-mdc-form-field-required-marker {

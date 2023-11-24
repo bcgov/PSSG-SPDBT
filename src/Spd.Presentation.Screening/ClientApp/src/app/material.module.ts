@@ -74,8 +74,8 @@ export const APP_DATE_FORMATS = {
 
 const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 	hideRequiredMarker: false,
-	floatLabel: 'always',
-	appearance: 'fill',
+	// floatLabel: 'always',
+	appearance: 'fill', // 'outline'
 };
 
 @Injectable()

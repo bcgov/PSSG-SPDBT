@@ -66,7 +66,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 												matInput
 												formControlName="genericPhoneNumber"
 												[mask]="phoneMask"
-												[showMaskTyped]="true"
+												[showMaskTyped]="false"
 												required
 												[errorStateMatcher]="matcher"
 											/>

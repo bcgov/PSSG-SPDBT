@@ -111,16 +111,17 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 				<div class="row">
 					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-						<mat-chip
-							*ngFor="let status of currentStatuses"
-							[removable]="true"
-							(removed)="onItemRemoved(status)"
+						<mat-chip-row
+							tabIndex="0"
 							class="filter-chip me-2 mb-2"
-							selected
+							*ngFor="let status of currentStatuses"
+							(click)="onStatusRemoved(status)"
+							(keydown)="onKeydownStatusRemoved($event, status)"
+							aria-label="remove status"
 						>
 							{{ getStatusDesc(status) }}
 							<mat-icon matChipRemove>cancel</mat-icon>
-						</mat-chip>
+						</mat-chip-row>
 					</div>
 				</div>
 			</div>
@@ -195,11 +196,13 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<ng-container *ngIf="application.status; else noStatus">
-									<mat-chip-listbox aria-label="Status" *ngIf="application.status" tabIndex="-1">
-										<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
-											{{ application.status | options : 'ApplicationPortalStatusTypes' }}
-										</mat-chip-option>
-									</mat-chip-listbox>
+									<mat-chip-row
+										aria-label="Status"
+										[ngClass]="application.applicationPortalStatusClass"
+										*ngIf="application.status"
+									>
+										{{ application.status | options : 'ApplicationPortalStatusTypes' }}
+									</mat-chip-row>
 								</ng-container>
 								<ng-template #noStatus>
 									<mat-icon>schedule</mat-icon>
@@ -487,12 +490,18 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		this.loadList();
 	}
 
-	onItemRemoved(item: string) {
+	onStatusRemoved(item: string) {
 		const items = [...this.statuses.value] as string[];
 		this.utilService.removeFirstFromArray(items, item);
 		this.statuses.setValue(items); // To trigger change detection
 
 		this.filterComponent.emitFilterChange();
+	}
+
+	onKeydownStatusRemoved(event: KeyboardEvent, item: string) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onStatusRemoved(item);
 	}
 
 	getStatusDesc(code: string): string {

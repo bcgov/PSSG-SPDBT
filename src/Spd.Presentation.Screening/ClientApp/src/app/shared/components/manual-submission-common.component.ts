@@ -111,7 +111,7 @@ export interface AliasCreateRequest {
 									matInput
 									formControlName="phoneNumber"
 									[mask]="phoneMask"
-									[showMaskTyped]="true"
+									[showMaskTyped]="false"
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')"> This is required </mat-error>

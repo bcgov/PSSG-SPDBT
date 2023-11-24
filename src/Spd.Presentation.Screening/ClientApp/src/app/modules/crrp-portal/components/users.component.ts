@@ -52,14 +52,12 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let user">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status" tabIndex="-1">
-									<ng-container *ngIf="user.isActive; else notactive">
-										<mat-chip-option [selectable]="false" class="mat-chip-green"> Active </mat-chip-option>
-									</ng-container>
-									<ng-template #notactive>
-										<mat-chip-option [selectable]="false" class="mat-chip-yellow"> Pending </mat-chip-option>
-									</ng-template>
-								</mat-chip-listbox>
+								<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="user.isActive; else notactive">
+									Active
+								</mat-chip-row>
+								<ng-template #notactive>
+									<mat-chip-row aria-label="Status" class="mat-chip-yellow"> Pending </mat-chip-row>
+								</ng-template>
 							</mat-cell>
 						</ng-container>
 

@@ -38,7 +38,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Phone Number</mat-label>
-								<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+								<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
