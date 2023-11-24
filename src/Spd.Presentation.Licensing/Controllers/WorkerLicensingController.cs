@@ -1,10 +1,8 @@
-
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
-using Spd.Manager.Cases.Screening;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.LogonUser;
@@ -15,8 +13,6 @@ using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -139,7 +135,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger.LogInformation("Get GetLicenceApplications");
             var info = _currentUser.GetBcscUserIdentityInfo();
             var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
-            if(response == null)
+            if (response == null)
             {
                 //no contact found for this person
                 return Array.Empty<WorkerLicenceAppListResponse>();
