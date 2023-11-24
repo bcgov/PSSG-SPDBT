@@ -5,22 +5,19 @@ import { LicenceUpdateTypeCode } from 'src/app/core/code-types/model-desc.models
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import {
-	DogAuthorizationDialogData,
-	UpdateAddDogsModalComponent,
+	UpdateAddDogsModalComponent
 } from '../../components/update-add-dogs-modal.component';
 import {
-	RestraintAuthorizationDialogData,
-	UpdateAddRestraintsModalComponent,
+	UpdateAddRestraintsModalComponent
 } from '../../components/update-add-restraints-modal.component';
 import {
-	ApplyNameChangeDialogData,
-	UpdateApplyNameChangeModalComponent,
+	UpdateApplyNameChangeModalComponent
 } from '../../components/update-apply-name-change-modal.component';
 import {
 	LicenceCategoryDialogData,
-	UpdateLicenceCategoryModalComponent,
+	UpdateLicenceCategoryModalComponent
 } from '../../components/update-licence-category-modal.component';
-import { UpdatePhotoDialogData, UpdatePhotoModalComponent } from '../../components/update-photo-modal.component';
+import { UpdatePhotoModalComponent } from '../../components/update-photo-modal.component';
 
 export interface UpdateOptionListData {
 	updateTypeCode: LicenceUpdateTypeCode;
@@ -138,7 +135,7 @@ export interface UpdateOptionListData {
 
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-							<app-alert type="info" icon="" *ngIf="updates.length == 0"> No updates have been selected </app-alert>
+							<app-alert type="info" icon="" *ngIf="updates.length === 0"> No updates have been selected </app-alert>
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
 								<div class="row">
 									<div class="col-lg-6 col-md-12">
@@ -246,11 +243,11 @@ export class StepLicenceUpdatesComponent {
 	}
 
 	onApplyNameChangeModal(): void {
-		const dialogOptions: ApplyNameChangeDialogData = {};
+		// const dialogOptions: ApplyNameChangeDialogData = {};
 
 		this.dialog
 			.open(UpdateApplyNameChangeModalComponent, {
-				data: dialogOptions,
+				// data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp) => {
@@ -268,12 +265,12 @@ export class StepLicenceUpdatesComponent {
 	}
 
 	onUpdatePhotoModal(): void {
-		const data: UpdatePhotoDialogData = {};
+		// const data: UpdatePhotoDialogData = {};
 
 		this.dialog
 			.open(UpdatePhotoModalComponent, {
 				width: '1000px',
-				data,
+				// data,
 			})
 			.afterClosed()
 			.subscribe((response: boolean) => {
@@ -329,12 +326,12 @@ export class StepLicenceUpdatesComponent {
 	}
 
 	onUseRestraintsModal(): void {
-		const data: RestraintAuthorizationDialogData = {};
+		// const data: RestraintAuthorizationDialogData = {};
 
 		this.dialog
 			.open(UpdateAddRestraintsModalComponent, {
 				width: '1000px',
-				data,
+				// data,
 			})
 			.afterClosed()
 			.subscribe((response: boolean) => {
@@ -352,12 +349,12 @@ export class StepLicenceUpdatesComponent {
 	}
 
 	onUseDogsModal(): void {
-		const data: DogAuthorizationDialogData = {};
+		// const data: DogAuthorizationDialogData = {};
 
 		this.dialog
 			.open(UpdateAddDogsModalComponent, {
 				width: '1000px',
-				data,
+				// data,
 			})
 			.afterClosed()
 			.subscribe((response: boolean) => {

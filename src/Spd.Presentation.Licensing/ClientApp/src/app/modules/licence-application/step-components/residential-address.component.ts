@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AddressRetrieveResponse } from 'src/app/api/models';
@@ -108,7 +108,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class ResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
+export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 

@@ -81,7 +81,9 @@ export class SecurityWorkerLicenceUpdateWizardComponent {
 
 	constructor(private router: Router) {}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {}
+	onStepSelectionChange(_event: StepperSelectionEvent) {
+		//empty
+	}
 
 	onScrollIntoView(): void {
 		this.scrollIntoView();
@@ -97,9 +99,13 @@ export class SecurityWorkerLicenceUpdateWizardComponent {
 		stepper.next();
 	}
 
-	onStepPrevious(): void {}
+	onStepPrevious(): void {
+		//empty
+	}
 
-	onStepNext(): void {}
+	onStepNext(): void {
+		//empty
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));

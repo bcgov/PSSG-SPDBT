@@ -43,7 +43,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 						<div
 							class="row mt-4"
-							*ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes"
+							*ngIf="hasExpiredLicence.value === booleanTypeCodes.Yes"
 							@showHideTriggerSlideAnimation
 						>
 							<div class="offset-md-2 col-md-8 col-sm-12">

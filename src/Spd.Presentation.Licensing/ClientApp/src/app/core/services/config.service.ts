@@ -53,17 +53,13 @@ export class ConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			strictDiscoveryDocumentValidation: false,
-			customQueryParams: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				acr_values: 'idp:bcsc',
-			},
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;
 	}
 
 	public getBcscIssuer(): string | null {
-		const resp = this.configs?.bcscConfiguration!;
+		const resp = this.configs?.bcscConfiguration??{};
 		return resp.issuer ?? null;
 	}
 

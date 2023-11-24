@@ -15,7 +15,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 	) {}
 
 	private checkUrl(url: string): boolean {
-		let isIncluded = includedURLs.some((regexp) => regexp.test(url));
+		const isIncluded = includedURLs.some((regexp) => regexp.test(url));
 		return isIncluded;
 	}
 
@@ -27,7 +27,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 		if (!token) return next.handle(req);
 
 		const header = 'Bearer ' + token;
-		let headers = req.headers.set('Authorization', header);
+		const headers = req.headers.set('Authorization', header);
 		req = req.clone({ headers });
 
 		return next.handle(req).pipe(catchError((err) => this.errorHandler.handleError(err)));

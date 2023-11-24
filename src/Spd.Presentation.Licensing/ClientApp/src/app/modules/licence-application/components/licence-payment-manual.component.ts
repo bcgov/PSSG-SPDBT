@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,19 +13,19 @@ import { Router } from '@angular/router';
 	`,
 	styles: [],
 })
-export class LicencePaymentManualComponent implements OnInit {
+export class LicencePaymentManualComponent  {
 	// applicationData: ApplicationPaymentResponse | null = null;
 
 	constructor(private router: Router, private location: Location) {}
 
-	ngOnInit() {
+	// ngOnInit() {
 		// const applicationData = (this.location.getState() as any)?.applicationData;
 		// if (applicationData) {
 		// 	this.applicationData = applicationData;
 		// } else {
 		// 	this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.PAYMENTS)]);
 		// }
-	}
+	// }
 
 	onBackRoute(): void {
 		// this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.PAYMENTS)]);
