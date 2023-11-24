@@ -159,6 +159,10 @@ namespace Spd.Utilities.Dynamics
             {"OtherCourseCompletion", Guid.Parse("9a06c71e-d47d-ee11-b846-00505683fbf4") },
             {"WorkPermit", Guid.Parse("f455ca0e-eb79-ee11-b846-00505683fbf4")},
             {"RecordOfLandingDocument", Guid.Parse("542c89dc-ea79-ee11-b846-00505683fbf4")},
+            {"DogCertificate",  Guid.Parse("5c8a778d-4b8a-ee11-b848-00505683fbf4")},
+            {"ASTCertificate",  Guid.Parse("25ce92a9-4b8a-ee11-b848-00505683fbf4")}, //advanced Security training certificate
+            {"UseForceEmployerLetter",  Guid.Parse("f3368269-4f8a-ee11-b848-00505683fbf4")},
+            {"UseForceEmployerLetterASTEquivalent",  Guid.Parse("08594985-4f8a-ee11-b848-00505683fbf4")}
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)
