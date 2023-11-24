@@ -29,7 +29,7 @@ export interface DelegateManageDialogData {
 								<mat-icon
 									class="initiator-icon"
 									matTooltip="Initiator"
-									*ngIf="delegate.pssoUserRoleCode == initiatorCode"
+									*ngIf="delegate.pssoUserRoleCode === initiatorCode"
 								>
 									emergency
 								</mat-icon>
@@ -48,7 +48,7 @@ export interface DelegateManageDialogData {
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let delegate">
 								<span class="mobile-label"></span>
-								<a
+								<button
 									mat-flat-button
 									(click)="onRemoveDelegate(delegate)"
 									class="m-2"
@@ -57,7 +57,7 @@ export interface DelegateManageDialogData {
 									*ngIf="isAllowDelegateDelete(delegate)"
 								>
 									<mat-icon>delete_outline</mat-icon>Remove
-								</a>
+								</button>
 							</mat-cell>
 						</ng-container>
 

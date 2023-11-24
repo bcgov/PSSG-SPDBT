@@ -22,7 +22,7 @@ import { Component } from '@angular/core';
 
 				<div class="d-flex justify-content-center">
 					<div class="payment__image text-center">
-						<img class="payment__image__item" src="/assets/login-no-identity.png" />
+						<img class="payment__image__item" src="/assets/login-no-identity.png" alt="Login no identity" />
 					</div>
 				</div>
 
@@ -49,5 +49,7 @@ import { Component } from '@angular/core';
 	styles: [],
 })
 export class SecurityScreeningLoginFailComponent {
-	onBack(): void {}
+	onBack(): void {
+		// empty
+	}
 }

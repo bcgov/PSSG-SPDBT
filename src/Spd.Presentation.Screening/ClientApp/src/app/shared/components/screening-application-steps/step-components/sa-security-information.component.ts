@@ -145,7 +145,7 @@ export class SaSecurityInformationComponent implements CrcFormStepComponent {
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator(
 						'contractedCompanyName',
-						(form) => this.facilityNameRequired
+						(_form) => this.facilityNameRequired
 					),
 				],
 			}

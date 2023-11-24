@@ -249,9 +249,9 @@ export class OrganizationProfileComponent implements OnInit {
 	isNotVolunteerOrg = false;
 	crrpRoutes = CrrpRoutes;
 
-	editable: boolean = true;
-	viewOnly: boolean = true;
-	displayLicenseesQuestion: boolean = true;
+	editable = true;
+	viewOnly = true;
+	displayLicenseesQuestion = true;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
@@ -279,7 +279,7 @@ export class OrganizationProfileComponent implements OnInit {
 					'licenseesNeedVulnerableSectorScreening',
 					() => this.displayLicenseesQuestion
 				),
-				FormGroupValidators.conditionalRequiredValidator('payerPreference', (form) => this.isNotVolunteerOrg ?? false),
+				FormGroupValidators.conditionalRequiredValidator('payerPreference', (_form) => this.isNotVolunteerOrg ?? false),
 			],
 		}
 	);

@@ -33,8 +33,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 	styles: [],
 })
 export class CrrpaPaymentFailComponent implements OnInit {
-	isCancelledPaymentFlow: boolean = false;
-	numberOfAttemptsRemaining: number = 0;
+	isCancelledPaymentFlow = false;
+	numberOfAttemptsRemaining = 0;
 	payment: PaymentResponse | null = null;
 	isPayBySecureLink = false;
 

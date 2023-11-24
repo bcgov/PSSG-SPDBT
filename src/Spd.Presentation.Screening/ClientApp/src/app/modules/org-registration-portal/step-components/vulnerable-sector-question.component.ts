@@ -18,13 +18,23 @@ export class VulnerableSectorQuestionModel {
 				<div class="step-container row">
 					<div class="col-md-3 col-sm-6 mb-3">
 						<div
+							tabindex="0"
 							class="step-container__box"
 							(click)="onDataChange(employeeInteractionTypeCodes.Children)"
-							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Children }"
+							(keydown)="onKeyDown($event, employeeInteractionTypeCodes.Children)"
+							[ngClass]="{
+								'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.Children
+							}"
 						>
 							<ng-container *ngIf="displayHelp1; else noHelp1">
 								<div class="step-container__box__info">
-									<mat-icon class="larger-icon" (click)="onViewHelp1($event)">close</mat-icon>
+									<mat-icon
+										class="larger-icon"
+										tabindex="0"
+										(click)="onViewHelp1($event)"
+										(keydown)="onKeyDownViewHelp1($event)"
+										>close</mat-icon
+									>
 								</div>
 								<div class="px-2 pb-3">
 									<div class="step-container__box__help-title mb-2">What does child mean?</div>
@@ -33,7 +43,13 @@ export class VulnerableSectorQuestionModel {
 							</ng-container>
 							<ng-template #noHelp1>
 								<div class="step-container__box__info">
-									<mat-icon class="larger-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
+									<mat-icon
+										class="larger-icon"
+										tabindex="0"
+										(click)="onViewHelp1($event)"
+										(keydown)="onKeyDownViewHelp1($event)"
+										>help_outline</mat-icon
+									>
 								</div>
 								<div class="px-2 pb-3">
 									<div class="icon-container d-none d-md-block"><mat-icon>family_restroom</mat-icon></div>
@@ -44,13 +60,21 @@ export class VulnerableSectorQuestionModel {
 					</div>
 					<div class="col-md-3 col-sm-6 mb-3">
 						<div
+							tabindex="0"
 							class="step-container__box"
 							(click)="onDataChange(employeeInteractionTypeCodes.Adults)"
-							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Adults }"
+							(keydown)="onKeyDown($event, employeeInteractionTypeCodes.Adults)"
+							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.Adults }"
 						>
 							<ng-container *ngIf="displayHelp2; else noHelp2">
 								<div class="step-container__box__info">
-									<mat-icon class="larger-icon" (click)="onViewHelp2($event)">close</mat-icon>
+									<mat-icon
+										class="larger-icon"
+										tabindex="0"
+										(click)="onViewHelp2($event)"
+										(keydown)="onKeyDownViewHelp2($event)"
+										>close</mat-icon
+									>
 								</div>
 								<div class="px-2 pb-3">
 									<div class="step-container__box__help-title mb-2">What does vulnerable adult mean?</div>
@@ -60,7 +84,13 @@ export class VulnerableSectorQuestionModel {
 							</ng-container>
 							<ng-template #noHelp2>
 								<div class="step-container__box__info">
-									<mat-icon class="larger-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
+									<mat-icon
+										class="larger-icon"
+										tabindex="0"
+										(click)="onViewHelp2($event)"
+										(keydown)="onKeyDownViewHelp2($event)"
+										>help_outline</mat-icon
+									>
 								</div>
 								<div class="px-2 pb-3">
 									<div class="icon-container d-none d-md-block"><mat-icon>elderly</mat-icon></div>
@@ -71,11 +101,13 @@ export class VulnerableSectorQuestionModel {
 					</div>
 					<div class="col-md-3 col-sm-6 mb-3">
 						<div
+							tabindex="0"
 							class="step-container__box px-2 pb-3"
 							style="padding-top: 32px;"
 							(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAndAdults)"
+							(keydown)="onKeyDown($event, employeeInteractionTypeCodes.ChildrenAndAdults)"
 							[ngClass]="{
-								'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.ChildrenAndAdults
+								'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.ChildrenAndAdults
 							}"
 						>
 							<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>
@@ -84,10 +116,12 @@ export class VulnerableSectorQuestionModel {
 					</div>
 					<div class="col-md-3 col-sm-6 mb-3">
 						<div
+							tabindex="0"
 							class="step-container__box px-2 pb-3"
 							style="padding-top: 32px;"
 							(click)="onDataChange(employeeInteractionTypeCodes.Neither)"
-							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Neither }"
+							(keydown)="onKeyDown($event, employeeInteractionTypeCodes.Neither)"
+							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.Neither }"
 						>
 							<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
 							My employee <strong>do not work</strong> with children or vulnerable adults
@@ -130,6 +164,12 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 		this.isDirtyAndInvalid = !isValid;
 	}
 
+	onKeyDown(event: KeyboardEvent, _val: EmployeeInteractionTypeCode) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onDataChange(_val);
+	}
+
 	getDataToSave(): VulnerableSectorQuestionModel {
 		return { employeeInteractionFlag: this.employeeInteractionFlag };
 	}
@@ -149,8 +189,20 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 		event.stopPropagation();
 	}
 
+	onKeyDownViewHelp1(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onViewHelp1(event);
+	}
+
 	onViewHelp2(event: any): void {
 		this.displayHelp2 = !this.displayHelp2;
 		event.stopPropagation();
+	}
+
+	onKeyDownViewHelp2(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onViewHelp2(event);
 	}
 }

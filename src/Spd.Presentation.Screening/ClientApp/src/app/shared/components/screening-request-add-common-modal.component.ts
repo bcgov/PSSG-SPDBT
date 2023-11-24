@@ -142,7 +142,7 @@ export interface ScreeningRequestAddDialogData {
 
 								<div
 									class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
-									*ngIf="portal == portalTypeCodes.Psso && isPsaUser"
+									*ngIf="portal === portalTypeCodes.Psso && isPsaUser"
 								>
 									<mat-form-field>
 										<mat-label>Ministry</mat-label>
@@ -233,7 +233,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	screeningTypes = ScreeningTypes;
 	payerPreferenceTypes = PayerPreferenceTypes;
 
-	requestName: string = '';
+	requestName = '';
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
@@ -310,12 +310,12 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			},
 			{
 				validators: [
-					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
-					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
-					FormGroupValidators.conditionalRequiredValidator('payeeType', (form) => this.isNotVolunteerOrg ?? false),
+					FormGroupValidators.conditionalRequiredValidator('screeningType', (_form) => this.showScreeningType ?? false),
+					FormGroupValidators.conditionalRequiredValidator('serviceType', (_form) => this.showServiceType ?? false),
+					FormGroupValidators.conditionalRequiredValidator('payeeType', (_form) => this.isNotVolunteerOrg ?? false),
 					FormGroupValidators.conditionalRequiredValidator(
 						'orgId',
-						(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser
+						(_form) => this.portal == PortalTypeCode.Psso && this.isPsaUser
 					),
 				],
 			}

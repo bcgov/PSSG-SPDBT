@@ -45,7 +45,7 @@ export interface AliasCreateRequest {
 					<h2>
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							<ng-container *ngIf="portal == portalTypeCodes.Psso; else crrpSubtitle">
+							<ng-container *ngIf="portal === portalTypeCodes.Psso; else crrpSubtitle">
 								Enter the applicant's information and submit their application
 							</ng-container>
 							<ng-template #crrpSubtitle>
@@ -188,14 +188,14 @@ export interface AliasCreateRequest {
 								<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal === portalTypeCodes.Psso">
 							<mat-form-field>
 								<mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="employeeId" mask="0000000" />
 								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 7 digits </mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso && isPsaUser">
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal === portalTypeCodes.Psso && isPsaUser">
 							<mat-form-field>
 								<mat-label>Ministry</mat-label>
 								<mat-select formControlName="orgId">
@@ -243,7 +243,7 @@ export interface AliasCreateRequest {
 						</div>
 					</div>
 
-					<div *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
+					<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
 						<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
 						<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
 							<div class="row" [formGroupName]="i">
@@ -406,7 +406,7 @@ export interface AliasCreateRequest {
 						</div>
 						<div class="col-md-12 col-sm-12">
 							<mat-checkbox formControlName="haveVerifiedIdentity">
-								<ng-container *ngIf="portal == portalTypeCodes.Psso; else haveVerifiedIdentityCrrpLabel">
+								<ng-container *ngIf="portal === portalTypeCodes.Psso; else haveVerifiedIdentityCrrpLabel">
 									I have verified the identity of the applicant for this criminal record check
 								</ng-container>
 								<ng-template #haveVerifiedIdentityCrrpLabel>
@@ -417,7 +417,7 @@ export interface AliasCreateRequest {
 						</div>
 					</div>
 
-					<ng-container *ngIf="portal == portalTypeCodes.Crrp">
+					<ng-container *ngIf="portal === portalTypeCodes.Crrp">
 						<mat-divider class="my-3"></mat-divider>
 						<div class="text-minor-heading fw-semibold mb-2">
 							Upload the copy of signed consent form sent by the applicant
@@ -511,15 +511,15 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
-				FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
+				FormGroupValidators.conditionalRequiredValidator('screeningType', (_form) => this.showScreeningType ?? false),
+				FormGroupValidators.conditionalRequiredValidator('serviceType', (_form) => this.showServiceType ?? false),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'emailAddress',
-					(form) => this.portal == PortalTypeCode.Crrp
+					(_form) => this.portal == PortalTypeCode.Crrp
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => this.portal == PortalTypeCode.Crrp
+					(_form) => this.portal == PortalTypeCode.Crrp
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'givenName',
@@ -527,7 +527,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'orgId',
-					(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
+					(_form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
 				),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
 					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)

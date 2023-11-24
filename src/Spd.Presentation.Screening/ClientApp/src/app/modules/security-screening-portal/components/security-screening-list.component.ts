@@ -106,7 +106,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef>Application Status</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Application Status:</span>
-							<mat-chip-listbox aria-label="Status">
+							<mat-chip-listbox aria-label="Status" tabIndex="-1">
 								<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
 									{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 								</mat-chip-option>
@@ -192,7 +192,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 })
 export class SecurityScreeningListComponent implements OnInit {
 	applicantName = '';
-	applicationFilter: string = 'ACTIVE';
+	applicationFilter = 'ACTIVE';
 	allApplications: Array<ApplicantApplicationStatusResponse> = [];
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
@@ -227,7 +227,7 @@ export class SecurityScreeningListComponent implements OnInit {
 		this.loadList();
 	}
 
-	onFilterChange(event: MatButtonToggleChange) {
+	onFilterChange(_event: MatButtonToggleChange) {
 		this.setFilterApplications();
 	}
 
@@ -271,7 +271,7 @@ export class SecurityScreeningListComponent implements OnInit {
 
 		let opportunityToRespondCount = 0;
 		let requestForAdditionalInfoCount = 0;
-		let fingerprintsCount = 0;
+		const fingerprintsCount = 0;
 		let statutoryDeclarationCount = 0;
 
 		this.applicantService
@@ -354,7 +354,7 @@ export class SecurityScreeningListComponent implements OnInit {
 	}
 
 	private getDocumentRequiredText(count: number): string | null {
-		if ((count = 0)) return null;
+		if (count == 0) return null;
 		return count > 1 ? 'Documents required' : 'Document required';
 	}
 

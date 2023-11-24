@@ -45,7 +45,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 					<ng-container *ngIf="applicationStatistics$ | async">
 						<app-alert type="warning" *ngIf="count > 0">
 							<ng-container>
-								<ng-container *ngIf="count == 1; else notOne">
+								<ng-container *ngIf="count === 1; else notOne">
 									<div>There is 1 application which requires payment</div>
 								</ng-container>
 								<ng-template #notOne>
@@ -141,7 +141,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
+								<mat-chip-listbox aria-label="Status" *ngIf="application.status" tabIndex="-1">
 									<ng-container *ngIf="application.isDownloadReceipt; else notpaid">
 										<mat-chip-option [selectable]="false" class="mat-chip-green"> Paid </mat-chip-option>
 									</ng-container>

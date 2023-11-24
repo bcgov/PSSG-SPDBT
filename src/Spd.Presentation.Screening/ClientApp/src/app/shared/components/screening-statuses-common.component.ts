@@ -195,7 +195,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<ng-container *ngIf="application.status; else noStatus">
-									<mat-chip-listbox aria-label="Status" *ngIf="application.status">
+									<mat-chip-listbox aria-label="Status" *ngIf="application.status" tabIndex="-1">
 										<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
 											{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 										</mat-chip-option>
@@ -399,7 +399,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				];
 			}
 
-			this.optionsService.getMinistries().subscribe((resp) => {
+			this.optionsService.getMinistries().subscribe((_resp) => {
 				this.onFilterReset();
 			});
 		}
@@ -538,8 +538,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 					app.isPayNow =
 						this.portal == 'CRRP'
 							? isNotVolunteerOrg &&
-							  app.payeeType == PayerPreferenceTypeCode.Organization &&
-							  app.status == ApplicationPortalStatusCode.AwaitingPayment
+							  app.payeeType === PayerPreferenceTypeCode.Organization &&
+							  app.status === ApplicationPortalStatusCode.AwaitingPayment
 							: false;
 					app.isVerifyIdentity = app.status == ApplicationPortalStatusCode.VerifyIdentity;
 				});

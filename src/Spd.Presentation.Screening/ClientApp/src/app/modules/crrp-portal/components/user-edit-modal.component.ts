@@ -94,7 +94,7 @@ export interface UserDialogData {
 export class UserEditModalComponent implements OnInit {
 	authorizationTypes = ContactAuthorizationTypes;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
-	title: string = '';
+	title = '';
 	isEdit = false;
 	form: FormGroup = this.formBuilder.group(
 		{
