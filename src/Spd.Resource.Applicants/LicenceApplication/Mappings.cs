@@ -74,6 +74,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_haspreviousnames, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasPreviousName)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
+         .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
          .ReverseMap()
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
@@ -94,6 +95,9 @@ internal class Mappings : Profile
          .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
          .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
          .ForMember(d => d.UseBcServicesCardPhoto, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_usephotofrombcsc)))
+         .ForMember(d => d.IsDogsPurposeProtection, opt => opt.MapFrom(s => GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.Protection)))
+         .ForMember(d => d.IsDogsPurposeDetectionDrugs, opt => opt.MapFrom(s => GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionDrugs)))
+         .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionExplosives)))
          .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
          .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_canadiancitizen)))
          .ForMember(d => d.HasBcDriversLicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_hasdriverslicence)))
@@ -347,6 +351,31 @@ internal class Mappings : Profile
     {
         if (optionset == null) return null;
         return Enum.Parse<PoliceOfficerRoleEnum>(Enum.GetName(typeof(PoliceOfficerRoleOptionSet), optionset));
+    }
+
+    private static string? GetDogReasonOptionSets(LicenceApplication app)
+    {
+        List<string> reasons = new List<string>();
+
+        if (app.IsDogsPurposeDetectionDrugs != null && app.IsDogsPurposeDetectionDrugs == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionDrugs).ToString());
+        if (app.IsDogsPurposeDetectionExplosives != null && app.IsDogsPurposeDetectionExplosives == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionExplosives).ToString());
+        if (app.IsDogsPurposeProtection != null && app.IsDogsPurposeProtection == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.Protection).ToString());
+        var result = String.Join(',', reasons.ToArray());
+
+        return string.IsNullOrWhiteSpace(result) ? null : result;
+    }
+
+    private static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
+    {
+        if (dogreasonsStr == null) return null;
+        string[] reasons = dogreasonsStr.Split(',');
+        string str = ((int)type).ToString();
+        if (reasons.Any(s => s == str)) return true;
+
+        return false;
     }
 }
 
