@@ -38,7 +38,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-success.png" />
+				<img class="payment__image__item" src="/assets/payment-success.png" alt="Payment success" />
 			</div>
 		</div>
 
@@ -109,7 +109,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	styles: [],
 })
 export class PaymentSuccessComponent implements OnInit {
-	isBackRoute: boolean = false;
+	isBackRoute = false;
 	appConstants = SPD_CONSTANTS;
 
 	@Input() sendEmailTo: string | null = null;

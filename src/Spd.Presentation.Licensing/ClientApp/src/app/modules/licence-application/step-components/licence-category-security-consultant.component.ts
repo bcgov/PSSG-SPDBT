@@ -90,14 +90,14 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<div class="fs-6 fw-bold mb-2">
 					<span
 						*ngIf="
-							requirementCode.value == securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters
+							requirementCode.value === securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters
 						"
 					>
 						Upload reference letters:
 					</span>
 					<span
 						*ngIf="
-							requirementCode.value ==
+							requirementCode.value ===
 							securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters
 						"
 					>

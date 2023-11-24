@@ -702,7 +702,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
-	@Input() isCalledFromModal: boolean = false;
+	@Input() isCalledFromModal = false;
 
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -202,7 +202,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="hasExpiredLicence == booleanTypeCodes.Yes">
+												<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Expired Licence</div>
 													<div class="row mt-0">
@@ -219,7 +219,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="carryAndUseRetraints == booleanTypeCodes.Yes">
+												<ng-container *ngIf="carryAndUseRetraints === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Restraints Authorization</div>
 													<div class="row mt-0">
@@ -242,7 +242,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="useDogs == booleanTypeCodes.Yes">
+												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Dog Authorization</div>
 													<div class="row mt-0">
@@ -300,13 +300,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 														<div class="text-data">{{ isPoliceOrPeaceOfficer }}</div>
 													</div>
-													<ng-container *ngIf="isPoliceOrPeaceOfficer == booleanTypeCodes.Yes">
+													<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
 															<div class="text-data">
 																<span
 																	*ngIf="
-																		policeOfficerRoleCode != policeOfficerRoleCodes.Other;
+																		policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
 																		else otherPoliceOfficerRole
 																	"
 																	>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
@@ -422,7 +422,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="text-data">{{ previousNameFlag }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<ng-container *ngIf="previousNameFlag == booleanTypeCodes.Yes">
+														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
 															<div class="text-data">
 																<div
@@ -509,7 +509,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
 														<div class="text-data">
-															<img src="/assets/sample-photo.svg" />
+															<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
 														</div>
 													</div>
 												</div>
@@ -682,7 +682,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 		`,
 	],
 })
-export class SummaryReviewComponent {
+export class SummaryReviewComponent implements OnInit {
 	licenceModelData: any = {};
 
 	constants = SPD_CONSTANTS;
