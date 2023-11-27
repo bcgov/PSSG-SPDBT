@@ -45,7 +45,7 @@ export class Address {
 	template: `
 		<form [formGroup]="form">
 			<div class="row">
-				<div class="col-xl-7 col-lg-7 col-md-12 pb-4">
+				<div class="col-xl-7 col-lg-7 col-md-12">
 					<mat-form-field>
 						<mat-label>Address Completed by Canada Post</mat-label>
 						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />

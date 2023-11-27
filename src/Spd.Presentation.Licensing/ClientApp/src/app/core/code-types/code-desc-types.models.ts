@@ -3,7 +3,6 @@ export {
 	ApplicationTypes,
 	BooleanTypes,
 	CountryTypes,
-	DogDocumentTypes,
 	EyeColourTypes,
 	GenderTypes,
 	GovernmentIssuedPhotoIdTypes,
@@ -16,5 +15,6 @@ export {
 	RestraintDocumentTypes,
 	WeightUnitTypes,
 	WorkerCategoryTypes,
-	WorkerLicenceTypes,
+	WorkerLicenceTypes
 } from './model-desc.models';
+

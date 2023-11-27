@@ -21,7 +21,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<form [formGroup]="form" novalidate>
 						<div class="row" *ngIf="!isCalledFromModal">
 							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRetraints">
+								<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRestraints">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-divider class="my-2"></mat-divider>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -29,16 +29,16 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
-										(form.get('carryAndUseRetraints')?.dirty || form.get('carryAndUseRetraints')?.touched) &&
-										form.get('carryAndUseRetraints')?.invalid &&
-										form.get('carryAndUseRetraints')?.hasError('required')
+										(form.get('carryAndUseRestraints')?.dirty || form.get('carryAndUseRestraints')?.touched) &&
+										form.get('carryAndUseRestraints')?.invalid &&
+										form.get('carryAndUseRestraints')?.hasError('required')
 									"
 									>This is required</mat-error
 								>
 							</div>
 						</div>
 
-						<div class="row" *ngIf="carryAndUseRetraints.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div class="row" *ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 							<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
 								<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
 
@@ -46,7 +46,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<mat-radio-group
 									class="category-radio-group"
 									aria-label="Select an option"
-									formControlName="carryAndUseRetraintsDocument"
+									formControlName="carryAndUseRestraintsDocument"
 								>
 									<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index">
 										<mat-radio-button class="radio-label" [value]="doc.code">
@@ -57,10 +57,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
-										(form.get('carryAndUseRetraintsDocument')?.dirty ||
-											form.get('carryAndUseRetraintsDocument')?.touched) &&
-										form.get('carryAndUseRetraintsDocument')?.invalid &&
-										form.get('carryAndUseRetraintsDocument')?.hasError('required')
+										(form.get('carryAndUseRestraintsDocument')?.dirty ||
+											form.get('carryAndUseRestraintsDocument')?.touched) &&
+										form.get('carryAndUseRestraintsDocument')?.invalid &&
+										form.get('carryAndUseRestraintsDocument')?.hasError('required')
 									"
 									>This is required</mat-error
 								>
@@ -114,14 +114,14 @@ export class RestraintsAuthorizationComponent implements OnInit, LicenceChildSte
 	ngOnInit(): void {
 		if (this.isCalledFromModal) {
 			this.form.patchValue({
-				carryAndUseRetraints: BooleanTypeCode.Yes,
+				carryAndUseRestraints: BooleanTypeCode.Yes,
 			});
 		}
 	}
 
 	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.addUploadDocument(this.carryAndUseRetraintsDocument.value, file).subscribe({
+			this.licenceApplicationService.addUploadDocument(this.carryAndUseRestraintsDocument.value, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 					matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -144,12 +144,12 @@ export class RestraintsAuthorizationComponent implements OnInit, LicenceChildSte
 		return this.form.valid;
 	}
 
-	get carryAndUseRetraints(): FormControl {
-		return this.form.get('carryAndUseRetraints') as FormControl;
+	get carryAndUseRestraints(): FormControl {
+		return this.form.get('carryAndUseRestraints') as FormControl;
 	}
 
-	get carryAndUseRetraintsDocument(): FormControl {
-		return this.form.get('carryAndUseRetraintsDocument') as FormControl;
+	get carryAndUseRestraintsDocument(): FormControl {
+		return this.form.get('carryAndUseRestraintsDocument') as FormControl;
 	}
 
 	get attachments(): FormControl {

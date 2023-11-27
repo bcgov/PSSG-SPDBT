@@ -213,61 +213,61 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
 															<div class="text-data">
-																{{ expiredLicenceExpiryDate | date : constants.date.dateFormat | default }}
+																{{ expiredLicenceExpiryDate | date : constants.date.dateFormat : 'UTC' | default }}
 															</div>
 														</div>
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="carryAndUseRetraints === booleanTypeCodes.Yes">
+												<ng-container *ngIf="showDogsAndRestraints">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Restraints Authorization</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
 															<div class="text-data">
-																{{ carryAndUseRetraints | options : 'BooleanTypes' }}
+																{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 															</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ carryAndUseRetraintsDocument | options : 'RestraintDocumentTypes' }}
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of carryAndUseRetraintsAttachments; let i = index">
-																	{{ doc.name }}
+														<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
+															<div class="col-lg-8 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
+																</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+																		{{ doc.name }}
+																	</div>
 																</div>
 															</div>
-														</div>
+														</ng-container>
 													</div>
-												</ng-container>
 
-												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Dog Authorization</div>
+													<div class="text-minor-heading">Dogs Authorization</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
 															<div class="text-data">{{ useDogs }}</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
-															<div class="text-data">
-																<div *ngIf="isDogsPurposeProtection">Protection</div>
-																<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-																<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-															</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ dogsPurposeDocumentType | options : 'DogDocumentTypes' }}
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																	{{ doc.name }}
+														<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
+																<div class="text-data">
+																	<div *ngIf="isDogsPurposeProtection">Protection</div>
+																	<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+																	<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
 																</div>
 															</div>
-														</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+														</ng-container>
 													</div>
 												</ng-container>
 											</div>
@@ -401,7 +401,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="col-lg-3 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
 														<div class="text-data">
-															{{ dateOfBirth | date : constants.date.dateFormat | default }}
+															{{ dateOfBirth | date : constants.date.dateFormat : 'UTC' | default }}
 														</div>
 													</div>
 													<div class="col-lg-3 col-md-12 mt-lg-2">
@@ -808,14 +808,17 @@ export class SummaryReviewComponent implements OnInit {
 		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
 	}
 
-	get carryAndUseRetraints(): string {
-		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRetraints ?? '';
+	get carryAndUseRestraints(): string {
+		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
 	}
-	get carryAndUseRetraintsDocument(): string {
-		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRetraintsDocument ?? '';
+	get carryAndUseRestraintsDocument(): string {
+		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraintsDocument ?? '';
 	}
-	get carryAndUseRetraintsAttachments(): File[] {
+	get carryAndUseRestraintsAttachments(): File[] {
 		return this.licenceModelData.restraintsAuthorizationData.attachments ?? [];
+	}
+	get showDogsAndRestraints(): boolean {
+		return this.licenceModelData.categorySecurityGuardFormGroup.isInclude;
 	}
 	get useDogs(): string {
 		return this.licenceModelData.dogsAuthorizationData.useDogs ?? '';
@@ -828,9 +831,6 @@ export class SummaryReviewComponent implements OnInit {
 	}
 	get isDogsPurposeDetectionExplosives(): string {
 		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
-	}
-	get dogsPurposeDocumentType(): string {
-		return this.licenceModelData.dogsAuthorizationData.dogsPurposeDocumentType ?? '';
 	}
 	get dogsPurposeAttachments(): File[] {
 		return this.licenceModelData.dogsAuthorizationData.attachments ?? [];

@@ -102,7 +102,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											for more information.
 										</p>
 
-										<app-file-upload [maxNumberOfFiles]="1" onFileChanged></app-file-upload>
+										<app-file-upload [maxNumberOfFiles]="10" onFileChanged></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="

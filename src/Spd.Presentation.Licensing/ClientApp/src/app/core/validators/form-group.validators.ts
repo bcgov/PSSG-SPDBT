@@ -20,6 +20,24 @@ export class FormGroupValidators {
 			return null;
 		};
 
+	public static conditionalDefaultRequiredTrueValidator =
+		(inputName: string, requiredWhen: (form: AbstractControl) => boolean): ValidatorFn =>
+		(form: AbstractControl): ValidationErrors | null => {
+			const targetInput = form.get(inputName);
+			if (targetInput) {
+				const isRequired = requiredWhen(form);
+				if (isRequired != targetInput.hasValidator(Validators.requiredTrue)) {
+					if (isRequired) {
+						targetInput.addValidators(Validators.requiredTrue);
+					} else {
+						targetInput.removeValidators(Validators.requiredTrue);
+					}
+					targetInput.updateValueAndValidity({ onlySelf: true });
+				}
+			}
+			return null;
+		};
+
 	public static conditionalDefaultRequiredValidator =
 		(inputName: string, requiredWhen: (form: AbstractControl) => boolean): ValidatorFn =>
 		(form: AbstractControl): ValidationErrors | null => {
