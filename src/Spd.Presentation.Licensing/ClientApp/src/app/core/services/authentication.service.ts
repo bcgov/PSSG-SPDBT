@@ -5,17 +5,14 @@ import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	constructor(
-		private oauthService: OAuthService,
-		private configService: ConfigService,
-	) {}
+	constructor(private oauthService: OAuthService, private configService: ConfigService) {}
 
 	//----------------------------------------------------------
 	// *
 	// *
 	public async tryLogin(
 		loginType: IdentityProviderTypeCode,
-		returnComponentRoute: string,
+		returnComponentRoute: string
 	): Promise<{ state: any; loggedIn: boolean }> {
 		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
@@ -26,21 +23,21 @@ export class AuthenticationService {
 
 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
-		if (isLoggedIn) {
-			const tokenExpiration = this.oauthService.getAccessTokenExpiration();
+		// if (isLoggedIn) {
+		// 	const tokenExpiration = this.oauthService.getAccessTokenExpiration();
 
-			const g = new Date(tokenExpiration);
-			console.log('aatokenExpiration', g);
+		// 	const g = new Date(tokenExpiration);
+		// 	console.log('aatokenExpiration', g);
 
-			const f = new Date();
-			console.log('aanow', f);
+		// 	const f = new Date();
+		// 	console.log('aanow', f);
 
-			const diffMs = g.getTime() - f.getTime();
-			const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
+		// 	const diffMs = g.getTime() - f.getTime();
+		// 	const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
 
-			this.oauthService.silentRefreshTimeout = diffMins * 1000;
-			console.log('aasilentRefreshTimeout', this.oauthService.silentRefreshTimeout / 1000);
-		}
+		// 	this.oauthService.silentRefreshTimeout = diffMins * 1000;
+		// 	console.log('aasilentRefreshTimeout', this.oauthService.silentRefreshTimeout / 1000);
+		// }
 
 		return {
 			state: this.oauthService.state || null,
@@ -53,7 +50,7 @@ export class AuthenticationService {
 	// *
 	public async login(
 		loginType: IdentityProviderTypeCode,
-		returnComponentRoute: string | undefined = undefined,
+		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
 		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
@@ -66,19 +63,19 @@ export class AuthenticationService {
 		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
 		if (isLoggedIn) {
-			const tokenExpiration = this.oauthService.getAccessTokenExpiration();
+			// const tokenExpiration = this.oauthService.getAccessTokenExpiration();
 
-			const g = new Date(tokenExpiration);
-			console.log('tokenExpiration', g);
+			// const g = new Date(tokenExpiration);
+			// console.log('tokenExpiration', g);
 
-			const f = new Date();
-			console.log('now', f);
+			// const f = new Date();
+			// console.log('now', f);
 
-			const diffMs = g.getTime() - f.getTime();
-			const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
+			// const diffMs = g.getTime() - f.getTime();
+			// const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
 
-			this.oauthService.silentRefreshTimeout = diffMins * 1000;
-			console.log('silentRefreshTimeout', this.oauthService.silentRefreshTimeout / 1000);
+			// this.oauthService.silentRefreshTimeout = diffMins * 1000;
+			// console.log('silentRefreshTimeout', this.oauthService.silentRefreshTimeout / 1000);
 
 			return Promise.resolve(this.oauthService.state || returnRoute);
 		}

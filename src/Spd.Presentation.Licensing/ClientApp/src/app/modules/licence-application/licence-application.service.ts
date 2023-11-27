@@ -219,7 +219,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const expiredLicenceData = {
 					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
 					expiredLicenceNumber: resp.expiredLicenceNumber,
-					expiryDate: this.utilService.getUtcIsoString(resp.expiryDate),
+					expiryDate: resp.expiryDate,
 					expiredLicenceId: resp.expiredLicenceId,
 				};
 				const licenceTermData = {
@@ -284,7 +284,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						middleName2: bcscUserWhoamiProfile.middleName2,
 						surname: bcscUserWhoamiProfile.lastName,
 						genderCode: bcscUserWhoamiProfile.gender,
-						dateOfBirth: this.utilService.getUtcIsoString(bcscUserWhoamiProfile.birthDate),
+						dateOfBirth: bcscUserWhoamiProfile.birthDate,
 					};
 				} else {
 					personalInformationData = {
@@ -293,7 +293,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						middleName2: resp.middleName2,
 						surname: resp.surname,
 						genderCode: resp.genderCode,
-						dateOfBirth: this.utilService.getUtcIsoString(resp.dateOfBirth),
+						dateOfBirth: resp.dateOfBirth,
 					};
 				}
 
@@ -305,7 +305,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 
-				const citizenshipExpiryDate = this.utilService.getUtcIsoString(resp.citizenshipDocument?.expiryDate);
+				const citizenshipExpiryDate = resp.citizenshipDocument?.expiryDate; //this.utilService.getUtcIsoString(resp.citizenshipDocument?.expiryDate);
 				const citizenshipData = {
 					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
