@@ -9,9 +9,7 @@ internal partial class LicenceManager
 {
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
-        DocumentTypeEnum? docEnum = null;
-        if (command.Request.LicenceDocumentTypeCode != null)
-            docEnum = GetDocumentTypeEnum((LicenceDocumentTypeCode)command.Request.LicenceDocumentTypeCode);
+        DocumentTypeEnum? docEnum = GetDocumentTypeEnum(command.Request.LicenceDocumentTypeCode);
         LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, ct);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
