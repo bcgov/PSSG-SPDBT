@@ -219,22 +219,22 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="carryAndUseRetraints === booleanTypeCodes.Yes">
+												<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Restraints Authorization</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
 															<div class="text-data">
-																{{ carryAndUseRetraints | options : 'BooleanTypes' }}
+																{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 															</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="col-lg-8 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ carryAndUseRetraintsDocument | options : 'RestraintDocumentTypes' }}
+																{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 															</div>
 															<div class="text-data">
-																<div *ngFor="let doc of carryAndUseRetraintsAttachments; let i = index">
+																<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
 															</div>
@@ -259,9 +259,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ dogsPurposeDocumentType | options : 'DogDocumentTypes' }}
-															</div>
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
 															<div class="text-data">
 																<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
 																	{{ doc.name }}
@@ -808,13 +806,13 @@ export class SummaryReviewComponent implements OnInit {
 		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
 	}
 
-	get carryAndUseRetraints(): string {
-		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRetraints ?? '';
+	get carryAndUseRestraints(): string {
+		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
 	}
-	get carryAndUseRetraintsDocument(): string {
-		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRetraintsDocument ?? '';
+	get carryAndUseRestraintsDocument(): string {
+		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraintsDocument ?? '';
 	}
-	get carryAndUseRetraintsAttachments(): File[] {
+	get carryAndUseRestraintsAttachments(): File[] {
 		return this.licenceModelData.restraintsAuthorizationData.attachments ?? [];
 	}
 	get useDogs(): string {
@@ -828,9 +826,6 @@ export class SummaryReviewComponent implements OnInit {
 	}
 	get isDogsPurposeDetectionExplosives(): string {
 		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
-	}
-	get dogsPurposeDocumentType(): string {
-		return this.licenceModelData.dogsAuthorizationData.dogsPurposeDocumentType ?? '';
 	}
 	get dogsPurposeAttachments(): File[] {
 		return this.licenceModelData.dogsAuthorizationData.attachments ?? [];

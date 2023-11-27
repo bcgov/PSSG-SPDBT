@@ -48,7 +48,7 @@ import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.c
 									(fileUploaded)="onFileUploaded($event)"
 									(fileRemoved)="onFileRemoved()"
 									[control]="attachments"
-									[maxNumberOfFiles]="1"
+									[maxNumberOfFiles]="10"
 									[files]="attachments.value"
 								></app-file-upload>
 								<mat-error

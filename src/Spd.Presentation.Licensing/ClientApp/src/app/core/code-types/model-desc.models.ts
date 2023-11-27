@@ -10,7 +10,7 @@ import {
 	PoliceOfficerRoleCode,
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
@@ -134,6 +134,21 @@ export const SecurityGuardRequirementCode: Record<SecurityGuardRequirementCodeSu
 		LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining,
 };
 
+type RestraintDocumentTypeCodeSubset = Extract<
+	LicenceDocumentTypeCode,
+	| LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate
+	| LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter
+	| LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent
+>;
+export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, string> = {
+	[LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate]:
+		LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate,
+	[LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter]:
+		LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter,
+	[LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent]:
+		LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent,
+};
+
 // ============================================================
 // SelectOptions Lists
 // ============================================================
@@ -178,26 +193,15 @@ export const LicenceTermTypes: SelectOptions[] = [
 export const RestraintDocumentTypes: SelectOptions[] = [
 	{
 		desc: 'Advanced security training (AST) certificate',
-		code: LicenceDocumentTypeCode.RestraintsAdvancedSecurityTrainingCertificate,
+		code: RestraintDocumentTypeCode.CategorySecurityGuard_ASTCertificate,
 	},
 	{
 		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months.',
-		code: LicenceDocumentTypeCode.RestraintsUseOfForceLetter,
+		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter,
 	},
 	{
 		desc: 'Must be able to demonstrate, to the satisfaction of the registrar that he or she has training equivalent to the training referred above.',
-		code: LicenceDocumentTypeCode.RestraintsTrainingEquivalent,
-	},
-];
-
-export const DogDocumentTypes: SelectOptions[] = [
-	{
-		desc: 'Certificate of Advanced Security Training',
-		code: LicenceDocumentTypeCode.DogsCertificateOfAdvancedSecurityTraining,
-	},
-	{
-		desc: 'Security Dog Validation Certificate',
-		code: LicenceDocumentTypeCode.DogsSecurityDogValidationCertificate,
+		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
 	},
 ];
 

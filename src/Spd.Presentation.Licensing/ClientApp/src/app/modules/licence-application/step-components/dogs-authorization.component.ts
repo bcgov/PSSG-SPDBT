@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { BooleanTypeCode, DogDocumentTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
@@ -64,28 +65,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 									</div>
 								</div>
 
-								<div class="text-minor-heading my-2">Document type:</div>
-								<mat-radio-group
-									class="category-radio-group"
-									aria-label="Select an option"
-									formControlName="dogsPurposeDocumentType"
-								>
-									<ng-container *ngFor="let doc of dogDocumentTypes; let i = index">
-										<mat-radio-button class="radio-label" [value]="doc.code">
-											{{ doc.desc }}
-										</mat-radio-button>
-									</ng-container>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('dogsPurposeDocumentType')?.dirty || form.get('dogsPurposeDocumentType')?.touched) &&
-										form.get('dogsPurposeDocumentType')?.invalid &&
-										form.get('dogsPurposeDocumentType')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-
 								<!-- Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification. -->
 
 								<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
@@ -120,7 +99,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 })
 export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	dogDocumentTypes = DogDocumentTypes;
 
 	form: FormGroup = this.licenceApplicationService.dogsAuthorizationFormGroup;
 
@@ -144,7 +122,7 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 
 	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.addUploadDocument(this.dogsPurposeDocumentType.value, file).subscribe({
+			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 					matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -169,10 +147,6 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 
 	get useDogs(): FormControl {
 		return this.form.get('useDogs') as FormControl;
-	}
-
-	get dogsPurposeDocumentType(): FormControl {
-		return this.form.get('dogsPurposeDocumentType') as FormControl;
 	}
 
 	get attachments(): FormControl {

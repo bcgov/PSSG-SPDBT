@@ -60,7 +60,7 @@ namespace Spd.Manager.Cases.Licence
         public string? OtherOfficerRole { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
-        public bool? CarryAndUseRetraints { get; set; }
+        public bool? CarryAndUseRestraints { get; set; }
         public bool? UseDogs { get; set; }
         public bool? IsDogsPurposeProtection { get; set; }
         public bool? IsDogsPurposeDetectionDrugs { get; set; }
