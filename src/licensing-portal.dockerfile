@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS net-builder
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS net-builder
 
 # install diagnostics tools
 RUN mkdir /tools
@@ -22,8 +22,8 @@ COPY ./Spd.Presentation.Licensing/ClientApp/ .
 # RUN npm run test -- --no-watch --no-progress
 RUN npm run build -- --configuration production
 
-# FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
-FROM registry.access.redhat.com/ubi8/dotnet-70-runtime AS final
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM registry.access.redhat.com/ubi8/dotnet-80-runtime AS final
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://*:8080
