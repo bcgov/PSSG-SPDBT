@@ -35,7 +35,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					(fileUploaded)="onFileCertificateAdded($event)"
 					(fileRemoved)="onFileRemoved()"
 					[control]="fireCourseCertificateAttachments"
-					[maxNumberOfFiles]="2"
+					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
 					[files]="fireCourseCertificateAttachments.value"
 				></app-file-upload>
@@ -57,7 +57,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					(fileUploaded)="onFileVerificationAdded($event)"
 					(fileRemoved)="onFileRemoved()"
 					[control]="fireVerificationLetterAttachments"
-					[maxNumberOfFiles]="2"
+					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef
 					[files]="fireVerificationLetterAttachments.value"
 				></app-file-upload>

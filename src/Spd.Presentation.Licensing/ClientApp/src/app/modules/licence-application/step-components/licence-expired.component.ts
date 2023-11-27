@@ -80,7 +80,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<ng-container *ngIf="isAfterSearch">
 										<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
 											This is a valid expired licence with an expiry date of
-											{{ expiryDate.value | date : constants.date.dateFormat }}.
+											{{ expiryDate.value | date : constants.date.formalDateFormat : 'UTC' }}.
 										</app-alert>
 										<app-alert type="warning" *ngIf="isFound && !isExpired">
 											The licence is still valid. Please renew it when you get your renewal notice in the mail.

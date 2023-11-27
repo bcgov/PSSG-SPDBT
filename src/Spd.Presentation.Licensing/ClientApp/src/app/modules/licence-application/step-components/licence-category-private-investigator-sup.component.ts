@@ -89,7 +89,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
-						[maxNumberOfFiles]="1"
+						[maxNumberOfFiles]="10"
 						#attachmentsRef
 						[files]="attachments.value"
 					></app-file-upload>

@@ -21,15 +21,16 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode
+	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import {
 	BooleanTypeCode,
 	PrivateInvestigatorTrainingCode,
+	RestraintDocumentTypeCode,
 	SelectOptions,
-	WorkerCategoryTypes
+	WorkerCategoryTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -168,6 +169,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					province: bcscUserWhoamiProfile.residentialAddress?.province,
 				},
 			});
+		} else {
+			this.licenceModelFormGroup.patchValue({
+				residentialAddressData: {
+					isMailingTheSameAsResidential: false,
+				},
+			});
 		}
 
 		this.initialized = true;
@@ -297,6 +304,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						citizenshipDataAttachments.push(aFile);
 					});
 				}
+
+				const citizenshipExpiryDate = resp.citizenshipDocument?.expiryDate; //this.utilService.getUtcIsoString(resp.citizenshipDocument?.expiryDate);
 				const citizenshipData = {
 					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
@@ -305,7 +314,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					notCanadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? null
 						: resp.citizenshipDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.citizenshipDocument?.expiryDate,
+					expiryDate: citizenshipExpiryDate,
 					attachments: citizenshipDataAttachments,
 				};
 
@@ -383,6 +392,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						addressSelected: !!resp.mailingAddressData?.addressLine1,
 					};
 				}
+
+				let restraintsAuthorizationData: any = {};
+				let dogsAuthorizationData: any = {};
 
 				let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
 				let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
@@ -542,27 +554,67 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						}
 						case WorkerCategoryTypeCode.SecurityGuard: {
 							const attachmentsSecurityGuard: Array<File> = [];
+							const attachmentsDogs: Array<File> = [];
+							const attachmentsRestraints: Array<File> = [];
+
 							let requirementCodeSecurityGuard = '';
+							let carryAndUseRestraintsDocument = '';
 
 							category.documents?.forEach((doc: Document) => {
-								requirementCodeSecurityGuard = doc.licenceDocumentTypeCode ?? '';
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									attachmentsSecurityGuard.push(aFile);
-								});
+								const isDogRelated =
+									doc.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate;
+								const isRestraintRelated = (Object.keys(RestraintDocumentTypeCode) as Array<any>).includes(
+									doc.licenceDocumentTypeCode
+								);
+
+								if (isDogRelated) {
+									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+										const aFile = this.utilService.dummyFile(item);
+										attachmentsDogs.push(aFile);
+									});
+								} else if (isRestraintRelated) {
+									carryAndUseRestraintsDocument = doc.licenceDocumentTypeCode ?? '';
+									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+										const aFile = this.utilService.dummyFile(item);
+										attachmentsRestraints.push(aFile);
+									});
+								} else {
+									requirementCodeSecurityGuard = doc.licenceDocumentTypeCode ?? '';
+									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+										const aFile = this.utilService.dummyFile(item);
+										attachmentsSecurityGuard.push(aFile);
+									});
+								}
 							});
+
+							restraintsAuthorizationData = {
+								carryAndUseRestraints: this.booleanToBooleanType(resp.carryAndUseRestraints),
+								carryAndUseRestraintsDocument,
+								attachments: attachmentsRestraints,
+							};
+
+							dogsAuthorizationData = {
+								useDogs: this.booleanToBooleanType(resp.useDogs),
+								dogsPurposeFormGroup: {
+									isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
+									isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
+									isDogsPurposeProtection: resp.isDogsPurposeProtection,
+								},
+								attachments: attachmentsDogs,
+							};
 
 							categorySecurityGuardFormGroup = {
 								isInclude: true,
 								requirementCode: requirementCodeSecurityGuard,
 								attachments: attachmentsSecurityGuard,
 							};
+
 							break;
 						}
 						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 							categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.SecurityAlarmInstaller:{
+						case WorkerCategoryTypeCode.SecurityAlarmInstaller: {
 							const attachmentsSecurityAlarmInstaller: Array<File> = [];
 							let requirementCodeSecurityAlarmInstaller = '';
 
@@ -593,7 +645,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						case WorkerCategoryTypeCode.SecurityAlarmSales:
 							categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.SecurityConsultant:{
+						case WorkerCategoryTypeCode.SecurityConsultant: {
 							const attachments1SecurityConsultant: Array<File> = [];
 							const attachments2SecurityConsultant: Array<File> = [];
 							let requirementCodeSecurityConsultant = '';
@@ -669,6 +721,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					categorySecurityAlarmResponseFormGroup,
 					categorySecurityAlarmSalesFormGroup,
 					categorySecurityConsultantFormGroup,
+					restraintsAuthorizationData,
+					dogsAuthorizationData,
 				});
 
 				console.debug('loadExistingLicence resp', resp);
@@ -872,6 +926,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const fingerprintProofData = { ...formValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...formValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
+		let dogsAuthorizationData = {};
+		let restraintsAuthorizationData = {};
 
 		const categoryData: Array<WorkerLicenceAppCategoryData> = [];
 
@@ -920,7 +976,30 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		}
 
 		if (formValue.categorySecurityGuardFormGroup.isInclude) {
-			categoryData.push(this.getCategorySecurityGuard(formValue.categorySecurityGuardFormGroup));
+			const dogsPurposeFormGroup = formValue.dogsAuthorizationData.dogsPurposeFormGroup;
+
+			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
+			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
+			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+
+			dogsAuthorizationData = {
+				useDogs: this.booleanTypeToBoolean(formValue.dogsAuthorizationData.useDogs),
+				isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.useDogs ? isDetectionDrugs : null,
+				isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.useDogs ? isDetectionExplosives : null,
+				isDogsPurposeProtection: formValue.dogsAuthorizationData.useDogs ? isProtection : null,
+			};
+
+			restraintsAuthorizationData = {
+				carryAndUseRestraints: this.booleanTypeToBoolean(formValue.restraintsAuthorizationData.carryAndUseRestraints),
+			};
+
+			categoryData.push(
+				this.getCategorySecurityGuard(
+					formValue.categorySecurityGuardFormGroup,
+					formValue.dogsAuthorizationData,
+					formValue.restraintsAuthorizationData
+				)
+			);
 		}
 
 		if (formValue.categorySecurityGuardSupFormGroup.isInclude) {
@@ -1121,6 +1200,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			policeOfficerDocument,
 			//-----------------------------------
 			categoryData,
+			...dogsAuthorizationData,
+			...restraintsAuthorizationData,
 		};
 
 		return body;
@@ -1305,9 +1386,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param categorySecurityGuardData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	private getCategorySecurityGuard(categorySecurityGuardData: any): WorkerLicenceAppCategoryData {
+	private getCategorySecurityGuard(
+		categorySecurityGuardData: any,
+		dogsAuthorizationData: any,
+		restraintsAuthorizationData: any
+	): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
-
 		if (categorySecurityGuardData.attachments) {
 			const categorySecurityGuardDocuments: Array<LicenceAppDocumentResponse> = [];
 
@@ -1322,6 +1406,40 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				documentResponses: categorySecurityGuardDocuments,
 				licenceDocumentTypeCode: categorySecurityGuardData.requirementCode,
 			});
+		}
+
+		if (this.booleanTypeToBoolean(dogsAuthorizationData.useDogs)) {
+			if (dogsAuthorizationData.attachments) {
+				const categorySecurityGuardDogDocuments: Array<LicenceAppDocumentResponse> = [];
+				dogsAuthorizationData.attachments.forEach((doc: any) => {
+					const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
+						documentUrlId: doc.documentUrlId,
+					};
+					categorySecurityGuardDogDocuments.push(licenceAppDocumentResponse);
+				});
+
+				documents.push({
+					documentResponses: categorySecurityGuardDogDocuments,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate,
+				});
+			}
+		}
+
+		if (this.booleanTypeToBoolean(restraintsAuthorizationData.carryAndUseRestraints)) {
+			if (restraintsAuthorizationData.attachments) {
+				const categorySecurityGuardRestraintDocuments: Array<LicenceAppDocumentResponse> = [];
+				restraintsAuthorizationData.attachments.forEach((doc: any) => {
+					const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
+						documentUrlId: doc.documentUrlId,
+					};
+					categorySecurityGuardRestraintDocuments.push(licenceAppDocumentResponse);
+				});
+
+				documents.push({
+					documentResponses: categorySecurityGuardRestraintDocuments,
+					licenceDocumentTypeCode: restraintsAuthorizationData.carryAndUseRestraintsDocument,
+				});
+			}
 		}
 
 		return {
