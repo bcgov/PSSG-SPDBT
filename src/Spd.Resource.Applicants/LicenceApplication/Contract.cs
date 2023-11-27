@@ -1,5 +1,4 @@
 using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.Delegates;
 using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
@@ -52,7 +51,7 @@ public record LicenceApplication
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
-    public bool? CarryAndUseRetraints { get; set; }
+    public bool? CarryAndUseRestraints { get; set; }
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
