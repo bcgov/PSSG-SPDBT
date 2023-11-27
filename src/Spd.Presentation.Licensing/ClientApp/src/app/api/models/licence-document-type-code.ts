@@ -33,8 +33,6 @@ export enum LicenceDocumentTypeCode {
   CertificateOfIndianStatus = 'CertificateOfIndianStatus',
   ConfirmationOfPermanentResidenceDocument = 'ConfirmationOfPermanentResidenceDocument',
   DocumentToVerifyLegalWorkStatus = 'DocumentToVerifyLegalWorkStatus',
-  DogsSecurityDogValidationCertificate = 'DogsSecurityDogValidationCertificate',
-  DogsCertificateOfAdvancedSecurityTraining = 'DogsCertificateOfAdvancedSecurityTraining',
   DriversLicence = 'DriversLicence',
   GovernmentIssuedPhotoId = 'GovernmentIssuedPhotoId',
   MentalHealthCondition = 'MentalHealthCondition',
@@ -43,9 +41,6 @@ export enum LicenceDocumentTypeCode {
   PoliceBackgroundLetterOfNoConflict = 'PoliceBackgroundLetterOfNoConflict',
   ProofOfFingerprint = 'ProofOfFingerprint',
   RecordOfLandingDocument = 'RecordOfLandingDocument',
-  RestraintsAdvancedSecurityTrainingCertificate = 'RestraintsAdvancedSecurityTrainingCertificate',
-  RestraintsUseOfForceLetter = 'RestraintsUseOfForceLetter',
-  RestraintsTrainingEquivalent = 'RestraintsTrainingEquivalent',
   StudyPermit = 'StudyPermit',
   WorkPermit = 'WorkPermit'
 }

@@ -150,6 +150,23 @@ export class UtilService {
 		return [year, month, day].join('-');
 	}
 
+	getUtcIsoString(dateStr: null | string | undefined): string {
+		if (!dateStr) {
+			return '';
+		}
+
+		const date = new Date(dateStr);
+		const dateAsUtcDate = new Date(
+			date.getUTCFullYear(),
+			date.getUTCMonth(),
+			date.getUTCDate(),
+			date.getUTCHours(),
+			date.getUTCMinutes(),
+			date.getUTCSeconds()
+		);
+		return dateAsUtcDate.toISOString();
+	}
+
 	//------------------------------------
 	// Sort
 

@@ -219,7 +219,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const expiredLicenceData = {
 					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
 					expiredLicenceNumber: resp.expiredLicenceNumber,
-					expiryDate: resp.expiryDate,
+					expiryDate: this.utilService.getUtcIsoString(resp.expiryDate),
 					expiredLicenceId: resp.expiredLicenceId,
 				};
 				const licenceTermData = {
@@ -284,7 +284,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						middleName2: bcscUserWhoamiProfile.middleName2,
 						surname: bcscUserWhoamiProfile.lastName,
 						genderCode: bcscUserWhoamiProfile.gender,
-						dateOfBirth: bcscUserWhoamiProfile.birthDate,
+						dateOfBirth: this.utilService.getUtcIsoString(bcscUserWhoamiProfile.birthDate),
 					};
 				} else {
 					personalInformationData = {
@@ -293,7 +293,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						middleName2: resp.middleName2,
 						surname: resp.surname,
 						genderCode: resp.genderCode,
-						dateOfBirth: resp.dateOfBirth,
+						dateOfBirth: this.utilService.getUtcIsoString(resp.dateOfBirth),
 					};
 				}
 
@@ -304,6 +304,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						citizenshipDataAttachments.push(aFile);
 					});
 				}
+
+				const citizenshipExpiryDate = this.utilService.getUtcIsoString(resp.citizenshipDocument?.expiryDate);
 				const citizenshipData = {
 					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
@@ -312,7 +314,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					notCanadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? null
 						: resp.citizenshipDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.citizenshipDocument?.expiryDate,
+					expiryDate: citizenshipExpiryDate,
 					attachments: citizenshipDataAttachments,
 				};
 
@@ -994,8 +996,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categoryData.push(
 				this.getCategorySecurityGuard(
 					formValue.categorySecurityGuardFormGroup,
-					dogsAuthorizationData,
-					restraintsAuthorizationData
+					formValue.dogsAuthorizationData,
+					formValue.restraintsAuthorizationData
 				)
 			);
 		}
@@ -1406,7 +1408,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 		}
 
-		if (dogsAuthorizationData.useDogs) {
+		if (this.booleanTypeToBoolean(dogsAuthorizationData.useDogs)) {
 			if (dogsAuthorizationData.attachments) {
 				const categorySecurityGuardDogDocuments: Array<LicenceAppDocumentResponse> = [];
 				dogsAuthorizationData.attachments.forEach((doc: any) => {
@@ -1423,7 +1425,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		}
 
-		if (restraintsAuthorizationData.carryAndUseRestraints) {
+		if (this.booleanTypeToBoolean(restraintsAuthorizationData.carryAndUseRestraints)) {
 			if (restraintsAuthorizationData.attachments) {
 				const categorySecurityGuardRestraintDocuments: Array<LicenceAppDocumentResponse> = [];
 				restraintsAuthorizationData.attachments.forEach((doc: any) => {
