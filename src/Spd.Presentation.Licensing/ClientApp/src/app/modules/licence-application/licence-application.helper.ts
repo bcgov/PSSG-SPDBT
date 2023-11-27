@@ -256,23 +256,23 @@ export abstract class LicenceApplicationHelper {
 
 	restraintsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			carryAndUseRetraints: new FormControl(''),
-			carryAndUseRetraintsDocument: new FormControl(''),
+			carryAndUseRestraints: new FormControl(''),
+			carryAndUseRestraintsDocument: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
-					'carryAndUseRetraints',
+					'carryAndUseRestraints',
 					(_form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'carryAndUseRetraintsDocument',
-					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
+					'carryAndUseRestraintsDocument',
+					(form) => form.get('carryAndUseRestraints')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('carryAndUseRestraints')?.value == this.booleanTypeCodes.Yes
 				),
 			],
 		}
@@ -289,7 +289,6 @@ export abstract class LicenceApplicationHelper {
 				},
 				FormGroupValidators.atLeastOneCheckboxValidator('useDogs', BooleanTypeCode.Yes)
 			),
-			dogsPurposeDocumentType: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
@@ -297,10 +296,6 @@ export abstract class LicenceApplicationHelper {
 				FormGroupValidators.conditionalRequiredValidator(
 					'useDogs',
 					(_form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'dogsPurposeDocumentType',
-					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
@@ -476,28 +471,28 @@ export abstract class LicenceApplicationHelper {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
+				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
 					'addressSelected',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingAddressLine1',
+					'addressLine1',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingCity',
+					'city',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingPostalCode',
+					'postalCode',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingProvince',
+					'province',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingCountry',
+					'country',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 			],

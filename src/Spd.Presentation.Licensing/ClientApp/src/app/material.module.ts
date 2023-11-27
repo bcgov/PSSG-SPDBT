@@ -82,7 +82,7 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 export class SpdDateAdapter extends NativeDateAdapter {
 	override format(date: Date, displayFormat: any): string {
 		if (displayFormat === 'input') {
-			return formatDate(date, SPD_CONSTANTS.date.dateFormat, this.locale);
+			return formatDate(date, SPD_CONSTANTS.date.dateFormat, this.locale, 'UTC');
 		} else {
 			return date.toDateString();
 		}
@@ -93,7 +93,7 @@ export class SpdDateAdapter extends NativeDateAdapter {
 export class SpdDateYearMonthAdapter extends NativeDateAdapter {
 	override format(date: Date, displayFormat: any): string {
 		if (displayFormat === 'input') {
-			return formatDate(date, SPD_CONSTANTS.date.monthYearFormat, this.locale);
+			return formatDate(date, SPD_CONSTANTS.date.monthYearFormat, this.locale, 'UTC');
 		} else {
 			return date.toDateString();
 		}
