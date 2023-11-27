@@ -5,6 +5,7 @@ namespace Spd.Resource.Applicants.LicenceApplication;
 public partial interface ILicenceApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
+    public Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid LicenceAppId, CancellationToken cancellationToken);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
     public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
 }
