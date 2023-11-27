@@ -219,7 +219,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
+												<ng-container *ngIf="showDogsAndRestraints">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Restraints Authorization</div>
 													<div class="row mt-0">
@@ -229,43 +229,45 @@ import { LicenceApplicationService } from '../licence-application.service';
 																{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 															</div>
 														</div>
-														<div class="col-lg-8 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-																	{{ doc.name }}
+														<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
+															<div class="col-lg-8 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
+																</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+																		{{ doc.name }}
+																	</div>
 																</div>
 															</div>
-														</div>
+														</ng-container>
 													</div>
-												</ng-container>
 
-												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Dog Authorization</div>
+													<div class="text-minor-heading">Dogs Authorization</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
 															<div class="text-data">{{ useDogs }}</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
-															<div class="text-data">
-																<div *ngIf="isDogsPurposeProtection">Protection</div>
-																<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-																<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-															</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
-															<div class="text-data">
-																<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																	{{ doc.name }}
+														<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
+																<div class="text-data">
+																	<div *ngIf="isDogsPurposeProtection">Protection</div>
+																	<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+																	<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
 																</div>
 															</div>
-														</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+														</ng-container>
 													</div>
 												</ng-container>
 											</div>
@@ -814,6 +816,9 @@ export class SummaryReviewComponent implements OnInit {
 	}
 	get carryAndUseRestraintsAttachments(): File[] {
 		return this.licenceModelData.restraintsAuthorizationData.attachments ?? [];
+	}
+	get showDogsAndRestraints(): boolean {
+		return this.licenceModelData.categorySecurityGuardFormGroup.isInclude;
 	}
 	get useDogs(): string {
 		return this.licenceModelData.dogsAuthorizationData.useDogs ?? '';

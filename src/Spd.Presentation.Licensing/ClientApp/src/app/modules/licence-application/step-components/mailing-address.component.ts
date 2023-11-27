@@ -14,7 +14,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="step">
 				<app-step-title
 					title="Provide your mailing address"
-					subtitle="Provide your mailing address, if different from your residential address. This can not be a company address."
+					subtitle="Provide your mailing address, if different from your residential address. This cannot be a company address."
 				></app-step-title>
 				<form [formGroup]="form" novalidate>
 					<div class="row">

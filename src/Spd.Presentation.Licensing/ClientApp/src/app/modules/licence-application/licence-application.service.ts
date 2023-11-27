@@ -169,6 +169,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					province: bcscUserWhoamiProfile.residentialAddress?.province,
 				},
 			});
+		} else {
+			this.licenceModelFormGroup.patchValue({
+				residentialAddressData: {
+					isMailingTheSameAsResidential: false,
+				},
+			});
 		}
 
 		this.initialized = true;
@@ -969,11 +975,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		if (formValue.categorySecurityGuardFormGroup.isInclude) {
 			const dogsPurposeFormGroup = formValue.dogsAuthorizationData.dogsPurposeFormGroup;
+
+			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
+			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
+			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+
 			dogsAuthorizationData = {
 				useDogs: this.booleanTypeToBoolean(formValue.dogsAuthorizationData.useDogs),
-				isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false,
-				isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false,
-				isDogsPurposeProtection: dogsPurposeFormGroup.isDogsPurposeProtection ?? false,
+				isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.useDogs ? isDetectionDrugs : null,
+				isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.useDogs ? isDetectionExplosives : null,
+				isDogsPurposeProtection: formValue.dogsAuthorizationData.useDogs ? isProtection : null,
 			};
 
 			restraintsAuthorizationData = {
@@ -983,8 +994,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categoryData.push(
 				this.getCategorySecurityGuard(
 					formValue.categorySecurityGuardFormGroup,
-					formValue.dogsAuthorizationData,
-					formValue.restraintsAuthorizationData
+					dogsAuthorizationData,
+					restraintsAuthorizationData
 				)
 			);
 		}
@@ -1415,7 +1426,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		if (restraintsAuthorizationData.carryAndUseRestraints) {
 			if (restraintsAuthorizationData.attachments) {
 				const categorySecurityGuardRestraintDocuments: Array<LicenceAppDocumentResponse> = [];
-				dogsAuthorizationData.attachments.forEach((doc: any) => {
+				restraintsAuthorizationData.attachments.forEach((doc: any) => {
 					const licenceAppDocumentResponse: LicenceAppDocumentResponse = {
 						documentUrlId: doc.documentUrlId,
 					};

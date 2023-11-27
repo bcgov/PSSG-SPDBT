@@ -471,28 +471,28 @@ export abstract class LicenceApplicationHelper {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
+				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
 					'addressSelected',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingAddressLine1',
+					'addressLine1',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingCity',
+					'city',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingPostalCode',
+					'postalCode',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingProvince',
+					'province',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
-					'mailingCountry',
+					'country',
 					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
 				),
 			],
