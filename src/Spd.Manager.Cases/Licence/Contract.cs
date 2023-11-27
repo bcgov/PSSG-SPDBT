@@ -20,7 +20,7 @@ namespace Spd.Manager.Cases.Licence
     }
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
-    public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) 
+    public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null)
         : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceAppUpsertResponse>;
 
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
@@ -503,7 +503,7 @@ namespace Spd.Manager.Cases.Licence
                     && d.Any(doc => LicenceManager.PrivateInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigator);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.FireInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.FireInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.FireInvestigator);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
                     && d.Any(doc => LicenceManager.SecurityConsultantCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))

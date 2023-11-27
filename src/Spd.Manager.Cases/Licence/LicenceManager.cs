@@ -12,6 +12,7 @@ using Spd.Utilities.TempFileStorage;
 namespace Spd.Manager.Cases.Licence;
 internal partial class LicenceManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
