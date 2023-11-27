@@ -374,6 +374,10 @@ internal partial class LicenceManager
             LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCertificate,
             LicenceDocumentTypeCode.CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
             LicenceDocumentTypeCode.CategorySecurityGuard_PoliceExperienceOrTraining,
+            LicenceDocumentTypeCode.CategorySecurityGuard_DogCertificate,
+            LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter,
+            LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
+            LicenceDocumentTypeCode.CategorySecurityGuard_ASTCertificate
         };
 
     public static List<LicenceDocumentTypeCode> SecurityAlarmInstallerCodes = new List<LicenceDocumentTypeCode> {
