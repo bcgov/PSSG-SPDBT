@@ -254,8 +254,6 @@ namespace Spd.Manager.Cases.Licence
         CertificateOfIndianStatus,
         ConfirmationOfPermanentResidenceDocument,
         DocumentToVerifyLegalWorkStatus,
-        DogsSecurityDogValidationCertificate,
-        DogsCertificateOfAdvancedSecurityTraining,
         DriversLicence,
         GovernmentIssuedPhotoId,
         MentalHealthCondition,
@@ -264,9 +262,6 @@ namespace Spd.Manager.Cases.Licence
         PoliceBackgroundLetterOfNoConflict,
         ProofOfFingerprint,
         RecordOfLandingDocument,
-        RestraintsAdvancedSecurityTrainingCertificate,
-        RestraintsUseOfForceLetter,
-        RestraintsTrainingEquivalent,
         StudyPermit,
         WorkPermit
     }
