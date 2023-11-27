@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS net-builder
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS net-builder
 
 # install diagnostics tools
 RUN mkdir /tools
@@ -12,8 +12,8 @@ RUN dotnet restore "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj"
 COPY . .
 RUN dotnet publish "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
-FROM registry.access.redhat.com/ubi8/dotnet-70-runtime AS final
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM registry.access.redhat.com/ubi8/dotnet-80-runtime AS final
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://*:8080
