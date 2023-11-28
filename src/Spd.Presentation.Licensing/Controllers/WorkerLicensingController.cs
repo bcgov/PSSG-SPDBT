@@ -118,9 +118,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
             var info = _currentUser.GetBcscUserIdentityInfo();
-            //temp: todo: process submit command
-            return null;
-            //return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceSubmitRequest, info.Sub));
+            return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest, info.Sub));
         }
 
         /// <summary>

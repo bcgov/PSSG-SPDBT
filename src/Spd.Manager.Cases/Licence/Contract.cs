@@ -11,6 +11,7 @@ namespace Spd.Manager.Cases.Licence
     public interface ILicenceManager
     {
         public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
+        public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
         public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
         public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
         public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
@@ -19,6 +20,9 @@ namespace Spd.Manager.Cases.Licence
     }
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
+    public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null)
+        : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceAppUpsertResponse>;
+
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
     public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
@@ -471,7 +475,7 @@ namespace Spd.Manager.Cases.Licence
             public WorkerLicenceAppCategoryDataValidator()
             {
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.SecurityGuardDocCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.SecurityGuardDocCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard);
                 RuleFor(c => c.Documents).Must(d => d == null || d.Count() == 0)
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
@@ -484,25 +488,25 @@ namespace Spd.Manager.Cases.Licence
                     || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.LocksmithUnderSupervision
                     || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.BodyArmourSales);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => (doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => (doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ArmouredCarGuard);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.SecurityAlarmInstallerCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.SecurityAlarmInstallerCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmInstaller);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.LockSmithCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.LockSmithCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 &&  doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.Locksmith);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.PrivateInvestigatorUnderSupervisionCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.PrivateInvestigatorUnderSupervisionCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.PrivateInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.PrivateInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigator);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.FireInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.FireInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.FireInvestigator);
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.SecurityConsultantCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0))
+                    && d.Any(doc => LicenceManager.SecurityConsultantCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityConsultant);
             }
         }

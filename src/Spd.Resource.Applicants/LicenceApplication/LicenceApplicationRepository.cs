@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
 internal class LicenceApplicationRepository : ILicenceApplicationRepository
@@ -63,6 +65,19 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         //then update category.
         ProcessCategories(cmd.CategoryData, app);
         await _context.SaveChangesAsync();
+        return new LicenceApplicationCmdResp(app.spd_applicationid);
+    }
+
+    public async Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid licAppId, CancellationToken cancellationToken)
+    {
+        spd_application? app = await _context.GetApplicationById(licAppId, cancellationToken);
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
+
+        app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
+        app.statecode = DynamicsConstants.StateCode_Inactive;
+        _context.UpdateObject(app);
+        await _context.SaveChangesAsync(cancellationToken);
         return new LicenceApplicationCmdResp(app.spd_applicationid);
     }
 
