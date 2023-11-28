@@ -1,7 +1,17 @@
-import { Platform } from '@angular/cdk/platform';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
-import { SpdDateYearMonthAdapter } from 'src/app/material.module';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { Moment } from 'moment';
+
+export const MONTH_PICKER_FORMATS = {
+	parse: {
+		dateInput: 'LL',
+	},
+	display: {
+		dateInput: 'MMMM YYYY', // this is the format showing on the input element
+		monthYearLabel: 'MMMM YYYY', // this is showing on the calendar
+	},
+};
 
 @Component({
 	selector: 'app-month-picker',
@@ -21,17 +31,19 @@ import { SpdDateYearMonthAdapter } from 'src/app/material.module';
 	providers: [
 		{
 			provide: DateAdapter,
-			useClass: SpdDateYearMonthAdapter,
-			deps: [MAT_DATE_LOCALE, Platform],
+			useClass: MomentDateAdapter,
+			deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
 		},
+
+		{ provide: MAT_DATE_FORMATS, useValue: MONTH_PICKER_FORMATS },
 	],
 })
 export class MonthPickerComponent {
 	@Input() label = '';
 	@Input() hint = '';
 	@Input() monthAndYear: Date | null = null;
-	@Input() minDate: Date | null = null;
-	@Input() maxDate: Date | null = null;
+	@Input() minDate: Moment | null = null;
+	@Input() maxDate: Moment | null = null;
 
 	@Output() monthAndYearChange = new EventEmitter<Date | null>();
 
