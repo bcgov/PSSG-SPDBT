@@ -175,11 +175,11 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
-	readonly STEP_POLICE_BACKGROUND = '1';
-	readonly STEP_MENTAL_HEALTH_CONDITIONS = '2';
-	readonly STEP_CRIMINAL_HISTORY = '3';
-	readonly STEP_FINGERPRINTS = '4';
-	readonly STEP_BACKGROUND_INFO = '5';
+	readonly STEP_POLICE_BACKGROUND = 1;
+	readonly STEP_MENTAL_HEALTH_CONDITIONS = 2;
+	readonly STEP_CRIMINAL_HISTORY = 3;
+	readonly STEP_FINGERPRINTS = 4;
+	readonly STEP_BACKGROUND_INFO = 5;
 
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 
@@ -244,20 +244,20 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 		this.previousStepperStep.emit(true);
 	}
 
-	onStepNext(formNumber: string): void {
+	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.nextStepperStep.emit(true);
 	}
 
-	onSaveAndExit(formNumber: string): void {
+	onSaveAndExit(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.saveAndExit.emit(true);
 	}
 
-	onNextReview(formNumber: string): void {
+	onNextReview(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
@@ -276,14 +276,14 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
 	}
 
-	onFormValidNextStep(formNumber: string): void {
+	onFormValidNextStep(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.childNextStep.emit(true);
 	}
 
-	private dirtyForm(step: string): boolean {
+	private dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_POLICE_BACKGROUND:
 				return this.policeBackgroundComponent.isFormValid();

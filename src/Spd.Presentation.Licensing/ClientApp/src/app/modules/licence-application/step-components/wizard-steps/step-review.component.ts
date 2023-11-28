@@ -82,11 +82,11 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 		this.scrollIntoView.emit(true);
 	}
 
-	onStepNext(_formNumber: string): void {
+	onStepNext(_formNumber: number): void {
 		// unused
 	}
 
-	onFormValidNextStep(_formNumber: string): void {
+	onFormValidNextStep(_formNumber: number): void {
 		// unused
 	}
 
