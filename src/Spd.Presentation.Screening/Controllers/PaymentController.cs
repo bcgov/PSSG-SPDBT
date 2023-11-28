@@ -20,6 +20,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly PaymentsConfiguration _paymentsConfiguration;
+        private readonly ILogger<PaymentController> _logger;
 
         /// <summary>
         /// 
@@ -29,12 +30,15 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="configuration"></param>
         public PaymentController(IMediator mediator,
             IMapper mapper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<PaymentController> logger
+            )
         {
             _mediator = mediator;
             _mapper = mapper;
             _configuration = configuration;
             _paymentsConfiguration = configuration.GetSection("Payments").Get<PaymentsConfiguration>();
+            _logger = logger;
             if (_paymentsConfiguration == null)
                 throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
         }
@@ -74,7 +78,10 @@ namespace Spd.Presentation.Screening.Controllers
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                {
+                    _logger.LogInformation("Payment is being cancelled.");
                     return Redirect($"{hostUrl}{cancelPath}");
+                }
 
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
@@ -82,8 +89,9 @@ namespace Spd.Presentation.Screening.Controllers
 
                 return Redirect($"{hostUrl}{failPath}{paymentId}");
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"Payment result processing has errors +{ex}");
                 return Redirect($"{hostUrl}{errorPath}");
             }
         }
@@ -189,8 +197,9 @@ namespace Spd.Presentation.Screening.Controllers
 
                 return Redirect($"{hostUrl}{failPath}{paymentId}?orgId={orgId}");
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"Payment result processing for org has errors +{ex}");
                 return Redirect($"{hostUrl}{errorPath}?orgId={orgId}");
             }
         }
@@ -287,7 +296,10 @@ namespace Spd.Presentation.Screening.Controllers
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                {
                     return Redirect($"{hostUrl}{cancelPath}");
+                }
+
 
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
@@ -295,8 +307,9 @@ namespace Spd.Presentation.Screening.Controllers
 
                 return Redirect($"{hostUrl}{failPath}{paymentId}");
             }
-            catch
+            catch( Exception ex ) 
             {
+                _logger.LogError($"ProcessApplicantInvitePaymentResult Payment result processing has errors +{ex}");
                 return Redirect($"{hostUrl}{errorPath}");
             }
         }
@@ -382,8 +395,9 @@ namespace Spd.Presentation.Screening.Controllers
                 var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
                 return Redirect(result.PaymentLinkUrl);
             }
-            catch (ApiException e)
+            catch (Exception ex)
             {
+                _logger.LogError($"CreateLinkRedirectToPaybcPaymentPage has errors +{ex}");
                 return Redirect($"{hostUrl}{errorPath}");
             }
         }

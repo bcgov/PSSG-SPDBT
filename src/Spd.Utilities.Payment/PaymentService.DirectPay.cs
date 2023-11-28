@@ -33,7 +33,7 @@ namespace Spd.Utilities.Payment
             string redirectUrl = command.RedirectUrl;
             string currency = "CAD";
             string revenue = $"1:{command.RevenueAccount}:{trnAmount}";
-            string? ref1 = HttpUtility.HtmlEncode(command.Ref1);
+            string? ref1 = string.Empty;// HttpUtility.HtmlEncode(command.Ref1); //ref1 is reserved for paybc internal use.
             string? ref2 = HttpUtility.HtmlEncode(command.Ref2);
             string? ref3 = HttpUtility.HtmlEncode(command.Ref3);
             string apikey = _config.DirectPayment.APIKey;
