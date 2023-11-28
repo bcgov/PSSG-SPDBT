@@ -57,17 +57,17 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 		<div class="row text-center mb-4">
 			<div class="offset-xl-3 col-xl-2 offset-lg-2 col-lg-3 mt-4">
-				<small class="d-block"> Case ID </small>
+				<div class="d-block text-label">Case ID</div>
 				<div class="payment__text">{{ payment?.caseNumber }}</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
-				<small class="d-block"> Date of Transaction </small>
+				<div class="d-block text-label">Date of Transaction</div>
 				<div class="payment__text">
 					{{ payment?.transDateTime | formatDate : appConstants.date.formalDateFormat }}
 				</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
-				<small class="d-block">Invoice/Order Number</small>
+				<div class="d-block text-label">Invoice/Order Number</div>
 				<div class="payment__text">{{ payment?.transOrderId }}</div>
 			</div>
 		</div>

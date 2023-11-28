@@ -1,6 +1,6 @@
 {
   "name": "spd",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "gen-api": "ng-openapi-gen -i https://frontend-dev.apps.emerald.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/app/api --ignoreUnusedModels false",

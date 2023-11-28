@@ -86,19 +86,19 @@ import {
 					<section class="px-4 py-2 ">
 						<div class="row mt-2">
 							<div class="col-lg-3 col-md-3">
-								<small class="d-block text-muted">Case ID</small>
+								<div class="d-block text-label">Case ID</div>
 								<strong> {{ application.applicationNumber }} </strong>
 							</div>
 							<div class="col-lg-3 col-md-3">
-								<small class="d-block text-muted mt-2 mt-md-0">Submitted On</small>
+								<div class="d-block text-label mt-2 mt-md-0">Submitted On</div>
 								<strong> {{ application.createdOn! | formatDate }} </strong>
 							</div>
 							<div class="col-lg-3 col-md-3">
-								<small class="d-block text-muted mt-2 mt-md-0">Service Type</small>
+								<div class="d-block text-label mt-2 mt-md-0">Service Type</div>
 								<strong> {{ application.serviceType | options : 'ServiceTypes' }}</strong>
 							</div>
 							<div class="col-lg-3 col-md-3">
-								<small class="d-block text-muted mt-2 mt-md-0">Paid By</small>
+								<div class="d-block text-label mt-2 mt-md-0">Paid By</div>
 								<strong> {{ application.payeeType }}</strong>
 							</div>
 						</div>
@@ -251,11 +251,10 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 		const applicationData = (this.location.getState() as any)?.applicationData;
 		if (applicationData) {
 			this.loadList(applicationData);
+			this.isNotAwaitingPayment = applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
 		} else {
 			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
 		}
-
-		this.isNotAwaitingPayment = applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
 	}
 
 	ngAfterViewInit() {

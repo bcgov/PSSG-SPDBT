@@ -36,7 +36,7 @@ export interface RegistrationFormStepComponent {
 @Component({
 	selector: 'app-org-registration',
 	template: `
-		<div class="container mt-4">
+		<div class="container my-4">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
