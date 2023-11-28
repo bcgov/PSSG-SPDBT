@@ -26,7 +26,7 @@ namespace Spd.Utilities.Payment
         public PaymentMethodEnum PaymentMethod { get; set; } //CC-credit card, VI - debit card
         public decimal Amount { get; set; }
         public string RedirectUrl { get; set; } = null!;
-        public string? Ref1 { get; set; }
+        //public string? Ref1 { get; set; } = null; //do not set ref1, it is reserved for paybc internal use
         public string? Ref2 { get; set; }
         public string? Ref3 { get; set; }
     }
