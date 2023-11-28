@@ -95,7 +95,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Date of Birth</div>
 									<div class="text-data">
-										{{ orgData.dateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
+										{{ orgData.dateOfBirth | formatDate }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">

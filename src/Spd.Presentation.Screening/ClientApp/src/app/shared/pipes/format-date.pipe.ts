@@ -7,7 +7,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	name: 'formatDate',
 })
 export class FormatDatePipe implements PipeTransform {
-	public transform(date: string | Moment, format: string = SPD_CONSTANTS.date.dateFormat): string {
+	public transform(date: string | Moment | undefined | null, format: string = SPD_CONSTANTS.date.dateFormat): string {
 		return date ? moment(date).format(format) : '';
 	}
 }

@@ -51,7 +51,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
-								Monthly Report - {{ report.reportDate | date : constants.date.monthYearFormat : 'UTC' }}
+								Monthly Report - {{ report.reportDate | formatDate : constants.date.monthYearFormat }}
 							</mat-cell>
 						</ng-container>
 
