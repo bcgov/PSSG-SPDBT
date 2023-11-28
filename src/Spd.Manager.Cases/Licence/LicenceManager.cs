@@ -12,6 +12,7 @@ using Spd.Utilities.TempFileStorage;
 namespace Spd.Manager.Cases.Licence;
 internal partial class LicenceManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
@@ -48,6 +49,7 @@ internal partial class LicenceManager :
         _logger = logger;
     }
 
+    //authenticated save
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
         _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
@@ -59,6 +61,21 @@ internal partial class LicenceManager :
         return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
     }
 
+    //authenticated submit
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    {
+        var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, ct);
+        //check if payment is done
+        //todo
+
+        //set status to submitted
+        await _licenceAppRepository.SubmitLicenceApplicationAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, ct);
+
+        //move the file from temp file repo to formal file repo.
+        //todo
+
+        return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
+    }
     public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct)
     {
         var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
@@ -72,13 +89,13 @@ internal partial class LicenceManager :
         LicenceAppQuery q = new LicenceAppQuery
         (
             query.ApplicantId,
-            new List<WorkerLicenceTypeEnum> 
+            new List<WorkerLicenceTypeEnum>
             {
                 WorkerLicenceTypeEnum.ArmouredVehiclePermit,
                 WorkerLicenceTypeEnum.BodyArmourPermit,
                 WorkerLicenceTypeEnum.SecurityWorkerLicence,
             },
-            new List<ApplicationPortalStatusEnum> 
+            new List<ApplicationPortalStatusEnum>
             {
                 ApplicationPortalStatusEnum.Draft,
                 ApplicationPortalStatusEnum.AwaitingThirdParty,
