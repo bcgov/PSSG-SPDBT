@@ -24,3 +24,6 @@ src/Spd.Presentation.Screening/key-*.xml
 key*.xml
 
 src/Spd.Presentation.Licensing/ClientApp/.nx/
+
+src/Spd.Presentation.Screening/ClientApp/.nx/
+
