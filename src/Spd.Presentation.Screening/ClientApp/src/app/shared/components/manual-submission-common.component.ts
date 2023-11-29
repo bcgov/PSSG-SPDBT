@@ -131,6 +131,9 @@ export interface AliasCreateRequest {
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 								<mat-datepicker #picker startView="multi-year" [startAt]="startAtBirthDate"></mat-datepicker>
 								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')">
+									This must be on or before {{ maxBirthDate | formatDate }}
+								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12">

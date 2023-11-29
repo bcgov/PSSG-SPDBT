@@ -16,20 +16,20 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<h4>Organization<br />Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">
+									<div class="text-label d-block">
 										<span *ngIf="orgData.isCrrpa">Requesting Organization</span>
 										<span *ngIf="!orgData.isCrrpa">Ministry</span>
 									</div>
 									<div class="text-data">{{ orgData.orgName }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12" *ngIf="orgData.isCrrpa">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Organization Phone Number</div>
+									<div class="text-label d-block mt-2 mt-lg-0">Organization Phone Number</div>
 									<div class="text-data">
 										{{ orgData.orgPhoneNumber || '' | mask : appConstants.phone.displayMask }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12" *ngIf="!orgData.isCrrpa">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
+									<div class="text-label d-block mt-2 mt-lg-0">Job Title</div>
 									<div class="text-data">{{ orgData.jobTitle | default }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
@@ -42,11 +42,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 								<div class="row mb-2">
 									<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted">Organization Address</div>
+										<div class="text-label d-block">Organization Address</div>
 										<div class="text-data">{{ orgData.orgAddress | default }}</div>
 									</div>
 									<div class="col-xl-4 col-lg-4 col-md-12">
-										<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
+										<div class="text-label d-block mt-2 mt-lg-0">Job Title</div>
 										<div class="text-data">{{ orgData.jobTitle | default }}</div>
 									</div>
 								</div>
@@ -62,13 +62,13 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<h4>Contact<br />Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Contact Given Names</div>
+									<div class="text-label d-block">Contact Given Names</div>
 									<div class="text-data">
 										{{ orgData.givenName }} {{ orgData.middleName1 }} {{ orgData.middleName2 }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Contact Surname</div>
+									<div class="text-label d-block mt-2 mt-lg-0">Contact Surname</div>
 									<div class="text-data">{{ orgData.surname }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
@@ -80,11 +80,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Email</div>
+									<div class="text-label d-block">Email</div>
 									<div class="text-data">{{ orgData.emailAddress | default }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
+									<div class="text-label d-block mt-2 mt-lg-0">Phone Number</div>
 									<div class="text-data">
 										{{ orgData.phoneNumber || '' | mask : appConstants.phone.displayMask }}
 									</div>
@@ -93,38 +93,38 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Date of Birth</div>
+									<div class="text-label d-block">Date of Birth</div>
 									<div class="text-data">
-										{{ orgData.dateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
+										{{ orgData.dateOfBirth | formatDate }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Birthplace</div>
+									<div class="text-label d-block mt-2 mt-lg-0">Birthplace</div>
 									<div class="text-data">{{ orgData.birthPlace | default }}</div>
 								</div>
 							</div>
 
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">BC Drivers Licence</div>
+									<div class="text-label d-block">BC Drivers Licence</div>
 									<div class="text-data">{{ orgData.driversLicense | default }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
+									<div class="text-label d-block mt-2 mt-lg-0">Sex</div>
 									<div class="text-data">{{ orgData.genderCode | options : 'GenderTypes' | default }}</div>
 								</div>
 							</div>
 
 							<div class="row mb-2" *ngIf="!orgData.isCrrpa">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">BC Government Employee ID</div>
+									<div class="text-label d-block">BC Government Employee ID</div>
 									<div class="text-data">{{ orgData.employeeId | default }}</div>
 								</div>
 							</div>
 
 							<div class="row mt-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
-									<div class="text-label d-block text-muted">Previous Names</div>
+									<div class="text-label d-block">Previous Names</div>
 									<div class="text-data">
 										<ng-container *ngIf="orgData.aliases?.length > 0; else noPreviousNames">
 											<ng-container *ngFor="let name of orgData.aliases">
@@ -138,7 +138,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 							<div class="row my-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
-									<div class="text-label d-block text-muted">Mailing Address</div>
+									<div class="text-label d-block">Mailing Address</div>
 									<div class="text-data">{{ getCrcDataMailingAddress() }}</div>
 								</div>
 							</div>
@@ -159,10 +159,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 				font-size: 1.05rem;
 				font-weight: 300;
 				line-height: 1.3em;
-			}
-
-			.text-label {
-				font-size: smaller;
 			}
 
 			.card-section {

@@ -210,7 +210,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										activities to better serve you. Should you have any questions about the collection, use, or
 										disclosure of your personal information, please contact the Policy Analyst of the Criminal Records
 										Review Program, Security Programs Division via mail to PO Box 9217 Stn Prov Govt Victoria, BC V8W
-										9J1; email to <a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a>; or by
+										9J1; email to <a href="mailto:criminalrecords@gov.bc.ca">criminalrecords&#64;gov.bc.ca</a>; or by
 										telephone at 1- 855-587-0185 (option 2).
 									</p>
 								</div>

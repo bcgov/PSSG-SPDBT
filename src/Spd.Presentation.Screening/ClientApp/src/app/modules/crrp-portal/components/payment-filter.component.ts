@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
@@ -42,6 +43,12 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 									</mat-date-range-input>
 									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 									<mat-date-range-picker #picker></mat-date-range-picker>
+									<mat-error *ngIf="formGroup.get('fromDate')?.hasError('matDatepickerMin')">
+										This must be on or after {{ minDate | formatDate }}
+									</mat-error>
+									<mat-error *ngIf="formGroup.get('toDate')?.hasError('matDatepickerMax')">
+										This must be on or before {{ maxDate | formatDate }}
+									</mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-sm-12">
@@ -85,8 +92,8 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 	],
 })
 export class PaymentFilterComponent extends BaseFilterComponent {
-	minDate: Date | null = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
-	maxDate: Date | null = new Date();
+	minDate = moment().subtract(1, 'year');
+	maxDate = moment();
 
 	@Input() formGroup: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),

@@ -75,7 +75,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 							Contact the Security Programs Division to request a new secure payment link:
 							<ul>
 								<li>include your Case ID</li>
-								<li>email: <strong>spdscreening@gov.bc.ca</strong></li>
+								<li>email: <strong>spdscreening&#64;gov.bc.ca</strong></li>
 								<li>toll-free: <strong>1-855-587-0185</strong> (press option 2)</li>
 							</ul>
 						</div>

@@ -17,9 +17,9 @@ import { CrcFormStepComponent } from '../screening-application.model';
 					<div class="row">
 						<div class="offset-md-4 col-md-4 col-sm-12">
 							<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag">
-								<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-divider class="my-3"></mat-divider>
-								<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+								<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 							</mat-radio-group>
 							<mat-error
 								class="mat-option-error"
