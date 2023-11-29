@@ -6,6 +6,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import * as moment from 'moment';
 import { ClearanceAccessListResponse, ClearanceAccessResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -418,10 +419,9 @@ export class ExpiringChecksComponent implements OnInit {
 			return ['', ''];
 		}
 
-		const expiringOnDate = new Date(expiringOn);
-		const todayDate = new Date();
-		const diff = expiringOnDate.getTime() - todayDate.getTime();
-		const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+		const expiringOnDate = moment(expiringOn);
+		const todayDate = moment();
+		const diffDays = expiringOnDate.diff(todayDate, 'days');
 
 		if (diffDays <= 0) {
 			return ['Expired', 'days-remaining-red'];

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { Observable, tap } from 'rxjs';
 import {
 	ApplicationPaymentListResponse,
@@ -392,8 +393,8 @@ export class PaymentsComponent implements OnInit {
 		let defaultSearch = `status==${defaultStatuses.join('|')},`;
 
 		if (!this.currentFilters) {
-			const fromDate = this.utilService.getDateString(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
-			const toDate = this.utilService.getDateString(new Date());
+			const fromDate = moment().subtract(1, 'year').format(SPD_CONSTANTS.date.dateFormat);
+			const toDate = moment().format(SPD_CONSTANTS.date.dateFormat);
 			defaultSearch += `fromDate==${fromDate},toDate==${toDate},`;
 		}
 
