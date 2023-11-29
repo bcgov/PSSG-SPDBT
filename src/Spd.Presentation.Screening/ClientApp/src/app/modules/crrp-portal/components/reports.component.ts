@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
 import { OrgReportService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -50,7 +51,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
-								Monthly Report - {{ report.reportDate | date : constants.date.monthYearFormat : 'UTC' }}
+								Monthly Report - {{ report.reportDate | formatDate : constants.date.monthYearFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -109,8 +110,8 @@ export class ReportsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	reportMonthYearFrom: Date | null = new Date(new Date().getFullYear(), 0, 1);
 	reportMonthYearTo: Date | null = null;
-	maxDate = new Date();
-	minDate = new Date(2023, 0, 1);
+	minDate = moment('2023-01-01');
+	maxDate = moment().endOf('month');
 
 	dataSource: MatTableDataSource<OrgReportResponse> = new MatTableDataSource<OrgReportResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();

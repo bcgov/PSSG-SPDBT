@@ -39,7 +39,7 @@ import { Component } from '@angular/core';
 					</div>
 					<div class="lead fs-5 my-4">
 						If you submitted a criminal record check application using your BC Services Card, please reach out to our
-						client services team at <a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or
+						client services team at <a href="mailto:criminalrecords@gov.bc.ca">criminalrecords&#64;gov.bc.ca</a> or
 						1-855-587-0185 (option 2) for further assistance.
 					</div>
 				</div>

@@ -119,7 +119,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 							<mat-header-cell *matHeaderCellDef>Request Sent</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Request Sent:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | formatDate }}
 							</mat-cell>
 						</ng-container>
 

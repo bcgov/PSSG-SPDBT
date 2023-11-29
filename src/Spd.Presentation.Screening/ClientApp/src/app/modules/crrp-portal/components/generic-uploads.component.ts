@@ -66,7 +66,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ application.uploadedDateTime | date : constants.date.dateTimeFormat }}
+								{{ application.uploadedDateTime | formatDate : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
