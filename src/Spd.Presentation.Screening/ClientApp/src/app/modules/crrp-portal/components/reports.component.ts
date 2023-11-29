@@ -108,8 +108,8 @@ export class ReportsComponent implements OnInit {
 	private allReports: Array<OrgReportResponse> = [];
 
 	constants = SPD_CONSTANTS;
-	reportMonthYearFrom: Date | null = new Date(new Date().getFullYear(), 0, 1);
-	reportMonthYearTo: Date | null = null;
+	reportMonthYearFrom: moment.Moment | null = moment().startOf('year');
+	reportMonthYearTo: moment.Moment | null = null;
 	minDate = moment('2023-01-01');
 	maxDate = moment().endOf('month');
 
@@ -135,18 +135,15 @@ export class ReportsComponent implements OnInit {
 		this.loadList();
 	}
 
-	onMonthAndYearChangeFrom(val: Date | null) {
+	onMonthAndYearChangeFrom(val: moment.Moment | null) {
 		this.reportMonthYearFrom = val;
 		this.filterList();
 	}
 
-	onMonthAndYearChangeTo(val: Date | null) {
+	onMonthAndYearChangeTo(val: moment.Moment | null) {
 		this.reportMonthYearTo = val;
 		if (val) {
-			// change to last day of month and time at end of day
-			const lastDayOfMonth = new Date(val.getFullYear(), val.getMonth() + 1, 0);
-			lastDayOfMonth.setHours(23, 59, 59, 999);
-			this.reportMonthYearTo = lastDayOfMonth;
+			this.reportMonthYearTo = val.endOf('month');
 		}
 		this.filterList();
 	}
@@ -186,23 +183,13 @@ export class ReportsComponent implements OnInit {
 		if (!this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports;
 		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => {
-				const reportDate = new Date(rpt.reportDate!);
-				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
-				return reportUtcDate >= this.reportMonthYearFrom!;
-			});
+			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isBefore(this.reportMonthYearFrom));
 		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => {
-				const reportDate = new Date(rpt.reportDate!);
-				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
-				return reportUtcDate <= this.reportMonthYearTo!;
-			});
+			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isAfter(this.reportMonthYearFrom));
 		} else {
-			reports = this.allReports.filter((rpt) => {
-				const reportDate = new Date(rpt.reportDate!);
-				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
-				return reportUtcDate >= this.reportMonthYearFrom! && reportUtcDate <= this.reportMonthYearTo!;
-			});
+			reports = this.allReports.filter((rpt) =>
+				moment(rpt.reportDate!).isBetween(this.reportMonthYearFrom!, this.reportMonthYearTo!)
+			);
 		}
 
 		const pageIndex = this.queryParams.page;
