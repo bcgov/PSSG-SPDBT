@@ -24,6 +24,7 @@ import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
+import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { OptionsPipe } from './pipes/options.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
@@ -41,6 +42,7 @@ const SHARED_COMPONENTS = [
 	DefaultPipe,
 	FullnamePipe,
 	YesNoPipe,
+	FormatDatePipe,
 	OptionsPipe,
 	CaptchaV2Component,
 	FileUploadComponent,
