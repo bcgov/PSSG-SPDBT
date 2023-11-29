@@ -54,6 +54,7 @@ import { ScreeningStatusesCommonComponent } from './components/screening-statuse
 import { StatusStatisticsCommonComponent } from './components/status-statistics-common.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
+import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { MinistryOptionsPipe } from './pipes/ministry-options.pipe';
 import { OptionsPipe } from './pipes/options.pipe';
@@ -74,6 +75,7 @@ const SHARED_COMPONENTS = [
 	FullnamePipe,
 	YesNoPipe,
 	OptionsPipe,
+	FormatDatePipe,
 	MinistryOptionsPipe,
 	CaptchaV2Component,
 	FileUploadComponent,
