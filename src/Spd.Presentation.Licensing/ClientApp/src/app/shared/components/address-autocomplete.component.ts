@@ -58,7 +58,7 @@ export class Address {
 								{{ field.text }} {{ field.description }}
 							</mat-option>
 						</mat-autocomplete>
-						<mat-icon style="padding: 28px 12px 12px 12px;" matSuffix>search</mat-icon>
+						<mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
 						<mat-hint> Start typing a street address or postal code </mat-hint>
 					</mat-form-field>
 
