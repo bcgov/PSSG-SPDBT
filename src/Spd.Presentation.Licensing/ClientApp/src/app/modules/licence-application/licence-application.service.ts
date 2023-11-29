@@ -102,7 +102,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private workerLicensingService: WorkerLicensingService
 	) {
 		super(formBuilder);
-
 		this.licenceFeeService
 			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
 			.pipe()

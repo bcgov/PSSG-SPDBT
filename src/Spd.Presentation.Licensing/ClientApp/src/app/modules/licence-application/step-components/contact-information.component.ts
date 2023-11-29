@@ -35,7 +35,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-md-6 col-sm-12">
 										<mat-form-field>
 											<mat-label>Phone Number</mat-label>
-											<input matInput formControlName="contactPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+											<input matInput formControlName="contactPhoneNumber" [mask]="phoneMask" />
 											<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')"
 												>This is required</mat-error
 											>

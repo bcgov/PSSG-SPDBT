@@ -20,27 +20,33 @@ import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.c
 				></app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<div class="offset-md-2 col-md-7 col-sm-12">
-							Scan or take a photo of the tear-off section on page 2 of the
-							<a
-								href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-								target="_blank"
-								>Request for Fingerprinting</a
-							>
-							form.
-						</div>
-						<div class="col-md-1 col-sm-12 text-end">
-							<button
-								mat-icon-button
-								color="primary"
-								(click)="onShowSampleTearOffModal()"
-								aria-label="View sample fingerprint tear-off section"
-							>
-								<mat-icon>info</mat-icon>
-							</button>
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<app-alert type="info" icon="">
+								<div class="d-flex">
+									<div>
+										Scan or take a photo of the tear-off section on page 2 of the
+										<a
+											href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
+											target="_blank"
+											>Request for Fingerprinting</a
+										>
+										form.
+									</div>
+									<div class="ms-auto">
+										<button
+											mat-icon-button
+											color="primary"
+											(click)="onShowSampleTearOffModal()"
+											aria-label="View sample fingerprint tear-off section"
+										>
+											<mat-icon>info</mat-icon>
+										</button>
+									</div>
+								</div>
+							</app-alert>
 						</div>
 					</div>
-					<div class="row mt-4">
+					<div class="row mt-2">
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<form [formGroup]="form" novalidate>
 								<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>

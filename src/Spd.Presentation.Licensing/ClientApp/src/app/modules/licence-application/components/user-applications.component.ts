@@ -49,24 +49,24 @@ export interface ApplicationResponse {
 								<div class="row">
 									<div class="col-lg-3">
 										<div class="fs-5" style="color: var(--color-primary);">
-											{{ appl.serviceTypeCode | options: 'WorkerLicenceTypes' }}
+											{{ appl.serviceTypeCode | options : 'WorkerLicenceTypes' }}
 										</div>
 									</div>
 									<div class="col-lg-9">
 										<div class="row">
 											<div class="col-lg-4">
 												<div class="d-block text-muted mt-2 mt-md-0">Application Type</div>
-												<div class="text-data">{{ appl.applicationTypeCode | options: 'ApplicationTypes' }}</div>
+												<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
 											</div>
 											<div class="col-lg-4">
 												<div class="d-block text-muted mt-2 mt-md-0">Create Date</div>
-												<div class="text-data">{{ appl.createdOn | date: constants.date.formalDateFormat }}</div>
+												<div class="text-data">{{ appl.createdOn | formatDate : constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-4 text-end">
 												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-yellow">
 													<mat-icon class="appl-chip-option-item">warning</mat-icon>
 													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">{{
-														appl.applicationStatusCode | options: 'ApplicationStatusTypes'
+														appl.applicationStatusCode | options : 'ApplicationStatusTypes'
 													}}</span>
 												</mat-chip-option>
 											</div>
@@ -93,7 +93,7 @@ export interface ApplicationResponse {
 								<div class="row">
 									<div class="col-lg-2">
 										<div class="fs-5" style="color: var(--color-primary);">
-											{{ appl.workerLicenceTypeCode | options: 'WorkerLicenceTypes' }}
+											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 										</div>
 									</div>
 									<div class="col-lg-10">
@@ -108,7 +108,7 @@ export interface ApplicationResponse {
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Application Type</div>
-												<div class="text-data">{{ appl.applicationTypeCode | options: 'ApplicationTypes' }}</div>
+												<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
 												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -122,7 +122,7 @@ export interface ApplicationResponse {
 										<div class="row mb-2">
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-												<div class="text-data">{{ appl.expiresOn | date: constants.date.formalDateFormat }}</div>
+												<div class="text-data">{{ appl.expiresOn | formatDate : constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-4">
 												<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
@@ -188,7 +188,7 @@ export interface ApplicationResponse {
 								<div class="row">
 									<div class="col-lg-3">
 										<h3 class="fs-4 fw-normal" style="color: var(--color-primary);">
-											{{ appl.workerLicenceTypeCode | options: 'WorkerLicenceTypes' }}
+											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 										</h3>
 									</div>
 									<div class="col-lg-9">
@@ -203,7 +203,7 @@ export interface ApplicationResponse {
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-												<div class="text-data">{{ appl.expiresOn | date: constants.date.formalDateFormat }}</div>
+												<div class="text-data">{{ appl.expiresOn | formatDate : constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
 												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
@@ -303,7 +303,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
 		private workerLicensingService: WorkerLicensingService,
-		private licenceApplicationService: LicenceApplicationService,
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -317,7 +317,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 							this.draftApplications = resp;
 						});
 				}
-			},
+			}
 		);
 
 		// this.draftApplications = [
@@ -403,7 +403,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 				tap((_resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
 				}),
-				take(1),
+				take(1)
 			)
 			.subscribe();
 	}
@@ -426,10 +426,10 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION),
+						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
 					);
 				}),
-				take(1),
+				take(1)
 			)
 			.subscribe();
 	}
