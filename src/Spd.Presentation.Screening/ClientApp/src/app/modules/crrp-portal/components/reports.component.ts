@@ -185,7 +185,7 @@ export class ReportsComponent implements OnInit {
 		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isBefore(this.reportMonthYearFrom));
 		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isAfter(this.reportMonthYearFrom));
+			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isAfter(this.reportMonthYearTo));
 		} else {
 			reports = this.allReports.filter((rpt) =>
 				moment(rpt.reportDate!).isBetween(this.reportMonthYearFrom!, this.reportMonthYearTo!)
