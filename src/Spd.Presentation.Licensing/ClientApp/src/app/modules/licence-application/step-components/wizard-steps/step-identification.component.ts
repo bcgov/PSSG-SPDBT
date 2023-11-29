@@ -363,16 +363,16 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
-	readonly STEP_PERSONAL_INFORMATION = '0';
-	readonly STEP_ALIASES = '1';
-	readonly STEP_CITIZENSHIP = '2';
-	readonly STEP_ADDITIONAL_GOV_ID = '3';
-	readonly STEP_BC_DRIVERS_LICENCE = '4';
-	readonly STEP_HEIGHT_AND_WEIGHT = '5';
-	readonly STEP_PHOTO = '6';
-	readonly STEP_RESIDENTIAL_ADDRESS = '7';
-	readonly STEP_MAILING_ADDRESS = '8';
-	readonly STEP_CONTACT_INFORMATION = '9';
+	readonly STEP_PERSONAL_INFORMATION = 0;
+	readonly STEP_ALIASES = 1;
+	readonly STEP_CITIZENSHIP = 2;
+	readonly STEP_ADDITIONAL_GOV_ID = 3;
+	readonly STEP_BC_DRIVERS_LICENCE = 4;
+	readonly STEP_HEIGHT_AND_WEIGHT = 5;
+	readonly STEP_PHOTO = 6;
+	readonly STEP_RESIDENTIAL_ADDRESS = 7;
+	readonly STEP_MAILING_ADDRESS = 8;
+	readonly STEP_CONTACT_INFORMATION = 9;
 
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -434,28 +434,28 @@ export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceSt
 		this.previousStepperStep.emit(true);
 	}
 
-	onStepNext(formNumber: string): void {
+	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.nextStepperStep.emit(true);
 	}
 
-	onSaveAndExit(formNumber: string): void {
+	onSaveAndExit(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.saveAndExit.emit(true);
 	}
 
-	onNextReview(formNumber: string): void {
+	onNextReview(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.nextReview.emit(true);
 	}
 
-	onFormValidNextStep(formNumber: string): void {
+	onFormValidNextStep(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
@@ -478,7 +478,7 @@ export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceSt
 		this.childstepper.selectedIndex = this.STEP_RESIDENTIAL_ADDRESS;
 	}
 
-	private dirtyForm(step: string): boolean {
+	private dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_PERSONAL_INFORMATION:
 				return this.personalInformationComponent.isFormValid();

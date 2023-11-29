@@ -213,7 +213,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
 															<div class="text-data">
-																{{ expiredLicenceExpiryDate | date : constants.date.dateFormat : 'UTC' | default }}
+																{{ expiredLicenceExpiryDate | formatDate : constants.date.dateFormat | default }}
 															</div>
 														</div>
 													</div>
@@ -401,7 +401,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="col-lg-3 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
 														<div class="text-data">
-															{{ dateOfBirth | date : constants.date.dateFormat : 'UTC' | default }}
+															{{ dateOfBirth | formatDate : constants.date.dateFormat | default }}
 														</div>
 													</div>
 													<div class="col-lg-3 col-md-12 mt-lg-2">
