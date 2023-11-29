@@ -30,7 +30,8 @@ namespace Spd.Manager.Cases.Screening
             CreateMap<AppInviteListSortBy, AppInviteSortBy>();
             CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status.ToString())));
-            CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
+            CreateMap<ApplicationCreateRequest, SearchApplicationQry>()
+               .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => ((DateOnly)s.DateOfBirth).ToDateTimeOffset(TimeZoneInfo.Utc)));
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>()
                .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => ((DateOnly)s.DateOfBirth).ToDateTimeOffset(TimeZoneInfo.Utc)))
                .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s.ServiceType)));

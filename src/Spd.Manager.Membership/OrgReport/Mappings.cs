@@ -1,5 +1,6 @@
 using AutoMapper;
 using Spd.Resource.Organizations.Report;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Manager.Membership.Report
 {
@@ -7,7 +8,8 @@ namespace Spd.Manager.Membership.Report
     {
         public Mappings()
         {
-            CreateMap<OrgReportResult, OrgReportResponse>();
+            CreateMap<OrgReportResult, OrgReportResponse>()
+              .ForMember(d => d.ReportDate, opt => opt.MapFrom(s => (s.ReportDate).ToDateOnly(TimeZoneInfo.Utc)));
         }
     }
 }

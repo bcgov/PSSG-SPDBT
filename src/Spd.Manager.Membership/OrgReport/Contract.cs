@@ -19,7 +19,7 @@ namespace Spd.Manager.Membership.Report
     public class OrgReportResponse
     {
         public Guid Id { get; set; }
-        public DateTimeOffset ReportDate { get; set; }
+        public DateOnly ReportDate { get; set; }
     }
 
     public record ReportFileQuery(Guid ReportId) : IRequest<FileResponse>;
