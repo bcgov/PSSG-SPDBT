@@ -191,7 +191,7 @@ body {
 
 .mat-divider-main {
   border-top-width: 2px !important;
-  border-top-color: var(--color-yellow);
+  border-top-color: var(--color-yellow) !important;
 }
 
 .alert {
@@ -316,6 +316,11 @@ a {
 
 .optional-label {
   font-size: 0.8em;
+}
+
+.text-label {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .step-section {

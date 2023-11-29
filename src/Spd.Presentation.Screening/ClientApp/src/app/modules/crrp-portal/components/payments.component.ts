@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { Observable, tap } from 'rxjs';
 import {
 	ApplicationPaymentListResponse,
@@ -117,7 +118,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | formatDate }}
 							</mat-cell>
 						</ng-container>
 
@@ -125,7 +126,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								{{ application.paidOn | date : constants.date.dateFormat | default }}
+								{{ application.paidOn | formatDate | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -392,8 +393,8 @@ export class PaymentsComponent implements OnInit {
 		let defaultSearch = `status==${defaultStatuses.join('|')},`;
 
 		if (!this.currentFilters) {
-			const fromDate = this.utilService.getDateString(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
-			const toDate = this.utilService.getDateString(new Date());
+			const fromDate = moment().subtract(1, 'year').format(SPD_CONSTANTS.date.dateFormat);
+			const toDate = moment().format(SPD_CONSTANTS.date.dateFormat);
 			defaultSearch += `fromDate==${fromDate},toDate==${toDate},`;
 		}
 

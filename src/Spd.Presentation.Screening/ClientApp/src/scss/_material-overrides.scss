@@ -40,7 +40,7 @@ a {
 
 // STEPPER 
 .mat-stepper-horizontal, .mat-stepper-vertical {
-  background-color: var(--color-primary-lightest);
+  background-color: var(--color-primary-lightest) !important;
 }
 
 .mat-horizontal-content-container {
@@ -103,10 +103,6 @@ button.mat-green-button {
   color: var(--color-primary);
 }
 
-.mdc-text-field--disabled .mdc-text-field__input {
-  color: rgba(0, 0, 0, 0.68);
-}
-
 .mat-mdc-form-field, .mat-mdc-radio-button, .mat-mdc-checkbox {  
   width: 100%;
 }
@@ -156,10 +152,18 @@ button.mat-green-button {
    color: var(--color-grey-dark);
 }
 
-// mat-label {  
-//   color: var(--color-grey-dark);
-//   font-weight: 600;
-// }
+.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input {
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.mdc-text-field--disabled .mdc-text-field__input {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+mat-label {  
+  color: rgba(0, 0, 0, 0.8);
+}
+
 .mat-mdc-chip-action-label, .mat-mdc-chip-action {
   cursor: pointer;
 }

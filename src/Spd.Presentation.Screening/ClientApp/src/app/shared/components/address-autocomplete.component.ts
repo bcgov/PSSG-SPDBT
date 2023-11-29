@@ -45,7 +45,7 @@ export class Address {
 	template: `
 		<form [formGroup]="form">
 			<div class="row">
-				<div class="col-xl-7 col-lg-7 col-md-12 pb-4">
+				<div class="col-xl-7 col-lg-7 col-md-12">
 					<mat-form-field>
 						<mat-label>Address Completed by Canada Post</mat-label>
 						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
@@ -58,7 +58,7 @@ export class Address {
 								{{ field.text }} {{ field.description }}
 							</mat-option>
 						</mat-autocomplete>
-						<mat-icon style="padding: 28px 12px 12px 12px;" matSuffix>search</mat-icon>
+						<mat-icon style="padding: 16px 8px 0 0;" matSuffix>search</mat-icon>
 						<mat-hint> Start typing a street address or postal code </mat-hint>
 					</mat-form-field>
 
