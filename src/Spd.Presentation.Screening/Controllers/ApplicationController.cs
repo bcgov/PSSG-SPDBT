@@ -250,7 +250,7 @@ namespace Spd.Presentation.Screening.Controllers
                             if (string.IsNullOrEmpty(birthDateStr))
                                 oneRequest.DateOfBirth = null;
                             else
-                                oneRequest.DateOfBirth = DateTimeOffset.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
+                                oneRequest.DateOfBirth = DateOnly.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
                             string? genderStr = CleanString(data[21]);
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? GenderCode.U : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = CleanString(data[22]);
