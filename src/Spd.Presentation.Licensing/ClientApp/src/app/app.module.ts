@@ -4,7 +4,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HotToastModule } from '@ngneat/hot-toast';
+import { provideHotToastConfig } from '@ngneat/hot-toast';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { tap } from 'rxjs';
@@ -40,7 +40,6 @@ export function appInitializer(configService: ConfigService) {
 		FormsModule,
 		ReactiveFormsModule,
 		NgxSpinnerModule,
-		HotToastModule.forRoot({ duration: 5000, reverseOrder: true, theme: 'toast' }),
 		OAuthModule.forRoot({
 			resourceServer: {
 				customUrlValidation: (url) => url.startsWith('/api') && !url.endsWith('/configuration'),
@@ -57,6 +56,7 @@ export function appInitializer(configService: ConfigService) {
 			deps: [ConfigService],
 			multi: true,
 		},
+		provideHotToastConfig(),
 	],
 	bootstrap: [AppComponent],
 })

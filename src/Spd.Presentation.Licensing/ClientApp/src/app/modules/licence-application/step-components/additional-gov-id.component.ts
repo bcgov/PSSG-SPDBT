@@ -22,12 +22,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="row my-2">
 									<div class="col-lg-6 col-md-12">
 										<mat-form-field>
-											<mat-label>Select other ID (can be from another country)</mat-label>
+											<mat-label>Select other ID</mat-label>
 											<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
 											</mat-select>
+											<mat-hint>Other ID can be from another country</mat-hint>
 											<mat-error *ngIf="form.get('governmentIssuedPhotoTypeCode')?.hasError('required')">
 												This is required
 											</mat-error>

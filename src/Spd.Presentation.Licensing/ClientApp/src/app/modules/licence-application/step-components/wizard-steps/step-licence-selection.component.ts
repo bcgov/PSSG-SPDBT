@@ -216,13 +216,13 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepLicenceSelectionComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
-	readonly STEP_SOLE_PROPRIETOR = '1';
-	readonly STEP_ACCESS_CODE = '2';
-	readonly STEP_LICENCE_EXPIRED = '5';
-	readonly STEP_LICENCE_CATEGORY = '6';
-	readonly STEP_DOGS = '8';
-	readonly STEP_RESTRAINTS = '9';
-	readonly STEP_LICENCE_TERM = '7';
+	readonly STEP_SOLE_PROPRIETOR = 1;
+	readonly STEP_ACCESS_CODE = 2;
+	readonly STEP_LICENCE_EXPIRED = 5;
+	readonly STEP_LICENCE_CATEGORY = 6;
+	readonly STEP_DOGS = 8;
+	readonly STEP_RESTRAINTS = 9;
+	readonly STEP_LICENCE_TERM = 7;
 
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -294,21 +294,21 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onStepNext(formNumber: string): void {
+	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.nextStepperStep.emit(true);
 	}
 
-	onSaveAndExit(formNumber: string): void {
+	onSaveAndExit(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.saveAndExit.emit(true);
 	}
 
-	onNextReview(formNumber: string): void {
+	onNextReview(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
@@ -325,7 +325,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 		this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH)]);
 	}
 
-	onFormValidNextStep(formNumber: string): void {
+	onFormValidNextStep(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
@@ -348,7 +348,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
 	}
 
-	private dirtyForm(step: string): boolean {
+	private dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
