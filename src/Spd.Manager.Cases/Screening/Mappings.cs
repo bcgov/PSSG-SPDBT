@@ -10,6 +10,7 @@ using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Manager.Cases.Screening
 {
@@ -31,6 +32,7 @@ namespace Spd.Manager.Cases.Screening
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status.ToString())));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>()
+               .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => ((DateOnly)s.DateOfBirth).ToDateTimeOffset(TimeZoneInfo.Utc)))
                .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s.ServiceType)));
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
                  .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
@@ -39,6 +41,7 @@ namespace Spd.Manager.Cases.Screening
                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResult, ApplicationResponse>()
+                .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => ((DateTimeOffset)s.DateOfBirth).ToDateOnly(TimeZoneInfo.Utc)))
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatusCode(s.ApplicationPortalStatus)));
             CreateMap<ApplicationResult, ApplicationPaymentResponse>()
                 .IncludeBase<ApplicationResult, ApplicationResponse>();
