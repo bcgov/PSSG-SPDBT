@@ -1,4 +1,5 @@
 using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
@@ -14,7 +15,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         //create application
         spd_application? application = null;
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
-        if(org == null)
+        if (org == null)
         {
             throw new InvalidOperationException($"cannot find org for {createApplicationCmd.OrgId}");
         }
@@ -104,12 +105,16 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     public async Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken)
     {
+        _logger.LogDebug($"query applicant application with applicantId={query.ApplicantId}");
         var applications = _context.spd_applications
+            .Expand(i => i.spd_ServiceTypeId)
             .Expand(i => i.spd_OrganizationId)
             .Where(r => r._spd_applicantid_value == query.ApplicantId)
             .OrderByDescending(i => i.createdon);
 
-        var result = applications.ToList();
+        List<Guid?> serviceTypeGuid = ScreeningServiceTypes.Select(c => _context.LookupServiceType(c.ToString()).spd_servicetypeid).ToList();
+
+        var result = applications.ToList().Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value));
         var response = new ApplicantApplicationListResp();
         response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
         return response;
@@ -258,7 +263,7 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         //delegate portal user
         string? delegateFilters = null;
-        if(appFilterBy.DelegatePortalUserId != null)
+        if (appFilterBy.DelegatePortalUserId != null)
         {
             delegateFilters = $"spd_delegateid eq '{appFilterBy.DelegatePortalUserId}'";
         }
@@ -302,7 +307,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             result += $" and {submitToDate}";
         }
-        if(delegateFilters != null)
+        if (delegateFilters != null)
         {
             result += $" and {delegateFilters}";
         }
