@@ -59,7 +59,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													[errorStateMatcher]="matcher"
 												/>
 												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year" [startAt]="startAtBirthDate"></mat-datepicker>
+												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 												<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 											</mat-form-field>
 										</div>
@@ -102,7 +102,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													[errorStateMatcher]="matcher"
 												/>
 												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year" [startAt]="startAtBirthDate"></mat-datepicker>
+												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 												<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 											</mat-form-field>
 										</div>
@@ -139,7 +139,6 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceC
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
-	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
 	isLoggedIn = false;
 

@@ -52,7 +52,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 					<div class="row mt-4">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-form-field class="w-auto" style="background-color: var(--color-grey-lightest);">
+							<mat-form-field class="w-auto">
 								<mat-label>Date Signed</mat-label>
 								<input matInput formControlName="dateSigned" />
 								<mat-error *ngIf="form.get('dateSigned')?.hasError('required')">This is required</mat-error>
