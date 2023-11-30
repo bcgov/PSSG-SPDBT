@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { AdditionalGovIdDocument } from './additional-gov-id-document';
 import { Alias } from './alias';
+import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
 import { CitizenshipDocument } from './citizenship-document';
 import { EyeColourCode } from './eye-colour-code';
@@ -22,9 +23,11 @@ import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceResponse {
   additionalGovIdDocument?: AdditionalGovIdDocument;
   aliases?: null | Array<Alias>;
+  applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
   carryAndUseRestraints?: null | boolean;
+  caseNumber?: null | string;
   categoryData?: null | Array<WorkerLicenceAppCategoryData>;
   citizenshipDocument?: CitizenshipDocument;
   contactEmailAddress?: null | string;

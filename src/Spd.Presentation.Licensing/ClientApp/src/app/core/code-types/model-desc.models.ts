@@ -1,5 +1,5 @@
 import {
-	ApplicationStatusCode,
+	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	EyeColourCode,
 	GenderCode,
@@ -10,7 +10,7 @@ import {
 	PoliceOfficerRoleCode,
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode
+	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
@@ -161,19 +161,28 @@ export const WorkerLicenceTypes: SelectOptions[] = [
 ];
 
 export const ApplicationTypes: SelectOptions[] = [
-	{ desc: 'New Or Expired', code: ApplicationTypeCode.New },
+	{ desc: 'New', code: ApplicationTypeCode.New },
 	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
 	{ desc: 'Replacement', code: ApplicationTypeCode.Replacement },
 	{ desc: 'Update', code: ApplicationTypeCode.Update },
 ];
 
-export const ApplicationStatusTypes: SelectOptions[] = [
-	{ desc: 'Draft', code: ApplicationStatusCode.Draft },
-	{ desc: 'Payment Pending', code: ApplicationStatusCode.PaymentPending },
-	{ desc: 'Incomplete', code: ApplicationStatusCode.Incomplete },
-	{ desc: 'Applicant Verification', code: ApplicationStatusCode.ApplicantVerification },
-	{ desc: 'Submitted', code: ApplicationStatusCode.Submitted },
-	{ desc: 'Cancelled', code: ApplicationStatusCode.Cancelled },
+export const ApplicationPortalStatusTypes: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationPortalStatusCode.Draft },
+	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
+	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
+	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
+	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
+	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
+	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
+	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
+	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
+	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Closed - Judicial Review', code: ApplicationPortalStatusCode.ClosedJudicialReview },
+	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
+	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
+	{ desc: 'Cancelled by Org.', code: ApplicationPortalStatusCode.CancelledByOrganization },
+	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
 ];
 
 export const GenderTypes: SelectOptions[] = [

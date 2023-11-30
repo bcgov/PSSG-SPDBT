@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -21,6 +22,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											<input
 												matInput
 												formControlName="contactEmailAddress"
+												[errorStateMatcher]="matcher"
 												placeholder="name@domain.com"
 												maxlength="75"
 											/>
@@ -35,7 +37,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-md-6 col-sm-12">
 										<mat-form-field>
 											<mat-label>Phone Number</mat-label>
-											<input matInput formControlName="contactPhoneNumber" [mask]="phoneMask" />
+											<input
+												matInput
+												formControlName="contactPhoneNumber"
+												[errorStateMatcher]="matcher"
+												[mask]="phoneMask"
+											/>
 											<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')"
 												>This is required</mat-error
 											>
@@ -56,6 +63,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 })
 export class ContactInformationComponent implements LicenceChildStepperStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
+
+	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
 
