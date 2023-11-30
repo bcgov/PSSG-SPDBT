@@ -28,7 +28,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-								<mat-datepicker #picker startView="multi-year" [startAt]="startAtBirthDate"></mat-datepicker>
+								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')">
 									This must be on or before {{ maxBirthDate | formatDate }}
@@ -107,7 +107,6 @@ export class SaPersonalInformationComponent implements CrcFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
-	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {}
