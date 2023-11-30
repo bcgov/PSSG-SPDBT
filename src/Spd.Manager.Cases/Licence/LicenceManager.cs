@@ -110,4 +110,39 @@ internal partial class LicenceManager :
         var response = await _licenceAppRepository.QueryAsync(q, ct);
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
+
+    private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, CancellationToken ct)
+    {
+        LicenceAppQuery q = new LicenceAppQuery
+        (
+            applicantId,
+            new List<WorkerLicenceTypeEnum>
+            {
+                workerLicenceType
+            },
+            new List<ApplicationPortalStatusEnum>
+            {
+                ApplicationPortalStatusEnum.Draft,
+                ApplicationPortalStatusEnum.AwaitingThirdParty,
+                ApplicationPortalStatusEnum.AwaitingPayment,
+                ApplicationPortalStatusEnum.Incomplete,
+                ApplicationPortalStatusEnum.InProgress,
+                ApplicationPortalStatusEnum.AwaitingApplicant,
+                ApplicationPortalStatusEnum.UnderAssessment,
+                ApplicationPortalStatusEnum.VerifyIdentity,
+            }
+        );
+        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        if (response.Any()) return true;
+
+        var licResponse = await _licenceRepository.QueryAsync(new LicenceQry(null, null, applicantId, ), ct);
+
+        if (!response.Items.Any())
+        {
+            return null;
+        }
+
+        LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response.Items.First());
+
+    }
 }

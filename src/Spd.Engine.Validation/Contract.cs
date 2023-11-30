@@ -51,4 +51,21 @@ namespace Spd.Engine.Validation
     }
     #endregion
 
+    #region licence app duplicate check
+    public record LicenceAppDuplicateCheckRequest(LicenceAppDuplicateCheck LicenceAppDuplicateCheck) : DuplicateCheckRequest;
+
+    public record LicenceAppDuplicateCheck(Guid ContactId, WorkerLicenceType WorkerLicenceType);
+    public enum WorkerLicenceType
+    {
+        SecurityWorkerLicence,
+        ArmouredVehiclePermit,
+        BodyArmourPermit
+    }
+    public record LicenceAppDuplicateCheckResponse(LicenceAppDuplicateCheckResult LicenceAppCheckResults) : DuplicateCheckResponse;
+    public record LicenceAppDuplicateCheckResult
+    {
+        public bool HasPotentialDuplicate { get; set; } = false;
+    }
+    #endregion
+
 }

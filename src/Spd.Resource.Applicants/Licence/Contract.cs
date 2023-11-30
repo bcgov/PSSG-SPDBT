@@ -1,3 +1,5 @@
+using Spd.Resource.Applicants.LicenceApplication;
+
 namespace Spd.Resource.Applicants.Licence
 {
     public interface ILicenceRepository
@@ -6,7 +8,11 @@ namespace Spd.Resource.Applicants.Licence
         public Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken cancellationToken);
     }
 
-    public record LicenceQry(Guid? LicenceId = null, string? LicenceNumber = null, Guid? ContactId = null, Guid? AccountId = null);
+    public record LicenceQry(Guid? LicenceId = null, 
+        string? LicenceNumber = null, 
+        Guid? ContactId = null, 
+        Guid? AccountId = null,
+        WorkerLicenceTypeEnum? type = null);
     public record LicenceListResp
     {
         public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
