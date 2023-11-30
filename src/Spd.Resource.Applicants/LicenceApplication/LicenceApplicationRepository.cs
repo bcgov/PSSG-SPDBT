@@ -76,6 +76,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
 
         app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
         app.statecode = DynamicsConstants.StateCode_Inactive;
+        app.spd_submittedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(cancellationToken);
         return new LicenceApplicationCmdResp(app.spd_applicationid);
