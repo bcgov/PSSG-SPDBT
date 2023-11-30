@@ -30,10 +30,22 @@ internal static class SharedMappingFuncs
         if (optionset == null) return null;
         return Enum.Parse<GenderEnum>(Enum.GetName(typeof(GenderOptionSet), optionset));
     }
+    internal static DateOnly? GetDateOnly(Date? date)
+    {
+        if (date == null) return null;
+        return new DateOnly(date.Value.Year, date.Value.Month, date.Value.Day);
+    }
+
     internal static DateTimeOffset? GetDateTimeOffset(Date? date)
     {
         if (date == null) return null;
         return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
+    }
+
+    internal static Date? GetDateFromDateOnly(DateOnly? dateOnly)
+    {
+        if (dateOnly == null) return null;
+        return new Microsoft.OData.Edm.Date(dateOnly.Value.Year, dateOnly.Value.Month, dateOnly.Value.Day);
     }
 
     internal static Date? GetDate(DateTimeOffset? datetime)

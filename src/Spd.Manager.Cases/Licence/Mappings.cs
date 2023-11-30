@@ -11,14 +11,11 @@ internal class Mappings : Profile
     public Mappings()
     {
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
-            .ForMember(d => d.DateOfBirth, opt=>opt.MapFrom(s=>((DateOnly)s.DateOfBirth).ToDateTimeOffset(TimeZoneInfo.Utc)))
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.CategoryData));
         CreateMap<WorkerLicenceAppCategoryData, WorkerLicenceAppCategory>()
             .ReverseMap();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
-        CreateMap<LicenceApplicationResp, WorkerLicenceResponse>()
-            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => ((DateTimeOffset)s.DateOfBirth).ToDateOnly(TimeZoneInfo.Utc)))
-            ;
+        CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
         CreateMap<LicenceResp, LicenceLookupResponse>();
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
         CreateMap<DocumentResp, LicenceAppDocumentResponse>()
