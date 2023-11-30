@@ -32,9 +32,11 @@ import {
 	SelectOptions,
 	WorkerCategoryTypes,
 } from 'src/app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
 @Injectable({
@@ -95,6 +97,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	constructor(
 		formBuilder: FormBuilder,
+		private formatDatePipe: FormatDatePipe,
 		private authUserBcscService: AuthUserBcscService,
 		private utilService: UtilService,
 		private configService: ConfigService,
@@ -102,7 +105,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private workerLicensingService: WorkerLicensingService
 	) {
 		super(formBuilder);
-
 		this.licenceFeeService
 			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
 			.pipe()
@@ -917,7 +919,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const contactInformationData = { ...formValue.contactInformationData };
 		const expiredLicenceData = { ...formValue.expiredLicenceData };
 		const characteristicsData = { ...formValue.characteristicsData };
-		const personalInformationData = { ...formValue.personalInformationData };
+
 		const residentialAddressData = { ...formValue.residentialAddressData };
 		const mailingAddressData = { ...formValue.mailingAddressData };
 		const citizenshipData = { ...formValue.citizenshipData };
@@ -928,6 +930,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 		let dogsAuthorizationData = {};
 		let restraintsAuthorizationData = {};
+
+		const personalInformationData = { ...formValue.personalInformationData };
+		personalInformationData.dateOfBirth = personalInformationData.dateOfBirth
+			? this.formatDatePipe.transform(personalInformationData.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
+			: '';
 
 		const categoryData: Array<WorkerLicenceAppCategoryData> = [];
 

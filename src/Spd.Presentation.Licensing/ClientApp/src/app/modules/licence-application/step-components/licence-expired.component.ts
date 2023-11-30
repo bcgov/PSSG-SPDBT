@@ -80,7 +80,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<ng-container *ngIf="isAfterSearch">
 										<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
 											This is a valid expired licence with an expiry date of
-											{{ expiryDate.value | date : constants.date.formalDateFormat : 'UTC' }}.
+											{{ expiryDate.value | formatDate : constants.date.formalDateFormat }}.
 										</app-alert>
 										<app-alert type="warning" *ngIf="isFound && !isExpired">
 											The licence is still valid. Please renew it when you get your renewal notice in the mail.
@@ -104,7 +104,6 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 	booleanTypeCodes = BooleanTypeCode;
 	constants = SPD_CONSTANTS;
 
-	maxDate = new Date();
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;

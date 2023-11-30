@@ -17,13 +17,13 @@ import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
-import { MonthPickerComponent } from './components/month-picker.component';
 import { PaymentErrorComponent } from './components/payment-error.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
 import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
+import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { OptionsPipe } from './pipes/options.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
@@ -41,12 +41,13 @@ const SHARED_COMPONENTS = [
 	DefaultPipe,
 	FullnamePipe,
 	YesNoPipe,
+	FormatDatePipe,
 	OptionsPipe,
+	FormatDatePipe,
 	CaptchaV2Component,
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	MonthPickerComponent,
 	PaymentSuccessComponent,
 	PaymentErrorComponent,
 	PaymentFailComponent,
@@ -66,7 +67,7 @@ const SHARED_COMPONENTS = [
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
-	providers: [provideNgxMask(), NgxMaskPipe, DatePipe, OptionsPipe],
+	providers: [provideNgxMask(), NgxMaskPipe, DatePipe, FormatDatePipe, OptionsPipe],
 	exports: [
 		CommonModule,
 		MaterialModule,

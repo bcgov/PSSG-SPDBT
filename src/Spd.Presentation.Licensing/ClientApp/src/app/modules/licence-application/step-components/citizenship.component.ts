@@ -5,7 +5,7 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
 	ProofOfAbilityToWorkInCanadaTypes,
-	ProofOfCanadianCitizenshipTypes
+	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -53,9 +53,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 								<ng-container>
 									<div class="row my-2">
-										<div class="col-lg-6 col-md-12">
+										<div class="col-lg-7 col-md-12">
 											<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 												<mat-form-field>
+													<mat-label>Proof of Canadian citizenship</mat-label>
 													<mat-select formControlName="canadianCitizenProofTypeCode">
 														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
 															{{ item.desc }}
@@ -68,6 +69,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											</ng-container>
 											<ng-template #notCanadianCitizen>
 												<mat-form-field>
+													<mat-label>Proof of ability to work in Canada</mat-label>
 													<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 														<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
 															{{ item.desc }}
@@ -79,7 +81,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</mat-form-field>
 											</ng-template>
 										</div>
-										<div class="col-lg-6 col-md-12">
+										<div class="col-lg-5 col-md-12">
 											<mat-form-field>
 												<mat-label>Document Expiry Date</mat-label>
 												<input

@@ -644,6 +644,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			)
 				? createRequest.contractedCompanyName
 				: '';
+			createRequest.requireDuplicateCheck = true;
 
 			const body = {
 				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
@@ -803,8 +804,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 
 	private saveAndCheckDuplicates(body: any): void {
-		body.ApplicationCreateRequestJson.requireDuplicateCheck = true;
-
 		// Check for potential duplicate
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({ orgId: this.orgId!, body })
