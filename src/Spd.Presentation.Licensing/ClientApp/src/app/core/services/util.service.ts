@@ -134,34 +134,8 @@ export class UtilService {
 	// Misc
 
 	getDateString(date: Date): string {
-		const d = new Date(date);
-		let month = '' + (d.getMonth() + 1);
-		let day = '' + d.getDate();
-		const year = d.getFullYear();
-
-		if (month.length < 2) month = '0' + month;
-		if (day.length < 2) day = '0' + day;
-
-		return [year, month, day].join('-');
+		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
 	}
-
-	// Not need at the moment
-	// getUtcIsoString(dateStr: null | string | undefined): string {
-	// 	if (!dateStr) {
-	// 		return '';
-	// 	}
-
-	// 	const date = new Date(dateStr);
-	// 	const dateAsUtcDate = new Date(
-	// 		date.getUTCFullYear(),
-	// 		date.getUTCMonth(),
-	// 		date.getUTCDate(),
-	// 		date.getUTCHours(),
-	// 		date.getUTCMinutes(),
-	// 		date.getUTCSeconds()
-	// 	);
-	// 	return dateAsUtcDate.toISOString();
-	// }
 
 	//------------------------------------
 	// Sort

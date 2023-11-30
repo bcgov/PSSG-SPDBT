@@ -61,7 +61,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			<div class=" col-xl-2 col-lg-3 mt-4">
 				<small class="d-block"> Date of Transaction </small>
 				<div class="payment__text">
-					{{ payment?.transDateTime | formatDate : appConstants.date.formalDateFormat  }}
+					{{ payment?.transDateTime | formatDate : appConstants.date.formalDateFormat }}
 				</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import * as moment from 'moment';
 import { Moment } from 'moment';
 
 export const MONTH_PICKER_FORMATS = {
@@ -41,14 +42,14 @@ export const MONTH_PICKER_FORMATS = {
 export class MonthPickerComponent {
 	@Input() label = '';
 	@Input() hint = '';
-	@Input() monthAndYear: Date | null = null;
+	@Input() monthAndYear: Moment | null = null;
 	@Input() minDate: Moment | null = null;
 	@Input() maxDate: Moment | null = null;
 
-	@Output() monthAndYearChange = new EventEmitter<Date | null>();
+	@Output() monthAndYearChange = new EventEmitter<Moment | null>();
 
 	onMonthChanged(value: any, widget: any): void {
-		const selectedDate = new Date(value);
+		const selectedDate = moment(value);
 
 		this.monthAndYear = selectedDate;
 		this.monthAndYearChange.emit(selectedDate);

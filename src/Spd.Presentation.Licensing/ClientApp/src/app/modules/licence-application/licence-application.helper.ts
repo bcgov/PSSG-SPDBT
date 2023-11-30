@@ -131,15 +131,12 @@ export abstract class LicenceApplicationHelper {
 	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			documentExpiryDate: new FormControl(''),
+			expiryDate: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'documentExpiryDate',
-					(form) => form.get('isInclude')?.value
-				),
+				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 			],
 		}
@@ -384,7 +381,7 @@ export abstract class LicenceApplicationHelper {
 	additionalGovIdFormGroup: FormGroup = this.formBuilder.group(
 		{
 			governmentIssuedPhotoTypeCode: new FormControl(''),
-			governmentIssuedPhotoExpiryDate: new FormControl(''),
+			expiryDate: new FormControl(''),
 			attachments: new FormControl(''),
 		},
 		{

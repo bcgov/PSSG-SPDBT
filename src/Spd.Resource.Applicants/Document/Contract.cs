@@ -32,7 +32,7 @@ namespace Spd.Resource.Applicants.Document
         public Guid? ApplicationId { get; set; } = null;
         public Guid? CaseId { get; set; } = null;
         public Guid? ReportId { get; set; } = null;
-        public DateTimeOffset? ExpiryDate { get; set; } = null;
+        public DateOnly? ExpiryDate { get; set; } = null;
     }
 
     public abstract record DocumentCmd;
@@ -48,7 +48,7 @@ namespace Spd.Resource.Applicants.Document
 
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record ReactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
-    public record UpdateDocumentCmd(Guid DocumentUrlId, DateTimeOffset? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
+    public record UpdateDocumentCmd(Guid DocumentUrlId, DateOnly? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
     public enum DocumentTypeEnum
     {
         AdditionalGovIdDocument,
