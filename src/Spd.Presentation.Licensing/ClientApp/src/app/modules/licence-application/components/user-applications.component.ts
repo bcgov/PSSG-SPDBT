@@ -49,11 +49,24 @@ export interface ApplicationResponse {
 							You haven't submitted your licence application yet. It will expire on Jan 12, 2024
 						</app-alert>
 
-						<div class="mb-4" *ngIf="draftApplications.length > 0">
-							<div class="fs-5 my-4">In-Progress Licences/Permits</div>
+						<div class="card-section my-4 px-4 py-3">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="text-data">You don't have any active licences</div>
+								</div>
+								<div class="col-lg-6 text-end">
+									<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
+										Apply for a New Licence or Permit
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-3" *ngIf="dataSource.data.length > 0">
+							<div class="fs-5 py-4">In-Progress Licences/Permits</div>
 
 							<div class="row">
-								<div class="col-12 mb-4" style="background-color: #f6f6f6 !important;">
+								<div class="col-12" style="background-color: #f6f6f6 !important;">
 									<mat-table [dataSource]="dataSource" class="pb-3" style="background-color: #f6f6f6 !important;">
 										<ng-container matColumnDef="serviceTypeCode">
 											<mat-header-cell *matHeaderCellDef>Licence Type</mat-header-cell>
@@ -172,8 +185,8 @@ export interface ApplicationResponse {
 							</div> -->
 						</div>
 
-						<div class="mb-4" *ngIf="activeApplications.length > 0">
-							<div class="fs-5 my-4">Active Licences/Permits</div>
+						<div class="mb-3" *ngIf="activeApplications.length > 0">
+							<div class="fs-5 py-4">Active Licences/Permits</div>
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-2">
@@ -267,8 +280,8 @@ export interface ApplicationResponse {
 							</div>
 						</div>
 
-						<div class="mb-4" *ngIf="expiredApplications.length > 0">
-							<div class="fs-5 my-4">Expired Licences/Permits</div>
+						<div class="mb-3" *ngIf="expiredApplications.length > 0">
+							<div class="fs-5 py-4">Expired Licences/Permits</div>
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-3">
@@ -310,19 +323,6 @@ export interface ApplicationResponse {
 						</div>
 					</ng-container>
 
-					<div class="card-section mb-3 px-4 py-3">
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="text-data">You don't have any active licences</div>
-							</div>
-							<div class="col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
-									Apply for a New Licence or Permit
-								</button>
-							</div>
-						</div>
-					</div>
-
 					<app-alert type="info" [showBorder]="false" icon="">
 						Do you have a security licence but it's not showing here?
 						<a href="https://id.gov.bc.ca/account/" target="_blank">Connect a current or expired licence</a> to your
@@ -355,7 +355,7 @@ export interface ApplicationResponse {
 
 			.appl-chip-option {
 				height: 35px;
-				width: 115px;
+				width: 125px;
 			}
 
 			.appl-chip-option-item {
@@ -393,7 +393,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 
-	draftApplications: Array<WorkerLicenceAppListResponse> = [];
+	// draftApplications: Array<WorkerLicenceAppListResponse> = [];
 	activeApplications: Array<ApplicationResponse> = [];
 	expiredApplications: Array<ApplicationResponse> = [];
 
@@ -430,7 +430,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 						.apiWorkerLicenceApplicationsGet()
 						.pipe()
 						.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
-							this.draftApplications = resp;
+							// this.draftApplications = resp;
 							this.dataSource = new MatTableDataSource(resp ?? []);
 						});
 				}

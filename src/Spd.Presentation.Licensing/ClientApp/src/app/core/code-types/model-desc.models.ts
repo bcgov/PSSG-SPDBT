@@ -37,8 +37,8 @@ export enum LicenceUpdateTypeCode {
 	UpdateName = 'UpdateName',
 	UpdatePhoto = 'UpdatePhoto',
 	AddLicenceCategory = 'AddLicenceCategory',
-	AddRequestAuthorizationToUseRestraints = 'AddRequestAuthorizationToUseRestraints',
-	AddRequestAuthorizationToUseDogs = 'AddRequestAuthorizationToUseDogs',
+	AddAuthorizationToUseRestraints = 'AddAuthorizationToUseRestraints',
+	AddAuthorizationToUseDogs = 'AddAuthorizationToUseDogs',
 }
 
 type LocksmithRequirementCodeSubset = Extract<
