@@ -12,6 +12,6 @@ namespace Spd.Resource.Organizations.Report
     public record OrgReportResult
     {
         public Guid? Id { get; set; }
-        public DateTimeOffset ReportDate { get; set; }
+        public DateOnly ReportDate { get; set; }
     }
 }

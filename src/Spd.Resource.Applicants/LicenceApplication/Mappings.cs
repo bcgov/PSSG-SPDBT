@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Edm;
 using Spd.Utilities.Dynamics;
@@ -21,7 +21,7 @@ internal class Mappings : Profile
         .ForMember(d => d.emailaddress1, opt => opt.Ignore())
         .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
         .ForMember(d => d.gendercode, opt => opt.Ignore())
-        .ForMember(d => d.birthdate, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
+        .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
         .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.ContactPhoneNumber))
         .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
         .ForMember(d => d.spd_birthplace, opt => opt.Ignore())
@@ -39,7 +39,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
          .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
-         .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => GetDate(s.DateOfBirth)))
+         .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
          .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
          .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
          .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
@@ -77,7 +77,7 @@ internal class Mappings : Profile
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Incomplete))
          .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
          .ReverseMap()
-         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
+         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
@@ -120,7 +120,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<spd_application, LicenceApplicationResp>()
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
-          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_expirydate))
+          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_CurrentExpiredLicenceId.spd_expirydate)))
           .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
           .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
           .IncludeBase<spd_application, LicenceApplication>();
@@ -140,18 +140,6 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ReverseMap();
-    }
-
-    private static DateTimeOffset? GetDateTimeOffset(Date? date)
-    {
-        if (date == null) return null;
-        return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
-    }
-
-    private static Date? GetDate(DateTimeOffset? datetime)
-    {
-        if (datetime == null) return null;
-        return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
     }
 
     private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)

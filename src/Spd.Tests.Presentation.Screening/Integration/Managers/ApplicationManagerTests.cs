@@ -79,7 +79,7 @@ public class ApplicationManagerTests : ScenarioContextBase
             RequireDuplicateCheck = false,
             City = "city",
             PhoneNumber = "12345678",
-            DateOfBirth = new DateTime(2000, 1, 1),
+            DateOfBirth = new DateOnly(2000, 1, 1),
             AddressLine1 = "address1",
             PostalCode = "121212",
             Province = "bc",

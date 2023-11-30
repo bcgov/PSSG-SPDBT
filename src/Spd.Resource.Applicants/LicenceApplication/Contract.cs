@@ -23,7 +23,7 @@ public record LicenceApplication
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     public GenderEnum? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
@@ -73,10 +73,9 @@ public record SaveLicenceApplicationCmd() : LicenceApplication
 public record LicenceApplicationResp() : LicenceApplication
 {
     public Guid? ContactId { get; set; }
-    public DateTimeOffset? ExpiryDate { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
     public string? CaseNumber { get; set; } 
-
 };
 
 public record LicenceAppListResp
