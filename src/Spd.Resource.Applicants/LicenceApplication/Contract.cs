@@ -73,7 +73,7 @@ public record SaveLicenceApplicationCmd() : LicenceApplication
 public record LicenceApplicationResp() : LicenceApplication
 {
     public Guid? ContactId { get; set; }
-    public DateTimeOffset? ExpiryDate { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
 };
 
 public record LicenceAppListResp

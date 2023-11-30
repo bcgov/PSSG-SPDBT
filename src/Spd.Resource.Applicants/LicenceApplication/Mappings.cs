@@ -120,7 +120,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<spd_application, LicenceApplicationResp>()
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
-          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_expirydate))
+          .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_CurrentExpiredLicenceId.spd_expirydate)))
           .IncludeBase<spd_application, LicenceApplication>();
 
         _ = CreateMap<spd_application, LicenceAppListResp>()

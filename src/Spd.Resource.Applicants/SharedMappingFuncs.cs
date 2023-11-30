@@ -54,6 +54,12 @@ internal static class SharedMappingFuncs
         return new Microsoft.OData.Edm.Date(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
     }
 
+    internal static DateOnly? GetDateOnlyFromDateTimeOffset(DateTimeOffset? datetime)
+    {
+        if (datetime == null) return null;
+        return new DateOnly(datetime.Value.Year, datetime.Value.Month, datetime.Value.Day);
+    }
+
     internal static LicenceTermEnum? GetLicenceTermEnum(int? optionset)
     {
         if (optionset == null) return null;

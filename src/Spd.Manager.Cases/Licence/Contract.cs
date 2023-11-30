@@ -118,7 +118,7 @@ namespace Spd.Manager.Cases.Licence
     public record WorkerLicenceResponse : WorkerLicenceApp
     {
         public Guid LicenceAppId { get; set; }
-        public DateTimeOffset? ExpiryDate { get; set; }
+        public DateOnly? ExpiryDate { get; set; }
     }
 
     public record WorkerLicenceAppListResponse
