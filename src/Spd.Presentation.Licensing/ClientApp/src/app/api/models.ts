@@ -4,7 +4,7 @@ export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { Alias } from './models/alias';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
-export { ApplicationStatusCode } from './models/application-status-code';
+export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationTypeCode } from './models/application-type-code';
 export { BcscConfiguration } from './models/bcsc-configuration';
 export { BooleanTypeCode } from './models/boolean-type-code';

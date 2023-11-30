@@ -1104,7 +1104,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 			citizenshipDocument = {
 				documentResponses: citizenshipDocuments,
-				expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
+				expiryDate: citizenshipData.expiryDate
+					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+					: null,
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 						? citizenshipData.canadianCitizenProofTypeCode
@@ -1128,7 +1130,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 			additionalGovIdDocument = {
 				documentResponses: additionalGovIdDocuments,
-				expiryDate: this.formatDatePipe.transform(additionalGovIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
+				expiryDate: additionalGovIdData.expiryDate
+					? this.formatDatePipe.transform(additionalGovIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+					: null,
 				licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
 			};
 		} else {
@@ -1155,6 +1159,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
+		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
+			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
+
 		const body: WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest = {
 			licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
@@ -1178,10 +1186,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			expiredLicenceId:
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes
-					? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
+			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------
@@ -1239,12 +1244,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				categoryArmouredCarGuardDocuments.push(licenceAppDocumentResponse);
 			});
 
+			const expiryDate = armouredCarGuardData.expiryDate
+				? this.formatDatePipe.transform(armouredCarGuardData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+				: null;
+
 			documents.push({
 				documentResponses: categoryArmouredCarGuardDocuments,
-				expiryDate: this.formatDatePipe.transform(
-					armouredCarGuardData.expiryDate,
-					SPD_CONSTANTS.date.backendDateFormat
-				),
+				expiryDate,
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
 			});
 		}
