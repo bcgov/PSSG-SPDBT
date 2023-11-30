@@ -67,8 +67,10 @@ namespace Spd.Presentation.Screening.Controllers
             var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
             appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.Portal;
 
-            //bcsc user name and birth date must be the same as name inside ApplicantAppCreateRequest          
-            DateOnly requestBirthDate = DateOnly.FromDateTime(((DateTimeOffset)appCreateRequest.DateOfBirth).Date);
+            //bcsc user name and birth date must be the same as name inside ApplicantAppCreateRequest
+            if (appCreateRequest.DateOfBirth == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "DateOfBirth cannot be null");
+            DateOnly requestBirthDate = (DateOnly)appCreateRequest.DateOfBirth;
             if (!string.Equals(applicantInfo.FirstName, appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
                 !string.Equals(applicantInfo.LastName, appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
                 applicantInfo.BirthDate != requestBirthDate)

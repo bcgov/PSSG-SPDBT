@@ -10,6 +10,7 @@ export const SPD_CONSTANTS = {
 		formalDateTimeFormat: 'MMM DD, YYYY HH:mm',
 		monthYearFormat: 'MMM yyyy',
 		dateTimeFormat: 'YYYY-MM-DD HH:mm',
+		backendDateFormat: 'YYYY-MM-DD',
 	},
 	phone: {
 		displayMask: '(000) 000-0000',

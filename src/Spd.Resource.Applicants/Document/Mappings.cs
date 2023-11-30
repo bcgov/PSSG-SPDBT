@@ -22,7 +22,7 @@ namespace Spd.Resource.Applicants.Document
             .ForMember(d => d.ReportId, opt => opt.MapFrom(s => s._spd_pdfreportid_value))
             .ForMember(d => d.FileName, opt => opt.MapFrom(s => s.bcgov_filename))
             .ForMember(d => d.FileExtension, opt => opt.MapFrom(s => FileNameHelper.GetFileExtensionWithoutDot(s.bcgov_fileextension)))
-            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => GetDateOnly(s.spd_expirydate)));
+            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_expirydate)));
 
             _ = CreateMap<SpdTempFile, bcgov_documenturl>()
             .ForMember(d => d.bcgov_documenturlid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -47,12 +47,6 @@ namespace Spd.Resource.Applicants.Document
                 .FirstOrDefault(t => t.Value == documenturl._bcgov_tag2id_value).Key;
             if (docType == null) { return null; }
             return Enum.Parse<DocumentTypeEnum>(docType);
-        }
-
-        private static DateTimeOffset? GetDateOnly(Date? date)
-        {
-            if (date == null) return null;
-            return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
         }
     }
 }
