@@ -293,9 +293,7 @@ export class PssoaComponent implements OnInit {
 		const dataToSave = this.getDataToSave();
 		const body: ApplicantAppCreateRequest = dataToSave;
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
-		body.dateOfBirth = body.dateOfBirth
-			? this.formatDatePipe.transform(body.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
-			: '';
+		body.dateOfBirth = this.formatDatePipe.transform(body.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat);
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
 		if (this.authenticationService.isLoggedIn()) {

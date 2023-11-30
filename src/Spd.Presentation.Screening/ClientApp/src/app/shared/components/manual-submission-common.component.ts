@@ -635,9 +635,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			createRequest.phoneNumber = createRequest.phoneNumber
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
 				: '';
-			createRequest.dateOfBirth = createRequest.dateOfBirth
-				? this.formatDatePipe.transform(createRequest.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
-				: '';
+			createRequest.dateOfBirth = this.formatDatePipe.transform(
+				createRequest.dateOfBirth,
+				SPD_CONSTANTS.date.backendDateFormat
+			);
 			createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true;
 			createRequest.contractedCompanyName = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
 				createRequest.screeningType

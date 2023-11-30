@@ -40,14 +40,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 											<input
 												matInput
 												[matDatepicker]="picker"
-												formControlName="governmentIssuedPhotoExpiryDate"
+												formControlName="expiryDate"
 												[errorStateMatcher]="matcher"
 											/>
 											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('governmentIssuedPhotoExpiryDate')?.hasError('required')">
-												This is required
-											</mat-error>
+											<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 								</div>

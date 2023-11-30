@@ -307,7 +307,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					});
 				}
 
-				const citizenshipExpiryDate = resp.citizenshipDocument?.expiryDate; //this.utilService.getUtcIsoString(resp.citizenshipDocument?.expiryDate);
 				const citizenshipData = {
 					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
@@ -316,7 +315,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					notCanadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? null
 						: resp.citizenshipDocument?.licenceDocumentTypeCode,
-					expiryDate: citizenshipExpiryDate,
+					expiryDate: resp.citizenshipDocument?.expiryDate,
 					attachments: citizenshipDataAttachments,
 				};
 
@@ -329,6 +328,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 				const additionalGovIdData = {
 					governmentIssuedPhotoTypeCode: resp.additionalGovIdDocument?.licenceDocumentTypeCode,
+					expiryDate: resp.additionalGovIdDocument?.expiryDate,
 					attachments: additionalGovIdAttachments,
 				};
 
@@ -420,8 +420,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					switch (category.workerCategoryTypeCode) {
 						case WorkerCategoryTypeCode.ArmouredCarGuard: {
 							const attachmentsArmouredCarGuard: Array<File> = [];
+							let armouredCarGuardExpiryDate = '';
 
 							category.documents?.forEach((doc: Document) => {
+								armouredCarGuardExpiryDate = this.formatDatePipe.transform(
+									doc.expiryDate,
+									SPD_CONSTANTS.date.backendDateFormat
+								);
 								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 									const aFile = this.utilService.dummyFile(item);
 									attachmentsArmouredCarGuard.push(aFile);
@@ -430,7 +435,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 							categoryArmouredCarGuardFormGroup = {
 								isInclude: true,
-								documentExpiryDate: '2009-10-07T00:00:00+00:00', // TODO where is date
+								expiryDate: armouredCarGuardExpiryDate,
 								attachments: attachmentsArmouredCarGuard,
 							};
 							break;
@@ -1099,7 +1104,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 			citizenshipDocument = {
 				documentResponses: citizenshipDocuments,
-				expiryDate: citizenshipData.expiryDate,
+				expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
 				licenceDocumentTypeCode:
 					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 						? citizenshipData.canadianCitizenProofTypeCode
@@ -1123,7 +1128,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 			additionalGovIdDocument = {
 				documentResponses: additionalGovIdDocuments,
-				expiryDate: additionalGovIdData.expiryDate,
+				expiryDate: this.formatDatePipe.transform(additionalGovIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
 				licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
 			};
 		} else {
@@ -1173,7 +1178,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			expiredLicenceId:
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiryDate : null,
+			expiryDate:
+				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes
+					? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+					: null,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------
@@ -1233,14 +1241,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 			documents.push({
 				documentResponses: categoryArmouredCarGuardDocuments,
+				expiryDate: this.formatDatePipe.transform(
+					armouredCarGuardData.expiryDate,
+					SPD_CONSTANTS.date.backendDateFormat
+				),
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
 			});
 		}
-
 		return {
 			workerCategoryTypeCode: WorkerCategoryTypeCode.ArmouredCarGuard,
 			documents: documents,
-			//TODO  needs expiryDate
 		};
 	}
 
