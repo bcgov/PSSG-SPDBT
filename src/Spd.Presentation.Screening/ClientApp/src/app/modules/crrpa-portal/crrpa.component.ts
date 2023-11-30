@@ -16,6 +16,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -27,6 +28,7 @@ import { SaStepOrganizationInfoComponent } from 'src/app/shared/components/scree
 import { SaStepPersonalInfoComponent } from 'src/app/shared/components/screening-application-steps/sa-step-personal-info.component';
 import { SaStepTermsAndCondComponent } from 'src/app/shared/components/screening-application-steps/sa-step-terms-and-cond.component';
 import { AppInviteOrgData } from 'src/app/shared/components/screening-application-steps/screening-application.model';
+import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 
 @Component({
 	selector: 'app-crrpa',
@@ -132,6 +134,7 @@ export class CrrpaComponent implements OnInit {
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
 		private utilService: UtilService,
+		private formatDatePipe: FormatDatePipe,
 		private authenticationService: AuthenticationService,
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserBcscService,
@@ -330,6 +333,9 @@ export class CrrpaComponent implements OnInit {
 		const dataToSave = this.getDataToSave();
 		const body: ApplicantAppCreateRequest = dataToSave;
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
+		body.dateOfBirth = body.dateOfBirth
+			? this.formatDatePipe.transform(body.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
+			: '';
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
 		if (this.authenticationService.isLoggedIn()) {

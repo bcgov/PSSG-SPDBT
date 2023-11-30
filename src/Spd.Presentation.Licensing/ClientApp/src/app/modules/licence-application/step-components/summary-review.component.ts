@@ -213,7 +213,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
 															<div class="text-data">
-																{{ expiredLicenceExpiryDate | formatDate : constants.date.dateFormat | default }}
+																{{ expiredLicenceExpiryDate | formatDate | default }}
 															</div>
 														</div>
 													</div>
@@ -401,7 +401,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="col-lg-3 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
 														<div class="text-data">
-															{{ dateOfBirth | formatDate : constants.date.dateFormat | default }}
+															{{ dateOfBirth | formatDate | default }}
 														</div>
 													</div>
 													<div class="col-lg-3 col-md-12 mt-lg-2">
@@ -926,7 +926,7 @@ export class SummaryReviewComponent implements OnInit {
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
 		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoExpiryDate ?? '';
+		return this.licenceModelData.additionalGovIdData.expiryDate ?? '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
 		if (!this.showAdditionalGovIdData) return [];

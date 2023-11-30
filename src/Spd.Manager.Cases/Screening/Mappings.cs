@@ -10,6 +10,7 @@ using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Manager.Cases.Screening
 {

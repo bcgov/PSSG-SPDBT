@@ -1,6 +1,7 @@
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.LicenceApplication;
+using Spd.Utilities.Shared.Tools;
 using Spd.Utilities.TempFileStorage;
 using System.Collections.Immutable;
 
@@ -263,7 +264,8 @@ internal partial class LicenceManager
                         LicenceDocumentTypeCode code = Enum.Parse<LicenceDocumentTypeCode>("Category" + docType.ToString() + "_" + type.ToString());
                         d.LicenceDocumentTypeCode = code;
                         d.DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(catFiles.Where(c => c.DocumentType2 == type).ToList());
-                        d.ExpiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
+                        DateOnly? expiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
+                        d.ExpiryDate = expiryDate;
                         docs.Add(d);
                     }
                     categoryData.Documents = docs.ToArray();
