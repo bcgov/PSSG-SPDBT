@@ -17,6 +17,6 @@ namespace Spd.Resource.Applicants.Licence
     {
         public Guid? LicenceId { get; set; }
         public string? LicenceNumber { get; set; } = null;
-        public DateTimeOffset ExpiryDate { get; set; }
+        public DateOnly ExpiryDate { get; set; }
     }
 }
