@@ -11,8 +11,7 @@ namespace Spd.Resource.Applicants.Licence
             _ = CreateMap<spd_licence, LicenceResp>()
              .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
              .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
-             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate));
-
+             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_expirydate)));
         }
 
     }

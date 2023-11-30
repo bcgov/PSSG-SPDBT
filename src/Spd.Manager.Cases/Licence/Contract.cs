@@ -183,7 +183,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public Guid? LicenceId { get; set; } = null;
         public string? LicenceNumber { get; set; } = null;
-        public DateTimeOffset ExpiryDate { get; set; }
+        public DateOnly ExpiryDate { get; set; }
     };
 
     public record LicenceLookupQuery(string LicenceNumber) : IRequest<LicenceLookupResponse>;
