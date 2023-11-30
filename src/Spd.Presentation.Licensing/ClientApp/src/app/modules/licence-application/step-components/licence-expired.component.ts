@@ -104,7 +104,6 @@ export class LicenceExpiredComponent implements LicenceChildStepperStepComponent
 	booleanTypeCodes = BooleanTypeCode;
 	constants = SPD_CONSTANTS;
 
-	maxDate = new Date();
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;

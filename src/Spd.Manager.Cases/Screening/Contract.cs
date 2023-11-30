@@ -187,7 +187,7 @@ namespace Spd.Manager.Cases.Screening
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
         public string? JobTitle { get; set; }
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
         public string? ContractedCompanyName { get; set; }
         public PayerPreferenceTypeCode? PayeeType { get; set; }
     }
@@ -545,7 +545,7 @@ namespace Spd.Manager.Cases.Screening
 
             RuleFor(r => r.DateOfBirth)
                 .NotEmpty()
-                .Must(birth => birth.Value.AddYears(13) < DateTimeOffset.UtcNow)
+                .Must(birth => (((DateOnly)birth).Year + 13) < DateTimeOffset.UtcNow.Year)
                 .NotNull();
 
             RuleFor(r => r.BirthPlace)

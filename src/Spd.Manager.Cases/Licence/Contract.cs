@@ -36,7 +36,7 @@ namespace Spd.Manager.Cases.Licence
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
         public GenderCode? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
         public string? ExpiredLicenceNumber { get; set; }
@@ -87,7 +87,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
-        public DateTimeOffset? ExpiryDate { get; set; }
+        public DateOnly? ExpiryDate { get; set; }
     }
 
     public record PoliceOfficerDocument : Document;
@@ -118,7 +118,7 @@ namespace Spd.Manager.Cases.Licence
     public record WorkerLicenceResponse : WorkerLicenceApp
     {
         public Guid LicenceAppId { get; set; }
-        public DateTimeOffset? ExpiryDate { get; set; }
+        public DateOnly? ExpiryDate { get; set; }
     }
 
     public record WorkerLicenceAppListResponse
@@ -407,7 +407,7 @@ namespace Spd.Manager.Cases.Licence
                 .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen != null && r.IsCanadianCitizen == true);
             RuleFor(r => r.CitizenshipDocument.ExpiryDate)
                 .NotEmpty()
-                .Must(d => d > DateTimeOffset.Now)
+                .Must(d => d > DateOnly.FromDateTime(DateTime.Now))
                 .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == false && (r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit || r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit));
 
             ////additional gov id

@@ -28,6 +28,7 @@ import { Address, AddressAutocompleteComponent } from 'src/app/shared/components
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { FormatDatePipe } from '../pipes/format-date.pipe';
 
 export interface AliasCreateRequest {
 	givenName?: null | string;
@@ -557,6 +558,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private utilService: UtilService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
+		private formatDatePipe: FormatDatePipe,
 		private dialog: MatDialog
 	) {}
 
@@ -633,6 +635,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			createRequest.phoneNumber = createRequest.phoneNumber
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
 				: '';
+			createRequest.dateOfBirth = this.formatDatePipe.transform(
+				createRequest.dateOfBirth,
+				SPD_CONSTANTS.date.backendDateFormat
+			);
 			createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true;
 			createRequest.contractedCompanyName = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
 				createRequest.screeningType
@@ -809,10 +815,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 
 	private saveManualSubmission(body: any): void {
-		body.requireDuplicateCheck = false;
-		if (body.phoneNumber) {
-			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
-		}
+		body.ApplicationCreateRequestJson.requireDuplicateCheck = false;
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
