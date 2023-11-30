@@ -215,7 +215,7 @@ mat-label {
 // }
 
 .mat-mdc-header-cell {
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 .mat-cell-email {
@@ -360,7 +360,7 @@ mat-label {
 
 // MAT ERROR
 .mat-option-error {
-  font-size: .8em;
+  color: var(--mat-form-field-error-text-color);
 }
 
 // MAT HINT
