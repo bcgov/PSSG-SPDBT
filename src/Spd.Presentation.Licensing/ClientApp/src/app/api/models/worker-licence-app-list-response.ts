@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationStatusCode } from './application-status-code';
+import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceAppListResponse {
-  applicationStatusCode?: ApplicationStatusCode;
+  applicationPortalStatusCode?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   caseNumber?: null | string;
   createdOn?: string;

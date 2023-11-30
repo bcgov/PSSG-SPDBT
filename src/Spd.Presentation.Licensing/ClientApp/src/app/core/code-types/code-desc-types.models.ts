@@ -1,5 +1,5 @@
 export {
-	ApplicationStatusTypes,
+	ApplicationPortalStatusTypes,
 	ApplicationTypes,
 	BooleanTypes,
 	CountryTypes,
@@ -15,6 +15,5 @@ export {
 	RestraintDocumentTypes,
 	WeightUnitTypes,
 	WorkerCategoryTypes,
-	WorkerLicenceTypes
+	WorkerLicenceTypes,
 } from './model-desc.models';
-

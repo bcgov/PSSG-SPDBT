@@ -4,18 +4,12 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { LicenceUpdateTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	UpdateAddDogsModalComponent
-} from '../../components/update-add-dogs-modal.component';
-import {
-	UpdateAddRestraintsModalComponent
-} from '../../components/update-add-restraints-modal.component';
-import {
-	UpdateApplyNameChangeModalComponent
-} from '../../components/update-apply-name-change-modal.component';
+import { UpdateAddDogsModalComponent } from '../../components/update-add-dogs-modal.component';
+import { UpdateAddRestraintsModalComponent } from '../../components/update-add-restraints-modal.component';
+import { UpdateApplyNameChangeModalComponent } from '../../components/update-apply-name-change-modal.component';
 import {
 	LicenceCategoryDialogData,
-	UpdateLicenceCategoryModalComponent
+	UpdateLicenceCategoryModalComponent,
 } from '../../components/update-licence-category-modal.component';
 import { UpdatePhotoModalComponent } from '../../components/update-photo-modal.component';
 
@@ -65,12 +59,12 @@ export interface UpdateOptionListData {
 								</li>
 								<li class="my-2">
 									<a color="primary" class="large my-2" (click)="onUseRestraintsModal()"
-										>Add Request Authorization to Use Restraints</a
+										>Add  Authorization to Use Restraints</a
 									>
 								</li>
 								<li class="my-2">
 									<a color="primary" class="large my-2" (click)="onUseDogsModal()"
-										>Add Request Authorization to Use Dogs</a
+										>Add  Authorization to Use Dogs</a
 									>
 								</li>
 							</ul>
@@ -86,7 +80,7 @@ export interface UpdateOptionListData {
 								class="large my-2"
 								[disabled]="addedUpdateName"
 							>
-								Apply your Updated Name
+								Apply updated Name
 							</button>
 							<button
 								mat-stroked-button
@@ -108,18 +102,18 @@ export interface UpdateOptionListData {
 								color="primary"
 								class="large my-2"
 								(click)="onUseRestraintsModal()"
-								[disabled]="addedRequestAuthorizationToUseRestraints"
+								[disabled]="addedAuthorizationToUseRestraints"
 							>
-								Add Request Authorization to Use Restraints
+								Add Authorization to Use Restraints
 							</button>
 							<button
 								mat-stroked-button
 								color="primary"
 								class="large my-2"
 								(click)="onUseDogsModal()"
-								[disabled]="addedRequestAuthorizationToUseDogs"
+								[disabled]="addedAuthorizationToUseDogs"
 							>
-								Add Request Authorization to Use Dogs
+								Add Authorization to Use Dogs
 							</button>
 						</div>
 					</div>
@@ -135,7 +129,9 @@ export interface UpdateOptionListData {
 
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-							<app-alert type="info" icon="" *ngIf="updates.length === 0"> No updates have been selected </app-alert>
+							<app-alert type="info" [showBorder]="false" icon="" *ngIf="updates.length === 0">
+								No updates have been selected
+							</app-alert>
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
 								<div class="row">
 									<div class="col-lg-6 col-md-12">
@@ -167,7 +163,6 @@ export interface UpdateOptionListData {
 			}
 
 			.text-data {
-				/* font-weight: 500; */
 				font-size: 0.9rem !important;
 			}
 
@@ -186,8 +181,8 @@ export class StepLicenceUpdatesComponent {
 
 	addedUpdateName = false;
 	addedUpdatePhoto = false;
-	addedRequestAuthorizationToUseRestraints = false;
-	addedRequestAuthorizationToUseDogs = false;
+	addedAuthorizationToUseRestraints = false;
+	addedAuthorizationToUseDogs = false;
 
 	constructor(private dialog: MatDialog, private optionsPipe: OptionsPipe) {}
 
@@ -199,10 +194,10 @@ export class StepLicenceUpdatesComponent {
 			case LicenceUpdateTypeCode.AddLicenceCategory:
 				this.onEditLicenceCategoryModal(row);
 				break;
-			case LicenceUpdateTypeCode.AddRequestAuthorizationToUseRestraints:
+			case LicenceUpdateTypeCode.AddAuthorizationToUseRestraints:
 				this.onUseRestraintsModal();
 				break;
-			case LicenceUpdateTypeCode.AddRequestAuthorizationToUseDogs:
+			case LicenceUpdateTypeCode.AddAuthorizationToUseDogs:
 				this.onUseDogsModal();
 				break;
 		}
@@ -231,11 +226,11 @@ export class StepLicenceUpdatesComponent {
 						case LicenceUpdateTypeCode.UpdatePhoto:
 							this.addedUpdatePhoto = false;
 							break;
-						case LicenceUpdateTypeCode.AddRequestAuthorizationToUseRestraints:
-							this.addedRequestAuthorizationToUseRestraints = false;
+						case LicenceUpdateTypeCode.AddAuthorizationToUseRestraints:
+							this.addedAuthorizationToUseRestraints = false;
 							break;
-						case LicenceUpdateTypeCode.AddRequestAuthorizationToUseDogs:
-							this.addedRequestAuthorizationToUseDogs = false;
+						case LicenceUpdateTypeCode.AddAuthorizationToUseDogs:
+							this.addedAuthorizationToUseDogs = false;
 							break;
 					}
 				}
@@ -336,11 +331,11 @@ export class StepLicenceUpdatesComponent {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.addedRequestAuthorizationToUseRestraints = true;
+					this.addedAuthorizationToUseRestraints = true;
 
 					this.updates.push({
-						updateTypeCode: LicenceUpdateTypeCode.AddRequestAuthorizationToUseRestraints,
-						label: 'Add Request Authorization to use Restraints',
+						updateTypeCode: LicenceUpdateTypeCode.AddAuthorizationToUseRestraints,
+						label: 'Add Authorization to use Restraints',
 						allowEdit: true,
 						allowDelete: true,
 					});
@@ -359,11 +354,11 @@ export class StepLicenceUpdatesComponent {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.addedRequestAuthorizationToUseDogs = true;
+					this.addedAuthorizationToUseDogs = true;
 
 					this.updates.push({
-						updateTypeCode: LicenceUpdateTypeCode.AddRequestAuthorizationToUseDogs,
-						label: 'Add Request Authorization to use Dogs',
+						updateTypeCode: LicenceUpdateTypeCode.AddAuthorizationToUseDogs,
+						label: 'Add Authorization to use Dogs',
 						allowEdit: true,
 						allowDelete: true,
 					});
