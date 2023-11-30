@@ -36,7 +36,7 @@ namespace Spd.Manager.Cases.Licence
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
         public GenderCode? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
         public string? ExpiredLicenceNumber { get; set; }
@@ -87,7 +87,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
-        public DateTimeOffset? ExpiryDate { get; set; }
+        public DateOnly? ExpiryDate { get; set; }
     }
 
     public record PoliceOfficerDocument : Document;

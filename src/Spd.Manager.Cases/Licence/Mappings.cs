@@ -3,6 +3,7 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Manager.Cases.Licence;
 internal class Mappings : Profile
@@ -10,11 +11,14 @@ internal class Mappings : Profile
     public Mappings()
     {
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.DateOfBirth, opt=>opt.MapFrom(s=>((DateOnly)s.DateOfBirth).ToDateTimeOffset(TimeZoneInfo.Utc)))
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.CategoryData));
         CreateMap<WorkerLicenceAppCategoryData, WorkerLicenceAppCategory>()
             .ReverseMap();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
-        CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+        CreateMap<LicenceApplicationResp, WorkerLicenceResponse>()
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => ((DateTimeOffset)s.DateOfBirth).ToDateOnly(TimeZoneInfo.Utc)))
+            ;
         CreateMap<LicenceResp, LicenceLookupResponse>();
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
         CreateMap<DocumentResp, LicenceAppDocumentResponse>()
