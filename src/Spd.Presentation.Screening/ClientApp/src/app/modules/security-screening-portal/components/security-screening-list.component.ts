@@ -82,7 +82,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Submitted On:</span>
-							{{ application.createdOn | date : constants.date.dateFormat }}
+							{{ application.createdOn | formatDate }}
 						</mat-cell>
 					</ng-container>
 
@@ -106,7 +106,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef>Application Status</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Application Status:</span>
-							<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="application.applicationPortalStatusClass">
+							<mat-chip-row aria-label="Status" [ngClass]="application.applicationPortalStatusClass">
 								{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 							</mat-chip-row>
 						</mat-cell>

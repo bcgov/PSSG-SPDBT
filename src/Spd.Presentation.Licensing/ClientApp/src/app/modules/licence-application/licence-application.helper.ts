@@ -6,9 +6,9 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
 export interface LicenceStepperStepComponent {
-	onStepNext(formNumber: string): void;
+	onStepNext(formNumber: number): void;
 	onStepPrevious(): void;
-	onFormValidNextStep(formNumber: string): void;
+	onFormValidNextStep(formNumber: number): void;
 	onStepSelectionChange(event: StepperSelectionEvent): void;
 	onGoToNextStep(): void;
 	onGoToFirstStep(): void;

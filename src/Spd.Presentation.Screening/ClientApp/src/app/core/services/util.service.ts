@@ -3,6 +3,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import jwt_decode from 'jwt-decode';
+import * as moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { ApplicationPortalStatusTypes, SelectOptions } from '../code-types/model-desc.models';
@@ -57,16 +58,12 @@ export class UtilService {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
-	getBirthDateStartAt(): Date {
-		const today = new Date();
-		today.setFullYear(today.getFullYear() - SPD_CONSTANTS.date.birthDateStartAtYears);
-		return today;
+	getBirthDateStartAt(): moment.Moment {
+		return moment().subtract(SPD_CONSTANTS.date.birthDateStartAtYears, 'years');
 	}
 
-	getBirthDateMax(): Date {
-		const today = new Date();
-		today.setFullYear(new Date().getFullYear() - SPD_CONSTANTS.date.birthDateMinAgeYears);
-		return today;
+	getBirthDateMax(): moment.Moment {
+		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
@@ -187,15 +184,7 @@ export class UtilService {
 	}
 
 	getDateString(date: Date): string {
-		const d = new Date(date);
-		let month = '' + (d.getMonth() + 1);
-		let day = '' + d.getDate();
-		const year = d.getFullYear();
-
-		if (month.length < 2) month = '0' + month;
-		if (day.length < 2) day = '0' + day;
-
-		return [year, month, day].join('-');
+		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
 	}
 
 	/**

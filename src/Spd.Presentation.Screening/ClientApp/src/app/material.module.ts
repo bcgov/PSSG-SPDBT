@@ -1,6 +1,6 @@
 import { OverlayModule } from '@angular/cdk/overlay';
-import { formatDate } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -65,9 +65,9 @@ export const APP_DATE_FORMATS = {
 		dateInput: SPD_CONSTANTS.date.dateFormat,
 	},
 	display: {
-		dateInput: 'input',
+		dateInput: SPD_CONSTANTS.date.dateFormat,
 		monthYearLabel: SPD_CONSTANTS.date.monthYearFormat,
-		dateA11yLabel: SPD_CONSTANTS.date.dateFormat,
+		dateA11yLabel: 'DDD',
 		monthYearA11yLabel: SPD_CONSTANTS.date.monthYearFormat,
 	},
 };
@@ -77,28 +77,6 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 	// floatLabel: 'always',
 	appearance: 'fill', // 'outline'
 };
-
-@Injectable()
-export class SpdDateAdapter extends NativeDateAdapter {
-	override format(date: Date, displayFormat: any): string {
-		if (displayFormat === 'input') {
-			return formatDate(date, SPD_CONSTANTS.date.dateFormat, this.locale);
-		} else {
-			return date.toDateString();
-		}
-	}
-}
-
-@Injectable()
-export class SpdDateYearMonthAdapter extends NativeDateAdapter {
-	override format(date: Date, displayFormat: any): string {
-		if (displayFormat === 'input') {
-			return formatDate(date, SPD_CONSTANTS.date.monthYearFormat, this.locale);
-		} else {
-			return date.toDateString();
-		}
-	}
-}
 
 @NgModule({
 	declarations: [],
@@ -111,7 +89,8 @@ export class SpdDateYearMonthAdapter extends NativeDateAdapter {
 		},
 		{
 			provide: DateAdapter,
-			useClass: SpdDateAdapter,
+			useClass: MomentDateAdapter,
+			deps: [MAT_DATE_LOCALE],
 		},
 		{
 			provide: MAT_RADIO_DEFAULT_OPTIONS,
