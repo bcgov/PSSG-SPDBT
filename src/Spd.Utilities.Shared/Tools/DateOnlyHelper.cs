@@ -11,7 +11,6 @@ public static class DateOnlyHelper
     public static DateOnly ToDateOnly(this DateTimeOffset dto, TimeZoneInfo zone)
     {
         var inTargetZone = TimeZoneInfo.ConvertTime(dto, zone);
-
         return DateOnly.FromDateTime(inTargetZone.Date);
     }
 }

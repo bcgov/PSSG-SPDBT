@@ -52,15 +52,7 @@ internal partial class LicenceManager
             {
                 DocumentTypeEnum tag1 = DocumentTypeEnum.CitizenshipDocument; //indicate which screen in fe
                 DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.CitizenshipDocument.LicenceDocumentTypeCode);
-                if (request.CitizenshipDocument.ExpiryDate != null)
-                {
-                    DateTimeOffset expiryDate = ((DateOnly)request.CitizenshipDocument.ExpiryDate).ToDateTimeOffset(TimeZoneInfo.Utc);
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, expiryDate, tag1, tag2), ct);
-                }
-                else
-                {
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
-                }
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.CitizenshipDocument.ExpiryDate, tag1, tag2), ct);
             }
         }
         //govid
@@ -70,15 +62,7 @@ internal partial class LicenceManager
             {
                 DocumentTypeEnum tag1 = DocumentTypeEnum.AdditionalGovIdDocument;
                 DocumentTypeEnum tag2 = GetDocumentTypeEnum(request.AdditionalGovIdDocument.LicenceDocumentTypeCode);
-                if(request.AdditionalGovIdDocument.ExpiryDate != null)
-                {
-                    DateTimeOffset expiryDate = ((DateOnly)request.AdditionalGovIdDocument.ExpiryDate).ToDateTimeOffset(TimeZoneInfo.Utc);
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, expiryDate, tag1, tag2), ct);
-                }
-                else
-                {
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
-                }
+                await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, request.AdditionalGovIdDocument.ExpiryDate, tag1, tag2), ct);
             }
         }
         //policy officer
@@ -131,15 +115,7 @@ internal partial class LicenceManager
                     foreach (var doc in d.DocumentResponses)
                     {
                         (DocumentTypeEnum? tag1, DocumentTypeEnum? tag2) = GetDocumentTypeEnums(d.LicenceDocumentTypeCode);
-                        if (d.ExpiryDate != null)
-                        {
-                            DateTimeOffset expiryDate = ((DateOnly)d.ExpiryDate).ToDateTimeOffset(TimeZoneInfo.Utc);
-                            await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, expiryDate, tag1, tag2), ct);
-                        }
-                        else
-                        {
-                            await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, null, tag1, tag2), ct);
-                        }
+                        await _documentRepository.ManageAsync(new UpdateDocumentCmd(doc.DocumentUrlId, d.ExpiryDate, tag1, tag2), ct);
                     }
                 }
             }
@@ -237,7 +213,7 @@ internal partial class LicenceManager
             {
                 LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)bornInCanadas[0].DocumentType2),
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(bornInCanadas),
-                ExpiryDate = bornInCanadas[0].ExpiryDate == null ? null : ((DateTimeOffset)bornInCanadas[0].ExpiryDate).ToDateOnly(TimeZoneInfo.Utc)
+                ExpiryDate = bornInCanadas[0].ExpiryDate
             };
         }
 
@@ -248,7 +224,7 @@ internal partial class LicenceManager
             {
                 LicenceDocumentTypeCode = GetlicenceDocumentTypeCode((DocumentTypeEnum)govIdDocs.First().DocumentType2),
                 DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(govIdDocs),
-                ExpiryDate = govIdDocs[0].ExpiryDate==null? null: ((DateTimeOffset)govIdDocs[0].ExpiryDate).ToDateOnly(TimeZoneInfo.Utc)
+                ExpiryDate = govIdDocs[0].ExpiryDate
             };
         }
 
@@ -288,8 +264,8 @@ internal partial class LicenceManager
                         LicenceDocumentTypeCode code = Enum.Parse<LicenceDocumentTypeCode>("Category" + docType.ToString() + "_" + type.ToString());
                         d.LicenceDocumentTypeCode = code;
                         d.DocumentResponses = _mapper.Map<List<LicenceAppDocumentResponse>>(catFiles.Where(c => c.DocumentType2 == type).ToList());
-                        DateTimeOffset? expiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
-                        d.ExpiryDate = expiryDate==null? null: ((DateTimeOffset)expiryDate).ToDateOnly(TimeZoneInfo.Utc);
+                        DateOnly? expiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
+                        d.ExpiryDate = expiryDate;
                         docs.Add(d);
                     }
                     categoryData.Documents = docs.ToArray();
