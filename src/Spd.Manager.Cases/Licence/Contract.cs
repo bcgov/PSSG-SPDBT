@@ -407,7 +407,7 @@ namespace Spd.Manager.Cases.Licence
                 .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen != null && r.IsCanadianCitizen == true);
             RuleFor(r => r.CitizenshipDocument.ExpiryDate)
                 .NotEmpty()
-                .Must(d => d > DateTimeOffset.Now)
+                .Must(d => d > DateOnly.FromDateTime(DateTime.Now))
                 .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == false && (r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit || r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit));
 
             ////additional gov id
