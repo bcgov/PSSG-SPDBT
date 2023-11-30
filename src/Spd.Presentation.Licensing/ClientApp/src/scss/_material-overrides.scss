@@ -360,7 +360,7 @@ mat-label {
 
 // MAT ERROR
 .mat-option-error {
-  font-size: .8em;
+  color: var(--mat-form-field-error-text-color);
 }
 
 // MAT HINT
