@@ -74,6 +74,8 @@ public record LicenceApplicationResp() : LicenceApplication
 {
     public Guid? ContactId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
+    public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
+    public string? CaseNumber { get; set; } 
 };
 
 public record LicenceAppListResp
