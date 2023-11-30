@@ -74,7 +74,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_haspreviousnames, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasPreviousName)))
          .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseDogs)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
-         .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
+         .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Incomplete))
          .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
          .ReverseMap()
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_dateofbirth)))
@@ -121,6 +121,8 @@ internal class Mappings : Profile
         _ = CreateMap<spd_application, LicenceApplicationResp>()
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
           .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_expirydate))
+          .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
+          .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
           .IncludeBase<spd_application, LicenceApplication>();
 
         _ = CreateMap<spd_application, LicenceAppListResp>()
