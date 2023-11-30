@@ -119,6 +119,8 @@ namespace Spd.Manager.Cases.Licence
     {
         public Guid LicenceAppId { get; set; }
         public DateOnly? ExpiryDate { get; set; }
+        public string? CaseNumber { get; set; }
+        public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     }
 
     public record WorkerLicenceAppListResponse
@@ -129,7 +131,7 @@ namespace Spd.Manager.Cases.Licence
         public DateTimeOffset? SubmittedOn { get; set; }
         public ApplicationTypeCode ApplicationTypeCode { get; set; }
         public string CaseNumber { get; set; }
-        public ApplicationStatusCode ApplicationStatusCode { get; set; }
+        public ApplicationPortalStatusCode ApplicationPortalStatusCode { get; set; }
     }
     #endregion
 
@@ -474,7 +476,7 @@ namespace Spd.Manager.Cases.Licence
         {
             public WorkerLicenceAppCategoryDataValidator()
             {
-                RuleFor(c => c.Documents).Must(d => d.Count() == 1
+                RuleFor(c => c.Documents).Must(d => d.Count() >= 1
                     && d.Any(doc => LicenceManager.SecurityGuardDocCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard);
                 RuleFor(c => c.Documents).Must(d => d == null || d.Count() == 0)
