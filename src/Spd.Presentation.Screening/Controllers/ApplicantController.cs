@@ -159,7 +159,7 @@ namespace Spd.Presentation.Screening.Controllers
                 Email = StringHelper.ToTitleCase(info.Email),
                 EmailVerified = info.EmailVerified,
                 Age = info.Age,
-                BirthDate = new DateTimeOffset(info.BirthDate.Year, info.BirthDate.Month, info.BirthDate.Day, 0, 0, 0, TimeSpan.Zero),
+                BirthDate = info.BirthDate,
                 DisplayName = StringHelper.ToTitleCase(info.DisplayName),
                 FirstName = StringHelper.ToTitleCase(info.FirstName),
                 LastName = StringHelper.ToTitleCase(info.LastName),
@@ -278,7 +278,7 @@ public class ApplicantUserInfo
     public GenderCode? GenderCode { get; set; }
     public string? Age { get; set; }
     public string? Sub { get; set; }
-    public DateTimeOffset? BirthDate { get; set; }
+    public DateOnly? BirthDate { get; set; }
     public bool? EmailVerified { get; set; }
 }
 

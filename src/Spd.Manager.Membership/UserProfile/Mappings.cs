@@ -44,7 +44,7 @@ namespace Spd.Manager.Membership.UserProfile
                .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.BcscIdentityInfo.Email))
                .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName1))
                .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName2))
-               .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => new DateTimeOffset(s.BcscIdentityInfo.BirthDate.Year, s.BcscIdentityInfo.BirthDate.Month, s.BcscIdentityInfo.BirthDate.Day, 0, 0, 0, TimeSpan.Zero)))
+               .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.BcscIdentityInfo.BirthDate))
                .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnum(s.BcscIdentityInfo.Gender)));
 
             CreateMap<ContactResp, ApplicantProfileResponse>()
