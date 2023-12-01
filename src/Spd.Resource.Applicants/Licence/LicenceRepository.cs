@@ -1,7 +1,6 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.FileStorage;
-using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Applicants.Licence;
 internal class LicenceRepository : ILicenceRepository
@@ -10,26 +9,49 @@ internal class LicenceRepository : ILicenceRepository
     private readonly IMapper _mapper;
 
     public LicenceRepository(IDynamicsContextFactory ctx,
-        IMapper mapper,
-        IFileStorageService fileStorageService,
-        ITempFileStorageService tempFileService)
+        IMapper mapper)
     {
         _context = ctx.Create();
         _mapper = mapper;
     }
     public async Task<LicenceListResp> QueryAsync(LicenceQry qry, CancellationToken ct)
     {
-        if (qry.LicenceNumber == null)
+        if (qry.LicenceNumber == null && qry.AccountId == null && qry.ContactId == null)
         {
-            return new LicenceListResp();
+            throw new ArgumentException("at least need 1 parameter to do licence query.");
         }
 
-        var app = await _context.spd_licences
-            .Where(a => a.spd_licencenumber == qry.LicenceNumber).SingleOrDefaultAsync(ct);
+        IQueryable<spd_licence> lics = _context.spd_licences;
+        if (!qry.IncludeInactive)
+            lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
-        var response = new LicenceListResp();
-        response.Items = new List<LicenceResp>() { _mapper.Map<LicenceResp>(app) };
-        return response;
+        if (qry.ContactId != null)
+        {
+            lics = lics.Where(a => a._spd_licenceholder_value == qry.ContactId);
+        }
+        if (qry.AccountId != null)
+        {
+            lics = lics.Where(a => a._spd_licenceholder_value == qry.AccountId);
+        }
+        if (qry.LicenceNumber != null)
+        {
+            lics = lics.Where(a => a.spd_licencenumber == qry.LicenceNumber);
+        }
+        if (qry.Type != null)
+        {
+            Guid? serviceTypeId = _context.LookupServiceType(qry.Type.ToString()).spd_servicetypeid;
+            lics = lics.Where(l => l._spd_licencetype_value == serviceTypeId);
+        }
+        if (qry.IsExpired != null)
+        {
+            lics = (bool)qry.IsExpired ? lics.Where(l => l.spd_expirydate <= DateTimeOffset.UtcNow) :
+                lics.Where(l => l.spd_expirydate > DateTimeOffset.UtcNow);
+        }
+
+        return new LicenceListResp()
+        {
+            Items = _mapper.Map<IEnumerable<LicenceResp>>(lics)
+        };
     }
 
     public async Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken ct)
