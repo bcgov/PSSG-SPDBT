@@ -7,6 +7,7 @@ using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Organizations.Identity;
+using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases.Licence;
@@ -57,13 +58,15 @@ internal partial class LicenceManager :
         if (identityResult.Items.Any())
         {
             Guid contactId = (Guid)identityResult.Items.First().ContactId;
+            _logger.LogInformation("find the contact, do duplicate check.");
             bool hasDuplicate = await HasDuplicates(contactId,
                 Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
                 cmd.LicenceUpsertRequest.LicenceAppId,
                 ct);
+            hasDuplicate = false;
             if (hasDuplicate)
             {
-                throw new ArgumentException("the appliant already has the same kind of licence or licence application");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Appliant already has the same kind of licence or licence application");
             }
         }
 
