@@ -2,9 +2,15 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subscription, take, tap } from 'rxjs';
-import { ApplicationTypeCode, WorkerLicenceAppListResponse, WorkerLicenceTypeCode } from 'src/app/api/models';
+import {
+	ApplicationPortalStatusCode,
+	ApplicationTypeCode,
+	WorkerLicenceAppListResponse,
+	WorkerLicenceTypeCode,
+} from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -25,7 +31,7 @@ export interface ApplicationResponse {
 	template: `
 		<section class="step-section">
 			<div class="row">
-				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<h2 class="my-3 fs-3 fw-normal">Security Licences & Permits</h2>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
@@ -39,13 +45,105 @@ export interface ApplicationResponse {
 							Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
 						</app-alert>
 
-						<app-alert type="danger" [boldText]="true" icon="error">
+						<app-alert type="danger" icon="error">
 							You haven't submitted your licence application yet. It will expire on Jan 12, 2024
 						</app-alert>
 
-						<div class="mb-4" *ngIf="draftApplications.length > 0">
-							<!-- <div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div> -->
-							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of draftApplications; let i = index">
+						<div class="card-section my-4 px-4 py-3">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="text-data">You don't have any active licences</div>
+								</div>
+								<div class="col-lg-6 text-end">
+									<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
+										Apply for a New Licence or Permit
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-3" *ngIf="dataSource.data.length > 0">
+							<div class="fs-5 py-4">In-Progress Licences/Permits</div>
+
+							<div class="row">
+								<div class="col-12" style="background-color: #f6f6f6 !important;">
+									<mat-table [dataSource]="dataSource" class="pb-3" style="background-color: #f6f6f6 !important;">
+										<ng-container matColumnDef="serviceTypeCode">
+											<mat-header-cell *matHeaderCellDef>Licence Type</mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<span class="mobile-label">Licence Type:</span>
+												<span class="my-2">
+													{{ application.serviceTypeCode | options : 'WorkerLicenceTypes' }}
+												</span>
+											</mat-cell>
+										</ng-container>
+
+										<ng-container matColumnDef="createdOn">
+											<mat-header-cell *matHeaderCellDef>Date Started</mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<span class="mobile-label">Date Started:</span>
+												{{ application.createdOn | formatDate | default }}
+											</mat-cell>
+										</ng-container>
+
+										<ng-container matColumnDef="submittedOn">
+											<mat-header-cell *matHeaderCellDef>Date Submitted</mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<span class="mobile-label">Date Submitted:</span>
+												{{ application.submittedOn | formatDate | default }}
+											</mat-cell>
+										</ng-container>
+
+										<ng-container matColumnDef="applicationTypeCode">
+											<mat-header-cell *matHeaderCellDef>Application Type</mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<span class="mobile-label">Application Type:</span>
+												{{ application.applicationTypeCode | options : 'ApplicationTypes' }}
+											</mat-cell>
+										</ng-container>
+
+										<ng-container matColumnDef="caseNumber">
+											<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<span class="mobile-label">Case ID:</span>
+												{{ application.caseNumber }}
+											</mat-cell>
+										</ng-container>
+
+										<ng-container matColumnDef="applicationPortalStatusCode">
+											<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<span class="mobile-label">Status:</span>
+												<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
+													{{
+														application.applicationPortalStatusCode | options : 'ApplicationPortalStatusTypes' | default
+													}}
+												</span>
+											</mat-cell>
+										</ng-container>
+
+										<ng-container matColumnDef="action1">
+											<mat-header-cell *matHeaderCellDef></mat-header-cell>
+											<mat-cell *matCellDef="let application">
+												<button
+													*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
+													mat-flat-button
+													color="primary"
+													class="large my-3 w-auto"
+													(click)="onResume(application)"
+												>
+													<mat-icon>double_arrow</mat-icon>Resume
+												</button>
+											</mat-cell>
+										</ng-container>
+
+										<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+										<mat-row *matRowDef="let row; columns: columns"></mat-row>
+									</mat-table>
+								</div>
+							</div>
+
+							<!-- <div class="card-section mb-2 px-4 py-3" *ngFor="let appl of draftApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-3">
 										<div class="fs-5" style="color: var(--color-primary);">
@@ -66,7 +164,7 @@ export interface ApplicationResponse {
 												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-yellow">
 													<mat-icon class="appl-chip-option-item">warning</mat-icon>
 													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">{{
-														appl.applicationStatusCode | options : 'ApplicationStatusTypes'
+														appl.applicationPortalStatusCode | options : 'ApplicationPortalStatusTypes'
 													}}</span>
 												</mat-chip-option>
 											</div>
@@ -84,11 +182,11 @@ export interface ApplicationResponse {
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 						</div>
 
-						<div class="mb-4" *ngIf="activeApplications.length > 0">
-							<!-- <div class="fs-4 fw-light mb-2">Active Licences/Permits</div> -->
+						<div class="mb-3" *ngIf="activeApplications.length > 0">
+							<div class="fs-5 py-4">Active Licences/Permits</div>
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-2">
@@ -182,14 +280,14 @@ export interface ApplicationResponse {
 							</div>
 						</div>
 
-						<div class="mb-4" *ngIf="expiredApplications.length > 0">
-							<!-- <div class="fs-4 fw-light mb-2">Expired Licences/Permits</div> -->
+						<div class="mb-3" *ngIf="expiredApplications.length > 0">
+							<div class="fs-5 py-4">Expired Licences/Permits</div>
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-3">
-										<h3 class="fs-4 fw-normal" style="color: var(--color-primary);">
+										<div class="fs-5" style="color: var(--color-primary);">
 											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-										</h3>
+										</div>
 									</div>
 									<div class="col-lg-9">
 										<div class="row">
@@ -225,19 +323,6 @@ export interface ApplicationResponse {
 						</div>
 					</ng-container>
 
-					<div class="card-section mb-3 px-4 py-3">
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="text-data">You don't have any active licences</div>
-							</div>
-							<div class="col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
-									Apply for a New Licence or Permit
-								</button>
-							</div>
-						</div>
-					</div>
-
 					<app-alert type="info" [showBorder]="false" icon="">
 						Do you have a security licence but it's not showing here?
 						<a href="https://id.gov.bc.ca/account/" target="_blank">Connect a current or expired licence</a> to your
@@ -270,7 +355,7 @@ export interface ApplicationResponse {
 
 			.appl-chip-option {
 				height: 35px;
-				width: 115px;
+				width: 125px;
 			}
 
 			.appl-chip-option-item {
@@ -284,6 +369,23 @@ export interface ApplicationResponse {
 				border-bottom-style: solid;
 				border-bottom-color: rgba(0, 0, 0, 0.12);
 			}
+
+			.mat-column-action1 {
+				text-align: right;
+				justify-content: flex-end;
+				min-width: 160px;
+				.table-button {
+					min-width: 140px;
+				}
+			}
+
+			.status-green {
+				color: var(--color-green) !important;
+			}
+
+			.status-yellow {
+				color: var(--color-yellow-dark) !important;
+			}
 		`,
 	],
 })
@@ -291,12 +393,26 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 
-	draftApplications: Array<WorkerLicenceAppListResponse> = [];
+	// draftApplications: Array<WorkerLicenceAppListResponse> = [];
 	activeApplications: Array<ApplicationResponse> = [];
 	expiredApplications: Array<ApplicationResponse> = [];
 
 	authenticationSubscription!: Subscription;
 	licenceApplicationRoutes = LicenceApplicationRoutes;
+	applicationPortalStatusCodes = ApplicationPortalStatusCode;
+
+	dataSource: MatTableDataSource<WorkerLicenceAppListResponse> = new MatTableDataSource<WorkerLicenceAppListResponse>(
+		[]
+	);
+	columns: string[] = [
+		'serviceTypeCode',
+		'createdOn',
+		'submittedOn',
+		'applicationTypeCode',
+		'caseNumber',
+		'applicationPortalStatusCode',
+		'action1',
+	];
 
 	constructor(
 		private router: Router,
@@ -314,7 +430,8 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 						.apiWorkerLicenceApplicationsGet()
 						.pipe()
 						.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
-							this.draftApplications = resp;
+							// this.draftApplications = resp;
+							this.dataSource = new MatTableDataSource(resp ?? []);
 						});
 				}
 			}
@@ -340,7 +457,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 		this.activeApplications = [
 			{
 				id: '1',
-				licenceAppId: 'SWL-NWQ3X7Y',
+				licenceAppId: 'TEST-NWQ3X7Y',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
@@ -355,18 +472,32 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 		];
 
 		this.expiredApplications = [
-			// {
-			// 	id: '1',
-			// 	licenceAppId: 'SWL-NWQ3AB7Y',
-			// 	workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-			// 	applicationTypeCode: ApplicationTypeCode.New,
-			// 	expiresOn: '2022-09-26T19:43:25+00:00',
-			// },
+			{
+				id: '1',
+				licenceAppId: 'TEST-NWQ3AB7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
+				expiresOn: '2022-09-26T19:43:25+00:00',
+			},
 		];
 	}
 
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+	}
+
+	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
+		switch (applicationPortalStatusCode) {
+			case ApplicationPortalStatusCode.Draft: {
+				return 'status-yellow';
+			}
+			case ApplicationPortalStatusCode.InProgress: {
+				return 'status-green';
+			}
+			default: {
+				return '';
+			}
+		}
 	}
 
 	onUpdateAuthorization(): void {

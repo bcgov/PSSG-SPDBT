@@ -58,10 +58,6 @@ export class UtilService {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
-	getBirthDateStartAt(): moment.Moment {
-		return moment().subtract(SPD_CONSTANTS.date.birthDateStartAtYears, 'years');
-	}
-
 	getBirthDateMax(): moment.Moment {
 		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}

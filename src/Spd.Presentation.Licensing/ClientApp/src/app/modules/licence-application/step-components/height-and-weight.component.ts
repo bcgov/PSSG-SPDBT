@@ -25,7 +25,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Hair Colour</mat-label>
-											<mat-select formControlName="hairColourCode">
+											<mat-select formControlName="hairColourCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of hairColourTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
@@ -36,7 +36,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Eye Colour</mat-label>
-											<mat-select formControlName="eyeColourCode">
+											<mat-select formControlName="eyeColourCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of eyeColourTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
@@ -56,7 +56,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												Number
 												<span *ngIf="heightUnitCode.value === heightUnitCodes.Inches"> of Feet</span>
 											</mat-label>
-											<input matInput formControlName="height" mask="099" />
+											<input matInput formControlName="height" [errorStateMatcher]="matcher" mask="099" />
 											<mat-error *ngIf="form.get('height')?.hasError('required')"> This is required </mat-error>
 											<mat-error *ngIf="form.get('height')?.hasError('mask')">
 												This must be a 1 to 3 digit whole number
@@ -69,7 +69,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									>
 										<mat-form-field>
 											<mat-label>Units</mat-label>
-											<mat-select formControlName="heightUnitCode">
+											<mat-select formControlName="heightUnitCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of heightUnitTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
@@ -80,7 +80,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="heightUnitCode.value === heightUnitCodes.Inches">
 										<mat-form-field>
 											<mat-label>Number of Inches</mat-label>
-											<input matInput formControlName="heightInches" mask="09" />
+											<input matInput formControlName="heightInches" [errorStateMatcher]="matcher" mask="09" />
 											<!-- <mat-error *ngIf="form.get('heightInches')?.hasError('required')"> This is required </mat-error> -->
 											<mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
 												This must be a 1 or 2 digit whole number
@@ -103,7 +103,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 									<div class="col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
 											<mat-label>Units</mat-label>
-											<mat-select formControlName="weightUnitCode">
+											<mat-select formControlName="weightUnitCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of weightUnitTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
@@ -127,6 +127,7 @@ export class HeightAndWeightComponent implements LicenceChildStepperStepComponen
 	heightUnitTypes = HeightUnitTypes;
 	weightUnitTypes = WeightUnitTypes;
 	heightUnitCodes = HeightUnitCode;
+
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
