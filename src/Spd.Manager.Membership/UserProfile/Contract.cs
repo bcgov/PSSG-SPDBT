@@ -84,7 +84,7 @@ namespace Spd.Manager.Membership.UserProfile
         public string? Email { get; set; }
         public GenderCode? Gender { get; set; }
         public string Sub { get; set; } = null!;
-        public DateTimeOffset BirthDate { get; set; }
+        public DateOnly BirthDate { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
