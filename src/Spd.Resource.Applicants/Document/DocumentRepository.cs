@@ -62,7 +62,7 @@ internal class DocumentRepository : IDocumentRepository
             CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
             RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
             ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
-            UpdateDocumentCmd c => await UpdateDocumentAsync(c, ct),
+            UpdateDocumentCmd c => await DocumentUpdateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -122,7 +122,7 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task<DocumentResp> UpdateDocumentAsync(UpdateDocumentCmd cmd, CancellationToken ct)
+    private async Task<DocumentResp> DocumentUpdateAsync(UpdateDocumentCmd cmd, CancellationToken ct)
     {
         bcgov_documenturl? documenturl = _context.bcgov_documenturls
             .Expand(d => d.bcgov_Tag1Id)
