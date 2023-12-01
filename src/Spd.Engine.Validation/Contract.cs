@@ -7,6 +7,8 @@ namespace Spd.Engine.Validation
 
     public abstract record DuplicateCheckRequest;
     public abstract record DuplicateCheckResponse;
+
+    #region bulk upload duplicate check
     public record BulkUploadAppDuplicateCheckRequest(IEnumerable<AppBulkDuplicateCheck> BulkDuplicateChecks) : DuplicateCheckRequest;
     public record AppBulkDuplicateCheck : AppDuplicateCheck
     {
@@ -18,17 +20,6 @@ namespace Spd.Engine.Validation
         public string? FirstName { get; set; }
         public string LastName { get; set; } = null!;
         public DateTimeOffset DateOfBirth { get; set; }
-    }
-    public record AppInviteDuplicateCheckRequest(IEnumerable<AppInviteDuplicateCheck> AppInviteChecks, Guid OrgId) : DuplicateCheckRequest;
-    public record AppInviteDuplicateCheck
-    {
-        public string? FirstName { get; set; }
-        public string LastName { get; set; } = null!;
-    }
-    public record AppInviteDuplicateCheckResponse(IEnumerable<AppInviteDuplicateCheckResult> AppInviteCheckResults) : DuplicateCheckResponse;
-    public record AppInviteDuplicateCheckResult : AppInviteDuplicateCheck
-    {
-        public bool HasPotentialDuplicate { get; set; } = false;
     }
     public record BulkUploadAppDuplicateCheckResponse(IEnumerable<AppBulkDuplicateCheckResult> BulkDuplicateChecks) : DuplicateCheckResponse;
     public record AppBulkDuplicateCheckResult : AppDuplicateCheckResult
@@ -44,4 +35,20 @@ namespace Spd.Engine.Validation
         public string? FirstName { get; set; }
         public string LastName { get; set; } = null!;
     }
+    #endregion
+
+    #region app invite duplicate check
+    public record AppInviteDuplicateCheckRequest(IEnumerable<AppInviteDuplicateCheck> AppInviteChecks, Guid OrgId) : DuplicateCheckRequest;
+    public record AppInviteDuplicateCheck
+    {
+        public string? FirstName { get; set; }
+        public string LastName { get; set; } = null!;
+    }
+    public record AppInviteDuplicateCheckResponse(IEnumerable<AppInviteDuplicateCheckResult> AppInviteCheckResults) : DuplicateCheckResponse;
+    public record AppInviteDuplicateCheckResult : AppInviteDuplicateCheck
+    {
+        public bool HasPotentialDuplicate { get; set; } = false;
+    }
+    #endregion
+
 }
