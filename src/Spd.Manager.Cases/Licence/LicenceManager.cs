@@ -63,7 +63,6 @@ internal partial class LicenceManager :
                 Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
                 cmd.LicenceUpsertRequest.LicenceAppId,
                 ct);
-            hasDuplicate = false;
             if (hasDuplicate)
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Appliant already has the same kind of licence or licence application");
