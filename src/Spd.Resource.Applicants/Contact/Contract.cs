@@ -23,7 +23,7 @@ namespace Spd.Resource.Applicants.Contact
         public string? Gender { get; set; }
         public string? Age { get; set; }
         public string Sub { get; set; } = null!;
-        public DateTimeOffset BirthDate { get; set; }
+        public DateOnly BirthDate { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
     }
@@ -44,7 +44,7 @@ namespace Spd.Resource.Applicants.Contact
         public Guid? IdentityId { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
-        public DateTimeOffset BirthDate { get; set; }
+        public DateOnly BirthDate { get; set; }
         public GenderEnum? Gender { get; set; }
 
     };

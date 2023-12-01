@@ -21,7 +21,7 @@ namespace Spd.Resource.Organizations.Identity
              .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.spd_middlename1)))
              .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.spd_middlename2)))
              .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_ContactId.emailaddress1))
-             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => GetDateTimeOffset(s.spd_ContactId.birthdate)))
+             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => GetDateOnly(s.spd_ContactId.birthdate)))
              .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnum(s.spd_ContactId.spd_sex)))
              .ForMember(d => d.Sub, opt => opt.MapFrom(s => s.spd_userguid));
 
@@ -35,10 +35,10 @@ namespace Spd.Resource.Organizations.Identity
              .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_identityid));
         }
 
-        internal static DateTimeOffset? GetDateTimeOffset(Date? date)
+        internal static DateOnly? GetDateOnly(Date? date)
         {
             if (date == null) return null;
-            return new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
+            return new DateOnly(date.Value.Year, date.Value.Month, date.Value.Day);
         }
         internal static GenderEnum? GetGenderEnum(int? optionset)
         {
