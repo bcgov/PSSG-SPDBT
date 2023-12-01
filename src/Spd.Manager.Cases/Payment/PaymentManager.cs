@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polly;
+using Polly.Retry;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
@@ -146,7 +148,7 @@ namespace Spd.Manager.Cases.Payment
                     Description = command.PaymentLinkCreateRequest.Description,
                     PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
-                    Ref2 = paymentId.ToString()+"*"+applicationId.ToString(), //paymentId+"*"+applicationId to ref2 //ref1 is recalled by paybc for their internal use.
+                    Ref2 = paymentId.ToString() + "*" + applicationId.ToString(), //paymentId+"*"+applicationId to ref2 //ref1 is recalled by paybc for their internal use.
                     Ref3 = isFromSecurePaymentLink.ToString()
                 });
 
@@ -215,10 +217,22 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct)
         {
+            //receipt generation is async operation to payment, so, needs wait for a while to get the receipt. Here we add
+            //retry 6 times, everytime wait for 5 seconds
             DocumentQry qry = new DocumentQry(ApplicationId: query.ApplicationId, FileType: DocumentTypeEnum.PaymentReceipt);
-            var docList = await _documentRepository.QueryAsync(qry, ct);
-            if (docList == null || !docList.Items.Any())
-                return new FileResponse();
+            DocumentListResp docList = null;
+            RetryPolicy<Task<bool>> retryIfNoFound = Policy.HandleResult<Task<bool>>(b => b.Result != true)
+                .WaitAndRetry(6, waitSec => TimeSpan.FromSeconds(5));
+
+            Task<bool> result = retryIfNoFound.Execute(async () =>
+            {
+                docList = await _documentRepository.QueryAsync(qry, ct);
+                if (docList == null || !docList.Items.Any())
+                    return false;
+                return true;
+            });
+
+            if (docList == null || !docList.Items.Any()) return new FileResponse();
 
             var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
             FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
