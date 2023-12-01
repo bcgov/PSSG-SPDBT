@@ -33,7 +33,7 @@ namespace Spd.Resource.Organizations.Identity
         public string? EmailAddress { get; set;}
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
-        public DateTimeOffset? BirthDate { get; set; }
+        public DateOnly? BirthDate { get; set; }
         public GenderEnum? Gender { get; set; }
         public string? Sub { get; set; }
     }

@@ -40,7 +40,7 @@ namespace Spd.Presentation.Licensing.Controllers
             //temp code, just return the data from bcsc
             ApplicantProfileResponse response = new ApplicantProfileResponse()
             {
-                BirthDate = new DateTimeOffset(info.BirthDate.Year, info.BirthDate.Month, info.BirthDate.Day, 0, 0, 0, TimeSpan.Zero),
+                BirthDate = info.BirthDate,
                 Email = info.Email,
                 FirstName = info.FirstName,
                 Gender = info.Gender switch
