@@ -18,7 +18,6 @@ namespace Spd.Engine.Validation
             {
                 BulkUploadAppDuplicateCheckRequest q => await BulkUploadAppDuplicateCheckAsync(q, ct),
                 AppInviteDuplicateCheckRequest q => await AppInviteDuplicateCheckAsync(q, ct),
-                LicenceAppDuplicateCheckRequest q => await LicenceAppDuplicateCheckAsync(q, ct),
                 _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }

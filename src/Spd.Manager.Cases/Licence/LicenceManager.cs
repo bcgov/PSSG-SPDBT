@@ -1,12 +1,12 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
+using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases.Licence;
@@ -25,7 +25,7 @@ internal partial class LicenceManager :
     private readonly ILicenceFeeRepository _licenceFeeRepository;
     private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
-    private readonly IDuplicateCheckEngine _duplicateCheckEngine;
+    private readonly IIdentityRepository _identityRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
 
@@ -35,7 +35,7 @@ internal partial class LicenceManager :
         ILicenceFeeRepository licenceFeeRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
-        IDuplicateCheckEngine duplicateCheckEngine,
+        IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
         ILogger<ILicenceManager> logger)
     {
@@ -44,7 +44,7 @@ internal partial class LicenceManager :
         _licenceFeeRepository = licenceFeeRepository;
         _tempFile = tempFile;
         _mapper = mapper;
-        _duplicateCheckEngine = duplicateCheckEngine;
+        _identityRepository = identityRepository;
         _documentRepository = documentUrlRepository;
         _logger = logger;
     }
@@ -53,6 +53,20 @@ internal partial class LicenceManager :
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
         _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
+        var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Organizations.Registration.IdentityProviderTypeEnum.BcServicesCard), ct);
+        if (identityResult.Items.Any())
+        {
+            Guid contactId = (Guid)identityResult.Items.First().ContactId;
+            bool hasDuplicate = await HasDuplicates(contactId,
+                Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
+                cmd.LicenceUpsertRequest.LicenceAppId,
+                ct);
+            if (hasDuplicate)
+            {
+                throw new ArgumentException("the appliant already has the same kind of licence or licence application");
+            }
+        }
+
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         saveCmd.BcscGuid = cmd.BcscGuid;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
@@ -111,7 +125,7 @@ internal partial class LicenceManager :
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
 
-    private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, CancellationToken ct)
+    private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
         (
@@ -133,16 +147,31 @@ internal partial class LicenceManager :
             }
         );
         var response = await _licenceAppRepository.QueryAsync(q, ct);
-        if (response.Any()) return true;
-
-        var licResponse = await _licenceRepository.QueryAsync(new LicenceQry(null, null, applicantId, ), ct);
-
-        if (!response.Items.Any())
+        if (response.Any())
         {
-            return null;
+            if (existingLicAppId != null)
+            {
+                if (response.Any(l => l.LicenceAppId != existingLicAppId))
+                    return true;
+            }
+            else
+            {
+                return true;
+            }
         }
 
-        LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response.Items.First());
+        var licResponse = await _licenceRepository.QueryAsync(
+            new LicenceQry
+            {
+                ContactId = applicantId,
+                Type = workerLicenceType,
+                IsExpired = false
+            }, ct);
 
+        if (licResponse.Items.Any())
+        {
+            return true;
+        }
+        return false;
     }
 }

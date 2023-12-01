@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.Licence;
@@ -19,7 +20,11 @@ internal class LicenceRepository : ILicenceRepository
         {
             throw new ArgumentException("at least need 1 parameter to do licence query.");
         }
-        var lics = _context.spd_licences.Where(l => l.statecode == DynamicsConstants.StateCode_Active);
+
+        IQueryable<spd_licence> lics = _context.spd_licences;
+        if (!qry.IncludeInactive)
+            lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
+
         if (qry.ContactId != null)
         {
             lics = lics.Where(a => a._spd_licenceholder_value == qry.ContactId);
@@ -32,10 +37,21 @@ internal class LicenceRepository : ILicenceRepository
         {
             lics = lics.Where(a => a.spd_licencenumber == qry.LicenceNumber);
         }
+        if (qry.Type != null)
+        {
+            Guid? serviceTypeId = _context.LookupServiceType(qry.Type.ToString()).spd_servicetypeid;
+            lics = lics.Where(l => l._spd_licencetype_value == serviceTypeId);
+        }
+        if (qry.IsExpired != null)
+        {
+            lics = (bool)qry.IsExpired ? lics.Where(l => l.spd_expirydate <= DateTimeOffset.UtcNow) :
+                lics.Where(l => l.spd_expirydate > DateTimeOffset.UtcNow);
+        }
 
-        var response = new LicenceListResp();
-        response.Items = new List<LicenceResp>() { _mapper.Map<LicenceResp>(lics) };
-        return response;
+        return new LicenceListResp()
+        {
+            Items = _mapper.Map<IEnumerable<LicenceResp>>(lics)
+        };
     }
 
     public async Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken ct)
