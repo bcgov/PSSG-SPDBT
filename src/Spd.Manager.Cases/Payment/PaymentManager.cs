@@ -218,11 +218,11 @@ namespace Spd.Manager.Cases.Payment
         public async Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct)
         {
             //receipt generation is async operation to payment, so, needs wait for a while to get the receipt. Here we add
-            //retry 6 times, everytime wait for 5 seconds
+            //retry 8 times, everytime wait for 5 seconds
             DocumentQry qry = new DocumentQry(ApplicationId: query.ApplicationId, FileType: DocumentTypeEnum.PaymentReceipt);
             DocumentListResp docList = null;
             RetryPolicy<Task<bool>> retryIfNoFound = Policy.HandleResult<Task<bool>>(b => b.Result != true)
-                .WaitAndRetry(6, waitSec => TimeSpan.FromSeconds(5));
+                .WaitAndRetry(8, waitSec => TimeSpan.FromSeconds(5));
 
             Task<bool> result = retryIfNoFound.Execute(async () =>
             {
