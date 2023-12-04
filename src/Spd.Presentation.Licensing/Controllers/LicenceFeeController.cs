@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
+using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class LicenceFeeController : ControllerBase
+    public class LicenceFeeController : SpdControllerBase
     {
         private readonly ILogger<LicenceFeeController> _logger;
         private readonly IPrincipal _currentUser;
