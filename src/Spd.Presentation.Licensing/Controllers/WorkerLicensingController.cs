@@ -6,6 +6,7 @@ using Spd.Manager.Cases.Licence;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class WorkerLicensingController : ControllerBase
+    public class WorkerLicensingController : SpdControllerBase
     {
         private readonly ILogger<WorkerLicensingController> _logger;
         private readonly IPrincipal _currentUser;
