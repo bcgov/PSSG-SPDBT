@@ -23,20 +23,18 @@ export class ErrorInterceptor implements HttpInterceptor {
 					(errorResponse.url?.includes(UserProfileService.ApiSecurityWorkerWhoamiGetPath) ||
 						errorResponse.url?.includes(UserProfileService.ApiBizLicenceWhoamiGetPath))
 				) {
-					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
+					console.debug(`ErrorInterceptor Access Denied- ${errorResponse.status} and ${errorResponse.url}`);
 					this.router.navigate([AppRoutes.ACCESS_DENIED]);
 					return throwError(() => new Error('Access denied'));
 				}
 
-				// WorkerLicensingService errors will be handled in the component
-				const url = WorkerLicensingService.ApiWorkerLicenceApplicationsPostPath;
-				// if (errorResponse.status == 404) {
-				if (errorResponse.url?.includes(url)) {
+				// Certain 404s will be handled in the component
+				if (
+					errorResponse.status == 403 &&
+					errorResponse.url?.includes(WorkerLicensingService.ApiWorkerLicenceApplicationsPostPath)
+				) {
 					return throwError(() => errorResponse);
 				}
-				// }
-
-				WorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath;
 
 				let message = 'An error has occurred';
 				if (errorResponse.error) {
