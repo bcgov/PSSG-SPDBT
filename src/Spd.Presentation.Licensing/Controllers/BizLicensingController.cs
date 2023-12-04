@@ -1,11 +1,12 @@
 
 
 using Microsoft.AspNetCore.Mvc;
+using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class BizLicensingController : ControllerBase
+    public class BizLicensingController : SpdControllerBase
     {
         private readonly ILogger<BizLicensingController> _logger;
 
