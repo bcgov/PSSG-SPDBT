@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
+using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class LicenceLookupController : ControllerBase
+    public class LicenceLookupController : SpdControllerBase
     {
         private readonly ILogger<LicenceLookupController> _logger;
         private readonly IPrincipal _currentUser;
