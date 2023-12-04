@@ -65,7 +65,7 @@ internal partial class LicenceManager :
                 ct);
             if (hasDuplicate)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Appliant already has the same kind of licence or licence application");
+                throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
             }
         }
 

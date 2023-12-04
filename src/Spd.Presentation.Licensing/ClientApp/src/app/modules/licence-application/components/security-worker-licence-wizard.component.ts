@@ -235,9 +235,9 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 							break;
 					}
 				},
-				error: (error: any) => {
-					console.log('An error occurred during save', error);
-					this.hotToastService.error('An error occurred during the save. Please try again.');
+				error: (_error: any) => {
+					// only 403s will be here as an error
+					this.handleDuplicateLicence();
 				},
 			});
 		} else {
@@ -274,9 +274,9 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS));
 			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
+			error: (_error: any) => {
+				// only 403s will be here as an error
+				this.handleDuplicateLicence();
 			},
 		});
 	}
@@ -321,9 +321,9 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 							this.stepper.selectedIndex = this.STEP_REVIEW;
 						}, 250);
 					},
-					error: (error: any) => {
-						console.log('An error occurred during save', error);
-						this.hotToastService.error('An error occurred during the save. Please try again.');
+					error: (_error: any) => {
+						// only 403s will be here as an error
+						this.handleDuplicateLicence();
 					},
 				});
 			} else {
@@ -353,9 +353,9 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 						this.hotToastService.success('Licence information has been saved');
 						this.goToChildNextStep();
 					},
-					error: (error: any) => {
-						console.log('An error occurred during save', error);
-						this.hotToastService.error('An error occurred during the save. Please try again.');
+					error: (_error: any) => {
+						// only 403s will be here as an error
+						this.handleDuplicateLicence();
 					},
 				});
 			} else {
@@ -364,6 +364,26 @@ export class SecurityWorkerLicenceWizardComponent implements OnInit, OnDestroy, 
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	private handleDuplicateLicence(): void {
+		const data: DialogOptions = {
+			icon: 'error',
+			title: 'Confirmation',
+			message:
+				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
+			actionText: 'Edit',
+			cancelText: 'Go back',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (!response) {
+					this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)]);
+				}
+			});
 	}
 
 	private goToChildNextStep() {
