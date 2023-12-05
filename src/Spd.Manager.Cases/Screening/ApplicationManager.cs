@@ -600,7 +600,7 @@ namespace Spd.Manager.Cases.Screening
                     FileName = fileResult.File.FileName
                 };
             }
-            throw new ApiException(HttpStatusCode.NoContent, "No file found.");
+            return new FileResponse();
         }
         #endregion
     }
