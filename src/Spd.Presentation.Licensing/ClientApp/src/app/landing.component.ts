@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from './modules/licence-application/licence-application-routing.module';
-import { LicenceRoutes } from './modules/licence-portal/licence-routing.module';
 
 @Component({
 	selector: 'app-landing',
@@ -21,9 +20,9 @@ import { LicenceRoutes } from './modules/licence-portal/licence-routing.module';
 export class LandingComponent {
 	constructor(private router: Router) {}
 
-	goToLicence(): void {
-		this.router.navigateByUrl(LicenceRoutes.path(LicenceRoutes.IN_PROGRESS_APPLICATIONS));
-	}
+	// goToLicence(): void {
+	// 	this.router.navigateByUrl(LicenceRoutes.path(LicenceRoutes.IN_PROGRESS_APPLICATIONS));
+	// }
 
 	goToLicenceApplication(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));

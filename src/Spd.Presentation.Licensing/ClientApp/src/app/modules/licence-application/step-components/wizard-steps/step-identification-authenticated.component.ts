@@ -19,7 +19,7 @@ import { PhotoComponent } from '../photo.component';
 import { ResidentialAddressComponent } from '../residential-address.component';
 
 @Component({
-	selector: 'app-step-identification',
+	selector: 'app-step-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -362,7 +362,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
+export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 0;
 	readonly STEP_ALIASES = 1;
 	readonly STEP_CITIZENSHIP = 2;

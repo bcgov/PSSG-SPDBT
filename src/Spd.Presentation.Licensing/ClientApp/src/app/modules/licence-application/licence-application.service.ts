@@ -749,6 +749,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// console.debug(
 		// 	'isStep1Complete',
 		// 	this.workerLicenceTypeFormGroup.valid,
+		// 	this.applicationTypeFormGroup.valid
+		// );
+
+		return this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStep2Complete(): boolean {
+		// console.debug(
+		// 	'isStep2Complete',
+		// 	this.workerLicenceTypeFormGroup.valid,
 		// 	this.applicationTypeFormGroup.valid,
 		// 	this.soleProprietorFormGroup.valid,
 		// 	this.expiredLicenceFormGroup.valid,
@@ -806,9 +820,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep2Complete(): boolean {
+	isStep3Complete(): boolean {
 		// console.debug(
-		// 	'isStep2Complete',
+		// 	'isStep3Complete',
 		// 	this.policeBackgroundFormGroup.valid,
 		// 	this.mentalHealthConditionsFormGroup.valid,
 		// 	this.criminalHistoryFormGroup.valid,
@@ -827,9 +841,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep3Complete(): boolean {
+	isStep4Complete(): boolean {
 		// console.debug(
-		// 	'isStep3Complete',
+		// 	'isStep4Complete',
 		// 	this.personalInformationFormGroup.valid,
 		// 	this.aliasesFormGroup.valid,
 		// 	this.citizenshipFormGroup.valid,

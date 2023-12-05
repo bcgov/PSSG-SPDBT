@@ -108,7 +108,7 @@ export class SecurityWorkerLicenceUpdateWizardComponent {
 	}
 
 	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
 	}
 
 	private scrollIntoView(): void {

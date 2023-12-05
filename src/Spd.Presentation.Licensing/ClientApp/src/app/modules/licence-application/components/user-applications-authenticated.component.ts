@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
-	selector: 'app-user-applications-bcsc',
+	selector: 'app-user-applications-authenticated',
 	template: ` <router-outlet></router-outlet> `,
 	styles: [],
 })
-export class UserApplicationsBcscComponent implements OnInit {
+export class UserApplicationsAuthenticatedComponent implements OnInit {
 	constructor(private router: Router, private authProcessService: AuthProcessService) {}
 
 	async ngOnInit(): Promise<void> {

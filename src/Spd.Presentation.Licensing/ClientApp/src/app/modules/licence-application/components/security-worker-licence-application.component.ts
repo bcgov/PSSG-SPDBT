@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -9,12 +10,21 @@ import { LicenceApplicationService } from '../licence-application.service';
 	styles: [],
 })
 export class SecurityWorkerLicenceApplicationComponent implements OnInit {
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService,
+		private authenticationService: AuthenticationService
+	) {}
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
-			return;
+			if (this.authenticationService.isLoggedIn()) {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
+				);
+			} else {
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS));
+			}
 		}
 	}
 }

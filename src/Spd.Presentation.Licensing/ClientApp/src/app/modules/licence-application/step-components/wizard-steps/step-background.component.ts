@@ -154,21 +154,6 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 					</div>
 				</div>
 			</mat-step>
-
-			<!-- <mat-step *ngIf="showStepBackgroundInfo">
-				<app-background-info></app-background-info>
-
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large bordered mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_BACKGROUND_INFO)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step> -->
 		</mat-stepper>
 	`,
 	styles: [],
@@ -199,7 +184,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	@ViewChild(MentalHealthConditionsComponent) mentalHealthConditionsComponent!: MentalHealthConditionsComponent;
 	@ViewChild(CriminalHistoryComponent) criminalHistoryComponent!: CriminalHistoryComponent;
 	@ViewChild(FingerprintsComponent) fingerprintsComponent!: FingerprintsComponent;
-	// @ViewChild(BackgroundInfoComponent) backgroundInfoComponent!: BackgroundInfoComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
@@ -293,8 +277,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 				return this.criminalHistoryComponent.isFormValid();
 			case this.STEP_FINGERPRINTS:
 				return this.fingerprintsComponent.isFormValid();
-			// case this.STEP_BACKGROUND_INFO:
-			// 	return this.backgroundInfoComponent.isFormValid();
 		}
 		return false;
 	}

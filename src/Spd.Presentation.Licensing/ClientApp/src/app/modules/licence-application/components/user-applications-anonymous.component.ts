@@ -7,7 +7,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
-	selector: 'app-user-applications-unauth',
+	selector: 'app-user-applications-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="row">
@@ -28,7 +28,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class UserApplicationsUnauthComponent implements OnInit {
+export class UserApplicationsAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
@@ -37,17 +37,11 @@ export class UserApplicationsUnauthComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
+		this.authProcessService.logoutBcsc();
 
-		const tryResultBCSC = await this.authProcessService.tryInitializeBCSC();
-		if (tryResultBCSC) {
-			this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)]);
-			return;
-		}
-
-		// const tryResultBCeID = await this.authProcessService.tryInitializeBCeID();
-		// console.debug('tryResultBCeID', tryResultBCeID);
-		// if (tryResultBCeID) {
-		// 	this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID)]);
+		// const tryResultBCSC = await this.authProcessService.tryInitializeBCSC();
+		// if (tryResultBCSC) {
+		// 	this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)]);
 		// 	return;
 		// }
 	}
@@ -59,9 +53,7 @@ export class UserApplicationsUnauthComponent implements OnInit {
 			.createNewLicence()
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
-					);
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
 				}),
 				take(1)
 			)

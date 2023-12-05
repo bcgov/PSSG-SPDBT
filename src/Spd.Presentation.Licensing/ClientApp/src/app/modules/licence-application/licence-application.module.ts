@@ -1,22 +1,16 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ApplicationTypeComponent } from './components/application-type.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
-import { LicenceSelectionComponent } from './components/licence-selection.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
+import { SecurityWorkerLicenceAnonymousWizardComponent } from './components/security-worker-licence-anonymous-wizard.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
+import { SecurityWorkerLicenceAuthenticatedWizardComponent } from './components/security-worker-licence-authenticated-wizard.component';
 import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
-import { SecurityWorkerLicenceWizardComponent } from './components/security-worker-licence-wizard.component';
-import { UpdateAddDogsModalComponent } from './components/update-add-dogs-modal.component';
-import { UpdateAddRestraintsModalComponent } from './components/update-add-restraints-modal.component';
-import { UpdateApplyNameChangeModalComponent } from './components/update-apply-name-change-modal.component';
-import { UpdateLicenceCategoryModalComponent } from './components/update-licence-category-modal.component';
-import { UpdatePhotoModalComponent } from './components/update-photo-modal.component';
-import { UserApplicationsBcscComponent } from './components/user-applications-bcsc.component';
-import { UserApplicationsUnauthComponent } from './components/user-applications-unauth.component';
+import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
+import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsComponent } from './components/user-applications.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
@@ -36,6 +30,7 @@ import { FingerprintTearOffModalComponent } from './step-components/fingerprint-
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
+import { LicenceApplicationTypeComponent } from './step-components/licence-application-type.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './step-components/licence-category-armoured-car-guard.component';
 import { LicenceCategoryBodyArmourSalesComponent } from './step-components/licence-category-body-armour-sales.component';
 import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from './step-components/licence-category-closed-circuit-television-installer.component';
@@ -56,6 +51,8 @@ import { LicenceCategorySecurityGuardComponent } from './step-components/licence
 import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
+import { LicenceTypeSelectionComponent } from './step-components/licence-type-selection.component';
+import { LicenceUserProfileComponent } from './step-components/licence-user-profile.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
@@ -66,18 +63,26 @@ import { RestraintsAuthorizationComponent } from './step-components/restraints-a
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
 import { StepBackgroundComponent } from './step-components/wizard-steps/step-background.component';
-import { StepIdentificationComponent } from './step-components/wizard-steps/step-identification.component';
+import { StepIdentificationAnonymousComponent } from './step-components/wizard-steps/step-identification-anonymous.component';
+import { StepIdentificationAuthenticatedComponent } from './step-components/wizard-steps/step-identification-authenticated.component';
 import { StepLicenceSelectionComponent } from './step-components/wizard-steps/step-licence-selection.component';
+import { StepLicenceSetupAnonymousComponent } from './step-components/wizard-steps/step-licence-setup-anonymous.component';
+import { StepLicenceSetupAuthenticatedComponent } from './step-components/wizard-steps/step-licence-setup-authenticated.component';
 import { StepReviewComponent } from './step-components/wizard-steps/step-review.component';
-import { StepConfirmMailingAddressComponent } from './step-components/wizard-update-steps/step-confirm-mailing-address.component';
-import { StepConfirmUpdatesComponent } from './step-components/wizard-update-steps/step-confirm-updates.component';
-import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
+import { UpdateAddDogsModalComponent } from './step-update-components/update-add-dogs-modal.component';
+import { UpdateAddRestraintsModalComponent } from './step-update-components/update-add-restraints-modal.component';
+import { UpdateApplyNameChangeModalComponent } from './step-update-components/update-apply-name-change-modal.component';
+import { UpdateLicenceCategoryModalComponent } from './step-update-components/update-licence-category-modal.component';
+import { UpdatePhotoModalComponent } from './step-update-components/update-photo-modal.component';
+import { StepConfirmMailingAddressComponent } from './step-update-components/wizard-update-steps/step-confirm-mailing-address.component';
+import { StepConfirmUpdatesComponent } from './step-update-components/wizard-update-steps/step-confirm-updates.component';
+import { StepLicenceUpdatesComponent } from './step-update-components/wizard-update-steps/step-licence-updates.component';
 
 @NgModule({
 	declarations: [
 		LicenceApplicationComponent,
-		LicenceSelectionComponent,
-		ApplicationTypeComponent,
+		LicenceTypeSelectionComponent,
+		LicenceApplicationTypeComponent,
 		SoleProprietorComponent,
 		ChecklistComponent,
 		PersonalInformationComponent,
@@ -104,9 +109,12 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
 		ContactInformationComponent,
+		StepLicenceSetupAnonymousComponent,
+		StepLicenceSetupAuthenticatedComponent,
 		StepLicenceSelectionComponent,
 		StepBackgroundComponent,
-		StepIdentificationComponent,
+		StepIdentificationAuthenticatedComponent,
+		StepIdentificationAnonymousComponent,
 		StepReviewComponent,
 		LicenceCategoryComponent,
 		AdditionalGovIdComponent,
@@ -130,7 +138,8 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		LicenceCategorySecurityConsultantComponent,
 		UserApplicationsComponent,
 		LoginSelectionComponent,
-		SecurityWorkerLicenceWizardComponent,
+		SecurityWorkerLicenceAnonymousWizardComponent,
+		SecurityWorkerLicenceAuthenticatedWizardComponent,
 		BackgroundInfoComponent,
 		SecurityWorkerLicenceUpdateWizardComponent,
 		StepLicenceUpdatesComponent,
@@ -143,9 +152,10 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		UpdateAddDogsModalComponent,
 		UpdatePhotoModalComponent,
 		SecurityWorkerLicenceApplicationComponent,
-		UserApplicationsBcscComponent,
-		UserApplicationsUnauthComponent,
+		UserApplicationsAuthenticatedComponent,
+		UserApplicationsAnonymousComponent,
 		FingerprintTearOffModalComponent,
+		LicenceUserProfileComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

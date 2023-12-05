@@ -3,10 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from 'src/app/api/models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
-	selector: 'app-licence-selection',
+	selector: 'app-licence-type-selection',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -31,7 +32,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 										</div>
 									</div> -->
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
-									<div tabindex="0"
+									<div
+										tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityWorkerLicence)"
 										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.SecurityWorkerLicence)"
@@ -48,7 +50,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 									</div>
 								</div>
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
-									<div tabindex="0"
+									<div
+										tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.ArmouredVehiclePermit)"
 										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.ArmouredVehiclePermit)"
@@ -65,7 +68,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 									</div>
 								</div>
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
-									<div tabindex="0"
+									<div
+										tabindex="0"
 										class="step-container__box step-container__box__fullheight"
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
 										(keydown)="onKeydownLicenceTypeChange($event, workerLicenceTypeCodes.BodyArmourPermit)"
@@ -87,12 +91,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 								</mat-error>
 							</div>
 						</div>
-					</div>
-				</div>
-
-				<div class="row mt-4">
-					<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
 			</div>
@@ -119,7 +117,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 		`,
 	],
 })
-export class LicenceSelectionComponent implements OnInit {
+export class LicenceTypeSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
@@ -127,6 +125,7 @@ export class LicenceSelectionComponent implements OnInit {
 
 	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	isDirtyAndInvalid = false;
+	isAnonymous = true;
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 
@@ -149,16 +148,7 @@ export class LicenceSelectionComponent implements OnInit {
 		});
 
 		this.workerLicenceTypeCode = this.form.value.workerLicenceTypeCode;
-	}
-
-	onStepNext(): void {
-		const isValid = this.isFormValid();
-
-		if (isValid) {
-			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.APPLICATION_TYPE)
-			);
-		}
+		this.isAnonymous = window.location.pathname.includes(LicenceApplicationRoutes.APPLICATION_ANONYMOUS);
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {

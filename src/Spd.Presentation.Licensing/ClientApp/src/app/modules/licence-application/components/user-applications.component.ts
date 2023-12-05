@@ -125,8 +125,8 @@ export interface ApplicationResponse {
 										<ng-container matColumnDef="action1">
 											<mat-header-cell *matHeaderCellDef></mat-header-cell>
 											<mat-cell *matCellDef="let application">
+												<!--	*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"-->
 												<button
-													*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
 													mat-flat-button
 													color="primary"
 													class="large my-3 w-auto"
@@ -392,6 +392,7 @@ export interface ApplicationResponse {
 export class UserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
+	isLoggedIn = false;
 
 	// draftApplications: Array<WorkerLicenceAppListResponse> = [];
 	activeApplications: Array<ApplicationResponse> = [];
@@ -425,6 +426,8 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+
 				if (isLoggedIn) {
 					this.workerLicensingService
 						.apiWorkerLicenceApplicationsGet()
@@ -556,9 +559,11 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 			.createNewLicence()
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
-					);
+					if (this.isLoggedIn) {
+						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+					} else {
+						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+					}
 				}),
 				take(1)
 			)

@@ -26,9 +26,6 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-						<!-- <button mat-stroked-button color="primary" class="large mb-2" *ngIf="licenceAppId" (click)="onCancel()">
-							Cancel
-						</button> -->
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
@@ -229,9 +226,9 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	isLoggedIn = false;
 	isFormValid = false;
-	// licenceAppId: string | null = null;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -316,13 +313,12 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	}
 
 	onStepPrevious(): void {
-		this.router.navigate([
-			LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.APPLICATION_TYPE),
-		]);
+		this.previousStepperStep.emit(true);
+		// this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SETUP)]);
 	}
 
 	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH)]);
+		this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)]);
 	}
 
 	onFormValidNextStep(formNumber: number): void {

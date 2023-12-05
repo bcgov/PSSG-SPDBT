@@ -65,7 +65,7 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 		this.licenceApplicationService.submitLicence().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH));
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

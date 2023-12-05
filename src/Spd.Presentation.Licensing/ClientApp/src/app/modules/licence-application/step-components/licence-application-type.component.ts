@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from 'src/app/api/models';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '../licence-application.helper';
 import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
-	selector: 'app-application-type',
+	selector: 'app-licence-application-type',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -81,38 +81,17 @@ import { LicenceApplicationService } from '../licence-application.service';
 						</div>
 					</div>
 				</div>
-
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
-					</div>
-				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class ApplicationTypeComponent {
+export class LicenceApplicationTypeComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
 
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
-
-	onStepPrevious(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SELECTION)
-		);
-	}
-
-	onStepNext(): void {
-		if (this.isFormValid()) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
-		}
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

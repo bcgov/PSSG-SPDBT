@@ -37,7 +37,7 @@ export class AuthProcessService {
 
 		const authInfo = await this.authenticationService.tryLogin(
 			IdentityProviderTypeCode.BcServicesCard,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
 		);
 
 		const identityClaims = this.oauthService.getIdentityClaims();
@@ -71,7 +71,7 @@ export class AuthProcessService {
 
 		const authInfo = await this.authenticationService.tryLogin(
 			IdentityProviderTypeCode.BusinessBceId,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)
 		);
 
 		const identityClaims = this.oauthService.getIdentityClaims();
@@ -107,12 +107,12 @@ export class AuthProcessService {
 
 		console.debug(
 			'initializeLicencingBCSC return',
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
 		);
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
 		);
 		console.debug('initializeLicencingBCSC nextUrl', nextUrl);
 
@@ -136,12 +136,12 @@ export class AuthProcessService {
 
 		console.debug(
 			'initializeLicencingBCeID return',
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)
 		);
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_UNAUTH)
+			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)
 		);
 		console.debug('initializeLicencingBCeID nextUrl', nextUrl);
 
