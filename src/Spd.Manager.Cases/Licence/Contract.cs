@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Spd.Manager.Cases.Screening;
+using Spd.Resource.Applicants.Document;
 using Spd.Utilities.Shared.Exceptions;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
@@ -258,6 +259,7 @@ namespace Spd.Manager.Cases.Licence
         CategorySecurityGuard_UseForceEmployerLetter,
         CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
         CertificateOfIndianStatus,
+        CertificateOfIndianStatusForCitizen,
         ConfirmationOfPermanentResidenceDocument,
         DocumentToVerifyLegalWorkStatus,
         DriversLicence,
@@ -417,7 +419,7 @@ namespace Spd.Manager.Cases.Licence
                 .NotEmpty()
                 .When(r => r.CitizenshipDocument != null && (r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CanadianPassport && r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.PermanentResidentCard));
             RuleFor(r => r.AdditionalGovIdDocument)
-                .Must(c => LicenceManager.GovIdCodes.Contains(c.LicenceDocumentTypeCode))
+                .Must(c => LicenceManager.GetDocumentType1Enum(c.LicenceDocumentTypeCode) == Resource.Applicants.Document.DocumentTypeEnum.AdditionalGovIdDocument)
                 .When(r => r.AdditionalGovIdDocument != null && r.CitizenshipDocument != null && (r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CanadianPassport && r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.PermanentResidentCard));
 
             //fingerprint
@@ -477,8 +479,12 @@ namespace Spd.Manager.Cases.Licence
             public WorkerLicenceAppCategoryDataValidator()
             {
                 RuleFor(c => c.Documents).Must(d => d.Count() >= 1
-                    && d.Any(doc => LicenceManager.SecurityGuardDocCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
+                    && d.Any(doc =>
+                        LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == Resource.Applicants.Document.DocumentTypeEnum.SecurityGuard
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard);
+
                 RuleFor(c => c.Documents).Must(d => d == null || d.Count() == 0)
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
                     || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuardUnderSupervision
@@ -489,26 +495,51 @@ namespace Spd.Manager.Cases.Licence
                     || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller
                     || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.LocksmithUnderSupervision
                     || c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.BodyArmourSales);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
                     && d.Any(doc => (doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ArmouredCarGuard);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.SecurityAlarmInstallerCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
+                    && d.Any(doc =>
+                        LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityAlarmInstaller
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmInstaller);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.LockSmithCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 &&  doc.DocumentResponses.Count() <= 10))
+                    && d.Any(doc =>
+                        LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.Locksmith
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.Locksmith);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 1
-                    && d.Any(doc => LicenceManager.PrivateInvestigatorUnderSupervisionCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
+                    && d.Any(
+                        doc => LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.PrivateInvestigatorUnderSupervision
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.PrivateInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
+                    && d.Any(doc =>
+                        LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.PrivateInvestigator
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigator);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.FireInvestigatorCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
+                    && d.Any(doc =>
+                        LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.FireInvestigator
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.FireInvestigator);
+
                 RuleFor(c => c.Documents).Must(d => d.Count() == 2
-                    && d.Any(doc => LicenceManager.SecurityConsultantCodes.Contains(doc.LicenceDocumentTypeCode) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
+                    && d.Any(doc =>
+                        LicenceManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityConsultant
+                        && doc.DocumentResponses.Count() > 0
+                        && doc.DocumentResponses.Count() <= 10))
                     .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityConsultant);
             }
         }

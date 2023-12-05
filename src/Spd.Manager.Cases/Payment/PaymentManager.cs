@@ -221,10 +221,10 @@ namespace Spd.Manager.Cases.Payment
             //retry 8 times, everytime wait for 5 seconds
             DocumentQry qry = new DocumentQry(ApplicationId: query.ApplicationId, FileType: DocumentTypeEnum.PaymentReceipt);
             DocumentListResp docList = null;
-            RetryPolicy<Task<bool>> retryIfNoFound = Policy.HandleResult<Task<bool>>(b => b.Result != true)
+            RetryPolicy<Task<bool>> retryIfNoFound = Policy.HandleResult<Task<bool>>(b => !b.Result)
                 .WaitAndRetry(8, waitSec => TimeSpan.FromSeconds(5));
 
-            Task<bool> result = retryIfNoFound.Execute(async () =>
+            await retryIfNoFound.Execute(async () =>
             {
                 docList = await _documentRepository.QueryAsync(qry, ct);
                 if (docList == null || !docList.Items.Any())
