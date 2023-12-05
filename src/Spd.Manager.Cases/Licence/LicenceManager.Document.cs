@@ -2,7 +2,6 @@ using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Spd.Manager.Cases.Licence;
@@ -11,7 +10,7 @@ internal partial class LicenceManager
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
         DocumentTypeEnum? docType1 = GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
-        DocumentTypeEnum? docType2 = GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode); 
+        DocumentTypeEnum? docType2 = GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
 
         LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, ct);
         if (app == null)
@@ -65,7 +64,7 @@ internal partial class LicenceManager
             }
         }
 
-         //category
+        //category
         foreach (WorkerLicenceAppCategoryData category in request.CategoryData)
         {
             if (category.Documents != null)
@@ -291,6 +290,7 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter, DocumentTypeEnum.SecurityGuard},
         {LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent, DocumentTypeEnum.SecurityGuard},
         {LicenceDocumentTypeCode.CertificateOfIndianStatus, DocumentTypeEnum.AdditionalGovIdDocument},
+        {LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen, DocumentTypeEnum.CitizenshipDocument},
         {LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.CitizenshipDocument},
         {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.CitizenshipDocument },
         {LicenceDocumentTypeCode.DriversLicence, DocumentTypeEnum.AdditionalGovIdDocument},
@@ -338,6 +338,7 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetter},
         {LicenceDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetterASTEquivalent, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent},
         {LicenceDocumentTypeCode.CertificateOfIndianStatus, DocumentTypeEnum.CanadianNativeStatusCard},
+        {LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen, DocumentTypeEnum.CanadianNativeStatusCard},
         {LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument, DocumentTypeEnum.ConfirmationOfPermanentResidenceDocument},
         {LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus, DocumentTypeEnum.LegalWorkStatus },
         {LicenceDocumentTypeCode.DriversLicence, DocumentTypeEnum.DriverLicense},
@@ -352,7 +353,7 @@ internal partial class LicenceManager
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
     }.ToImmutableDictionary();
 
- 
+
     public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.PermanentResidentCard,
             LicenceDocumentTypeCode.RecordOfLandingDocument,
@@ -365,6 +366,6 @@ internal partial class LicenceManager
     public static readonly List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.CanadianPassport,
             LicenceDocumentTypeCode.BirthCertificate,
-            LicenceDocumentTypeCode.CertificateOfIndianStatus,
+            LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
         };
 }

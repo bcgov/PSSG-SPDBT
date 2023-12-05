@@ -259,6 +259,7 @@ namespace Spd.Manager.Cases.Licence
         CategorySecurityGuard_UseForceEmployerLetter,
         CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
         CertificateOfIndianStatus,
+        CertificateOfIndianStatusForCitizen,
         ConfirmationOfPermanentResidenceDocument,
         DocumentToVerifyLegalWorkStatus,
         DriversLicence,
