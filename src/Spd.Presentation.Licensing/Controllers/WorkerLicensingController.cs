@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
+using Spd.Presentation.Licensing.Services;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -25,18 +26,21 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
+        private readonly IMultipartRequestService _multipartRequestService;
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
-            IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator)
+            IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
+            IMultipartRequestService multipartRequestService)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
             _wslSubmitValidator = wslSubmitValidator;
+            _multipartRequestService = multipartRequestService;
         }
 
         #region bcsc authenticated
@@ -122,6 +126,7 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest, info.Sub));
         }
 
+
         /// <summary>
         /// Get List of draft or InProgress Security Worker Licence Application
         /// </summary>
@@ -145,16 +150,36 @@ namespace Spd.Presentation.Licensing.Controllers
 
         #region anonymous APIs
         /// <summary>
-        /// Create Security Worker Licence Application Anonymously
+        /// Submit Security Worker Licence Application Anonymously
         /// </summary>
-        /// <param name="licenceCreateRequest"></param>
+        /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
-        [Route("api/anonymous-worker-licences")]
+        [Route("api/worker-licence-applications/submit/anonymous")]
         [HttpPost]
-        public async Task<WorkerLicenceAppUpsertResponse> CreateWorkerLicenceAnonymously([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
+        [DisableFormValueModelBinding]
+        [Consumes("multipart/form-data")]
+        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous()
         {
-            _logger.LogInformation("Get CreateWorkerLicenceAnonymously");
-            return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
+            ICollection<UploadFileInfo> uploadedFileInfoList = null;
+
+            try
+            {
+                var request = HttpContext.Request;
+                var (model, uploadFileInfoList) = await _multipartRequestService.UploadMultipleFilesAsync<WorkerLicenceAppAnonymousSubmitRequest>(request, ModelState);
+
+                uploadedFileInfoList = uploadFileInfoList;
+
+                //return await mediator.Send(new AddSecureMessagingMessageCommand(model, uploadFileInfoList));
+                return null;
+            }
+            finally
+            {
+                //cleanup the temp file
+                var existingFiles = uploadedFileInfoList.Where(f => System.IO.File.Exists(f.FilePath));
+
+                foreach (UploadFileInfo uploadedFileInfo in existingFiles)
+                    System.IO.File.Delete(uploadedFileInfo.FilePath);
+            }
         }
         #endregion
     }
