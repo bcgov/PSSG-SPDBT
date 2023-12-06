@@ -440,6 +440,10 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
+	// profileFormGroup: FormGroup = this.formBuilder.group({
+	// 	profileIsUpToDate: new FormControl('', [Validators.requiredTrue]),
+	// });
+
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
 		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),

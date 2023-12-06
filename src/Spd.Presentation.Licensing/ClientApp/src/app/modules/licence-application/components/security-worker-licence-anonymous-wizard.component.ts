@@ -1,18 +1,11 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-import { AppRoutes } from 'src/app/app-routing.module';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
-import { StepIdentificationAuthenticatedComponent } from '../step-components/wizard-steps/step-identification-authenticated.component';
+import { StepIdentificationAnonymousComponent } from '../step-components/wizard-steps/step-identification-anonymous.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAnonymousComponent } from '../step-components/wizard-steps/step-licence-setup-anonymous.component';
 import { StepReviewComponent } from '../step-components/wizard-steps/step-review.component';
@@ -34,7 +27,6 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel> Licence Setup </ng-template>
 							<app-step-licence-setup-anonymous
 								(childNextStep)="onChildNextStep()"
-								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -45,7 +37,6 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
 								(childNextStep)="onChildNextStep()"
-								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
@@ -57,7 +48,6 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
 								(childNextStep)="onChildNextStep()"
-								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
@@ -69,7 +59,6 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification-anonymous
 								(childNextStep)="onChildNextStep()"
-								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
@@ -103,11 +92,11 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	private licenceModelLoadedSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	readonly STEP_LICENCE_SETUP = 1;
-	readonly STEP_LICENCE_SELECTION = 2;
-	readonly STEP_BACKGROUND = 3;
-	readonly STEP_IDENTIFICATION = 4;
-	readonly STEP_REVIEW = 5;
+	readonly STEP_LICENCE_SETUP = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_LICENCE_SELECTION = 1;
+	readonly STEP_BACKGROUND = 2;
+	readonly STEP_IDENTIFICATION = 3;
+	readonly STEP_REVIEW = 4;
 
 	isLoaded$ = new BehaviorSubject<boolean>(false);
 
@@ -132,8 +121,8 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	@ViewChild(StepBackgroundComponent)
 	stepBackgroundComponent!: StepBackgroundComponent;
 
-	@ViewChild(StepIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepIdentificationAuthenticatedComponent;
+	@ViewChild(StepIdentificationAnonymousComponent)
+	stepIdentificationComponent!: StepIdentificationAnonymousComponent;
 
 	@ViewChild(StepReviewComponent)
 	stepReviewComponent!: StepReviewComponent;
@@ -141,12 +130,8 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	@ViewChild('stepper') stepper!: MatStepper;
 
 	constructor(
-		private router: Router,
-		private dialog: MatDialog,
-		private authenticationService: AuthenticationService,
 		private breakpointObserver: BreakpointObserver,
-		private licenceApplicationService: LicenceApplicationService,
-		private hotToastService: HotToastService
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -178,12 +163,14 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 
 	ngAfterViewInit(): void {
 		if (this.step1Complete) {
-			if (this.step3Complete) {
+			if (this.step4Complete) {
 				this.stepper.selectedIndex = this.STEP_REVIEW;
-			} else if (this.step2Complete) {
+			} else if (this.step3Complete) {
 				this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-			} else {
+			} else if (this.step2Complete) {
 				this.stepper.selectedIndex = this.STEP_BACKGROUND;
+			} else {
+				this.stepper.selectedIndex = this.STEP_LICENCE_SELECTION;
 			}
 		}
 	}
@@ -237,40 +224,10 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
-				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
+		this.updateCompleteStatus();
 
-					this.hotToastService.success('Licence information has been saved');
-
-					if (stepper?.selected) stepper.selected.completed = true;
-					stepper.next();
-
-					switch (stepper.selectedIndex) {
-						case this.STEP_LICENCE_SETUP:
-							this.stepLicenceSetupAnonymousComponent.onGoToFirstStep();
-							break;
-						case this.STEP_LICENCE_SELECTION:
-							this.stepLicenceSelectionComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_BACKGROUND:
-							this.stepBackgroundComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_IDENTIFICATION:
-							this.stepIdentificationComponent?.onGoToFirstStep();
-							break;
-					}
-				},
-				error: (_error: any) => {
-					// only 403s will be here as an error
-					this.handleDuplicateLicence();
-				},
-			});
-		} else {
-			if (stepper?.selected) stepper.selected.completed = true;
-			stepper.next();
-		}
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
 	}
 
 	onGoToStep(step: number) {
@@ -289,79 +246,8 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 		this.stepper.selectedIndex = step;
 	}
 
-	onSaveAndExit() {
-		if (!this.authenticationService.isLoggedIn()) {
-			this.exitAndLoseChanges();
-			return;
-		}
-
-		this.licenceApplicationService.saveLicenceStep().subscribe({
-			next: (_resp: any) => {
-				this.licenceApplicationService.hasValueChanged = false;
-
-				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
-				);
-			},
-			error: (_error: any) => {
-				// only 403s will be here as an error
-				this.handleDuplicateLicence();
-			},
-		});
-	}
-
-	private exitAndLoseChanges() {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Are you sure you want to leave this application? All of your data will be lost.',
-			actionText: 'Yes',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigate([AppRoutes.LANDING]);
-				}
-			});
-	}
-
 	onGoToReview() {
-		console.log(
-			'onGoToReview',
-			this.licenceApplicationService.hasValueChanged,
-			this.authenticationService.isLoggedIn()
-		);
-
-		if (this.authenticationService.isLoggedIn()) {
-			if (this.licenceApplicationService.hasValueChanged) {
-				this.licenceApplicationService.saveLicenceStep().subscribe({
-					next: (_resp: any) => {
-						this.licenceApplicationService.hasValueChanged = false;
-						this.updateCompleteStatus();
-
-						this.hotToastService.success('Licence information has been saved');
-
-						setTimeout(() => {
-							// hack... does not navigate without the timeout
-							this.stepper.selectedIndex = this.STEP_REVIEW;
-						}, 250);
-					},
-					error: (_error: any) => {
-						// only 403s will be here as an error
-						this.handleDuplicateLicence();
-					},
-				});
-			} else {
-				this.stepper.selectedIndex = this.STEP_REVIEW;
-			}
-		} else {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		}
+		this.stepper.selectedIndex = this.STEP_REVIEW;
 	}
 
 	private updateCompleteStatus(): void {
@@ -374,49 +260,7 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	}
 
 	onChildNextStep() {
-		if (this.authenticationService.isLoggedIn()) {
-			if (this.licenceApplicationService.hasValueChanged) {
-				this.licenceApplicationService.saveLicenceStep().subscribe({
-					next: (_resp: any) => {
-						this.licenceApplicationService.hasValueChanged = false;
-						this.updateCompleteStatus();
-
-						this.hotToastService.success('Licence information has been saved');
-						this.goToChildNextStep();
-					},
-					error: (_error: any) => {
-						// only 403s will be here as an error
-						this.handleDuplicateLicence();
-					},
-				});
-			} else {
-				this.goToChildNextStep();
-			}
-		} else {
-			this.goToChildNextStep();
-		}
-	}
-
-	private handleDuplicateLicence(): void {
-		const data: DialogOptions = {
-			icon: 'error',
-			title: 'Confirmation',
-			message:
-				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
-			actionText: 'Edit',
-			cancelText: 'Go back',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (!response) {
-					this.router.navigate([
-						LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED),
-					]);
-				}
-			});
+		this.goToChildNextStep();
 	}
 
 	private goToChildNextStep() {
@@ -434,6 +278,7 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
+		this.updateCompleteStatus();
 	}
 
 	private breakpointChanged() {

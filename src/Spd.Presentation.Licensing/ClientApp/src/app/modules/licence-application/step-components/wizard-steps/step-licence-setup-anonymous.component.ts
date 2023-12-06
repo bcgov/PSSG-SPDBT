@@ -82,7 +82,7 @@ export class StepLicenceSetupAnonymousComponent implements LicenceStepperStepCom
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.childstepper.next();
+		this.childNextStep.emit(true);
 	}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {

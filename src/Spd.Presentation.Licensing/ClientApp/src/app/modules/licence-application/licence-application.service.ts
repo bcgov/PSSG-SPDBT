@@ -95,6 +95,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		contactInformationData: this.contactInformationFormGroup,
 	});
 
+	licenceFeeTermCodes: Array<LicenceFeeResponse> = [];
+
 	constructor(
 		formBuilder: FormBuilder,
 		private formatDatePipe: FormatDatePipe,
@@ -113,21 +115,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 	}
 
-	getLicenceTermsAndFees() {
-		const workerLicenceTypeCode = this.licenceModelFormGroup.value.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
-		const applicationTypeCode = this.licenceModelFormGroup.value.applicationTypeData?.applicationTypeCode ?? '';
-		// const businessTypeCode = //TODO what to do about business type code??
-		// 	this.licenceModelFormGroup.value.businessTypeCode ?? BusinessTypeCode.NonRegisteredPartnership;
-
-		const fees = this.licenceFees?.filter(
-			(item) =>
-				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == BusinessTypeCode.NonRegisteredPartnership &&
-				item.applicationTypeCode == applicationTypeCode
-		);
-		return [...fees];
-	}
-
 	/**
 	 * Reset the licence formgroup
 	 */
@@ -138,6 +125,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
 		aliases.clear();
 
+		this.licenceFeeTermCodes = [];
+
 		console.debug('RESET licenceModelFormGroup', this.licenceModelFormGroup.value);
 	}
 
@@ -147,37 +136,46 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	createNewLicence(): Observable<any> {
 		this.licenceModelFormGroup.reset();
-		console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
 
 		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 		if (bcscUserWhoamiProfile) {
-			this.licenceModelFormGroup.patchValue({
-				personalInformationData: {
-					givenName: bcscUserWhoamiProfile.firstName,
-					middleName1: bcscUserWhoamiProfile.middleName1,
-					middleName2: bcscUserWhoamiProfile.middleName2,
-					surname: bcscUserWhoamiProfile.lastName,
-					dateOfBirth: bcscUserWhoamiProfile.birthDate,
-					genderCode: bcscUserWhoamiProfile.gender,
+			this.licenceModelFormGroup.patchValue(
+				{
+					personalInformationData: {
+						givenName: bcscUserWhoamiProfile.firstName,
+						middleName1: bcscUserWhoamiProfile.middleName1,
+						middleName2: bcscUserWhoamiProfile.middleName2,
+						surname: bcscUserWhoamiProfile.lastName,
+						dateOfBirth: bcscUserWhoamiProfile.birthDate,
+						genderCode: bcscUserWhoamiProfile.gender,
+					},
+					residentialAddressData: {
+						addressSelected: true,
+						isMailingTheSameAsResidential: false,
+						addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+						addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+						city: bcscUserWhoamiProfile.residentialAddress?.city,
+						country: bcscUserWhoamiProfile.residentialAddress?.country,
+						postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+						province: bcscUserWhoamiProfile.residentialAddress?.province,
+					},
 				},
-				residentialAddressData: {
-					addressSelected: true,
-					isMailingTheSameAsResidential: false,
-					addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-					addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-					city: bcscUserWhoamiProfile.residentialAddress?.city,
-					country: bcscUserWhoamiProfile.residentialAddress?.country,
-					postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-					province: bcscUserWhoamiProfile.residentialAddress?.province,
-				},
-			});
+				{ emitEvent: false }
+			);
 		} else {
-			this.licenceModelFormGroup.patchValue({
-				residentialAddressData: {
-					isMailingTheSameAsResidential: false,
+			this.licenceModelFormGroup.patchValue(
+				{
+					residentialAddressData: {
+						isMailingTheSameAsResidential: false,
+					},
 				},
-			});
+				{ emitEvent: false }
+			);
 		}
+
+		console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
+
+		this.licenceFeeTermCodes = [];
 
 		this.initialized = true;
 		return of(this.licenceModelFormGroup.value);
@@ -210,6 +208,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	loadDraftLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		this.licenceModelFormGroup.reset();
+
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
@@ -732,8 +732,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					dogsAuthorizationData,
 				});
 
-				console.debug('loadExistingLicence resp', resp);
-				console.debug('loadExistingLicence this.licenceModelFormGroup', this.licenceModelFormGroup.value);
+				// console.debug('loadExistingLicence resp', resp);
+				console.debug('LOAD EXISTING licenceModelFormGroup', this.licenceModelFormGroup.value);
 
 				this.initialized = true;
 			}),
@@ -752,7 +752,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	this.applicationTypeFormGroup.valid
 		// );
 
-		return this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+		const isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+		if (isValid && this.licenceFeeTermCodes.length === 0) {
+			// value has changed to true
+			this.licenceFeeTermCodes.push(...this.getLicenceTermsAndFees());
+		}
+
+		return isValid;
 	}
 
 	/**
@@ -762,8 +768,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	isStep2Complete(): boolean {
 		// console.debug(
 		// 	'isStep2Complete',
-		// 	this.workerLicenceTypeFormGroup.valid,
-		// 	this.applicationTypeFormGroup.valid,
 		// 	this.soleProprietorFormGroup.valid,
 		// 	this.expiredLicenceFormGroup.valid,
 		// 	this.licenceTermFormGroup.valid,
@@ -789,8 +793,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// );
 
 		return (
-			this.workerLicenceTypeFormGroup.valid &&
-			this.applicationTypeFormGroup.valid &&
 			this.soleProprietorFormGroup.valid &&
 			this.expiredLicenceFormGroup.valid &&
 			this.licenceTermFormGroup.valid &&
@@ -1239,6 +1241,31 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		return body;
+	}
+
+	/**
+	 * Set the licence fees for the licence and application type
+	 * @returns list of fees
+	 */
+	private getLicenceTermsAndFees() {
+		const workerLicenceTypeCode = this.licenceModelFormGroup.value.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
+		const applicationTypeCode = this.licenceModelFormGroup.value.applicationTypeData?.applicationTypeCode ?? '';
+		// const businessTypeCode = //TODO what to do about business type code??
+		// 	this.licenceModelFormGroup.value.businessTypeCode ?? BusinessTypeCode.NonRegisteredPartnership;
+
+		if (!workerLicenceTypeCode || !applicationTypeCode) {
+			return [];
+		}
+
+		const fees = this.licenceFees?.filter(
+			(item) =>
+				item.workerLicenceTypeCode == workerLicenceTypeCode &&
+				item.businessTypeCode == BusinessTypeCode.NonRegisteredPartnership &&
+				item.applicationTypeCode == applicationTypeCode
+		);
+
+		console.debug('getLicenceTermsAndFees filtered', fees);
+		return [...fees];
 	}
 
 	/**

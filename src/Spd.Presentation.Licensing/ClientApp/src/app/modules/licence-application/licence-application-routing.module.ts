@@ -5,14 +5,13 @@ import { LicencePaymentFailComponent } from './components/licence-payment-fail.c
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
+import { LoginUserProfileComponent } from './components/login-user-profile.component';
 import { SecurityWorkerLicenceAnonymousWizardComponent } from './components/security-worker-licence-anonymous-wizard.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { SecurityWorkerLicenceAuthenticatedWizardComponent } from './components/security-worker-licence-authenticated-wizard.component';
 import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
-import { UserApplicationsComponent } from './components/user-applications.component';
-import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
@@ -88,7 +87,6 @@ const routes: Routes = [
 			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,
 				component: UserApplicationsAuthenticatedComponent,
-				children: [{ path: '', component: UserApplicationsComponent }],
 			},
 			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS,
@@ -96,43 +94,19 @@ const routes: Routes = [
 			},
 			{
 				path: LicenceApplicationRoutes.USER_PROFILE,
-				component: UserProfileComponent,
+				component: LoginUserProfileComponent,
 			},
 			{
 				// SWL - NEW - UNAUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
 				component: SecurityWorkerLicenceApplicationComponent,
-				children: [
-					// {
-					// 	path: LicenceApplicationRoutes.LICENCE_SETUP,
-					// 	component: StepLicenceSetupAnonymousComponent,
-					// },
-					// {
-					// 	path: LicenceApplicationRoutes.LICENCE_TYPE_SELECTION,
-					// 	component: LicenceTypeSelectionComponent,
-					// },
-					// {
-					// 	path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE,
-					// 	component: LicenceApplicationTypeComponent,
-					// },
-					{ path: '', component: SecurityWorkerLicenceAnonymousWizardComponent },
-				],
+				children: [{ path: '', component: SecurityWorkerLicenceAnonymousWizardComponent }],
 			},
 			{
 				// SWL - NEW - AUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
 				component: SecurityWorkerLicenceApplicationComponent,
-				children: [
-					// {
-					// 	path: LicenceApplicationRoutes.LICENCE_USER_PROFILE,
-					// 	component: LicenceUserProfileComponent,
-					// },
-					// {
-					// 	path: LicenceApplicationRoutes.LICENCE_TYPE_SELECTION,
-					// 	component: LicenceTypeSelectionComponent,
-					// },
-					{ path: '', component: SecurityWorkerLicenceAuthenticatedWizardComponent },
-				],
+				children: [{ path: '', component: SecurityWorkerLicenceAuthenticatedWizardComponent }],
 			},
 			{
 				path: LicenceApplicationRoutes.LICENCE_UPDATE,

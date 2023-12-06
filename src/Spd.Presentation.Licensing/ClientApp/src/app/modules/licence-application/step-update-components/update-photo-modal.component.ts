@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<app-photo [isCalledFromModal]="true"></app-photo>
+			<app-photograph-of-yourself [isCalledFromModal]="true"></app-photograph-of-yourself>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">

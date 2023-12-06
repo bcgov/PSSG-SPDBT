@@ -345,8 +345,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	}
 
 	private dirtyForm(step: number): boolean {
+		console.log('dirtyForm', step);
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
+				console.log('STEP_SOLE_PROPRIETOR', this.soleProprietorComponent.isFormValid());
 				return this.soleProprietorComponent.isFormValid();
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();

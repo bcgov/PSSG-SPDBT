@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
@@ -103,7 +104,7 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	private licenceModelLoadedSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	readonly STEP_LICENCE_SETUP = 0;
+	readonly STEP_LICENCE_SETUP = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
 	readonly STEP_BACKGROUND = 2;
 	readonly STEP_IDENTIFICATION = 3;
@@ -123,11 +124,11 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	isReplacement = false;
 	isNotReplacement = false;
 
-	@ViewChild(StepLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepLicenceSelectionComponent;
-
 	@ViewChild(StepLicenceSetupAuthenticatedComponent)
 	stepLicenceSetupAuthenticatedComponent!: StepLicenceSetupAuthenticatedComponent;
+
+	@ViewChild(StepLicenceSelectionComponent)
+	stepLicenceSelectionComponent!: StepLicenceSelectionComponent;
 
 	@ViewChild(StepBackgroundComponent)
 	stepBackgroundComponent!: StepBackgroundComponent;
@@ -160,7 +161,6 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();
-
 				this.isLoaded$.next(true);
 			},
 		});
@@ -170,20 +170,25 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 			.subscribe((_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = true;
 
-				console.debug('*******valueChanges to TRUE');
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
+				console.debug(
+					'*******valueChanges to TRUE',
+					'valueChanges isFormValid',
+					this.licenceApplicationService.licenceModelFormGroup.valid
+				);
 			});
 	}
 
 	ngAfterViewInit(): void {
 		if (this.step1Complete) {
-			if (this.step3Complete) {
+			if (this.step4Complete) {
 				this.stepper.selectedIndex = this.STEP_REVIEW;
-			} else if (this.step2Complete) {
+			} else if (this.step3Complete) {
 				this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-			} else {
+			} else if (this.step2Complete) {
 				this.stepper.selectedIndex = this.STEP_BACKGROUND;
+			} else {
+				this.stepper.selectedIndex = this.STEP_LICENCE_SELECTION;
 			}
 		}
 	}
@@ -237,7 +242,7 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.hasValueChanged && this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.hasValueChanged) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
@@ -262,9 +267,11 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 							break;
 					}
 				},
-				error: (_error: any) => {
+				error: (error: HttpErrorResponse) => {
 					// only 403s will be here as an error
-					this.handleDuplicateLicence();
+					if (error.status == 403) {
+						this.handleDuplicateLicence();
+					}
 				},
 			});
 		} else {
@@ -277,11 +284,11 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 		console.debug('onGoToStep', step);
 
 		if (step == 4) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-			this.stepIdentificationComponent.onGoToContactStep();
+			this.stepper.selectedIndex = this.STEP_LICENCE_SETUP;
 			return;
 		}
 
+		this.stepLicenceSetupAuthenticatedComponent?.onGoToFirstStep();
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepBackgroundComponent?.onGoToFirstStep();
 		this.stepIdentificationComponent?.onGoToFirstStep();
@@ -303,9 +310,11 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 					LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
 				);
 			},
-			error: (_error: any) => {
+			error: (error: HttpErrorResponse) => {
 				// only 403s will be here as an error
-				this.handleDuplicateLicence();
+				if (error.status == 403) {
+					this.handleDuplicateLicence();
+				}
 			},
 		});
 	}
@@ -330,34 +339,26 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	onGoToReview() {
-		console.log(
-			'onGoToReview',
-			this.licenceApplicationService.hasValueChanged,
-			this.authenticationService.isLoggedIn()
-		);
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
+				next: (_resp: any) => {
+					this.licenceApplicationService.hasValueChanged = false;
+					this.updateCompleteStatus();
 
-		if (this.authenticationService.isLoggedIn()) {
-			if (this.licenceApplicationService.hasValueChanged) {
-				this.licenceApplicationService.saveLicenceStep().subscribe({
-					next: (_resp: any) => {
-						this.licenceApplicationService.hasValueChanged = false;
-						this.updateCompleteStatus();
+					this.hotToastService.success('Licence information has been saved');
 
-						this.hotToastService.success('Licence information has been saved');
-
-						setTimeout(() => {
-							// hack... does not navigate without the timeout
-							this.stepper.selectedIndex = this.STEP_REVIEW;
-						}, 250);
-					},
-					error: (_error: any) => {
-						// only 403s will be here as an error
+					setTimeout(() => {
+						// hack... does not navigate without the timeout
+						this.stepper.selectedIndex = this.STEP_REVIEW;
+					}, 250);
+				},
+				error: (error: HttpErrorResponse) => {
+					// only 403s will be here as an error
+					if (error.status == 403) {
 						this.handleDuplicateLicence();
-					},
-				});
-			} else {
-				this.stepper.selectedIndex = this.STEP_REVIEW;
-			}
+					}
+				},
+			});
 		} else {
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
@@ -373,24 +374,20 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	onChildNextStep() {
-		if (this.authenticationService.isLoggedIn()) {
-			if (this.licenceApplicationService.hasValueChanged) {
-				this.licenceApplicationService.saveLicenceStep().subscribe({
-					next: (_resp: any) => {
-						this.licenceApplicationService.hasValueChanged = false;
-						this.updateCompleteStatus();
-
-						this.hotToastService.success('Licence information has been saved');
-						this.goToChildNextStep();
-					},
-					error: (_error: any) => {
-						// only 403s will be here as an error
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
+				next: (_resp: any) => {
+					this.licenceApplicationService.hasValueChanged = false;
+					this.hotToastService.success('Licence information has been saved');
+					this.goToChildNextStep();
+				},
+				error: (error: HttpErrorResponse) => {
+					// only 403s will be here as an error
+					if (error.status == 403) {
 						this.handleDuplicateLicence();
-					},
-				});
-			} else {
-				this.goToChildNextStep();
-			}
+					}
+				},
+			});
 		} else {
 			this.goToChildNextStep();
 		}
@@ -419,7 +416,6 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	private goToChildNextStep() {
-		console.log('onChildNextStep', this.stepper.selectedIndex);
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_LICENCE_SETUP:
 				this.stepLicenceSetupAuthenticatedComponent?.onGoToNextStep();
@@ -434,6 +430,7 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
+		this.updateCompleteStatus();
 	}
 
 	private breakpointChanged() {

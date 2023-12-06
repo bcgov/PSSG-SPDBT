@@ -10,7 +10,7 @@ import { LicenceChildStepperStepComponent } from '../licence-application.helper'
 import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
-	selector: 'app-photo',
+	selector: 'app-photograph-of-yourself',
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
@@ -102,7 +102,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class PhotoComponent implements LicenceChildStepperStepComponent {
+export class PhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 

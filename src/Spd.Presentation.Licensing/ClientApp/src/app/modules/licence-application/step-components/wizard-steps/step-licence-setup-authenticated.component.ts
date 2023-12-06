@@ -101,7 +101,11 @@ export class StepLicenceSetupAuthenticatedComponent implements LicenceStepperSte
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.childstepper.next();
+		if (formNumber === this.STEP_USER_PROFILE) {
+			this.childstepper.next(); // FIX
+		} else {
+			this.childNextStep.emit(true);
+		}
 	}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {

@@ -5,14 +5,14 @@ import { LicencePaymentFailComponent } from './components/licence-payment-fail.c
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
+import { LoginUserProfileComponent } from './components/login-user-profile.component';
 import { SecurityWorkerLicenceAnonymousWizardComponent } from './components/security-worker-licence-anonymous-wizard.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { SecurityWorkerLicenceAuthenticatedWizardComponent } from './components/security-worker-licence-authenticated-wizard.component';
 import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
-import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
+import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { UserApplicationsComponent } from './components/user-applications.component';
-import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { LicenceApplicationService } from './licence-application.service';
@@ -56,12 +56,17 @@ import { LicenceUserProfileComponent } from './step-components/licence-user-prof
 import { MailingAddressComponent } from './step-components/mailing-address.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
-import { PhotoComponent } from './step-components/photo.component';
+import { PhotographOfYourselfComponent } from './step-components/photograph-of-yourself.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { ResidentialAddressComponent } from './step-components/residential-address.component';
 import { RestraintsAuthorizationComponent } from './step-components/restraints-authorization.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
+import { StepAliasesComponent } from './step-components/step-aliases.component';
+import { StepContactInformationComponent } from './step-components/step-contact-information.component';
+import { StepMailingAddressComponent } from './step-components/step-mailing-address.component';
+import { StepResidentialAddressComponent } from './step-components/step-residential-address.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
+import { UserProfileComponent } from './step-components/user-profile.component';
 import { StepBackgroundComponent } from './step-components/wizard-steps/step-background.component';
 import { StepIdentificationAnonymousComponent } from './step-components/wizard-steps/step-identification-anonymous.component';
 import { StepIdentificationAuthenticatedComponent } from './step-components/wizard-steps/step-identification-authenticated.component';
@@ -83,6 +88,7 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		LicenceApplicationComponent,
 		LicenceTypeSelectionComponent,
 		LicenceApplicationTypeComponent,
+		LoginUserProfileComponent,
 		SoleProprietorComponent,
 		ChecklistComponent,
 		PersonalInformationComponent,
@@ -97,7 +103,7 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		CitizenshipComponent,
 		BcDriverLicenceComponent,
 		HeightAndWeightComponent,
-		PhotoComponent,
+		PhotographOfYourselfComponent,
 		ContactInformationComponent,
 		ResidentialAddressComponent,
 		MailingAddressComponent,
@@ -108,7 +114,10 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		LicencePaymentFailComponent,
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
-		ContactInformationComponent,
+		StepAliasesComponent,
+		StepContactInformationComponent,
+		StepResidentialAddressComponent,
+		StepMailingAddressComponent,
 		StepLicenceSetupAnonymousComponent,
 		StepLicenceSetupAuthenticatedComponent,
 		StepLicenceSelectionComponent,

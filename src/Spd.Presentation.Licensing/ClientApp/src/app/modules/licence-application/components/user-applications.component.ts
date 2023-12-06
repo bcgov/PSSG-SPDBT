@@ -36,7 +36,7 @@ export interface ApplicationResponse {
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<ng-container *ngIf="isAuthenticated | async">
-						<app-alert type="info" icon="info">
+						<!-- <app-alert type="info" icon="info">
 							We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
 							fee?
 						</app-alert>
@@ -47,12 +47,12 @@ export interface ApplicationResponse {
 
 						<app-alert type="danger" icon="error">
 							You haven't submitted your licence application yet. It will expire on Jan 12, 2024
-						</app-alert>
+						</app-alert> -->
 
 						<div class="card-section my-4 px-4 py-3">
 							<div class="row">
 								<div class="col-lg-6">
-									<div class="text-data">You don't have any active licences</div>
+									<div class="text-data">You don't have an active licence</div>
 								</div>
 								<div class="col-lg-6 text-end">
 									<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
@@ -65,7 +65,7 @@ export interface ApplicationResponse {
 						<div class="mb-3" *ngIf="dataSource.data.length > 0">
 							<div class="fs-5 py-4">In-Progress Licences/Permits</div>
 
-							<div class="row">
+							<div class="row m-0">
 								<div class="col-12" style="background-color: #f6f6f6 !important;">
 									<mat-table [dataSource]="dataSource" class="pb-3" style="background-color: #f6f6f6 !important;">
 										<ng-container matColumnDef="serviceTypeCode">
@@ -125,12 +125,12 @@ export interface ApplicationResponse {
 										<ng-container matColumnDef="action1">
 											<mat-header-cell *matHeaderCellDef></mat-header-cell>
 											<mat-cell *matCellDef="let application">
-												<!--	*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"-->
 												<button
 													mat-flat-button
 													color="primary"
 													class="large my-3 w-auto"
 													(click)="onResume(application)"
+													*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
 												>
 													<mat-icon>double_arrow</mat-icon>Resume
 												</button>
@@ -328,15 +328,6 @@ export interface ApplicationResponse {
 						<a href="https://id.gov.bc.ca/account/" target="_blank">Connect a current or expired licence</a> to your
 						account
 					</app-alert>
-
-					<!-- <button
-						mat-flat-button
-						color="accent"
-						class="large w-auto mb-4 mx-4"
-						[routerLink]="[licenceApplicationRoutes.path(licenceApplicationRoutes.USER_PROFILE)]"
-					>
-						User Profile
-					</button> -->
 				</div>
 			</div>
 		</section>
@@ -392,9 +383,7 @@ export interface ApplicationResponse {
 export class UserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
-	isLoggedIn = false;
 
-	// draftApplications: Array<WorkerLicenceAppListResponse> = [];
 	activeApplications: Array<ApplicationResponse> = [];
 	expiredApplications: Array<ApplicationResponse> = [];
 
@@ -426,36 +415,18 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
+				// this.isLoggedIn = isLoggedIn;
 
 				if (isLoggedIn) {
 					this.workerLicensingService
 						.apiWorkerLicenceApplicationsGet()
 						.pipe()
 						.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
-							// this.draftApplications = resp;
 							this.dataSource = new MatTableDataSource(resp ?? []);
 						});
 				}
 			}
 		);
-
-		// this.draftApplications = [
-		// 	{
-		// 		id: 'fc0c10a3-b6e6-4460-ac80-9b516f3e02a5',
-		// 		licenceAppId: 'SWL-NWQ3X7Z',
-		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-		// 		applicationTypeCode: ApplicationTypeCode.New,
-		// 		expiresOn: '2023-09-15T19:43:25+00:00',
-		// 	},
-		// 	{
-		// 		id: '5a1bcc48-4eab-40c9-a820-ff6846b42d29',
-		// 		licenceAppId: 'SWL-CBC3X7Z',
-		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-		// 		applicationTypeCode: ApplicationTypeCode.New,
-		// 		expiresOn: '2023-11-15T19:43:25+00:00',
-		// 	},
-		// ];
 
 		this.activeApplications = [
 			{
@@ -559,11 +530,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 			.createNewLicence()
 			.pipe(
 				tap((_resp: any) => {
-					if (this.isLoggedIn) {
-						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-					} else {
-						this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
-					}
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 				}),
 				take(1)
 			)

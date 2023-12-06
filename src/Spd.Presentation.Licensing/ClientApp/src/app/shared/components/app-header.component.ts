@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
 
 @Component({
 	selector: 'app-header',
@@ -16,9 +16,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
 			<div class="app-header-text pl-3">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
+
 			<div *ngIf="loggedInUserDisplay">
-				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
-				<span class="d-none d-sm-inline">{{ loggedInUserDisplay }}</span>
+				<button mat-button [matMenuTriggerFor]="menu" class="w-auto" style="font-size: inherit;">
+					{{ loggedInUserDisplay }}
+				</button>
+				<mat-menu #menu="matMenu">
+					<button mat-menu-item (click)="onUserProfile()">Your Profile</button>
+					<button mat-menu-item (click)="onLogout()">Logout</button>
+				</mat-menu>
 			</div>
 		</mat-toolbar>
 	`,
@@ -72,7 +78,6 @@ export class HeaderComponent implements OnInit {
 	constructor(
 		protected router: Router,
 		private authUserBcscService: AuthUserBcscService,
-		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private utilService: UtilService
 	) {}
@@ -87,6 +92,10 @@ export class HeaderComponent implements OnInit {
 
 			this.getUserInfo();
 		});
+	}
+
+	onUserProfile(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_PROFILE));
 	}
 
 	onLogout(): void {

@@ -8,15 +8,15 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceStepperStepComponent } from '../../licence-application.helper';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
-import { AliasesComponent } from '../aliases.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
 import { CitizenshipComponent } from '../citizenship.component';
-import { ContactInformationComponent } from '../contact-information.component';
 import { HeightAndWeightComponent } from '../height-and-weight.component';
-import { MailingAddressComponent } from '../mailing-address.component';
 import { PersonalInformationComponent } from '../personal-information.component';
-import { PhotoComponent } from '../photo.component';
-import { ResidentialAddressComponent } from '../residential-address.component';
+import { PhotographOfYourselfComponent } from '../photograph-of-yourself.component';
+import { StepAliasesComponent } from '../step-aliases.component';
+import { StepContactInformationComponent } from '../step-contact-information.component';
+import { StepMailingAddressComponent } from '../step-mailing-address.component';
+import { StepResidentialAddressComponent } from '../step-residential-address.component';
 
 @Component({
 	selector: 'app-step-identification-anonymous',
@@ -63,7 +63,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 			</mat-step>
 
 			<mat-step>
-				<app-aliases></app-aliases>
+				<app-step-aliases></app-step-aliases>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -228,7 +228,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 			</mat-step>
 
 			<mat-step>
-				<app-photo></app-photo>
+				<app-photograph-of-yourself></app-photograph-of-yourself>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -253,7 +253,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 			</mat-step>
 
 			<mat-step>
-				<app-residential-address></app-residential-address>
+				<app-step-residential-address></app-step-residential-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -288,7 +288,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 			</mat-step>
 
 			<mat-step *ngIf="showMailingAddressStep">
-				<app-mailing-address></app-mailing-address>
+				<app-step-mailing-address></app-step-mailing-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -323,7 +323,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 			</mat-step>
 
 			<mat-step>
-				<app-contact-information></app-contact-information>
+				<app-step-contact-information></app-step-contact-information>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -388,15 +388,15 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(PersonalInformationComponent) personalInformationComponent!: PersonalInformationComponent;
-	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
+	@ViewChild(StepAliasesComponent) aliasesComponent!: StepAliasesComponent;
 	@ViewChild(CitizenshipComponent) citizenshipComponent!: CitizenshipComponent;
 	@ViewChild(AdditionalGovIdComponent) additionalGovIdComponent!: AdditionalGovIdComponent;
 	@ViewChild(BcDriverLicenceComponent) bcDriverLicenceComponent!: BcDriverLicenceComponent;
 	@ViewChild(HeightAndWeightComponent) heightAndWeightComponent!: HeightAndWeightComponent;
-	@ViewChild(PhotoComponent) photoComponent!: PhotoComponent;
-	@ViewChild(ResidentialAddressComponent) residentialAddressComponent!: ResidentialAddressComponent;
-	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
-	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
+	@ViewChild(PhotographOfYourselfComponent) photoComponent!: PhotographOfYourselfComponent;
+	@ViewChild(StepResidentialAddressComponent) residentialAddressComponent!: StepResidentialAddressComponent;
+	@ViewChild(StepMailingAddressComponent) mailingAddressComponent!: StepMailingAddressComponent;
+	@ViewChild(StepContactInformationComponent) stepContactInformationComponent!: StepContactInformationComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
@@ -479,8 +479,10 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	}
 
 	private dirtyForm(step: number): boolean {
+		console.log('dirtyForm', step);
 		switch (step) {
 			case this.STEP_PERSONAL_INFORMATION:
+				console.log('personalInformationComponent', this.personalInformationComponent.isFormValid());
 				return this.personalInformationComponent.isFormValid();
 			case this.STEP_ALIASES:
 				return this.aliasesComponent.isFormValid();
@@ -499,7 +501,7 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 			case this.STEP_MAILING_ADDRESS:
 				return this.mailingAddressComponent.isFormValid();
 			case this.STEP_CONTACT_INFORMATION:
-				return this.contactInformationComponent.isFormValid();
+				return this.stepContactInformationComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

@@ -1,6 +1,11 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode, PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
+import {
+	LicenceDocumentTypeCode,
+	LicenceFeeResponse,
+	PoliceOfficerRoleCode,
+	WorkerCategoryTypeCode,
+} from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -792,9 +797,9 @@ export class SummaryReviewComponent implements OnInit {
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationService
-			.getLicenceTermsAndFees()
-			.find((item) => item.licenceTermCode == this.licenceTermCode);
+		const feeItem = this.licenceApplicationService.licenceFeeTermCodes.find(
+			(item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode
+		);
 		return feeItem?.amount ?? null;
 	}
 
