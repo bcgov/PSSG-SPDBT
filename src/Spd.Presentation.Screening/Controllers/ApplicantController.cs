@@ -209,7 +209,7 @@ namespace Spd.Presentation.Screening.Controllers
             //validation files
             foreach (IFormFile file in fileUploadRequest.Files)
             {
-                string? fileexe = FileNameHelper.GetFileExtension(file.FileName);
+                string? fileexe = FileHelper.GetFileExtension(file.FileName);
                 if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");

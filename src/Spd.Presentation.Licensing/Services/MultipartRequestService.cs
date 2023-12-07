@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -24,15 +26,15 @@ public interface IMultipartRequestService
 
 public class MultipartRequestService : IMultipartRequestService
 {
-    //private readonly CmsConfiguration cmsConfiguration;
+    private readonly IConfiguration _configuration;
     private readonly JsonOptions _jsonOptions;
     private readonly ILogger<MultipartRequestService> _logger;
 
-    public MultipartRequestService(/*IOptions<CmsConfiguration> cmsConfiguration,*/
+    public MultipartRequestService(IConfiguration configuration,
         IOptions<JsonOptions> jsonOptions,
         ILogger<MultipartRequestService> logger)
     {
-        //this.cmsConfiguration = cmsConfiguration.Value;
+        _configuration = configuration;
         this._jsonOptions = jsonOptions.Value;
         this._logger = logger;
     }
@@ -40,10 +42,11 @@ public class MultipartRequestService : IMultipartRequestService
     public async Task<(T model, ICollection<UploadFileInfo> uploadFileInfoList)> UploadMultipleFilesAsync<T>(HttpRequest request,
         ModelStateDictionary modelState)
     {
+        UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
         T model;
-        if (!Directory.Exists("/tmp"))
+        if (!Directory.Exists(fileUploadConfig.StreamFileFolder))
         {
-            Directory.CreateDirectory("/tmp");
+            Directory.CreateDirectory(fileUploadConfig.StreamFileFolder);
         }
 
         var defaultFormOptions = new FormOptions();
@@ -51,7 +54,7 @@ public class MultipartRequestService : IMultipartRequestService
         if (!MultipartRequestHelper.IsMultipartContentType(request.ContentType))
         {
             modelState.AddModelError("File", $"Expected a multipart request, but got {request.ContentType}");
-            throw new ApiException(HttpStatusCode.BadRequest, modelState.ToString());
+            throw new ApiException(HttpStatusCode.BadRequest, modelState.AllErrorsStr());
         }
 
         var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(request.ContentType), defaultFormOptions.MultipartBoundaryLengthLimit);
@@ -123,7 +126,7 @@ public class MultipartRequestService : IMultipartRequestService
         // the model must be valid
         if (!modelState.IsValid)
         {
-            throw new ApiException(HttpStatusCode.BadRequest, modelState.ToString());
+            throw new ApiException(HttpStatusCode.BadRequest, modelState.AllErrorsStr());
         }
 
         return (model, uploadFileInfoList);
@@ -131,7 +134,8 @@ public class MultipartRequestService : IMultipartRequestService
 
     private async Task<UploadFileInfo> SaveFileAndGetFileInfoAsync(MultipartSection section, ContentDispositionHeaderValue contentDisposition, ModelStateDictionary modelState)
     {
-        var file = $"/tmp\\{Guid.NewGuid()}.temp";
+        UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+        var file = $"{fileUploadConfig.StreamFileFolder}\\{Guid.NewGuid()}.temp";
         using (var stream = File.Create(file))
         {
             try
@@ -143,15 +147,18 @@ public class MultipartRequestService : IMultipartRequestService
                 {
                     modelState.AddModelError("File", "The file is empty.");
                 }
-                //else if (stream.Length > cmsConfiguration.DocumentMaxFileSizeMB * 1048576)
-                //{
-                //    modelState.AddModelError("File", $"The file exceeds {cmsConfiguration.DocumentMaxFileSizeMB:N1} MB.");
-                //}
-                //else if (!FileTools.IsValidFileExtension(contentDisposition.FileName.Value,
-                //            stream, cmsConfiguration.DocumentAllowedExtentions.Split(',')))
-                //{
-                //    modelState.AddModelError("File", "The file type isn't permitted or the file's signature doesn't match the file's extension.");
-                //}
+                else if (stream.Length > fileUploadConfig.MaxFileSizeMB * 1048576)
+                {
+                    modelState.AddModelError("File", $"The file exceeds {fileUploadConfig.MaxFileSizeMB:N1} MB.");
+                }
+                else
+                {
+                    string? fileexe = FileHelper.GetFileExtension(contentDisposition.FileName.Value);
+                    if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                    {
+                        modelState.AddModelError("File", $"{contentDisposition.FileName.Value} file type is not supported.");
+                    }
+                }
 
                 return new UploadFileInfo()
                 {
@@ -168,107 +175,6 @@ public class MultipartRequestService : IMultipartRequestService
                 _logger.LogError($"msg. {ex.Message}");
                 return null;
             }
-        }
-    }
-
-    /// <summary>
-    /// Based on:
-    /// https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#upload-large-files-with-streaming
-    /// </summary>
-    private async Task<(FormValueProvider documentViewModelProvider, string filename, string fileExtension)> StreamFile(HttpRequest request,
-        Stream targetStream,
-        ModelStateDictionary modelState)
-    {
-        var defaultFormOptions = new FormOptions();
-
-        if (!MultipartRequestHelper.IsMultipartContentType(request.ContentType))
-        {
-            modelState.AddModelError("File", $"Expected a multipart request, but got {request.ContentType}");
-            throw new ApiException(HttpStatusCode.BadRequest, modelState.ToString());
-        }
-
-        // Used to accumulate all the form url encoded key value pairs in the
-        // request.
-        var formAccumulator = new KeyValueAccumulator();
-
-        var boundary = MultipartRequestHelper.GetBoundary(
-            MediaTypeHeaderValue.Parse(request.ContentType),
-            defaultFormOptions.MultipartBoundaryLengthLimit);
-        var reader = new MultipartReader(boundary, request.Body);
-
-        var section = await reader.ReadNextSectionAsync();
-
-        if (request.Body.Length <= 0)
-        {
-            modelState.AddModelError("Payload", $"Expected a multipart request with correct payload, but got 0 payload");
-            throw new ApiException(HttpStatusCode.BadRequest, modelState.ToString());
-        }
-
-        string filename = null;
-        string fileExtension = null;
-
-        while (section != null)
-        {
-            var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out ContentDispositionHeaderValue contentDisposition);
-
-            if (hasContentDispositionHeader)
-            {
-                if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
-                {
-                    filename = await CheckStreamAndGetFilenameAsync(section, contentDisposition, targetStream, modelState);
-                    fileExtension = Path.GetExtension(contentDisposition.FileName.Value).ToLowerInvariant();
-                }
-                else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
-                {
-                    formAccumulator = await GetFormUrlKeyValuePairAsync(section, contentDisposition, modelState, defaultFormOptions);
-                }
-            }
-
-            // Drains any remaining section body that has not been consumed and
-            // reads the headers for the next section.
-            section = await reader.ReadNextSectionAsync();
-        }
-
-        // Bind form data to a model
-        var formValueProvider = new FormValueProvider(
-            BindingSource.Form,
-            new FormCollection(formAccumulator.GetResults()),
-            CultureInfo.CurrentCulture);
-
-        return (formValueProvider, filename, fileExtension);
-    }
-
-    private async Task<string> CheckStreamAndGetFilenameAsync(MultipartSection section, ContentDispositionHeaderValue contentDisposition, Stream targetStream,
-        ModelStateDictionary modelState)
-    {
-        try
-        {
-            await section.Body.CopyToAsync(targetStream);
-
-            // Check if the file is empty or exceeds the size limit.
-            if (targetStream.Length == 0)
-            {
-                modelState.AddModelError("File", "The file is empty.");
-            }
-            //else if (targetStream.Length > cmsConfiguration.DocumentMaxFileSizeMB * 1048576)
-            //{
-            //    modelState.AddModelError("File", $"The file exceeds {cmsConfiguration.DocumentMaxFileSizeMB:N1} MB.");
-            //}
-            //else if (!FileTools.IsValidFileExtension(contentDisposition.FileName.Value,
-            //    targetStream, cmsConfiguration.DocumentAllowedExtentions.Split(',')))
-            //{
-            //    modelState.AddModelError("File",
-            //        "The file type isn't permitted or the file's signature doesn't match the file's extension.");
-            //}
-
-            return contentDisposition.FileName.Value;
-        }
-        catch (Exception ex)
-        {
-            var msg = $"The upload failed. Error: {ex.HResult}";
-            modelState.AddModelError("File", msg);
-            _logger.LogError($"msg. {ex.Message}");
-            return null;
         }
     }
 

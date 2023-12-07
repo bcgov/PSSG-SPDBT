@@ -81,7 +81,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/worker-licence-applications/{licenceAppId}/files")]
         [HttpPost]
-        [DisableRequestSizeLimit]
+        [RequestSizeLimit(26214400)] //25M
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
         {
@@ -94,7 +94,7 @@ namespace Spd.Presentation.Licensing.Controllers
             //validation files
             foreach (IFormFile file in fileUploadRequest.Documents)
             {
-                string? fileexe = FileNameHelper.GetFileExtension(file.FileName);
+                string? fileexe = FileHelper.GetFileExtension(file.FileName);
                 if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
@@ -158,6 +158,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         [DisableFormValueModelBinding]
         [Consumes("multipart/form-data")]
+        [RequestSizeLimit(long.MaxValue)]
         public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous()
         {
             ICollection<UploadFileInfo> uploadedFileInfoList = null;
@@ -169,16 +170,23 @@ namespace Spd.Presentation.Licensing.Controllers
 
                 uploadedFileInfoList = uploadFileInfoList;
 
-                //return await mediator.Send(new AddSecureMessagingMessageCommand(model, uploadFileInfoList));
+                //todo: submit the request.
                 return null;
+            }
+            catch(ApiException ex)
+            {
+                throw ex;
             }
             finally
             {
                 //cleanup the temp file
-                var existingFiles = uploadedFileInfoList.Where(f => System.IO.File.Exists(f.FilePath));
+                if (uploadedFileInfoList != null)
+                {
+                    var existingFiles = uploadedFileInfoList.Where(f => System.IO.File.Exists(f.FilePath));
 
-                foreach (UploadFileInfo uploadedFileInfo in existingFiles)
-                    System.IO.File.Delete(uploadedFileInfo.FilePath);
+                    foreach (UploadFileInfo uploadedFileInfo in existingFiles)
+                        System.IO.File.Delete(uploadedFileInfo.FilePath);
+                }
             }
         }
         #endregion
