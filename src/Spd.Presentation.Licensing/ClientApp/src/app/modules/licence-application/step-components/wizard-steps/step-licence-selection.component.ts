@@ -1,13 +1,13 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
@@ -227,6 +227,8 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	isLoggedIn = false;
 	isFormValid = false;
 
+	@Input() licenceModelFormGroup!: FormGroup;
+
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -266,17 +268,12 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-		// this.licenceAppId = this.licenceApplicationService.licenceModelFormGroup.value.licenceAppId;
+		this.isFormValid = this.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-				//TODO hide previous when already saved licence
-				// console.log('xxxxxxxxxxxxx', this.licenceApplicationService.licenceModelFormGroup);
-				// this.licenceAppId = this.licenceApplicationService.licenceModelFormGroup.controls['licenceAppId'].value;
-				//
+				this.isFormValid = this.licenceModelFormGroup.valid;
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
@@ -314,7 +311,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
-		// this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicence(LicenceApplicationRoutes.LICENCE_SETUP)]);
 	}
 
 	onCancel(): void {

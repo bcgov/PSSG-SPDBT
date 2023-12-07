@@ -5,17 +5,17 @@ import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceApplicationAnonymousService } from '../../services/licence-application-anonymous.service';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
 import { CitizenshipComponent } from '../citizenship.component';
 import { HeightAndWeightComponent } from '../height-and-weight.component';
-import { PersonalInformationComponent } from '../personal-information.component';
 import { PhotographOfYourselfComponent } from '../photograph-of-yourself.component';
 import { StepAliasesComponent } from '../step-aliases.component';
 import { StepContactInformationComponent } from '../step-contact-information.component';
 import { StepMailingAddressComponent } from '../step-mailing-address.component';
+import { StepPersonalInformationComponent } from '../step-personal-information.component';
 import { StepResidentialAddressComponent } from '../step-residential-address.component';
 
 @Component({
@@ -23,7 +23,7 @@ import { StepResidentialAddressComponent } from '../step-residential-address.com
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-personal-information></app-personal-information>
+				<app-step-personal-information></app-step-personal-information>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -387,7 +387,7 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	@ViewChild(PersonalInformationComponent) personalInformationComponent!: PersonalInformationComponent;
+	@ViewChild(StepPersonalInformationComponent) personalInformationComponent!: StepPersonalInformationComponent;
 	@ViewChild(StepAliasesComponent) aliasesComponent!: StepAliasesComponent;
 	@ViewChild(CitizenshipComponent) citizenshipComponent!: CitizenshipComponent;
 	@ViewChild(AdditionalGovIdComponent) additionalGovIdComponent!: AdditionalGovIdComponent;
@@ -402,16 +402,16 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 
 	constructor(
 		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationAnonymousService: LicenceApplicationAnonymousService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceApplicationAnonymousService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+				this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
@@ -509,12 +509,12 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	}
 
 	get showMailingAddressStep(): boolean {
-		const form = this.licenceApplicationService.residentialAddressFormGroup;
+		const form = this.licenceApplicationAnonymousService.residentialAddressFormGroup;
 		return !form.value.isMailingTheSameAsResidential;
 	}
 
 	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationService.citizenshipFormGroup;
+		const form = this.licenceApplicationAnonymousService.citizenshipFormGroup;
 		return (
 			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||

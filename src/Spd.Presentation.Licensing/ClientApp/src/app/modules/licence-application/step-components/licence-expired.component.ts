@@ -8,8 +8,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-expired',

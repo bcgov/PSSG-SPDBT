@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 export interface LicenceCategoryDialogData {
 	category: WorkerCategoryTypeCode | null;

@@ -16,7 +16,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationAuthenticatedService } from '../services/licence-application-authenticated.service';
 
 export interface ApplicationResponse {
 	id?: string;
@@ -409,7 +409,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
 		private workerLicensingService: WorkerLicensingService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -495,9 +495,9 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onResume(appl: WorkerLicenceAppListResponse): void {
-		this.licenceApplicationService.reset();
+		this.licenceApplicationAuthenticatedService.reset();
 
-		this.licenceApplicationService
+		this.licenceApplicationAuthenticatedService
 			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
@@ -509,19 +509,19 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onUpdate(_appl: ApplicationResponse): void {
-		this.licenceApplicationService.reset();
+		this.licenceApplicationAuthenticatedService.reset();
 
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE));
 	}
 
 	onReapply(_appl: ApplicationResponse): void {
-		this.licenceApplicationService.reset();
+		this.licenceApplicationAuthenticatedService.reset();
 	}
 
 	onCreateNew(): void {
-		this.licenceApplicationService.reset();
+		this.licenceApplicationAuthenticatedService.reset();
 
-		this.licenceApplicationService
+		this.licenceApplicationAuthenticatedService
 			.createNewLicence()
 			.pipe(
 				tap((_resp: any) => {

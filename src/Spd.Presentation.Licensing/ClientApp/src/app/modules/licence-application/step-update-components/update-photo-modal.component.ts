@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 // export interface UpdatePhotoDialogData {}
 
@@ -30,9 +30,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 export class UpdatePhotoModalComponent {
 	constructor(
 		private dialogRef: MatDialogRef<UpdatePhotoModalComponent>,
-		private licenceApplicationService: LicenceApplicationService,
-		// @Inject(MAT_DIALOG_DATA) public dialogData: UpdatePhotoDialogData
-	) {}
+		private licenceApplicationService: LicenceApplicationService
+	) // @Inject(MAT_DIALOG_DATA) public dialogData: UpdatePhotoDialogData
+	{}
 
 	onSave(): void {
 		this.dialogRef.close({ success: true });

@@ -5,8 +5,8 @@ import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app
 import { BooleanTypeCode, RestraintDocumentTypes } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-restraints-authorization',
@@ -38,7 +38,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 							</div>
 						</div>
 
-						<div class="row" *ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div
+							class="row"
+							*ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes"
+							@showHideTriggerSlideAnimation
+						>
 							<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
 								<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
 

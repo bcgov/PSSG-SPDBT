@@ -1,42 +1,19 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 import { ContactInformationComponent } from './contact-information.component';
 
 @Component({
 	selector: 'app-user-profile',
 	template: `
-		<!-- <mat-accordion multi="true">
-			<mat-expansion-panel class="mb-2" [expanded]="true">
-				<mat-expansion-panel-header>
-					<mat-panel-title class="review-panel-title">
-						<div class="panel-header fs-4 my-2">Contact Information</div>
-					</mat-panel-title>
-				</mat-expansion-panel-header>
-				<div class="panel-body pt-4">
-					<app-contact-information [isWizardStep]="false"></app-contact-information>
-				</div>
-			</mat-expansion-panel>
-		</mat-accordion> -->
-
-		<!-- <div class="row mb-2">
-			<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
-				<h2>User Profile</h2>
-			</div>
-			<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12 text-end" *ngIf="viewOnly && editable">
-				<button mat-flat-button color="primary" class="large w-auto mb-2" (click)="onEditView()">
-					Edit Information
-				</button>
-			</div>
-		</div> -->
-
 		<mat-divider class="mat-divider-main2 mt-2"></mat-divider>
 		<div class="fs-5 pt-2 pb-3">Personal Information</div>
+		<app-personal-information></app-personal-information>
 
 		<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
 		<div class="fs-5 pt-2 pb-3">Aliases or Previous Names</div>
-		<app-aliases [isWizardStep]="false"></app-aliases>
+		<app-alias-list></app-alias-list>
 
 		<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
 		<div class="fs-5 pt-2 pb-3">Contact Information</div>
@@ -46,21 +23,22 @@ import { ContactInformationComponent } from './contact-information.component';
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
 				<div class="fs-5 pt-2 pb-3">Residential Address</div>
-				<div class="mb-3">
+
+				<app-alert type="info" icon="">
 					Has your residential address changed?
 					<a href="https://www.addresschange.gov.bc.ca/" target="_blank">Change your address online</a> to update this
 					information on your BC Services Card. Any changes you make will then be updated here.
-				</div>
+				</app-alert>
+
 				<app-residential-address [isWizardStep]="false" [isReadOnly]="true"></app-residential-address>
-				<!-- <app-residential-address [isWizardStep]="false"></app-residential-address> -->
 			</div>
 
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
 				<div class="fs-5 pt-2 pb-3">Mailing Address</div>
-				<div class="mb-3">
+				<app-alert type="info" icon="">
 					Provide your mailing address, if different from your residential address. This cannot be a company address.
-				</div>
+				</app-alert>
 
 				<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
 					<div class="mb-3">
@@ -89,17 +67,6 @@ import { ContactInformationComponent } from './contact-information.component';
 				This is required
 			</mat-error>
 		</div> -->
-
-		<!-- <div class="row" *ngIf="!viewOnly">
-			<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
-					<i class="fa fa-times mr-2"></i>Cancel
-				</button>
-			</div>
-			<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Submit</button>
-			</div>
-		</div> -->
 	`,
 	styles: [],
 })
@@ -110,10 +77,6 @@ export class UserProfileComponent implements OnInit, LicenceChildStepperStepComp
 
 	// form: FormGroup = this.licenceApplicationService.profileFormGroup;
 	residentialForm: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
-
-	// editable = true;
-	// viewOnly = true;
-	// initialValues = {};
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

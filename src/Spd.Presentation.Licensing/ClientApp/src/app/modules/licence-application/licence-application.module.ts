@@ -6,17 +6,20 @@ import { LicencePaymentManualComponent } from './components/licence-payment-manu
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LoginUserProfileComponent } from './components/login-user-profile.component';
-import { SecurityWorkerLicenceAnonymousWizardComponent } from './components/security-worker-licence-anonymous-wizard.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
-import { SecurityWorkerLicenceAuthenticatedWizardComponent } from './components/security-worker-licence-authenticated-wizard.component';
-import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
+import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
+import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
+import { SecurityWorkerLicenceWizardUpdateComponent } from './components/security-worker-licence-wizard-update.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
-import { UserApplicationsComponent } from './components/user-applications.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
-import { LicenceApplicationService } from './licence-application.service';
+import { LicenceApplicationAnonymousService } from './services/licence-application-anonymous.service';
+import { LicenceApplicationAuthenticatedService } from './services/licence-application-authenticated.service';
+import { LicenceApplicationService } from './services/licence-application.service';
+import { LicenceUserService } from './services/licence-user.service';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
+import { AliasListComponent } from './step-components/alias-list.component';
 import { AliasesComponent } from './step-components/aliases.component';
 import { BackgroundInfoComponent } from './step-components/background-info.component';
 import { BcDriverLicenceComponent } from './step-components/bc-driver-licence.component';
@@ -64,8 +67,10 @@ import { SoleProprietorComponent } from './step-components/sole-proprietor.compo
 import { StepAliasesComponent } from './step-components/step-aliases.component';
 import { StepContactInformationComponent } from './step-components/step-contact-information.component';
 import { StepMailingAddressComponent } from './step-components/step-mailing-address.component';
+import { StepPersonalInformationComponent } from './step-components/step-personal-information.component';
 import { StepResidentialAddressComponent } from './step-components/step-residential-address.component';
-import { SummaryReviewComponent } from './step-components/summary-review.component';
+import { SummaryReviewAnonymousComponent } from './step-components/summary-review-anonymous.component';
+import { SummaryReviewAuthenticatedComponent } from './step-components/summary-review-authenticated.component';
 import { UserProfileComponent } from './step-components/user-profile.component';
 import { StepBackgroundComponent } from './step-components/wizard-steps/step-background.component';
 import { StepIdentificationAnonymousComponent } from './step-components/wizard-steps/step-identification-anonymous.component';
@@ -73,7 +78,8 @@ import { StepIdentificationAuthenticatedComponent } from './step-components/wiza
 import { StepLicenceSelectionComponent } from './step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAnonymousComponent } from './step-components/wizard-steps/step-licence-setup-anonymous.component';
 import { StepLicenceSetupAuthenticatedComponent } from './step-components/wizard-steps/step-licence-setup-authenticated.component';
-import { StepReviewComponent } from './step-components/wizard-steps/step-review.component';
+import { StepReviewAnonymousComponent } from './step-components/wizard-steps/step-review-anonymous.component';
+import { StepReviewAuthenticatedComponent } from './step-components/wizard-steps/step-review-authenticated.component';
 import { UpdateAddDogsModalComponent } from './step-update-components/update-add-dogs-modal.component';
 import { UpdateAddRestraintsModalComponent } from './step-update-components/update-add-restraints-modal.component';
 import { UpdateApplyNameChangeModalComponent } from './step-update-components/update-apply-name-change-modal.component';
@@ -100,6 +106,7 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		CriminalHistoryComponent,
 		FingerprintsComponent,
 		AliasesComponent,
+		AliasListComponent,
 		CitizenshipComponent,
 		BcDriverLicenceComponent,
 		HeightAndWeightComponent,
@@ -108,7 +115,8 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		ResidentialAddressComponent,
 		MailingAddressComponent,
 		LicenceTermComponent,
-		SummaryReviewComponent,
+		SummaryReviewAnonymousComponent,
+		SummaryReviewAuthenticatedComponent,
 		ConsentAndDeclarationComponent,
 		LicencePaymentSuccessComponent,
 		LicencePaymentFailComponent,
@@ -124,7 +132,9 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		StepBackgroundComponent,
 		StepIdentificationAuthenticatedComponent,
 		StepIdentificationAnonymousComponent,
-		StepReviewComponent,
+		StepPersonalInformationComponent,
+		StepReviewAnonymousComponent,
+		StepReviewAuthenticatedComponent,
 		LicenceCategoryComponent,
 		AdditionalGovIdComponent,
 		LicenceAccessCodeComponent,
@@ -145,12 +155,11 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		LicenceCategorySecurityAlarmResponseComponent,
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
-		UserApplicationsComponent,
 		LoginSelectionComponent,
-		SecurityWorkerLicenceAnonymousWizardComponent,
-		SecurityWorkerLicenceAuthenticatedWizardComponent,
+		SecurityWorkerLicenceWizardAnonymousComponent,
+		SecurityWorkerLicenceWizardAuthenticatedComponent,
 		BackgroundInfoComponent,
-		SecurityWorkerLicenceUpdateWizardComponent,
+		SecurityWorkerLicenceWizardUpdateComponent,
 		StepLicenceUpdatesComponent,
 		StepConfirmMailingAddressComponent,
 		StepConfirmUpdatesComponent,
@@ -167,6 +176,11 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		LicenceUserProfileComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
-	providers: [LicenceApplicationService],
+	providers: [
+		LicenceApplicationService,
+		LicenceApplicationAnonymousService,
+		LicenceApplicationAuthenticatedService,
+		LicenceUserService,
+	],
 })
 export class LicenceApplicationModule {}

@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationTypeComponent } from '../licence-application-type.component';
 import { LicenceTypeSelectionComponent } from '../licence-type-selection.component';
 

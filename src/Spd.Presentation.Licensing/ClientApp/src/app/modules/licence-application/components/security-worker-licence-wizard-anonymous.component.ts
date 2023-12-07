@@ -3,15 +3,15 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationAnonymousService } from '../services/licence-application-anonymous.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationAnonymousComponent } from '../step-components/wizard-steps/step-identification-anonymous.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAnonymousComponent } from '../step-components/wizard-steps/step-licence-setup-anonymous.component';
-import { StepReviewComponent } from '../step-components/wizard-steps/step-review.component';
+import { StepReviewAuthenticatedComponent } from '../step-components/wizard-steps/step-review-authenticated.component';
 
 @Component({
-	selector: 'app-security-worker-licence-anonymous-wizard',
+	selector: 'app-security-worker-licence-wizard-anonymous',
 	template: `
 		<ng-container *ngIf="isLoaded$ | async">
 			<div class="row">
@@ -36,6 +36,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
+								[licenceModelFormGroup]="this.licenceApplicationAnonymousService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -47,6 +48,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
+								[licenceModelFormGroup]="this.licenceApplicationAnonymousService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -69,12 +71,12 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
-								<app-step-review
+								<app-step-review-anonymous
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
 									(goToStep)="onGoToStep($event)"
-								></app-step-review>
+								></app-step-review-anonymous>
 							</ng-template>
 						</mat-step>
 
@@ -88,7 +90,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 	`,
 	styles: [],
 })
-export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -124,25 +126,25 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	@ViewChild(StepIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepIdentificationAnonymousComponent;
 
-	@ViewChild(StepReviewComponent)
-	stepReviewComponent!: StepReviewComponent;
+	@ViewChild(StepReviewAuthenticatedComponent)
+	stepReviewComponent!: StepReviewAuthenticatedComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
 	constructor(
 		private breakpointObserver: BreakpointObserver,
-		private licenceApplicationService: LicenceApplicationService
+		protected licenceApplicationAnonymousService: LicenceApplicationAnonymousService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationAnonymousService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();
 
@@ -150,14 +152,14 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 			},
 		});
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceApplicationAnonymousService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.licenceApplicationService.hasValueChanged = true;
+				this.licenceApplicationAnonymousService.hasValueChanged = true;
 
 				console.debug('*******valueChanges to TRUE');
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
+				this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
+				console.debug('valueChanges isFormValid', this.licenceApplicationAnonymousService.licenceModelFormGroup.valid);
 			});
 	}
 
@@ -251,10 +253,10 @@ export class SecurityWorkerLicenceAnonymousWizardComponent implements OnInit, On
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStep1Complete();
-		this.step2Complete = this.licenceApplicationService.isStep2Complete();
-		this.step3Complete = this.licenceApplicationService.isStep3Complete();
-		this.step4Complete = this.licenceApplicationService.isStep4Complete();
+		this.step1Complete = this.licenceApplicationAnonymousService.isStep1Complete();
+		this.step2Complete = this.licenceApplicationAnonymousService.isStep2Complete();
+		this.step3Complete = this.licenceApplicationAnonymousService.isStep3Complete();
+		this.step4Complete = this.licenceApplicationAnonymousService.isStep4Complete();
 
 		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}

@@ -4,7 +4,7 @@ import { take } from 'rxjs/internal/operators/take';
 import { tap } from 'rxjs/internal/operators/tap';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationAnonymousService } from '../services/licence-application-anonymous.service';
 
 @Component({
 	selector: 'app-user-applications-anonymous',
@@ -32,7 +32,7 @@ export class UserApplicationsAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationAnonymousService: LicenceApplicationAnonymousService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -47,9 +47,9 @@ export class UserApplicationsAnonymousComponent implements OnInit {
 	}
 
 	onCreateNew(): void {
-		this.licenceApplicationService.reset();
+		this.licenceApplicationAnonymousService.reset();
 
-		this.licenceApplicationService
+		this.licenceApplicationAnonymousService
 			.createNewLicence()
 			.pipe(
 				tap((_resp: any) => {

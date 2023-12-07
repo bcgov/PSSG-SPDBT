@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from 'src/app/api/models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-type-selection',

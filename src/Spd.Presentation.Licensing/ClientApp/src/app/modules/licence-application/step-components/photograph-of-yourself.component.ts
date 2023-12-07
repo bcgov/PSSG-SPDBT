@@ -6,8 +6,8 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-photograph-of-yourself',
@@ -29,7 +29,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					<form [formGroup]="form" novalidate>
 						<div class="row mb-2">
 							<div class="col-12 text-center">
-								<img src="/assets/sample-photo.svg" alt="Photograph of yourself"/>
+								<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
 							</div>
 						</div>
 

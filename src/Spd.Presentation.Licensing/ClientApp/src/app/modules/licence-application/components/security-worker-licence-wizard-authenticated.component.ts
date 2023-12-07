@@ -11,15 +11,15 @@ import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationAuthenticatedService } from '../services/licence-application-authenticated.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationAuthenticatedComponent } from '../step-components/wizard-steps/step-identification-authenticated.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAuthenticatedComponent } from '../step-components/wizard-steps/step-licence-setup-authenticated.component';
-import { StepReviewComponent } from '../step-components/wizard-steps/step-review.component';
+import { StepReviewAuthenticatedComponent } from '../step-components/wizard-steps/step-review-authenticated.component';
 
 @Component({
-	selector: 'app-security-worker-licence-authenticated-wizard',
+	selector: 'app-security-worker-licence-wizard-authenticated',
 	template: `
 		<ng-container *ngIf="isLoaded$ | async">
 			<div class="row">
@@ -45,6 +45,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
+								[licenceModelFormGroup]="this.licenceApplicationAuthenticatedService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(saveAndExit)="onSaveAndExit()"
@@ -57,6 +58,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
+								[licenceModelFormGroup]="this.licenceApplicationAuthenticatedService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
@@ -81,12 +83,12 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
-								<app-step-review
+								<app-step-review-authenticated
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
 									(goToStep)="onGoToStep($event)"
-								></app-step-review>
+								></app-step-review-authenticated>
 							</ng-template>
 						</mat-step>
 
@@ -100,7 +102,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 	`,
 	styles: [],
 })
-export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -136,8 +138,8 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	@ViewChild(StepIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepIdentificationAuthenticatedComponent;
 
-	@ViewChild(StepReviewComponent)
-	stepReviewComponent!: StepReviewComponent;
+	@ViewChild(StepReviewAuthenticatedComponent)
+	stepReviewComponent!: StepReviewAuthenticatedComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -146,37 +148,38 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private breakpointObserver: BreakpointObserver,
-		private licenceApplicationService: LicenceApplicationService,
+		protected licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService,
 		private hotToastService: HotToastService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationAuthenticatedService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();
 				this.isLoaded$.next(true);
 			},
 		});
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-			.pipe(debounceTime(200), distinctUntilChanged())
-			.subscribe((_resp: any) => {
-				this.licenceApplicationService.hasValueChanged = true;
+		this.licenceModelChangedSubscription =
+			this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valueChanges
+				.pipe(debounceTime(200), distinctUntilChanged())
+				.subscribe((_resp: any) => {
+					this.licenceApplicationAuthenticatedService.hasValueChanged = true;
 
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-				console.debug(
-					'*******valueChanges to TRUE',
-					'valueChanges isFormValid',
-					this.licenceApplicationService.licenceModelFormGroup.valid
-				);
-			});
+					this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+					console.debug(
+						'*******valueChanges to TRUE',
+						'valueChanges isFormValid',
+						this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid
+					);
+				});
 	}
 
 	ngAfterViewInit(): void {
@@ -242,10 +245,10 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+		if (this.licenceApplicationAuthenticatedService.hasValueChanged) {
+			this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
+					this.licenceApplicationAuthenticatedService.hasValueChanged = false;
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -301,9 +304,9 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 			return;
 		}
 
-		this.licenceApplicationService.saveLicenceStep().subscribe({
+		this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
 			next: (_resp: any) => {
-				this.licenceApplicationService.hasValueChanged = false;
+				this.licenceApplicationAuthenticatedService.hasValueChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(
@@ -339,10 +342,10 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+		if (this.licenceApplicationAuthenticatedService.hasValueChanged) {
+			this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
+					this.licenceApplicationAuthenticatedService.hasValueChanged = false;
 					this.updateCompleteStatus();
 
 					this.hotToastService.success('Licence information has been saved');
@@ -365,19 +368,19 @@ export class SecurityWorkerLicenceAuthenticatedWizardComponent implements OnInit
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStep1Complete();
-		this.step2Complete = this.licenceApplicationService.isStep2Complete();
-		this.step3Complete = this.licenceApplicationService.isStep3Complete();
-		this.step4Complete = this.licenceApplicationService.isStep4Complete();
+		this.step1Complete = this.licenceApplicationAuthenticatedService.isStep1Complete();
+		this.step2Complete = this.licenceApplicationAuthenticatedService.isStep2Complete();
+		this.step3Complete = this.licenceApplicationAuthenticatedService.isStep3Complete();
+		this.step4Complete = this.licenceApplicationAuthenticatedService.isStep4Complete();
 
 		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.hasValueChanged) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+		if (this.licenceApplicationAuthenticatedService.hasValueChanged) {
+			this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
+					this.licenceApplicationAuthenticatedService.hasValueChanged = false;
 					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();
 				},

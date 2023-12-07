@@ -6,8 +6,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-aliases',
@@ -42,26 +42,26 @@ import { LicenceApplicationService } from '../licence-application.service';
 						<div class="text-minor-heading mb-2">Previous names:</div>
 						<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
 							<div class="row" [formGroupName]="i">
-								<div class="col-lg-6 col-md-6 col-sm-12">
+								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 									<mat-form-field>
 										<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 										<input matInput type="text" formControlName="givenName" maxlength="40" />
 									</mat-form-field>
 								</div>
-								<div class="col-lg-6 col-md-6 col-sm-12">
+								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 									<mat-form-field>
 										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 										<input matInput type="text" formControlName="middleName1" maxlength="40" />
 									</mat-form-field>
 								</div>
-								<div class="col-lg-6 col-md-6 col-sm-12">
+								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 									<mat-form-field>
 										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 										<input matInput type="text" formControlName="middleName2" maxlength="40" />
 									</mat-form-field>
 								</div>
-								<div class="col-md-6 col-sm-12" [ngClass]="moreThanOneRowExists ? 'col-lg-5' : 'col-lg-6'">
-									<mat-form-field>
+								<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+									<mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
 										<mat-label>Surname</mat-label>
 										<input
 											matInput
@@ -73,11 +73,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 										/>
 										<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
-								</div>
-								<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
 									<button
 										mat-mini-fab
-										class="delete-row-button mb-3"
+										class="delete-row-button ms-1 mb-3"
 										matTooltip="Remove previous name"
 										(click)="onDeleteRow(i)"
 										*ngIf="moreThanOneRowExists"
@@ -115,6 +113,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 			.add-icon {
 				color: var(--color-green);
+			}
+
+			.more-than-one-row {
+				max-width: 85%;
 			}
 		`,
 	],

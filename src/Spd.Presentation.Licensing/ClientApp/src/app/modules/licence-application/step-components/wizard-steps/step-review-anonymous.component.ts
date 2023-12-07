@@ -4,16 +4,16 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
-import { LicenceApplicationService } from '../../licence-application.service';
-import { SummaryReviewComponent } from '../summary-review.component';
+import { LicenceApplicationAnonymousService } from '../../services/licence-application-anonymous.service';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { SummaryReviewAuthenticatedComponent } from '../summary-review-authenticated.component';
 
 @Component({
-	selector: 'app-step-review',
+	selector: 'app-step-review-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-summary-review (editStep)="onGoToStep($event)"></app-summary-review>
+				<app-summary-review-anonymous (editStep)="onGoToStep($event)"></app-summary-review-anonymous>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -42,18 +42,18 @@ import { SummaryReviewComponent } from '../summary-review.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepReviewComponent implements LicenceStepperStepComponent {
+export class StepReviewAnonymousComponent implements LicenceStepperStepComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	@ViewChild(SummaryReviewComponent) summaryReviewComponent!: SummaryReviewComponent;
+	@ViewChild(SummaryReviewAuthenticatedComponent) summaryReviewComponent!: SummaryReviewAuthenticatedComponent;
 
 	constructor(
 		private router: Router,
-		private licenceApplicationService: LicenceApplicationService,
+		private licenceApplicationAnonymousService: LicenceApplicationAnonymousService,
 		private hotToastService: HotToastService
 	) {}
 
@@ -62,7 +62,7 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 	}
 
 	onPayNow(): void {
-		this.licenceApplicationService.submitLicence().subscribe({
+		this.licenceApplicationAnonymousService.submitLicence().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());

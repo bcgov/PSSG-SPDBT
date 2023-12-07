@@ -4,8 +4,8 @@ import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceApplicationAuthenticatedService } from '../../services/licence-application-authenticated.service';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
 import { CitizenshipComponent } from '../citizenship.component';
@@ -17,7 +17,7 @@ import { PhotographOfYourselfComponent } from '../photograph-of-yourself.compone
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<!-- <mat-step>
-				<app-personal-information></app-personal-information>
+				<app-step-personal-information></app-step-personal-information>
 			</mat-step> -->
 
 			<!-- <mat-step>
@@ -206,16 +206,17 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-			.pipe(debounceTime(200), distinctUntilChanged())
-			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-			});
+		this.licenceModelChangedSubscription =
+			this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valueChanges
+				.pipe(debounceTime(200), distinctUntilChanged())
+				.subscribe((_resp: any) => {
+					this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+				});
 	}
 
 	ngOnDestroy() {
@@ -300,12 +301,12 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 	}
 
 	// get showMailingAddressStep(): boolean {
-	// 	const form = this.licenceApplicationService.residentialAddressFormGroup;
+	// 	const form = this.licenceApplicationAuthenticatedService.residentialAddressFormGroup;
 	// 	return !form.value.isMailingTheSameAsResidential;
 	// }
 
 	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationService.citizenshipFormGroup;
+		const form = this.licenceApplicationAuthenticatedService.citizenshipFormGroup;
 		return (
 			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||

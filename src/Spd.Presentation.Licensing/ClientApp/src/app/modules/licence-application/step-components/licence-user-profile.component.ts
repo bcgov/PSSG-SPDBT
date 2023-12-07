@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { UserProfileComponent } from './user-profile.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { UserProfileComponent } from './user-profile.component';
 				<div class="step-container">
 					<div class="row">
 						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<app-alert type="info" icon="info"
+							<app-alert type="warning" icon="warning"
 								>Make sure your profile information is up-to-date before renewing or updating your licence or permit, or
 								starting a new application
 							</app-alert>

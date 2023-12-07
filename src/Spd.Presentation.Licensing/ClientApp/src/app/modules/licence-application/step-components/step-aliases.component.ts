@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { AliasesComponent } from './aliases.component';
 
 @Component({

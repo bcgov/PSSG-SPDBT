@@ -1,11 +1,12 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { PoliceOfficerRoleCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 import { CriminalHistoryComponent } from '../criminal-history.component';
 import { FingerprintsComponent } from '../fingerprints.component';
 import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
@@ -187,6 +188,8 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
+	@Input() licenceModelFormGroup!: FormGroup;
+
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -200,12 +203,12 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+				this.isFormValid = this.licenceModelFormGroup.valid;
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(

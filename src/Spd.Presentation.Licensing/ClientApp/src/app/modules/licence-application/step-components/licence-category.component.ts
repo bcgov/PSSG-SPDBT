@@ -4,8 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-category',

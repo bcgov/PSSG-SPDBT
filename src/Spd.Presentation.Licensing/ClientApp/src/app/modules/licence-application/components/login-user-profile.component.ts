@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceUserService } from '../services/licence-user.service';
 import { UserProfileComponent } from '../step-components/user-profile.component';
 
 @Component({
@@ -14,28 +16,69 @@ import { UserProfileComponent } from '../step-components/user-profile.component'
 					<h2 class="my-3 fs-3 fw-normal">Your Profile</h2>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-alert type="info" icon="info">Fill out your profile information </app-alert>
+					<ng-container *ngIf="isAuthenticated | async">
+						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
 
-					<app-user-profile></app-user-profile>
+						<app-user-profile></app-user-profile>
+
+						<mat-divider class="mat-divider-main2 mb-3"></mat-divider>
+						<div class="row">
+							<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+								<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
+									<i class="fa fa-times mr-2"></i>Cancel
+								</button>
+							</div>
+							<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+								<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Save</button>
+							</div>
+						</div>
+					</ng-container>
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class LoginUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
 	@ViewChild(UserProfileComponent) userProfileComponent!: UserProfileComponent;
 
-	constructor(private router: Router, private authProcessService: AuthProcessService) {}
+	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
+	authenticationSubscription!: Subscription;
+
+	constructor(
+		private router: Router,
+		private authProcessService: AuthProcessService,
+		private licenceUserService: LicenceUserService
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
-
 		await this.authProcessService.initializeLicencingBCSC();
+
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				if (isLoggedIn) {
+					this.licenceUserService
+						.createNewLicenceUser()
+						.pipe()
+						.subscribe((resp: any) => {
+							// TODO fill in
+						});
+				}
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+	}
+
+	onSave(): void {
+		//TODO save info
 	}
 
 	isFormValid(): boolean {

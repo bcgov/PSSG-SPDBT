@@ -6,10 +6,10 @@ import { LicencePaymentManualComponent } from './components/licence-payment-manu
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LoginUserProfileComponent } from './components/login-user-profile.component';
-import { SecurityWorkerLicenceAnonymousWizardComponent } from './components/security-worker-licence-anonymous-wizard.component';
+import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
-import { SecurityWorkerLicenceAuthenticatedWizardComponent } from './components/security-worker-licence-authenticated-wizard.component';
-import { SecurityWorkerLicenceUpdateWizardComponent } from './components/security-worker-licence-update-wizard.component';
+import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
+import { SecurityWorkerLicenceWizardUpdateComponent } from './components/security-worker-licence-wizard-update.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationComponent } from './licence-application.component';
@@ -22,16 +22,11 @@ export class LicenceApplicationRoutes {
 	public static USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
 	public static USER_APPLICATIONS_ANONYMOUS = 'user-applications-anonymous';
 
-	// public static LICENCE_USER_PROFILE = 'licence-user-profile';
-	// public static LICENCE_SETUP = 'licence-setup';
-	// public static LICENCE_TYPE_SELECTION = 'licence-type-selection';
-	// public static LICENCE_APPLICATION_TYPE = 'licence-application-type';
-
 	public static APPLICATION_AUTHENTICATED = 'application';
 	public static APPLICATION_ANONYMOUS = 'application-anonymous';
 
 	public static LICENCE_UPDATE = 'licence-update';
-	public static USER_PROFILE = 'user-profile';
+	public static LOGIN_USER_PROFILE = 'user-profile';
 
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
@@ -93,24 +88,24 @@ const routes: Routes = [
 				component: UserApplicationsAnonymousComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.USER_PROFILE,
+				path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
 				component: LoginUserProfileComponent,
 			},
 			{
 				// SWL - NEW - UNAUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
 				component: SecurityWorkerLicenceApplicationComponent,
-				children: [{ path: '', component: SecurityWorkerLicenceAnonymousWizardComponent }],
+				children: [{ path: '', component: SecurityWorkerLicenceWizardAnonymousComponent }],
 			},
 			{
 				// SWL - NEW - AUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
 				component: SecurityWorkerLicenceApplicationComponent,
-				children: [{ path: '', component: SecurityWorkerLicenceAuthenticatedWizardComponent }],
+				children: [{ path: '', component: SecurityWorkerLicenceWizardAuthenticatedComponent }],
 			},
 			{
 				path: LicenceApplicationRoutes.LICENCE_UPDATE,
-				component: SecurityWorkerLicenceUpdateWizardComponent,
+				component: SecurityWorkerLicenceWizardUpdateComponent,
 			},
 			{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },

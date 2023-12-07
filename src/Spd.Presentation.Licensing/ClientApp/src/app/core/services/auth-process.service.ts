@@ -102,7 +102,7 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Licencing Portal - BCSC
 	// *
-	async initializeLicencingBCSC(): Promise<string | null> {
+	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
 		console.debug(
@@ -112,7 +112,9 @@ export class AuthProcessService {
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
+			returnComponentRoute
+				? returnComponentRoute
+				: LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
 		);
 		console.debug('initializeLicencingBCSC nextUrl', nextUrl);
 

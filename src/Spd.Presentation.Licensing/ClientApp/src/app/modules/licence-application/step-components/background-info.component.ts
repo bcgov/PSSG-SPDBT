@@ -6,8 +6,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 
 @Component({
 	selector: 'app-background-info',
@@ -158,7 +157,7 @@ export class BackgroundInfoComponent implements LicenceChildStepperStepComponent
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private formBuilder: FormBuilder) {}
 
 	onFileChanged(): void {
 		//this.licenceApplicationService.hasDocumentsChanged = null;

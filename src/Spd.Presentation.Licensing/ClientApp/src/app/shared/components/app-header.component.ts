@@ -18,8 +18,8 @@ import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/li
 			<span style="flex: 1 1 auto;"></span>
 
 			<div *ngIf="loggedInUserDisplay">
-				<button mat-button [matMenuTriggerFor]="menu" class="w-auto" style="font-size: inherit;">
-					{{ loggedInUserDisplay }}
+				<button mat-button [matMenuTriggerFor]="menu" class="login-user-menu-button w-auto" style="font-size: inherit;">
+					<mat-icon>more_vert</mat-icon> {{ loggedInUserDisplay }}
 				</button>
 				<mat-menu #menu="matMenu">
 					<button mat-menu-item (click)="onUserProfile()">Your Profile</button>
@@ -62,6 +62,10 @@ import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/li
 				cursor: pointer;
 			}
 
+			.login-user-menu-button:hover {
+				background-color: var(--color-primary-dark);
+			}
+
 			@media (max-width: 767px) {
 				.mat-toolbar-row,
 				.mat-toolbar-single-row {
@@ -95,7 +99,7 @@ export class HeaderComponent implements OnInit {
 	}
 
 	onUserProfile(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_PROFILE));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_USER_PROFILE));
 	}
 
 	onLogout(): void {

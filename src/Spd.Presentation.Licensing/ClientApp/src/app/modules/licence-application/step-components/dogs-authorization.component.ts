@@ -6,8 +6,8 @@ import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-dogs-authorization',
@@ -122,17 +122,19 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 
 	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+			this.licenceApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadComponent.removeFailedFile(file);
+					},
+				});
 		}
 	}
 
