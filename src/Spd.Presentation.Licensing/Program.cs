@@ -1,8 +1,6 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.Dynamics.CRM;
-using Microsoft.Extensions.Configuration;
 using Spd.Presentation.Licensing;
+using Spd.Presentation.Licensing.Services;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
@@ -11,7 +9,6 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.TempFileStorage;
-using System.Configuration;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -54,6 +51,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAutoMapper(assemblies);
 builder.Services.AddTempFileStorageService();
+builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>();
 builder.Services.AddFileStorageProxy(builder.Configuration);
 builder.Services
   .AddBCeIDService(builder.Configuration)
