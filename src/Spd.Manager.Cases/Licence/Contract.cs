@@ -152,7 +152,7 @@ namespace Spd.Manager.Cases.Licence
     #endregion
 
     #region anonymous user
-    public record WorkerLicenceAppCreateRequest : WorkerLicenceApp; //for anonymous user
+    public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceApp; //for anonymous user
     public record WorkerLicenceCreateResponse
     {
         public Guid LicenceAppId { get; set; }
