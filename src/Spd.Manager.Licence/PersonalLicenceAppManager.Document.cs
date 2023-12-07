@@ -1,11 +1,11 @@
-using Spd.Resource.Applicants.Application;
+﻿using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
 using System.Collections.Immutable;
 
-namespace Spd.Manager.Cases.Licence;
-internal partial class LicenceManager
+namespace Spd.Manager.Licence;
+internal partial class PersonalLicenceAppManager
 {
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
