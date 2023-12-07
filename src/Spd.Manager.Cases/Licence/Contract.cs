@@ -28,7 +28,7 @@ namespace Spd.Manager.Cases.Licence
     public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
     #region base data model
-    public abstract record WorkerLicenceApp
+    public abstract record WorkerLicenceAppBase
     {
         public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
         public ApplicationTypeCode? ApplicationTypeCode { get; set; }
@@ -71,6 +71,10 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsDogsPurposeDetectionDrugs { get; set; }
         public bool? IsDogsPurposeDetectionExplosives { get; set; }
         public bool? IsCanadianCitizen { get; set; }
+
+    }
+    public record WorkerLicenceApp : WorkerLicenceAppBase //for authenticated user
+    {
         public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
         public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
         public MentalHealthDocument? MentalHealthDocument { get; set; }
@@ -79,18 +83,21 @@ namespace Spd.Manager.Cases.Licence
         public AdditionalGovIdDocument? AdditionalGovIdDocument { get; set; }
         public IdPhotoDocument? IdPhotoDocument { get; set; }
     }
+
     public record WorkerLicenceAppCategoryData
     {
         public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
         public Document[]? Documents { get; set; } = null;
     }
-    public record Document
+    public record DocumentBase
     {
-        public IList<LicenceAppDocumentResponse> DocumentResponses { get; set; } //for authenticated user
         public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
         public DateOnly? ExpiryDate { get; set; }
     }
-
+    public record Document: DocumentBase
+    {
+        public LicenceAppDocumentResponse[]? DocumentResponses { get; set; } //for authenticated user
+    }
     public record PoliceOfficerDocument : Document;
     public record MentalHealthDocument : Document;
     public record FingerprintProofDocument : Document;
@@ -152,7 +159,12 @@ namespace Spd.Manager.Cases.Licence
     #endregion
 
     #region anonymous user
-    public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceApp; //for anonymous user
+    public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //for anonymous user
+    {
+        public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+        public DocumentBase[]? DocumentInfos { get; set; }
+    }
+
     public record WorkerLicenceCreateResponse
     {
         public Guid LicenceAppId { get; set; }
