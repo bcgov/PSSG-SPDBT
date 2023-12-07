@@ -2,7 +2,7 @@
 
 namespace Spd.Utilities.Shared.Tools;
 
-public static class FileNameHelper
+public static class FileHelper
 {
     public static string? GetFileExtension(string fileName)
     {
