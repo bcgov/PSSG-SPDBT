@@ -3,9 +3,8 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
-using Spd.Utilities.Shared.Tools;
 
-namespace Spd.Manager.Cases.Licence;
+namespace Spd.Manager.Licence;
 internal class Mappings : Profile
 {
     public Mappings()

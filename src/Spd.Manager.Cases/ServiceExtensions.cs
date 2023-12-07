@@ -2,7 +2,6 @@
 using Spd.Manager.Cases.Screening;
 using Spd.Manager.Cases.Payment;
 using Spd.Utilities.Hosting;
-using Spd.Manager.Cases.Licence;
 
 namespace Spd.Manager.Cases
 {
@@ -12,7 +11,6 @@ namespace Spd.Manager.Cases
         {
             configurationServices.Services.AddTransient<IApplicationManager, ApplicationManager>();
             configurationServices.Services.AddTransient<IPaymentManager, PaymentManager>();
-            configurationServices.Services.AddTransient<ILicenceManager, LicenceManager>();
         }
     }
 }
