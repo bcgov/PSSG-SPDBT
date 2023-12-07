@@ -1,7 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.Dynamics.CRM;
-using Microsoft.Extensions.Configuration;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Utilities.Address;
@@ -12,7 +9,6 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.TempFileStorage;
-using System.Configuration;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
