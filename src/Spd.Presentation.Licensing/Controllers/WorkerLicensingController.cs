@@ -175,6 +175,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             try
             {
+                _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplicationAnonymous");
                 var request = HttpContext.Request;
                 var (model, uploadFileInfoList) = await _multipartRequestService.UploadMultipleFilesAsync<WorkerLicenceAppAnonymousSubmitRequest>(request, ModelState);
                 uploadedFileInfoList = uploadFileInfoList;

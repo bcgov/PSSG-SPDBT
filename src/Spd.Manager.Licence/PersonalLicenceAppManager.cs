@@ -127,10 +127,8 @@ internal partial class PersonalLicenceAppManager :
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         ICollection<UploadFileRequest> fileRequests = cmd.UploadFileRequests;
 
-        //validation
-        //validate request
-        //validate request must have filekey in fileRequests
-
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
         return null;
     }
 

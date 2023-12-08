@@ -32,5 +32,17 @@ internal class Mappings : Profile
         CreateMap<Alias, Spd.Resource.Applicants.LicenceApplication.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+    }
+
+    private WorkerLicenceAppCategory[] GetCategories(WorkerCategoryTypeCode[] codes)
+    {
+        List<WorkerLicenceAppCategory> categories = new List<WorkerLicenceAppCategory> { };
+        foreach (WorkerCategoryTypeCode code in codes)
+        {
+            categories.Add(new WorkerLicenceAppCategory() { WorkerCategoryTypeCode=Enum.Parse<WorkerCategoryTypeEnum>( code.ToString() )});
+        }
+        return categories.ToArray();
     }
 }
