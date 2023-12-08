@@ -129,6 +129,32 @@ internal partial class PersonalLicenceAppManager :
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        IList<DocumentResp> docResps = new List<DocumentResp>();
+        foreach (UploadFileRequest uploadRequest in fileRequests)
+        {
+
+                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
+                SpdTempFile spdTempFile = new()
+                {
+                    TempFileKey = fileKey,
+                    ContentType = file.ContentType,
+                    FileName = file.FileName,
+                    FileSize = file.Length,
+                };
+
+                //create bcgov_documenturl and file
+                var docResp = await _documentRepository.ManageAsync(new CreateDocumentCmd
+                {
+                    TempFile = spdTempFile,
+                    ApplicationId = command.AppId,
+                    DocumentType = docType1,
+                    DocumentType2 = docType2,
+                    SubmittedByApplicantId = contactId
+                }, ct);
+                docResps.Add(docResp);
+            
+        }
         return null;
     }
 

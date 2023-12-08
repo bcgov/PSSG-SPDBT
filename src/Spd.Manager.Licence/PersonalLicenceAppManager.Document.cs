@@ -45,6 +45,7 @@ internal partial class PersonalLicenceAppManager
         return _mapper.Map<IEnumerable<LicenceAppDocumentResponse>>(docResps);
     }
 
+
     private async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
         //citizenship

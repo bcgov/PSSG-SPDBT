@@ -60,6 +60,7 @@ internal class DocumentRepository : IDocumentRepository
         return cmd switch
         {
             CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
+            CreateStreamDocumentCmd c => await StreamDocumentCreateAsync(c, ct),
             RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
             ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
             UpdateDocumentCmd c => await DocumentUpdateAsync(c, ct),
@@ -157,13 +158,15 @@ internal class DocumentRepository : IDocumentRepository
     {
         if (applicationId == null) return;
         if (docUrlId == null) return;
-        byte[]? consentFileContent = await _tempFileService.HandleQuery(
+        byte[]? 
+        if(tempFile.TempFileKey != null) { }
+        byte[]? fileContent = await _tempFileService.HandleQuery(
             new GetTempFileQuery(tempFile.TempFileKey), ct);
-        if (consentFileContent == null) return;
+        if (fileContent == null) return;
 
         Utilities.FileStorage.File file = new()
         {
-            Content = consentFileContent,
+            Content = fileContent,
             ContentType = tempFile.ContentType,
             FileName = tempFile.FileName,
         };

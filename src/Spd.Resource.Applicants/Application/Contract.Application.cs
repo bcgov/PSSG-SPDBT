@@ -117,10 +117,11 @@ public enum ApplicationStatusEnum
 }
 public record SpdTempFile
 {
-    public string TempFileKey { get; set; } = null!;
+    public string? TempFileKey { get; set; } = null!;
     public string ContentType { get; set; } = null!;
     public string FileName { get; set; } = null!;
     public long FileSize { get; set; } = 0;
+    public string? TempFileName { get;set; } = null!;//it is the file location in the hard disk
 }
 public record ApplicationResult
 {
