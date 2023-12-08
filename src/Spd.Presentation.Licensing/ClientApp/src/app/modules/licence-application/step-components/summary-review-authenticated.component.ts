@@ -8,8 +8,7 @@ import {
 } from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationAuthenticatedService } from '../services/licence-application-authenticated.service';
-import { LicenceUserService } from '../services/licence-user.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-summary-review-authenticated',
@@ -733,14 +732,10 @@ export class SummaryReviewAuthenticatedComponent implements OnInit {
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(
-		private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService,
-		private licenceUserService: LicenceUserService
-	) {}
+	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.licenceModelData = { ...this.licenceApplicationAuthenticatedService.licenceModelFormGroup.getRawValue() };
-		this.licenceUserModelData = { ...this.licenceUserService.licenceUserModelFormGroup.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {

@@ -29,6 +29,18 @@ export interface ApplicationResponse {
 @Component({
 	selector: 'app-user-applications-authenticated',
 	template: `
+		<!-- <app-alert type="info" icon="info">
+	We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
+	fee?
+</app-alert>
+
+<app-alert type="warning">
+	Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
+</app-alert>
+
+<app-alert type="danger" icon="error">
+	You haven't submitted your licence application yet. It will expire on Jan 12, 2024
+</app-alert> -->
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -36,19 +48,6 @@ export interface ApplicationResponse {
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<ng-container *ngIf="isAuthenticated | async">
-						<!-- <app-alert type="info" icon="info">
-						We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
-						fee?
-					</app-alert>
-
-					<app-alert type="warning">
-						Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
-					</app-alert>
-
-					<app-alert type="danger" icon="error">
-						You haven't submitted your licence application yet. It will expire on Jan 12, 2024
-					</app-alert> -->
-
 						<div class="card-section my-4 px-4 py-3">
 							<div class="row">
 								<div class="col-lg-6">
@@ -142,47 +141,6 @@ export interface ApplicationResponse {
 									</mat-table>
 								</div>
 							</div>
-
-							<!-- <div class="card-section mb-2 px-4 py-3" *ngFor="let appl of draftApplications; let i = index">
-							<div class="row">
-								<div class="col-lg-3">
-									<div class="fs-5" style="color: var(--color-primary);">
-										{{ appl.serviceTypeCode | options : 'WorkerLicenceTypes' }}
-									</div>
-								</div>
-								<div class="col-lg-9">
-									<div class="row">
-										<div class="col-lg-4">
-											<div class="d-block text-muted mt-2 mt-md-0">Application Type</div>
-											<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
-										</div>
-										<div class="col-lg-4">
-											<div class="d-block text-muted mt-2 mt-md-0">Create Date</div>
-											<div class="text-data">{{ appl.createdOn | formatDate : constants.date.formalDateFormat }}</div>
-										</div>
-										<div class="col-lg-4 text-end">
-											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-yellow">
-												<mat-icon class="appl-chip-option-item">warning</mat-icon>
-												<span class="appl-chip-option-item ms-2 fs-6 fw-bold">{{
-													appl.applicationPortalStatusCode | options : 'ApplicationPortalStatusTypes'
-												}}</span>
-											</mat-chip-option>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-8">
-											<div class="d-block text-muted mt-2">Case Number</div>
-											<div class="text-data">{{ appl.caseNumber }}</div>
-										</div>
-										<div class="col-lg-4 text-end">
-											<button mat-flat-button color="primary" class="large mt-4 w-auto" (click)="onResume(appl)">
-												<mat-icon>double_arrow</mat-icon>Resume
-											</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div> -->
 						</div>
 
 						<div class="mb-3" *ngIf="activeApplications.length > 0">
@@ -310,13 +268,6 @@ export interface ApplicationResponse {
 												</mat-chip-option>
 											</div>
 										</div>
-										<!-- <div class="row mb-2">
-									<div class="col-12 text-end">
-										<button mat-flat-button class="mat-red-button large w-auto" (click)="onReapply(appl)">
-											<mat-icon>double_arrow</mat-icon>Reapply
-										</button>
-									</div>
-								</div> -->
 									</div>
 								</div>
 							</div>
@@ -331,6 +282,13 @@ export interface ApplicationResponse {
 				</div>
 			</div>
 		</section>
+		<!-- <div class="row mb-2">
+									<div class="col-12 text-end">
+										<button mat-flat-button class="mat-red-button large w-auto" (click)="onReapply(appl)">
+											<mat-icon>double_arrow</mat-icon>Reapply
+										</button>
+									</div>
+								</div> -->
 	`,
 	styles: [
 		`

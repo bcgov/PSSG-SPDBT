@@ -1,6 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { PoliceOfficerRoleCode } from 'src/app/api/models';
@@ -188,7 +187,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	@Input() licenceModelFormGroup!: FormGroup;
+	// @Input() licenceModelFormGroup!: FormGroup;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -203,12 +202,12 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceModelFormGroup.valid;
+				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(

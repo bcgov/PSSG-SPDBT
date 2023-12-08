@@ -3,9 +3,8 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationAuthenticatedService } from '../../services/licence-application-authenticated.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 import { SummaryReviewAuthenticatedComponent } from '../summary-review-authenticated.component';
 
 @Component({
@@ -53,7 +52,7 @@ export class StepReviewAuthenticatedComponent implements LicenceStepperStepCompo
 
 	constructor(
 		private router: Router,
-		private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService,
+		private licenceApplicationAuthenticatedService: LicenceApplicationService,
 		private hotToastService: HotToastService
 	) {}
 
@@ -62,16 +61,16 @@ export class StepReviewAuthenticatedComponent implements LicenceStepperStepCompo
 	}
 
 	onPayNow(): void {
-		this.licenceApplicationAuthenticatedService.submitLicence().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
+		// this.licenceApplicationAuthenticatedService.submitLicence().subscribe({
+		// 	next: (_resp: any) => {
+		// 		this.hotToastService.success('Your licence has been successfully submitted');
+		// 		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+		// 	},
+		// 	error: (error: any) => {
+		// 		console.log('An error occurred during save', error);
+		// 		this.hotToastService.error('An error occurred during the save. Please try again.');
+		// 	},
+		// });
 	}
 
 	onGoToStep(step: number): void {

@@ -6,8 +6,8 @@ import { LicencePaymentManualComponent } from './components/licence-payment-manu
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LoginUserProfileComponent } from './components/login-user-profile.component';
-import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
+import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
 import { SecurityWorkerLicenceWizardUpdateComponent } from './components/security-worker-licence-wizard-update.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
@@ -92,7 +92,7 @@ const routes: Routes = [
 				component: LoginUserProfileComponent,
 			},
 			{
-				// SWL - NEW - UNAUTHORIZED
+				// SWL - NEW - ANONYMOUS
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
 				component: SecurityWorkerLicenceApplicationComponent,
 				children: [{ path: '', component: SecurityWorkerLicenceWizardAnonymousComponent }],

@@ -45,7 +45,6 @@ import { StepReviewAuthenticatedComponent } from '../step-components/wizard-step
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
-								[licenceModelFormGroup]="this.licenceApplicationAuthenticatedService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(saveAndExit)="onSaveAndExit()"
@@ -58,7 +57,6 @@ import { StepReviewAuthenticatedComponent } from '../step-components/wizard-step
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
-								[licenceModelFormGroup]="this.licenceApplicationAuthenticatedService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
@@ -123,9 +121,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	step3Complete = false;
 	step4Complete = false;
 
-	isReplacement = false;
-	isNotReplacement = false;
-
 	@ViewChild(StepLicenceSetupAuthenticatedComponent)
 	stepLicenceSetupAuthenticatedComponent!: StepLicenceSetupAuthenticatedComponent;
 
@@ -139,7 +134,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	stepIdentificationComponent!: StepIdentificationAuthenticatedComponent;
 
 	@ViewChild(StepReviewAuthenticatedComponent)
-	stepReviewComponent!: StepReviewAuthenticatedComponent;
+	stepReviewAuthenticatedComponent!: StepReviewAuthenticatedComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -148,8 +143,8 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private breakpointObserver: BreakpointObserver,
-		protected licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService,
-		private hotToastService: HotToastService
+		private hotToastService: HotToastService,
+		private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService
 	) {}
 
 	ngOnInit(): void {
@@ -216,7 +211,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToFirstStep();
+				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
 				break;
 		}
 	}

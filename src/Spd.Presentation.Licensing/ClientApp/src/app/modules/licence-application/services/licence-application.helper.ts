@@ -1,20 +1,13 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
 import {
-	BusinessTypeCode,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	LicenceFeeListResponse,
-	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppCategoryData,
-	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
-import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
-import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -61,13 +54,6 @@ export enum LicenceDocumentChanged {
 }
 
 export abstract class LicenceApplicationHelper {
-	initialized = false;
-	hasValueChanged = false;
-	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	licenceAppId = '';
-	contactId = '';
-
 	booleanTypeCodes = BooleanTypeCode;
 
 	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
@@ -464,9 +450,9 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	// profileFormGroup: FormGroup = this.formBuilder.group({
-	// 	profileIsUpToDate: new FormControl('', [Validators.requiredTrue]),
-	// });
+	profileFormGroup: FormGroup = this.formBuilder.group({
+		profileIsUpToDate: new FormControl('', [Validators.requiredTrue]),
+	});
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
 		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
@@ -524,129 +510,13 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	licenceFees: Array<LicenceFeeResponse> = [];
-	licenceFeeTermCodes: Array<LicenceFeeResponse> = [];
-
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected licenceFeeService: LicenceFeeService,
-		protected workerLicensingService: WorkerLicensingService,
+		// private licenceFeeService: LicenceFeeService,
+		// private workerLicensingService: WorkerLicensingService,
 		protected formatDatePipe: FormatDatePipe
-	) {
-		this.licenceFeeService
-			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
-			.pipe()
-			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFees = resp.licenceFees ?? [];
-			});
-	}
-
-	/**
-	 * Reset the licence data
-	 */
-	reset(): void {
-		this.initialized = false;
-		this.licenceFeeTermCodes = [];
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStep1Complete(): boolean {
-		// console.debug(
-		// 	'isStep1Complete',
-		// 	this.workerLicenceTypeFormGroup.valid,
-		// 	this.applicationTypeFormGroup.valid
-		// );
-
-		const isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-		if (isValid && this.licenceFeeTermCodes.length === 0) {
-			// value has changed to true
-			this.licenceFeeTermCodes.push(...this.getLicenceTermsAndFees());
-		}
-
-		return isValid;
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStep2Complete(): boolean {
-		// console.debug(
-		// 	'isStep2Complete',
-		// 	this.soleProprietorFormGroup.valid,
-		// 	this.expiredLicenceFormGroup.valid,
-		// 	this.licenceTermFormGroup.valid,
-		// 	this.restraintsAuthorizationFormGroup.valid,
-		// 	this.dogsAuthorizationFormGroup.valid,
-		// 	this.categoryArmouredCarGuardFormGroup.valid,
-		// 	this.categoryBodyArmourSalesFormGroup.valid,
-		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,
-		// 	this.categoryElectronicLockingDeviceInstallerFormGroup.valid,
-		// 	this.categoryFireInvestigatorFormGroup.valid,
-		// 	this.categoryLocksmithFormGroup.valid,
-		// 	this.categoryLocksmithSupFormGroup.valid,
-		// 	this.categoryPrivateInvestigatorFormGroup.valid,
-		// 	this.categoryPrivateInvestigatorSupFormGroup.valid,
-		// 	this.categorySecurityAlarmInstallerFormGroup.valid,
-		// 	this.categorySecurityAlarmInstallerSupFormGroup.valid,
-		// 	this.categorySecurityConsultantFormGroup.valid,
-		// 	this.categorySecurityAlarmMonitorFormGroup.valid,
-		// 	this.categorySecurityAlarmResponseFormGroup.valid,
-		// 	this.categorySecurityAlarmSalesFormGroup.valid,
-		// 	this.categorySecurityGuardFormGroup.valid,
-		// 	this.categorySecurityGuardSupFormGroup.valid
-		// );
-
-		return (
-			this.soleProprietorFormGroup.valid &&
-			this.expiredLicenceFormGroup.valid &&
-			this.licenceTermFormGroup.valid &&
-			this.restraintsAuthorizationFormGroup.valid &&
-			this.dogsAuthorizationFormGroup.valid &&
-			this.categoryArmouredCarGuardFormGroup.valid &&
-			this.categoryBodyArmourSalesFormGroup.valid &&
-			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
-			this.categoryElectronicLockingDeviceInstallerFormGroup.valid &&
-			this.categoryFireInvestigatorFormGroup.valid &&
-			this.categoryLocksmithFormGroup.valid &&
-			this.categoryLocksmithSupFormGroup.valid &&
-			this.categoryPrivateInvestigatorFormGroup.valid &&
-			this.categoryPrivateInvestigatorSupFormGroup.valid &&
-			this.categorySecurityAlarmInstallerFormGroup.valid &&
-			this.categorySecurityAlarmInstallerSupFormGroup.valid &&
-			this.categorySecurityConsultantFormGroup.valid &&
-			this.categorySecurityAlarmMonitorFormGroup.valid &&
-			this.categorySecurityAlarmResponseFormGroup.valid &&
-			this.categorySecurityAlarmSalesFormGroup.valid &&
-			this.categorySecurityGuardFormGroup.valid &&
-			this.categorySecurityGuardSupFormGroup.valid
-		);
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStep3Complete(): boolean {
-		// console.debug(
-		// 	'isStep3Complete',
-		// 	this.policeBackgroundFormGroup.valid,
-		// 	this.mentalHealthConditionsFormGroup.valid,
-		// 	this.criminalHistoryFormGroup.valid,
-		// 	this.fingerprintProofFormGroup.valid
-		// );
-
-		return (
-			this.policeBackgroundFormGroup.valid &&
-			this.mentalHealthConditionsFormGroup.valid &&
-			this.criminalHistoryFormGroup.valid &&
-			this.fingerprintProofFormGroup.valid
-		);
-	}
+	) {}
 
 	/**
 	 * Get the valid list of categories based upon the current selections
@@ -665,55 +535,11 @@ export abstract class LicenceApplicationHelper {
 	}
 
 	/**
-	 * Set the licence fees for the licence and application type
-	 * @returns list of fees
-	 */
-	protected getLicenceTermsAndFees() {
-		const workerLicenceTypeCode = this.workerLicenceTypeFormGroup.value.workerLicenceTypeData?.workerLicenceTypeCode;
-		const applicationTypeCode = this.applicationTypeFormGroup.value.applicationTypeData?.applicationTypeCode;
-		// const businessTypeCode = //TODO what to do about business type code??
-
-		if (!workerLicenceTypeCode || !applicationTypeCode) {
-			return [];
-		}
-
-		const fees = this.licenceFees?.filter(
-			(item) =>
-				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == BusinessTypeCode.NonRegisteredPartnership &&
-				item.applicationTypeCode == applicationTypeCode
-		);
-
-		console.debug('getLicenceTermsAndFees filtered', fees);
-		return [...fees];
-	}
-
-	/**
-	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
-	 * @param documentCode
-	 * @param document
-	 * @returns
-	 */
-	addUploadDocument(
-		documentCode: LicenceDocumentTypeCode,
-		document: File
-	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [document],
-			LicenceDocumentTypeCode: documentCode,
-		};
-
-		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
-			licenceAppId: this.licenceAppId,
-			body: doc,
-		});
-	}
-	/**
 	 * Get the category data formatted for saving
 	 * @param armouredCarGuardData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategoryArmouredCarGuard(armouredCarGuardData: any): WorkerLicenceAppCategoryData {
+	getCategoryArmouredCarGuard(armouredCarGuardData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (armouredCarGuardData.attachments) {
@@ -746,7 +572,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param fireInvestigatorData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategoryFireInvestigator(fireInvestigatorData: any): WorkerLicenceAppCategoryData {
+	getCategoryFireInvestigator(fireInvestigatorData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (fireInvestigatorData.fireCourseCertificateAttachments) {
@@ -789,7 +615,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param locksmithData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategoryLocksmith(locksmithData: any): WorkerLicenceAppCategoryData {
+	getCategoryLocksmith(locksmithData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (locksmithData.attachments) {
@@ -818,7 +644,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param privateInvestigatorData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategoryPrivateInvestigator(privateInvestigatorData: any): WorkerLicenceAppCategoryData {
+	getCategoryPrivateInvestigator(privateInvestigatorData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (privateInvestigatorData.attachments) {
@@ -861,7 +687,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param privateInvestigatorSupData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategoryPrivateInvestigatorSup(privateInvestigatorSupData: any): WorkerLicenceAppCategoryData {
+	getCategoryPrivateInvestigatorSup(privateInvestigatorSupData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (privateInvestigatorSupData.attachments) {
@@ -890,7 +716,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param categorySecurityGuardData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategorySecurityGuard(
+	getCategorySecurityGuard(
 		categorySecurityGuardData: any,
 		dogsAuthorizationData: any,
 		restraintsAuthorizationData: any
@@ -957,7 +783,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param categorySecurityAlarmInstallerData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategorySecurityAlarmInstaller(categorySecurityAlarmInstallerData: any): WorkerLicenceAppCategoryData {
+	getCategorySecurityAlarmInstaller(categorySecurityAlarmInstallerData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (categorySecurityAlarmInstallerData.attachments) {
@@ -987,7 +813,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param categorySecurityConsultantData
 	 * @returns WorkerLicenceAppCategoryData
 	 */
-	protected getCategorySecurityConsultantInstaller(categorySecurityConsultantData: any): WorkerLicenceAppCategoryData {
+	getCategorySecurityConsultantInstaller(categorySecurityConsultantData: any): WorkerLicenceAppCategoryData {
 		const documents: Array<Document> = [];
 
 		if (categorySecurityConsultantData.attachments) {
@@ -1030,7 +856,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param value
 	 * @returns
 	 */
-	protected booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
+	booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
 		if (!value) return null;
 
 		if (value == BooleanTypeCode.Yes) return true;
@@ -1042,7 +868,7 @@ export abstract class LicenceApplicationHelper {
 	 * @param value
 	 * @returns
 	 */
-	protected booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
+	public booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
 		const isBooleanType = typeof value === 'boolean';
 		if (!isBooleanType) return null;
 

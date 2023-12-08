@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
+import { AliasListComponent } from './alias-list.component';
 import { ContactInformationComponent } from './contact-information.component';
+import { MailingAddressComponent } from './mailing-address.component';
 
 @Component({
 	selector: 'app-user-profile',
@@ -51,69 +52,27 @@ import { ContactInformationComponent } from './contact-information.component';
 				</ng-template>
 			</div>
 		</div>
-
-		<!-- <div>
-			<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
-			<div class="fs-5 pt-2 pb-3">Confirmation</div>
-			<mat-checkbox formControlName="profileIsUpToDate"> I confirm that this information is up-to-date </mat-checkbox>
-			<mat-error
-				class="mat-option-error"
-				*ngIf="
-					(form.get('profileIsUpToDate')?.dirty || form.get('profileIsUpToDate')?.touched) &&
-					form.get('profileIsUpToDate')?.invalid &&
-					form.get('profileIsUpToDate')?.hasError('required')
-				"
-			>
-				This is required
-			</mat-error>
-		</div> -->
 	`,
 	styles: [],
 })
-export class UserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
+export class UserProfileComponent implements LicenceChildStepperStepComponent {
+	@ViewChild(AliasListComponent) aliasesComponent!: AliasListComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
+	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	// form: FormGroup = this.licenceApplicationService.profileFormGroup;
-	residentialForm: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
-
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {
-		// this.initialValues = this.form.value;
-		// this.setFormView();
-	}
-
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		// this.contactInformationComponent.form.markAllAsTouched();
-		// return this.form.valid && this.contactInformationComponent.form.valid;
-		return true;
+		const contactIsValid = this.contactInformationComponent.isFormValid();
+		const aliasesIsValid = this.aliasesComponent.isFormValid();
+		const mailingIsValid = this.mailingAddressComponent.isFormValid();
+
+		return contactIsValid && aliasesIsValid && mailingIsValid;
 	}
-
-	// onCancel(): void {
-	// 	this.viewOnly = true;
-	// 	this.form.reset(this.initialValues);
-	// 	this.form.disable();
-	// }
-
-	// onSave(): void {}
-
-	// onEditView() {
-	// 	this.viewOnly = !this.viewOnly;
-	// 	this.setFormView();
-	// }
-
-	// private setFormView(): void {
-	// 	if (this.viewOnly) {
-	// 		this.form.disable();
-	// 	} else {
-	// 		this.form.enable();
-	// 	}
-	// }
 
 	get isMailingTheSameAsResidential(): boolean {
-		return this.residentialForm.get('isMailingTheSameAsResidential')?.value;
+		return this.licenceApplicationService.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value;
 	}
 }

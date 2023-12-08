@@ -5,8 +5,8 @@ import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceApplicationAnonymousService } from '../../services/licence-application-anonymous.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
 import { CitizenshipComponent } from '../citizenship.component';
@@ -402,16 +402,16 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 
 	constructor(
 		private authProcessService: AuthProcessService,
-		private licenceApplicationAnonymousService: LicenceApplicationAnonymousService
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceApplicationAnonymousService.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
+				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
@@ -509,12 +509,12 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	}
 
 	get showMailingAddressStep(): boolean {
-		const form = this.licenceApplicationAnonymousService.residentialAddressFormGroup;
+		const form = this.licenceApplicationService.residentialAddressFormGroup;
 		return !form.value.isMailingTheSameAsResidential;
 	}
 
 	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationAnonymousService.citizenshipFormGroup;
+		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||

@@ -34,7 +34,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 						</mat-form-field>
 					</div>
 					<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-						<mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
+						<mat-form-field class="remove-row-space">
 							<mat-label>Surname</mat-label>
 							<input
 								matInput
@@ -51,7 +51,6 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 							class="delete-row-button ms-1 mb-3"
 							matTooltip="Remove previous name"
 							(click)="onDeleteRow(i)"
-							*ngIf="moreThanOneRowExists"
 							aria-label="Remove row"
 						>
 							<mat-icon>delete_outline</mat-icon>
@@ -85,7 +84,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 				color: var(--color-green);
 			}
 
-			.more-than-one-row {
+			.remove-row-space {
 				max-width: 85%;
 			}
 		`,
@@ -127,19 +126,6 @@ export class AliasListComponent implements LicenceChildStepperStepComponent {
 	}
 
 	onDeleteRow(index: number) {
-		const control = this.form.get('aliases') as FormArray;
-		if (control.length == 1) {
-			const data: DialogOptions = {
-				icon: 'warning',
-				title: 'Remove row',
-				message: 'This row cannot be removed. At least one row must exist.',
-				cancelText: 'Close',
-			};
-
-			this.dialog.open(DialogComponent, { data });
-			return;
-		}
-
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -154,12 +140,18 @@ export class AliasListComponent implements LicenceChildStepperStepComponent {
 			.subscribe((response: boolean) => {
 				if (response) {
 					const control = this.form.get('aliases') as FormArray;
+					if (control.length == 1) {
+						this.form.patchValue({ previousNameFlag: BooleanTypeCode.No });
+					}
+
 					control.removeAt(index);
 				}
 			});
 	}
 
 	private newAliasRow(): FormGroup {
+		this.form.patchValue({ previousNameFlag: BooleanTypeCode.Yes });
+
 		return this.formBuilder.group({
 			givenName: [''],
 			middleName1: [''],
@@ -170,10 +162,6 @@ export class AliasListComponent implements LicenceChildStepperStepComponent {
 
 	get previousNameFlag(): FormControl {
 		return this.form.get('previousNameFlag') as FormControl;
-	}
-
-	get moreThanOneRowExists(): boolean {
-		return this.aliasesArray.length > 1;
 	}
 
 	get isAllowAliasAdd(): boolean {

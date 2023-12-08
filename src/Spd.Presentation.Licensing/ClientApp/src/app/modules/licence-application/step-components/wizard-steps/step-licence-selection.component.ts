@@ -1,5 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -227,8 +227,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	isLoggedIn = false;
 	isFormValid = false;
 
-	@Input() licenceModelFormGroup!: FormGroup;
-
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -268,12 +266,12 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
-		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceModelFormGroup.valid;
+				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(

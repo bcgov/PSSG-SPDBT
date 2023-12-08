@@ -4,8 +4,8 @@ import { MatStepper } from '@angular/material/stepper';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationAuthenticatedService } from '../../services/licence-application-authenticated.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
 import { CitizenshipComponent } from '../citizenship.component';
@@ -206,7 +206,7 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService) {}
+	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;

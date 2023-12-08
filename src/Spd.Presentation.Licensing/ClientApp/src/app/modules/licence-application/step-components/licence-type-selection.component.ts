@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
 
@@ -125,7 +123,6 @@ export class LicenceTypeSelectionComponent implements OnInit, LicenceChildSteppe
 
 	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	isDirtyAndInvalid = false;
-	isAnonymous = true;
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 
@@ -135,7 +132,7 @@ export class LicenceTypeSelectionComponent implements OnInit, LicenceChildSteppe
 
 	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.imagePaths.forEach((path) => {
@@ -147,14 +144,16 @@ export class LicenceTypeSelectionComponent implements OnInit, LicenceChildSteppe
 			tmp.src = path;
 		});
 
-		this.workerLicenceTypeCode = this.form.value.workerLicenceTypeCode;
-		this.isAnonymous = window.location.pathname.includes(LicenceApplicationRoutes.APPLICATION_ANONYMOUS);
+		this.workerLicenceTypeCode = this.form?.value.workerLicenceTypeCode;
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
+		console.log('onLicenceTypeChange', _val);
 		this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
+		console.log('onLicenceTypeChange', this.form.value);
+		console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
 		this.isFormValid();
 	}
 

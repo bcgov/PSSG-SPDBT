@@ -3,12 +3,12 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-import { LicenceApplicationAnonymousService } from '../services/licence-application-anonymous.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationAnonymousComponent } from '../step-components/wizard-steps/step-identification-anonymous.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAnonymousComponent } from '../step-components/wizard-steps/step-licence-setup-anonymous.component';
-import { StepReviewAuthenticatedComponent } from '../step-components/wizard-steps/step-review-authenticated.component';
+import { StepReviewAnonymousComponent } from '../step-components/wizard-steps/step-review-anonymous.component';
 
 @Component({
 	selector: 'app-security-worker-licence-wizard-anonymous',
@@ -36,7 +36,6 @@ import { StepReviewAuthenticatedComponent } from '../step-components/wizard-step
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
-								[licenceModelFormGroup]="this.licenceApplicationAnonymousService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -48,7 +47,6 @@ import { StepReviewAuthenticatedComponent } from '../step-components/wizard-step
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
-								[licenceModelFormGroup]="this.licenceApplicationAnonymousService.licenceModelFormGroup"
 								(childNextStep)="onChildNextStep()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -111,9 +109,6 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	step3Complete = false;
 	step4Complete = false;
 
-	isReplacement = false;
-	isNotReplacement = false;
-
 	@ViewChild(StepLicenceSetupAnonymousComponent)
 	stepLicenceSetupAnonymousComponent!: StepLicenceSetupAnonymousComponent;
 
@@ -126,40 +121,40 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	@ViewChild(StepIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepIdentificationAnonymousComponent;
 
-	@ViewChild(StepReviewAuthenticatedComponent)
-	stepReviewComponent!: StepReviewAuthenticatedComponent;
+	@ViewChild(StepReviewAnonymousComponent)
+	stepReviewAnonymousComponent!: StepReviewAnonymousComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
 	constructor(
 		private breakpointObserver: BreakpointObserver,
-		protected licenceApplicationAnonymousService: LicenceApplicationAnonymousService
+		// protected licenceApplicationAnonymousService: LicenceApplicationAnonymousService,
+		protected licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelLoadedSubscription = this.licenceApplicationAnonymousService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();
-
 				this.isLoaded$.next(true);
 			},
 		});
 
-		this.licenceModelChangedSubscription = this.licenceApplicationAnonymousService.licenceModelFormGroup.valueChanges
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
-				this.licenceApplicationAnonymousService.hasValueChanged = true;
+				this.licenceApplicationService.hasValueChanged = true;
 
 				console.debug('*******valueChanges to TRUE');
-				this.isFormValid = this.licenceApplicationAnonymousService.licenceModelFormGroup.valid;
-				console.debug('valueChanges isFormValid', this.licenceApplicationAnonymousService.licenceModelFormGroup.valid);
+				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
 			});
 	}
 
@@ -179,7 +174,7 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 
 	ngOnDestroy() {
 		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+		// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
@@ -197,7 +192,7 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToFirstStep();
+				this.stepReviewAnonymousComponent?.onGoToFirstStep();
 				break;
 		}
 	}
@@ -253,19 +248,15 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationAnonymousService.isStep1Complete();
-		this.step2Complete = this.licenceApplicationAnonymousService.isStep2Complete();
-		this.step3Complete = this.licenceApplicationAnonymousService.isStep3Complete();
-		this.step4Complete = this.licenceApplicationAnonymousService.isStep4Complete();
+		this.step1Complete = this.licenceApplicationService.isStep1Complete();
+		this.step2Complete = this.licenceApplicationService.isStep2Complete();
+		this.step3Complete = this.licenceApplicationService.isStep3Complete();
+		this.step4Complete = this.licenceApplicationService.isStep4Complete();
 
 		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	onChildNextStep() {
-		this.goToChildNextStep();
-	}
-
-	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_LICENCE_SETUP:
 				this.stepLicenceSetupAnonymousComponent.onGoToNextStep();

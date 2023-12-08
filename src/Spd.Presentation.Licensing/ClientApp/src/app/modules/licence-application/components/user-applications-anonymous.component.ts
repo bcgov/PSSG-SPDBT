@@ -38,12 +38,6 @@ export class UserApplicationsAnonymousComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
 		this.authProcessService.logoutBcsc();
-
-		// const tryResultBCSC = await this.authProcessService.tryInitializeBCSC();
-		// if (tryResultBCSC) {
-		// 	this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS)]);
-		// 	return;
-		// }
 	}
 
 	onCreateNew(): void {

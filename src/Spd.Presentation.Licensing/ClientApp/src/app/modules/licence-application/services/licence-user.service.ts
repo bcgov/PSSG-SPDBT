@@ -1,59 +1,55 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
+import { WorkerLicensingService } from 'src/app/api/services';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
-import { ConfigService } from 'src/app/core/services/config.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { LicenceApplicationHelper } from './licence-application.helper';
+import { LicenceApplicationService } from './licence-application.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class LicenceUserService extends LicenceApplicationHelper {
-	licenceUserModelFormGroup: FormGroup = this.formBuilder.group({
-		personalInformationData: this.personalInformationFormGroup,
-		aliasesData: this.aliasesFormGroup,
-		residentialAddressData: this.residentialAddressFormGroup,
-		mailingAddressData: this.mailingAddressFormGroup,
-		contactInformationData: this.contactInformationFormGroup,
-	});
+export class LicenceUserService {
+	// licenceUserModelFormGroup: FormGroup = this.formBuilder.group({
+	// 	personalInformationData: this.personalInformationFormGroup,
+	// 	aliasesData: this.aliasesFormGroup,
+	// 	residentialAddressData: this.residentialAddressFormGroup,
+	// 	mailingAddressData: this.mailingAddressFormGroup,
+	// 	contactInformationData: this.contactInformationFormGroup,
+	// });
 
 	constructor(
-		formBuilder: FormBuilder,
-		configService: ConfigService,
-		workerLicensingService: WorkerLicensingService,
-		licenceFeeService: LicenceFeeService,
-		formatDatePipe: FormatDatePipe,
-		private authUserBcscService: AuthUserBcscService
-	) {
-		super(formBuilder, configService, licenceFeeService, workerLicensingService, formatDatePipe);
-	}
+		private workerLicensingService: WorkerLicensingService,
+		private formatDatePipe: FormatDatePipe,
+		private authUserBcscService: AuthUserBcscService,
+		private utilService: UtilService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	/**
 	 * Reset the licence formgroup
 	 */
-	override reset(): void {
-		super.reset();
+	// override reset(): void {
+	// 	super.reset();
 
-		this.licenceUserModelFormGroup.reset();
+	// 	this.licenceUserModelFormGroup.reset();
 
-		const aliases = this.licenceUserModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		aliases.clear();
+	// 	const aliases = this.licenceUserModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
+	// 	aliases.clear();
 
-		console.debug('RESET licenceUserModelFormGroup', this.licenceUserModelFormGroup.value);
-	}
+	// 	console.debug('RESET licenceUserModelFormGroup', this.licenceUserModelFormGroup.value);
+	// }
 
 	/**
 	 * Create an empty licence
 	 * @returns
 	 */
 	createNewLicenceUser(): Observable<any> {
-		this.licenceUserModelFormGroup.reset();
+		this.licenceApplicationService.reset();
 
 		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 		if (bcscUserWhoamiProfile) {
-			this.licenceUserModelFormGroup.patchValue(
+			this.licenceApplicationService.licenceUserModelFormGroup.patchValue(
 				{
 					personalInformationData: {
 						givenName: bcscUserWhoamiProfile.firstName,
@@ -77,7 +73,7 @@ export class LicenceUserService extends LicenceApplicationHelper {
 				{ emitEvent: false }
 			);
 		} else {
-			this.licenceUserModelFormGroup.patchValue(
+			this.licenceApplicationService.licenceUserModelFormGroup.patchValue(
 				{
 					residentialAddressData: {
 						isMailingTheSameAsResidential: false,
@@ -87,9 +83,9 @@ export class LicenceUserService extends LicenceApplicationHelper {
 			);
 		}
 
-		console.debug('NEW licenceUserModelFormGroup', this.licenceUserModelFormGroup.value);
+		console.debug('NEW licenceUserModelFormGroup', this.licenceApplicationService.licenceUserModelFormGroup.value);
 
-		this.initialized = true;
-		return of(this.licenceUserModelFormGroup.value);
+		this.licenceApplicationService.initialized = true;
+		return of(this.licenceApplicationService.licenceUserModelFormGroup.value);
 	}
 }

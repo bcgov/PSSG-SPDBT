@@ -1,5 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 import { AliasesComponent } from './aliases.component';
 
 @Component({
@@ -9,8 +17,7 @@ import { AliasesComponent } from './aliases.component';
 			<div class="step">
 				<app-step-title title="Do you have any previous names?"></app-step-title>
 				<div class="step-container">
-					<app-aliases></app-aliases>
-					<!-- <form [formGroup]="form" novalidate>
+					<form [formGroup]="form" novalidate>
 						<div class="row">
 							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group
@@ -40,26 +47,26 @@ import { AliasesComponent } from './aliases.component';
 									<div class="text-minor-heading mb-2">Previous names:</div>
 									<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
 										<div class="row" [formGroupName]="i">
-											<div class="col-lg-6 col-md-6 col-sm-12">
+											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 													<input matInput type="text" formControlName="givenName" maxlength="40" />
 												</mat-form-field>
 											</div>
-											<div class="col-lg-6 col-md-6 col-sm-12">
+											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 													<input matInput type="text" formControlName="middleName1" maxlength="40" />
 												</mat-form-field>
 											</div>
-											<div class="col-lg-6 col-md-6 col-sm-12">
+											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 													<input matInput type="text" formControlName="middleName2" maxlength="40" />
 												</mat-form-field>
 											</div>
-											<div class="col-md-6 col-sm-12" [ngClass]="moreThanOneRowExists ? 'col-lg-5' : 'col-lg-6'">
-												<mat-form-field>
+											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+												<mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
 													<mat-label>Surname</mat-label>
 													<input
 														matInput
@@ -71,11 +78,9 @@ import { AliasesComponent } from './aliases.component';
 													/>
 													<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 												</mat-form-field>
-											</div>
-											<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
 												<button
 													mat-mini-fab
-													class="delete-row-button mb-3"
+													class="delete-row-button ms-1 mb-3"
 													matTooltip="Remove previous name"
 													(click)="onDeleteRow(i)"
 													*ngIf="moreThanOneRowExists"
@@ -96,7 +101,7 @@ import { AliasesComponent } from './aliases.component';
 								</div>
 							</div>
 						</div>
-					</form> -->
+					</form>
 				</div>
 			</div>
 		</section>
@@ -105,93 +110,92 @@ import { AliasesComponent } from './aliases.component';
 })
 export class StepAliasesComponent implements LicenceChildStepperStepComponent {
 	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
-	// booleanTypeCodes = BooleanTypeCode;
+	booleanTypeCodes = BooleanTypeCode;
 
-	// form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
+	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
 
-	// matcher = new FormErrorStateMatcher();
+	matcher = new FormErrorStateMatcher();
 
-	// constructor(
-	// 	private formBuilder: FormBuilder,
-	// 	private dialog: MatDialog,
-	// 	private licenceApplicationService: LicenceApplicationService
-	// ) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private dialog: MatDialog,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
-	// onPreviousNameFlagChange(): void {
-	// 	if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
-	// 		this.onAddRow();
-	// 	} else {
-	// 		const control = this.form.get('aliases') as FormArray;
-	// 		control.clear();
-	// 	}
-	// }
-
-	isFormValid(): boolean {
-		return this.aliasesComponent.isFormValid();
-		// this.form.markAllAsTouched();
-		// return this.form.valid;
+	onPreviousNameFlagChange(): void {
+		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
+			this.onAddRow();
+		} else {
+			const control = this.form.get('aliases') as FormArray;
+			control.clear();
+		}
 	}
 
-	// onAddRow() {
-	// 	const control = this.form.get('aliases') as FormArray;
-	// 	control.push(this.newAliasRow());
-	// }
+	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		return this.form.valid;
+	}
 
-	// onDeleteRow(index: number) {
-	// 	const control = this.form.get('aliases') as FormArray;
-	// 	if (control.length == 1) {
-	// 		const data: DialogOptions = {
-	// 			icon: 'warning',
-	// 			title: 'Remove row',
-	// 			message: 'This row cannot be removed. At least one row must exist.',
-	// 			cancelText: 'Close',
-	// 		};
+	onAddRow() {
+		const control = this.form.get('aliases') as FormArray;
+		control.push(this.newAliasRow());
+	}
 
-	// 		this.dialog.open(DialogComponent, { data });
-	// 		return;
-	// 	}
+	onDeleteRow(index: number) {
+		const control = this.form.get('aliases') as FormArray;
+		if (control.length == 1) {
+			const data: DialogOptions = {
+				icon: 'warning',
+				title: 'Remove row',
+				message: 'This row cannot be removed. At least one row must exist.',
+				cancelText: 'Close',
+			};
 
-	// 	const data: DialogOptions = {
-	// 		icon: 'warning',
-	// 		title: 'Confirmation',
-	// 		message: 'Are you sure you want to remove this previous name?',
-	// 		actionText: 'Yes, remove name',
-	// 		cancelText: 'Cancel',
-	// 	};
+			this.dialog.open(DialogComponent, { data });
+			return;
+		}
 
-	// 	this.dialog
-	// 		.open(DialogComponent, { data })
-	// 		.afterClosed()
-	// 		.subscribe((response: boolean) => {
-	// 			if (response) {
-	// 				const control = this.form.get('aliases') as FormArray;
-	// 				control.removeAt(index);
-	// 			}
-	// 		});
-	// }
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to remove this previous name?',
+			actionText: 'Yes, remove name',
+			cancelText: 'Cancel',
+		};
 
-	// private newAliasRow(): FormGroup {
-	// 	return this.formBuilder.group({
-	// 		givenName: [''],
-	// 		middleName1: [''],
-	// 		middleName2: [''],
-	// 		surname: ['', [FormControlValidators.required]],
-	// 	});
-	// }
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					const control = this.form.get('aliases') as FormArray;
+					control.removeAt(index);
+				}
+			});
+	}
 
-	// get previousNameFlag(): FormControl {
-	// 	return this.form.get('previousNameFlag') as FormControl;
-	// }
+	private newAliasRow(): FormGroup {
+		return this.formBuilder.group({
+			givenName: [''],
+			middleName1: [''],
+			middleName2: [''],
+			surname: ['', [FormControlValidators.required]],
+		});
+	}
 
-	// get moreThanOneRowExists(): boolean {
-	// 	return this.aliasesArray.length > 1;
-	// }
+	get previousNameFlag(): FormControl {
+		return this.form.get('previousNameFlag') as FormControl;
+	}
 
-	// get isAllowAliasAdd(): boolean {
-	// 	return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
-	// }
+	get moreThanOneRowExists(): boolean {
+		return this.aliasesArray.length > 1;
+	}
 
-	// get aliasesArray(): FormArray {
-	// 	return <FormArray>this.form.get('aliases');
-	// }
+	get isAllowAliasAdd(): boolean {
+		return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
+	}
+
+	get aliasesArray(): FormArray {
+		return <FormArray>this.form.get('aliases');
+	}
 }

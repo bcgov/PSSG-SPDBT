@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Observable, of, take, tap } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import {
 	AdditionalGovIdDocument,
 	CitizenshipDocument,
@@ -19,7 +18,7 @@ import {
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
 } from 'src/app/api/models';
-import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
+import { WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import {
 	BooleanTypeCode,
@@ -28,84 +27,27 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
-import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { LicenceApplicationHelper } from './licence-application.helper';
+import { LicenceApplicationService } from './licence-application.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class LicenceApplicationAnonymousService extends LicenceApplicationHelper {
-	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(null),
-		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
-		applicationTypeData: this.applicationTypeFormGroup,
-		soleProprietorData: this.soleProprietorFormGroup,
-		personalInformationData: this.personalInformationFormGroup,
-		expiredLicenceData: this.expiredLicenceFormGroup,
-		licenceTermData: this.licenceTermFormGroup,
-		restraintsAuthorizationData: this.restraintsAuthorizationFormGroup,
-		dogsAuthorizationData: this.dogsAuthorizationFormGroup,
-
-		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
-		categoryBodyArmourSalesFormGroup: this.categoryBodyArmourSalesFormGroup,
-		categoryClosedCircuitTelevisionInstallerFormGroup: this.categoryClosedCircuitTelevisionInstallerFormGroup,
-		categoryElectronicLockingDeviceInstallerFormGroup: this.categoryElectronicLockingDeviceInstallerFormGroup,
-		categoryFireInvestigatorFormGroup: this.categoryFireInvestigatorFormGroup,
-		categoryLocksmithFormGroup: this.categoryLocksmithFormGroup,
-		categoryLocksmithSupFormGroup: this.categoryLocksmithSupFormGroup,
-		categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
-		categoryPrivateInvestigatorSupFormGroup: this.categoryPrivateInvestigatorSupFormGroup,
-		categorySecurityAlarmInstallerFormGroup: this.categorySecurityAlarmInstallerFormGroup,
-		categorySecurityAlarmInstallerSupFormGroup: this.categorySecurityAlarmInstallerSupFormGroup,
-		categorySecurityConsultantFormGroup: this.categorySecurityConsultantFormGroup,
-		categorySecurityAlarmMonitorFormGroup: this.categorySecurityAlarmMonitorFormGroup,
-		categorySecurityAlarmResponseFormGroup: this.categorySecurityAlarmResponseFormGroup,
-		categorySecurityAlarmSalesFormGroup: this.categorySecurityAlarmSalesFormGroup,
-		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
-		categorySecurityGuardSupFormGroup: this.categorySecurityGuardSupFormGroup,
-
-		policeBackgroundData: this.policeBackgroundFormGroup,
-		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
-		criminalHistoryData: this.criminalHistoryFormGroup,
-		fingerprintProofData: this.fingerprintProofFormGroup,
-
-		aliasesData: this.aliasesFormGroup,
-		citizenshipData: this.citizenshipFormGroup,
-		additionalGovIdData: this.additionalGovIdFormGroup,
-		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
-		characteristicsData: this.characteristicsFormGroup,
-		photographOfYourselfData: this.photographOfYourselfFormGroup,
-		residentialAddressData: this.residentialAddressFormGroup,
-		mailingAddressData: this.mailingAddressFormGroup,
-		contactInformationData: this.contactInformationFormGroup,
-	});
-
+export class LicenceApplicationAnonymousService {
 	constructor(
-		formBuilder: FormBuilder,
-		configService: ConfigService,
-		workerLicensingService: WorkerLicensingService,
-		licenceFeeService: LicenceFeeService,
-		formatDatePipe: FormatDatePipe,
+		private workerLicensingService: WorkerLicensingService,
+		private formatDatePipe: FormatDatePipe,
 		private authUserBcscService: AuthUserBcscService,
-		private utilService: UtilService
-	) {
-		super(formBuilder, configService, licenceFeeService, workerLicensingService, formatDatePipe);
-	}
+		private utilService: UtilService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	/**
 	 * Reset the licence formgroup
 	 */
-	override reset(): void {
-		super.reset();
-
-		this.licenceModelFormGroup.reset();
-
-		const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		aliases.clear();
-
-		console.debug('RESET licenceModelFormGroup', this.licenceModelFormGroup.value);
+	reset(): void {
+		this.licenceApplicationService.reset();
 	}
 
 	/**
@@ -113,50 +55,13 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 	 * @returns
 	 */
 	createNewLicence(): Observable<any> {
-		this.licenceModelFormGroup.reset();
+		return this.licenceApplicationService.createNewLicenceAnonymous().pipe(
+			tap((resp: any) => {
+				console.debug('NEW licenceModelFormGroup', resp);
 
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
-		if (bcscUserWhoamiProfile) {
-			this.licenceModelFormGroup.patchValue(
-				{
-					personalInformationData: {
-						givenName: bcscUserWhoamiProfile.firstName,
-						middleName1: bcscUserWhoamiProfile.middleName1,
-						middleName2: bcscUserWhoamiProfile.middleName2,
-						surname: bcscUserWhoamiProfile.lastName,
-						dateOfBirth: bcscUserWhoamiProfile.birthDate,
-						genderCode: bcscUserWhoamiProfile.gender,
-					},
-					residentialAddressData: {
-						addressSelected: true,
-						isMailingTheSameAsResidential: false,
-						addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-						addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-						city: bcscUserWhoamiProfile.residentialAddress?.city,
-						country: bcscUserWhoamiProfile.residentialAddress?.country,
-						postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-						province: bcscUserWhoamiProfile.residentialAddress?.province,
-					},
-				},
-				{ emitEvent: false }
-			);
-		} else {
-			this.licenceModelFormGroup.patchValue(
-				{
-					residentialAddressData: {
-						isMailingTheSameAsResidential: false,
-					},
-				},
-				{ emitEvent: false }
-			);
-		}
-
-		console.debug('NEW licenceModelFormGroup', this.licenceModelFormGroup.value);
-
-		this.licenceFeeTermCodes = [];
-
-		this.initialized = true;
-		return of(this.licenceModelFormGroup.value);
+				this.licenceApplicationService.initialized = true;
+			})
+		);
 	}
 
 	/**
@@ -165,7 +70,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 	 * @returns
 	 */
 	loadDraftLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		this.licenceModelFormGroup.reset();
+		this.licenceApplicationService.reset();
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
@@ -173,10 +78,10 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 				const soleProprietorData = {
-					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
+					isSoleProprietor: this.licenceApplicationService.booleanToBooleanType(resp.isSoleProprietor),
 				};
 				const expiredLicenceData = {
-					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+					hasExpiredLicence: this.licenceApplicationService.booleanToBooleanType(resp.hasExpiredLicence),
 					expiredLicenceNumber: resp.expiredLicenceNumber,
 					expiryDate: resp.expiryDate,
 					expiredLicenceId: resp.expiredLicenceId,
@@ -193,14 +98,14 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 					});
 				}
 				const policeBackgroundData = {
-					isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
+					isPoliceOrPeaceOfficer: this.licenceApplicationService.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
 					policeOfficerRoleCode: resp.policeOfficerRoleCode,
 					otherOfficerRole: resp.otherOfficerRole,
 					attachments: policeBackgroundDataAttachments,
 				};
 
 				const bcDriversLicenceData = {
-					hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
+					hasBcDriversLicence: this.licenceApplicationService.booleanToBooleanType(resp.hasBcDriversLicence),
 					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 				};
 
@@ -223,16 +128,16 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 					});
 				}
 				const mentalHealthConditionsData = {
-					isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
+					isTreatedForMHC: this.licenceApplicationService.booleanToBooleanType(resp.isTreatedForMHC),
 					attachments: mentalHealthConditionsDataAttachments,
 				};
 
 				const criminalHistoryData = {
-					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
+					hasCriminalHistory: this.licenceApplicationService.booleanToBooleanType(resp.hasCriminalHistory),
 				};
 
 				const aliasesData = {
-					previousNameFlag: this.booleanToBooleanType(resp.hasPreviousName),
+					previousNameFlag: this.licenceApplicationService.booleanToBooleanType(resp.hasPreviousName),
 				};
 
 				let personalInformationData = {};
@@ -265,7 +170,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 				}
 
 				const citizenshipData = {
-					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
+					isCanadianCitizen: this.licenceApplicationService.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? resp.citizenshipDocument?.licenceDocumentTypeCode
 						: null,
@@ -314,7 +219,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 					});
 				}
 				const photographOfYourselfData = {
-					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
+					useBcServicesCardPhoto: this.licenceApplicationService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 					attachments: photographOfYourselfAttachments,
 				};
 
@@ -552,13 +457,13 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 							});
 
 							restraintsAuthorizationData = {
-								carryAndUseRestraints: this.booleanToBooleanType(resp.carryAndUseRestraints),
+								carryAndUseRestraints: this.licenceApplicationService.booleanToBooleanType(resp.carryAndUseRestraints),
 								carryAndUseRestraintsDocument,
 								attachments: attachmentsRestraints,
 							};
 
 							dogsAuthorizationData = {
-								useDogs: this.booleanToBooleanType(resp.useDogs),
+								useDogs: this.licenceApplicationService.booleanToBooleanType(resp.useDogs),
 								dogsPurposeFormGroup: {
 									isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
 									isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
@@ -647,7 +552,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 					}
 				});
 
-				this.licenceModelFormGroup.patchValue({
+				this.licenceApplicationService.licenceModelFormGroup.patchValue({
 					licenceAppId: resp.licenceAppId,
 					workerLicenceTypeData,
 					applicationTypeData,
@@ -690,44 +595,14 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 				});
 
 				// console.debug('loadExistingLicence resp', resp);
-				console.debug('LOAD EXISTING licenceModelFormGroup', this.licenceModelFormGroup.value);
+				console.debug(
+					'LOAD EXISTING licenceModelFormGroup',
+					this.licenceApplicationService.licenceModelFormGroup.value
+				);
 
-				this.initialized = true;
+				this.licenceApplicationService.initialized = true;
 			}),
 			take(1)
-		);
-	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	isStep4Complete(): boolean {
-		// console.debug(
-		// 	'isStep4Complete',
-		// 	this.personalInformationFormGroup.valid,
-		// 	this.aliasesFormGroup.valid,
-		// 	this.citizenshipFormGroup.valid,
-		// 	this.additionalGovIdFormGroup.valid,
-		// 	this.bcDriversLicenceFormGroup.valid,
-		// 	this.characteristicsFormGroup.valid,
-		// 	this.photographOfYourselfFormGroup.valid,
-		// 	this.residentialAddressFormGroup.valid,
-		// 	this.mailingAddressFormGroup.valid,
-		// 	this.contactInformationFormGroup.valid
-		// );
-
-		return (
-			this.personalInformationFormGroup.valid &&
-			this.aliasesFormGroup.valid &&
-			this.citizenshipFormGroup.valid &&
-			this.additionalGovIdFormGroup.valid &&
-			this.bcDriversLicenceFormGroup.valid &&
-			this.characteristicsFormGroup.valid &&
-			this.photographOfYourselfFormGroup.valid &&
-			this.residentialAddressFormGroup.valid &&
-			this.mailingAddressFormGroup.valid &&
-			this.contactInformationFormGroup.valid
 		);
 	}
 
@@ -738,7 +613,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 	submitLicence(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response({ body });
 	}
 
 	/**
@@ -746,7 +621,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 	 * @returns
 	 */
 	private getSaveBody(): WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest {
-		const formValue = this.licenceModelFormGroup.getRawValue();
+		const formValue = this.licenceApplicationService.licenceModelFormGroup.getRawValue();
 		console.debug('getSaveBody licenceModelFormGroup', formValue);
 
 		const licenceAppId = formValue.licenceAppId;
@@ -777,7 +652,9 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 		const categoryData: Array<WorkerLicenceAppCategoryData> = [];
 
 		if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
-			categoryData.push(this.getCategoryArmouredCarGuard(formValue.categoryArmouredCarGuardFormGroup));
+			categoryData.push(
+				this.licenceApplicationService.getCategoryArmouredCarGuard(formValue.categoryArmouredCarGuardFormGroup)
+			);
 		}
 
 		if (formValue.categoryBodyArmourSalesFormGroup.isInclude) {
@@ -799,11 +676,13 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 		}
 
 		if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
-			categoryData.push(this.getCategoryFireInvestigator(formValue.categoryFireInvestigatorFormGroup));
+			categoryData.push(
+				this.licenceApplicationService.getCategoryFireInvestigator(formValue.categoryFireInvestigatorFormGroup)
+			);
 		}
 
 		if (formValue.categoryLocksmithFormGroup.isInclude) {
-			categoryData.push(this.getCategoryLocksmith(formValue.categoryLocksmithFormGroup));
+			categoryData.push(this.licenceApplicationService.getCategoryLocksmith(formValue.categoryLocksmithFormGroup));
 		}
 
 		if (formValue.categoryLocksmithSupFormGroup.isInclude) {
@@ -813,11 +692,17 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 		}
 
 		if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
-			categoryData.push(this.getCategoryPrivateInvestigator(formValue.categoryPrivateInvestigatorFormGroup));
+			categoryData.push(
+				this.licenceApplicationService.getCategoryPrivateInvestigator(formValue.categoryPrivateInvestigatorFormGroup)
+			);
 		}
 
 		if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			categoryData.push(this.getCategoryPrivateInvestigatorSup(formValue.categoryPrivateInvestigatorSupFormGroup));
+			categoryData.push(
+				this.licenceApplicationService.getCategoryPrivateInvestigatorSup(
+					formValue.categoryPrivateInvestigatorSupFormGroup
+				)
+			);
 		}
 
 		if (formValue.categorySecurityGuardFormGroup.isInclude) {
@@ -828,18 +713,20 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
 
 			dogsAuthorizationData = {
-				useDogs: this.booleanTypeToBoolean(formValue.dogsAuthorizationData.useDogs),
+				useDogs: this.licenceApplicationService.booleanTypeToBoolean(formValue.dogsAuthorizationData.useDogs),
 				isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.useDogs ? isDetectionDrugs : null,
 				isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.useDogs ? isDetectionExplosives : null,
 				isDogsPurposeProtection: formValue.dogsAuthorizationData.useDogs ? isProtection : null,
 			};
 
 			restraintsAuthorizationData = {
-				carryAndUseRestraints: this.booleanTypeToBoolean(formValue.restraintsAuthorizationData.carryAndUseRestraints),
+				carryAndUseRestraints: this.licenceApplicationService.booleanTypeToBoolean(
+					formValue.restraintsAuthorizationData.carryAndUseRestraints
+				),
 			};
 
 			categoryData.push(
-				this.getCategorySecurityGuard(
+				this.licenceApplicationService.getCategorySecurityGuard(
 					formValue.categorySecurityGuardFormGroup,
 					formValue.dogsAuthorizationData,
 					formValue.restraintsAuthorizationData
@@ -854,7 +741,11 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 		}
 
 		if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			categoryData.push(this.getCategorySecurityAlarmInstaller(formValue.categorySecurityAlarmInstallerFormGroup));
+			categoryData.push(
+				this.licenceApplicationService.getCategorySecurityAlarmInstaller(
+					formValue.categorySecurityAlarmInstallerFormGroup
+				)
+			);
 		}
 
 		if (formValue.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
@@ -882,7 +773,11 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 		}
 
 		if (formValue.categorySecurityConsultantFormGroup.isInclude) {
-			categoryData.push(this.getCategorySecurityConsultantInstaller(formValue.categorySecurityConsultantFormGroup));
+			categoryData.push(
+				this.licenceApplicationService.getCategorySecurityConsultantInstaller(
+					formValue.categorySecurityConsultantFormGroup
+				)
+			);
 		}
 
 		let policeOfficerDocument: PoliceOfficerDocument | null = null;
@@ -969,7 +864,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 				licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
 			};
 		} else {
-			this.additionalGovIdFormGroup.reset();
+			this.licenceApplicationService.additionalGovIdFormGroup.reset();
 		}
 
 		let idPhotoDocument: IdPhotoDocument | null = null;
@@ -1001,12 +896,14 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
-			isSoleProprietor: this.booleanTypeToBoolean(soleProprietorData.isSoleProprietor),
+			isSoleProprietor: this.licenceApplicationService.booleanTypeToBoolean(soleProprietorData.isSoleProprietor),
 			//-----------------------------------
-			hasPreviousName: this.booleanTypeToBoolean(formValue.aliasesData.previousNameFlag),
+			hasPreviousName: this.licenceApplicationService.booleanTypeToBoolean(formValue.aliasesData.previousNameFlag),
 			aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
 			//-----------------------------------
-			hasBcDriversLicence: this.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
+			hasBcDriversLicence: this.licenceApplicationService.booleanTypeToBoolean(
+				bcDriversLicenceData.hasBcDriversLicence
+			),
 			bcDriversLicenceNumber:
 				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
 					? bcDriversLicenceData.bcDriversLicenceNumber
@@ -1014,7 +911,7 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
+			hasExpiredLicence: this.licenceApplicationService.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
 			expiredLicenceNumber:
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			expiredLicenceId:
@@ -1025,7 +922,9 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 			//-----------------------------------
 			...personalInformationData,
 			//-----------------------------------
-			hasCriminalHistory: this.booleanTypeToBoolean(formValue.criminalHistoryData.hasCriminalHistory),
+			hasCriminalHistory: this.licenceApplicationService.booleanTypeToBoolean(
+				formValue.criminalHistoryData.hasCriminalHistory
+			),
 			//-----------------------------------
 			licenceTermCode: formValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
@@ -1035,19 +934,23 @@ export class LicenceApplicationAnonymousService extends LicenceApplicationHelper
 				: mailingAddressData,
 			residentialAddressData,
 			//-----------------------------------
-			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
+			isCanadianCitizen: this.licenceApplicationService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			citizenshipDocument,
 			additionalGovIdDocument,
 			//-----------------------------------
 			fingerprintProofDocument,
 			//-----------------------------------
-			useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			useBcServicesCardPhoto: this.licenceApplicationService.booleanTypeToBoolean(
+				photographOfYourselfData.useBcServicesCardPhoto
+			),
 			idPhotoDocument,
 			//-----------------------------------
-			isTreatedForMHC: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			isTreatedForMHC: this.licenceApplicationService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
 			mentalHealthDocument,
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: this.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
+			isPoliceOrPeaceOfficer: this.licenceApplicationService.booleanTypeToBoolean(
+				policeBackgroundData.isPoliceOrPeaceOfficer
+			),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
 			otherOfficerRole: policeBackgroundData.otherOfficerRole,
 			policeOfficerDocument,

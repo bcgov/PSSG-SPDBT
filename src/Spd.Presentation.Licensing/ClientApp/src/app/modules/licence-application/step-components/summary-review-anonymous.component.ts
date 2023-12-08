@@ -8,7 +8,7 @@ import {
 } from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationAnonymousService } from '../services/licence-application-anonymous.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-summary-review-anonymous',
@@ -696,44 +696,37 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 	categoryTypeCodes = WorkerCategoryTypeCode;
 	swlCategoryTypes = WorkerCategoryTypes;
 
-	categoryArmouredCarGuardFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryArmouredCarGuardFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryBodyArmourSalesFormGroup;
+	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
+	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
 	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryClosedCircuitTelevisionInstallerFormGroup;
+		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationAnonymousService.categoryLocksmithFormGroup;
+		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
+	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
+	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
 	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categoryPrivateInvestigatorFormGroup;
+		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
 	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityConsultantFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationAnonymousService.categoryLocksmithSupFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
+	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
+	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
 	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityAlarmInstallerSupFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
 	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityAlarmMonitorFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
 	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityAlarmSalesFormGroup;
-	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationAnonymousService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup =
-		this.licenceApplicationAnonymousService.categorySecurityGuardSupFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
+	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
+	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
+	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private licenceApplicationAnonymousService: LicenceApplicationAnonymousService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationAnonymousService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {
@@ -741,7 +734,7 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationAnonymousService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	get workerLicenceTypeCode(): string {
@@ -804,7 +797,7 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationAnonymousService.licenceFeeTermCodes.find(
+		const feeItem = this.licenceApplicationService.licenceFeeTermCodes.find(
 			(item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode
 		);
 		return feeItem?.amount ?? null;
