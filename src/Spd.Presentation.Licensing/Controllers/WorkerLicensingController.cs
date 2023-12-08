@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,14 +27,20 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
+        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequest> _anonymousWslSubmitValidator;
+        private readonly IValidator<AnonymousWorkerLicenceSubmitCommand> _anonymousWslCommandValidator;
         private readonly IMultipartRequestService _multipartRequestService;
+        private readonly IMapper _mapper;
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
-            IMultipartRequestService multipartRequestService)
+            IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousWslSubmitValidator,
+            IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
+            IMultipartRequestService multipartRequestService,
+            IMapper mapper)
         {
             _logger = logger;
             _currentUser = currentUser;
@@ -41,6 +48,9 @@ namespace Spd.Presentation.Licensing.Controllers
             _configuration = configuration;
             _wslSubmitValidator = wslSubmitValidator;
             _multipartRequestService = multipartRequestService;
+            _mapper = mapper;
+            _anonymousWslSubmitValidator = anonymousWslSubmitValidator;
+            _anonymousWslCommandValidator = anonymousWslCommandValidator;
         }
 
         #region bcsc authenticated
@@ -159,7 +169,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [DisableFormValueModelBinding]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(long.MaxValue)]
-        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous()
+        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous(CancellationToken ct)
         {
             ICollection<UploadFileInfo> uploadedFileInfoList = null;
 
@@ -167,11 +177,15 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 var request = HttpContext.Request;
                 var (model, uploadFileInfoList) = await _multipartRequestService.UploadMultipleFilesAsync<WorkerLicenceAppAnonymousSubmitRequest>(request, ModelState);
-
                 uploadedFileInfoList = uploadFileInfoList;
+                AnonymousWorkerLicenceSubmitCommand command = new AnonymousWorkerLicenceSubmitCommand(
+                    model, 
+                    _mapper.Map<ICollection<UploadFileRequest>>(uploadFileInfoList));
+                var validateResult = await _anonymousWslCommandValidator.ValidateAsync(command, ct);
+                if (!validateResult.IsValid)
+                    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-                //todo: submit the request.
-                return null;
+                return await _mediator.Send(command);
             }
             catch(ApiException ex)
             {

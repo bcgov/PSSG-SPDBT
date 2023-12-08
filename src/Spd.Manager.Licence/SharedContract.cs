@@ -1,5 +1,13 @@
 ﻿namespace Spd.Manager.Licence;
 
+public class UploadFileRequest
+{
+    public LicenceDocumentTypeCode FileTypeCode { get; set; }
+    public string FileName { get; set; }
+    public string FilePath { get; set; }
+    public string FileExtension { get; set; }
+}
+
 public enum WorkerLicenceTypeCode
 {
     SecurityWorkerLicence,

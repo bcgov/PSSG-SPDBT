@@ -16,6 +16,7 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
+        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IPersonalLicenceAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -119,6 +120,18 @@ internal partial class PersonalLicenceAppManager :
         );
         var response = await _licenceAppRepository.QueryAsync(q, ct);
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
+    }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        ICollection<UploadFileRequest> fileRequests = cmd.UploadFileRequests;
+
+        //validation
+        //validate request
+        //validate request must have filekey in fileRequests
+
+        return null;
     }
 
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
