@@ -1,48 +1,43 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
-using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
 
-namespace Spd.Manager.Cases.Licence;
-internal partial class LicenceManager :
+namespace Spd.Manager.Licence;
+internal partial class PersonalLicenceAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
-        IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
-        IRequestHandler<GetLicenceFeeListQuery, LicenceFeeListResponse>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
-        ILicenceManager
+        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IPersonalLicenceAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
     private readonly ILicenceApplicationRepository _licenceAppRepository;
-    private readonly ILicenceFeeRepository _licenceFeeRepository;
     private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
     private readonly IIdentityRepository _identityRepository;
     private readonly IDocumentRepository _documentRepository;
-    private readonly ILogger<ILicenceManager> _logger;
+    private readonly ILogger<IPersonalLicenceAppManager> _logger;
 
-    public LicenceManager(
+    public PersonalLicenceAppManager(
         ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
-        ILicenceFeeRepository licenceFeeRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
         IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
-        ILogger<ILicenceManager> logger)
+        ILogger<IPersonalLicenceAppManager> logger)
     {
         _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
-        _licenceFeeRepository = licenceFeeRepository;
         _tempFile = tempFile;
         _mapper = mapper;
         _identityRepository = identityRepository;
@@ -125,6 +120,32 @@ internal partial class LicenceManager :
         );
         var response = await _licenceAppRepository.QueryAsync(q, ct);
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
+    }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        ICollection<UploadFileRequest> fileRequests = cmd.UploadFileRequests;
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        foreach (UploadFileRequest uploadRequest in fileRequests)
+        {
+            SpdTempFile spdTempFile = _mapper.Map<SpdTempFile>(uploadRequest);
+            DocumentTypeEnum? docType1 = GetDocumentType1Enum(uploadRequest.FileTypeCode);
+            DocumentTypeEnum? docType2 = GetDocumentType2Enum(uploadRequest.FileTypeCode);
+            //create bcgov_documenturl and file
+            await _documentRepository.ManageAsync(new CreateDocumentCmd
+            {
+                TempFile = spdTempFile,
+                ApplicationId = response.LicenceAppId,
+                DocumentType = docType1,
+                DocumentType2 = docType2,
+                SubmittedByApplicantId = response.ContactId
+            }, ct);
+        }
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)

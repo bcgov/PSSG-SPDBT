@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
-using Spd.Utilities.Shared.Tools;
 
-namespace Spd.Manager.Cases.Licence;
+namespace Spd.Manager.Licence;
 internal class Mappings : Profile
 {
     public Mappings()
@@ -33,5 +33,19 @@ internal class Mappings : Profile
         CreateMap<Alias, Spd.Resource.Applicants.LicenceApplication.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+        CreateMap<UploadFileRequest, SpdTempFile>()
+            .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath)); 
+    }
+
+    private WorkerLicenceAppCategory[] GetCategories(WorkerCategoryTypeCode[] codes)
+    {
+        List<WorkerLicenceAppCategory> categories = new List<WorkerLicenceAppCategory> { };
+        foreach (WorkerCategoryTypeCode code in codes)
+        {
+            categories.Add(new WorkerLicenceAppCategory() { WorkerCategoryTypeCode=Enum.Parse<WorkerCategoryTypeEnum>( code.ToString() )});
+        }
+        return categories.ToArray();
     }
 }
