@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
@@ -34,6 +35,8 @@ internal class Mappings : Profile
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+        CreateMap<UploadFileRequest, SpdTempFile>()
+            .ForMember(d => d.TempFileName, opt => opt.MapFrom(s => s.FilePath)); 
     }
 
     private WorkerLicenceAppCategory[] GetCategories(WorkerCategoryTypeCode[] codes)

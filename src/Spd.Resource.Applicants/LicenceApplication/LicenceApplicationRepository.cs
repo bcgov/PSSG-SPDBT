@@ -65,7 +65,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         //then update category.
         ProcessCategories(cmd.CategoryData, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp(app.spd_applicationid);
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
     }
 
     public async Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid licAppId, CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         app.spd_submittedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(cancellationToken);
-        return new LicenceApplicationCmdResp(app.spd_applicationid);
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
     }
 
     public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
@@ -160,12 +161,16 @@ public class MultipartRequestService : IMultipartRequestService
                     }
                 }
 
+                string contentType;
+                new FileExtensionContentTypeProvider().TryGetContentType(contentDisposition.FileName.Value, out contentType);
                 return new UploadFileInfo()
                 {
-                    FileKey = contentDisposition.Name.HasValue? contentDisposition.Name.Value: null,
+                    FileKey = contentDisposition.Name.HasValue ? contentDisposition.Name.Value : null,
                     FileName = contentDisposition.FileName.HasValue ? contentDisposition.FileName.Value : null,
                     FilePath = file,
-                    FileExtension = Path.GetExtension(contentDisposition.FileName.Value).ToLowerInvariant()
+                    FileExtension = Path.GetExtension(contentDisposition.FileName.Value).ToLowerInvariant(),
+                    FileSize = stream.Length,
+                    ContentType = contentType ?? "application/octet-stream"
                 };
             }
             catch (Exception ex)
