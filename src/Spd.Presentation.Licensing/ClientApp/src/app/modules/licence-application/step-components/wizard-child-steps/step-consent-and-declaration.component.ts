@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-consent-and-declaration',
+	selector: 'app-step-consent-and-declaration',
 	template: `
 		<section class="step-section">
 			<form [formGroup]="form" novalidate>
@@ -79,7 +79,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class ConsentAndDeclarationComponent {
+export class StepConsentAndDeclarationComponent {
 	form: FormGroup = this.formBuilder.group({
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),

@@ -6,12 +6,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationAuthenticatedService } from '../services/licence-application-authenticated.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationAuthenticatedComponent } from '../step-components/wizard-steps/step-identification-authenticated.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
@@ -144,18 +144,18 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 		private authenticationService: AuthenticationService,
 		private breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
-		private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelLoadedSubscription = this.licenceApplicationAuthenticatedService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();
 				this.isLoaded$.next(true);
@@ -163,18 +163,24 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 		});
 
 		this.licenceModelChangedSubscription =
-			this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valueChanges
-				.pipe(debounceTime(200), distinctUntilChanged())
-				.subscribe((_resp: any) => {
-					this.licenceApplicationAuthenticatedService.hasValueChanged = true;
+			this.licenceApplicationService.licenceModelAuthenticatedValueChanges$.subscribe((_resp: any) => {
+				console.log('licenceModelAuthenticatedValueChanges$', _resp);
+				this.isFormValid = _resp;
+			});
 
-					this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
-					console.debug(
-						'*******valueChanges to TRUE',
-						'valueChanges isFormValid',
-						this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid
-					);
-				});
+		// this.licenceModelChangedSubscription =
+		// 	this.licenceApplicationService.licenceModelFormGroupAuthenticated.valueChanges
+		// 		.pipe(debounceTime(200), distinctUntilChanged())
+		// 		.subscribe((_resp: any) => {
+		// 			this.licenceApplicationService.hasValueChanged = true;
+
+		// 			this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
+		// 			console.debug(
+		// 				'*******valueChanges to TRUE',
+		// 				'valueChanges isFormValid',
+		// 				this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid
+		// 			);
+		// 		});
 	}
 
 	ngAfterViewInit(): void {
@@ -240,10 +246,14 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationAuthenticatedService.hasValueChanged) {
-			this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
+		console.log(
+			'onNextStepperStep this.licenceApplicationService.hasValueChanged',
+			this.licenceApplicationService.hasValueChanged
+		);
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationAuthenticatedService.hasValueChanged = false;
+					this.licenceApplicationService.hasValueChanged = false;
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -299,9 +309,9 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 			return;
 		}
 
-		this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
+		this.licenceApplicationService.saveLicenceStep().subscribe({
 			next: (_resp: any) => {
-				this.licenceApplicationAuthenticatedService.hasValueChanged = false;
+				this.licenceApplicationService.hasValueChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(
@@ -337,10 +347,10 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationAuthenticatedService.hasValueChanged) {
-			this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationAuthenticatedService.hasValueChanged = false;
+					this.licenceApplicationService.hasValueChanged = false;
 					this.updateCompleteStatus();
 
 					this.hotToastService.success('Licence information has been saved');
@@ -363,19 +373,19 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationAuthenticatedService.isStep1Complete();
-		this.step2Complete = this.licenceApplicationAuthenticatedService.isStep2Complete();
-		this.step3Complete = this.licenceApplicationAuthenticatedService.isStep3Complete();
-		this.step4Complete = this.licenceApplicationAuthenticatedService.isStep4Complete();
+		this.step1Complete = this.licenceApplicationService.isStep1Complete();
+		this.step2Complete = this.licenceApplicationService.isStep2Complete();
+		this.step3Complete = this.licenceApplicationService.isStep3Complete();
+		this.step4Complete = this.licenceApplicationService.isStep4Complete();
 
-		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationAuthenticatedService.hasValueChanged) {
-			this.licenceApplicationAuthenticatedService.saveLicenceStep().subscribe({
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationAuthenticatedService.hasValueChanged = false;
+					this.licenceApplicationService.hasValueChanged = false;
 					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();
 				},

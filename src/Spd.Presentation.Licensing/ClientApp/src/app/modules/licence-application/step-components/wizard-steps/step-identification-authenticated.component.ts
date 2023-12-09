@@ -6,11 +6,11 @@ import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { AdditionalGovIdComponent } from '../additional-gov-id.component';
-import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
-import { CitizenshipComponent } from '../citizenship.component';
-import { HeightAndWeightComponent } from '../height-and-weight.component';
-import { PhotographOfYourselfComponent } from '../photograph-of-yourself.component';
+import { StepAdditionalGovIdComponent } from '../wizard-child-steps/step-additional-gov-id.component';
+import { StepBcDriverLicenceComponent } from '../wizard-child-steps/step-bc-driver-licence.component';
+import { StepCitizenshipComponent } from '../wizard-child-steps/step-citizenship.component';
+import { StepHeightAndWeightComponent } from '../wizard-child-steps/step-height-and-weight.component';
+import { StepPhotographOfYourselfComponent } from '../wizard-child-steps/step-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-identification-authenticated',
@@ -25,7 +25,7 @@ import { PhotographOfYourselfComponent } from '../photograph-of-yourself.compone
 			</mat-step> -->
 
 			<mat-step>
-				<app-citizenship></app-citizenship>
+				<app-step-citizenship></app-step-citizenship>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -50,7 +50,7 @@ import { PhotographOfYourselfComponent } from '../photograph-of-yourself.compone
 			</mat-step>
 
 			<mat-step *ngIf="showAdditionalGovermentIdStep">
-				<app-additional-gov-id></app-additional-gov-id>
+				<app-step-additional-gov-id></app-step-additional-gov-id>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -80,7 +80,7 @@ import { PhotographOfYourselfComponent } from '../photograph-of-yourself.compone
 			</mat-step>
 
 			<mat-step>
-				<app-bc-driver-licence></app-bc-driver-licence>
+				<app-step-bc-driver-licence></app-step-bc-driver-licence>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -110,7 +110,7 @@ import { PhotographOfYourselfComponent } from '../photograph-of-yourself.compone
 			</mat-step>
 
 			<mat-step>
-				<app-height-and-weight></app-height-and-weight>
+				<app-step-height-and-weight></app-step-height-and-weight>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -140,7 +140,7 @@ import { PhotographOfYourselfComponent } from '../photograph-of-yourself.compone
 			</mat-step>
 
 			<mat-step>
-				<app-photograph-of-yourself></app-photograph-of-yourself>
+				<app-step-photograph-of-yourself></app-step-photograph-of-yourself>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -198,24 +198,24 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	@ViewChild(CitizenshipComponent) citizenshipComponent!: CitizenshipComponent;
-	@ViewChild(AdditionalGovIdComponent) additionalGovIdComponent!: AdditionalGovIdComponent;
-	@ViewChild(BcDriverLicenceComponent) bcDriverLicenceComponent!: BcDriverLicenceComponent;
-	@ViewChild(HeightAndWeightComponent) heightAndWeightComponent!: HeightAndWeightComponent;
-	@ViewChild(PhotographOfYourselfComponent) photoComponent!: PhotographOfYourselfComponent;
+	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
+	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
+	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
+	@ViewChild(StepHeightAndWeightComponent) heightAndWeightComponent!: StepHeightAndWeightComponent;
+	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
 	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.valid;
 
 		this.licenceModelChangedSubscription =
-			this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valueChanges
+			this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.valueChanges
 				.pipe(debounceTime(200), distinctUntilChanged())
 				.subscribe((_resp: any) => {
-					this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+					this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.valid;
 				});
 	}
 

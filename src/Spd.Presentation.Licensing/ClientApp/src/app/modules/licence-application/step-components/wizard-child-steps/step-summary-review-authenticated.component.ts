@@ -8,10 +8,10 @@ import {
 } from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-summary-review-anonymous',
+	selector: 'app-step-summary-review-authenticated',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -207,23 +207,6 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Expired Licence</div>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Number</div>
-															<div class="text-data">{{ expiredLicenceNumber | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
-															<div class="text-data">
-																{{ expiredLicenceExpiryDate | formatDate | default }}
-															</div>
-														</div>
-													</div>
-												</ng-container>
-
 												<ng-container *ngIf="showDogsAndRestraints">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Restraints Authorization</div>
@@ -394,55 +377,6 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Personal Information</div>
-												<div class="row mt-0">
-													<div class="col-lg-6 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
-														<div class="text-data">
-															{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-															{{ surname }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
-														<div class="text-data">
-															{{ dateOfBirth | formatDate | default }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
-														<div class="text-data">
-															{{ genderCode | options : 'GenderTypes' | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Aliases</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Do you have any previous names?
-														</div>
-														<div class="text-data">{{ previousNameFlag }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
-															<div class="text-data">
-																<div
-																	*ngFor="let alias of aliases; let i = index; let first = first"
-																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-																>
-																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																	{{ alias.surname }}
-																</div>
-															</div>
-														</ng-container>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
 												<div class="text-minor-heading">Identification</div>
 												<div class="row mt-0">
 													<div class="col-lg-8 col-md-12">
@@ -520,112 +454,6 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 												</div>
 											</div>
 										</mat-expansion-panel>
-
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Contact Information</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 3"
-															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(4)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Contact</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
-														<div class="text-data">{{ contactEmailAddress | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-														<div class="text-data">
-															{{ contactPhoneNumber | mask : constants.phone.displayMask }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Residential Address</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="text-data">{{ residentialAddressLine1 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="text-data">{{ residentialAddressLine2 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="text-data">{{ residentialCity | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="text-data">{{ residentialPostalCode | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="text-data">
-															{{ residentialProvince | default }}
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="text-data">
-															{{ residentialCountry | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Mailing Address</div>
-												<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-													<div class="row mt-0">
-														<div class="col-12 mt-lg-2">
-															<div class="text-data">Mailing address is the same as the residential address</div>
-														</div>
-													</div>
-												</ng-container>
-												<ng-template #mailingIsDifferentThanResidential>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="text-data">{{ mailingAddressLine1 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="text-data">{{ mailingAddressLine2 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="text-data">{{ mailingCity | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="text-data">{{ mailingPostalCode | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="text-data">{{ mailingProvince | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="text-data">{{ mailingCountry | default }}</div>
-														</div>
-													</div>
-												</ng-template>
-											</div>
-										</mat-expansion-panel>
 									</mat-accordion>
 								</div>
 							</div>
@@ -687,8 +515,9 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 		`,
 	],
 })
-export class SummaryReviewAnonymousComponent implements OnInit {
+export class StepSummaryReviewAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
+	licenceUserModelData: any = {};
 
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
@@ -696,37 +525,47 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 	categoryTypeCodes = WorkerCategoryTypeCode;
 	swlCategoryTypes = WorkerCategoryTypes;
 
-	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
+	categoryArmouredCarGuardFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categoryArmouredCarGuardFormGroup;
+	categoryBodyArmourSalesFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categoryBodyArmourSalesFormGroup;
 	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
+		this.licenceApplicationAuthenticatedService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+		this.licenceApplicationAuthenticatedService.categoryElectronicLockingDeviceInstallerFormGroup;
+	categoryFireInvestigatorFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categoryFireInvestigatorFormGroup;
+	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationAuthenticatedService.categoryLocksmithFormGroup;
 	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+		this.licenceApplicationAuthenticatedService.categoryPrivateInvestigatorSupFormGroup;
+	categoryPrivateInvestigatorFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categoryPrivateInvestigatorFormGroup;
 	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
+		this.licenceApplicationAuthenticatedService.categorySecurityAlarmInstallerFormGroup;
+	categorySecurityConsultantFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categorySecurityConsultantFormGroup;
+	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationAuthenticatedService.categoryLocksmithSupFormGroup;
 	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
+		this.licenceApplicationAuthenticatedService.categorySecurityAlarmInstallerSupFormGroup;
 	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
+		this.licenceApplicationAuthenticatedService.categorySecurityAlarmMonitorFormGroup;
 	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
-	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
+		this.licenceApplicationAuthenticatedService.categorySecurityAlarmResponseFormGroup;
+	categorySecurityAlarmSalesFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categorySecurityAlarmSalesFormGroup;
+	categorySecurityGuardFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categorySecurityGuardFormGroup;
+	categorySecurityGuardSupFormGroup: FormGroup =
+		this.licenceApplicationAuthenticatedService.categorySecurityGuardSupFormGroup;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = {
+			...this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.getRawValue(),
+		};
 	}
 
 	onEditStep(stepNumber: number) {
@@ -734,7 +573,9 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = {
+			...this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.getRawValue(),
+		};
 	}
 
 	get workerLicenceTypeCode(): string {
@@ -797,20 +638,10 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationService.licenceFeeTermCodes.find(
+		const feeItem = this.licenceApplicationAuthenticatedService.licenceFeeTermCodes.find(
 			(item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode
 		);
 		return feeItem?.amount ?? null;
-	}
-
-	get hasExpiredLicence(): string {
-		return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
-	}
-	get expiredLicenceNumber(): string {
-		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
-	}
-	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
 	}
 
 	get carryAndUseRestraints(): string {
@@ -852,32 +683,6 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 	}
 	get letterOfNoConflictAttachments(): File[] {
 		return this.licenceModelData.policeBackgroundData.attachments ?? [];
-	}
-
-	get givenName(): string {
-		return this.licenceModelData.personalInformationData.givenName ?? '';
-	}
-	get middleName1(): string {
-		return this.licenceModelData.personalInformationData.middleName1 ?? '';
-	}
-	get middleName2(): string {
-		return this.licenceModelData.personalInformationData.middleName2 ?? '';
-	}
-	get surname(): string {
-		return this.licenceModelData.personalInformationData.surname ?? '';
-	}
-	get genderCode(): string {
-		return this.licenceModelData.personalInformationData.genderCode ?? '';
-	}
-	get dateOfBirth(): string {
-		return this.licenceModelData.personalInformationData.dateOfBirth ?? '';
-	}
-
-	get previousNameFlag(): string {
-		return this.licenceModelData.aliasesData.previousNameFlag ?? '';
-	}
-	get aliases(): Array<any> {
-		return this.licenceModelData.aliasesData.aliases ?? [];
 	}
 
 	get isTreatedForMHC(): string {
@@ -974,53 +779,6 @@ export class SummaryReviewAnonymousComponent implements OnInit {
 		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
 	}
 
-	get contactEmailAddress(): string {
-		return this.licenceModelData.contactInformationData?.contactEmailAddress ?? '';
-	}
-	get contactPhoneNumber(): string {
-		return this.licenceModelData.contactInformationData?.contactPhoneNumber ?? '';
-	}
-
-	get residentialAddressLine1(): string {
-		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
-	}
-	get residentialAddressLine2(): string {
-		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
-	}
-	get residentialCity(): string {
-		return this.licenceModelData.residentialAddressData?.city ?? '';
-	}
-	get residentialPostalCode(): string {
-		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
-	}
-	get residentialProvince(): string {
-		return this.licenceModelData.residentialAddressData?.province ?? '';
-	}
-	get residentialCountry(): string {
-		return this.licenceModelData.residentialAddressData?.country ?? '';
-	}
-	get isMailingTheSameAsResidential(): string {
-		return this.licenceModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
-	}
-
-	get mailingAddressLine1(): string {
-		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
-	}
-	get mailingAddressLine2(): string {
-		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
-	}
-	get mailingCity(): string {
-		return this.licenceModelData.mailingAddressData?.city ?? '';
-	}
-	get mailingPostalCode(): string {
-		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
-	}
-	get mailingProvince(): string {
-		return this.licenceModelData.mailingAddressData?.province ?? '';
-	}
-	get mailingCountry(): string {
-		return this.licenceModelData.mailingAddressData?.country ?? '';
-	}
 	get categoryList(): Array<SelectOptions> {
 		const list: Array<SelectOptions> = [];
 		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {

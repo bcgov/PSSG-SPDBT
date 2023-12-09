@@ -2,8 +2,8 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
 import { AliasListComponent } from './alias-list.component';
-import { ContactInformationComponent } from './contact-information.component';
 import { MailingAddressComponent } from './mailing-address.component';
+import { ContactInformationComponent } from './wizard-child-steps/contact-information.component';
 
 @Component({
 	selector: 'app-user-profile',

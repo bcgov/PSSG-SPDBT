@@ -5,15 +5,15 @@ import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationAuthenticatedService } from '../../services/licence-application-authenticated.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
-import { LicenceApplicationTypeComponent } from '../licence-application-type.component';
-import { LicenceTypeSelectionComponent } from '../licence-type-selection.component';
-import { LicenceUserProfileComponent } from '../licence-user-profile.component';
+import { StepLicenceApplicationTypeComponent } from '../wizard-child-steps/step-licence-application-type.component';
+import { StepLicenceTypeSelectionComponent } from '../wizard-child-steps/step-licence-type-selection.component';
+import { StepLicenceUserProfileComponent } from '../wizard-child-steps/step-licence-user-profile.component';
 @Component({
 	selector: 'app-step-licence-setup-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-licence-user-profile></app-licence-user-profile>
+				<app-step-licence-user-profile></app-step-licence-user-profile>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -28,7 +28,7 @@ import { LicenceUserProfileComponent } from '../licence-user-profile.component';
 			</mat-step>
 
 			<mat-step>
-				<app-licence-type-selection></app-licence-type-selection>
+				<app-step-licence-type-selection></app-step-licence-type-selection>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -43,7 +43,7 @@ import { LicenceUserProfileComponent } from '../licence-user-profile.component';
 			</mat-step>
 
 			<mat-step>
-				<app-licence-application-type></app-licence-application-type>
+				<app-step-licence-application-type></app-step-licence-application-type>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -66,14 +66,14 @@ export class StepLicenceSetupAuthenticatedComponent implements LicenceStepperSte
 	readonly STEP_LICENCE_TYPE = 1;
 	readonly STEP_APPLICATION_TYPE = 2;
 
-	@ViewChild(LicenceUserProfileComponent)
-	licenceUserProfileComponent!: LicenceUserProfileComponent;
+	@ViewChild(StepLicenceUserProfileComponent)
+	licenceUserProfileComponent!: StepLicenceUserProfileComponent;
 
-	@ViewChild(LicenceTypeSelectionComponent)
-	licenceTypeSelectionComponent!: LicenceTypeSelectionComponent;
+	@ViewChild(StepLicenceTypeSelectionComponent)
+	licenceTypeSelectionComponent!: StepLicenceTypeSelectionComponent;
 
-	@ViewChild(LicenceApplicationTypeComponent)
-	licenceApplicationTypeComponent!: LicenceApplicationTypeComponent;
+	@ViewChild(StepLicenceApplicationTypeComponent)
+	licenceApplicationTypeComponent!: StepLicenceApplicationTypeComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 

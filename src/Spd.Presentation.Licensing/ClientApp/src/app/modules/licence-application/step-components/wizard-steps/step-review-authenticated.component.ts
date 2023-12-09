@@ -3,16 +3,17 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { SummaryReviewAuthenticatedComponent } from '../summary-review-authenticated.component';
+import { StepSummaryReviewAuthenticatedComponent } from '../wizard-child-steps/step-summary-review-authenticated.component';
 
 @Component({
 	selector: 'app-step-review-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-summary-review-authenticated (editStep)="onGoToStep($event)"></app-summary-review-authenticated>
+				<app-step-summary-review-authenticated (editStep)="onGoToStep($event)"></app-step-summary-review-authenticated>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -25,7 +26,7 @@ import { SummaryReviewAuthenticatedComponent } from '../summary-review-authentic
 			</mat-step>
 
 			<mat-step>
-				<app-consent-and-declaration></app-consent-and-declaration>
+				<app-step-consent-and-declaration></app-step-consent-and-declaration>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -48,11 +49,11 @@ export class StepReviewAuthenticatedComponent implements LicenceStepperStepCompo
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	@ViewChild(SummaryReviewAuthenticatedComponent) summaryReviewComponent!: SummaryReviewAuthenticatedComponent;
+	@ViewChild(StepSummaryReviewAuthenticatedComponent) summaryReviewComponent!: StepSummaryReviewAuthenticatedComponent;
 
 	constructor(
 		private router: Router,
-		private licenceApplicationAuthenticatedService: LicenceApplicationService,
+		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
 	) {}
 
@@ -61,16 +62,16 @@ export class StepReviewAuthenticatedComponent implements LicenceStepperStepCompo
 	}
 
 	onPayNow(): void {
-		// this.licenceApplicationAuthenticatedService.submitLicence().subscribe({
-		// 	next: (_resp: any) => {
-		// 		this.hotToastService.success('Your licence has been successfully submitted');
-		// 		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 		this.hotToastService.error('An error occurred during the save. Please try again.');
-		// 	},
-		// });
+		this.licenceApplicationService.submitLicenceAuthenticated().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your licence has been successfully submitted');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
 	}
 
 	onGoToStep(step: number): void {

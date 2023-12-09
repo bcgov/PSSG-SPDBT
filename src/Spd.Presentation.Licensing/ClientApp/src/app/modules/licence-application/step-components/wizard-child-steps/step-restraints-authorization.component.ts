@@ -5,11 +5,11 @@ import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app
 import { BooleanTypeCode, RestraintDocumentTypes } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-restraints-authorization',
+	selector: 'app-step-restraints-authorization',
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
@@ -99,7 +99,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class RestraintsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepRestraintsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 

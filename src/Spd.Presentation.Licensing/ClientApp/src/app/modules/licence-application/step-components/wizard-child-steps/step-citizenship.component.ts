@@ -10,11 +10,11 @@ import {
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-citizenship',
+	selector: 'app-step-citizenship',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -145,7 +145,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CitizenshipComponent implements LicenceChildStepperStepComponent {
+export class StepCitizenshipComponent implements LicenceChildStepperStepComponent {
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;
 

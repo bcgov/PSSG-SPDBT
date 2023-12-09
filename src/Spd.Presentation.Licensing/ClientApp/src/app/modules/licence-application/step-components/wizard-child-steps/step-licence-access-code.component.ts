@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-access-code',
+	selector: 'app-step-licence-access-code',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -53,7 +53,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	`,
 	styles: [],
 })
-export class LicenceAccessCodeComponent implements LicenceChildStepperStepComponent {
+export class StepLicenceAccessCodeComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.formBuilder.group({

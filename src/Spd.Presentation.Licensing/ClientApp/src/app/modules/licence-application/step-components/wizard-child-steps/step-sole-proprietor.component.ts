@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-sole-proprietor',
+	selector: 'app-step-sole-proprietor',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -53,7 +52,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	`,
 	styles: [],
 })
-export class SoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 	infoTitle = '';
@@ -64,7 +63,7 @@ export class SoleProprietorComponent implements OnInit, LicenceChildStepperStepC
 
 	form: FormGroup = this.licenceApplicationService.soleProprietorFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.title_apply;

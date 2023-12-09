@@ -6,11 +6,11 @@ import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-dogs-authorization',
+	selector: 'app-step-dogs-authorization',
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
@@ -97,7 +97,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepDogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.dogsAuthorizationFormGroup;

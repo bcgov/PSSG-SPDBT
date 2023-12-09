@@ -5,8 +5,8 @@ import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-personal-information',

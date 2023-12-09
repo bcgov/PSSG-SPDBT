@@ -453,8 +453,6 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onResume(appl: WorkerLicenceAppListResponse): void {
-		this.licenceApplicationAuthenticatedService.reset();
-
 		this.licenceApplicationAuthenticatedService
 			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
@@ -477,8 +475,6 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onCreateNew(): void {
-		this.licenceApplicationAuthenticatedService.reset();
-
 		this.licenceApplicationAuthenticatedService
 			.createNewLicence()
 			.pipe(

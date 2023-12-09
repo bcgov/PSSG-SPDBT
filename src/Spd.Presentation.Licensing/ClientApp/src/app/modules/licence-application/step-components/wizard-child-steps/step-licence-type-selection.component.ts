@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-type-selection',
+	selector: 'app-step-licence-type-selection',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -115,7 +115,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 		`,
 	],
 })
-export class LicenceTypeSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';

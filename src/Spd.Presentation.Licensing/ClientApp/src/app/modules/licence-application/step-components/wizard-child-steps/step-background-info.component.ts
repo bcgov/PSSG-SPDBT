@@ -6,10 +6,10 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
 @Component({
-	selector: 'app-background-info',
+	selector: 'app-step-background-info',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -123,7 +123,7 @@ import { LicenceChildStepperStepComponent } from '../services/licence-applicatio
 	`,
 	styles: [],
 })
-export class BackgroundInfoComponent implements LicenceChildStepperStepComponent {
+export class StepBackgroundInfoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;

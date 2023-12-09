@@ -7,7 +7,6 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
-
 @Component({
 	selector: 'app-licence-category-fire-investigator',
 	template: `

@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<app-photograph-of-yourself [isCalledFromModal]="true"></app-photograph-of-yourself>
+			<app-step-photograph-of-yourself [isCalledFromModal]="true"></app-step-photograph-of-yourself>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
@@ -30,9 +30,8 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 export class UpdatePhotoModalComponent {
 	constructor(
 		private dialogRef: MatDialogRef<UpdatePhotoModalComponent>,
-		private licenceApplicationService: LicenceApplicationService
-	) // @Inject(MAT_DIALOG_DATA) public dialogData: UpdatePhotoDialogData
-	{}
+		private licenceApplicationService: LicenceApplicationService // @Inject(MAT_DIALOG_DATA) public dialogData: UpdatePhotoDialogData
+	) {}
 
 	onSave(): void {
 		this.dialogRef.close({ success: true });

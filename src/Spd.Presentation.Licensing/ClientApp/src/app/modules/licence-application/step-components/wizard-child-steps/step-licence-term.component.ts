@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-term',
+	selector: 'app-step-licence-term',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -41,7 +41,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	`,
 	styles: [],
 })
-export class LicenceTermComponent implements LicenceChildStepperStepComponent {
+export class StepLicenceTermComponent implements LicenceChildStepperStepComponent {
 	termCodes = this.licenceApplicationService.licenceFeeTermCodes;
 
 	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;

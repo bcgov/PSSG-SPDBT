@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
 @Component({
-	selector: 'app-checklist',
+	selector: 'app-step-checklist',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -119,7 +119,7 @@ import { LicenceChildStepperStepComponent } from '../services/licence-applicatio
 		`,
 	],
 })
-export class ChecklistComponent implements LicenceChildStepperStepComponent {
+export class StepChecklistComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});

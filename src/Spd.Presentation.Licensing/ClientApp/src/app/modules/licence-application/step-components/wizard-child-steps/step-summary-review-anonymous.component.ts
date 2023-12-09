@@ -8,10 +8,10 @@ import {
 } from 'src/app/api/models';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-summary-review-authenticated',
+	selector: 'app-step-summary-review-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -687,9 +687,8 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 		`,
 	],
 })
-export class SummaryReviewAuthenticatedComponent implements OnInit {
+export class StepSummaryReviewAnonymousComponent implements OnInit {
 	licenceModelData: any = {};
-	licenceUserModelData: any = {};
 
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
@@ -697,45 +696,37 @@ export class SummaryReviewAuthenticatedComponent implements OnInit {
 	categoryTypeCodes = WorkerCategoryTypeCode;
 	swlCategoryTypes = WorkerCategoryTypes;
 
-	categoryArmouredCarGuardFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryArmouredCarGuardFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryBodyArmourSalesFormGroup;
+	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
+	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
 	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryClosedCircuitTelevisionInstallerFormGroup;
+		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationAuthenticatedService.categoryLocksmithFormGroup;
+		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
+	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
+	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
 	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categoryPrivateInvestigatorFormGroup;
+		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
 	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityConsultantFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationAuthenticatedService.categoryLocksmithSupFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
+	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
+	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
 	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityAlarmInstallerSupFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
 	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityAlarmMonitorFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
 	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityAlarmSalesFormGroup;
-	categorySecurityGuardFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup =
-		this.licenceApplicationAuthenticatedService.categorySecurityGuardSupFormGroup;
+		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
+	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
+	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
+	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationAuthenticatedService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroupAnonymous.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {
@@ -743,7 +734,7 @@ export class SummaryReviewAuthenticatedComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationAuthenticatedService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroupAnonymous.getRawValue() };
 	}
 
 	get workerLicenceTypeCode(): string {
@@ -806,7 +797,7 @@ export class SummaryReviewAuthenticatedComponent implements OnInit {
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationAuthenticatedService.licenceFeeTermCodes.find(
+		const feeItem = this.licenceApplicationService.licenceFeeTermCodes.find(
 			(item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode
 		);
 		return feeItem?.amount ?? null;
@@ -864,29 +855,29 @@ export class SummaryReviewAuthenticatedComponent implements OnInit {
 	}
 
 	get givenName(): string {
-		return this.licenceUserModelData.personalInformationData.givenName ?? '';
+		return this.licenceModelData.personalInformationData.givenName ?? '';
 	}
 	get middleName1(): string {
-		return this.licenceUserModelData.personalInformationData.middleName1 ?? '';
+		return this.licenceModelData.personalInformationData.middleName1 ?? '';
 	}
 	get middleName2(): string {
-		return this.licenceUserModelData.personalInformationData.middleName2 ?? '';
+		return this.licenceModelData.personalInformationData.middleName2 ?? '';
 	}
 	get surname(): string {
-		return this.licenceUserModelData.personalInformationData.surname ?? '';
+		return this.licenceModelData.personalInformationData.surname ?? '';
 	}
 	get genderCode(): string {
-		return this.licenceUserModelData.personalInformationData.genderCode ?? '';
+		return this.licenceModelData.personalInformationData.genderCode ?? '';
 	}
 	get dateOfBirth(): string {
-		return this.licenceUserModelData.personalInformationData.dateOfBirth ?? '';
+		return this.licenceModelData.personalInformationData.dateOfBirth ?? '';
 	}
 
 	get previousNameFlag(): string {
-		return this.licenceUserModelData.aliasesData.previousNameFlag ?? '';
+		return this.licenceModelData.aliasesData.previousNameFlag ?? '';
 	}
 	get aliases(): Array<any> {
-		return this.licenceUserModelData.aliasesData.aliases ?? [];
+		return this.licenceModelData.aliasesData.aliases ?? [];
 	}
 
 	get isTreatedForMHC(): string {
@@ -984,51 +975,51 @@ export class SummaryReviewAuthenticatedComponent implements OnInit {
 	}
 
 	get contactEmailAddress(): string {
-		return this.licenceUserModelData.contactInformationData?.contactEmailAddress ?? '';
+		return this.licenceModelData.contactInformationData?.contactEmailAddress ?? '';
 	}
 	get contactPhoneNumber(): string {
-		return this.licenceUserModelData.contactInformationData?.contactPhoneNumber ?? '';
+		return this.licenceModelData.contactInformationData?.contactPhoneNumber ?? '';
 	}
 
 	get residentialAddressLine1(): string {
-		return this.licenceUserModelData.residentialAddressData?.addressLine1 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.licenceUserModelData.residentialAddressData?.addressLine2 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.licenceUserModelData.residentialAddressData?.city ?? '';
+		return this.licenceModelData.residentialAddressData?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.licenceUserModelData.residentialAddressData?.postalCode ?? '';
+		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.licenceUserModelData.residentialAddressData?.province ?? '';
+		return this.licenceModelData.residentialAddressData?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.licenceUserModelData.residentialAddressData?.country ?? '';
+		return this.licenceModelData.residentialAddressData?.country ?? '';
 	}
 	get isMailingTheSameAsResidential(): string {
-		return this.licenceUserModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
+		return this.licenceModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.licenceUserModelData.mailingAddressData?.addressLine1 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.licenceUserModelData.mailingAddressData?.addressLine2 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.licenceUserModelData.mailingAddressData?.city ?? '';
+		return this.licenceModelData.mailingAddressData?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.licenceUserModelData.mailingAddressData?.postalCode ?? '';
+		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.licenceUserModelData.mailingAddressData?.province ?? '';
+		return this.licenceModelData.mailingAddressData?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.licenceUserModelData.mailingAddressData?.country ?? '';
+		return this.licenceModelData.mailingAddressData?.country ?? '';
 	}
 	get categoryList(): Array<SelectOptions> {
 		const list: Array<SelectOptions> = [];

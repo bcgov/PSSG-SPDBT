@@ -11,7 +11,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<app-restraints-authorization [isCalledFromModal]="true"></app-restraints-authorization>
+			<app-step-restraints-authorization [isCalledFromModal]="true"></app-step-restraints-authorization>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">

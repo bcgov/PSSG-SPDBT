@@ -3,7 +3,6 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
-
 @Component({
 	selector: 'app-licence-category-security-alarm-installer-sup',
 	template: `

@@ -5,12 +5,12 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
-import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.component';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
+import { FingerprintTearOffModalComponent } from '../fingerprint-tear-off-modal.component';
 
 @Component({
-	selector: 'app-fingerprints',
+	selector: 'app-step-fingerprints',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -83,7 +83,7 @@ import { FingerprintTearOffModalComponent } from './fingerprint-tear-off-modal.c
 	`,
 	styles: [],
 })
-export class FingerprintsComponent implements LicenceChildStepperStepComponent {
+export class StepFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.fingerprintProofFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;

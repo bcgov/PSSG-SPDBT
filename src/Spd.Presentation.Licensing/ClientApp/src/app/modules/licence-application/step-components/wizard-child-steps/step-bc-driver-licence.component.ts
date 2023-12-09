@@ -3,11 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-bc-driver-licence',
+	selector: 'app-step-bc-driver-licence',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -65,7 +65,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class BcDriverLicenceComponent implements LicenceChildStepperStepComponent {
+export class StepBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 

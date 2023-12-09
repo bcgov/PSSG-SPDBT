@@ -1,13 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
-import { UserProfileComponent } from './user-profile.component';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
+import { UserProfileComponent } from '../user-profile.component';
 
 @Component({
-	selector: 'app-licence-user-profile',
+	selector: 'app-step-licence-user-profile',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -49,7 +49,7 @@ import { UserProfileComponent } from './user-profile.component';
 	`,
 	styles: [],
 })
-export class LicenceUserProfileComponent implements LicenceChildStepperStepComponent {
+export class StepLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
 	@ViewChild(UserProfileComponent) userProfileComponent!: UserProfileComponent;
 
 	form: FormGroup = this.licenceApplicationService.profileFormGroup;
@@ -61,9 +61,10 @@ export class LicenceUserProfileComponent implements LicenceChildStepperStepCompo
 	}
 
 	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		const isValid = this.form.valid;
-		const isProfileValid = this.userProfileComponent.isFormValid();
-		return isValid && isProfileValid;
+		// this.form.markAllAsTouched();
+		// const isValid = this.form.valid;
+		// const isProfileValid = this.userProfileComponent.isFormValid();
+		// return isValid && isProfileValid;
+		return true;
 	}
 }

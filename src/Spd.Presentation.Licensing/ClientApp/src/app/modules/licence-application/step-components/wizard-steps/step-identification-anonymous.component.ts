@@ -7,16 +7,16 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { AdditionalGovIdComponent } from '../additional-gov-id.component';
-import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
-import { CitizenshipComponent } from '../citizenship.component';
-import { HeightAndWeightComponent } from '../height-and-weight.component';
-import { PhotographOfYourselfComponent } from '../photograph-of-yourself.component';
-import { StepAliasesComponent } from '../step-aliases.component';
-import { StepContactInformationComponent } from '../step-contact-information.component';
-import { StepMailingAddressComponent } from '../step-mailing-address.component';
-import { StepPersonalInformationComponent } from '../step-personal-information.component';
-import { StepResidentialAddressComponent } from '../step-residential-address.component';
+import { StepAdditionalGovIdComponent } from '../wizard-child-steps/step-additional-gov-id.component';
+import { StepAliasesComponent } from '../wizard-child-steps/step-aliases.component';
+import { StepBcDriverLicenceComponent } from '../wizard-child-steps/step-bc-driver-licence.component';
+import { StepCitizenshipComponent } from '../wizard-child-steps/step-citizenship.component';
+import { StepContactInformationComponent } from '../wizard-child-steps/step-contact-information.component';
+import { StepHeightAndWeightComponent } from '../wizard-child-steps/step-height-and-weight.component';
+import { StepMailingAddressComponent } from '../wizard-child-steps/step-mailing-address.component';
+import { StepPersonalInformationComponent } from '../wizard-child-steps/step-personal-information.component';
+import { StepPhotographOfYourselfComponent } from '../wizard-child-steps/step-photograph-of-yourself.component';
+import { StepResidentialAddressComponent } from '../wizard-child-steps/step-residential-address.component';
 
 @Component({
 	selector: 'app-step-identification-anonymous',
@@ -93,7 +93,7 @@ import { StepResidentialAddressComponent } from '../step-residential-address.com
 			</mat-step>
 
 			<mat-step>
-				<app-citizenship></app-citizenship>
+				<app-step-citizenship></app-step-citizenship>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -123,7 +123,7 @@ import { StepResidentialAddressComponent } from '../step-residential-address.com
 			</mat-step>
 
 			<mat-step *ngIf="showAdditionalGovermentIdStep">
-				<app-additional-gov-id></app-additional-gov-id>
+				<app-step-additional-gov-id></app-step-additional-gov-id>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -158,7 +158,7 @@ import { StepResidentialAddressComponent } from '../step-residential-address.com
 			</mat-step>
 
 			<mat-step>
-				<app-bc-driver-licence></app-bc-driver-licence>
+				<app-step-bc-driver-licence></app-step-bc-driver-licence>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -193,7 +193,7 @@ import { StepResidentialAddressComponent } from '../step-residential-address.com
 			</mat-step>
 
 			<mat-step>
-				<app-height-and-weight></app-height-and-weight>
+				<app-step-height-and-weight></app-step-height-and-weight>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -228,7 +228,7 @@ import { StepResidentialAddressComponent } from '../step-residential-address.com
 			</mat-step>
 
 			<mat-step>
-				<app-photograph-of-yourself></app-photograph-of-yourself>
+				<app-step-photograph-of-yourself></app-step-photograph-of-yourself>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -389,11 +389,11 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 
 	@ViewChild(StepPersonalInformationComponent) personalInformationComponent!: StepPersonalInformationComponent;
 	@ViewChild(StepAliasesComponent) aliasesComponent!: StepAliasesComponent;
-	@ViewChild(CitizenshipComponent) citizenshipComponent!: CitizenshipComponent;
-	@ViewChild(AdditionalGovIdComponent) additionalGovIdComponent!: AdditionalGovIdComponent;
-	@ViewChild(BcDriverLicenceComponent) bcDriverLicenceComponent!: BcDriverLicenceComponent;
-	@ViewChild(HeightAndWeightComponent) heightAndWeightComponent!: HeightAndWeightComponent;
-	@ViewChild(PhotographOfYourselfComponent) photoComponent!: PhotographOfYourselfComponent;
+	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
+	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
+	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
+	@ViewChild(StepHeightAndWeightComponent) heightAndWeightComponent!: StepHeightAndWeightComponent;
+	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
 	@ViewChild(StepResidentialAddressComponent) residentialAddressComponent!: StepResidentialAddressComponent;
 	@ViewChild(StepMailingAddressComponent) mailingAddressComponent!: StepMailingAddressComponent;
 	@ViewChild(StepContactInformationComponent) stepContactInformationComponent!: StepContactInformationComponent;
@@ -406,13 +406,14 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-			.pipe(debounceTime(200), distinctUntilChanged())
-			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-			});
+		this.licenceModelChangedSubscription =
+			this.licenceApplicationService.licenceModelFormGroupAuthenticated.valueChanges
+				.pipe(debounceTime(200), distinctUntilChanged())
+				.subscribe((_resp: any) => {
+					this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
+				});
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {

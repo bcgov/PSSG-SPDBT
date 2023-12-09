@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-criminal-history',
+	selector: 'app-step-criminal-history',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -37,7 +37,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	`,
 	styles: [],
 })
-export class CriminalHistoryComponent implements LicenceChildStepperStepComponent {
+export class StepCriminalHistoryComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;

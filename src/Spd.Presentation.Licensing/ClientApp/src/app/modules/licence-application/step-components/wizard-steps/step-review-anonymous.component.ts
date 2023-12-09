@@ -5,14 +5,14 @@ import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { SummaryReviewAuthenticatedComponent } from '../summary-review-authenticated.component';
+import { StepSummaryReviewAuthenticatedComponent } from '../wizard-child-steps/step-summary-review-authenticated.component';
 
 @Component({
 	selector: 'app-step-review-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-summary-review-anonymous (editStep)="onGoToStep($event)"></app-summary-review-anonymous>
+				<app-step-summary-review-anonymous (editStep)="onGoToStep($event)"></app-step-summary-review-anonymous>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -25,7 +25,7 @@ import { SummaryReviewAuthenticatedComponent } from '../summary-review-authentic
 			</mat-step>
 
 			<mat-step>
-				<app-consent-and-declaration></app-consent-and-declaration>
+				<app-step-consent-and-declaration></app-step-consent-and-declaration>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -48,7 +48,7 @@ export class StepReviewAnonymousComponent implements LicenceStepperStepComponent
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	@ViewChild(SummaryReviewAuthenticatedComponent) summaryReviewComponent!: SummaryReviewAuthenticatedComponent;
+	@ViewChild(StepSummaryReviewAuthenticatedComponent) summaryReviewComponent!: StepSummaryReviewAuthenticatedComponent;
 
 	constructor(
 		private router: Router,

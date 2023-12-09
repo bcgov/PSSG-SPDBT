@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from 'src/app/api/models';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-application-type',
+	selector: 'app-step-licence-application-type',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -86,7 +86,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	`,
 	styles: [],
 })
-export class LicenceApplicationTypeComponent implements LicenceChildStepperStepComponent {
+export class StepLicenceApplicationTypeComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;

@@ -11,7 +11,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<app-dogs-authorization [isCalledFromModal]="true"></app-dogs-authorization>
+			<app-step-dogs-authorization [isCalledFromModal]="true"></app-step-dogs-authorization>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">

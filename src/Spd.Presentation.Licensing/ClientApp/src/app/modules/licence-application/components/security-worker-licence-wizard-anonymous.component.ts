@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { LicenceApplicationService } from '../services/licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationAnonymousComponent } from '../step-components/wizard-steps/step-identification-anonymous.component';
@@ -102,7 +102,7 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 
 	orientation: StepperOrientation = 'vertical';
 
-	isFormValid = false;
+	// isFormValid = false;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -128,12 +128,11 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 
 	constructor(
 		private breakpointObserver: BreakpointObserver,
-		// protected licenceApplicationAnonymousService: LicenceApplicationAnonymousService,
-		protected licenceApplicationService: LicenceApplicationService
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		// this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -147,15 +146,15 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 			},
 		});
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-			.pipe(debounceTime(200), distinctUntilChanged())
-			.subscribe((_resp: any) => {
-				this.licenceApplicationService.hasValueChanged = true;
+		// this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		// 	.pipe(debounceTime(200), distinctUntilChanged())
+		// 	.subscribe((_resp: any) => {
+		// 		this.licenceApplicationService.hasValueChanged = true;
 
-				console.debug('*******valueChanges to TRUE');
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-				console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
-			});
+		// 		console.debug('*******valueChanges to TRUE');
+		// 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		// 		console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
+		// 	});
 	}
 
 	ngAfterViewInit(): void {
@@ -253,7 +252,7 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 		this.step3Complete = this.licenceApplicationService.isStep3Complete();
 		this.step4Complete = this.licenceApplicationService.isStep4Complete();
 
-		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 
 	onChildNextStep() {

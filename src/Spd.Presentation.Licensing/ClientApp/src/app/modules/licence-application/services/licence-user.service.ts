@@ -47,45 +47,45 @@ export class LicenceUserService {
 	createNewLicenceUser(): Observable<any> {
 		this.licenceApplicationService.reset();
 
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
-		if (bcscUserWhoamiProfile) {
-			this.licenceApplicationService.licenceUserModelFormGroup.patchValue(
-				{
-					personalInformationData: {
-						givenName: bcscUserWhoamiProfile.firstName,
-						middleName1: bcscUserWhoamiProfile.middleName1,
-						middleName2: bcscUserWhoamiProfile.middleName2,
-						surname: bcscUserWhoamiProfile.lastName,
-						dateOfBirth: bcscUserWhoamiProfile.birthDate,
-						genderCode: bcscUserWhoamiProfile.gender,
-					},
-					residentialAddressData: {
-						addressSelected: true,
-						isMailingTheSameAsResidential: false,
-						addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-						addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-						city: bcscUserWhoamiProfile.residentialAddress?.city,
-						country: bcscUserWhoamiProfile.residentialAddress?.country,
-						postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-						province: bcscUserWhoamiProfile.residentialAddress?.province,
-					},
-				},
-				{ emitEvent: false }
-			);
-		} else {
-			this.licenceApplicationService.licenceUserModelFormGroup.patchValue(
-				{
-					residentialAddressData: {
-						isMailingTheSameAsResidential: false,
-					},
-				},
-				{ emitEvent: false }
-			);
-		}
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+		// if (bcscUserWhoamiProfile) {
+		// 	this.licenceApplicationService.licenceUserModelFormGroup.patchValue(
+		// 		{
+		// 			personalInformationData: {
+		// 				givenName: bcscUserWhoamiProfile.firstName,
+		// 				middleName1: bcscUserWhoamiProfile.middleName1,
+		// 				middleName2: bcscUserWhoamiProfile.middleName2,
+		// 				surname: bcscUserWhoamiProfile.lastName,
+		// 				dateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 				genderCode: bcscUserWhoamiProfile.gender,
+		// 			},
+		// 			residentialAddressData: {
+		// 				addressSelected: true,
+		// 				isMailingTheSameAsResidential: false,
+		// 				addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+		// 				addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+		// 				city: bcscUserWhoamiProfile.residentialAddress?.city,
+		// 				country: bcscUserWhoamiProfile.residentialAddress?.country,
+		// 				postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+		// 				province: bcscUserWhoamiProfile.residentialAddress?.province,
+		// 			},
+		// 		},
+		// 		{ emitEvent: false }
+		// 	);
+		// } else {
+		// 	this.licenceApplicationService.licenceUserModelFormGroup.patchValue(
+		// 		{
+		// 			residentialAddressData: {
+		// 				isMailingTheSameAsResidential: false,
+		// 			},
+		// 		},
+		// 		{ emitEvent: false }
+		// 	);
+		// }
 
-		console.debug('NEW licenceUserModelFormGroup', this.licenceApplicationService.licenceUserModelFormGroup.value);
+		// console.debug('NEW licenceUserModelFormGroup', this.licenceApplicationService.licenceUserModelFormGroup.value);
 
-		this.licenceApplicationService.initialized = true;
-		return of(this.licenceApplicationService.licenceUserModelFormGroup.value);
+		// this.licenceApplicationService.initialized = true;
+		return of(this.licenceApplicationService.licenceModelFormGroupAuthenticated.value);
 	}
 }

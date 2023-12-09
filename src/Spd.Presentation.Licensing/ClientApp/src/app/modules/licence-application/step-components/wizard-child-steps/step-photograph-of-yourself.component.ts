@@ -6,11 +6,11 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-photograph-of-yourself',
+	selector: 'app-step-photograph-of-yourself',
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
@@ -102,7 +102,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class PhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
+export class StepPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
