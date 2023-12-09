@@ -45,6 +45,7 @@ internal partial class PersonalLicenceAppManager
         return _mapper.Map<IEnumerable<LicenceAppDocumentResponse>>(docResps);
     }
 
+
     private async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
         //citizenship
@@ -367,5 +368,17 @@ internal partial class PersonalLicenceAppManager
             LicenceDocumentTypeCode.CanadianPassport,
             LicenceDocumentTypeCode.BirthCertificate,
             LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
+        };
+
+    public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new List<WorkerCategoryTypeCode> {
+            WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
+            WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
+            WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+            WorkerCategoryTypeCode.SecurityAlarmMonitor,
+            WorkerCategoryTypeCode.SecurityAlarmResponse,
+            WorkerCategoryTypeCode.SecurityAlarmSales,
+            WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
+            WorkerCategoryTypeCode.LocksmithUnderSupervision,
+            WorkerCategoryTypeCode.BodyArmourSales
         };
 }

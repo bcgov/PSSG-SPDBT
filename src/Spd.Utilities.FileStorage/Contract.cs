@@ -9,6 +9,7 @@
     public abstract record StorageCommand(string Key, string? Folder);
 
     public record UploadFileCommand(string Key, string? Folder, File File, FileTag FileTag) : StorageCommand(Key, Folder);
+    public record UploadFileStreamCommand(string Key, string? Folder, FileStream FileStream, FileTag FileTag) : StorageCommand(Key, Folder);
 
     public record UpdateTagsCommand(string Key, string? Folder, FileTag? FileTag) : StorageCommand(Key, Folder);
 
@@ -20,6 +21,14 @@
     public record File
     {
         public byte[] Content { get; set; } = Array.Empty<byte>();
+        public string? ContentType { get; set; }
+        public string? FileName { get; set; }
+        public IEnumerable<Metadata> Metadata { get; set; } = Array.Empty<Metadata>();
+    }
+
+    public record FileStream
+    {
+        public Stream? FileContentStream { get; set; }
         public string? ContentType { get; set; }
         public string? FileName { get; set; }
         public IEnumerable<Metadata> Metadata { get; set; } = Array.Empty<Metadata>();
