@@ -83,7 +83,6 @@ public record ApplicationCreateCmd
     public PayerPreferenceTypeCode PayeeType { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
     public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
-    //public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
     public string? CreatedByApplicantBcscId { get; set; } = null;
     public Guid? SharedClearanceId { get; set; } = null;
     public Guid? ContactId { get; set; }
@@ -121,7 +120,7 @@ public record SpdTempFile
     public string ContentType { get; set; } = null!;
     public string FileName { get; set; } = null!;
     public long FileSize { get; set; } = 0;
-    public string? TempFileName { get;set; } = null!;//it is the file location in the hard disk
+    public string? TempFilePath { get;set; } = null!;//it is the file location in the hard disk
 }
 public record ApplicationResult
 {

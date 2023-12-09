@@ -27,7 +27,6 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
-        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequest> _anonymousWslSubmitValidator;
         private readonly IValidator<AnonymousWorkerLicenceSubmitCommand> _anonymousWslCommandValidator;
         private readonly IMultipartRequestService _multipartRequestService;
         private readonly IMapper _mapper;
@@ -37,7 +36,6 @@ namespace Spd.Presentation.Licensing.Controllers
             IMediator mediator,
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
-            IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousWslSubmitValidator,
             IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
             IMultipartRequestService multipartRequestService,
             IMapper mapper)
@@ -49,7 +47,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _wslSubmitValidator = wslSubmitValidator;
             _multipartRequestService = multipartRequestService;
             _mapper = mapper;
-            _anonymousWslSubmitValidator = anonymousWslSubmitValidator;
             _anonymousWslCommandValidator = anonymousWslCommandValidator;
         }
 

@@ -192,7 +192,7 @@ internal class DocumentRepository : IDocumentRepository
         {
             Utilities.FileStorage.FileStream fileStream = new()
             {
-                FileContentStream = System.IO.File.OpenRead(tempFile.TempFileName),
+                FileContentStream = System.IO.File.OpenRead(tempFile.TempFilePath),
                 ContentType = tempFile.ContentType,
                 FileName = tempFile.FileName,
             };

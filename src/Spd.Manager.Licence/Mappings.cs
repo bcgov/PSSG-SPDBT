@@ -36,7 +36,7 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<UploadFileRequest, SpdTempFile>()
-            .ForMember(d => d.TempFileName, opt => opt.MapFrom(s => s.FilePath)); 
+            .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath)); 
     }
 
     private WorkerLicenceAppCategory[] GetCategories(WorkerCategoryTypeCode[] codes)
