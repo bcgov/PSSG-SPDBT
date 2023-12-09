@@ -157,33 +157,63 @@ internal class DocumentRepository : IDocumentRepository
     {
         if (applicationId == null) return;
         if (docUrlId == null) return;
-        byte[]? consentFileContent = await _tempFileService.HandleQuery(
-            new GetTempFileQuery(tempFile.TempFileKey), ct);
-        if (consentFileContent == null) return;
 
-        Utilities.FileStorage.File file = new()
+        if (tempFile.TempFileKey != null)
         {
-            Content = consentFileContent,
-            ContentType = tempFile.ContentType,
-            FileName = tempFile.FileName,
-        };
-        FileTag fileTag = tag == null ?
-            new FileTag() { Tags = new List<Tag> { new Tag("file-classification", "Unclassified") } } :
-            new FileTag()
+            byte[]? fileContent = await _tempFileService.HandleQuery(
+                new GetTempFileQuery(tempFile.TempFileKey), ct);
+            if (fileContent == null) return;
+
+            Utilities.FileStorage.File file = new()
             {
-                Tags = new List<Tag>
+                Content = fileContent,
+                ContentType = tempFile.ContentType,
+                FileName = tempFile.FileName,
+            };
+            FileTag fileTag = tag == null ?
+                new FileTag() { Tags = new List<Tag> { new Tag("file-classification", "Unclassified") } } :
+                new FileTag()
                 {
+                    Tags = new List<Tag>
+                    {
                     new Tag("file-classification", "Unclassified"),
                     new Tag("file-tag", tag.bcgov_name)
-                }
-            };
+                    }
+                };
 
-        await _fileStorageService.HandleCommand(new UploadFileCommand(
-                    Key: ((Guid)docUrlId).ToString(),
-                    Folder: $"spd_application/{applicationId}",
-                    File: file,
-                    FileTag: fileTag
-                    ), ct);
+            await _fileStorageService.HandleCommand(new UploadFileCommand(
+                        Key: ((Guid)docUrlId).ToString(),
+                        Folder: $"spd_application/{applicationId}",
+                        File: file,
+                        FileTag: fileTag
+                        ), ct);
+        }
+        else
+        {
+            Utilities.FileStorage.FileStream fileStream = new()
+            {
+                FileContentStream = System.IO.File.OpenRead(tempFile.TempFilePath),
+                ContentType = tempFile.ContentType,
+                FileName = tempFile.FileName,
+            };
+            FileTag fileTag = tag == null ?
+                new FileTag() { Tags = new List<Tag> { new Tag("file-classification", "Unclassified") } } :
+                new FileTag()
+                {
+                    Tags = new List<Tag>
+                    {
+                    new Tag("file-classification", "Unclassified"),
+                    new Tag("file-tag", tag.bcgov_name)
+                    }
+                };
+
+            await _fileStorageService.HandleCommand(new UploadFileStreamCommand(
+                        Key: ((Guid)docUrlId).ToString(),
+                        Folder: $"spd_application/{applicationId}",
+                        FileStream: fileStream,
+                        FileTag: fileTag
+                        ), ct);
+        }
     }
 
     private async Task DeleteFileAsync(Guid docUrlId, Guid applicationId, CancellationToken ct)

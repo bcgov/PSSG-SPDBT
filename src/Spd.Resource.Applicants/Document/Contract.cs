@@ -46,6 +46,9 @@ namespace Spd.Resource.Applicants.Document
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
     }
 
+    public record CreateStreamDocumentCmd : CreateDocumentCmd
+    { }
+
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record ReactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record UpdateDocumentCmd(Guid DocumentUrlId, DateOnly? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;

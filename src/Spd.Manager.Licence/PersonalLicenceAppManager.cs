@@ -16,6 +16,7 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
+        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IPersonalLicenceAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -119,6 +120,32 @@ internal partial class PersonalLicenceAppManager :
         );
         var response = await _licenceAppRepository.QueryAsync(q, ct);
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
+    }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        ICollection<UploadFileRequest> fileRequests = cmd.UploadFileRequests;
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        foreach (UploadFileRequest uploadRequest in fileRequests)
+        {
+            SpdTempFile spdTempFile = _mapper.Map<SpdTempFile>(uploadRequest);
+            DocumentTypeEnum? docType1 = GetDocumentType1Enum(uploadRequest.FileTypeCode);
+            DocumentTypeEnum? docType2 = GetDocumentType2Enum(uploadRequest.FileTypeCode);
+            //create bcgov_documenturl and file
+            await _documentRepository.ManageAsync(new CreateDocumentCmd
+            {
+                TempFile = spdTempFile,
+                ApplicationId = response.LicenceAppId,
+                DocumentType = docType1,
+                DocumentType2 = docType2,
+                SubmittedByApplicantId = response.ContactId
+            }, ct);
+        }
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
