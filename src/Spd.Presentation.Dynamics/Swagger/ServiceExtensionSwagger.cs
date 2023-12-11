@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Rsvp.Cms.Api.Filters;
-using Spd.Utilities.Hosting.ApiFilters;
+using Spd.Presentation.Dynamics.Swagger.ApiFilters;
 
-namespace Spd.Utilities.Hosting
+namespace Spd.Presentation.Dynamics.Swagger
 {
     public static class ServiceExtensionSwagger
     {
@@ -39,13 +37,11 @@ namespace Spd.Utilities.Hosting
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
 
-                //c.OperationFilter<AddRequiredHeaderParameter>();
                 c.OperationFilter<ProducesResponseTypeFilter>();
-                c.OperationFilter<AddApplicationPostParamTypesFilter>();
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFileName = $"{assemblyName}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-                if(File.Exists(xmlPath))
+                if (File.Exists(xmlPath))
                     c.IncludeXmlComments(xmlPath);
                 // Provide sample for JsonElement
                 //c.SchemaFilter<ExamplesSchemaFilter>();

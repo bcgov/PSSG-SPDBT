@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Rsvp.Cms.Api.Filters
+namespace Spd.Presentation.Screening.Swagger.ApiFilters
 {
     /// <summary>
     /// To manually definate the Document Post API
