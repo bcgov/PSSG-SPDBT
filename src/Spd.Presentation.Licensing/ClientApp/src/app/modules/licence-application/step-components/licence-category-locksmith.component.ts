@@ -8,8 +8,8 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceChildStepperStepComponent } from '../licence-application.helper';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-locksmith',
@@ -67,7 +67,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="fs-6 fw-bold mb-2">
-					<span *ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification">
+					<span
+						*ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification"
+					>
 						Upload a copy of your certificate:
 					</span>
 					<span

@@ -38,6 +38,15 @@ export class UtilService {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
+	getFullNameWithMiddle(
+		firstName: string | null | undefined,
+		middleName1: string | null | undefined,
+		middleName2: string | null | undefined,
+		lastName: string | null | undefined
+	): string {
+		return `${firstName ?? ''} ${middleName1 ?? ''} ${middleName2 ?? ''} ${lastName ?? ''}`.trim();
+	}
+
 	getBirthDateMax(): moment.Moment {
 		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}

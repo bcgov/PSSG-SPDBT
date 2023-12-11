@@ -221,7 +221,7 @@ export const BooleanTypes: SelectOptions[] = [
 
 export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
 	{ desc: 'Birth Certificate', code: LicenceDocumentTypeCode.BirthCertificate },
-	{ desc: 'Secure Certificate of Indian Status', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
+	{ desc: 'Secure Certificate of Indian Status', code: LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen },
 	{ desc: 'Valid Canadian Passport', code: LicenceDocumentTypeCode.CanadianPassport },
 ];
 

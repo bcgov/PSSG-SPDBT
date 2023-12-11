@@ -33,10 +33,11 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "no-mixed-spaces-and-tabs": 0,
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-non-null-asserted-optional-chain": "off", //"warn",
+        // "no-unused-vars": "warn",
+        "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+        "@angular-eslint/no-empty-lifecycle-method": "warn",
         "@typescript-eslint/no-unused-vars": [
-          "error",
+          "warn",
           {
             "argsIgnorePattern": "^_",
             "varsIgnorePattern": "^_",
