@@ -1,22 +1,22 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { PoliceOfficerRoleCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceStepperStepComponent } from '../../licence-application.helper';
-import { LicenceApplicationService } from '../../licence-application.service';
-import { CriminalHistoryComponent } from '../criminal-history.component';
-import { FingerprintsComponent } from '../fingerprints.component';
-import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
-import { PoliceBackgroundComponent } from '../police-background.component';
+import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
+import { StepCriminalHistoryComponent } from '../wizard-child-steps/step-criminal-history.component';
+import { StepFingerprintsComponent } from '../wizard-child-steps/step-fingerprints.component';
+import { StepMentalHealthConditionsComponent } from '../wizard-child-steps/step-mental-health-conditions.component';
+import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police-background.component';
 
 @Component({
 	selector: 'app-step-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-police-background></app-police-background>
+				<app-step-police-background></app-step-police-background>
 
 				<div class="row mt-4" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -51,7 +51,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			</mat-step>
 
 			<mat-step>
-				<app-mental-health-conditions></app-mental-health-conditions>
+				<app-step-mental-health-conditions></app-step-mental-health-conditions>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -91,7 +91,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			</mat-step>
 
 			<mat-step>
-				<app-criminal-history></app-criminal-history>
+				<app-step-criminal-history></app-step-criminal-history>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -126,7 +126,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			</mat-step>
 
 			<mat-step>
-				<app-fingerprints></app-fingerprints>
+				<app-step-fingerprints></app-step-fingerprints>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -154,21 +154,6 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 					</div>
 				</div>
 			</mat-step>
-
-			<!-- <mat-step *ngIf="showStepBackgroundInfo">
-				<app-background-info></app-background-info>
-
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large bordered mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_BACKGROUND_INFO)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step> -->
 		</mat-stepper>
 	`,
 	styles: [],
@@ -195,13 +180,14 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	showStepFingerprints = true;
 	showStepBackgroundInfo = true;
 
-	@ViewChild(PoliceBackgroundComponent) policeBackgroundComponent!: PoliceBackgroundComponent;
-	@ViewChild(MentalHealthConditionsComponent) mentalHealthConditionsComponent!: MentalHealthConditionsComponent;
-	@ViewChild(CriminalHistoryComponent) criminalHistoryComponent!: CriminalHistoryComponent;
-	@ViewChild(FingerprintsComponent) fingerprintsComponent!: FingerprintsComponent;
-	// @ViewChild(BackgroundInfoComponent) backgroundInfoComponent!: BackgroundInfoComponent;
+	@ViewChild(StepPoliceBackgroundComponent) policeBackgroundComponent!: StepPoliceBackgroundComponent;
+	@ViewChild(StepMentalHealthConditionsComponent) mentalHealthConditionsComponent!: StepMentalHealthConditionsComponent;
+	@ViewChild(StepCriminalHistoryComponent) criminalHistoryComponent!: StepCriminalHistoryComponent;
+	@ViewChild(StepFingerprintsComponent) fingerprintsComponent!: StepFingerprintsComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
+
+	// @Input() licenceModelFormGroup!: FormGroup;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -216,14 +202,20 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: any) => {
+				console.log('licenceModelValueChanges$', _resp);
+				this.isFormValid = _resp;
+			}
+		);
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-			.pipe(debounceTime(200), distinctUntilChanged())
-			.subscribe((_resp: any) => {
-				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-			});
-
+		// this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		// this.licenceModelChangedSubscription =
+		// 	this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		// 		.pipe(debounceTime(200), distinctUntilChanged())
+		// 		.subscribe((_resp: any) => {
+		// 			this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		// 		});
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				this.isLoggedIn = isLoggedIn;
@@ -293,8 +285,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 				return this.criminalHistoryComponent.isFormValid();
 			case this.STEP_FINGERPRINTS:
 				return this.fingerprintsComponent.isFormValid();
-			// case this.STEP_BACKGROUND_INFO:
-			// 	return this.backgroundInfoComponent.isFormValid();
 		}
 		return false;
 	}
