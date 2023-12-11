@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Rsvp.Cms.Api.Filters
+namespace Spd.Presentation.Licensing.Swagger.ApiFilters
 {
     /// <summary>
     /// To manually definate the Document Post API
@@ -403,57 +403,57 @@ namespace Rsvp.Cms.Api.Filters
                                             new OpenApiSchema
                                             {
                                                 Type = "Address",
-                                                Properties =
-                                                {
-                                                    {
-                                                        "addressLine1",
-                                                        new OpenApiSchema
-                                                        {
-                                                            Type = "string",
-                                                            Nullable= true,
-                                                        }
-                                                    },
-                                                    {
-                                                        "addressLine2",
-                                                        new OpenApiSchema
-                                                        {
-                                                            Type = "string",
-                                                            Nullable= true,
-                                                        }
-                                                    },
-                                                    {
-                                                        "city",
-                                                        new OpenApiSchema
-                                                        {
-                                                            Type = "string",
-                                                            Nullable= true,
-                                                        }
-                                                    },
-                                                    {
-                                                        "country",
-                                                        new OpenApiSchema
-                                                        {
-                                                            Type = "string",
-                                                            Nullable= true,
-                                                        }
-                                                    },
-                                                    {
-                                                        "postalCode",
-                                                        new OpenApiSchema
-                                                        {
-                                                            Type = "string",
-                                                            Nullable= true,
-                                                        }
-                                                    },
-                                                    {
-                                                        "province",
-                                                        new OpenApiSchema
-                                                        {
-                                                            Type = "string",
-                                                            Nullable= true,
-                                                        }
-                                                    }
-                                                }
+                                                //Properties =
+                                                //{
+                                                //    {
+                                                //        "addressLine1",
+                                                //        new OpenApiSchema
+                                                //        {
+                                                //            Type = "string",
+                                                //            Nullable= true,
+                                                //        }
+                                                //    },
+                                                //    {
+                                                //        "addressLine2",
+                                                //        new OpenApiSchema
+                                                //        {
+                                                //            Type = "string",
+                                                //            Nullable= true,
+                                                //        }
+                                                //    },
+                                                //    {
+                                                //        "city",
+                                                //        new OpenApiSchema
+                                                //        {
+                                                //            Type = "string",
+                                                //            Nullable= true,
+                                                //        }
+                                                //    },
+                                                //    {
+                                                //        "country",
+                                                //        new OpenApiSchema
+                                                //        {
+                                                //            Type = "string",
+                                                //            Nullable= true,
+                                                //        }
+                                                //    },
+                                                //    {
+                                                //        "postalCode",
+                                                //        new OpenApiSchema
+                                                //        {
+                                                //            Type = "string",
+                                                //            Nullable= true,
+                                                //        }
+                                                //    },
+                                                //    {
+                                                //        "province",
+                                                //        new OpenApiSchema
+                                                //        {
+                                                //            Type = "string",
+                                                //            Nullable= true,
+                                                //        }
+                                                //    }
+                                                //}
                                             }
                                         },
                                         {

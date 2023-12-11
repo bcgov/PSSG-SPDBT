@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Dynamics.CRM;
-using Microsoft.Extensions.Configuration;
+using Spd.Presentation.Dynamics.Swagger;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
@@ -38,7 +37,7 @@ builder.Services.ConfigureCors(builder.Configuration);
 var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
 
 string? protectionShareKeyAppName = builder.Configuration.GetValue<string>("ProtectionShareKeyAppName");
-if(protectionShareKeyAppName == null) 
+if (protectionShareKeyAppName == null)
     throw new ConfigurationErrorsException("ProtectionShareKeyAppName is not set correctly.");
 builder.Services.ConfigureDataProtection(builder.Configuration, protectionShareKeyAppName);
 
