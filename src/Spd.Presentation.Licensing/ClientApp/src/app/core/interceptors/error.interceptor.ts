@@ -63,7 +63,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 				};
 
 				this.dialog.open(DialogOopsComponent, { data: dialogOptions });
-				return throwError(() => new Error(message));
+				return throwError(() => errorResponse); //new Error(message));
 			})
 		) as Observable<HttpEvent<any>>;
 	}

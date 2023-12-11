@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -45,7 +45,7 @@ export class Address {
 	template: `
 		<form [formGroup]="form">
 			<div class="row">
-				<div class="col-xl-7 col-lg-7 col-md-12">
+				<div [ngClass]="isWizardStep ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
 					<mat-form-field>
 						<mat-label>Address Completed by Canada Post</mat-label>
 						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
@@ -75,7 +75,7 @@ export class Address {
 					</button>
 				</div>
 
-				<div class="col-xl-5 col-lg-5 col-md-12">
+				<div [ngClass]="isWizardStep ? 'col-xl-5 col-lg-5 col-md-12' : 'col-12'">
 					<mat-form-field>
 						<mat-label>Country</mat-label>
 						<mat-select formControlName="country">
@@ -101,6 +101,7 @@ export class Address {
 export class AddressAutocompleteComponent implements OnInit {
 	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();
 	@Output() enterAddressManually: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Input() isWizardStep = true;
 
 	form!: FormGroup;
 	addressAutocompleteFields!: AddressFindResponse[];
