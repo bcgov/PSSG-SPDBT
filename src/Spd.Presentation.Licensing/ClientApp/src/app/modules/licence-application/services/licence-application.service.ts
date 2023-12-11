@@ -30,9 +30,9 @@ import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { PrivateInvestigatorTrainingCode, RestraintDocumentTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
@@ -44,66 +44,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	hasValueChanged = false;
 
 	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-	// licenceModelAnonymousValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	licenceFees: Array<LicenceFeeResponse> = [];
 	licenceFeeTermCodes: Array<LicenceFeeResponse> = [];
 
-	// licenceModelFormGroupAnonymous: FormGroup = this.formBuilder.group({
-	// 	licenceAppId: new FormControl(null, [FormControlValidators.required]),
-	// 	workerLicenceTypeData: this.workerLicenceTypeFormGroup,
-	// 	applicationTypeData: this.applicationTypeFormGroup,
-	// 	soleProprietorData: this.soleProprietorFormGroup,
-	// 	personalInformationData: this.personalInformationFormGroup,
-	// 	expiredLicenceData: this.expiredLicenceFormGroup,
-	// 	licenceTermData: this.licenceTermFormGroup,
-	// 	restraintsAuthorizationData: this.restraintsAuthorizationFormGroup,
-	// 	dogsAuthorizationData: this.dogsAuthorizationFormGroup,
-
-	// 	categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
-	// 	categoryBodyArmourSalesFormGroup: this.categoryBodyArmourSalesFormGroup,
-	// 	categoryClosedCircuitTelevisionInstallerFormGroup: this.categoryClosedCircuitTelevisionInstallerFormGroup,
-	// 	categoryElectronicLockingDeviceInstallerFormGroup: this.categoryElectronicLockingDeviceInstallerFormGroup,
-	// 	categoryFireInvestigatorFormGroup: this.categoryFireInvestigatorFormGroup,
-	// 	categoryLocksmithFormGroup: this.categoryLocksmithFormGroup,
-	// 	categoryLocksmithSupFormGroup: this.categoryLocksmithSupFormGroup,
-	// 	categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
-	// 	categoryPrivateInvestigatorSupFormGroup: this.categoryPrivateInvestigatorSupFormGroup,
-	// 	categorySecurityAlarmInstallerFormGroup: this.categorySecurityAlarmInstallerFormGroup,
-	// 	categorySecurityAlarmInstallerSupFormGroup: this.categorySecurityAlarmInstallerSupFormGroup,
-	// 	categorySecurityConsultantFormGroup: this.categorySecurityConsultantFormGroup,
-	// 	categorySecurityAlarmMonitorFormGroup: this.categorySecurityAlarmMonitorFormGroup,
-	// 	categorySecurityAlarmResponseFormGroup: this.categorySecurityAlarmResponseFormGroup,
-	// 	categorySecurityAlarmSalesFormGroup: this.categorySecurityAlarmSalesFormGroup,
-	// 	categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
-	// 	categorySecurityGuardSupFormGroup: this.categorySecurityGuardSupFormGroup,
-
-	// 	policeBackgroundData: this.policeBackgroundFormGroup,
-	// 	mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
-	// 	criminalHistoryData: this.criminalHistoryFormGroup,
-	// 	fingerprintProofData: this.fingerprintProofFormGroup,
-
-	// 	aliasesData: this.aliasesFormGroup,
-	// 	citizenshipData: this.citizenshipFormGroup,
-	// 	additionalGovIdData: this.additionalGovIdFormGroup,
-	// 	bcDriversLicenceData: this.bcDriversLicenceFormGroup,
-	// 	characteristicsData: this.characteristicsFormGroup,
-	// 	photographOfYourselfData: this.photographOfYourselfFormGroup,
-	// 	residentialAddressData: this.residentialAddressFormGroup,
-	// 	mailingAddressData: this.mailingAddressFormGroup,
-	// 	contactInformationData: this.contactInformationFormGroup,
-	// });
-
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(null, [FormControlValidators.required]),
-		contactId: new FormControl(null), //, [FormControlValidators.required]
+		licenceAppId: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
+		profileConfirmationData: this.profileConfirmationFormGroup,
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -157,6 +111,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private licenceFeeService: LicenceFeeService,
 		private workerLicensingService: WorkerLicensingService,
 		private authUserBcscService: AuthUserBcscService,
+		private authenticationService: AuthenticationService,
 		private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
@@ -173,12 +128,23 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
 					this.hasValueChanged = true;
+
+					const step1Complete = this.isStep1Complete();
+					const step2Complete = this.isStep2Complete();
+					const step3Complete = this.isStep3Complete();
+					const step4Complete = this.isStep4Complete();
+					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
+
 					console.log(
 						'licenceModelFormGroup CHANGED',
-						this.licenceModelFormGroup.valid,
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						step4Complete,
 						this.licenceModelFormGroup.getRawValue()
 					);
-					this.licenceModelValueChanges$.next(this.licenceModelFormGroup.valid);
+
+					this.licenceModelValueChanges$.next(isValid);
 				}
 			});
 	}
@@ -186,7 +152,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	createNewLicenceAnonymous(): Observable<any> {
 		this.reset();
 
-		// return of(this.licenceModelFormGroupAnonymous.value);
+		this.licenceModelFormGroup.patchValue(
+			{
+				profileConfirmationData: { isProfileUpToDate: true },
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
 		return of(this.licenceModelFormGroup.value);
 	}
 
@@ -317,7 +291,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				};
 
 				const aliasesData = {
-					previousNameFlag: this.booleanToBooleanType(resp.hasPreviousName),
+					previousNameFlag: resp.hasPreviousName ? this.booleanToBooleanType(resp.hasPreviousName) : BooleanTypeCode.No,
 				};
 
 				let personalInformationData = {};
@@ -360,6 +334,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					expiryDate: resp.citizenshipDocument?.expiryDate,
 					attachments: citizenshipDataAttachments,
 				};
+
+				console.log('citizenshipData', citizenshipData);
 
 				const additionalGovIdAttachments: Array<File> = [];
 				if (resp.additionalGovIdDocument?.documentResponses) {
@@ -729,6 +705,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						additionalGovIdData,
 						photographOfYourselfData,
 						contactInformationData,
+						profileConfirmationData: { isProfileUpToDate: true },
 						residentialAddressData: { ...residentialAddressData },
 						mailingAddressData: { ...mailingAddressData },
 						categoryArmouredCarGuardFormGroup,
@@ -825,7 +802,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 
 		this.licenceFeeTermCodes.push(...fees);
-		// console.debug('this.licenceFeeTermCodes', this.licenceFeeTermCodes);
+		console.debug('this.licenceFeeTermCodes', this.licenceFeeTermCodes);
+	}
+
+	isShowAdditionalGovermentIdStep(): boolean {
+		const form = this.citizenshipFormGroup;
+		return (
+			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
+				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
+				form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		);
 	}
 
 	/**
@@ -835,12 +822,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	isStep1Complete(): boolean {
 		// console.debug(
 		// 	'isStep1Complete',
+		// 	this.profileFormGroup.valid,
 		// 	this.workerLicenceTypeFormGroup.valid,
 		// 	this.applicationTypeFormGroup.valid,
 		// );
-		// TODO handle authenticated
 
-		const isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+		let isValid!: boolean;
+		if (this.authenticationService.isLoggedIn()) {
+			isValid =
+				this.profileConfirmationFormGroup.valid &&
+				this.personalInformationFormGroup.valid &&
+				this.aliasesFormGroup.valid &&
+				this.residentialAddressFormGroup.valid &&
+				this.mailingAddressFormGroup.valid &&
+				this.contactInformationFormGroup.valid;
+			this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+		} else {
+			isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+		}
 		if (isValid && this.licenceFeeTermCodes.length === 0) {
 			this.setLicenceTermsAndFees();
 		}
@@ -931,12 +930,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isStep4Complete(): boolean {
+		const showAdditionalGovermentIdStep = this.citizenshipFormGroup
+			? (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.Yes &&
+					this.citizenshipFormGroup.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			  (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.No &&
+					this.citizenshipFormGroup.value.notCanadianCitizenProofTypeCode !=
+						LicenceDocumentTypeCode.PermanentResidentCard)
+			: true;
+
 		// console.debug(
 		// 	'isStep4Complete',
 		// 	this.personalInformationFormGroup.valid,
 		// 	this.aliasesFormGroup.valid,
 		// 	this.citizenshipFormGroup.valid,
-		// 	this.additionalGovIdFormGroup.valid,
+		// 	showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true,
 		// 	this.bcDriversLicenceFormGroup.valid,
 		// 	this.characteristicsFormGroup.valid,
 		// 	this.photographOfYourselfFormGroup.valid,
@@ -944,19 +951,59 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	this.mailingAddressFormGroup.valid,
 		// 	this.contactInformationFormGroup.valid
 		// );
+		// console.debug('showAdditionalGovermentIdStep', showAdditionalGovermentIdStep, this.additionalGovIdFormGroup.valid);
 
-		return (
-			this.personalInformationFormGroup.valid &&
-			this.aliasesFormGroup.valid &&
-			this.citizenshipFormGroup.valid &&
-			this.additionalGovIdFormGroup.valid &&
-			this.bcDriversLicenceFormGroup.valid &&
-			this.characteristicsFormGroup.valid &&
-			this.photographOfYourselfFormGroup.valid &&
-			this.residentialAddressFormGroup.valid &&
-			this.mailingAddressFormGroup.valid &&
-			this.contactInformationFormGroup.valid
-		);
+		if (this.authenticationService.isLoggedIn()) {
+			return (
+				this.citizenshipFormGroup.valid &&
+				(showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true) &&
+				this.bcDriversLicenceFormGroup.valid &&
+				this.characteristicsFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid
+			);
+		} else {
+			return (
+				this.personalInformationFormGroup.valid &&
+				this.aliasesFormGroup.valid &&
+				this.citizenshipFormGroup.valid &&
+				(showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true) &&
+				this.bcDriversLicenceFormGroup.valid &&
+				this.characteristicsFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid &&
+				this.residentialAddressFormGroup.valid &&
+				this.mailingAddressFormGroup.valid &&
+				this.contactInformationFormGroup.valid
+			);
+		}
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isSaveStep(): boolean {
+		const shouldSaveStep =
+			this.hasValueChanged &&
+			((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
+				(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
+
+		console.debug('shouldSaveStep', shouldSaveStep);
+		return shouldSaveStep;
 	}
 
 	/**
@@ -982,7 +1029,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
-		console.debug('getSaveBody getSaveBody body', body);
+		console.debug('submitLicenceAuthenticated body', body);
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
@@ -1301,7 +1348,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
-		console.debug('getSaveBody licenceModelFormGroupA body', body);
+		console.debug('submitLicenceAnonymous body', body);
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response({ body });
 	}
 

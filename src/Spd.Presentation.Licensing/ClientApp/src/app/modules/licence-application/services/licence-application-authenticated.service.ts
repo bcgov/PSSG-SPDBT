@@ -42,36 +42,4 @@ export class LicenceApplicationAuthenticatedService {
 			})
 		);
 	}
-
-	// /**
-	//  * If this step is complete, mark the step as complete in the wizard
-	//  * @returns
-	//  */
-	// isStep1Complete(): boolean {
-	// 	return this.licenceApplicationService.isStep1Complete();
-	// }
-
-	// /**
-	//  * If this step is complete, mark the step as complete in the wizard
-	//  * @returns
-	//  */
-	// isStep2Complete(): boolean {
-	// 	return this.licenceApplicationService.isStep2Complete();
-	// }
-
-	// /**
-	//  * If this step is complete, mark the step as complete in the wizard
-	//  * @returns
-	//  */
-	// isStep3Complete(): boolean {
-	// 	return this.licenceApplicationService.isStep3Complete();
-	// }
-
-	// /**
-	//  * If this step is complete, mark the step as complete in the wizard
-	//  * @returns
-	//  */
-	// isStep4Complete(): boolean {
-	// 	return this.licenceApplicationService.isStep4Complete();
-	// }
 }

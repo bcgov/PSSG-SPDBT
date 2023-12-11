@@ -276,19 +276,19 @@ export interface ApplicationResponse {
 
 					<app-alert type="info" [showBorder]="false" icon="">
 						Do you have a security licence but it's not showing here?
-						<a href="https://id.gov.bc.ca/account/" target="_blank">Connect a current or expired licence</a> to your
+
+						<a
+							class="fw-normal"
+							tabindex="0"
+							(click)="onConnectToExpiredLicence()"
+							(keydown)="onKeydownConnectToExpiredLicence($event)"
+							>Connect a current or expired licence</a
+						>
 						account
 					</app-alert>
 				</div>
 			</div>
 		</section>
-		<!-- <div class="row mb-2">
-									<div class="col-12 text-end">
-										<button mat-flat-button class="mat-red-button large w-auto" (click)="onReapply(appl)">
-											<mat-icon>double_arrow</mat-icon>Reapply
-										</button>
-									</div>
-								</div> -->
 	`,
 	styles: [
 		`
@@ -484,5 +484,15 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 				take(1)
 			)
 			.subscribe();
+	}
+
+	onConnectToExpiredLicence(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS));
+	}
+
+	onKeydownConnectToExpiredLicence(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onConnectToExpiredLicence();
 	}
 }

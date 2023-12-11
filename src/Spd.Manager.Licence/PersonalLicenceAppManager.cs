@@ -6,7 +6,6 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Organizations.Identity;
-using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
@@ -58,10 +57,10 @@ internal partial class PersonalLicenceAppManager :
                 Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
                 cmd.LicenceUpsertRequest.LicenceAppId,
                 ct);
-            if (hasDuplicate)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
-            }
+            //if (hasDuplicate)
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+            //}
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);

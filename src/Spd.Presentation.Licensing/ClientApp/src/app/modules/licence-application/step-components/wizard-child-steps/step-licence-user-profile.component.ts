@@ -26,15 +26,15 @@ import { UserProfileComponent } from '../user-profile.component';
 								<div>
 									<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
 									<div class="fs-5 pt-2 pb-3">Confirmation</div>
-									<mat-checkbox formControlName="profileIsUpToDate">
+									<mat-checkbox formControlName="isProfileUpToDate">
 										I confirm that this information is up-to-date
 									</mat-checkbox>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
-											(form.get('profileIsUpToDate')?.dirty || form.get('profileIsUpToDate')?.touched) &&
-											form.get('profileIsUpToDate')?.invalid &&
-											form.get('profileIsUpToDate')?.hasError('required')
+											(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+											form.get('isProfileUpToDate')?.invalid &&
+											form.get('isProfileUpToDate')?.hasError('required')
 										"
 									>
 										This is required
@@ -52,7 +52,7 @@ import { UserProfileComponent } from '../user-profile.component';
 export class StepLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
 	@ViewChild(UserProfileComponent) userProfileComponent!: UserProfileComponent;
 
-	form: FormGroup = this.licenceApplicationService.profileFormGroup;
+	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
