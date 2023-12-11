@@ -36,7 +36,7 @@ namespace Spd.Presentation.Licensing.Swagger
                 {
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
-
+                c.OperationFilter<ProducesResponseTypeFilter>();
                 c.OperationFilter<SwlPostPostParamTypesFilter>();
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFileName = $"{assemblyName}.xml";
