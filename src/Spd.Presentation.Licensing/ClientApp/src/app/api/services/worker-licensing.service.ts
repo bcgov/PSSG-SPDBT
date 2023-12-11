@@ -340,30 +340,28 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAnonymousWorkerLicencesPost
+   * Path part for operation apiWorkerLicenceApplicationsSubmitAnonymousPost
    */
-  static readonly ApiAnonymousWorkerLicencesPostPath = '/api/anonymous-worker-licences';
+  static readonly ApiWorkerLicenceApplicationsSubmitAnonymousPostPath = '/api/worker-licence-applications/submit/anonymous';
 
   /**
-   * Create Security Worker Licence Application Anonymously.
+   * Submit Security Worker Licence Application Anonymously.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAnonymousWorkerLicencesPost()` instead.
+   * To access only the response body, use `apiWorkerLicenceApplicationsSubmitAnonymousPost()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method doesn't expect any request body.
    */
-  apiAnonymousWorkerLicencesPost$Response(params: {
-    body: WorkerLicenceAppUpsertRequest
+  apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params?: {
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsSubmitAnonymousPostPath, 'post');
     if (params) {
-      rb.body(params.body, 'application/*+json');
     }
 
     return this.http.request(rb.build({
@@ -379,23 +377,22 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Create Security Worker Licence Application Anonymously.
+   * Submit Security Worker Licence Application Anonymously.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAnonymousWorkerLicencesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsSubmitAnonymousPost$Response()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method doesn't expect any request body.
    */
-  apiAnonymousWorkerLicencesPost(params: {
-    body: WorkerLicenceAppUpsertRequest
+  apiWorkerLicenceApplicationsSubmitAnonymousPost(params?: {
   },
   context?: HttpContext
 
 ): Observable<WorkerLicenceAppUpsertResponse> {
 
-    return this.apiAnonymousWorkerLicencesPost$Response(params,context).pipe(
+    return this.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
     );
   }

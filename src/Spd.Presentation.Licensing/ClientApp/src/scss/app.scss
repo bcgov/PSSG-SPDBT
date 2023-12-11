@@ -114,6 +114,7 @@ $spd-theme: mat.define-light-theme((
 @include mat.all-component-themes($spd-theme);
 
 :root {
+  // --mat-form-field-subscript-text-size: 16px;
 	--color-white: #fff;
   --color-primary-lightest: #eff2f5;
   --color-primary-lighter: #d6ddec;
@@ -191,11 +192,17 @@ body {
 }
 
 .mat-divider-primary {
-  border-top-color: rgba(15, 72, 174, 0.52);
+  // border-top-color: rgba(15, 72, 174, 0.52) !important;
 }
+
 .mat-divider-main {
   border-top-width: 2px !important;
   border-top-color: var(--color-yellow) !important;
+}
+
+.mat-divider-main2 {
+  border-top-width: 2px !important;
+  border-top-color: var(--color-primary-lighter) !important;
 }
 
 .alert-category {
