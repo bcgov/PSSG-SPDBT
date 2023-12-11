@@ -169,14 +169,14 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             "hasCriminalHistory",
                                             new OpenApiSchema
                                             {
-                                                Type = "bool",
+                                                Type = "boolean",
                                             }
                                         },
                                         {
                                             "hasPreviousName",
                                             new OpenApiSchema
                                             {
-                                                Type = "bool",
+                                                Type = "boolean",
                                             }
                                         },
                                         {
@@ -546,7 +546,8 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                                             "expiryDate",
                                                             new OpenApiSchema
                                                             {
-                                                                Type = "date",
+                                                                Type = "string",
+                                                                Format = "date",
                                                                 Nullable= true,
                                                             }
                                                         }
