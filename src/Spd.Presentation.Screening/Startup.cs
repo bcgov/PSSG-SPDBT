@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Spd.Manager.Membership;
+using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;

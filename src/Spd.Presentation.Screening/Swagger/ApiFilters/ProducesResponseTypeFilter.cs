@@ -2,8 +2,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-
-namespace Spd.Utilities.Hosting.ApiFilters
+namespace Spd.Presentation.Screening.Swagger.ApiFilters
 {
     internal class ProducesResponseTypeFilter : IOperationFilter
     {
