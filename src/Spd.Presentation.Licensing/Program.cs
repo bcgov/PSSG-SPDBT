@@ -1,6 +1,7 @@
 using FluentValidation;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
+using Spd.Presentation.Licensing.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
@@ -40,7 +41,6 @@ builder.Services
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddSwaggerGen();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 builder.Services.AddHttpContextAccessor();
