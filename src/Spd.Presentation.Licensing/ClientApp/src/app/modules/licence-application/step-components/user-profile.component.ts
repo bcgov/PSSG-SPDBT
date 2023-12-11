@@ -69,6 +69,7 @@ export class UserProfileComponent implements LicenceChildStepperStepComponent {
 		const aliasesIsValid = this.aliasesComponent.isFormValid();
 		const mailingIsValid = this.mailingAddressComponent.isFormValid();
 
+		console.log('UserProfileComponent', contactIsValid, aliasesIsValid, mailingIsValid);
 		return contactIsValid && aliasesIsValid && mailingIsValid;
 	}
 

@@ -564,7 +564,7 @@ export class StepSummaryReviewAuthenticatedComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.licenceModelData = {
-			...this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.getRawValue(),
+			...this.licenceApplicationAuthenticatedService.licenceModelFormGroup.getRawValue(),
 		};
 	}
 
@@ -574,7 +574,7 @@ export class StepSummaryReviewAuthenticatedComponent implements OnInit {
 
 	onUpdateData(): void {
 		this.licenceModelData = {
-			...this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.getRawValue(),
+			...this.licenceApplicationAuthenticatedService.licenceModelFormGroup.getRawValue(),
 		};
 	}
 

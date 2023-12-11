@@ -61,10 +61,11 @@ export class StepLicenceUserProfileComponent implements LicenceChildStepperStepC
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		// const isValid = this.form.valid;
-		// const isProfileValid = this.userProfileComponent.isFormValid();
-		// return isValid && isProfileValid;
-		return true;
+		this.form.markAllAsTouched();
+		const isValid = this.form.valid;
+		const isProfileValid = this.userProfileComponent.isFormValid();
+
+		console.log('StepLicenceUserProfileComponent', isValid, isProfileValid);
+		return isValid && isProfileValid;
 	}
 }

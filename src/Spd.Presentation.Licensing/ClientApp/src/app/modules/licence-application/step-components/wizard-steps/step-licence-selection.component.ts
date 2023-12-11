@@ -3,7 +3,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEnca
 import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
@@ -266,21 +266,26 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	) {}
 
 	ngOnInit(): void {
-		// TODO handle both scenarios
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
-
-		this.licenceModelChangedSubscription =
-			this.licenceApplicationService.licenceModelFormGroupAuthenticated.valueChanges
-				.pipe(debounceTime(200), distinctUntilChanged())
-				.subscribe((_resp: any) => {
-					this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
-				});
-
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: any) => {
+				console.log('licenceModelValueChanges$', _resp);
+				this.isFormValid = _resp;
 			}
 		);
+
+		// TODO handle both scenarios
+		// this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		// this.licenceModelChangedSubscription =
+		// 	this.licenceApplicationService.licenceModelFormGroup.valueChanges
+		// 		.pipe(debounceTime(200), distinctUntilChanged())
+		// 		.subscribe((_resp: any) => {
+		// 			this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
+		// 		});
+		// this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+		// 	(isLoggedIn: boolean) => {
+		// 		this.isLoggedIn = isLoggedIn;
+		// 	}
+		// );
 	}
 
 	ngOnDestroy() {
@@ -342,10 +347,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	private dirtyForm(step: number): boolean {
 		console.log('dirtyForm', step);
-		console.log(
-			'licenceModelFormGroupAuthenticated',
-			this.licenceApplicationService.licenceModelFormGroupAuthenticated.value
-		);
+		// console.log(
+		// 	'licenceModelFormGroup',
+		// 	this.licenceApplicationService.licenceModelFormGroup.value
+		// );
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();

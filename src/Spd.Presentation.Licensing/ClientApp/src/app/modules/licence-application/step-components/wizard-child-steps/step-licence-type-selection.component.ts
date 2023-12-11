@@ -15,20 +15,6 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 					<div class="row">
 						<div class="col-xxl-9 col-xl-12 mx-auto">
 							<div class="row">
-								<!-- <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-										<div
-											class="step-container__box step-container__box__fullheight"
-											(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityBusinessLicence)"
-											[ngClass]="{ 'active-selection-main': workerLicenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
-										>
-											<div class="fs-5 mb-4 mt-4 mx-3 mt-md-0">
-												<div class="box__image d-none d-md-block">
-													<img class="box__image__item" [src]="image1" />
-												</div>
-												Security Business Licence
-											</div>
-										</div>
-									</div> -->
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
 									<div
 										tabindex="0"
@@ -116,7 +102,6 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 	],
 })
 export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
-	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
@@ -128,7 +113,7 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
-	imagePaths = [this.image1, this.image2, this.image3, this.image4];
+	imagePaths = [this.image2, this.image3, this.image4];
 
 	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
 
@@ -154,6 +139,14 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 
 		console.log('onLicenceTypeChange', this.form.value);
 		console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
+		// console.log(
+		// 	'onLicenceTypeChange licenceModelFormGroupAnonymous',
+		// 	this.licenceApplicationService.licenceModelFormGroupAnonymous.value
+		// );
+		// console.log(
+		// 	'onLicenceTypeChange licenceModelFormGroup',
+		// 	this.licenceApplicationService.licenceModelFormGroup.value
+		// );
 		this.isFormValid();
 	}
 

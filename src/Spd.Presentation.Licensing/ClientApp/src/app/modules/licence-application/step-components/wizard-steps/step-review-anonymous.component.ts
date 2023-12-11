@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepSummaryReviewAuthenticatedComponent } from '../wizard-child-steps/step-summary-review-authenticated.component';
@@ -61,16 +62,16 @@ export class StepReviewAnonymousComponent implements LicenceStepperStepComponent
 	}
 
 	onPayNow(): void {
-		// this.licenceApplicationService.submitLicence().subscribe({
-		// 	next: (_resp: any) => {
-		// 		this.hotToastService.success('Your licence has been successfully submitted');
-		// 		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 		this.hotToastService.error('An error occurred during the save. Please try again.');
-		// 	},
-		// });
+		this.licenceApplicationService.submitLicenceAnonymous().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your licence has been successfully submitted');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
 	}
 
 	onGoToStep(step: number): void {

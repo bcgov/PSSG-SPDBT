@@ -57,7 +57,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 											<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 												<mat-form-field>
 													<mat-label>Proof of Canadian citizenship</mat-label>
-													<mat-select formControlName="canadianCitizenProofTypeCode">
+													<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>

@@ -148,12 +148,17 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
-
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: any) => {
+				console.log('licenceModelValueChanges$', _resp);
+				this.isFormValid = _resp;
+			}
+		);
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
@@ -161,26 +166,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 				this.isLoaded$.next(true);
 			},
 		});
-
-		this.licenceModelChangedSubscription =
-			this.licenceApplicationService.licenceModelAuthenticatedValueChanges$.subscribe((_resp: any) => {
-				console.log('licenceModelAuthenticatedValueChanges$', _resp);
-				this.isFormValid = _resp;
-			});
-
-		// this.licenceModelChangedSubscription =
-		// 	this.licenceApplicationService.licenceModelFormGroupAuthenticated.valueChanges
-		// 		.pipe(debounceTime(200), distinctUntilChanged())
-		// 		.subscribe((_resp: any) => {
-		// 			this.licenceApplicationService.hasValueChanged = true;
-
-		// 			this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
-		// 			console.debug(
-		// 				'*******valueChanges to TRUE',
-		// 				'valueChanges isFormValid',
-		// 				this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid
-		// 			);
-		// 		});
 	}
 
 	ngAfterViewInit(): void {

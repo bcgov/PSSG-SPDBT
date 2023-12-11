@@ -23,8 +23,7 @@ export class LicenceApplicationAuthenticatedService {
 	createNewLicence(): Observable<any> {
 		return this.licenceApplicationService.createNewLicenceAuthenticated().pipe(
 			tap((resp: any) => {
-				console.debug('NEW licenceModelFormGroup', resp);
-
+				console.debug('NEW LicenceApplicationAuthenticatedService licenceModelFormGroup', resp);
 				this.licenceApplicationService.initialized = true;
 			})
 		);
@@ -38,29 +37,11 @@ export class LicenceApplicationAuthenticatedService {
 	loadDraftLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.licenceApplicationService.loadDraftLicenceAuthenticated(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD licenceModelFormGroup', resp);
-
+				console.debug('LOAD LicenceApplicationAuthenticatedService licenceModelFormGroup', resp);
 				this.licenceApplicationService.initialized = true;
 			})
 		);
 	}
-
-	// /**
-	//  * Save the licence data
-	//  * @returns
-	//  */
-	// saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-	// 	return this.licenceApplicationService.saveLicenceStep();
-	// }
-
-	// /**
-	//  * Submit the licence data
-	//  * @returns
-	//  */
-	// submitLicence(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-	// 	const body = {}; //this.getSaveBody();
-	// 	return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
-	// }
 
 	// /**
 	//  * If this step is complete, mark the step as complete in the wizard

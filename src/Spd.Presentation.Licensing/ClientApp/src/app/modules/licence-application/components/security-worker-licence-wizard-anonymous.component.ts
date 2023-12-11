@@ -102,8 +102,6 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 
 	orientation: StepperOrientation = 'vertical';
 
-	// isFormValid = false;
-
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
@@ -132,8 +130,6 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	) {}
 
 	ngOnInit(): void {
-		// this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -145,16 +141,6 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 				this.isLoaded$.next(true);
 			},
 		});
-
-		// this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-		// 	.pipe(debounceTime(200), distinctUntilChanged())
-		// 	.subscribe((_resp: any) => {
-		// 		this.licenceApplicationService.hasValueChanged = true;
-
-		// 		console.debug('*******valueChanges to TRUE');
-		// 		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-		// 		console.debug('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
-		// 	});
 	}
 
 	ngAfterViewInit(): void {

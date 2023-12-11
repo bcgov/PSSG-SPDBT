@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -49,7 +49,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -84,7 +84,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ALIASES)">
 							Next: Review
 						</button>
@@ -114,7 +114,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
 							Next: Review
 						</button>
@@ -149,7 +149,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ADDITIONAL_GOV_ID)">
 							Next: Review
 						</button>
@@ -184,7 +184,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
 							Next: Review
 						</button>
@@ -219,7 +219,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)">
 							Next: Review
 						</button>
@@ -244,7 +244,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PHOTO)">
 							Next: Review
 						</button>
@@ -279,7 +279,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
 							Next: Review
 						</button>
@@ -314,7 +314,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
 							Next: Review
 						</button>
@@ -350,11 +350,6 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CONTACT_INFORMATION)">
-							Next: Review
-						</button>
-					</div>
 				</div>
 			</mat-step>
 		</mat-stepper>
@@ -378,7 +373,6 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	private licenceModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
-	isFormValid = false;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -406,15 +400,6 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
-
-		this.licenceModelChangedSubscription =
-			this.licenceApplicationService.licenceModelFormGroupAuthenticated.valueChanges
-				.pipe(debounceTime(200), distinctUntilChanged())
-				.subscribe((_resp: any) => {
-					this.isFormValid = this.licenceApplicationService.licenceModelFormGroupAuthenticated.valid;
-				});
-
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				this.isLoggedIn = isLoggedIn;

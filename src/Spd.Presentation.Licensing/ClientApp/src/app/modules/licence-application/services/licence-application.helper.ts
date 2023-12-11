@@ -513,8 +513,6 @@ export abstract class LicenceApplicationHelper {
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		// private licenceFeeService: LicenceFeeService,
-		// private workerLicensingService: WorkerLicensingService,
 		protected formatDatePipe: FormatDatePipe
 	) {}
 

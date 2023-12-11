@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
+import { LicenceApplicationService } from '../services/licence-application.service';
 import { LicenceUserService } from '../services/licence-user.service';
 import { UserProfileComponent } from '../step-components/user-profile.component';
 
@@ -48,7 +49,8 @@ export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChil
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private licenceUserService: LicenceUserService
+		private licenceUserService: LicenceUserService,
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -58,12 +60,12 @@ export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChil
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				if (isLoggedIn) {
-					this.licenceUserService
-						.createNewLicenceUser()
-						.pipe()
-						.subscribe((resp: any) => {
-							// TODO fill in
-						});
+					this.licenceUserService.createNewLicence().pipe(
+						tap((resp: any) => {
+							console.debug('NEW LoginUserProfileComponent licenceModelFormGroup', resp);
+							this.licenceApplicationService.initialized = true;
+						})
+					);
 				}
 			}
 		);

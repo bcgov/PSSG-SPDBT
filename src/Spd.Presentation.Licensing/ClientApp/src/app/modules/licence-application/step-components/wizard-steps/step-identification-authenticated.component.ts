@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
@@ -206,17 +206,23 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	constructor(private licenceApplicationAuthenticatedService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.valid;
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: any) => {
+				console.log('licenceModelValueChanges$', _resp);
+				this.isFormValid = _resp;
+			}
+		);
 
-		this.licenceModelChangedSubscription =
-			this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.valueChanges
-				.pipe(debounceTime(200), distinctUntilChanged())
-				.subscribe((_resp: any) => {
-					this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroupAuthenticated.valid;
-				});
+		// this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+		// this.licenceModelChangedSubscription =
+		// 	this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valueChanges
+		// 		.pipe(debounceTime(200), distinctUntilChanged())
+		// 		.subscribe((_resp: any) => {
+		// 			this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
+		// 		});
 	}
 
 	ngOnDestroy() {
@@ -306,7 +312,7 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 	// }
 
 	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationAuthenticatedService.citizenshipFormGroup;
+		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||

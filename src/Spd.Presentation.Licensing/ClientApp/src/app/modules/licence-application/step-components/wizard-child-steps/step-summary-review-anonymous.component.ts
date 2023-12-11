@@ -726,7 +726,7 @@ export class StepSummaryReviewAnonymousComponent implements OnInit {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroupAnonymous.getRawValue() };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() }; //TODO fix
 	}
 
 	onEditStep(stepNumber: number) {
@@ -734,7 +734,7 @@ export class StepSummaryReviewAnonymousComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroupAnonymous.getRawValue() };
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	get workerLicenceTypeCode(): string {

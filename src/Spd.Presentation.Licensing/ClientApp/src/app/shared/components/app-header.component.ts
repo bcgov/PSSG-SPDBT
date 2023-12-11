@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit {
 	loggedInUserDisplay: string | null = null;
 
 	constructor(
-		protected router: Router,
+		private router: Router,
 		private authUserBcscService: AuthUserBcscService,
 		private authProcessService: AuthProcessService,
 		private utilService: UtilService
