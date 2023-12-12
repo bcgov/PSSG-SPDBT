@@ -161,6 +161,7 @@ public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //fo
 {
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
+    public string Recaptcha { get; set; } = null!;
 }
 
 public record WorkerLicenceCreateResponse
