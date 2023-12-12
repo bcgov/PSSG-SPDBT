@@ -53,6 +53,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -60,6 +61,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -67,6 +69,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -74,6 +77,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -114,7 +118,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
-                                                Nullable= false,
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -122,7 +126,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
-                                                Nullable= true,
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -142,14 +146,6 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                                 Nullable = true,
                                             }
                                         },
-
-                                        {
-                                            "expiredDate",
-                                            new OpenApiSchema
-                                            {
-                                                Type = "Date",
-                                            }
-                                        },
                                         {
                                             "hasExpiredLicence",
                                             new OpenApiSchema
@@ -163,6 +159,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -170,6 +167,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -177,13 +175,14 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
+                                                Nullable= true
                                             }
                                         },
                                         {
                                             "hasBcDriversLicence",
                                             new OpenApiSchema
                                             {
-                                                Type = "string",
+                                                Type = "boolean",
                                                 Nullable = true
                                             }
                                         },
@@ -200,6 +199,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -207,6 +207,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -215,7 +216,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             {
                                                 Type = "integer",
                                                 Format = "int32",
-                                                Nullable = false
+                                                Nullable = true
                                             }
                                         },
                                         {
@@ -223,6 +224,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -231,7 +233,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             {
                                                 Type = "integer",
                                                 Format = "int32",
-                                                Nullable = false
+                                                Nullable = true
                                             }
                                         },
                                         {
@@ -239,6 +241,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
@@ -246,7 +249,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
-                                                Nullable = false
+                                                Nullable = true
                                             }
                                         },
                                         {
@@ -254,7 +257,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
-                                                Nullable = false
+                                                Nullable = true
                                             }
                                         },
                                         {
@@ -270,7 +273,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
-                                                Nullable= false,
+                                                Nullable= true,
                                             }
                                         },
                                         {
@@ -280,7 +283,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                               Type = "string",
                                               Nullable = true
                                           }
-                                      },
+                                        },
                                         {
                                           "otherOfficerRole",
                                           new OpenApiSchema
@@ -294,7 +297,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
-                                                Nullable= false,
+                                                Nullable= true,
                                             }
                                         },
                                         {
@@ -302,7 +305,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
-                                                Nullable= false,
+                                                Nullable= true,
                                             }
                                         },
                                         {
@@ -310,7 +313,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
-                                                Nullable= false,
+                                                Nullable= true,
                                             }
                                         },
                                         {
@@ -318,7 +321,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             new OpenApiSchema
                                             {
                                                 Type = "boolean",
-                                                Nullable= false,
+                                                Nullable= true,
                                             }
                                         },
                                         {
