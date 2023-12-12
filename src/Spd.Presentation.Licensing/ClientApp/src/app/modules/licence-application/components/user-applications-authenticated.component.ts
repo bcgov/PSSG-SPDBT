@@ -16,7 +16,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationAuthenticatedService } from '../services/licence-application-authenticated.service';
+import { LicenceApplicationService } from '../services/licence-application.service';
 
 export interface ApplicationResponse {
 	id?: string;
@@ -367,7 +367,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
 		private workerLicensingService: WorkerLicensingService,
-		private licenceApplicationAuthenticatedService: LicenceApplicationAuthenticatedService
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -453,7 +453,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onResume(appl: WorkerLicenceAppListResponse): void {
-		this.licenceApplicationAuthenticatedService
+		this.licenceApplicationService
 			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
@@ -465,18 +465,18 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onUpdate(_appl: ApplicationResponse): void {
-		this.licenceApplicationAuthenticatedService.reset();
+		this.licenceApplicationService.reset();
 
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE));
 	}
 
 	onReapply(_appl: ApplicationResponse): void {
-		this.licenceApplicationAuthenticatedService.reset();
+		this.licenceApplicationService.reset();
 	}
 
 	onCreateNew(): void {
-		this.licenceApplicationAuthenticatedService
-			.createNewLicence()
+		this.licenceApplicationService
+			.createNewUserProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());

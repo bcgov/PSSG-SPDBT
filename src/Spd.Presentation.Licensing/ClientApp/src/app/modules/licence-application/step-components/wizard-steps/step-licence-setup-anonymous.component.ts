@@ -3,7 +3,6 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationAnonymousService } from '../../services/licence-application-anonymous.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { StepLicenceApplicationTypeComponent } from '../wizard-child-steps/step-licence-application-type.component';
 import { StepLicenceTypeSelectionComponent } from '../wizard-child-steps/step-licence-type-selection.component';
@@ -62,7 +61,7 @@ export class StepLicenceSetupAnonymousComponent implements LicenceStepperStepCom
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationAnonymousService) {}
+	constructor(private router: Router) {}
 
 	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);

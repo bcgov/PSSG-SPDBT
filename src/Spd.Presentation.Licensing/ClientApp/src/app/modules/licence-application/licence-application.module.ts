@@ -14,10 +14,7 @@ import { UserApplicationsAnonymousComponent } from './components/user-applicatio
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
-import { LicenceApplicationAnonymousService } from './services/licence-application-anonymous.service';
-import { LicenceApplicationAuthenticatedService } from './services/licence-application-authenticated.service';
 import { LicenceApplicationService } from './services/licence-application.service';
-import { LicenceUserService } from './services/licence-user.service';
 import { AliasListComponent } from './step-components/alias-list.component';
 import { AliasesComponent } from './step-components/aliases.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
@@ -166,17 +163,12 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		UpdateAddDogsModalComponent,
 		UpdatePhotoModalComponent,
 		SecurityWorkerLicenceApplicationComponent,
-		UserApplicationsAuthenticatedComponent,
-		UserApplicationsAnonymousComponent,
 		FingerprintTearOffModalComponent,
 		StepLicenceUserProfileComponent,
+		UserApplicationsAnonymousComponent,
+		UserApplicationsAuthenticatedComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
-	providers: [
-		LicenceApplicationService,
-		LicenceApplicationAnonymousService,
-		LicenceApplicationAuthenticatedService,
-		LicenceUserService,
-	],
+	providers: [LicenceApplicationService],
 })
 export class LicenceApplicationModule {}
