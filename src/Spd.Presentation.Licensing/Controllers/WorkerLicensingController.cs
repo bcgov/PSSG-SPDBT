@@ -8,6 +8,7 @@ using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Presentation.Licensing.Services;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
@@ -30,6 +31,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IValidator<AnonymousWorkerLicenceSubmitCommand> _anonymousWslCommandValidator;
         private readonly IMultipartRequestService _multipartRequestService;
         private readonly IMapper _mapper;
+        private readonly IRecaptchaVerificationService _recaptchaVerificationService;
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
@@ -38,7 +40,8 @@ namespace Spd.Presentation.Licensing.Controllers
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
             IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
             IMultipartRequestService multipartRequestService,
-            IMapper mapper)
+            IMapper mapper,
+            IRecaptchaVerificationService recaptchaVerificationService)
         {
             _logger = logger;
             _currentUser = currentUser;
@@ -47,6 +50,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _wslSubmitValidator = wslSubmitValidator;
             _multipartRequestService = multipartRequestService;
             _mapper = mapper;
+            _recaptchaVerificationService = recaptchaVerificationService;
             _anonymousWslCommandValidator = anonymousWslCommandValidator;
         }
 
@@ -172,10 +176,19 @@ namespace Spd.Presentation.Licensing.Controllers
 
             try
             {
-                _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplicationAnonymous");
+                _logger.LogInformation("downloading all the files");
                 var request = HttpContext.Request;
                 var (model, uploadFileInfoList) = await _multipartRequestService.UploadMultipleFilesAsync<WorkerLicenceAppAnonymousSubmitRequest>(request, ModelState);
                 uploadedFileInfoList = uploadFileInfoList;
+
+                _logger.LogInformation("do Google recaptcha verification");
+                var isValid = await _recaptchaVerificationService.VerifyAsync(model.Recaptcha, ct);
+                if (!isValid)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+                }
+
+                _logger.LogInformation("validate payload");
                 AnonymousWorkerLicenceSubmitCommand command = new AnonymousWorkerLicenceSubmitCommand(
                     model, 
                     _mapper.Map<ICollection<UploadFileRequest>>(uploadFileInfoList));
