@@ -53,21 +53,11 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="!isLoggedIn">
+			<mat-step>
 				<app-step-licence-expired></app-step-licence-expired>
 
 				<div class="row mt-4">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -92,17 +82,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				<app-step-licence-category></app-step-licence-category>
 
 				<div class="row mt-4">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -272,20 +252,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 				this.isFormValid = _resp;
 			}
 		);
-
-		// TODO handle both scenarios
-		// this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-		// this.licenceModelChangedSubscription =
-		// 	this.licenceApplicationService.licenceModelFormGroup.valueChanges
-		// 		.pipe(debounceTime(200), distinctUntilChanged())
-		// 		.subscribe((_resp: any) => {
-		// 			this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-		// 		});
-		// this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-		// 	(isLoggedIn: boolean) => {
-		// 		this.isLoggedIn = isLoggedIn;
-		// 	}
-		// );
 	}
 
 	ngOnDestroy() {

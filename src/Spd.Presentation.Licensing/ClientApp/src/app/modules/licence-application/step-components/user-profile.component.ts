@@ -2,8 +2,8 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
 import { AliasListComponent } from './alias-list.component';
+import { ContactInformationComponent } from './contact-information.component';
 import { MailingAddressComponent } from './mailing-address.component';
-import { ContactInformationComponent } from './wizard-child-steps/contact-information.component';
 
 @Component({
 	selector: 'app-user-profile',
@@ -67,7 +67,7 @@ export class UserProfileComponent implements LicenceChildStepperStepComponent {
 	isFormValid(): boolean {
 		const contactIsValid = this.contactInformationComponent.isFormValid();
 		const aliasesIsValid = this.aliasesComponent.isFormValid();
-		const mailingIsValid = this.mailingAddressComponent.isFormValid();
+		const mailingIsValid = this.isMailingTheSameAsResidential ? true : this.mailingAddressComponent.isFormValid();
 
 		console.log('UserProfileComponent', contactIsValid, aliasesIsValid, mailingIsValid);
 		return contactIsValid && aliasesIsValid && mailingIsValid;

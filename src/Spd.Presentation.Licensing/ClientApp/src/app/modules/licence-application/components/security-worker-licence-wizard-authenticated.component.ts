@@ -16,7 +16,7 @@ import { StepBackgroundComponent } from '../step-components/wizard-steps/step-ba
 import { StepIdentificationAuthenticatedComponent } from '../step-components/wizard-steps/step-identification-authenticated.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAuthenticatedComponent } from '../step-components/wizard-steps/step-licence-setup-authenticated.component';
-import { StepReviewAuthenticatedComponent } from '../step-components/wizard-steps/step-review-authenticated.component';
+import { StepReviewLicenceComponent } from '../step-components/wizard-steps/step-review-licence.component';
 
 @Component({
 	selector: 'app-security-worker-licence-wizard-authenticated',
@@ -32,7 +32,7 @@ import { StepReviewAuthenticatedComponent } from '../step-components/wizard-step
 						#stepper
 					>
 						<mat-step [completed]="step1Complete">
-							<ng-template matStepLabel> Licence Setup </ng-template>
+							<ng-template matStepLabel> Profile & Licence Setup </ng-template>
 							<app-step-licence-setup-authenticated
 								(childNextStep)="onChildNextStep()"
 								(saveAndExit)="onSaveAndExit()"
@@ -81,12 +81,12 @@ import { StepReviewAuthenticatedComponent } from '../step-components/wizard-step
 						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
-								<app-step-review-authenticated
+								<app-step-review-licence
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
 									(goToStep)="onGoToStep($event)"
-								></app-step-review-authenticated>
+								></app-step-review-licence>
 							</ng-template>
 						</mat-step>
 
@@ -114,7 +114,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 
 	orientation: StepperOrientation = 'vertical';
 
-	isFormValid = false;
+	// isFormValid = false;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -133,8 +133,8 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	@ViewChild(StepIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepIdentificationAuthenticatedComponent;
 
-	@ViewChild(StepReviewAuthenticatedComponent)
-	stepReviewAuthenticatedComponent!: StepReviewAuthenticatedComponent;
+	@ViewChild(StepReviewLicenceComponent)
+	stepReviewAuthenticatedComponent!: StepReviewLicenceComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -153,12 +153,12 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: any) => {
-				console.log('licenceModelValueChanges$', _resp);
-				this.isFormValid = _resp;
-			}
-		);
+		// this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		// 	(_resp: any) => {
+		// 		console.log('licenceModelValueChanges$', _resp);
+		// 		this.isFormValid = _resp;
+		// 	}
+		// );
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
@@ -235,7 +235,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 			'onNextStepperStep this.licenceApplicationService.hasValueChanged',
 			this.licenceApplicationService.hasValueChanged
 		);
-		if (this.licenceApplicationService.hasValueChanged) {
+		if (this.licenceApplicationService.isSaveStep()) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
@@ -332,7 +332,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.hasValueChanged) {
+		if (this.licenceApplicationService.isSaveStep()) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
@@ -353,6 +353,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 				},
 			});
 		} else {
+			this.updateCompleteStatus();
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
 	}
@@ -363,11 +364,11 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 		this.step3Complete = this.licenceApplicationService.isStep3Complete();
 		this.step4Complete = this.licenceApplicationService.isStep4Complete();
 
-		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.hasValueChanged) {
+		if (this.licenceApplicationService.isSaveStep()) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
