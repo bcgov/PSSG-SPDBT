@@ -2,8 +2,6 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
-import { LicenceDocumentTypeCode } from 'src/app/api/models';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
@@ -49,7 +47,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
 							mat-flat-button
 							color="primary"
@@ -84,7 +82,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ALIASES)">
 							Next: Review
 						</button>
@@ -114,7 +112,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
 							Next: Review
 						</button>
@@ -149,7 +147,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ADDITIONAL_GOV_ID)">
 							Next: Review
 						</button>
@@ -184,7 +182,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
 							Next: Review
 						</button>
@@ -219,7 +217,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)">
 							Next: Review
 						</button>
@@ -244,7 +242,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PHOTO)">
 							Next: Review
 						</button>
@@ -279,7 +277,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
 							Next: Review
 						</button>
@@ -314,7 +312,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
 							Next: Review
 						</button>
@@ -373,6 +371,7 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	private licenceModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
+	isFormValid = false;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -403,6 +402,13 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				this.isLoggedIn = isLoggedIn;
+			}
+		);
+
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: any) => {
+				console.log('StepIdentificationAnonymousComponent licenceModelValueChanges$', _resp);
+				this.isFormValid = _resp;
 			}
 		);
 	}
@@ -436,6 +442,8 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 
 	onNextReview(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
+		console.log('onNextReview', formNumber, isValid);
+		console.log('onNextReview', this.licenceApplicationService.licenceModelFormGroup);
 		if (!isValid) return;
 
 		this.nextReview.emit(true);
@@ -465,10 +473,8 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	}
 
 	private dirtyForm(step: number): boolean {
-		console.log('dirtyForm', step);
 		switch (step) {
 			case this.STEP_PERSONAL_INFORMATION:
-				console.log('personalInformationComponent', this.personalInformationComponent.isFormValid());
 				return this.personalInformationComponent.isFormValid();
 			case this.STEP_ALIASES:
 				return this.aliasesComponent.isFormValid();
@@ -500,12 +506,13 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	}
 
 	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationService.citizenshipFormGroup;
-		return (
-			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-				form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		);
+		return this.licenceApplicationService.isShowAdditionalGovermentIdStep();
+		// const form = this.licenceApplicationService.citizenshipFormGroup;
+		// return (
+		// 	(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
+		// 		form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+		// 	(form.value.isCanadianCitizen == BooleanTypeCode.No &&
+		// 		form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		// );
 	}
 }

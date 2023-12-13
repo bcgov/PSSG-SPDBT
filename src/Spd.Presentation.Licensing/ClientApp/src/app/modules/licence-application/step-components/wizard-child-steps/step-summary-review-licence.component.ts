@@ -11,7 +11,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
-	selector: 'app-step-summary-review-anonymous',
+	selector: 'app-step-summary-review-licence',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -687,7 +687,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 		`,
 	],
 })
-export class StepSummaryReviewAnonymousComponent implements OnInit {
+export class StepSummaryReviewLicenceComponent implements OnInit {
 	licenceModelData: any = {};
 
 	constants = SPD_CONSTANTS;
@@ -726,7 +726,7 @@ export class StepSummaryReviewAnonymousComponent implements OnInit {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() }; //TODO fix
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {
@@ -734,7 +734,9 @@ export class StepSummaryReviewAnonymousComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = {
+			...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
+		};
 	}
 
 	get workerLicenceTypeCode(): string {
@@ -899,10 +901,14 @@ export class StepSummaryReviewAnonymousComponent implements OnInit {
 		return this.licenceModelData.citizenshipData.isCanadianCitizen ?? '';
 	}
 	get canadianCitizenProofTypeCode(): string {
-		return this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? '';
+		return this.licenceModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
+			? this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
+			: '';
 	}
 	get notCanadianCitizenProofTypeCode(): string {
-		return this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? '';
+		return this.licenceModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
+			? this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? ''
+			: '';
 	}
 	get proofOfAbility(): string {
 		return this.licenceModelData.citizenshipData.proofOfAbility ?? '';
