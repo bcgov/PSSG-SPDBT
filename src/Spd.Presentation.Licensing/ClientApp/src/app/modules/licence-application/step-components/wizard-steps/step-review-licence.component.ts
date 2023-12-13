@@ -6,6 +6,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
+import { StepConsentAndDeclarationComponent } from '../wizard-child-steps/step-consent-and-declaration.component';
 import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-summary-review-licence.component';
 
 @Component({
@@ -50,6 +51,7 @@ export class StepReviewLicenceComponent implements LicenceStepperStepComponent {
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
 	@ViewChild(StepSummaryReviewLicenceComponent) summaryReviewComponent!: StepSummaryReviewLicenceComponent;
+	@ViewChild(StepConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepConsentAndDeclarationComponent;
 
 	constructor(
 		private router: Router,
@@ -62,6 +64,9 @@ export class StepReviewLicenceComponent implements LicenceStepperStepComponent {
 	}
 
 	onPayNow(): void {
+		const isValid = this.consentAndDeclarationComponent.isFormValid();
+		if (!isValid) return;
+
 		this.licenceApplicationService.submitLicence().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
