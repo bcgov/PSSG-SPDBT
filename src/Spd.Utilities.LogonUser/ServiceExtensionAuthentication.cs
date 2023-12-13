@@ -1,6 +1,7 @@
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Spd.Utilities.LogonUser.Configurations;
@@ -128,10 +129,14 @@ namespace Spd.Utilities.LogonUser
                         validationParameters.ValidateLifetime = false;
                         validationParameters.ValidateIssuer = false;
 
+                        string tokenStr = ((JsonWebToken)ctx.SecurityToken).EncodedHeader + "." 
+                            + ((JsonWebToken)ctx.SecurityToken).EncodedPayload + "." 
+                            + ((JsonWebToken)ctx.SecurityToken).EncodedSignature;
+
                         var userInfoRequest = new UserInfoRequest
                         {
                             Address = oidcConfig.UserInfoEndpoint,
-                            Token = ((JwtSecurityToken)ctx.SecurityToken).RawData
+                            Token = tokenStr
                         };
                         //set the userinfo response to be JWT
                         userInfoRequest.Headers.Accept.Clear();
