@@ -8,7 +8,7 @@ import { StepBackgroundComponent } from '../step-components/wizard-steps/step-ba
 import { StepIdentificationAnonymousComponent } from '../step-components/wizard-steps/step-identification-anonymous.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
 import { StepLicenceSetupAnonymousComponent } from '../step-components/wizard-steps/step-licence-setup-anonymous.component';
-import { StepReviewAnonymousComponent } from '../step-components/wizard-steps/step-review-anonymous.component';
+import { StepReviewLicenceComponent } from '../step-components/wizard-steps/step-review-licence.component';
 
 @Component({
 	selector: 'app-security-worker-licence-wizard-anonymous',
@@ -69,12 +69,12 @@ import { StepReviewAnonymousComponent } from '../step-components/wizard-steps/st
 						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
-								<app-step-review-anonymous
+								<app-step-review-licence
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
 									(goToStep)="onGoToStep($event)"
-								></app-step-review-anonymous>
+								></app-step-review-licence>
 							</ng-template>
 						</mat-step>
 
@@ -90,7 +90,7 @@ import { StepReviewAnonymousComponent } from '../step-components/wizard-steps/st
 })
 export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
+	// private licenceModelChangedSubscription!: Subscription;
 
 	readonly STEP_LICENCE_SETUP = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
@@ -119,8 +119,8 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	@ViewChild(StepIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepIdentificationAnonymousComponent;
 
-	@ViewChild(StepReviewAnonymousComponent)
-	stepReviewAnonymousComponent!: StepReviewAnonymousComponent;
+	@ViewChild(StepReviewLicenceComponent)
+	stepReviewLicenceComponent!: StepReviewLicenceComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -177,7 +177,7 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_REVIEW:
-				this.stepReviewAnonymousComponent?.onGoToFirstStep();
+				this.stepReviewLicenceComponent?.onGoToFirstStep();
 				break;
 		}
 	}
@@ -213,8 +213,6 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	}
 
 	onGoToStep(step: number) {
-		console.debug('onGoToStep', step);
-
 		if (step == 4) {
 			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
 			this.stepIdentificationComponent.onGoToContactStep();
@@ -229,7 +227,12 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 	}
 
 	onGoToReview() {
-		this.stepper.selectedIndex = this.STEP_REVIEW;
+		this.updateCompleteStatus();
+
+		setTimeout(() => {
+			// hack... does not navigate without the timeout
+			this.stepper.selectedIndex = this.STEP_REVIEW;
+		}, 250);
 	}
 
 	private updateCompleteStatus(): void {
@@ -238,7 +241,7 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 		this.step3Complete = this.licenceApplicationService.isStep3Complete();
 		this.step4Complete = this.licenceApplicationService.isStep4Complete();
 
-		console.log('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 
 	onChildNextStep() {

@@ -2,8 +2,6 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
-import { LicenceDocumentTypeCode } from 'src/app/api/models';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepAdditionalGovIdComponent } from '../wizard-child-steps/step-additional-gov-id.component';
@@ -16,14 +14,6 @@ import { StepPhotographOfYourselfComponent } from '../wizard-child-steps/step-ph
 	selector: 'app-step-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
-				<app-step-personal-information></app-step-personal-information>
-			</mat-step> -->
-
-			<!-- <mat-step>
-				<app-step-aliases></app-step-aliases>
-			</mat-step> -->
-
 			<mat-step>
 				<app-step-citizenship></app-step-citizenship>
 
@@ -161,19 +151,6 @@ import { StepPhotographOfYourselfComponent } from '../wizard-child-steps/step-ph
 					</div>
 				</div>
 			</mat-step>
-
-			<!--onFormValidNextStep vs onStepNext-->
-			<!-- <mat-step>
-				<app-step-residential-address></app-step-residential-address>
-			</mat-step> -->
-
-			<!-- <mat-step>
-				<app-step-mailing-address></app-step-mailing-address>
-			</mat-step> -->
-
-			<!-- <mat-step>
-				<app-step-contact-information></app-step-contact-information>
-			</mat-step> -->
 		</mat-stepper>
 	`,
 	styles: [],
@@ -280,10 +257,6 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 
 	private dirtyForm(step: number): boolean {
 		switch (step) {
-			// case this.STEP_PERSONAL_INFORMATION:
-			// 	return this.personalInformationComponent.isFormValid();
-			// case this.STEP_ALIASES:
-			// 	return this.aliasesComponent.isFormValid();
 			case this.STEP_CITIZENSHIP:
 				return this.citizenshipComponent.isFormValid();
 			case this.STEP_ADDITIONAL_GOV_ID:
@@ -294,30 +267,31 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 				return this.heightAndWeightComponent.isFormValid();
 			case this.STEP_PHOTO:
 				return this.photoComponent.isFormValid();
-			// case this.STEP_RESIDENTIAL_ADDRESS:
-			// 	return this.residentialAddressComponent.isFormValid();
-			// case this.STEP_MAILING_ADDRESS:
-			// 	return this.mailingAddressComponent.isFormValid();
-			// case this.STEP_CONTACT_INFORMATION:
-			// 	return this.contactInformationComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
 		return false;
 	}
 
-	// get showMailingAddressStep(): boolean {
-	// 	const form = this.licenceApplicationAuthenticatedService.residentialAddressFormGroup;
-	// 	return !form.value.isMailingTheSameAsResidential;
-	// }
-
 	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationService.citizenshipFormGroup;
-		return (
-			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-				form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		);
+		return this.licenceApplicationService.isShowAdditionalGovermentIdStep();
+		// const form = this.licenceApplicationService.citizenshipFormGroup;
+		// console.log('showAdditionalGovermentIdStep form1', form.value);
+		// console.log(
+		// 	'showAdditionalGovermentIdStep valid2',
+		// 	(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
+		// 		form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+		// 		(form.value.isCanadianCitizen == BooleanTypeCode.No &&
+		// 			form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		// );
+		// console.log('showAdditionalGovermentIdStep form3', this.licenceApplicationService.additionalGovIdFormGroup);
+		// console.log('showAdditionalGovermentIdStep form4', this.licenceApplicationService.additionalGovIdFormGroup.valid);
+
+		// return (
+		// 	(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
+		// 		form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+		// 	(form.value.isCanadianCitizen == BooleanTypeCode.No &&
+		// 		form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		// );
 	}
 }
