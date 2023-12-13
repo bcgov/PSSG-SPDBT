@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { ContactInformationComponent } from './contact-information.component';
+import { ContactInformationComponent } from '../contact-information.component';
 
 @Component({
 	selector: 'app-step-contact-information',

@@ -22,14 +22,14 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 			</app-alert>
 
 			<div class="row mx-0 mb-4">
-				<div class="col-lg-6 col-md-12 mt-2 mt-lg-0 p-3" style="background-color: whitesmoke;">
+				<div class="col-xl-6 col-lg-6 col-md-12 mt-2 mt-lg-0 p-3" style="background-color: whitesmoke;">
 					<div class="fs-6 text-muted me-3">Full Name</div>
 					<div class="fs-5" style="color: var(--color-primary);">
 						{{ fullname }}
 					</div>
 				</div>
 
-				<div class="col-lg-6 col-md-12 mt-2 mt-lg-0 p-3" style="background-color: whitesmoke;">
+				<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mt-2 mt-lg-0 p-3" style="background-color: whitesmoke;">
 					<div class="fs-6 text-muted me-3">Date of Birth</div>
 					<div class="fs-5" style="color: var(--color-primary);">
 						{{ dateOfBirth.value | formatDate : constants.date.formalDateFormat }}
@@ -38,7 +38,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 			</div>
 
 			<div class="row">
-				<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12">
+				<div class="col-lg-4 col-md-6 col-sm-12">
 					<mat-form-field>
 						<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
 						<mat-select formControlName="genderCode">

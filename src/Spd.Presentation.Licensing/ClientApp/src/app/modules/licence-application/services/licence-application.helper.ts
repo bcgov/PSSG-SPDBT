@@ -388,37 +388,11 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	additionalGovIdFormGroup: FormGroup = this.formBuilder.group(
-		{
-			governmentIssuedPhotoTypeCode: new FormControl(''),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedPhotoTypeCode',
-					(_form) =>
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.CanadianPassport) ||
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.PermanentResidentCard)
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(_form) =>
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.CanadianPassport) ||
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.PermanentResidentCard)
-				),
-			],
-		}
-	);
+	additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
+		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
+		expiryDate: new FormControl(''),
+		attachments: new FormControl([], [Validators.required]),
+	});
 
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
 		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
@@ -450,8 +424,8 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	profileFormGroup: FormGroup = this.formBuilder.group({
-		profileIsUpToDate: new FormControl('', [Validators.requiredTrue]),
+	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
+		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
 	});
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({

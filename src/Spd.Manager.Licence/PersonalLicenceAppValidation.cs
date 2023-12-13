@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Spd.Resource.Applicants.Document;
 using Spd.Utilities.Shared.Exceptions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Spd.Manager.Licence;
 public class WorkerLicenceAppBaseValidator<T> : AbstractValidator<T> where T : WorkerLicenceAppBase
@@ -253,12 +252,12 @@ public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<An
         RuleFor(r => r.UploadFileRequests)
             .Must(r => r.Any(f => PersonalLicenceAppManager.WorkProofCodes.Contains(f.FileTypeCode)))
             .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && !r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
-            .WithMessage("Missing proven file because you are not candadian.");
+            .WithMessage("Missing proven file because you are not canadian.");
 
         RuleFor(r => r.UploadFileRequests)
            .Must(r => r.Any(f => PersonalLicenceAppManager.CitizenshipProofCodes.Contains(f.FileTypeCode)))
            .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
-           .WithMessage("Missing citizen proof file because you are candadian.");
+           .WithMessage("Missing citizen proof file because you are canadian.");
 
         RuleFor(r => r.UploadFileRequests)
             .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
@@ -269,7 +268,8 @@ public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<An
           .When(r => r.LicenceAnonymousRequest.UseBcServicesCardPhoto != null && !r.LicenceAnonymousRequest.UseBcServicesCardPhoto.Value)
           .WithMessage("Missing PhotoOfYourself file.");
 
-        RuleFor(r => r).Custom((request, context) => {
+        RuleFor(r => r).Custom((request, context) =>
+        {
             foreach (WorkerCategoryTypeCode code in request.LicenceAnonymousRequest.CategoryCodes)
             {
                 if (!PersonalLicenceAppManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))

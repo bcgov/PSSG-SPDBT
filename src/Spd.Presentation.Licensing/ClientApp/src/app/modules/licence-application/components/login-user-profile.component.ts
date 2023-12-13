@@ -5,7 +5,6 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 import { LicenceApplicationService } from '../services/licence-application.service';
-import { LicenceUserService } from '../services/licence-user.service';
 import { UserProfileComponent } from '../step-components/user-profile.component';
 
 @Component({
@@ -49,7 +48,6 @@ export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChil
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private licenceUserService: LicenceUserService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
@@ -60,7 +58,7 @@ export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChil
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				if (isLoggedIn) {
-					this.licenceUserService.createNewLicence().pipe(
+					this.licenceApplicationService.createNewUserProfile().pipe(
 						tap((resp: any) => {
 							console.debug('NEW LoginUserProfileComponent licenceModelFormGroup', resp);
 							this.licenceApplicationService.initialized = true;

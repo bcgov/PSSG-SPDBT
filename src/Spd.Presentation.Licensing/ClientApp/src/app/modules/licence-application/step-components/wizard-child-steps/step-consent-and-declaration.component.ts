@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
 @Component({
 	selector: 'app-step-consent-and-declaration',
@@ -59,6 +62,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-form-field>
 						</div>
 					</div>
+
+					<div class="row mb-4" *ngIf="displayCaptcha">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+							<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
+								This is required
+							</mat-error>
+						</div>
+					</div>
 				</div>
 			</form>
 		</section>
@@ -79,13 +91,42 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class StepConsentAndDeclarationComponent {
+export class StepConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
+	displayValidationErrors = false;
+	displayCaptcha = false;
+	captchaPassed = false;
+	captchaResponse: CaptchaResponse | null = null;
+
 	form: FormGroup = this.formBuilder.group({
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
+		recaptcha: new FormControl({ value: null, disabled: true }),
 	});
 
-	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private utilService: UtilService,
+		private authProcessService: AuthProcessService
+	) {}
+
+	ngOnInit(): void {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.displayCaptcha = !isLoggedIn;
+		});
+	}
+
+	isFormValid(): boolean {
+		if (this.displayCaptcha) {
+			this.displayValidationErrors = !this.captchaPassed;
+
+			if (this.captchaPassed) {
+				this.form.patchValue({ recaptcha: this.captchaResponse?.resolved });
+			}
+			return this.form.valid && this.displayCaptcha && this.captchaPassed;
+		}
+
+		return this.form.valid;
+	}
 
 	onCheckboxChange(): void {
 		const data = this.form.value;
@@ -93,6 +134,15 @@ export class StepConsentAndDeclarationComponent {
 			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
 		} else {
 			this.form.controls['dateSigned'].setValue('');
+		}
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		this.captchaResponse = $event;
+		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
+			this.captchaPassed = true;
+		} else {
+			this.captchaPassed = false;
 		}
 	}
 }
