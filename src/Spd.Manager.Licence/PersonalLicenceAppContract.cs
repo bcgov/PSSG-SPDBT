@@ -11,15 +11,23 @@ public interface IPersonalLicenceAppManager
     public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand command, CancellationToken ct);
-
+    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppSubmitCommand command, CancellationToken ct);
+    public Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
 }
 
 public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
 public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null)
     : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceAppUpsertResponse>;
+//deprecated
 public record AnonymousWorkerLicenceSubmitCommand(
     WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     ICollection<UploadFileRequest> UploadFileRequests)
+    : IRequest<WorkerLicenceAppUpsertResponse>;
+//
+
+public record AnonymousWorkerLicenceAppSubmitCommand(
+    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    Guid KeyCode)
     : IRequest<WorkerLicenceAppUpsertResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
@@ -157,11 +165,17 @@ public record WorkerLicenceAppUpsertResponse
 #endregion
 
 #region anonymous user
-public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //for anonymous user
+public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //for anonymous user, deprecated
 {
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
     public string Recaptcha { get; set; } = null!;
+}
+
+public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase //for anonymous user
+{
+    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public DocumentBase[]? DocumentInfos { get; set; }
 }
 
 public record WorkerLicenceCreateResponse
@@ -169,10 +183,23 @@ public record WorkerLicenceCreateResponse
     public Guid LicenceAppId { get; set; }
 }
 
+public record LicenceAppDocumentsCache
+{
+    public List<LicAppFileInfo> LicAppFileInfos { get; set; } = new List<LicAppFileInfo>();
+}
+public record LicAppFileInfo
+{
+    public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
+    public string? TempFileKey { get; set; } = null!;
+    public string ContentType { get; set; } = null!;
+    public string FileName { get; set; } = null!;
+    public long FileSize { get; set; } = 0;
+}
 #endregion
 
 #region file upload
 public record CreateLicenceAppDocumentCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicenceAppDocumentResponse>>;
+public record CreateDocumentInCacheCommand(LicenceAppDocumentUploadRequest Request) : IRequest<IEnumerable<LicAppFileInfo>>;
 
 public record LicenceAppDocumentUploadRequest(
     IList<IFormFile> Documents,
