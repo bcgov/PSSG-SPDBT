@@ -284,4 +284,40 @@ public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<An
     }
 }
 
+public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : WorkerLicenceAppBaseValidator<WorkerLicenceAppAnonymousSubmitRequestJson>
+{
+    public WorkerLicenceAppAnonymousSubmitRequestJsonValidator(IConfiguration configuration)
+    {
+        //category
+        RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Count() > 0 && d.Count() < 7);
+        var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
+        if (invalidCategoryMatrix == null)
+            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
+
+        RuleFor(r => r.CategoryCodes).Must(c =>
+        {
+            foreach (var code in c)
+            {
+                var invalidCodes = invalidCategoryMatrix.GetValueOrDefault(code);
+                if (invalidCodes != null)
+                {
+                    foreach (var cat in c)
+                    {
+                        if (cat != code)
+                        {
+                            if (invalidCodes.Contains(cat))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        })
+        .When(c => c.CategoryCodes != null)
+        .WithMessage("Some category cannot be in the same licence request.");
+    }
+}
+
 
