@@ -1,8 +1,6 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepAdditionalGovIdComponent } from '../wizard-child-steps/step-additional-gov-id.component';
 import { StepBcDriverLicenceComponent } from '../wizard-child-steps/step-bc-driver-licence.component';
@@ -156,7 +154,7 @@ import { StepPhotographOfYourselfComponent } from '../wizard-child-steps/step-ph
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
+export class StepIdentificationAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_CITIZENSHIP = 2;
 	readonly STEP_ADDITIONAL_GOV_ID = 3;
 	readonly STEP_BC_DRIVERS_LICENCE = 4;
@@ -168,22 +166,15 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 
 	isFormValid = false;
 
-	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
-
 	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
 	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
 	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
 	@ViewChild(StepHeightAndWeightComponent) heightAndWeightComponent!: StepHeightAndWeightComponent;
 	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
 
-	@ViewChild('childstepper') private childstepper!: MatStepper;
-
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {
+		super();
+	}
 
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
@@ -199,55 +190,7 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		this.scrollIntoView.emit(true);
-	}
-
-	onStepPrevious(): void {
-		this.previousStepperStep.emit(true);
-	}
-
-	onStepNext(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextStepperStep.emit(true);
-	}
-
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.saveAndExit.emit(true);
-	}
-
-	onNextReview(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextReview.emit(true);
-	}
-
-	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.childNextStep.emit(true);
-	}
-
-	onGoToNextStep() {
-		this.childstepper.next();
-	}
-
-	onGoToFirstStep() {
-		this.childstepper.selectedIndex = 0;
-	}
-
-	onGoToLastStep() {
-		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
-	}
-
-	private dirtyForm(step: number): boolean {
+	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_CITIZENSHIP:
 				return this.citizenshipComponent.isFormValid();

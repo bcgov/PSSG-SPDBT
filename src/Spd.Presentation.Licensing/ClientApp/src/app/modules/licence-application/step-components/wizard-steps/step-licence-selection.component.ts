@@ -1,12 +1,9 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
 import { StepLicenceAccessCodeComponent } from '../wizard-child-steps/step-licence-access-code.component';
@@ -192,7 +189,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenceSelectionComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
+export class StepLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_SOLE_PROPRIETOR = 1;
 	readonly STEP_ACCESS_CODE = 2;
 	readonly STEP_LICENCE_EXPIRED = 5;
@@ -206,13 +203,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 
 	isLoggedIn = false;
 	isFormValid = false;
-
-	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(StepSoleProprietorComponent)
 	soleProprietorComponent!: StepSoleProprietorComponent;
@@ -235,15 +225,11 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 	@ViewChild(StepLicenceTermComponent)
 	licenceTermComponent!: StepLicenceTermComponent;
 
-	@ViewChild('childstepper') private childstepper!: MatStepper;
-
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private router: Router,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {
+		super();
+	}
 
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
@@ -259,64 +245,11 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy, Licence
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onStepNext(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextStepperStep.emit(true);
-	}
-
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.saveAndExit.emit(true);
-	}
-
-	onNextReview(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextReview.emit(true);
-	}
-
-	onStepPrevious(): void {
-		this.previousStepperStep.emit(true);
-	}
-
 	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)]);
+		this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()]);
 	}
 
-	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.childNextStep.emit(true);
-	}
-
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		this.scrollIntoView.emit(true);
-	}
-
-	onGoToNextStep() {
-		this.childstepper.next();
-	}
-
-	onGoToFirstStep() {
-		this.childstepper.selectedIndex = 0;
-	}
-
-	onGoToLastStep() {
-		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
-	}
-
-	private dirtyForm(step: number): boolean {
-		console.log('dirtyForm', step);
-		// console.log(
-		// 	'licenceModelFormGroup',
-		// 	this.licenceApplicationService.licenceModelFormGroup.value
-		// );
+	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();

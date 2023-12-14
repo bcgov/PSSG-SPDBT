@@ -208,9 +208,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					this.hasValueChanged = true;
 
 					const step1Complete = this.isStep1Complete();
-					const step2Complete = this.isStep2Complete();
-					const step3Complete = this.isStep3Complete();
-					const step4Complete = this.isStep4Complete();
+					const step2Complete = this.isStepLicenceSelectionComplete();
+					const step3Complete = this.isStepBackgroundComplete();
+					const step4Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.log(
@@ -1032,9 +1032,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep2Complete(): boolean {
+	isStepLicenceSelectionComplete(): boolean {
 		// console.debug(
-		// 	'isStep2Complete',
+		// 	'isStepLicenceSelectionComplete',
 		// 	this.soleProprietorFormGroup.valid,
 		// 	this.expiredLicenceFormGroup.valid,
 		// 	this.licenceTermFormGroup.valid,
@@ -1089,9 +1089,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep3Complete(): boolean {
+	isStepBackgroundComplete(): boolean {
 		// console.debug(
-		// 	'isStep3Complete',
+		// 	'isStepBackgroundComplete',
 		// 	this.policeBackgroundFormGroup.valid,
 		// 	this.mentalHealthConditionsFormGroup.valid,
 		// 	this.criminalHistoryFormGroup.valid,
@@ -1110,7 +1110,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep4Complete(): boolean {
+	isStepIdentificationComplete(): boolean {
 		const showAdditionalGovermentIdStep = this.citizenshipFormGroup
 			? (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.Yes &&
 					this.citizenshipFormGroup.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||

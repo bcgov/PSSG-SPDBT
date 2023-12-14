@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { LicenceApplicationTypeAnonymousComponent } from './components/anonymous/licence-application-type-anonymous.component';
+import { LicenceSelectionAnonymousComponent } from './components/anonymous/licence-selection-anonymous.component';
+import { UserApplicationsAnonymousComponent } from './components/anonymous/user-applications-anonymous.component';
+import { WorkerLicenceNewWizardAnonymousComponent } from './components/anonymous/worker-licence-new-wizard-anonymous.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -7,10 +11,8 @@ import { LicencePaymentSuccessComponent } from './components/licence-payment-suc
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LoginUserProfileComponent } from './components/login-user-profile.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
-import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
 import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/security-worker-licence-wizard-update-authenticated.component';
-import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
@@ -75,7 +77,6 @@ import { StepBackgroundComponent } from './step-components/wizard-steps/step-bac
 import { StepIdentificationAnonymousComponent } from './step-components/wizard-steps/step-identification-anonymous.component';
 import { StepIdentificationAuthenticatedComponent } from './step-components/wizard-steps/step-identification-authenticated.component';
 import { StepLicenceSelectionComponent } from './step-components/wizard-steps/step-licence-selection.component';
-import { StepLicenceSetupAnonymousComponent } from './step-components/wizard-steps/step-licence-setup-anonymous.component';
 import { StepLicenceSetupAuthenticatedComponent } from './step-components/wizard-steps/step-licence-setup-authenticated.component';
 import { StepReviewLicenceComponent } from './step-components/wizard-steps/step-review-licence.component';
 import { UpdateAddDogsModalComponent } from './step-update-components/update-add-dogs-modal.component';
@@ -125,7 +126,6 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		StepContactInformationComponent,
 		StepResidentialAddressComponent,
 		StepMailingAddressComponent,
-		StepLicenceSetupAnonymousComponent,
 		StepLicenceSetupAuthenticatedComponent,
 		StepLicenceSelectionComponent,
 		StepBackgroundComponent,
@@ -155,7 +155,7 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
 		LoginSelectionComponent,
-		SecurityWorkerLicenceWizardAnonymousComponent,
+		WorkerLicenceNewWizardAnonymousComponent,
 		SecurityWorkerLicenceWizardAuthenticatedComponent,
 		StepBackgroundInfoComponent,
 		SecurityWorkerLicenceWizardUpdateAuthenticatedComponent,
@@ -173,6 +173,8 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		StepLicenceUserProfileComponent,
 		UserApplicationsAnonymousComponent,
 		UserApplicationsAuthenticatedComponent,
+		LicenceSelectionAnonymousComponent,
+		LicenceApplicationTypeAnonymousComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

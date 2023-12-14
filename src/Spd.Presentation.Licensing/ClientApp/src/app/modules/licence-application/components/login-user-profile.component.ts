@@ -74,7 +74,7 @@ export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChil
 	}
 
 	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 
 	onSave(): void {

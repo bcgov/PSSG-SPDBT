@@ -91,10 +91,10 @@ export class LicenceAccessCodeComponent implements LicenceChildStepperStepCompon
 		if (!isValid) return;
 
 		this.hotToastService.success('The licence or permit has been successfully linked to your account');
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED));
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 
 	onBack(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED));
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 }

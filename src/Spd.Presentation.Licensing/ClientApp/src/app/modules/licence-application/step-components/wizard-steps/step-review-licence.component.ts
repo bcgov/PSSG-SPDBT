@@ -1,10 +1,8 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepConsentAndDeclarationComponent } from '../wizard-child-steps/step-consent-and-declaration.component';
 import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-summary-review-licence.component';
@@ -43,12 +41,8 @@ import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-su
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepReviewLicenceComponent implements LicenceStepperStepComponent {
-	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+export class StepReviewLicenceComponent extends BaseWizardStepComponent {
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
-
-	@ViewChild('childstepper') private childstepper!: MatStepper;
 
 	@ViewChild(StepSummaryReviewLicenceComponent) summaryReviewComponent!: StepSummaryReviewLicenceComponent;
 	@ViewChild(StepConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepConsentAndDeclarationComponent;
@@ -57,10 +51,8 @@ export class StepReviewLicenceComponent implements LicenceStepperStepComponent {
 		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
-	) {}
-
-	onStepPrevious(): void {
-		this.previousStepperStep.emit(true);
+	) {
+		super();
 	}
 
 	onPayNow(): void {
@@ -70,7 +62,7 @@ export class StepReviewLicenceComponent implements LicenceStepperStepComponent {
 		this.licenceApplicationService.submitLicence().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -83,28 +75,16 @@ export class StepReviewLicenceComponent implements LicenceStepperStepComponent {
 		this.goToStep.emit(step);
 	}
 
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		this.scrollIntoView.emit(true);
-	}
-
-	onStepNext(_formNumber: number): void {
+	override onStepNext(_formNumber: number): void {
 		// unused
 	}
 
-	onFormValidNextStep(_formNumber: number): void {
+	override onFormValidNextStep(_formNumber: number): void {
 		// unused
 	}
 
-	onGoToNextStep() {
-		this.childstepper.next();
-	}
-
-	onGoToFirstStep() {
+	override onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
 		this.summaryReviewComponent.onUpdateData();
-	}
-
-	onGoToLastStep() {
-		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
 	}
 }

@@ -1,9 +1,7 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { StepLicenceApplicationTypeComponent } from '../wizard-child-steps/step-licence-application-type.component';
 import { StepLicenceTypeSelectionComponent } from '../wizard-child-steps/step-licence-type-selection.component';
 import { StepLicenceUserProfileComponent } from '../wizard-child-steps/step-licence-user-profile.component';
@@ -60,7 +58,7 @@ import { StepLicenceUserProfileComponent } from '../wizard-child-steps/step-lice
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenceSetupAuthenticatedComponent implements LicenceStepperStepComponent {
+export class StepLicenceSetupAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_USER_PROFILE = 0;
 	readonly STEP_LICENCE_TYPE = 1;
 	readonly STEP_APPLICATION_TYPE = 2;
@@ -73,58 +71,19 @@ export class StepLicenceSetupAuthenticatedComponent implements LicenceStepperSte
 
 	@ViewChild(StepLicenceApplicationTypeComponent)
 	licenceApplicationTypeComponent!: StepLicenceApplicationTypeComponent;
-
-	@ViewChild('childstepper') private childstepper!: MatStepper;
-
-	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-	constructor(private router: Router) {}
-
-	onStepNext(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextStepperStep.emit(true);
+	constructor(private router: Router) {
+		super();
 	}
 
-	onStepPrevious(): void {
+	override onStepPrevious(): void {
 		// unused
 	}
 
 	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)]);
+		this.router.navigate([LicenceApplicationRoutes.pathUserApplications()]);
 	}
 
-	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		// if (formNumber === this.STEP_USER_PROFILE) {
-		// 	this.childstepper.next(); // FIX
-		// } else {
-		this.childNextStep.emit(true);
-		// }
-	}
-
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		this.scrollIntoView.emit(true);
-	}
-
-	onGoToNextStep() {
-		this.childstepper.next();
-	}
-
-	onGoToFirstStep() {
-		this.childstepper.selectedIndex = 0;
-	}
-
-	onGoToLastStep() {
-		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
-	}
-
-	private dirtyForm(step: number): boolean {
+	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_USER_PROFILE:
 				return this.licenceUserProfileComponent.isFormValid();

@@ -1,5 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LicenceApplicationTypeAnonymousComponent } from './components/anonymous/licence-application-type-anonymous.component';
+import { LicenceSelectionAnonymousComponent } from './components/anonymous/licence-selection-anonymous.component';
+import { UserApplicationsAnonymousComponent } from './components/anonymous/user-applications-anonymous.component';
+import { WorkerLicenceNewWizardAnonymousComponent } from './components/anonymous/worker-licence-new-wizard-anonymous.component';
+import { WorkerLicenceRenewalWizardAnonymousComponent } from './components/anonymous/worker-licence-renewal-wizard-anonymous.component';
+import { WorkerLicenceReplacementWizardAnonymousComponent } from './components/anonymous/worker-licence-replacement-wizard-anonymous.component';
+import { WorkerLicenceUpdateWizardAnonymousComponent } from './components/anonymous/worker-licence-update-wizard-anonymous.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -7,10 +14,8 @@ import { LicencePaymentSuccessComponent } from './components/licence-payment-suc
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LoginUserProfileComponent } from './components/login-user-profile.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
-import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
 import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/security-worker-licence-wizard-update-authenticated.component';
-import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
@@ -21,10 +26,16 @@ export class LicenceApplicationRoutes {
 	public static LOGIN_SELECTION = 'login-selection';
 
 	public static USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
-	public static USER_APPLICATIONS_ANONYMOUS = 'user-applications-anonymous';
+	public static APPLICATION_AUTHENTICATED = 'applications';
+	public static WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
 
-	public static APPLICATION_AUTHENTICATED = 'application';
-	public static APPLICATION_ANONYMOUS = 'application-anonymous';
+	public static APPLICATION_ANONYMOUS = 'applications-anonymous';
+	public static LICENCE_SELECTION_ANONYMOUS = 'licence-selection';
+	public static LICENCE_APPLICATION_TYPE_ANONYMOUS = 'licence-application-type';
+	public static WORKER_LICENCE_NEW_ANONYMOUS = 'worker-licence-new';
+	public static WORKER_LICENCE_RENEWAL_ANONYMOUS = 'worker-licence-renewal';
+	public static WORKER_LICENCE_REPLACEMENT_ANONYMOUS = 'worker-licence-replacement';
+	public static WORKER_LICENCE_UPDATE_ANONYMOUS = 'worker-licence-update';
 
 	public static LICENCE_UPDATE = 'licence-update';
 	public static LICENCE_LINK = 'licence-link';
@@ -41,22 +52,8 @@ export class LicenceApplicationRoutes {
 		return route ? `/${LicenceApplicationRoutes.MODULE_PATH}/${route}` : `/${LicenceApplicationRoutes.MODULE_PATH}`;
 	}
 
-	public static pathSecurityWorkerLicenceApplications(): string {
-		if (window.location.pathname.includes(LicenceApplicationRoutes.APPLICATION_ANONYMOUS)) {
-			return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS}`;
-		}
+	public static pathUserApplications(): string {
 		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED}`;
-	}
-
-	public static pathSecurityWorkerLicence(route: string | null = null): string {
-		if (window.location.pathname.includes(LicenceApplicationRoutes.APPLICATION_ANONYMOUS)) {
-			return route
-				? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}/${route}`
-				: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}`;
-		}
-		return route
-			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_AUTHENTICATED}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_AUTHENTICATED}`;
 	}
 
 	public static pathSecurityWorkerLicenceAuthenticated(route: string | null = null): string {
@@ -81,29 +78,58 @@ const routes: Routes = [
 				path: LicenceApplicationRoutes.LOGIN_SELECTION,
 				component: LoginSelectionComponent,
 			},
+			// {
+			// 	path: LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS,
+			// 	component: WorkerLicenceUpdateWizardAnonymousComponent,
+			// },
+			{
+				// ANONYMOUS
+				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
+				component: SecurityWorkerLicenceApplicationComponent,
+				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_SELECTION_ANONYMOUS,
+						component: LicenceSelectionAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS,
+						component: LicenceApplicationTypeAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
+						component: WorkerLicenceNewWizardAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS,
+						component: WorkerLicenceRenewalWizardAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS,
+						component: WorkerLicenceReplacementWizardAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS,
+						component: WorkerLicenceUpdateWizardAnonymousComponent,
+					},
+					{
+						path: '',
+						component: UserApplicationsAnonymousComponent,
+					},
+				],
+			},
 			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,
 				component: UserApplicationsAuthenticatedComponent,
-			},
-			{
-				path: LicenceApplicationRoutes.LICENCE_LINK,
-				component: LicenceAccessCodeComponent,
-			},
-			{
-				path: LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS,
-				component: UserApplicationsAnonymousComponent,
-			},
-			{
-				// SWL - NEW - ANONYMOUS
-				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
-				component: SecurityWorkerLicenceApplicationComponent,
-				children: [{ path: '', component: SecurityWorkerLicenceWizardAnonymousComponent }],
 			},
 			{
 				// SWL - NEW - AUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
 				component: SecurityWorkerLicenceApplicationComponent,
 				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_LINK,
+						component: LicenceAccessCodeComponent,
+					},
 					{
 						path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
 						component: LoginUserProfileComponent,
@@ -112,7 +138,10 @@ const routes: Routes = [
 						path: LicenceApplicationRoutes.LICENCE_UPDATE,
 						component: SecurityWorkerLicenceWizardUpdateAuthenticatedComponent,
 					},
-					{ path: '', component: SecurityWorkerLicenceWizardAuthenticatedComponent },
+					{
+						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED,
+						component: SecurityWorkerLicenceWizardAuthenticatedComponent,
+					},
 				],
 			},
 			{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },

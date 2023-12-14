@@ -1,13 +1,14 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
@@ -100,21 +101,15 @@ import { StepReviewLicenceComponent } from '../step-components/wizard-steps/step
 	`,
 	styles: [],
 })
-export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit, OnDestroy, AfterViewInit {
-	private licenceModelLoadedSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
-
+export class SecurityWorkerLicenceWizardAuthenticatedComponent
+	extends BaseWizardComponent
+	implements OnInit, OnDestroy, AfterViewInit
+{
 	readonly STEP_LICENCE_SETUP = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
 	readonly STEP_BACKGROUND = 2;
 	readonly STEP_IDENTIFICATION = 3;
 	readonly STEP_REVIEW = 4;
-
-	isLoaded$ = new BehaviorSubject<boolean>(false);
-
-	orientation: StepperOrientation = 'vertical';
-
-	// isFormValid = false;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -136,16 +131,16 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	@ViewChild(StepReviewLicenceComponent)
 	stepReviewAuthenticatedComponent!: StepReviewLicenceComponent;
 
-	@ViewChild('stepper') stepper!: MatStepper;
-
 	constructor(
+		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
-		private breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
-	) {}
+	) {
+		super(breakpointObserver);
+	}
 
 	ngOnInit(): void {
 		this.breakpointObserver
@@ -177,7 +172,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 
 	ngOnDestroy() {
 		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
@@ -200,10 +194,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 		}
 	}
 
-	onScrollIntoView(): void {
-		this.scrollIntoView();
-	}
-
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 
@@ -224,10 +214,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		console.log(
-			'onNextStepperStep this.licenceApplicationService.hasValueChanged',
-			this.licenceApplicationService.hasValueChanged
-		);
 		if (this.licenceApplicationService.isSaveStep()) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
 				next: (_resp: any) => {
@@ -267,8 +253,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 	}
 
 	onGoToStep(step: number) {
-		console.debug('onGoToStep', step);
-
 		if (step == 4) {
 			this.stepper.selectedIndex = this.STEP_LICENCE_SETUP;
 			return;
@@ -292,9 +276,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 				this.licenceApplicationService.hasValueChanged = false;
 
 				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
-				);
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {
 				// only 403s will be here as an error
@@ -353,9 +335,9 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.licenceApplicationService.isStep1Complete();
-		this.step2Complete = this.licenceApplicationService.isStep2Complete();
-		this.step3Complete = this.licenceApplicationService.isStep3Complete();
-		this.step4Complete = this.licenceApplicationService.isStep4Complete();
+		this.step2Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
+		this.step3Complete = this.licenceApplicationService.isStepBackgroundComplete();
+		this.step4Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
 		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
@@ -395,9 +377,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (!response) {
-					this.router.navigate([
-						LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED),
-					]);
+					this.router.navigate([LicenceApplicationRoutes.pathUserApplications()]);
 				}
 			});
 	}
@@ -418,28 +398,5 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 				break;
 		}
 		this.updateCompleteStatus();
-	}
-
-	private breakpointChanged() {
-		if (this.breakpointObserver.isMatched(Breakpoints.XLarge) || this.breakpointObserver.isMatched(Breakpoints.Large)) {
-			this.orientation = 'horizontal';
-		} else {
-			this.orientation = 'vertical';
-		}
-	}
-
-	private scrollIntoView(): void {
-		const stepIndex = this.stepper.selectedIndex;
-		const stepId = this.stepper._getStepLabelId(stepIndex);
-		const stepElement = document.getElementById(stepId);
-		if (stepElement) {
-			setTimeout(() => {
-				stepElement.scrollIntoView({
-					block: 'start',
-					inline: 'nearest',
-					behavior: 'smooth',
-				});
-			}, 250);
-		}
 	}
 }

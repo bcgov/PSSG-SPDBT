@@ -3,10 +3,12 @@
 import { BcscConfiguration } from './bcsc-configuration';
 import { OidcConfiguration } from './oidc-configuration';
 import { RecaptchaConfiguration } from './recaptcha-configuration';
+import { WorkerCategoryTypeCode } from './worker-category-type-code';
 export interface ConfigurationResponse {
-  bannerMessage?: null | string;
   bcscConfiguration?: BcscConfiguration;
+  invalidWorkerLicenceCategoryMatrixConfiguration?: null | {
+[key: string]: Array<WorkerCategoryTypeCode>;
+};
   oidcConfiguration?: OidcConfiguration;
-  payBcSearchInvoiceUrl?: null | string;
   recaptchaConfiguration?: RecaptchaConfiguration;
 }

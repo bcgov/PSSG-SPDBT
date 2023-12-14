@@ -1,9 +1,7 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepAdditionalGovIdComponent } from '../wizard-child-steps/step-additional-gov-id.component';
 import { StepAliasesComponent } from '../wizard-child-steps/step-aliases.component';
@@ -355,7 +353,7 @@ import { StepResidentialAddressComponent } from '../wizard-child-steps/step-resi
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
+export class StepIdentificationAnonymousComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_PERSONAL_INFORMATION = 0;
 	readonly STEP_ALIASES = 1;
 	readonly STEP_CITIZENSHIP = 2;
@@ -373,13 +371,6 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	isLoggedIn = false;
 	isFormValid = false;
 
-	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
-
 	@ViewChild(StepPersonalInformationComponent) personalInformationComponent!: StepPersonalInformationComponent;
 	@ViewChild(StepAliasesComponent) aliasesComponent!: StepAliasesComponent;
 	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
@@ -391,12 +382,12 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 	@ViewChild(StepMailingAddressComponent) mailingAddressComponent!: StepMailingAddressComponent;
 	@ViewChild(StepContactInformationComponent) stepContactInformationComponent!: StepContactInformationComponent;
 
-	@ViewChild('childstepper') private childstepper!: MatStepper;
-
 	constructor(
 		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService
-	) {}
+	) {
+		super();
+	}
 
 	ngOnInit(): void {
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
@@ -418,61 +409,11 @@ export class StepIdentificationAnonymousComponent implements OnInit, OnDestroy, 
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		this.scrollIntoView.emit(true);
-	}
-
-	onStepPrevious(): void {
-		this.previousStepperStep.emit(true);
-	}
-
-	onStepNext(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextStepperStep.emit(true);
-	}
-
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.saveAndExit.emit(true);
-	}
-
-	onNextReview(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		console.log('onNextReview', formNumber, isValid);
-		console.log('onNextReview', this.licenceApplicationService.licenceModelFormGroup);
-		if (!isValid) return;
-
-		this.nextReview.emit(true);
-	}
-
-	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.childNextStep.emit(true);
-	}
-
-	onGoToNextStep() {
-		this.childstepper.next();
-	}
-
-	onGoToFirstStep() {
-		this.childstepper.selectedIndex = 0;
-	}
-
-	onGoToLastStep() {
-		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
-	}
-
 	onGoToContactStep() {
 		this.childstepper.selectedIndex = this.STEP_RESIDENTIAL_ADDRESS;
 	}
 
-	private dirtyForm(step: number): boolean {
+	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_PERSONAL_INFORMATION:
 				return this.personalInformationComponent.isFormValid();

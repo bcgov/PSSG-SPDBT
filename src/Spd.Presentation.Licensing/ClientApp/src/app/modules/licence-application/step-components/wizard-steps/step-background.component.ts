@@ -1,10 +1,8 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PoliceOfficerRoleCode } from 'src/app/api/models';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepCriminalHistoryComponent } from '../wizard-child-steps/step-criminal-history.component';
 import { StepFingerprintsComponent } from '../wizard-child-steps/step-fingerprints.component';
@@ -159,7 +157,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceStepperStepComponent {
+export class StepBackgroundComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_POLICE_BACKGROUND = 1;
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = 2;
 	readonly STEP_CRIMINAL_HISTORY = 3;
@@ -174,32 +172,17 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 	isLoggedIn = false;
 	isFormValid = false;
 
-	showStepPoliceBackground = true;
-	showStepMentalHealth = true;
-	showStepCriminalHistory = true;
-	showStepFingerprints = true;
-	showStepBackgroundInfo = true;
-
 	@ViewChild(StepPoliceBackgroundComponent) policeBackgroundComponent!: StepPoliceBackgroundComponent;
 	@ViewChild(StepMentalHealthConditionsComponent) mentalHealthConditionsComponent!: StepMentalHealthConditionsComponent;
 	@ViewChild(StepCriminalHistoryComponent) criminalHistoryComponent!: StepCriminalHistoryComponent;
 	@ViewChild(StepFingerprintsComponent) fingerprintsComponent!: StepFingerprintsComponent;
 
-	@ViewChild('childstepper') private childstepper!: MatStepper;
-
-	// @Input() licenceModelFormGroup!: FormGroup;
-
-	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
-
 	constructor(
 		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService
-	) {}
+	) {
+		super();
+	}
 
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
@@ -221,54 +204,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		this.scrollIntoView.emit(true);
-	}
-
-	onStepPrevious(): void {
-		this.previousStepperStep.emit(true);
-	}
-
-	onStepNext(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-		this.nextStepperStep.emit(true);
-	}
-
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.saveAndExit.emit(true);
-	}
-
-	onNextReview(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.nextReview.emit(true);
-	}
-
-	onGoToNextStep() {
-		this.childstepper.next();
-	}
-
-	onGoToFirstStep() {
-		this.childstepper.selectedIndex = 0;
-	}
-
-	onGoToLastStep() {
-		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
-	}
-
-	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
-		this.childNextStep.emit(true);
-	}
-
-	private dirtyForm(step: number): boolean {
+	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_POLICE_BACKGROUND:
 				return this.policeBackgroundComponent.isFormValid();

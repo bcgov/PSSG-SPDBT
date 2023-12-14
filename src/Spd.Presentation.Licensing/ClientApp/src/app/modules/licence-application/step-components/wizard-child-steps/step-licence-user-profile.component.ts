@@ -57,7 +57,7 @@ export class StepLicenceUserProfileComponent implements LicenceChildStepperStepC
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceApplications());
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 
 	isFormValid(): boolean {

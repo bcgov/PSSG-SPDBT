@@ -469,7 +469,11 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+						)
+					);
 				}),
 				take(1)
 			)
@@ -499,7 +503,11 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.createNewLicenceAuthenticated()
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+						)
+					);
 				}),
 				take(1)
 			)

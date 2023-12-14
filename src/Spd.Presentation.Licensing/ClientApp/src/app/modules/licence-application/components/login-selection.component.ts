@@ -164,11 +164,11 @@ export class LoginSelectionComponent {
 	}
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED));
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 
 	onContinue(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS));
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
 	}
 
 	onKeydownContinue(event: KeyboardEvent) {
