@@ -247,6 +247,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Upload licence application files: frontend use the keyCode to upload following files.
         /// Do not support parallel.
+        /// Uploading file only save files in cache, the files are not connected to the appliation yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="keyCode"></param>
