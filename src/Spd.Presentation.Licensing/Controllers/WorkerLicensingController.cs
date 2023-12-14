@@ -231,10 +231,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns>Guid: keyCode</returns>
         [Route("api/worker-licence-applications/anonymous/keyCode")]
         [HttpPost]
-        public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] string recaptcha, CancellationToken ct)
+        public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
-            //var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha, ct);
+            //var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
             //if (!isValid)
             //{
             //    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
@@ -255,7 +255,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/anonymous/{keyCode}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        public async Task<string> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
         {
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
             if (fileUploadConfig == null)
@@ -287,7 +287,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var newFileInfos = await _mediator.Send(command);
             existingFileInfo.LicAppFileInfos.AddRange(newFileInfos);
             await _cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
-            return $"{keyCode}";
+            return keyCode;
         }
 
         /// <summary>
@@ -296,12 +296,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
-        [Route("worker-licence-applications/anonymous/{keyCode}/submit")]
+        [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
         [HttpPost]
         public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
         {
             //validate keyCode
-            if (await _cache.Get<Guid?>(keyCode.ToString()) == null)
+            if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
             }
@@ -316,5 +316,10 @@ namespace Spd.Presentation.Licensing.Controllers
 
         }
         #endregion
+    }
+
+    public class GoogleRecaptcha
+    {
+        public string RecaptchaCode { get; set; }
     }
 }

@@ -35,6 +35,8 @@ internal class Mappings : Profile
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
         CreateMap<LicAppFileInfo, SpdTempFile>();
@@ -45,7 +47,7 @@ internal class Mappings : Profile
         List<WorkerLicenceAppCategory> categories = new List<WorkerLicenceAppCategory> { };
         foreach (WorkerCategoryTypeCode code in codes)
         {
-            categories.Add(new WorkerLicenceAppCategory() { WorkerCategoryTypeCode=Enum.Parse<WorkerCategoryTypeEnum>( code.ToString() )});
+            categories.Add(new WorkerLicenceAppCategory() { WorkerCategoryTypeCode = Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()) });
         }
         return categories.ToArray();
     }

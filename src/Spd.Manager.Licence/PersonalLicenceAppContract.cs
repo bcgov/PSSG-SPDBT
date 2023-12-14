@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Resource.Applicants.Application;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Licence;

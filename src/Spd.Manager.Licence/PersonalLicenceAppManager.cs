@@ -19,6 +19,8 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
         IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
