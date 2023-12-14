@@ -20,6 +20,7 @@ using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
 using Spd.Resource.Applicants.Application;
+using System.Reflection;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -229,11 +230,16 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications-anonymous/{licenceAppId}/files")]
+        [Route("api/worker-licence-applications-anonymous/code")]
         [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> GetLicenceAppAnonymousCode(CancellationToken ct)
+        public async Task<Guid> GetLicenceAppAnonymousCode([FromBody]string recaptcha, CancellationToken ct)
         {
+            _logger.LogInformation("do Google recaptcha verification");
+            var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha, ct);
+            if (!isValid)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+            }
             Guid keyCode = Guid.NewGuid();
             await _cache.Set<Guid>(keyCode.ToString(), keyCode, TimeSpan.FromMinutes(30));
             return keyCode;
