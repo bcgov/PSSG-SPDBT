@@ -6,7 +6,6 @@ import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-ste
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
-import { StepLicenceAccessCodeComponent } from '../wizard-child-steps/step-licence-access-code.component';
 import { StepLicenceCategoryComponent } from '../wizard-child-steps/step-licence-category.component';
 import { StepLicenceExpiredComponent } from '../wizard-child-steps/step-licence-expired.component';
 import { StepLicenceTermComponent } from '../wizard-child-steps/step-licence-term.component';
@@ -191,7 +190,6 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 })
 export class StepLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_SOLE_PROPRIETOR = 1;
-	readonly STEP_ACCESS_CODE = 2;
 	readonly STEP_LICENCE_EXPIRED = 5;
 	readonly STEP_LICENCE_CATEGORY = 6;
 	readonly STEP_DOGS = 8;
@@ -206,9 +204,6 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 
 	@ViewChild(StepSoleProprietorComponent)
 	soleProprietorComponent!: StepSoleProprietorComponent;
-
-	@ViewChild(StepLicenceAccessCodeComponent)
-	licenceAccessCodeComponent!: StepLicenceAccessCodeComponent;
 
 	@ViewChild(StepLicenceExpiredComponent)
 	licenceExpiredComponent!: StepLicenceExpiredComponent;
@@ -253,8 +248,6 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
-			case this.STEP_ACCESS_CODE:
-				return this.licenceAccessCodeComponent.isFormValid();
 			case this.STEP_LICENCE_EXPIRED:
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:

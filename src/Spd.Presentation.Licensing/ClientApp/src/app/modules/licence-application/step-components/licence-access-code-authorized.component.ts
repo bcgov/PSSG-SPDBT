@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { Subscription } from 'rxjs';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
 
 @Component({
-	selector: 'app-licence-access-code',
+	selector: 'app-licence-access-code-authorized',
 	template: `
 		<section class="step-section">
 			<div class="row">
@@ -71,15 +74,35 @@ import { LicenceChildStepperStepComponent } from '../services/licence-applicatio
 	`,
 	styles: [],
 })
-export class LicenceAccessCodeComponent implements LicenceChildStepperStepComponent {
+export class LicenceAccessCodeAuthorizedComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
+	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
+	authenticationSubscription!: Subscription;
+
 	form: FormGroup = this.formBuilder.group({
-		currentLicenceNumber: new FormControl(null, [Validators.required]),
-		accessCode: new FormControl(null, [Validators.required]),
+		currentLicenceNumber: new FormControl(null, [FormControlValidators.required]),
+		accessCode: new FormControl(null, [FormControlValidators.required]),
 	});
 
-	constructor(private formBuilder: FormBuilder, private router: Router, private hotToastService: HotToastService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private router: Router,
+		private authProcessService: AuthProcessService,
+		private hotToastService: HotToastService
+	) {}
+
+	async ngOnInit(): Promise<void> {
+		this.authProcessService.logoutBceid();
+
+		await this.authProcessService.initializeLicencingBCSC();
+
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe();
+	}
+
+	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

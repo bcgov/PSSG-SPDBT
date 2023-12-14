@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
@@ -15,75 +15,70 @@ import { StepReviewLicenceComponent } from '../../step-components/wizard-steps/s
 @Component({
 	selector: 'app-worker-licence-new-wizard-anonymous',
 	template: `
-		<ng-container *ngIf="isLoaded$ | async">
-			<div class="row">
-				<div class="col-12">
-					<mat-stepper
-						linear
-						labelPosition="bottom"
-						[orientation]="orientation"
-						(selectionChange)="onStepSelectionChange($event)"
-						#stepper
-					>
-						<mat-step [completed]="step1Complete">
-							<ng-template matStepLabel> Licence Selection </ng-template>
-							<app-step-licence-selection
-								(childNextStep)="onChildNextStep()"
-								(nextReview)="onGoToReview()"
+		<div class="row">
+			<div class="col-12">
+				<mat-stepper
+					linear
+					labelPosition="bottom"
+					[orientation]="orientation"
+					(selectionChange)="onStepSelectionChange($event)"
+					#stepper
+				>
+					<mat-step [completed]="step1Complete">
+						<ng-template matStepLabel> Licence Selection </ng-template>
+						<app-step-licence-selection
+							(childNextStep)="onChildNextStep()"
+							(nextReview)="onGoToReview()"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-step-licence-selection>
+					</mat-step>
+
+					<mat-step [completed]="step2Complete">
+						<ng-template matStepLabel>Background</ng-template>
+						<app-step-background
+							(childNextStep)="onChildNextStep()"
+							(nextReview)="onGoToReview()"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-step-background>
+					</mat-step>
+
+					<mat-step [completed]="step3Complete">
+						<ng-template matStepLabel>Identification</ng-template>
+						<app-step-identification-anonymous
+							(childNextStep)="onChildNextStep()"
+							(nextReview)="onGoToReview()"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-step-identification-anonymous>
+					</mat-step>
+
+					<mat-step completed="false">
+						<ng-template matStepLabel>Review and Confirm</ng-template>
+						<ng-template matStepContent>
+							<app-step-review-licence
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
-							></app-step-licence-selection>
-						</mat-step>
+								(goToStep)="onGoToStep($event)"
+							></app-step-review-licence>
+						</ng-template>
+					</mat-step>
 
-						<mat-step [completed]="step2Complete">
-							<ng-template matStepLabel>Background</ng-template>
-							<app-step-background
-								(childNextStep)="onChildNextStep()"
-								(nextReview)="onGoToReview()"
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(scrollIntoView)="onScrollIntoView()"
-							></app-step-background>
-						</mat-step>
-
-						<mat-step [completed]="step3Complete">
-							<ng-template matStepLabel>Identification</ng-template>
-							<app-step-identification-anonymous
-								(childNextStep)="onChildNextStep()"
-								(nextReview)="onGoToReview()"
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(scrollIntoView)="onScrollIntoView()"
-							></app-step-identification-anonymous>
-						</mat-step>
-
-						<mat-step completed="false">
-							<ng-template matStepLabel>Review and Confirm</ng-template>
-							<ng-template matStepContent>
-								<app-step-review-licence
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-									(scrollIntoView)="onScrollIntoView()"
-									(goToStep)="onGoToStep($event)"
-								></app-step-review-licence>
-							</ng-template>
-						</mat-step>
-
-						<mat-step completed="false">
-							<ng-template matStepLabel>Pay</ng-template>
-						</mat-step>
-					</mat-stepper>
-				</div>
+					<mat-step completed="false">
+						<ng-template matStepLabel>Pay</ng-template>
+					</mat-step>
+				</mat-stepper>
 			</div>
-		</ng-container>
+		</div>
 	`,
 	styles: [],
 })
-export class WorkerLicenceNewWizardAnonymousComponent
-	extends BaseWizardComponent
-	implements OnInit, OnDestroy, AfterViewInit
-{
+export class WorkerLicenceNewWizardAnonymousComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -119,28 +114,7 @@ export class WorkerLicenceNewWizardAnonymousComponent
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: () => {
-				this.updateCompleteStatus();
-				this.isLoaded$.next(true);
-			},
-		});
-	}
-
-	ngAfterViewInit(): void {
-		if (this.step3Complete) {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		} else if (this.step2Complete) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		} else if (this.step1Complete) {
-			this.stepper.selectedIndex = this.STEP_BACKGROUND;
-		} else {
-			this.stepper.selectedIndex = this.STEP_LICENCE_SELECTION;
-		}
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
+		this.updateCompleteStatus();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

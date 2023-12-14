@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
@@ -56,6 +57,8 @@ export class StepSoleProprietorComponent implements OnInit, LicenceChildStepperS
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 	infoTitle = '';
+
+	@Input() applicationTypeCode!: ApplicationTypeCode; // TODO
 
 	readonly title_apply = 'Do you also want to apply for a Sole Proprietor Security Business Licence?';
 	readonly subtitle_apply =

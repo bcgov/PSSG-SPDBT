@@ -130,26 +130,12 @@ export class LicenceApplicationTypeAnonymousComponent {
 							);
 							break;
 						}
+						case ApplicationTypeCode.Update:
+						case ApplicationTypeCode.Replacement:
 						case ApplicationTypeCode.Renewal: {
 							this.router.navigateByUrl(
 								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
-								)
-							);
-							break;
-						}
-						case ApplicationTypeCode.Replacement: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
-								)
-							);
-							break;
-						}
-						case ApplicationTypeCode.Update: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
+									LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
 								)
 							);
 							break;

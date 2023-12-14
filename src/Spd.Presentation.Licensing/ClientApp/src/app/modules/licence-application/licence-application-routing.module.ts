@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LicenceAccessCodeAnonymousComponent } from './components/anonymous/licence-access-code-anonymous.component';
 import { LicenceApplicationTypeAnonymousComponent } from './components/anonymous/licence-application-type-anonymous.component';
 import { LicenceSelectionAnonymousComponent } from './components/anonymous/licence-selection-anonymous.component';
 import { UserApplicationsAnonymousComponent } from './components/anonymous/user-applications-anonymous.component';
@@ -18,7 +19,7 @@ import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/
 import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/security-worker-licence-wizard-update-authenticated.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationComponent } from './licence-application.component';
-import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
+import { LicenceAccessCodeAuthorizedComponent } from './step-components/licence-access-code-authorized.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
@@ -32,6 +33,7 @@ export class LicenceApplicationRoutes {
 	public static APPLICATION_ANONYMOUS = 'applications-anonymous';
 	public static LICENCE_SELECTION_ANONYMOUS = 'licence-selection';
 	public static LICENCE_APPLICATION_TYPE_ANONYMOUS = 'licence-application-type';
+	public static LICENCE_ACCESS_CODE_ANONYMOUS = 'licence-access-code';
 	public static WORKER_LICENCE_NEW_ANONYMOUS = 'worker-licence-new';
 	public static WORKER_LICENCE_RENEWAL_ANONYMOUS = 'worker-licence-renewal';
 	public static WORKER_LICENCE_REPLACEMENT_ANONYMOUS = 'worker-licence-replacement';
@@ -83,6 +85,10 @@ const routes: Routes = [
 			// 	component: WorkerLicenceUpdateWizardAnonymousComponent,
 			// },
 			{
+				path: LicenceApplicationRoutes.LICENCE_LINK,
+				component: LicenceAccessCodeAuthorizedComponent,
+			},
+			{
 				// ANONYMOUS
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
 				component: SecurityWorkerLicenceApplicationComponent,
@@ -94,6 +100,10 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS,
 						component: LicenceApplicationTypeAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS,
+						component: LicenceAccessCodeAnonymousComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
@@ -127,10 +137,6 @@ const routes: Routes = [
 				component: SecurityWorkerLicenceApplicationComponent,
 				children: [
 					{
-						path: LicenceApplicationRoutes.LICENCE_LINK,
-						component: LicenceAccessCodeComponent,
-					},
-					{
 						path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
 						component: LoginUserProfileComponent,
 					},
@@ -141,6 +147,10 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED,
 						component: SecurityWorkerLicenceWizardAuthenticatedComponent,
+					},
+					{
+						path: '',
+						component: UserApplicationsAuthenticatedComponent,
 					},
 				],
 			},

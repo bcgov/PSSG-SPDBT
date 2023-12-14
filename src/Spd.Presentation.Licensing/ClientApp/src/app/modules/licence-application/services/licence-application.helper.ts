@@ -64,6 +64,12 @@ export abstract class LicenceApplicationHelper {
 		applicationTypeCode: new FormControl('', [Validators.required]),
 	});
 
+	accessCodeFormGroup: FormGroup = this.formBuilder.group({
+		currentLicenceNumber: new FormControl(null, [FormControlValidators.required]),
+		accessCode: new FormControl(null, [FormControlValidators.required]),
+		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
+	});
+
 	personalInformationFormGroup = this.formBuilder.group({
 		givenName: new FormControl(''),
 		middleName1: new FormControl(''),
