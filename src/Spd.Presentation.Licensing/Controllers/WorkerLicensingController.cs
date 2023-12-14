@@ -8,19 +8,17 @@ using Spd.Manager.Licence;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Presentation.Licensing.Services;
+using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
-using Spd.Utilities.Cache;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
-using Spd.Resource.Applicants.Application;
-using System.Reflection;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -33,6 +31,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
         private readonly IValidator<AnonymousWorkerLicenceSubmitCommand> _anonymousWslCommandValidator;
+        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> _anonymousLicenceAppSubmitRequestValidator;
         private readonly IMultipartRequestService _multipartRequestService;
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
@@ -44,6 +43,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
             IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
+            IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> anonymousLicenceAppSubmitRequestValidator,
             IMultipartRequestService multipartRequestService,
             IMapper mapper,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -59,6 +59,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
             _anonymousWslCommandValidator = anonymousWslCommandValidator;
+            _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
 
         #region bcsc authenticated
@@ -224,38 +225,37 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload licence application files
+        /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
         /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/worker-licence-applications-anonymous/code")]
+        /// <returns>Guid: keyCode</returns>
+        [Route("api/worker-licence-applications/anonymous/keyCode")]
         [HttpPost]
-        public async Task<Guid> GetLicenceAppAnonymousCode([FromBody]string recaptcha, CancellationToken ct)
+        public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] string recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
-            var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha, ct);
-            if (!isValid)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
-            }
+            //var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha, ct);
+            //if (!isValid)
+            //{
+            //    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+            //}
             Guid keyCode = Guid.NewGuid();
-            await _cache.Set<Guid>(keyCode.ToString(), keyCode, TimeSpan.FromMinutes(30));
+            await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(30));
             return keyCode;
         }
 
         /// <summary>
-        /// Upload licence application files
+        /// Upload licence application files: frontend use the keyCode to upload following files.
+        /// Do not support parallel.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
+        /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications-anonymous/{keyCode}/files")]
+        [Route("api/worker-licence-applications/anonymous/{keyCode}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        public async Task<string> UploadLsicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        public async Task<string> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
         {
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
             if (fileUploadConfig == null)
@@ -277,18 +277,44 @@ namespace Spd.Presentation.Licensing.Controllers
             }
 
             //validate keyCode
-            if(await _cache.Get<Guid?>(keyCode.ToString()) == null)
+            LicenceAppDocumentsCache? existingFileInfo = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+            if (existingFileInfo == null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
             }
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
-            var cacheFileInfos =  await _mediator.Send(command);
-            Guid filesGuid = Guid.NewGuid();
-            await _cache.Set<IEnumerable<SpdTempFile>>($"{keyCode}.{filesGuid}", cacheFileInfos, TimeSpan.FromMinutes(30));
-            return $"{keyCode}.{filesGuid}";
+            var newFileInfos = await _mediator.Send(command);
+            existingFileInfo.LicAppFileInfos.AddRange(newFileInfos);
+            await _cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
+            return $"{keyCode}";
+        }
+
+        /// <summary>
+        /// Submit Security Worker Licence Application Json part Anonymously
+        /// After fe done with the uploading files, then fe do post with json payload
+        /// </summary>
+        /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("worker-licence-applications/anonymous/{keyCode}/submit")]
+        [HttpPost]
+        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
+        {
+            //validate keyCode
+            if (await _cache.Get<Guid?>(keyCode.ToString()) == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
+
+            _logger.LogInformation("validate payload");
+            var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            AnonymousWorkerLicenceAppSubmitCommand command = new AnonymousWorkerLicenceAppSubmitCommand(jsonRequest, keyCode);
+            return await _mediator.Send(command);
+
         }
         #endregion
     }
-
 }
