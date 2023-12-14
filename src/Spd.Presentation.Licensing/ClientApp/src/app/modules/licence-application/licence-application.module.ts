@@ -9,7 +9,7 @@ import { LoginUserProfileComponent } from './components/login-user-profile.compo
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
-import { SecurityWorkerLicenceWizardUpdateComponent } from './components/security-worker-licence-wizard-update.component';
+import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/security-worker-licence-wizard-update-authenticated.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
@@ -19,6 +19,7 @@ import { AliasListComponent } from './step-components/alias-list.component';
 import { AliasesComponent } from './step-components/aliases.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { FingerprintTearOffModalComponent } from './step-components/fingerprint-tear-off-modal.component';
+import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './step-components/licence-category-armoured-car-guard.component';
 import { LicenceCategoryBodyArmourSalesComponent } from './step-components/licence-category-body-armour-sales.component';
 import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from './step-components/licence-category-closed-circuit-television-installer.component';
@@ -44,7 +45,9 @@ import { StepAdditionalGovIdComponent } from './step-components/wizard-child-ste
 import { StepAliasesComponent } from './step-components/wizard-child-steps/step-aliases.component';
 import { StepBackgroundInfoComponent } from './step-components/wizard-child-steps/step-background-info.component';
 import { StepBcDriverLicenceComponent } from './step-components/wizard-child-steps/step-bc-driver-licence.component';
-import { StepChecklistComponent } from './step-components/wizard-child-steps/step-checklist.component';
+import { StepChecklistNewWorkerComponent } from './step-components/wizard-child-steps/step-checklist-new-worker.component';
+import { StepChecklistRenewalWorkerComponent } from './step-components/wizard-child-steps/step-checklist-renewal-worker.component';
+import { StepChecklistUpdateWorkerComponent } from './step-components/wizard-child-steps/step-checklist-update-worker.component';
 import { StepCitizenshipComponent } from './step-components/wizard-child-steps/step-citizenship.component';
 import { StepConsentAndDeclarationComponent } from './step-components/wizard-child-steps/step-consent-and-declaration.component';
 import { StepContactInformationComponent } from './step-components/wizard-child-steps/step-contact-information.component';
@@ -91,7 +94,9 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		StepLicenceApplicationTypeComponent,
 		LoginUserProfileComponent,
 		StepSoleProprietorComponent,
-		StepChecklistComponent,
+		StepChecklistNewWorkerComponent,
+		StepChecklistRenewalWorkerComponent,
+		StepChecklistUpdateWorkerComponent,
 		PersonalInformationComponent,
 		StepLicenceExpiredComponent,
 		StepPoliceBackgroundComponent,
@@ -131,6 +136,7 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		StepLicenceCategoryComponent,
 		StepAdditionalGovIdComponent,
 		StepLicenceAccessCodeComponent,
+		LicenceAccessCodeComponent,
 		LicenceCategoryLocksmithComponent,
 		LicenceCategoryArmouredCarGuardComponent,
 		LicenceCategoryBodyArmourSalesComponent,
@@ -152,7 +158,7 @@ import { StepLicenceUpdatesComponent } from './step-update-components/wizard-upd
 		SecurityWorkerLicenceWizardAnonymousComponent,
 		SecurityWorkerLicenceWizardAuthenticatedComponent,
 		StepBackgroundInfoComponent,
-		SecurityWorkerLicenceWizardUpdateComponent,
+		SecurityWorkerLicenceWizardUpdateAuthenticatedComponent,
 		StepLicenceUpdatesComponent,
 		StepConfirmMailingAddressComponent,
 		StepConfirmUpdatesComponent,

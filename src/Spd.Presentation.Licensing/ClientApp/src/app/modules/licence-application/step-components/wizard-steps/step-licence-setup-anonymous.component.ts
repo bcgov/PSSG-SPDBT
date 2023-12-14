@@ -64,8 +64,8 @@ export class StepLicenceSetupAnonymousComponent implements LicenceStepperStepCom
 	constructor(private router: Router) {}
 
 	onStepNext(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
+		// const isValid = this.dirtyForm(formNumber);
+		// if (!isValid) return;
 
 		this.nextStepperStep.emit(true);
 	}
@@ -79,8 +79,8 @@ export class StepLicenceSetupAnonymousComponent implements LicenceStepperStepCom
 	}
 
 	onFormValidNextStep(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
+		// const isValid = this.dirtyForm(formNumber);
+		// if (!isValid) return;
 
 		this.childNextStep.emit(true);
 	}

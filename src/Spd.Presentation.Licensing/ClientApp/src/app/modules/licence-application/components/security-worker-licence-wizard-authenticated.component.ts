@@ -153,13 +153,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent implements OnInit
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		// this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-		// 	(_resp: any) => {
-		// 		console.log('licenceModelValueChanges$', _resp);
-		// 		this.isFormValid = _resp;
-		// 	}
-		// );
-
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();

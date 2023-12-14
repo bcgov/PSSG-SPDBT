@@ -8,7 +8,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 	template: `
 		<div mat-dialog-title>
 			Add Request Authorization to use Restraints
-			<mat-divider></mat-divider>
+
+			<mat-divider class="mat-divider-main mt-2 mb-3"></mat-divider>
 		</div>
 		<div mat-dialog-content>
 			<app-step-restraints-authorization [isCalledFromModal]="true"></app-step-restraints-authorization>
@@ -28,10 +29,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class UpdateAddRestraintsModalComponent {
 	constructor(
-		private dialogRef: MatDialogRef<UpdateAddRestraintsModalComponent>,
-		// private licenceApplicationService: LicenceApplicationService,
-		// @Inject(MAT_DIALOG_DATA) public dialogData: RestraintAuthorizationDialogData
-	) {}
+		private dialogRef: MatDialogRef<UpdateAddRestraintsModalComponent>
+	) // private licenceApplicationService: LicenceApplicationService,
+	// @Inject(MAT_DIALOG_DATA) public dialogData: RestraintAuthorizationDialogData
+	{}
 
 	onSave(): void {
 		this.dialogRef.close({ success: true });

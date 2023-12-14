@@ -132,7 +132,7 @@ export interface UpdateOptionListData {
 							<app-alert type="info" [showBorder]="false" icon="" *ngIf="updates.length === 0">
 								No updates have been selected
 							</app-alert>
-							<div class="card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
+							<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
 								<div class="row">
 									<div class="col-lg-6 col-md-12">
 										<div class="fs-6 fw-normal" style="color: var(--color-primary);" [innerHTML]="update.label"></div>
@@ -155,26 +155,7 @@ export interface UpdateOptionListData {
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			small {
-				color: var(--color-grey-dark);
-				line-height: 1.3em;
-			}
-
-			.text-data {
-				font-size: 0.9rem !important;
-			}
-
-			.card-section {
-				background-color: #f6f6f6 !important;
-				border-left: 3px solid #38598a;
-				border-bottom-width: 1px;
-				border-bottom-style: solid;
-				border-bottom-color: rgba(0, 0, 0, 0.12);
-			}
-		`,
-	],
+	styles: [],
 })
 export class StepLicenceUpdatesComponent {
 	updates: Array<UpdateOptionListData> = [];

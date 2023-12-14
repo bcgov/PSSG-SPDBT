@@ -48,13 +48,13 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 														</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ applicationTypeCode | options : 'ApplicationTypes' }}
 														</div>
 													</div>
@@ -62,7 +62,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
 															Sole Proprietorship Security Business Licence
 														</div>
-														<div class="text-data">{{ isSoleProprietor }}</div>
+														<div class="summary-text-data">{{ isSoleProprietor }}</div>
 													</div>
 												</div>
 												<div class="row mt-0">
@@ -73,18 +73,18 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																{{ category.desc }}
 															</div>
 														</div>
 													</ng-container>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-														<div class="text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+														<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 														</div>
 													</div>
@@ -98,7 +98,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -108,7 +108,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -121,7 +121,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of categoryLocksmithAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -133,8 +133,8 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 																{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
 																Documents
 															</div>
-															<div class="text-data">
-																<div class="text-data">
+															<div class="summary-text-data">
+																<div class="summary-text-data">
 																	<div *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
 																		{{ doc.name }}
 																	</div>
@@ -156,7 +156,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 																}}
 																Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div
 																	*ngFor="
 																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
@@ -173,7 +173,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 																{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
 																Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -184,7 +184,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -198,7 +198,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
 															</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -213,11 +213,11 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Number</div>
-															<div class="text-data">{{ expiredLicenceNumber | default }}</div>
+															<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																{{ expiredLicenceExpiryDate | formatDate | default }}
 															</div>
 														</div>
@@ -230,7 +230,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 															</div>
 														</div>
@@ -239,7 +239,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																	{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 																</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
 																		{{ doc.name }}
 																	</div>
@@ -253,12 +253,12 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
-															<div class="text-data">{{ useDogs }}</div>
+															<div class="summary-text-data">{{ useDogs }}</div>
 														</div>
 														<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	<div *ngIf="isDogsPurposeProtection">Protection</div>
 																	<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
 																	<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
@@ -266,7 +266,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															</div>
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
 																		{{ doc.name }}
 																	</div>
@@ -303,12 +303,12 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
 															Police Officer or Peace Officer Roles
 														</div>
-														<div class="text-data">{{ isPoliceOrPeaceOfficer }}</div>
+														<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
 													</div>
 													<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<span
 																	*ngIf="
 																		policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
@@ -321,7 +321,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2" *ngIf="letterOfNoConflictAttachments">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Letter of No Conflict</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
@@ -335,11 +335,11 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Conditions?</div>
-														<div class="text-data">{{ isTreatedForMHC }}</div>
+														<div class="summary-text-data">{{ isTreatedForMHC }}</div>
 													</div>
 													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="mentalHealthConditionAttachments.length > 0">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Condition Form</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															<div *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
 																{{ doc.name }}
 															</div>
@@ -354,7 +354,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
 															Have you previously been charged or convicted of a crime?
 														</div>
-														<div class="text-data">{{ hasCriminalHistory }}</div>
+														<div class="summary-text-data">{{ hasCriminalHistory }}</div>
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
@@ -365,7 +365,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
 															Request for Fingerprinting Form
 														</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
 																{{ doc.name }}
 															</div>
@@ -398,20 +398,20 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ givenName }} {{ middleName1 }} {{ middleName2 }}
 															{{ surname }}
 														</div>
 													</div>
 													<div class="col-lg-3 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ dateOfBirth | formatDate | default }}
 														</div>
 													</div>
 													<div class="col-lg-3 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ genderCode | options : 'GenderTypes' | default }}
 														</div>
 													</div>
@@ -424,12 +424,12 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
 															Do you have any previous names?
 														</div>
-														<div class="text-data">{{ previousNameFlag }}</div>
+														<div class="summary-text-data">{{ previousNameFlag }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
-															<div class="text-data">
+															<div class="summary-text-data">
 																<div
 																	*ngFor="let alias of aliases; let i = index; let first = first"
 																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
@@ -449,7 +449,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 														<div class="row mt-0">
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-																<div class="text-data">{{ isCanadianCitizen }}</div>
+																<div class="summary-text-data">{{ isCanadianCitizen }}</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -462,7 +462,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 																		}}
 																	</span>
 																</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	<div *ngFor="let doc of attachments; let i = index">
 																		{{ doc.name }}
 																	</div>
@@ -470,13 +470,13 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
-																<div class="text-data">{{ bcDriversLicenceNumber | default }}</div>
+																<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																	{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 																</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
 																		{{ doc.name }}
 																	</div>
@@ -484,7 +484,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	{{ height }}
 																	{{ heightUnitCode | options : 'HeightUnitTypes' }}
 																	{{ heightInches }}
@@ -492,20 +492,20 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	{{ weight }}
 																	{{ weightUnitCode | options : 'WeightUnitTypes' }}
 																</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	{{ hairColourCode | options : 'HairColourTypes' }}
 																</div>
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
-																<div class="text-data">
+																<div class="summary-text-data">
 																	{{ eyeColourCode | options : 'EyeColourTypes' }}
 																</div>
 															</div>
@@ -513,7 +513,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
 														</div>
 													</div>
@@ -544,11 +544,11 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
-														<div class="text-data">{{ contactEmailAddress | default }}</div>
+														<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ contactPhoneNumber | mask : constants.phone.displayMask }}
 														</div>
 													</div>
@@ -559,29 +559,29 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="text-data">{{ residentialAddressLine1 | default }}</div>
+														<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="text-data">{{ residentialAddressLine2 | default }}</div>
+														<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="text-data">{{ residentialCity | default }}</div>
+														<div class="summary-text-data">{{ residentialCity | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="text-data">{{ residentialPostalCode | default }}</div>
+														<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ residentialProvince | default }}
 														</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="text-data">
+														<div class="summary-text-data">
 															{{ residentialCountry | default }}
 														</div>
 													</div>
@@ -592,7 +592,9 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 												<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
 													<div class="row mt-0">
 														<div class="col-12 mt-lg-2">
-															<div class="text-data">Mailing address is the same as the residential address</div>
+															<div class="summary-text-data">
+																Mailing address is the same as the residential address
+															</div>
 														</div>
 													</div>
 												</ng-container>
@@ -600,27 +602,27 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="text-data">{{ mailingAddressLine1 | default }}</div>
+															<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="text-data">{{ mailingAddressLine2 | default }}</div>
+															<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="text-data">{{ mailingCity | default }}</div>
+															<div class="summary-text-data">{{ mailingCity | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="text-data">{{ mailingPostalCode | default }}</div>
+															<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="text-data">{{ mailingProvince | default }}</div>
+															<div class="summary-text-data">{{ mailingProvince | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="text-data">{{ mailingCountry | default }}</div>
+															<div class="summary-text-data">{{ mailingCountry | default }}</div>
 														</div>
 													</div>
 												</ng-template>
@@ -654,12 +656,6 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 				font-size: 1.1rem !important;
 				color: var(--color-primary-light) !important;
 				font-weight: 300 !important;
-			}
-
-			.text-data {
-				font-size: 1.1rem !important;
-				font-weight: 500 !important;
-				color: var(--color-primary);
 			}
 
 			.text-label {

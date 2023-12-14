@@ -24,45 +24,60 @@ export interface ApplicationResponse {
 	workerLicenceTypeCode?: WorkerLicenceTypeCode;
 	applicationTypeCode?: ApplicationTypeCode;
 	expiresOn?: null | string;
+	action?: null | string;
 }
 
 @Component({
 	selector: 'app-user-applications-authenticated',
 	template: `
-		<!-- <app-alert type="info" icon="info">
-	We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
-	fee?
-</app-alert>
-
-<app-alert type="warning">
-	Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
-</app-alert>
-
-<app-alert type="danger" icon="error">
-	You haven't submitted your licence application yet. It will expire on Jan 12, 2024
-</app-alert> -->
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<h2 class="my-3 fs-3 fw-normal">Security Licences & Permits</h2>
+					<div class="row">
+						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
+							<h2 class="my-3 fs-3 fw-normal">Security Licences & Permits</h2>
+						</div>
+
+						<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
+							<div class="d-flex justify-content-end">
+								<button mat-flat-button color="primary" class="large w-auto" (click)="onUserProfile()">
+									<mat-icon>person</mat-icon>
+									Your Profile
+								</button>
+							</div>
+						</div>
+					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+					<!-- <app-alert type="info" icon="info">
+						We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
+						fee?
+					</app-alert>
+
+					<app-alert type="warning">
+						Your armoured vehicle permit is expiring in 71 days. Please renew by <strong>December 15, 2023</strong>.
+					</app-alert>
+
+					<app-alert type="danger" icon="error">
+						You haven't submitted your licence application yet. It will expire on <strong>January 12, 2024</strong>
+					</app-alert> -->
+
 					<ng-container *ngIf="isAuthenticated | async">
-						<div class="card-section my-4 px-4 py-3">
+						<div class="summary-card-section my-4 px-4 py-3">
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="text-data">You don't have an active licence</div>
 								</div>
 								<div class="col-lg-6 text-end">
 									<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
-										Apply for a New Licence or Permit
+										<mat-icon>add</mat-icon>Apply for a New Licence or Permit
 									</button>
 								</div>
 							</div>
 						</div>
 
 						<div class="mb-3" *ngIf="dataSource.data.length > 0">
-							<div class="fs-5 py-4">In-Progress Licences/Permits</div>
+							<div class="section-title fs-5 py-3">In-Progress Licences/Permits</div>
 
 							<div class="row m-0">
 								<div class="col-12" style="background-color: #f6f6f6 !important;">
@@ -131,7 +146,7 @@ export interface ApplicationResponse {
 													(click)="onResume(application)"
 													*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
 												>
-													<mat-icon>double_arrow</mat-icon>Resume
+													<mat-icon>play_arrow</mat-icon>Resume
 												</button>
 											</mat-cell>
 										</ng-container>
@@ -144,8 +159,8 @@ export interface ApplicationResponse {
 						</div>
 
 						<div class="mb-3" *ngIf="activeApplications.length > 0">
-							<div class="fs-5 py-4">Active Licences/Permits</div>
-							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
+							<div class="section-title fs-5 py-3">Active Licences/Permits</div>
+							<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-2">
 										<div class="fs-5" style="color: var(--color-primary);">
@@ -219,8 +234,8 @@ export interface ApplicationResponse {
 												</ul>
 											</div>
 											<div class="col-lg-3 text-end">
-												<button mat-flat-button class="mat-green-button large w-auto" (click)="onUpdate(appl)">
-													<mat-icon>double_arrow</mat-icon>Update
+												<button mat-flat-button color="primary" class="large w-auto" (click)="onUpdate(appl)">
+													<mat-icon>play_arrow</mat-icon>{{ appl.action }}
 												</button>
 											</div>
 										</div>
@@ -239,8 +254,8 @@ export interface ApplicationResponse {
 						</div>
 
 						<div class="mb-3" *ngIf="expiredApplications.length > 0">
-							<div class="fs-5 py-4">Expired Licences/Permits</div>
-							<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
+							<div class="section-title fs-5 py-3">Expired Licences/Permits</div>
+							<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
 								<div class="row">
 									<div class="col-lg-3">
 										<div class="fs-5" style="color: var(--color-primary);">
@@ -274,34 +289,26 @@ export interface ApplicationResponse {
 						</div>
 					</ng-container>
 
-					<app-alert type="info" [showBorder]="false" icon="">
-						Do you have a security licence but it's not showing here?
+					<div class="mt-4">
+						<app-alert type="info" [showBorder]="false" icon="">
+							Do you have a security licence but it's not showing here?
 
-						<a
-							class="fw-normal"
-							tabindex="0"
-							(click)="onConnectToExpiredLicence()"
-							(keydown)="onKeydownConnectToExpiredLicence($event)"
-							>Connect a current or expired licence</a
-						>
-						account
-					</app-alert>
+							<a
+								class="fw-normal"
+								tabindex="0"
+								(click)="onConnectToExpiredLicence()"
+								(keydown)="onKeydownConnectToExpiredLicence($event)"
+								>Connect a current or expired licence</a
+							>
+							account
+						</app-alert>
+					</div>
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [
 		`
-			.text-muted {
-				color: var(--color-grey-dark);
-				line-height: 1.3em;
-				font-size: 0.9rem !important;
-			}
-
-			.text-data {
-				font-weight: 500;
-			}
-
 			.appl-chip-option {
 				height: 35px;
 				width: 125px;
@@ -311,14 +318,6 @@ export interface ApplicationResponse {
 				vertical-align: text-bottom;
 			}
 
-			.card-section {
-				background-color: #f6f6f6 !important;
-				border-left: 3px solid #38598a;
-				border-bottom-width: 1px;
-				border-bottom-style: solid;
-				border-bottom-color: rgba(0, 0, 0, 0.12);
-			}
-
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
@@ -326,6 +325,10 @@ export interface ApplicationResponse {
 				.table-button {
 					min-width: 140px;
 				}
+			}
+
+			.section-title {
+				color: var(--color-primary) !important;
 			}
 
 			.status-green {
@@ -394,6 +397,15 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 				licenceAppId: 'TEST-NWQ3X7Y',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
+				action: 'Update',
+				expiresOn: '2023-09-26T19:43:25+00:00',
+			},
+			{
+				id: '2',
+				licenceAppId: 'TEST-NWQ3X7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
+				action: 'Renew',
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 		];
@@ -457,7 +469,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.loadDraftLicence(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicence());
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 				}),
 				take(1)
 			)
@@ -465,9 +477,17 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onUpdate(_appl: ApplicationResponse): void {
-		this.licenceApplicationService.reset();
-
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE));
+		this.licenceApplicationService
+			.loadUpdateLicence()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LICENCE_UPDATE)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	onReapply(_appl: ApplicationResponse): void {
@@ -476,7 +496,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 
 	onCreateNew(): void {
 		this.licenceApplicationService
-			.createNewUserProfile()
+			.createNewLicenceAuthenticated()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
@@ -486,8 +506,22 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.subscribe();
 	}
 
+	onUserProfile(): void {
+		this.licenceApplicationService
+			.loadUserProfile()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LOGIN_USER_PROFILE)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
 	onConnectToExpiredLicence(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS));
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_LINK));
 	}
 
 	onKeydownConnectToExpiredLicence(event: KeyboardEvent) {

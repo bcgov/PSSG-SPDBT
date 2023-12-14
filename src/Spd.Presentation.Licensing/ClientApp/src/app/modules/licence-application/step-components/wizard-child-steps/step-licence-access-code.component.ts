@@ -12,7 +12,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 				<app-step-title
 					title="Provide your access code"
 					info="	<p>
-							You need both your licence number as it appears on your current licence, plus the access code number
+							You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
 							provided following your initial security worker application and in your renewal letter from the Registrar,
 							Security Services. Enter the two numbers below then click 'Next' to continue.
 						</p>

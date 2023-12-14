@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 @Component({
-	selector: 'app-security-worker-licence-wizard-update',
+	selector: 'app-security-worker-licence-wizard-update-authenticated',
 	template: `
 		<ng-container>
 			<!--  *ngIf="isLoaded$ | async" -->
@@ -74,7 +74,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class SecurityWorkerLicenceWizardUpdateComponent {
+export class SecurityWorkerLicenceWizardUpdateAuthenticatedComponent {
 	orientation: StepperOrientation = 'vertical';
 
 	@ViewChild('stepper') stepper!: MatStepper;

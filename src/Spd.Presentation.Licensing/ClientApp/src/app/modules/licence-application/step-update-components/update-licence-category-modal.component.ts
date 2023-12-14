@@ -15,7 +15,8 @@ export interface LicenceCategoryDialogData {
 	template: `
 		<div mat-dialog-title>
 			Add Licence Category
-			<mat-divider></mat-divider>
+
+			<mat-divider class="mat-divider-main mt-2 mb-3"></mat-divider>
 		</div>
 		<div mat-dialog-content>
 			<section class="step-section-modal">

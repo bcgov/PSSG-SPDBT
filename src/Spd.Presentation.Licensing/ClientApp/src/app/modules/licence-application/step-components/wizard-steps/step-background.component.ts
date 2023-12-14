@@ -209,13 +209,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy, LicenceSteppe
 			}
 		);
 
-		// this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-		// this.licenceModelChangedSubscription =
-		// 	this.licenceApplicationService.licenceModelFormGroup.valueChanges
-		// 		.pipe(debounceTime(200), distinctUntilChanged())
-		// 		.subscribe((_resp: any) => {
-		// 			this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
-		// 		});
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				this.isLoggedIn = isLoggedIn;

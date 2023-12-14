@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
 @Component({
-	selector: 'app-step-checklist',
+	selector: 'app-step-checklist-renewal-worker',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -18,47 +18,34 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								<div class="fw-semibold fs-6">For all applicants:</div>
 
 								<mat-checkbox formControlName="checklistItem">
-									<span class="checklist-label">Proof of fingerprinting request</span>
+									<span class="checklist-label">Authorization to Carry (ATC)</span>
 								</mat-checkbox>
 								<p class="checklist-info">
-									All applicants must submit a proof of fingerprinting request. Download the
-									<a
-										aria-label="Request for Fingerprinting form"
-										href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
-										target="_blank"
-									>
-										Request for Fingerprinting form </a
-									>, take it your local police department, and return to this application when you have this form
-									completed.
+									If you are renewing your Armoured Car Guard licence, you must provide a new ATC document.
 								</p>
 
 								<mat-checkbox formControlName="checklistItem">
-									<span class="checklist-label">Proof of training and experience</span>
+									<span class="checklist-label">Restraint authorization</span>
 								</mat-checkbox>
 								<p class="checklist-info">
-									Some categories of security workers, such as security guards, require proof of training or experience.
-									<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp;about the types
-									of documents we accept for each security worker category.
+									If you want to maintain your restraint authorization, you must provide your advanced security training
+									certificate or proof of training as correction officer or peace officer in last three years.
 								</p>
 
 								<mat-checkbox formControlName="checklistItem">
-									<span class="checklist-label">Proof of Canadian citizenship or ability to work in Canada</span>
+									<span class="checklist-label">Dogs for protection authorization</span>
 								</mat-checkbox>
 								<p class="checklist-info">
-									See all accepted forms of identification on the
-									<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank"
-										>Security Worker Licence requirements page</a
-									>.
+									If you want to maintain your restraint authorization for use of dogs for protection, you must provide
+									your Canine Security Validation for each dog.
 								</p>
 
 								<mat-checkbox formControlName="checklistItem">
-									<span class="checklist-label">Photograph of yourself for the licence</span>
+									<span class="checklist-label">Proof of ability to work in Canada</span>
 								</mat-checkbox>
 								<p class="checklist-info">
-									You will need to upload a passport-quality photo of your face looking straight at the camera against a
-									plain, white background. Uploading a photo that does not meet the criteria will delay your
-									application's processing time. For further information on Passport Quality Photographs, please review
-									the Government of Canada’s passport photograph requirements.
+									You must supply proof of ability to work in Canada. See all accepted forms of identification on the
+									Security Worker Licence requirements page.
 								</p>
 
 								<mat-checkbox formControlName="checklistItem">
@@ -70,15 +57,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								<div class="fw-semibold fs-6">For some applicants:</div>
 
 								<mat-checkbox formControlName="checklistItem">
-									<span class="checklist-label">Expired licence (if applicable)</span>
-								</mat-checkbox>
-								<p class="checklist-info">
-									If you have a Security Worker Licence that has expired, we can use the number and expiry date to
-									connect this application to your file.
-								</p>
-
-								<mat-checkbox formControlName="checklistItem">
-									<span class="checklist-label">If you are a Peace Officer, provide a letter of no conflict</span>
+									<span class="checklist-label">If you are now a Peace Officer, provide a letter of no conflict</span>
 								</mat-checkbox>
 								<p class="checklist-info">
 									Your superior officer must write a letter of no conflict for you to upload.
@@ -106,20 +85,9 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.checklist-label {
-				color: var(--color-primary);
-				line-height: initial;
-			}
-
-			.checklist-info {
-				margin-left: 3em;
-			}
-		`,
-	],
+	styles: [],
 })
-export class StepChecklistComponent implements LicenceChildStepperStepComponent {
+export class StepChecklistRenewalWorkerComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});

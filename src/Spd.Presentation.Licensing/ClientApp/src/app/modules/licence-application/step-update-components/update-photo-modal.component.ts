@@ -9,7 +9,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 	template: `
 		<div mat-dialog-title>
 			Update your Photo
-			<mat-divider></mat-divider>
+			<mat-divider class="mat-divider-main mt-2 mb-3"></mat-divider>
 		</div>
 		<div mat-dialog-content>
 			<app-step-photograph-of-yourself [isCalledFromModal]="true"></app-step-photograph-of-yourself>

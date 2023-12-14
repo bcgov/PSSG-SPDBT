@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
@@ -52,21 +52,21 @@ export class LoginUserProfileComponent implements OnInit, OnDestroy, LicenceChil
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.authProcessService.logoutBceid();
-		await this.authProcessService.initializeLicencingBCSC();
-
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				if (isLoggedIn) {
-					this.licenceApplicationService.createNewUserProfile().pipe(
-						tap((resp: any) => {
-							console.debug('NEW LoginUserProfileComponent licenceModelFormGroup', resp);
-							this.licenceApplicationService.initialized = true;
-						})
-					);
-				}
-			}
-		);
+		console.log('xxx', this.licenceApplicationService.licenceModelFormGroup.getRawValue());
+		// this.authProcessService.logoutBceid();
+		// await this.authProcessService.initializeLicencingBCSC();
+		// this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+		// 	(isLoggedIn: boolean) => {
+		// 		if (isLoggedIn) {
+		// 			this.licenceApplicationService.createNewUserProfile().pipe(
+		// 				tap((resp: any) => {
+		// 					console.debug('NEW LoginUserProfileComponent licenceModelFormGroup', resp);
+		// 					this.licenceApplicationService.initialized = true;
+		// 				})
+		// 			);
+		// 		}
+		// 	}
+		// );
 	}
 
 	ngOnDestroy() {

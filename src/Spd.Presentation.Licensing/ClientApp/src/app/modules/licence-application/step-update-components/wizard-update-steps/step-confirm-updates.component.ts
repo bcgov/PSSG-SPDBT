@@ -13,23 +13,23 @@ import { Component } from '@angular/core';
 						<div class="row mt-0">
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Holder Name</div>
-								<div class="text-data">a</div>
+								<div class="summary-text-data">a</div>
 							</div>
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="text-data">b</div>
+								<div class="summary-text-data">b</div>
 							</div>
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-								<div class="text-data">c</div>
+								<div class="summary-text-data">c</div>
 							</div>
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-								<div class="text-data">c</div>
+								<div class="summary-text-data">c</div>
 							</div>
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2 mt-lg-0">Reprint Fee</div>
-								<div class="text-data">$20</div>
+								<div class="summary-text-data">$20</div>
 							</div>
 						</div>
 					</div>
@@ -43,12 +43,6 @@ import { Component } from '@angular/core';
 				font-size: 1.1rem !important;
 				color: var(--color-primary-light) !important;
 				font-weight: 300 !important;
-			}
-
-			.text-data {
-				font-size: 1rem !important;
-				font-weight: 600 !important;
-				color: var(--color-primary);
 			}
 
 			.text-label {

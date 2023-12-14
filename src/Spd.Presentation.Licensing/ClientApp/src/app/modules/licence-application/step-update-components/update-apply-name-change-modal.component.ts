@@ -5,17 +5,17 @@ import { MatDialogRef } from '@angular/material/dialog';
 @Component({
 	selector: 'app-update-apply-name-change-modal',
 	template: `
-		<div mat-dialog-title>Apply Name Change <mat-divider></mat-divider></div>
+		<div mat-dialog-title>Apply Name Change <mat-divider class="mat-divider-main mt-2 mb-3"></mat-divider></div>
 		<mat-dialog-content>
 			<div class="mb-2">Your licence will be updated with your new name:</div>
 			<div class="row">
 				<div class="col-md-6 col-sm-12">
 					<div class="text-label d-block text-muted mt-2 mt-lg-0">New Name</div>
-					<div class="text-data">Joanna Lee</div>
+					<div class="summary-text-data">Joanna Lee</div>
 				</div>
 				<div class="col-md-6 col-sm-12">
 					<div class="text-label d-block text-muted mt-2 mt-lg-0">Previous Name</div>
-					<div class="text-data">Joanna Lee Smith</div>
+					<div class="summary-text-data">Joanna Lee Smith</div>
 				</div>
 
 				<!-- <div class="col-md-6 col-sm-12">Joanna Lee</div>
@@ -36,9 +36,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 	`,
 	styles: [
 		`
-			.text-data {
-				font-size: 1.05rem;
-				font-weight: 400;
+			.summary-text-data {
 				line-height: 1.3em;
 			}
 
@@ -54,12 +52,11 @@ export class UpdateApplyNameChangeModalComponent {
 	title = 'Organization selection';
 
 	constructor(
-		private dialogRef: MatDialogRef<UpdateApplyNameChangeModalComponent>,
-		// @Inject(MAT_DIALOG_DATA) public dialogData: ApplyNameChangeDialogData
+		private dialogRef: MatDialogRef<UpdateApplyNameChangeModalComponent> // @Inject(MAT_DIALOG_DATA) public dialogData: ApplyNameChangeDialogData
 	) {}
 
 	// ngOnInit(): void {
-	// 	// TODO 
+	// 	// TODO
 	// 	// const infos = this.dialogData.userInfos;
 	// 	// this.userInfos = infos;
 	// }

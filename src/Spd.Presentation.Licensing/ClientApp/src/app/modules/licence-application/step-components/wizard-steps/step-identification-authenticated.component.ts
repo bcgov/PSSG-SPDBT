@@ -192,14 +192,6 @@ export class StepIdentificationAuthenticatedComponent implements OnInit, OnDestr
 				this.isFormValid = _resp;
 			}
 		);
-
-		// this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
-		// this.licenceModelChangedSubscription =
-		// 	this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valueChanges
-		// 		.pipe(debounceTime(200), distinctUntilChanged())
-		// 		.subscribe((_resp: any) => {
-		// 			this.isFormValid = this.licenceApplicationAuthenticatedService.licenceModelFormGroup.valid;
-		// 		});
 	}
 
 	ngOnDestroy() {

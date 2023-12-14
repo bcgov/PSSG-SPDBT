@@ -226,13 +226,35 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 			});
 	}
+	async delay(ms: number) {
+		await new Promise<void>((resolve) => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
+	}
+	/**
+	 * Load a user profile
+	 * @returns
+	 */
+	loadUserProfile(): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.createLicenceAuthenticated().pipe(
+			// TODO update
+			tap((_resp: any) => {
+				console.debug('loadUserProfile');
+
+				this.initialized = true;
+				console.log('this.initialized', this.initialized);
+			})
+		);
+	}
 
 	/**
-	 * Load an existing licence application
+	 * Load an existing draft licence application
 	 * @param licenceAppId
 	 * @returns
 	 */
 	loadDraftLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		this.reset();
+
 		return this.loadDraftLicenceAuthenticated(licenceAppId).pipe(
 			tap((resp: any) => {
 				console.debug('LOAD LicenceApplicationService loadDraftLicence', resp);
@@ -242,10 +264,31 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
+	 * Load an existing licence application for update
+	 * @param licenceAppId
+	 * @returns
+	 */
+	loadUpdateLicence(): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.createLicenceAuthenticated().pipe(
+			// TODO update
+			tap((_resp: any) => {
+				console.debug('loadUserProfile');
+
+				this.initialized = true;
+				console.log('this.initialized', this.initialized);
+			})
+		);
+	}
+
+	/**
 	 * Create an empty licence
 	 * @returns
 	 */
 	createNewLicenceAnonymous(): Observable<any> {
+		this.reset();
+
 		return this.createLicenceAnonymous().pipe(
 			tap((resp: any) => {
 				console.debug('NEW LicenceApplicationService createNewLicenceAnonymous', resp);
@@ -260,6 +303,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	createNewLicenceAuthenticated(): Observable<any> {
+		this.reset();
+
 		return this.createLicenceAuthenticated().pipe(
 			tap((resp: any) => {
 				console.debug('NEW LicenceApplicationService createNewLicenceAuthenticated', resp);
@@ -272,15 +317,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewUserProfile(): Observable<any> {
-		return this.createLicenceAuthenticated().pipe(
-			tap((resp: any) => {
-				console.debug('NEW LicenceApplicationService createNewUserProfile', resp);
+	// createNewUserProfile(): Observable<any> {
+	// 	this.reset();
 
-				this.initialized = true;
-			})
-		);
-	}
+	// 	return this.createLicenceAuthenticated().pipe(
+	// 		tap((resp: any) => {
+	// 			console.debug('NEW LicenceApplicationService createNewUserProfile', resp);
+
+	// 			this.initialized = true;
+	// 		})
+	// 	);
+	// }
 
 	private createLicenceAnonymous(): Observable<any> {
 		this.reset();
@@ -878,6 +925,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	reset(): void {
 		this.initialized = false;
+		console.log('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
 		this.licenceFeeTermCodes = [];
 

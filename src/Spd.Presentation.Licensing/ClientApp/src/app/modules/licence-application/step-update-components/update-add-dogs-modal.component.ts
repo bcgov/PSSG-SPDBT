@@ -8,7 +8,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 	template: `
 		<div mat-dialog-title>
 			Add Request Authorization to use Dogs
-			<mat-divider></mat-divider>
+
+			<mat-divider class="mat-divider-main mt-2 mb-3"></mat-divider>
 		</div>
 		<div mat-dialog-content>
 			<app-step-dogs-authorization [isCalledFromModal]="true"></app-step-dogs-authorization>
@@ -28,10 +29,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class UpdateAddDogsModalComponent {
 	constructor(
-		private dialogRef: MatDialogRef<UpdateAddDogsModalComponent>,
-		// private licenceApplicationService: LicenceApplicationService,
-		// @Inject(MAT_DIALOG_DATA) public dialogData: DogAuthorizationDialogData
-	) {}
+		private dialogRef: MatDialogRef<UpdateAddDogsModalComponent>
+	) // private licenceApplicationService: LicenceApplicationService,
+	// @Inject(MAT_DIALOG_DATA) public dialogData: DogAuthorizationDialogData
+	{}
 
 	onSave(): void {
 		this.dialogRef.close({ success: true });

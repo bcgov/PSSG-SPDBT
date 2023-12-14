@@ -9,10 +9,11 @@ import { LoginUserProfileComponent } from './components/login-user-profile.compo
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { SecurityWorkerLicenceWizardAnonymousComponent } from './components/security-worker-licence-wizard-anonymous.component';
 import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
-import { SecurityWorkerLicenceWizardUpdateComponent } from './components/security-worker-licence-wizard-update.component';
+import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/security-worker-licence-wizard-update-authenticated.component';
 import { UserApplicationsAnonymousComponent } from './components/user-applications-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
 import { LicenceApplicationComponent } from './licence-application.component';
+import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
@@ -26,6 +27,7 @@ export class LicenceApplicationRoutes {
 	public static APPLICATION_ANONYMOUS = 'application-anonymous';
 
 	public static LICENCE_UPDATE = 'licence-update';
+	public static LICENCE_LINK = 'licence-link';
 	public static LOGIN_USER_PROFILE = 'user-profile';
 
 	public static PAYMENT_SUCCESS = 'payment-success';
@@ -84,12 +86,12 @@ const routes: Routes = [
 				component: UserApplicationsAuthenticatedComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS,
-				component: UserApplicationsAnonymousComponent,
+				path: LicenceApplicationRoutes.LICENCE_LINK,
+				component: LicenceAccessCodeComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
-				component: LoginUserProfileComponent,
+				path: LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS,
+				component: UserApplicationsAnonymousComponent,
 			},
 			{
 				// SWL - NEW - ANONYMOUS
@@ -101,11 +103,17 @@ const routes: Routes = [
 				// SWL - NEW - AUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
 				component: SecurityWorkerLicenceApplicationComponent,
-				children: [{ path: '', component: SecurityWorkerLicenceWizardAuthenticatedComponent }],
-			},
-			{
-				path: LicenceApplicationRoutes.LICENCE_UPDATE,
-				component: SecurityWorkerLicenceWizardUpdateComponent,
+				children: [
+					{
+						path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
+						component: LoginUserProfileComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.LICENCE_UPDATE,
+						component: SecurityWorkerLicenceWizardUpdateAuthenticatedComponent,
+					},
+					{ path: '', component: SecurityWorkerLicenceWizardAuthenticatedComponent },
+				],
 			},
 			{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },

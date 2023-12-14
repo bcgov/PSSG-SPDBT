@@ -17,6 +17,7 @@ export class SecurityWorkerLicenceApplicationComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		console.log('this.licenceApplicationService.initialized', this.licenceApplicationService.initialized);
 		if (!this.licenceApplicationService.initialized) {
 			if (this.authenticationService.isLoggedIn()) {
 				this.router.navigateByUrl(

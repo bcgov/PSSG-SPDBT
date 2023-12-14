@@ -33,6 +33,10 @@ import { StepReviewLicenceComponent } from '../step-components/wizard-steps/step
 							></app-step-licence-setup-anonymous>
 						</mat-step>
 
+						<mat-step>
+							<ng-template matStepLabel> Temp </ng-template>
+						</mat-step>
+
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
@@ -90,7 +94,6 @@ import { StepReviewLicenceComponent } from '../step-components/wizard-steps/step
 })
 export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
-	// private licenceModelChangedSubscription!: Subscription;
 
 	readonly STEP_LICENCE_SETUP = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
@@ -135,6 +138,19 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
+		// this.licenceModelChangedSubscription =
+		this.licenceApplicationService.licenceModelValueChanges$.subscribe((_resp: any) => {
+			console.log('SecurityWorkerLicenceWizardAnonymousComponent licenceModelValueChanges$', _resp);
+			const workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				'workerLicenceTypeData.workerLicenceTypeCode'
+			)?.value;
+			const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				'applicationTypeData.applicationTypeCode'
+			)?.value;
+			console.log('workerLicenceTypeCode', workerLicenceTypeCode);
+			console.log('applicationTypeCode', applicationTypeCode);
+		});
+
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: () => {
 				this.updateCompleteStatus();
@@ -159,7 +175,6 @@ export class SecurityWorkerLicenceWizardAnonymousComponent implements OnInit, On
 
 	ngOnDestroy() {
 		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
-		// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
