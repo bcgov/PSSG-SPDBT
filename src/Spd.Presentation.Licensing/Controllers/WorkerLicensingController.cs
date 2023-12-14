@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
@@ -12,11 +13,13 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
+using Spd.Utilities.Cache;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
+using Spd.Resource.Applicants.Application;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -32,6 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMultipartRequestService _multipartRequestService;
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
+        private readonly IDistributedCache _cache;
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
@@ -41,7 +45,8 @@ namespace Spd.Presentation.Licensing.Controllers
             IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
             IMultipartRequestService multipartRequestService,
             IMapper mapper,
-            IRecaptchaVerificationService recaptchaVerificationService)
+            IRecaptchaVerificationService recaptchaVerificationService,
+            IDistributedCache cache)
         {
             _logger = logger;
             _currentUser = currentUser;
@@ -51,6 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _multipartRequestService = multipartRequestService;
             _mapper = mapper;
             _recaptchaVerificationService = recaptchaVerificationService;
+            _cache = cache;
             _anonymousWslCommandValidator = anonymousWslCommandValidator;
         }
 
@@ -162,6 +168,7 @@ namespace Spd.Presentation.Licensing.Controllers
         #region anonymous APIs
         /// <summary>
         /// Submit Security Worker Licence Application Anonymously
+        /// deprecated as the request body is too big. the proxy won't let it through.
         /// </summary>
         /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
@@ -190,7 +197,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
                 _logger.LogInformation("validate payload");
                 AnonymousWorkerLicenceSubmitCommand command = new AnonymousWorkerLicenceSubmitCommand(
-                    model, 
+                    model,
                     _mapper.Map<ICollection<UploadFileRequest>>(uploadFileInfoList));
                 var validateResult = await _anonymousWslCommandValidator.ValidateAsync(command, ct);
                 if (!validateResult.IsValid)
@@ -198,7 +205,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
                 return await _mediator.Send(command);
             }
-            catch(ApiException ex)
+            catch (ApiException ex)
             {
                 throw ex;
             }
@@ -213,6 +220,67 @@ namespace Spd.Presentation.Licensing.Controllers
                         System.IO.File.Delete(uploadedFileInfo.FilePath);
                 }
             }
+        }
+
+        /// <summary>
+        /// Upload licence application files
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="licenceAppId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications-anonymous/{licenceAppId}/files")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> GetLicenceAppAnonymousCode(CancellationToken ct)
+        {
+            Guid keyCode = Guid.NewGuid();
+            await _cache.Set<Guid>(keyCode.ToString(), keyCode, TimeSpan.FromMinutes(30));
+            return keyCode;
+        }
+
+        /// <summary>
+        /// Upload licence application files
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="licenceAppId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications-anonymous/{keyCode}/files")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<string> UploadLsicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        {
+            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+            if (fileUploadConfig == null)
+                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
+
+            //validation files
+            foreach (IFormFile file in fileUploadRequest.Documents)
+            {
+                string? fileexe = FileHelper.GetFileExtension(file.FileName);
+                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
+                }
+                long fileSize = file.Length;
+                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
+                }
+            }
+
+            //validate keyCode
+            if(await _cache.Get<Guid?>(keyCode.ToString()) == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
+
+            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            var cacheFileInfos =  await _mediator.Send(command);
+            Guid filesGuid = Guid.NewGuid();
+            await _cache.Set<IEnumerable<SpdTempFile>>($"{keyCode}.{filesGuid}", cacheFileInfos, TimeSpan.FromMinutes(30));
+            return $"{keyCode}.{filesGuid}";
         }
         #endregion
     }

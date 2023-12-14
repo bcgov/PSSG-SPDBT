@@ -45,6 +45,25 @@ internal partial class PersonalLicenceAppManager
         return _mapper.Map<IEnumerable<LicenceAppDocumentResponse>>(docResps);
     }
 
+    public async Task<IEnumerable<SpdTempFile>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct)
+    {
+        //put file to cache
+        IList<SpdTempFile> cacheFileInfos = new List<SpdTempFile>();
+        foreach (var file in command.Request.Documents)
+        {
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
+            SpdTempFile spdTempFile = new()
+            {
+                TempFileKey = fileKey,
+                ContentType = file.ContentType,
+                FileName = file.FileName,
+                FileSize = file.Length,
+            };
+            cacheFileInfos.Add(spdTempFile);
+        }
+
+        return cacheFileInfos;
+    }
 
     private async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {

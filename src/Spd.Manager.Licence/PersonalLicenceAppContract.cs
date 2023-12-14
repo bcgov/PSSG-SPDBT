@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Resource.Applicants.Application;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Licence;
@@ -11,7 +12,7 @@ public interface IPersonalLicenceAppManager
     public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand command, CancellationToken ct);
-
+    public Task<IEnumerable<SpdTempFile>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
 }
 
 public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
@@ -173,6 +174,7 @@ public record WorkerLicenceCreateResponse
 
 #region file upload
 public record CreateLicenceAppDocumentCommand(LicenceAppDocumentUploadRequest Request, string? BcscId, Guid AppId) : IRequest<IEnumerable<LicenceAppDocumentResponse>>;
+public record CreateDocumentInCacheCommand(LicenceAppDocumentUploadRequest Request) : IRequest<IEnumerable<SpdTempFile>>;
 
 public record LicenceAppDocumentUploadRequest(
     IList<IFormFile> Documents,
