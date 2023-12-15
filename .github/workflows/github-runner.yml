@@ -1,0 +1,25 @@
+name: GitHub Runner CI/CD
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - tools/github-runner
+      - .github/workflows/github-runner.yml
+      - .github/workflows/build-template.yml
+
+  pull_request:
+    branches: ["main"]
+    paths:
+      - tools/github-runner
+      - .github/workflows/github-runner.yml
+      - .github/workflows/build-template.yml
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-template.yml
+    with:
+      IMAGE_CONTEXT: tools/github-runner
+      IMAGE_FILE: Dockerfile
+      IMAGE_NAME: gh-runner
+    secrets: inherit
