@@ -5,15 +5,15 @@ on:
     branches: ["main"]
     paths:
       - tools/github-runner
-      - .github/workflows/github-runner.yml
-      - .github/workflows/build-template.yml
+      - .github/workflows/github-runner-build.yml
+      - .github/workflows/docker-build-template.yml
 
   pull_request:
     branches: ["main"]
     paths:
       - tools/github-runner
-      - .github/workflows/github-runner.yml
-      - .github/workflows/build-template.yml
+      - .github/workflows/github-runner-build.yml
+      - .github/workflows/docker-build-template.yml
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     with:
       IMAGE_CONTEXT: tools/github-runner
-      IMAGE_FILE: Dockerfile
+      IMAGE_FILE: tools/github-runner/Dockerfile
       IMAGE_NAME: ${{ github.repository }}/gh-runner
       REGISTRY: ghcr.io
     secrets:
