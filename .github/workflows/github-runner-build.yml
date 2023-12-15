@@ -5,15 +5,15 @@ on:
     branches: ["main"]
     paths:
       - tools/github-runner
-      - .github/workflows/github-runner.yml
-      - .github/workflows/build-template.yml
+      - .github/workflows/github-runner-build.yml
+      - .github/workflows/docker-build-template.yml
 
   pull_request:
     branches: ["main"]
     paths:
       - tools/github-runner
-      - .github/workflows/github-runner.yml
-      - .github/workflows/build-template.yml
+      - .github/workflows/github-runner-build.yml
+      - .github/workflows/docker-build-template.yml
 
 jobs:
   build:
