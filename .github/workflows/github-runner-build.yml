@@ -1,0 +1,33 @@
+name: GitHub Runner Build
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - tools/github-runner
+      - .github/workflows/github-runner.yml
+      - .github/workflows/build-template.yml
+
+  pull_request:
+    branches: ["main"]
+    paths:
+      - tools/github-runner
+      - .github/workflows/github-runner.yml
+      - .github/workflows/build-template.yml
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    uses: ./.github/workflow-templates/docker-build-template.yml
+    with:
+      IMAGE_CONTEXT: tools/github-runner
+      IMAGE_FILE: Dockerfile
+      IMAGE_NAME: ${{ github.repository }}/gh-runner
+      REGISTRY: ghcr.io
+    secrets:
+      REGISTRY_USER: ${{ github.actor }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+     
