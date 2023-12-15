@@ -36,6 +36,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
+        private static Mutex mutex = new(false);
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
@@ -286,8 +287,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command);
-            existingFileInfo.LicAppFileInfos.AddRange(newFileInfos);
-            await _cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
+            await UpdateCache(_cache,keyCode,newFileInfos);
             return keyCode;
         }
 
@@ -314,7 +314,32 @@ namespace Spd.Presentation.Licensing.Controllers
 
             AnonymousWorkerLicenceAppSubmitCommand command = new AnonymousWorkerLicenceAppSubmitCommand(jsonRequest, keyCode);
             return await _mediator.Send(command);
+        }
 
+        private static async Task UpdateCache(IDistributedCache cache, Guid keyCode, IEnumerable<LicAppFileInfo> newFileInfos)
+        {
+            try
+            {
+                mutex.WaitOne();
+            }
+            catch (AbandonedMutexException)
+            {
+                return;
+            }
+            try
+            {
+                LicenceAppDocumentsCache existingFileInfo = await cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+                if (existingFileInfo == null)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+                }
+                existingFileInfo.Items.AddRange(newFileInfos);
+                await cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }            
         }
         #endregion
     }
