@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
@@ -32,5 +33,22 @@ internal class Mappings : Profile
         CreateMap<Alias, Spd.Resource.Applicants.LicenceApplication.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+        CreateMap<UploadFileRequest, SpdTempFile>()
+            .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
+        CreateMap<LicAppFileInfo, SpdTempFile>();
+    }
+
+    private WorkerLicenceAppCategory[] GetCategories(WorkerCategoryTypeCode[] codes)
+    {
+        List<WorkerLicenceAppCategory> categories = new List<WorkerLicenceAppCategory> { };
+        foreach (WorkerCategoryTypeCode code in codes)
+        {
+            categories.Add(new WorkerLicenceAppCategory() { WorkerCategoryTypeCode = Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()) });
+        }
+        return categories.ToArray();
     }
 }

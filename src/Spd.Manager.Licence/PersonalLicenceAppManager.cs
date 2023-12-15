@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
@@ -8,6 +9,7 @@ using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
+using Spd.Utilities.Cache;
 
 namespace Spd.Manager.Licence;
 internal partial class PersonalLicenceAppManager :
@@ -16,6 +18,9 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
+        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -25,6 +30,7 @@ internal partial class PersonalLicenceAppManager :
     private readonly IIdentityRepository _identityRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<IPersonalLicenceAppManager> _logger;
+    private readonly IDistributedCache _cache;
 
     public PersonalLicenceAppManager(
         ILicenceRepository licenceRepository,
@@ -33,7 +39,8 @@ internal partial class PersonalLicenceAppManager :
         ITempFileStorageService tempFile,
         IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
-        ILogger<IPersonalLicenceAppManager> logger)
+        ILogger<IPersonalLicenceAppManager> logger,
+        IDistributedCache cache)
     {
         _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
@@ -42,6 +49,7 @@ internal partial class PersonalLicenceAppManager :
         _identityRepository = identityRepository;
         _documentRepository = documentUrlRepository;
         _logger = logger;
+        _cache = cache;
     }
 
     //authenticated save
@@ -119,6 +127,60 @@ internal partial class PersonalLicenceAppManager :
         );
         var response = await _licenceAppRepository.QueryAsync(q, ct);
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
+    }
+
+    //deprecated
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        ICollection<UploadFileRequest> fileRequests = cmd.UploadFileRequests;
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        foreach (UploadFileRequest uploadRequest in fileRequests)
+        {
+            SpdTempFile spdTempFile = _mapper.Map<SpdTempFile>(uploadRequest);
+            DocumentTypeEnum? docType1 = GetDocumentType1Enum(uploadRequest.FileTypeCode);
+            DocumentTypeEnum? docType2 = GetDocumentType2Enum(uploadRequest.FileTypeCode);
+            //create bcgov_documenturl and file
+            await _documentRepository.ManageAsync(new CreateDocumentCmd
+            {
+                TempFile = spdTempFile,
+                ApplicationId = response.LicenceAppId,
+                DocumentType = docType1,
+                DocumentType2 = docType2,
+                SubmittedByApplicantId = response.ContactId
+            }, ct);
+        }
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+    }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppSubmitCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+
+        LicenceAppDocumentsCache? appDocCache = await _cache.Get<LicenceAppDocumentsCache>(cmd.KeyCode.ToString());
+
+        //todo: add checking if all necessary files have been uploaded
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        foreach (LicAppFileInfo licAppFile in appDocCache.LicAppFileInfos)
+        {
+            DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+            DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+            //create bcgov_documenturl and file
+            await _documentRepository.ManageAsync(new CreateDocumentCmd
+            {
+                TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                ApplicationId = response.LicenceAppId,
+                DocumentType = docType1,
+                DocumentType2 = docType2,
+                SubmittedByApplicantId = response.ContactId
+            }, ct);
+        }
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)

@@ -31,6 +31,7 @@ export enum LicenceDocumentTypeCode {
   CategorySecurityGuardUseForceEmployerLetter = 'CategorySecurityGuard_UseForceEmployerLetter',
   CategorySecurityGuardUseForceEmployerLetterAstEquivalent = 'CategorySecurityGuard_UseForceEmployerLetterASTEquivalent',
   CertificateOfIndianStatus = 'CertificateOfIndianStatus',
+  CertificateOfIndianStatusForCitizen = 'CertificateOfIndianStatusForCitizen',
   ConfirmationOfPermanentResidenceDocument = 'ConfirmationOfPermanentResidenceDocument',
   DocumentToVerifyLegalWorkStatus = 'DocumentToVerifyLegalWorkStatus',
   DriversLicence = 'DriversLicence',

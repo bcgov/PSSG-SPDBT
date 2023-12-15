@@ -114,7 +114,7 @@ a {
 }
 
 .radio-label .mdc-label, .mat-mdc-checkbox label {
-  font-size: 1.1em;
+  font-size: 1em;
   color: var(--color-primary);
 }
 
@@ -149,16 +149,20 @@ button.mat-red-button {
   color: var(--color-primary);
 }
 
-.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input {
-  color: rgba(0, 0, 0, 0.8) !important;
+.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input, .mdc-text-field--disabled .mdc-text-field__input {
+  color: rgba(0, 0, 0, 0.9) !important;
 }
 
-.mdc-text-field--disabled .mdc-text-field__input {
-  color: rgba(0, 0, 0, 0.8);
+.mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label, .mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label--float-above {
+  color: rgba(0, 0, 0, 0.9) !important;
 }
 
-mat-label {  
-  color: rgba(0, 0, 0, 0.8);
+.mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label, .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label--float-above {
+  color: var(--mdc-filled-text-field-error-label-text-color) !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label, .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label--float-above {
+  color: rgba(0, 0, 0, 0.9) !important;
 }
 
 .mat-mdc-form-field, .mat-mdc-radio-button, .mat-mdc-checkbox {  
@@ -361,6 +365,7 @@ mat-label {
 // MAT ERROR
 .mat-option-error {
   color: var(--mat-form-field-error-text-color);
+  font-size: var(--mat-form-field-subscript-text-size);
 }
 
 // MAT HINT

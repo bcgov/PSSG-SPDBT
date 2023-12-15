@@ -1,12 +1,14 @@
 using FluentValidation;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
+using Spd.Presentation.Licensing.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
 using System.Reflection;
 using System.Security.Principal;
@@ -40,7 +42,6 @@ builder.Services
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddSwaggerGen();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 builder.Services.AddHttpContextAccessor();
@@ -53,6 +54,7 @@ builder.Services.AddTempFileStorageService();
 builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>();
 builder.Services.AddFileStorageProxy(builder.Configuration);
 builder.Services
+  .AddGoogleRecaptcha(builder.Configuration)
   .AddBCeIDService(builder.Configuration)
   // .AddPaymentService(builder.Configuration)
   .AddDynamicsProxy(builder.Configuration)

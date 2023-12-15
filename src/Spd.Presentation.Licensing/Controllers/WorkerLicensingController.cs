@@ -1,12 +1,16 @@
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Presentation.Licensing.Services;
+using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
@@ -26,14 +30,24 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
+        private readonly IValidator<AnonymousWorkerLicenceSubmitCommand> _anonymousWslCommandValidator;
+        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> _anonymousLicenceAppSubmitRequestValidator;
         private readonly IMultipartRequestService _multipartRequestService;
+        private readonly IMapper _mapper;
+        private readonly IRecaptchaVerificationService _recaptchaVerificationService;
+        private readonly IDistributedCache _cache;
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
-            IMultipartRequestService multipartRequestService)
+            IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
+            IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> anonymousLicenceAppSubmitRequestValidator,
+            IMultipartRequestService multipartRequestService,
+            IMapper mapper,
+            IRecaptchaVerificationService recaptchaVerificationService,
+            IDistributedCache cache)
         {
             _logger = logger;
             _currentUser = currentUser;
@@ -41,6 +55,11 @@ namespace Spd.Presentation.Licensing.Controllers
             _configuration = configuration;
             _wslSubmitValidator = wslSubmitValidator;
             _multipartRequestService = multipartRequestService;
+            _mapper = mapper;
+            _recaptchaVerificationService = recaptchaVerificationService;
+            _cache = cache;
+            _anonymousWslCommandValidator = anonymousWslCommandValidator;
+            _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
 
         #region bcsc authenticated
@@ -151,6 +170,7 @@ namespace Spd.Presentation.Licensing.Controllers
         #region anonymous APIs
         /// <summary>
         /// Submit Security Worker Licence Application Anonymously
+        /// deprecated as the request body is too big. the proxy won't let it through.
         /// </summary>
         /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
@@ -159,21 +179,35 @@ namespace Spd.Presentation.Licensing.Controllers
         [DisableFormValueModelBinding]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(long.MaxValue)]
-        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous()
+        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous(CancellationToken ct)
         {
             ICollection<UploadFileInfo> uploadedFileInfoList = null;
 
             try
             {
+                _logger.LogInformation("downloading all the files");
                 var request = HttpContext.Request;
                 var (model, uploadFileInfoList) = await _multipartRequestService.UploadMultipleFilesAsync<WorkerLicenceAppAnonymousSubmitRequest>(request, ModelState);
-
                 uploadedFileInfoList = uploadFileInfoList;
 
-                //todo: submit the request.
-                return null;
+                _logger.LogInformation("do Google recaptcha verification");
+                var isValid = await _recaptchaVerificationService.VerifyAsync(model.Recaptcha, ct);
+                if (!isValid)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+                }
+
+                _logger.LogInformation("validate payload");
+                AnonymousWorkerLicenceSubmitCommand command = new AnonymousWorkerLicenceSubmitCommand(
+                    model,
+                    _mapper.Map<ICollection<UploadFileRequest>>(uploadFileInfoList));
+                var validateResult = await _anonymousWslCommandValidator.ValidateAsync(command, ct);
+                if (!validateResult.IsValid)
+                    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+                return await _mediator.Send(command);
             }
-            catch(ApiException ex)
+            catch (ApiException ex)
             {
                 throw ex;
             }
@@ -189,7 +223,104 @@ namespace Spd.Presentation.Licensing.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns>Guid: keyCode</returns>
+        [Route("api/worker-licence-applications/anonymous/keyCode")]
+        [HttpPost]
+        public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
+        {
+            _logger.LogInformation("do Google recaptcha verification");
+            //var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
+            //if (!isValid)
+            //{
+            //    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+            //}
+            Guid keyCode = Guid.NewGuid();
+            await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(30));
+            return keyCode;
+        }
+
+        /// <summary>
+        /// Upload licence application files: frontend use the keyCode to upload following files.
+        /// Do not support parallel.
+        /// Uploading file only save files in cache, the files are not connected to the appliation yet.
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="keyCode"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/anonymous/{keyCode}/files")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        {
+            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+            if (fileUploadConfig == null)
+                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
+
+            //validation files
+            foreach (IFormFile file in fileUploadRequest.Documents)
+            {
+                string? fileexe = FileHelper.GetFileExtension(file.FileName);
+                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
+                }
+                long fileSize = file.Length;
+                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
+                }
+            }
+
+            //validate keyCode
+            LicenceAppDocumentsCache? existingFileInfo = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+            if (existingFileInfo == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
+
+            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command);
+            existingFileInfo.LicAppFileInfos.AddRange(newFileInfos);
+            await _cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
+            return keyCode;
+        }
+
+        /// <summary>
+        /// Submit Security Worker Licence Application Json part Anonymously
+        /// After fe done with the uploading files, then fe do post with json payload
+        /// </summary>
+        /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
+        [HttpPost]
+        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
+        {
+            //validate keyCode
+            if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
+
+            _logger.LogInformation("validate payload");
+            var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            AnonymousWorkerLicenceAppSubmitCommand command = new AnonymousWorkerLicenceAppSubmitCommand(jsonRequest, keyCode);
+            return await _mediator.Send(command);
+
+        }
         #endregion
     }
 
+    public class GoogleRecaptcha
+    {
+        public string RecaptchaCode { get; set; }
+    }
 }

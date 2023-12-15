@@ -340,30 +340,103 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAnonymousWorkerLicencesPost
+   * Path part for operation apiWorkerLicenceApplicationsSubmitAnonymousPost
    */
-  static readonly ApiAnonymousWorkerLicencesPostPath = '/api/anonymous-worker-licences';
+  static readonly ApiWorkerLicenceApplicationsSubmitAnonymousPostPath = '/api/worker-licence-applications/submit/anonymous';
 
   /**
-   * Create Security Worker Licence Application Anonymously.
+   * Submit Security Worker Licence Application Anonymously.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAnonymousWorkerLicencesPost()` instead.
+   * To access only the response body, use `apiWorkerLicenceApplicationsSubmitAnonymousPost()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiAnonymousWorkerLicencesPost$Response(params: {
-    body: WorkerLicenceAppUpsertRequest
+  apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params: {
+    body: {
+'docs'?: Array<Blob>;
+
+/**
+ * See WorkerLicenceAppAnonymousSubmitRequest schema
+ */
+'WorkerLicenceAppAnonymousSubmitRequest'?: {
+'workerLicenceTypeCode'?: string | null;
+'applicationTypeCode'?: string | null;
+'isSoleProprietor'?: boolean | null;
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+'dateOfBirth'?: string | null;
+'genderCode'?: string | null;
+'oneLegalName'?: boolean | null;
+'expiredLicenceNumber'?: string | null;
+'expiredLicenceId'?: string | null;
+'hasExpiredLicence'?: boolean | null;
+'licenceTermCode'?: string | null;
+'hasCriminalHistory'?: boolean | null;
+'hasPreviousName'?: boolean | null;
+'hasBcDriversLicence'?: boolean | null;
+'bcDriversLicenceNumber'?: string | null;
+'hairColourCode'?: string | null;
+'eyeColourCode'?: string | null;
+'height'?: number | null;
+'heightUnitCode'?: string | null;
+'weight'?: number | null;
+'weightUnitCode'?: string | null;
+'contactEmailAddress'?: string | null;
+'contactPhoneNumber'?: string | null;
+'isMailingTheSameAsResidential'?: boolean | null;
+'isPoliceOrPeaceOfficer'?: boolean | null;
+'policeOfficerRoleCode'?: string | null;
+'otherOfficerRole'?: string | null;
+'isTreatedForMHC'?: boolean | null;
+'useBcServicesCardPhoto'?: boolean | null;
+'carryAndUseRestraints'?: boolean | null;
+'useDogs'?: boolean | null;
+'isDogsPurposeProtection'?: boolean | null;
+'isDogsPurposeDetectionDrugs'?: boolean | null;
+'isDogsPurposeDetectionExplosives'?: boolean | null;
+'isCanadianCitizen'?: boolean | null;
+'aliases'?: Array<{
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+}>;
+'residentialAddressData'?: {
+'addressLine1'?: string | null;
+'addressLine2'?: string | null;
+'city'?: string | null;
+'country'?: string | null;
+'postalCode'?: string | null;
+'province'?: string | null;
+};
+'mailingAddressData'?: {
+'addressLine1'?: string | null;
+'addressLine2'?: string | null;
+'city'?: string | null;
+'country'?: string | null;
+'postalCode'?: string | null;
+'province'?: string | null;
+};
+'categoryCodes'?: Array<string>;
+'documentInfos'?: Array<{
+'licenceDocumentTypeCode'?: string;
+'expiryDate'?: string | null;
+}>;
+};
+}
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiAnonymousWorkerLicencesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsSubmitAnonymousPostPath, 'post');
     if (params) {
-      rb.body(params.body, 'application/*+json');
+      rb.body(params.body, 'multipart/form-data');
     }
 
     return this.http.request(rb.build({
@@ -379,23 +452,96 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Create Security Worker Licence Application Anonymously.
+   * Submit Security Worker Licence Application Anonymously.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAnonymousWorkerLicencesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsSubmitAnonymousPost$Response()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiAnonymousWorkerLicencesPost(params: {
-    body: WorkerLicenceAppUpsertRequest
+  apiWorkerLicenceApplicationsSubmitAnonymousPost(params: {
+    body: {
+'docs'?: Array<Blob>;
+
+/**
+ * See WorkerLicenceAppAnonymousSubmitRequest schema
+ */
+'WorkerLicenceAppAnonymousSubmitRequest'?: {
+'workerLicenceTypeCode'?: string | null;
+'applicationTypeCode'?: string | null;
+'isSoleProprietor'?: boolean | null;
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+'dateOfBirth'?: string | null;
+'genderCode'?: string | null;
+'oneLegalName'?: boolean | null;
+'expiredLicenceNumber'?: string | null;
+'expiredLicenceId'?: string | null;
+'hasExpiredLicence'?: boolean | null;
+'licenceTermCode'?: string | null;
+'hasCriminalHistory'?: boolean | null;
+'hasPreviousName'?: boolean | null;
+'hasBcDriversLicence'?: boolean | null;
+'bcDriversLicenceNumber'?: string | null;
+'hairColourCode'?: string | null;
+'eyeColourCode'?: string | null;
+'height'?: number | null;
+'heightUnitCode'?: string | null;
+'weight'?: number | null;
+'weightUnitCode'?: string | null;
+'contactEmailAddress'?: string | null;
+'contactPhoneNumber'?: string | null;
+'isMailingTheSameAsResidential'?: boolean | null;
+'isPoliceOrPeaceOfficer'?: boolean | null;
+'policeOfficerRoleCode'?: string | null;
+'otherOfficerRole'?: string | null;
+'isTreatedForMHC'?: boolean | null;
+'useBcServicesCardPhoto'?: boolean | null;
+'carryAndUseRestraints'?: boolean | null;
+'useDogs'?: boolean | null;
+'isDogsPurposeProtection'?: boolean | null;
+'isDogsPurposeDetectionDrugs'?: boolean | null;
+'isDogsPurposeDetectionExplosives'?: boolean | null;
+'isCanadianCitizen'?: boolean | null;
+'aliases'?: Array<{
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+}>;
+'residentialAddressData'?: {
+'addressLine1'?: string | null;
+'addressLine2'?: string | null;
+'city'?: string | null;
+'country'?: string | null;
+'postalCode'?: string | null;
+'province'?: string | null;
+};
+'mailingAddressData'?: {
+'addressLine1'?: string | null;
+'addressLine2'?: string | null;
+'city'?: string | null;
+'country'?: string | null;
+'postalCode'?: string | null;
+'province'?: string | null;
+};
+'categoryCodes'?: Array<string>;
+'documentInfos'?: Array<{
+'licenceDocumentTypeCode'?: string;
+'expiryDate'?: string | null;
+}>;
+};
+}
   },
   context?: HttpContext
 
 ): Observable<WorkerLicenceAppUpsertResponse> {
 
-    return this.apiAnonymousWorkerLicencesPost$Response(params,context).pipe(
+    return this.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
     );
   }

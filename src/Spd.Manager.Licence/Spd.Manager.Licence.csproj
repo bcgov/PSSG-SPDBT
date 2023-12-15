@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
     <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
   </ItemGroup>
 
 </Project>
