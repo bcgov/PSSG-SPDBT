@@ -21,7 +21,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
-    uses: ./.github/workflow-templates/docker-build-template.yml
+    uses: ./.github/workflows/docker-build-template.yml
     with:
       IMAGE_CONTEXT: tools/github-runner
       IMAGE_FILE: Dockerfile
