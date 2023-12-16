@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -166,7 +166,7 @@ internal partial class PersonalLicenceAppManager :
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
-        foreach (LicAppFileInfo licAppFile in appDocCache.LicAppFileInfos)
+        foreach (LicAppFileInfo licAppFile in appDocCache.Items)
         {
             DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
             DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);

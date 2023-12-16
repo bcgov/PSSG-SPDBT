@@ -185,7 +185,7 @@ public record WorkerLicenceCreateResponse
 
 public record LicenceAppDocumentsCache
 {
-    public List<LicAppFileInfo> LicAppFileInfos { get; set; } = new List<LicAppFileInfo>();
+    public List<LicAppFileInfo> Items { get; set; } = new List<LicAppFileInfo>();
 }
 public record LicAppFileInfo
 {

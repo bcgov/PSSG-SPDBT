@@ -2,6 +2,8 @@ using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
@@ -580,12 +582,23 @@ namespace Spd.Manager.Cases.Screening
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the case for this application.");
 
             //dynamics will put the pre-popluated template file in S3 and add record in documentUrl. so, download file from there.
-            var docList = await _documentRepository.QueryAsync(new DocumentQry
+            DocumentQry qry = new DocumentQry
             {
                 CaseId = incidents.Items.First().IncidentId,
                 FileType = Enum.Parse<DocumentTypeEnum>(query.FileTemplateType.ToString()),
-            }, ct);
+            };
+            DocumentListResp docList = null;
+            RetryPolicy<Task<bool>> retryIfNoFound = Policy.HandleResult<Task<bool>>(b => !b.Result)
+                .WaitAndRetry(8, waitSec => TimeSpan.FromSeconds(5));
+            await retryIfNoFound.Execute(async () =>
+            {
+                docList = await _documentRepository.QueryAsync(qry, ct);
+                if (docList == null || !docList.Items.Any())
+                    return false;
+                return true;
+            });
 
+            if (docList == null || !docList.Items.Any()) return new FileResponse();
             var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
 
             if (docUrl != null)
