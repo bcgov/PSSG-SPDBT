@@ -1,18 +1,22 @@
-name: GitHub Runner Build
+name: Dynamics Helper Build
 
 on:
   push:
     branches: ["main"]
     paths:
-      - tools/github-runner/**
-      - .github/workflows/github-runner-build.yml
+      - src/**
+      - "!src/Spd.Presentation.Licensing/**"
+      - "!src/Spd.Presentation.Screening/**"
+      - .github/workflows/dynamics-helper-build.yml
       - .github/workflows/docker-build-template.yml
 
   pull_request:
     branches: ["main"]
     paths:
-      - tools/github-runner/**
-      - .github/workflows/github-runner-build.yml
+      - src/**
+      - "!src/Spd.Presentation.Licensing/**"
+      - "!src/Spd.Presentation.Screening/**"
+      - .github/workflows/dynamics-helper-build.yml
       - .github/workflows/docker-build-template.yml
 
 jobs:
@@ -23,9 +27,9 @@ jobs:
       id-token: write
     uses: ./.github/workflows/docker-build-template.yml
     with:
-      IMAGE_CONTEXT: tools/github-runner
-      IMAGE_FILE: tools/github-runner/Dockerfile
-      IMAGE_NAME: ${{ github.repository }}/gh-runner
+      IMAGE_CONTEXT: src
+      IMAGE_FILE: src/dynamics.dockerfile
+      IMAGE_NAME: ${{ github.repository }}/dynamics-helper
       REGISTRY: ghcr.io
     secrets:
       REGISTRY_USER: ${{ github.actor }}
