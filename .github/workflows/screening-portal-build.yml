@@ -1,0 +1,36 @@
+name: Screening Protal Build
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - "!src/Spd.Presentation.Dynamics/**"
+      - "!src/Spd.Presentation.Licensing/**"
+      - .github/workflows/screening-portal-build.yml
+      - .github/workflows/docker-build-template.yml
+
+  pull_request:
+    branches: ["main"]
+    paths:
+      - src/**
+      - "!src/Spd.Presentation.Dynamics/**"
+      - "!src/Spd.Presentation.Screening/**"
+      - .github/workflows/screening-portal-build.yml
+      - .github/workflows/docker-build-template.yml
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    uses: ./.github/workflows/docker-build-template.yml
+    with:
+      IMAGE_CONTEXT: src
+      IMAGE_FILE: src/screening-portal.dockerfile
+      IMAGE_NAME: ${{ github.repository }}/screening-portal
+      REGISTRY: ghcr.io
+    secrets:
+      REGISTRY_USER: ${{ github.actor }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
