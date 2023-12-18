@@ -1,6 +1,12 @@
 export { AddressAutoCompleteService } from './services/address-auto-complete.service';
+export { ApplicantService } from './services/applicant.service';
+export { ApplicationService } from './services/application.service';
 export { ConfigurationService } from './services/configuration.service';
-export { LicenceFeeService } from './services/licence-fee.service';
-export { LicenceLookupService } from './services/licence-lookup.service';
+export { DelegateService } from './services/delegate.service';
+export { MinistryService } from './services/ministry.service';
+export { OrgService } from './services/org.service';
+export { OrgRegistrationService } from './services/org-registration.service';
+export { OrgReportService } from './services/org-report.service';
+export { OrgUserService } from './services/org-user.service';
+export { PaymentService } from './services/payment.service';
 export { UserProfileService } from './services/user-profile.service';
-export { WorkerLicensingService } from './services/worker-licensing.service';

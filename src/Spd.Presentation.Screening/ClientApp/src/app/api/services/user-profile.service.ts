@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
+import { IdirUserProfileResponse } from '../models/idir-user-profile-response';
 import { OrgUserProfileResponse } from '../models/org-user-profile-response';
 
 @Injectable({
@@ -24,147 +25,27 @@ export class UserProfileService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSecurityWorkerWhoamiGet
+   * Path part for operation apiUsersWhoamiGet
    */
-  static readonly ApiSecurityWorkerWhoamiGetPath = '/api/security-worker/whoami';
+  static readonly ApiUsersWhoamiGetPath = '/api/users/whoami';
 
   /**
-   * Security Worker whoami, for security worker portal
-   * return 204 No Content when there is no contact found with this BCSC.
+   * Org user whoami, for orgPortal.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecurityWorkerWhoamiGet()` instead.
+   * To access only the response body, use `apiUsersWhoamiGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecurityWorkerWhoamiGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiSecurityWorkerWhoamiGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
-      })
-    );
-  }
-
-  /**
-   * Security Worker whoami, for security worker portal
-   * return 204 No Content when there is no contact found with this BCSC.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSecurityWorkerWhoamiGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiSecurityWorkerWhoamiGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantProfileResponse> {
-
-    return this.apiSecurityWorkerWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiSecurityWorkerLoginGet
-   */
-  static readonly ApiSecurityWorkerLoginGetPath = '/api/security-worker/login';
-
-  /**
-   * Security Worker whoami, for security worker portal
-   * return 204 No Content when there is no contact found with this BCSC.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecurityWorkerLoginGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiSecurityWorkerLoginGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiSecurityWorkerLoginGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
-      })
-    );
-  }
-
-  /**
-   * Security Worker whoami, for security worker portal
-   * return 204 No Content when there is no contact found with this BCSC.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSecurityWorkerLoginGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiSecurityWorkerLoginGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantProfileResponse> {
-
-    return this.apiSecurityWorkerLoginGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiBizLicenceWhoamiGet
-   */
-  static readonly ApiBizLicenceWhoamiGetPath = '/api/biz-licence/whoami';
-
-  /**
-   * Biz bceid login, for biz licence.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBizLicenceWhoamiGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBizLicenceWhoamiGet$Response(params?: {
+  apiUsersWhoamiGet$Response(params?: {
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<OrgUserProfileResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiBizLicenceWhoamiGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiUsersWhoamiGetPath, 'get');
     if (params) {
     }
 
@@ -181,23 +62,139 @@ export class UserProfileService extends BaseService {
   }
 
   /**
-   * Biz bceid login, for biz licence.
+   * Org user whoami, for orgPortal.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBizLicenceWhoamiGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUsersWhoamiGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBizLicenceWhoamiGet(params?: {
+  apiUsersWhoamiGet(params?: {
   },
   context?: HttpContext
 
 ): Observable<OrgUserProfileResponse> {
 
-    return this.apiBizLicenceWhoamiGet$Response(params,context).pipe(
+    return this.apiUsersWhoamiGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<OrgUserProfileResponse>) => r.body as OrgUserProfileResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsWhoamiGet
+   */
+  static readonly ApiApplicantsWhoamiGetPath = '/api/applicants/whoami';
+
+  /**
+   * Applicant whoami, for applicantPortal.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsWhoamiGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsWhoamiGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiApplicantsWhoamiGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantProfileResponse>;
+      })
+    );
+  }
+
+  /**
+   * Applicant whoami, for applicantPortal.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsWhoamiGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsWhoamiGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<ApplicantProfileResponse> {
+
+    return this.apiApplicantsWhoamiGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiIdirUsersWhoamiGet
+   */
+  static readonly ApiIdirUsersWhoamiGetPath = '/api/idir-users/whoami';
+
+  /**
+   * Idir user whoami, for PSSO portal.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiIdirUsersWhoamiGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiIdirUsersWhoamiGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiIdirUsersWhoamiGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<IdirUserProfileResponse>;
+      })
+    );
+  }
+
+  /**
+   * Idir user whoami, for PSSO portal.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiIdirUsersWhoamiGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiIdirUsersWhoamiGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<IdirUserProfileResponse> {
+
+    return this.apiIdirUsersWhoamiGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<IdirUserProfileResponse>) => r.body as IdirUserProfileResponse)
     );
   }
 
