@@ -70,14 +70,39 @@ export abstract class LicenceApplicationHelper {
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 	});
 
-	personalInformationFormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		genderCode: new FormControl('', [FormControlValidators.required]),
-		dateOfBirth: new FormControl('', [Validators.required]),
-	});
+	personalInformationFormGroup = this.formBuilder.group(
+		{
+			givenName: new FormControl(''),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [FormControlValidators.required]),
+			genderCode: new FormControl('', [FormControlValidators.required]),
+			dateOfBirth: new FormControl('', [Validators.required]),
+			isNeedProofOfLegalNameChange: new FormControl(false),
+			newGivenName: new FormControl(''),
+			newMiddleName1: new FormControl(''),
+			newMiddleName2: new FormControl(''),
+			newSurname: new FormControl(''),
+			newGenderCode: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'newSurname',
+					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'newGenderCode',
+					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+				),
+			],
+		}
+	);
 
 	soleProprietorFormGroup = this.formBuilder.group({
 		isSoleProprietor: new FormControl('', [FormControlValidators.required]),

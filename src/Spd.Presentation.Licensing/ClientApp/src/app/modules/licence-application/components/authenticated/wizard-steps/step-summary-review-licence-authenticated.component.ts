@@ -11,7 +11,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
-	selector: 'app-step-summary-review-licence',
+	selector: 'app-step-summary-review-licence-authenticated',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -29,6 +29,114 @@ import { LicenceApplicationService } from '../../../services/licence-application
 											<mat-expansion-panel-header>
 												<mat-panel-title class="review-panel-title">
 													<mat-toolbar class="d-flex justify-content-between">
+														<div class="panel-header fs-4 my-2">Profile Information</div>
+														<button
+															mat-mini-fab
+															color="primary"
+															class="go-to-step-button"
+															matTooltip="Go to Step 3"
+															aria-label="Go to Step 3"
+															(click)="$event.stopPropagation(); onEditStep(0)"
+														>
+															<mat-icon>edit</mat-icon>
+														</button>
+													</mat-toolbar>
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="panel-body">
+												<div class="text-minor-heading mt-4">Contact</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
+														<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
+														<div class="summary-text-data">
+															{{ contactPhoneNumber | mask : constants.phone.displayMask }}
+														</div>
+													</div>
+												</div>
+												<mat-divider class="mt-4 mb-2"></mat-divider>
+
+												<div class="text-minor-heading">Residential Address</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+														<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+														<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+														<div class="summary-text-data">{{ residentialCity | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+														<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+														<div class="summary-text-data">
+															{{ residentialProvince | default }}
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+														<div class="summary-text-data">
+															{{ residentialCountry | default }}
+														</div>
+													</div>
+												</div>
+												<mat-divider class="mt-4 mb-2"></mat-divider>
+
+												<div class="text-minor-heading">Mailing Address</div>
+												<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
+													<div class="row mt-0">
+														<div class="col-12 mt-lg-2">
+															<div class="summary-text-data">
+																Mailing address is the same as the residential address
+															</div>
+														</div>
+													</div>
+												</ng-container>
+												<ng-template #mailingIsDifferentThanResidential>
+													<div class="row mt-0">
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+															<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+															<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+															<div class="summary-text-data">{{ mailingCity | default }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+															<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+															<div class="summary-text-data">{{ mailingProvince | default }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+															<div class="summary-text-data">{{ mailingCountry | default }}</div>
+														</div>
+													</div>
+												</ng-template>
+											</div>
+										</mat-expansion-panel>
+
+										<mat-expansion-panel class="mb-2" [expanded]="true">
+											<mat-expansion-panel-header>
+												<mat-panel-title class="review-panel-title">
+													<mat-toolbar class="d-flex justify-content-between">
 														<div class="panel-header fs-4 my-2">Licence Selection</div>
 														<button
 															mat-mini-fab
@@ -36,7 +144,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 1"
 															aria-label="Go to Step 1"
-															(click)="$event.stopPropagation(); onEditStep(1)"
+															(click)="$event.stopPropagation(); onEditStep(0)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -520,114 +628,6 @@ import { LicenceApplicationService } from '../../../services/licence-application
 												</div>
 											</div>
 										</mat-expansion-panel>
-
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Contact Information</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 3"
-															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(4)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Contact</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
-														<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-														<div class="summary-text-data">
-															{{ contactPhoneNumber | mask : constants.phone.displayMask }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Residential Address</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="summary-text-data">{{ residentialCity | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="summary-text-data">
-															{{ residentialProvince | default }}
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="summary-text-data">
-															{{ residentialCountry | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Mailing Address</div>
-												<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-													<div class="row mt-0">
-														<div class="col-12 mt-lg-2">
-															<div class="summary-text-data">
-																Mailing address is the same as the residential address
-															</div>
-														</div>
-													</div>
-												</ng-container>
-												<ng-template #mailingIsDifferentThanResidential>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="summary-text-data">{{ mailingCity | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="summary-text-data">{{ mailingProvince | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="summary-text-data">{{ mailingCountry | default }}</div>
-														</div>
-													</div>
-												</ng-template>
-											</div>
-										</mat-expansion-panel>
 									</mat-accordion>
 								</div>
 							</div>
@@ -683,7 +683,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 		`,
 	],
 })
-export class StepSummaryReviewLicenceComponent implements OnInit {
+export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
 
 	constants = SPD_CONSTANTS;

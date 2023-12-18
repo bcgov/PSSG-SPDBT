@@ -7,9 +7,9 @@ import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
+import { StepReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/step-review-licence-authenticated.component';
 import { StepBackgroundComponent } from '../shared/wizard-steps/step-background.component';
 import { StepLicenceSelectionComponent } from '../shared/wizard-steps/step-licence-selection.component';
-import { StepReviewLicenceComponent } from '../shared/wizard-steps/step-review-licence.component';
 import { StepIdentificationAnonymousComponent } from './wizard-steps/step-identification-anonymous.component';
 
 @Component({
@@ -60,12 +60,12 @@ import { StepIdentificationAnonymousComponent } from './wizard-steps/step-identi
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review and Confirm</ng-template>
 						<ng-template matStepContent>
-							<app-step-review-licence
+							<app-step-review-licence-anonymous
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 								(goToStep)="onGoToStep($event)"
-							></app-step-review-licence>
+							></app-step-review-licence-anonymous>
 						</ng-template>
 					</mat-step>
 
@@ -97,8 +97,8 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 	@ViewChild(StepIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepIdentificationAnonymousComponent;
 
-	@ViewChild(StepReviewLicenceComponent)
-	stepReviewLicenceComponent!: StepReviewLicenceComponent;
+	@ViewChild(StepReviewLicenceAuthenticatedComponent)
+	stepReviewLicenceComponent!: StepReviewLicenceAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -162,7 +162,7 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 	}
 
 	onGoToStep(step: number) {
-		if (step == 4) {
+		if (step == 99) {
 			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
 			this.stepIdentificationComponent.onGoToContactStep();
 			return;

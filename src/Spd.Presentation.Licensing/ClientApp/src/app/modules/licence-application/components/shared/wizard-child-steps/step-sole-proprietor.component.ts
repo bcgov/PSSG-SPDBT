@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
@@ -54,20 +55,36 @@ import { LicenceApplicationService } from '../../../services/licence-application
 })
 export class StepSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	title = '';
+	title = 'Do you also want a Sole Proprietor Security Business Licence?';
 	infoTitle = '';
 
-	readonly title_apply = 'Do you also want to apply for a Sole Proprietor Security Business Licence?';
-	readonly subtitle_apply =
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	readonly title_new = 'Do you also want to apply for a Sole Proprietor Security Business Licence?';
+	readonly subtitle_new =
 		'If you are a sole proprietor, you need both a security worker licence and a security business licence. If you apply for them together, the fee for the worker licence will be waived.';
+
+	readonly title_renew = 'Do you also want to renew your Sole Proprietor Security Business Licence?';
+	readonly subtitle_renew =
+		'If you renew both your security worker licence and security business licence together, the fee for the worker licence will be waived.';
 
 	form: FormGroup = this.licenceApplicationService.soleProprietorFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.title_apply;
-		this.infoTitle = this.subtitle_apply;
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = this.title_new;
+				this.infoTitle = this.subtitle_new;
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.title = this.title_renew;
+				this.infoTitle = this.subtitle_renew;
+				break;
+			}
+		}
 	}
 
 	isFormValid(): boolean {

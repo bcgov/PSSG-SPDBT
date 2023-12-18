@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PoliceOfficerRoleCode } from 'src/app/api/models';
+import { ApplicationTypeCode, PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
@@ -14,7 +14,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-police-background></app-step-police-background>
+				<app-step-police-background [applicationTypeCode]="applicationTypeCode"></app-step-police-background>
 
 				<div class="row mt-4" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -49,7 +49,9 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 			</mat-step>
 
 			<mat-step>
-				<app-step-mental-health-conditions></app-step-mental-health-conditions>
+				<app-step-mental-health-conditions
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-mental-health-conditions>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -89,7 +91,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 			</mat-step>
 
 			<mat-step>
-				<app-step-criminal-history></app-step-criminal-history>
+				<app-step-criminal-history [applicationTypeCode]="applicationTypeCode"></app-step-criminal-history>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -172,6 +174,9 @@ export class StepBackgroundComponent extends BaseWizardStepComponent implements 
 	isLoggedIn = false;
 	isFormValid = false;
 
+	applicationTypeCode: ApplicationTypeCode | null = null;
+	applicationTypeCodes = ApplicationTypeCode;
+
 	@ViewChild(StepPoliceBackgroundComponent) policeBackgroundComponent!: StepPoliceBackgroundComponent;
 	@ViewChild(StepMentalHealthConditionsComponent) mentalHealthConditionsComponent!: StepMentalHealthConditionsComponent;
 	@ViewChild(StepCriminalHistoryComponent) criminalHistoryComponent!: StepCriminalHistoryComponent;
@@ -187,8 +192,12 @@ export class StepBackgroundComponent extends BaseWizardStepComponent implements 
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: any) => {
-				console.log('licenceModelValueChanges$', _resp);
+				// console.debug('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
 			}
 		);
 

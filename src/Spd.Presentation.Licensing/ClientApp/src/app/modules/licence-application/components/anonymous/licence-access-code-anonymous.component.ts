@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { take, tap } from 'rxjs';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from 'src/app/api/models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
@@ -108,43 +109,51 @@ export class LicenceAccessCodeAnonymousComponent implements LicenceChildStepperS
 				'applicationTypeData.applicationTypeCode'
 			)?.value;
 
-			switch (workerLicenceTypeCode) {
-				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-					switch (applicationTypeCode) {
-						case ApplicationTypeCode.Renewal: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
-								)
-							);
-							break;
+			this.licenceApplicationService
+				.loadLicence('a60af04a-f150-4078-8908-40debd21e7f8', workerLicenceTypeCode, applicationTypeCode)
+				.pipe(
+					tap((_resp: any) => {
+						switch (workerLicenceTypeCode) {
+							case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+								switch (applicationTypeCode) {
+									case ApplicationTypeCode.Renewal: {
+										this.router.navigateByUrl(
+											LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+												LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
+											)
+										);
+										break;
+									}
+									case ApplicationTypeCode.Replacement: {
+										this.router.navigateByUrl(
+											LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+												LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
+											)
+										);
+										break;
+									}
+									case ApplicationTypeCode.Update: {
+										this.router.navigateByUrl(
+											LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+												LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
+											)
+										);
+										break;
+									}
+								}
+								break;
+							}
+							case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
+								break;
+							}
+							case WorkerLicenceTypeCode.BodyArmourPermit: {
+								break;
+							}
 						}
-						case ApplicationTypeCode.Replacement: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
-								)
-							);
-							break;
-						}
-						case ApplicationTypeCode.Update: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
-								)
-							);
-							break;
-						}
-					}
-					break;
-				}
-				case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
-					break;
-				}
-				case WorkerLicenceTypeCode.BodyArmourPermit: {
-					break;
-				}
-			}
+					}),
+					take(1)
+				)
+				.subscribe();
 		}
 	}
 

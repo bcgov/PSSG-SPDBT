@@ -5,15 +5,17 @@ import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-ste
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
-import { StepConsentAndDeclarationComponent } from '../wizard-child-steps/step-consent-and-declaration.component';
-import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-summary-review-licence.component';
+import { StepConsentAndDeclarationComponent } from '../../shared/wizard-child-steps/step-consent-and-declaration.component';
+import { StepSummaryReviewLicenceAnonymousComponent } from './step-summary-review-licence-anonymous.component';
 
 @Component({
-	selector: 'app-step-review-licence',
+	selector: 'app-step-review-licence-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-summary-review-licence (editStep)="onGoToStep($event)"></app-step-summary-review-licence>
+				<app-step-summary-review-licence-anonymous
+					(editStep)="onGoToStep($event)"
+				></app-step-summary-review-licence-anonymous>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -42,10 +44,11 @@ import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-su
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepReviewLicenceComponent extends BaseWizardStepComponent {
+export class StepReviewLicenceAnonymousComponent extends BaseWizardStepComponent {
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepSummaryReviewLicenceComponent) summaryReviewComponent!: StepSummaryReviewLicenceComponent;
+	@ViewChild(StepSummaryReviewLicenceAnonymousComponent)
+	summaryReviewComponent!: StepSummaryReviewLicenceAnonymousComponent;
 	@ViewChild(StepConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepConsentAndDeclarationComponent;
 
 	constructor(

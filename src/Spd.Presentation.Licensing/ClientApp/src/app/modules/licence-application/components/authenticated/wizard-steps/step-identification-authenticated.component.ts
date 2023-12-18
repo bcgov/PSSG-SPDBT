@@ -5,7 +5,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 import { StepAdditionalGovIdComponent } from '../../shared/wizard-child-steps/step-additional-gov-id.component';
 import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
 import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
-import { StepHeightAndWeightComponent } from '../../shared/wizard-child-steps/step-height-and-weight.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
 
 @Component({
@@ -98,7 +98,7 @@ import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-ste
 			</mat-step>
 
 			<mat-step>
-				<app-step-height-and-weight></app-step-height-and-weight>
+				<app-step-physical-characteristics></app-step-physical-characteristics>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -169,7 +169,7 @@ export class StepIdentificationAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
 	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
 	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
-	@ViewChild(StepHeightAndWeightComponent) heightAndWeightComponent!: StepHeightAndWeightComponent;
+	@ViewChild(StepPhysicalCharacteristicsComponent) heightAndWeightComponent!: StepPhysicalCharacteristicsComponent;
 	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {

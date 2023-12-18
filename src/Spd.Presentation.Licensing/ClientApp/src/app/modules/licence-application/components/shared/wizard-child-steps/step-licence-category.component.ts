@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
+import { ApplicationTypeCode, WorkerCategoryTypeCode } from 'src/app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
@@ -10,48 +10,61 @@ import { LicenceApplicationService } from '../../../services/licence-application
 @Component({
 	selector: 'app-step-licence-category',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
+		<section class="step-section">
 			<div class="step">
-				<app-step-title
-					title="Which categories of Security Worker Licence are you applying for?"
-					subtitle="You can add up to a total of 6 categories"
-					[ngClass]="isCalledFromModal ? 'fs-7' : ''"
-				></app-step-title>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-renewal-alert title="" subtitle="">
+						<div class="row mt-0 mx-3 mb-4">
+							<div class="col-lg-4 col-md-12 mt-lg-2">
+								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+								<div class="summary-text-data text-center">DL5E39</div>
+							</div>
+							<div class="col-lg-4 col-md-12 mt-lg-2">
+								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Current Licence Expiry Date</div>
+								<div class="summary-text-data text-center">Aug 10 2023</div>
+							</div>
+							<div class="col-lg-4 col-md-12 mt-lg-2">
+								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Term</div>
+								<div class="summary-text-data text-center">1 year</div>
+							</div>
+						</div>
+
+						<div class="mx-3 text-center">
+							If any of this information is not correct, please call the Security Program's Licensing Unit during
+							regular office hours: 1-855-587-0185
+						</div>
+					</app-renewal-alert>
+				</ng-container>
+
+				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<div
-							[ngClass]="
-								isCalledFromModal
-									? 'col-md-6 col-sm-12'
-									: 'offset-xxl-2 col-xxl-5 offset-xl-1 col-xl-6 col-lg-6 col-md-6 col-sm-12'
-							"
-						>
-							<mat-form-field>
-								<mat-label>Category</mat-label>
-								<mat-select [(ngModel)]="category">
-									<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
-										{{ item.desc }}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-							<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-								At least one category must be added
-							</mat-error>
-						</div>
-						<div
-							[ngClass]="isCalledFromModal ? 'col-md-6 col-sm-12' : 'col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12'"
-							*ngIf="categoryList.length < 6"
-						>
-							<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
-								Add Category
-							</button>
+						<div class="offset-xxl-2 col-xxl-8 offset-xl-2 col-xl-8 col-lg-12 mx-auto">
+							<div class="row">
+								<div class="col-md-8 col-sm-12">
+									<mat-form-field>
+										<mat-label>Category</mat-label>
+										<mat-select [(ngModel)]="category">
+											<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
+												{{ item.desc }}
+											</mat-option>
+										</mat-select>
+									</mat-form-field>
+									<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+										At least one category must be added
+									</mat-error>
+								</div>
+								<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
+									<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+										Add Category
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 
 					<div class="row">
-						<div
-							[ngClass]="isCalledFromModal ? 'col-12' : 'col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto'"
-						>
+						<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-accordion multi="false">
 								<ng-container *ngIf="showArmouredCarGuard">
 									<mat-expansion-panel class="my-3" [expanded]="true">
@@ -676,6 +689,7 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 
 	workerCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -702,12 +716,33 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
-	@Input() isCalledFromModal = false;
+	title = 'Which categories of Security Worker Licence would you like?';
+	infoTitle = '';
+
+	readonly title_new = 'Which categories of Security Worker Licence are you applying for?';
+	readonly subtitle_new = 'You can add up to a total of 6 categories';
+
+	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
+	readonly subtitle_renew = 'You can remove existing categories and add new ones';
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.setValidCategoryList();
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = this.title_new;
+				this.infoTitle = this.subtitle_new;
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.title = this.title_renew;
+				this.infoTitle = this.subtitle_renew;
+				break;
+			}
+		}
+
 		this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 	}
 
@@ -768,7 +803,6 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 					break;
 			}
 
-			// this.setValidCategoryList();
 			this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 
 			this.category = '';
@@ -878,7 +912,6 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 				if (response) {
 					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
 
-					// this.setValidCategoryList();
 					this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 				}
 			});
@@ -1002,18 +1035,6 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 
 		return list;
 	}
-
-	// private setValidCategoryList(): void {
-	// 	const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
-	// 	const currentList = this.categoryList;
-	// 	let updatedList = this.workerCategoryTypes;
-
-	// 	currentList.forEach((item) => {
-	// 		updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
-	// 	});
-
-	// 	this.validCategoryList = [...updatedList];
-	// }
 
 	get showArmouredCarGuard(): boolean {
 		return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;

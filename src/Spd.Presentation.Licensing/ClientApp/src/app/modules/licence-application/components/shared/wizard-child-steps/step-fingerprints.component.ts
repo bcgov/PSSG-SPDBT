@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
-import { LicenceDocumentTypeCode } from 'src/app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
@@ -85,6 +85,7 @@ import { FingerprintTearOffModalComponent } from '../step-components/fingerprint
 })
 export class StepFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.fingerprintProofFormGroup;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

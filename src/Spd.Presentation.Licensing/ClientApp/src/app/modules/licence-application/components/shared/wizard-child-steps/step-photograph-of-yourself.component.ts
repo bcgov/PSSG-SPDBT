@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
-import { LicenceDocumentTypeCode } from 'src/app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -14,6 +14,10 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-renewal-alert></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					*ngIf="!isCalledFromModal"
 					title="Upload a photograph of yourself"
@@ -104,6 +108,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 })
 export class StepPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
+	applicationTypeCodes = ApplicationTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
@@ -111,6 +116,8 @@ export class StepPhotographOfYourselfComponent implements LicenceChildStepperSte
 	@Input() isCalledFromModal = false;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
 		private authenticationService: AuthenticationService,

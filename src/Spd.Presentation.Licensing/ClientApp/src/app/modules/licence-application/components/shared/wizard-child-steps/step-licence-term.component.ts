@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
 
@@ -8,7 +9,20 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title title="Select your licence term"></app-step-title>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-renewal-alert title="" subtitle="">
+						<div class="text-center">
+							<div class="text-label d-block text-muted">Current Licence Expiry Date</div>
+							<div class="summary-text-data">Aug 10 2023</div>
+						</div>
+					</app-renewal-alert>
+				</ng-container>
+
+				<app-step-title
+					title="Select your licence term"
+					subtitle="The licence term will apply to all licence categories"
+				></app-step-title>
+
 				<div class="step-container">
 					<div class="row">
 						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -43,8 +57,11 @@ import { LicenceApplicationService } from '../../../services/licence-application
 })
 export class StepLicenceTermComponent implements LicenceChildStepperStepComponent {
 	termCodes = this.licenceApplicationService.licenceFeeTermCodes;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

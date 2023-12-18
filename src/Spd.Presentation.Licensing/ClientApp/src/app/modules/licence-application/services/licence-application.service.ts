@@ -261,16 +261,272 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	loadLicence(
+		licenceAppId: string,
+		workerLicenceTypeCode: WorkerCategoryTypeCode,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return this.loadLicenceRenewal(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+						this.initialized = true;
+					})
+				);
+			}
+			case ApplicationTypeCode.Update: {
+				return this.loadLicenceUpdate(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('LOAD LicenceApplicationService loadLicenceUpdate', resp);
+						this.initialized = true;
+					})
+				);
+			}
+			case ApplicationTypeCode.Replacement: {
+				return this.loadLicenceReplacement(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('LOAD LicenceApplicationService loadLicenceReplacement', resp);
+						this.initialized = true;
+					})
+				);
+			}
+			default: {
+				return this.loadLicenceNew(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
+						this.initialized = true;
+					})
+				);
+			}
+		}
+	}
+
+	// /**
+	//  * Load an existing draft licence application
+	//  * @param licenceAppId
+	//  * @returns
+	//  */
+	// loadDraftLicenceAuthenticated(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	// 	this.reset();
+
+	// 	return this.loadSpecificLicence(licenceAppId).pipe(
+	// 		tap((resp: any) => {
+	// 			console.debug('LOAD LicenceApplicationService loadDraftLicenceAuthenticated', resp);
+	// 			this.initialized = true;
+	// 		})
+	// 	);
+	// }
+
+	/**
 	 * Load an existing draft licence application
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadDraftLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
-		return this.loadDraftLicenceAuthenticated(licenceAppId).pipe(
+		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD LicenceApplicationService loadDraftLicence', resp);
+				console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application for renewal
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private loadLicenceRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.loadSpecificLicence(licenceAppId).pipe(
+			tap((resp: any) => {
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+				// TODO renewal - remove data that should be re-prompted for
+				// const soleProprietorData = {
+				// 	isSoleProprietor: null,
+				// };
+				// const licenceTermData = {
+				// 	licenceTermCode: null,
+				// };
+				// const bcDriversLicenceData = {
+				// 	hasBcDriversLicence: null,
+				// 	bcDriversLicenceNumber: null,
+				// };
+				// const fingerprintProofData = {
+				// 	attachments: [],
+				// };
+				// const aliasesData = { previousNameFlag: null, aliases: [] };
+				// const citizenshipData = {
+				// 	isCanadianCitizen: null,
+				// 	canadianCitizenProofTypeCode: null,
+				// 	notCanadianCitizenProofTypeCode: null,
+				// 	expiryDate: null,
+				// 	attachments: [],
+				// };
+				// const additionalGovIdData = {
+				// 	governmentIssuedPhotoTypeCode: null,
+				// 	expiryDate: null,
+				// 	attachments: [],
+				// };
+
+				this.licenceModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						applicationTypeData,
+						// soleProprietorData,
+						// licenceTermData,
+						// bcDriversLicenceData,
+						// fingerprintProofData,
+						// aliasesData,
+						// citizenshipData,
+						// additionalGovIdData,
+						// restraintsAuthorizationData,
+						// dogsAuthorizationData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application for update
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private loadLicenceUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.loadSpecificLicence(licenceAppId).pipe(
+			tap((resp: any) => {
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+				// TODO renewal - remove data that should be re-prompted for
+				// const soleProprietorData = {
+				// 	isSoleProprietor: null,
+				// };
+				// const licenceTermData = {
+				// 	licenceTermCode: null,
+				// };
+				// const bcDriversLicenceData = {
+				// 	hasBcDriversLicence: null,
+				// 	bcDriversLicenceNumber: null,
+				// };
+				// const fingerprintProofData = {
+				// 	attachments: [],
+				// };
+				// const aliasesData = { previousNameFlag: null, aliases: [] };
+				// const citizenshipData = {
+				// 	isCanadianCitizen: null,
+				// 	canadianCitizenProofTypeCode: null,
+				// 	notCanadianCitizenProofTypeCode: null,
+				// 	expiryDate: null,
+				// 	attachments: [],
+				// };
+				// const additionalGovIdData = {
+				// 	governmentIssuedPhotoTypeCode: null,
+				// 	expiryDate: null,
+				// 	attachments: [],
+				// };
+
+				this.licenceModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						applicationTypeData,
+						// soleProprietorData,
+						// licenceTermData,
+						// bcDriversLicenceData,
+						// fingerprintProofData,
+						// aliasesData,
+						// citizenshipData,
+						// additionalGovIdData,
+						// restraintsAuthorizationData,
+						// dogsAuthorizationData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application for replacement
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.loadSpecificLicence(licenceAppId).pipe(
+			tap((resp: any) => {
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
+				// TODO renewal - remove data that should be re-prompted for
+				// const soleProprietorData = {
+				// 	isSoleProprietor: null,
+				// };
+				// const licenceTermData = {
+				// 	licenceTermCode: null,
+				// };
+				// const bcDriversLicenceData = {
+				// 	hasBcDriversLicence: null,
+				// 	bcDriversLicenceNumber: null,
+				// };
+				// const fingerprintProofData = {
+				// 	attachments: [],
+				// };
+				// const aliasesData = { previousNameFlag: null, aliases: [] };
+				// const citizenshipData = {
+				// 	isCanadianCitizen: null,
+				// 	canadianCitizenProofTypeCode: null,
+				// 	notCanadianCitizenProofTypeCode: null,
+				// 	expiryDate: null,
+				// 	attachments: [],
+				// };
+				// const additionalGovIdData = {
+				// 	governmentIssuedPhotoTypeCode: null,
+				// 	expiryDate: null,
+				// 	attachments: [],
+				// };
+
+				this.licenceModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						applicationTypeData,
+						// soleProprietorData,
+						// licenceTermData,
+						// bcDriversLicenceData,
+						// fingerprintProofData,
+						// aliasesData,
+						// citizenshipData,
+						// additionalGovIdData,
+						// restraintsAuthorizationData,
+						// dogsAuthorizationData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
 				this.initialized = true;
 			})
 		);
@@ -411,7 +667,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private loadDraftLicenceAuthenticated(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadSpecificLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
@@ -527,8 +783,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					expiryDate: resp.citizenshipDocument?.expiryDate,
 					attachments: citizenshipDataAttachments,
 				};
-
-				console.log('citizenshipData', citizenshipData);
 
 				const additionalGovIdAttachments: Array<File> = [];
 				if (resp.additionalGovIdDocument?.documentResponses) {

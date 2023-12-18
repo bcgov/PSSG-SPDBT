@@ -17,7 +17,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<!-- <mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-checklist-new-worker></app-step-checklist-new-worker>
 				</ng-container>
@@ -41,7 +41,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 			</mat-step>
 
 			<mat-step>
-				<app-step-sole-proprietor></app-step-sole-proprietor>
+				<app-step-sole-proprietor [applicationTypeCode]="applicationTypeCode"></app-step-sole-proprietor>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -83,10 +83,10 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
-				<app-step-licence-category></app-step-licence-category>
+				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -166,7 +166,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 			</mat-step>
 
 			<mat-step>
-				<app-step-licence-term></app-step-licence-term>
+				<app-step-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-licence-term>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -243,6 +243,7 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 			(_resp: any) => {
 				// console.debug('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
+
 				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;

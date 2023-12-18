@@ -466,7 +466,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 
 	onResume(appl: WorkerLicenceAppListResponse): void {
 		this.licenceApplicationService
-			.loadDraftLicence(appl.licenceAppId!)
+			.loadLicenceNew(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

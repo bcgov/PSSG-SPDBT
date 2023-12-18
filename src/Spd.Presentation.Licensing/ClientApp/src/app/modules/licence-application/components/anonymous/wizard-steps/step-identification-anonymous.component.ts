@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
@@ -8,18 +9,18 @@ import { StepAliasesComponent } from '../../shared/wizard-child-steps/step-alias
 import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
 import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
 import { StepContactInformationComponent } from '../../shared/wizard-child-steps/step-contact-information.component';
-import { StepHeightAndWeightComponent } from '../../shared/wizard-child-steps/step-height-and-weight.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 import { StepMailingAddressComponent } from '../../shared/wizard-child-steps/step-mailing-address.component';
-import { StepPersonalInformationComponent } from '../../shared/wizard-child-steps/step-personal-information.component';
 import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
 import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps/step-residential-address.component';
+import { StepPersonalInformationAnonymousComponent } from './step-personal-information-anonymous.component';
 
 @Component({
 	selector: 'app-step-identification-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-personal-information></app-step-personal-information>
+				<app-step-personal-information-anonymous [applicationTypeCode]="applicationTypeCode"></app-step-personal-information-anonymous>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -189,7 +190,7 @@ import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps
 			</mat-step>
 
 			<mat-step>
-				<app-step-height-and-weight></app-step-height-and-weight>
+				<app-step-physical-characteristics [applicationTypeCode]="applicationTypeCode"></app-step-physical-characteristics>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -224,7 +225,7 @@ import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps
 			</mat-step>
 
 			<mat-step>
-				<app-step-photograph-of-yourself></app-step-photograph-of-yourself>
+				<app-step-photograph-of-yourself [applicationTypeCode]="applicationTypeCode"></app-step-photograph-of-yourself>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -249,7 +250,7 @@ import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps
 			</mat-step>
 
 			<mat-step>
-				<app-step-residential-address></app-step-residential-address>
+				<app-step-residential-address [applicationTypeCode]="applicationTypeCode"></app-step-residential-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -284,7 +285,7 @@ import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps
 			</mat-step>
 
 			<mat-step *ngIf="showMailingAddressStep">
-				<app-step-mailing-address></app-step-mailing-address>
+				<app-step-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-mailing-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -319,7 +320,7 @@ import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps
 			</mat-step>
 
 			<mat-step>
-				<app-step-contact-information></app-step-contact-information>
+				<app-step-contact-information [applicationTypeCode]="applicationTypeCode"></app-step-contact-information>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -371,12 +372,15 @@ export class StepIdentificationAnonymousComponent extends BaseWizardStepComponen
 	isLoggedIn = false;
 	isFormValid = false;
 
-	@ViewChild(StepPersonalInformationComponent) personalInformationComponent!: StepPersonalInformationComponent;
+	applicationTypeCode: ApplicationTypeCode | null = null;
+	applicationTypeCodes = ApplicationTypeCode;
+
+	@ViewChild(StepPersonalInformationAnonymousComponent) personalInformationComponent!: StepPersonalInformationAnonymousComponent;
 	@ViewChild(StepAliasesComponent) aliasesComponent!: StepAliasesComponent;
 	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
 	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
 	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
-	@ViewChild(StepHeightAndWeightComponent) heightAndWeightComponent!: StepHeightAndWeightComponent;
+	@ViewChild(StepPhysicalCharacteristicsComponent) heightAndWeightComponent!: StepPhysicalCharacteristicsComponent;
 	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
 	@ViewChild(StepResidentialAddressComponent) residentialAddressComponent!: StepResidentialAddressComponent;
 	@ViewChild(StepMailingAddressComponent) mailingAddressComponent!: StepMailingAddressComponent;
@@ -398,8 +402,12 @@ export class StepIdentificationAnonymousComponent extends BaseWizardStepComponen
 
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: any) => {
-				console.log('StepIdentificationAnonymousComponent licenceModelValueChanges$', _resp);
+				// console.debig('StepIdentificationAnonymousComponent licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
 			}
 		);
 	}

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
@@ -9,6 +10,10 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-renewal-alert></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title>
 				<div class="step-container">
 					<div class="row">
@@ -39,8 +44,11 @@ import { LicenceApplicationService } from '../../../services/licence-application
 })
 export class StepCriminalHistoryComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

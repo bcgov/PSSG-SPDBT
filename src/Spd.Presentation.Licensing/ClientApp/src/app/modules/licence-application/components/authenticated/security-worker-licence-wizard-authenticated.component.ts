@@ -15,9 +15,9 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepBackgroundComponent } from '../shared/wizard-steps/step-background.component';
 import { StepLicenceSelectionComponent } from '../shared/wizard-steps/step-licence-selection.component';
-import { StepReviewLicenceComponent } from '../shared/wizard-steps/step-review-licence.component';
 import { StepIdentificationAuthenticatedComponent } from './wizard-steps/step-identification-authenticated.component';
 import { StepLicenceSetupAuthenticatedComponent } from './wizard-steps/step-licence-setup-authenticated.component';
+import { StepReviewLicenceAuthenticatedComponent } from './wizard-steps/step-review-licence-authenticated.component';
 
 @Component({
 	selector: 'app-security-worker-licence-wizard-authenticated',
@@ -82,12 +82,12 @@ import { StepLicenceSetupAuthenticatedComponent } from './wizard-steps/step-lice
 						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
-								<app-step-review-licence
+								<app-step-review-licence-authenticated
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
 									(goToStep)="onGoToStep($event)"
-								></app-step-review-licence>
+								></app-step-review-licence-authenticated>
 							</ng-template>
 						</mat-step>
 
@@ -128,8 +128,8 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 	@ViewChild(StepIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepIdentificationAuthenticatedComponent;
 
-	@ViewChild(StepReviewLicenceComponent)
-	stepReviewAuthenticatedComponent!: StepReviewLicenceComponent;
+	@ViewChild(StepReviewLicenceAuthenticatedComponent)
+	stepReviewAuthenticatedComponent!: StepReviewLicenceAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -253,7 +253,7 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 	}
 
 	onGoToStep(step: number) {
-		if (step == 4) {
+		if (step == 99) {
 			this.stepper.selectedIndex = this.STEP_LICENCE_SETUP;
 			return;
 		}

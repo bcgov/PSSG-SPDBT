@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse } from 'src/app/api/models';
+import { AddressRetrieveResponse, ApplicationTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -12,6 +12,10 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-renewal-alert></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					title="Provide your mailing address"
 					subtitle="Provide your mailing address, if different from your residential address. This cannot be a company address."
@@ -107,6 +111,9 @@ export class StepMailingAddressComponent implements LicenceChildStepperStepCompo
 	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
+	applicationTypeCodes = ApplicationTypeCode;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
