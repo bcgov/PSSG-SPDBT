@@ -64,12 +64,18 @@ export abstract class LicenceApplicationHelper {
 		applicationTypeCode: new FormControl('', [Validators.required]),
 	});
 
+	accessCodeFormGroup: FormGroup = this.formBuilder.group({
+		currentLicenceNumber: new FormControl(null, [FormControlValidators.required]),
+		accessCode: new FormControl(null, [FormControlValidators.required]),
+		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
+	});
+
 	personalInformationFormGroup = this.formBuilder.group({
 		givenName: new FormControl(''),
 		middleName1: new FormControl(''),
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
-		genderCode: new FormControl(''),
+		genderCode: new FormControl('', [FormControlValidators.required]),
 		dateOfBirth: new FormControl('', [Validators.required]),
 	});
 
@@ -483,6 +489,12 @@ export abstract class LicenceApplicationHelper {
 			],
 		}
 	);
+
+	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
+		readTerms: new FormControl(null, [Validators.requiredTrue]),
+		dateSigned: new FormControl({ value: null, disabled: true }),
+		recaptcha: new FormControl(),
+	});
 
 	constructor(
 		protected formBuilder: FormBuilder,
