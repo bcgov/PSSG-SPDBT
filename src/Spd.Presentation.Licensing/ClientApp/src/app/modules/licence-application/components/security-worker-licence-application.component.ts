@@ -19,11 +19,9 @@ export class SecurityWorkerLicenceApplicationComponent implements OnInit {
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
 			if (this.authenticationService.isLoggedIn()) {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
-				);
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			} else {
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
 			}
 		}
 	}

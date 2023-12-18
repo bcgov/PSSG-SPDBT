@@ -37,7 +37,7 @@ export class AuthProcessService {
 
 		const authInfo = await this.authenticationService.tryLogin(
 			IdentityProviderTypeCode.BcServicesCard,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
+			LicenceApplicationRoutes.pathUserApplications()
 		);
 
 		const identityClaims = this.oauthService.getIdentityClaims();
@@ -71,7 +71,7 @@ export class AuthProcessService {
 
 		const authInfo = await this.authenticationService.tryLogin(
 			IdentityProviderTypeCode.BusinessBceId,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()
 		);
 
 		const identityClaims = this.oauthService.getIdentityClaims();
@@ -105,18 +105,13 @@ export class AuthProcessService {
 	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		console.debug(
-			'initializeLicencingBCSC return',
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
-		);
+		const returningRoute = LicenceApplicationRoutes.pathUserApplications();
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			returnComponentRoute
-				? returnComponentRoute
-				: LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED)
+			returnComponentRoute ? returnComponentRoute : returningRoute
 		);
-		console.debug('initializeLicencingBCSC nextUrl', nextUrl);
+		console.debug('initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBcscService.whoAmIAsync();
@@ -136,14 +131,11 @@ export class AuthProcessService {
 	async initializeLicencingBCeID(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		console.debug(
-			'initializeLicencingBCeID return',
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)
-		);
+		console.debug('initializeLicencingBCeID return', LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS)
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()
 		);
 		console.debug('initializeLicencingBCeID nextUrl', nextUrl);
 
