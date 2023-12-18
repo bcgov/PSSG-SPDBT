@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Dynamics",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{44CEC402-28D1-4A94-B18A-F3147AD4CCCE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Tests.Presentation.Dynamics", "..\test\Spd.Tests.Presentation.Dynamics\Spd.Tests.Presentation.Dynamics.csproj", "{DC7A40EF-3210-4343-ACAB-84C885539377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Tests.Presentation.Dynamics", "Spd.Tests.Presentation.Dynamics\Spd.Tests.Presentation.Dynamics.csproj", "{DC7A40EF-3210-4343-ACAB-84C885539377}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03AFB695-813D-4F33-900A-5F4992DF0568}"
 	ProjectSection(SolutionItems) = preProject
