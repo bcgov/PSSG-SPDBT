@@ -11,13 +11,13 @@ import { AppRoutes } from 'src/app/app-routing.module';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../services/licence-application.service';
-import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
-import { StepIdentificationAuthenticatedComponent } from '../step-components/wizard-steps/step-identification-authenticated.component';
-import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
-import { StepLicenceSetupAuthenticatedComponent } from '../step-components/wizard-steps/step-licence-setup-authenticated.component';
-import { StepReviewLicenceComponent } from '../step-components/wizard-steps/step-review-licence.component';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { LicenceApplicationService } from '../../services/licence-application.service';
+import { StepBackgroundComponent } from '../shared/wizard-steps/step-background.component';
+import { StepLicenceSelectionComponent } from '../shared/wizard-steps/step-licence-selection.component';
+import { StepReviewLicenceComponent } from '../shared/wizard-steps/step-review-licence.component';
+import { StepIdentificationAuthenticatedComponent } from './wizard-steps/step-identification-authenticated.component';
+import { StepLicenceSetupAuthenticatedComponent } from './wizard-steps/step-licence-setup-authenticated.component';
 
 @Component({
 	selector: 'app-security-worker-licence-wizard-authenticated',

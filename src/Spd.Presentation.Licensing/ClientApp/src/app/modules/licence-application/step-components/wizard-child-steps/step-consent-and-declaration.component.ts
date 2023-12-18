@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-consent-and-declaration',
@@ -97,16 +98,12 @@ export class StepConsentAndDeclarationComponent implements OnInit, LicenceChildS
 	captchaPassed = false;
 	captchaResponse: CaptchaResponse | null = null;
 
-	form: FormGroup = this.formBuilder.group({
-		readTerms: new FormControl(null, [Validators.requiredTrue]),
-		dateSigned: new FormControl({ value: null, disabled: true }),
-		recaptcha: new FormControl({ value: null, disabled: true }),
-	});
+	form: FormGroup = this.licenceApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(
-		private formBuilder: FormBuilder,
 		private utilService: UtilService,
-		private authProcessService: AuthProcessService
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {

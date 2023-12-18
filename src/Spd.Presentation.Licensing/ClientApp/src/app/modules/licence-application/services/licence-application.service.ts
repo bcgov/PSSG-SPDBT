@@ -1,6 +1,17 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subscription, take, tap } from 'rxjs';
+import {
+	BehaviorSubject,
+	debounceTime,
+	distinctUntilChanged,
+	forkJoin,
+	Observable,
+	of,
+	Subscription,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import {
 	AdditionalGovIdDocument,
 	ApplicationTypeCode,
@@ -8,6 +19,7 @@ import {
 	BusinessTypeCode,
 	CitizenshipDocument,
 	Document,
+	DocumentBase,
 	FingerprintProofDocument,
 	HeightUnitCode,
 	IdPhotoDocument,
@@ -18,6 +30,7 @@ import {
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
+	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
 	WorkerLicenceAppSubmitRequest,
 	WorkerLicenceAppUpsertRequest,
@@ -36,9 +49,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
-export class DocumentInfos {
+export class DocumentsToSave {
 	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
-	'expiryDate': string;
+	'documents': Array<Blob>;
 }
 
 export class WorkerLicenceAppAnonymousSubmitRequest {
@@ -1541,28 +1554,69 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const body = this.getSaveBodyAnonymous();
 		console.debug('submitLicenceAnonymous body', body);
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response({
-			body: { docs: body.docs, WorkerLicenceAppAnonymousSubmitRequest: body.WorkerLicenceAppAnonymousSubmitRequest },
-		});
+		// const formValue = this.licenceModelFormGroup.getRawValue();
+
+		const documentInfos = this.getSaveDocsAnonymous();
+		console.log('documentInfos', documentInfos);
+
+		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
+		console.debug('submitLicenceAnonymous', formValue);
+
+		const googleRecaptcha = { recaptchaCode: formValue.recaptcha };
+		return this.workerLicensingService
+			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((resp: string) => {
+					console.log('resp', resp);
+					const keyCode = resp;
+
+					const documentsToSave: Observable<string>[] = [];
+					documentInfos.forEach((docBody: DocumentsToSave) => {
+						documentsToSave.push(
+							this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
+								keyCode,
+								body: {
+									Documents: docBody.documents,
+									LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+								},
+							})
+						);
+					});
+
+					console.log('documentsToSave', documentsToSave);
+
+					return forkJoin(documentsToSave);
+				}),
+				switchMap((resps: string[]) => {
+					console.log('resps', resps);
+					const keyCode = resps[0];
+
+					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
+						keyCode,
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
 	}
 
 	/**
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyAnonymous(): WorkerLicenceApplicationsSubmitAnonymousPost {
-		const documents = this.getSaveDocsAnonymous();
-		console.debug('submitLicenceAnonymous documents', documents);
-
+	private getSaveBodyAnonymous(): WorkerLicenceAppAnonymousSubmitRequestJson {
 		const savebody = this.getSaveBody();
+
+		const documentInfos = this.getSaveDocumentInfosAnonymous();
+		console.log('documentInfos', documentInfos);
+
 		const categoryData = savebody.categoryData ?? [];
 
-		const categoryCodes =
-			categoryData.map((item: WorkerLicenceAppCategoryData) => item.workerCategoryTypeCode!.toString()) ?? [];
+		const categoryCodes: Array<WorkerCategoryTypeCode> = categoryData.map(
+			(item: WorkerLicenceAppCategoryData) => item.workerCategoryTypeCode!
+		);
 
-		const documentInfos = this.getSaveDocInfosAnonymous(categoryData);
-
-		const requestBody: WorkerLicenceAppAnonymousSubmitRequest = {
+		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
 			applicationTypeCode: savebody.applicationTypeCode,
 			isSoleProprietor: savebody.isSoleProprietor,
@@ -1594,29 +1648,28 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			otherOfficerRole: savebody.otherOfficerRole,
 			isTreatedForMHC: savebody.isTreatedForMHC,
 			useBcServicesCardPhoto: savebody.useBcServicesCardPhoto,
-			carryAndUseRestraints: savebody.carryAndUseRestraints,
-			useDogs: savebody.useDogs,
-			isDogsPurposeProtection: savebody.isDogsPurposeProtection,
-			isDogsPurposeDetectionDrugs: savebody.isDogsPurposeDetectionDrugs,
-			isDogsPurposeDetectionExplosives: savebody.isDogsPurposeDetectionExplosives,
+			carryAndUseRestraints: savebody.carryAndUseRestraints ?? null,
+			useDogs: savebody.useDogs ?? null,
+			isDogsPurposeProtection: savebody.isDogsPurposeProtection ?? null,
+			isDogsPurposeDetectionDrugs: savebody.isDogsPurposeDetectionDrugs ?? null,
+			isDogsPurposeDetectionExplosives: savebody.isDogsPurposeDetectionExplosives ?? null,
 			isCanadianCitizen: savebody.isCanadianCitizen,
 			aliases: savebody.aliases ? [...savebody.aliases] : [],
 			residentialAddressData: { ...savebody.residentialAddressData },
 			mailingAddressData: { ...savebody.mailingAddressData },
 			categoryCodes: categoryCodes,
-			documentInfos: documentInfos,
+			documentInfos,
 		};
-		console.debug('submitLicenceAnonymous requestBody', requestBody);
+		console.log('requestBody', requestBody);
 
-		return { docs: documents, WorkerLicenceAppAnonymousSubmitRequest: requestBody };
+		return requestBody;
 	}
 
-	getSaveDocInfosAnonymous(categoryData: WorkerLicenceAppCategoryData[]): Array<DocumentInfos> {
-		const documents: Array<DocumentInfos> = [];
-		const formValue = this.licenceModelFormGroup.getRawValue();
-		console.debug('getSaveBody licenceModelFormGroup', formValue);
+	getSaveDocumentInfosAnonymous(): Array<DocumentBase> {
+		const documents: Array<DocumentBase> = [];
+		const savebody = this.getSaveBody();
 
-		categoryData.forEach((item: WorkerLicenceAppCategoryData) => {
+		savebody.categoryData?.forEach((item: WorkerLicenceAppCategoryData) => {
 			item.documents?.forEach((doc: Document) => {
 				if (doc.expiryDate) {
 					documents.push({ licenceDocumentTypeCode: doc.licenceDocumentTypeCode!, expiryDate: doc.expiryDate });
@@ -1624,34 +1677,26 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 		});
 
-		const citizenshipData = { ...formValue.citizenshipData };
-		const additionalGovIdData = { ...formValue.additionalGovIdData };
-
-		if (citizenshipData.expiryDate) {
-			const licencename =
-				citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-					? citizenshipData.canadianCitizenProofTypeCode
-					: citizenshipData.notCanadianCitizenProofTypeCode;
-			documents.push({ licenceDocumentTypeCode: licencename, expiryDate: citizenshipData.expiryDate });
+		if (savebody.citizenshipDocument?.expiryDate) {
+			documents.push({
+				licenceDocumentTypeCode: savebody.citizenshipDocument.licenceDocumentTypeCode,
+				expiryDate: savebody.citizenshipDocument.expiryDate,
+			});
 		}
 
-		const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-			citizenshipData.isCanadianCitizen,
-			citizenshipData.canadianCitizenProofTypeCode,
-			citizenshipData.notCanadianCitizenProofTypeCode
-		);
-
-		if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.expiryDate) {
-			const licencename = additionalGovIdData.governmentIssuedPhotoTypeCode;
-			documents.push({ licenceDocumentTypeCode: licencename, expiryDate: additionalGovIdData.expiryDate });
+		if (savebody.additionalGovIdDocument?.expiryDate) {
+			documents.push({
+				licenceDocumentTypeCode: savebody.additionalGovIdDocument.licenceDocumentTypeCode,
+				expiryDate: savebody.additionalGovIdDocument.expiryDate,
+			});
 		}
 
 		console.debug('submitLicenceAnonymous documentInfos', documents);
 		return documents;
 	}
 
-	getSaveDocsAnonymous(): Array<Blob> {
-		const documents: Array<Blob> = [];
+	getSaveDocsAnonymous(): Array<DocumentsToSave> {
+		const documents: Array<DocumentsToSave> = [];
 		const formValue = this.licenceModelFormGroup.getRawValue();
 
 		const citizenshipData = { ...formValue.citizenshipData };
@@ -1662,83 +1707,123 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
 		if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
+			const docs: Array<Blob> = [];
 			formValue.categoryArmouredCarGuardFormGroup.attachments.forEach((doc: Blob) => {
-				// doc.licencename = LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate;
-				documents.push(doc);
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
+				documents: docs,
 			});
 		}
 
 		if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
 			if (formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments) {
+				const docs: Array<Blob> = [];
 				formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments.forEach((doc: Blob) => {
-					// doc.licencename = LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
+					documents: docs,
 				});
 			}
 
 			if (formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments) {
+				const docs: Array<Blob> = [];
 				formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments.forEach((doc: Blob) => {
-					// doc.licencename = LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
+					documents: docs,
 				});
 			}
 		}
 
 		if (formValue.categoryLocksmithFormGroup.isInclude) {
 			if (formValue.categoryLocksmithFormGroup.attachments) {
+				const docs: Array<Blob> = [];
 				formValue.categoryLocksmithFormGroup.attachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categoryLocksmithFormGroup.requirementCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categoryLocksmithFormGroup.requirementCode,
+					documents: docs,
 				});
 			}
 		}
 
 		if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
 			if (formValue.categoryPrivateInvestigatorFormGroup.attachments) {
+				const docs: Array<Blob> = [];
 				formValue.categoryPrivateInvestigatorFormGroup.attachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categoryPrivateInvestigatorFormGroup.requirementCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.requirementCode,
+					documents: docs,
 				});
 			}
 			if (formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments) {
+				const docs: Array<Blob> = [];
 				formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categoryPrivateInvestigatorFormGroup.trainingCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.trainingCode,
+					documents: docs,
 				});
 			}
 		}
 
 		if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
 			if (formValue.categoryPrivateInvestigatorSupFormGroup.attachments) {
+				const docs: Array<Blob> = [];
 				formValue.categoryPrivateInvestigatorSupFormGroup.attachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
+					documents: docs,
 				});
 			}
 		}
 
 		if (formValue.categorySecurityGuardFormGroup.isInclude) {
 			if (formValue.categorySecurityGuardFormGroup.attachments) {
+				const docs: Array<Blob> = [];
 				formValue.categorySecurityGuardFormGroup.attachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categorySecurityGuardFormGroup.requirementCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categorySecurityGuardFormGroup.requirementCode,
+					documents: docs,
 				});
 			}
 
 			if (this.booleanTypeToBoolean(formValue.dogsAuthorizationData.useDogs)) {
 				if (formValue.dogsAuthorizationData.attachments) {
+					const docs: Array<Blob> = [];
 					formValue.dogsAuthorizationData.attachments.forEach((doc: Blob) => {
-						// doc.licencename = LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate;
-						documents.push(doc);
+						docs.push(doc);
+					});
+					documents.push({
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate,
+						documents: docs,
 					});
 				}
 			}
 
 			if (this.booleanTypeToBoolean(formValue.restraintsAuthorizationData.carryAndUseRestraints)) {
 				if (formValue.restraintsAuthorizationData.attachments) {
+					const docs: Array<Blob> = [];
 					formValue.restraintsAuthorizationData.attachments.forEach((doc: Blob) => {
-						// doc.licencename = formValue.restraintsAuthorizationData.carryAndUseRestraintsDocument;
-						documents.push(doc);
+						docs.push(doc);
+					});
+					documents.push({
+						licenceDocumentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRestraintsDocument,
+						documents: docs,
 					});
 				}
 			}
@@ -1746,57 +1831,77 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
 			if (formValue.categorySecurityAlarmInstallerData.attachments) {
+				const docs: Array<Blob> = [];
 				formValue.categorySecurityAlarmInstallerData.attachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categorySecurityAlarmInstallerData.requirementCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categorySecurityAlarmInstallerData.requirementCode,
+					documents: docs,
 				});
 			}
 		}
 
 		if (formValue.categorySecurityConsultantFormGroup.isInclude) {
 			if (formValue.categorySecurityConsultantFormGroup.attachments) {
+				const docs: Array<Blob> = [];
 				formValue.categorySecurityConsultantFormGroup.attachments.forEach((doc: Blob) => {
-					// doc.licencename = formValue.categorySecurityConsultantFormGroup.requirementCode;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+					documents: docs,
 				});
 			}
 			if (formValue.categorySecurityConsultantFormGroup.resumeAttachments) {
+				const docs: Array<Blob> = [];
 				formValue.categorySecurityConsultantFormGroup.resumeAttachments.forEach((doc: Blob) => {
-					// doc.licencename = LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters;
-					documents.push(doc);
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
+					documents: docs,
 				});
 			}
 		}
 
 		if (policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
 			policeBackgroundData.attachments.forEach((doc: Blob) => {
-				// doc.licencename = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict;
-				documents.push(doc);
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
 			});
 		}
 
 		if (mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
 			mentalHealthConditionsData.attachments.forEach((doc: Blob) => {
-				// doc.licencename = LicenceDocumentTypeCode.MentalHealthCondition;
-				documents.push(doc);
+				docs.push(doc);
 			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
 		}
 
 		if (fingerprintProofData.attachments) {
+			const docs: Array<Blob> = [];
 			fingerprintProofData.attachments.forEach((doc: Blob) => {
-				// doc.licencename = LicenceDocumentTypeCode.ProofOfFingerprint;
-				documents.push(doc);
+				docs.push(doc);
 			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
 		}
 
 		if (citizenshipData.attachments) {
+			const docs: Array<Blob> = [];
 			citizenshipData.attachments.forEach((doc: Blob) => {
-				// doc.licencename =
+				docs.push(doc);
+			});
+			const citizenshipLicenceDocumentTypeCode =
 				citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
 					? citizenshipData.canadianCitizenProofTypeCode
 					: citizenshipData.notCanadianCitizenProofTypeCode;
-				documents.push(doc);
-			});
+			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
 		}
 
 		const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
@@ -1806,17 +1911,19 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 
 		if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
+			const docs: Array<Blob> = [];
 			additionalGovIdData.attachments.forEach((doc: Blob) => {
-				// doc.licencename = additionalGovIdData.governmentIssuedPhotoTypeCode;
-				documents.push(doc);
+				docs.push(doc);
 			});
+			documents.push({ licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode, documents: docs });
 		}
 
 		if (photographOfYourselfData.attachments) {
+			const docs: Array<Blob> = [];
 			photographOfYourselfData.attachments.forEach((doc: Blob) => {
-				// doc.licencename = LicenceDocumentTypeCode.PhotoOfYourself;
-				documents.push(doc);
+				docs.push(doc);
 			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
 		}
 
 		return documents;

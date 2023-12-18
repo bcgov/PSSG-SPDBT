@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../services/licence-application.helper';
-import { LicenceApplicationService } from '../services/licence-application.service';
-import { UserProfileComponent } from '../step-components/user-profile.component';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
+import { UserProfileComponent } from '../../step-components/user-profile.component';
 
 @Component({
 	selector: 'app-login-user-profile',

@@ -7,10 +7,10 @@ import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepBackgroundComponent } from '../../step-components/wizard-steps/step-background.component';
-import { StepIdentificationAnonymousComponent } from '../../step-components/wizard-steps/step-identification-anonymous.component';
-import { StepLicenceSelectionComponent } from '../../step-components/wizard-steps/step-licence-selection.component';
-import { StepReviewLicenceComponent } from '../../step-components/wizard-steps/step-review-licence.component';
+import { StepBackgroundComponent } from '../shared/wizard-steps/step-background.component';
+import { StepLicenceSelectionComponent } from '../shared/wizard-steps/step-licence-selection.component';
+import { StepReviewLicenceComponent } from '../shared/wizard-steps/step-review-licence.component';
+import { StepIdentificationAnonymousComponent } from './wizard-steps/step-identification-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-update-wizard-anonymous',

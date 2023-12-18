@@ -34,7 +34,7 @@ import { LicenceChildStepperStepComponent } from '../services/licence-applicatio
 						<p>
 							You need both <strong>your licence number</strong> as it appears on your current licence, plus the
 							<strong>access code number</strong>
-							provided following your initial security worker application and in your renewal letter from the Registrar,
+							provided following your initial security worker application or in your renewal letter from the Registrar,
 							Security Services. Enter the two numbers below then click 'Link' to continue.
 						</p>
 						<p>

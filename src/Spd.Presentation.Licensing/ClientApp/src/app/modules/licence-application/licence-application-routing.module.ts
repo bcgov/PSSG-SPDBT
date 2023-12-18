@@ -8,16 +8,16 @@ import { WorkerLicenceNewWizardAnonymousComponent } from './components/anonymous
 import { WorkerLicenceRenewalWizardAnonymousComponent } from './components/anonymous/worker-licence-renewal-wizard-anonymous.component';
 import { WorkerLicenceReplacementWizardAnonymousComponent } from './components/anonymous/worker-licence-replacement-wizard-anonymous.component';
 import { WorkerLicenceUpdateWizardAnonymousComponent } from './components/anonymous/worker-licence-update-wizard-anonymous.component';
-import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
-import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
-import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
-import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
+import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
+import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-authenticated.component';
+import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-update-authenticated.component';
+import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
-import { LoginUserProfileComponent } from './components/login-user-profile.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
-import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/security-worker-licence-wizard-authenticated.component';
-import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/security-worker-licence-wizard-update-authenticated.component';
-import { UserApplicationsAuthenticatedComponent } from './components/user-applications-authenticated.component';
+import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
+import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
+import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
+import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { LicenceAccessCodeAuthorizedComponent } from './step-components/licence-access-code-authorized.component';
 

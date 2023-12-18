@@ -15,8 +15,8 @@ import { WorkerLicensingService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../services/licence-application.service';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 export interface ApplicationResponse {
 	id?: string;

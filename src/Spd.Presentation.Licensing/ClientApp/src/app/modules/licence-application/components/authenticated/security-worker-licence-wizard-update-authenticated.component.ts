@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper, StepperOrientation } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 
 @Component({
 	selector: 'app-security-worker-licence-wizard-update-authenticated',

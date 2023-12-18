@@ -40,7 +40,7 @@ import { LicenceApplicationService } from '../services/licence-application.servi
 			<div class="row">
 				<div class="col-lg-4 col-md-6 col-sm-12">
 					<mat-form-field>
-						<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
+						<mat-label>Sex</mat-label>
 						<mat-select formControlName="genderCode">
 							<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
 								{{ gdr.desc }}

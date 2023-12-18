@@ -3,14 +3,14 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
-import { StepLicenceCategoryComponent } from '../wizard-child-steps/step-licence-category.component';
-import { StepLicenceExpiredComponent } from '../wizard-child-steps/step-licence-expired.component';
-import { StepLicenceTermComponent } from '../wizard-child-steps/step-licence-term.component';
-import { StepRestraintsAuthorizationComponent } from '../wizard-child-steps/step-restraints-authorization.component';
-import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-proprietor.component';
+import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
+import { LicenceApplicationService } from '../../../services/licence-application.service';
+import { StepDogsAuthorizationComponent } from '../../../step-components/wizard-child-steps/step-dogs-authorization.component';
+import { StepLicenceCategoryComponent } from '../../../step-components/wizard-child-steps/step-licence-category.component';
+import { StepLicenceExpiredComponent } from '../../../step-components/wizard-child-steps/step-licence-expired.component';
+import { StepLicenceTermComponent } from '../../../step-components/wizard-child-steps/step-licence-term.component';
+import { StepRestraintsAuthorizationComponent } from '../../../step-components/wizard-child-steps/step-restraints-authorization.component';
+import { StepSoleProprietorComponent } from '../../../step-components/wizard-child-steps/step-sole-proprietor.component';
 
 @Component({
 	selector: 'app-step-licence-selection',

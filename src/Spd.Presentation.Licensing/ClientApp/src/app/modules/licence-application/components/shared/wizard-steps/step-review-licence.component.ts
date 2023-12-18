@@ -2,10 +2,11 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepConsentAndDeclarationComponent } from '../wizard-child-steps/step-consent-and-declaration.component';
-import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-summary-review-licence.component';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
+import { LicenceApplicationService } from '../../../services/licence-application.service';
+import { StepConsentAndDeclarationComponent } from '../../../step-components/wizard-child-steps/step-consent-and-declaration.component';
+import { StepSummaryReviewLicenceComponent } from '../../../step-components/wizard-child-steps/step-summary-review-licence.component';
 
 @Component({
 	selector: 'app-step-review-licence',
@@ -50,6 +51,7 @@ export class StepReviewLicenceComponent extends BaseWizardStepComponent {
 	constructor(
 		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
+		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService
 	) {
 		super();
@@ -62,7 +64,11 @@ export class StepReviewLicenceComponent extends BaseWizardStepComponent {
 		this.licenceApplicationService.submitLicence().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				if (this.authenticationService.isLoggedIn()) {
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				} else {
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+				}
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

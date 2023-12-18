@@ -16,8 +16,8 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 					title="Provide your access code"
 					info="	<p>
 							You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
-							provided following your initial security worker application and in your renewal letter from the Registrar,
-							Security Services. Enter the two numbers below then click 'Next' to continue.
+							provided following your initial security worker application or in your renewal letter from the Registrar,
+							Security Services. Enter the two numbers below then click 'Link' to continue.
 						</p>
 						<p>
 							If you do not know your access code, you may call Security Program's Licensing Unit during regular office
@@ -70,17 +70,17 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						</div>
 					</div>
 				</div>
-
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
-					</div>
-				</div>
 			</div>
 		</section>
+
+		<div class="row mt-4">
+			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+			</div>
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+			</div>
+		</div>
 	`,
 	styles: [],
 })

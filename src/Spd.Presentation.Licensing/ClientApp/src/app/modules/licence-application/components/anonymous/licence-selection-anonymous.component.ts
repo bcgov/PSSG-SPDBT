@@ -78,14 +78,14 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						</div>
 					</div>
 				</div>
-
-				<div class="row mt-4">
-					<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
-					</div>
-				</div>
 			</div>
 		</section>
+
+		<div class="row mt-4">
+			<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+			</div>
+		</div>
 	`,
 	styles: [
 		`
