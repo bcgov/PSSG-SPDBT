@@ -52,10 +52,11 @@ const SHARED_COMPONENTS = [
 	PaymentErrorComponent,
 	PaymentFailComponent,
 	PaymentManualComponent,
+	BaseFilterComponent,
 ];
 
 @NgModule({
-	declarations: [...SHARED_COMPONENTS, BaseFilterComponent],
+	declarations: [...SHARED_COMPONENTS],
 	imports: [
 		CommonModule,
 		MaterialModule,
