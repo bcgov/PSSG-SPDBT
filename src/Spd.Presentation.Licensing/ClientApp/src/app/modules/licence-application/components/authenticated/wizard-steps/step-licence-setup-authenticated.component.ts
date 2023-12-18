@@ -2,9 +2,9 @@ import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { StepLicenceApplicationTypeComponent } from '../../../step-components/wizard-child-steps/step-licence-application-type.component';
-import { StepLicenceTypeSelectionComponent } from '../../../step-components/wizard-child-steps/step-licence-type-selection.component';
-import { StepLicenceUserProfileComponent } from '../../../step-components/wizard-child-steps/step-licence-user-profile.component';
+import { StepLicenceApplicationTypeComponent } from '../../shared/wizard-child-steps/step-licence-application-type.component';
+import { StepLicenceTypeSelectionComponent } from '../../shared/wizard-child-steps/step-licence-type-selection.component';
+import { StepLicenceUserProfileComponent } from '../../shared/wizard-child-steps/step-licence-user-profile.component';
 @Component({
 	selector: 'app-step-licence-setup-authenticated',
 	template: `

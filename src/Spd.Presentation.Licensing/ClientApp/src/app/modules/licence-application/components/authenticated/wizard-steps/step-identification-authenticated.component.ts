@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
-import { StepAdditionalGovIdComponent } from '../../../step-components/wizard-child-steps/step-additional-gov-id.component';
-import { StepBcDriverLicenceComponent } from '../../../step-components/wizard-child-steps/step-bc-driver-licence.component';
-import { StepCitizenshipComponent } from '../../../step-components/wizard-child-steps/step-citizenship.component';
-import { StepHeightAndWeightComponent } from '../../../step-components/wizard-child-steps/step-height-and-weight.component';
-import { StepPhotographOfYourselfComponent } from '../../../step-components/wizard-child-steps/step-photograph-of-yourself.component';
+import { StepAdditionalGovIdComponent } from '../../shared/wizard-child-steps/step-additional-gov-id.component';
+import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
+import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
+import { StepHeightAndWeightComponent } from '../../shared/wizard-child-steps/step-height-and-weight.component';
+import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-identification-authenticated',

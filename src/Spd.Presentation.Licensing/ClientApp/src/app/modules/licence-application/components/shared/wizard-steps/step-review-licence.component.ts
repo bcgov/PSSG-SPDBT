@@ -5,8 +5,8 @@ import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-ste
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
-import { StepConsentAndDeclarationComponent } from '../../../step-components/wizard-child-steps/step-consent-and-declaration.component';
-import { StepSummaryReviewLicenceComponent } from '../../../step-components/wizard-child-steps/step-summary-review-licence.component';
+import { StepConsentAndDeclarationComponent } from '../wizard-child-steps/step-consent-and-declaration.component';
+import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-summary-review-licence.component';
 
 @Component({
 	selector: 'app-step-review-licence',

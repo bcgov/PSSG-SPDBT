@@ -5,7 +5,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { UserProfileComponent } from '../../step-components/user-profile.component';
+import { UserProfileComponent } from '../shared/step-components/user-profile.component';
 
 @Component({
 	selector: 'app-login-user-profile',

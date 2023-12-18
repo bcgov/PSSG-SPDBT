@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from 'src/app/api/models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -89,11 +89,7 @@ export class LicenceAccessCodeAnonymousComponent implements LicenceChildStepperS
 
 	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
 
-	constructor(
-		private router: Router,
-		private formBuilder: FormBuilder,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
@@ -153,8 +149,9 @@ export class LicenceAccessCodeAnonymousComponent implements LicenceChildStepperS
 	}
 
 	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
+		// this.form.markAllAsTouched();
+		// return this.form.valid;
+		return true;
 	}
 
 	onLink(): void {

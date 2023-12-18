@@ -2,26 +2,50 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
-import { StepDogsAuthorizationComponent } from '../../../step-components/wizard-child-steps/step-dogs-authorization.component';
-import { StepLicenceCategoryComponent } from '../../../step-components/wizard-child-steps/step-licence-category.component';
-import { StepLicenceExpiredComponent } from '../../../step-components/wizard-child-steps/step-licence-expired.component';
-import { StepLicenceTermComponent } from '../../../step-components/wizard-child-steps/step-licence-term.component';
-import { StepRestraintsAuthorizationComponent } from '../../../step-components/wizard-child-steps/step-restraints-authorization.component';
-import { StepSoleProprietorComponent } from '../../../step-components/wizard-child-steps/step-sole-proprietor.component';
+import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
+import { StepLicenceCategoryComponent } from '../wizard-child-steps/step-licence-category.component';
+import { StepLicenceExpiredComponent } from '../wizard-child-steps/step-licence-expired.component';
+import { StepLicenceTermComponent } from '../wizard-child-steps/step-licence-term.component';
+import { StepRestraintsAuthorizationComponent } from '../wizard-child-steps/step-restraints-authorization.component';
+import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-proprietor.component';
 
 @Component({
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-sole-proprietor></app-step-sole-proprietor>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
+					<app-step-checklist-new-worker></app-step-checklist-new-worker>
+				</ng-container>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-step-checklist-renewal-worker></app-step-checklist-renewal-worker>
+				</ng-container>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+					<app-step-checklist-update-worker></app-step-checklist-update-worker>
+				</ng-container>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-sole-proprietor></app-step-sole-proprietor>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
@@ -32,19 +56,6 @@ import { StepSoleProprietorComponent } from '../../../step-components/wizard-chi
 						>
 							Next
 						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-checklist-new-worker></app-step-checklist-new-worker>
-
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -196,11 +207,12 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 	readonly STEP_RESTRAINTS = 9;
 	readonly STEP_LICENCE_TERM = 7;
 
-	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
 	isFormValid = false;
+	applicationTypeCode: ApplicationTypeCode | null = null;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepSoleProprietorComponent)
 	soleProprietorComponent!: StepSoleProprietorComponent;
@@ -229,14 +241,16 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: any) => {
-				console.log('licenceModelValueChanges$', _resp);
+				// console.debug('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
 			}
 		);
 	}
 
 	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 

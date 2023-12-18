@@ -18,8 +18,8 @@ import { LicencePaymentErrorComponent } from './components/shared/licence-paymen
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
+import { LicenceAccessCodeAuthorizedComponent } from './components/shared/step-components/licence-access-code-authorized.component';
 import { LicenceApplicationComponent } from './licence-application.component';
-import { LicenceAccessCodeAuthorizedComponent } from './step-components/licence-access-code-authorized.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';

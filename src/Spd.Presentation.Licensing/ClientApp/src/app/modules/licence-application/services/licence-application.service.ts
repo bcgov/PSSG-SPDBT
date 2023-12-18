@@ -1642,7 +1642,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			weightUnitCode: savebody.weightUnitCode,
 			contactEmailAddress: savebody.contactEmailAddress,
 			contactPhoneNumber: savebody.contactPhoneNumber,
-			isMailingTheSameAsResidential: savebody.isMailingTheSameAsResidential,
+			isMailingTheSameAsResidential: savebody.isMailingTheSameAsResidential ?? false,
 			isPoliceOrPeaceOfficer: savebody.isPoliceOrPeaceOfficer,
 			policeOfficerRoleCode: savebody.policeOfficerRoleCode,
 			otherOfficerRole: savebody.otherOfficerRole,

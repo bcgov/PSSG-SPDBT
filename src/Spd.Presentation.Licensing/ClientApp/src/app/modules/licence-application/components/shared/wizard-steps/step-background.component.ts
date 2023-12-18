@@ -4,10 +4,10 @@ import { PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
-import { StepCriminalHistoryComponent } from '../../../step-components/wizard-child-steps/step-criminal-history.component';
-import { StepFingerprintsComponent } from '../../../step-components/wizard-child-steps/step-fingerprints.component';
-import { StepMentalHealthConditionsComponent } from '../../../step-components/wizard-child-steps/step-mental-health-conditions.component';
-import { StepPoliceBackgroundComponent } from '../../../step-components/wizard-child-steps/step-police-background.component';
+import { StepCriminalHistoryComponent } from '../wizard-child-steps/step-criminal-history.component';
+import { StepFingerprintsComponent } from '../wizard-child-steps/step-fingerprints.component';
+import { StepMentalHealthConditionsComponent } from '../wizard-child-steps/step-mental-health-conditions.component';
+import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police-background.component';
 
 @Component({
 	selector: 'app-step-background',
