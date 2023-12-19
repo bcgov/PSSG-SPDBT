@@ -9,8 +9,10 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { GoogleRecaptcha } from '../models/google-recaptcha';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
+import { WorkerLicenceAppAnonymousSubmitRequestJson } from '../models/worker-licence-app-anonymous-submit-request-json';
 import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
@@ -345,7 +347,8 @@ export class WorkerLicensingService extends BaseService {
   static readonly ApiWorkerLicenceApplicationsSubmitAnonymousPostPath = '/api/worker-licence-applications/submit/anonymous';
 
   /**
-   * Submit Security Worker Licence Application Anonymously.
+   * Submit Security Worker Licence Application Anonymously
+   * deprecated as the request body is too big. the proxy won't let it through.
    *
    *
    *
@@ -452,7 +455,8 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Submit Security Worker Licence Application Anonymously.
+   * Submit Security Worker Licence Application Anonymously
+   * deprecated as the request body is too big. the proxy won't let it through.
    *
    *
    *
@@ -542,6 +546,207 @@ export class WorkerLicensingService extends BaseService {
 ): Observable<WorkerLicenceAppUpsertResponse> {
 
     return this.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiWorkerLicenceApplicationsAnonymousKeyCodePost
+   */
+  static readonly ApiWorkerLicenceApplicationsAnonymousKeyCodePostPath = '/api/worker-licence-applications/anonymous/keyCode';
+
+  /**
+   * Upload licence application first step: frontend needs to make this first request to get a Guid code.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsAnonymousKeyCodePost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsAnonymousKeyCodePost$Response(params?: {
+    body?: GoogleRecaptcha
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<string>> {
+
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodePostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<string>;
+      })
+    );
+  }
+
+  /**
+   * Upload licence application first step: frontend needs to make this first request to get a Guid code.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsAnonymousKeyCodePost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsAnonymousKeyCodePost(params?: {
+    body?: GoogleRecaptcha
+  },
+  context?: HttpContext
+
+): Observable<string> {
+
+    return this.apiWorkerLicenceApplicationsAnonymousKeyCodePost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<string>) => r.body as string)
+    );
+  }
+
+  /**
+   * Path part for operation apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost
+   */
+  static readonly ApiWorkerLicenceApplicationsAnonymousKeyCodeFilesPostPath = '/api/worker-licence-applications/anonymous/{keyCode}/files';
+
+  /**
+   * Upload licence application files: frontend use the keyCode to upload following files.
+   * Do not support parallel.
+   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost$Response(params: {
+    keyCode: string;
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<string>> {
+
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeFilesPostPath, 'post');
+    if (params) {
+      rb.path('keyCode', params.keyCode, {"style":"simple"});
+      rb.body(params.body, 'multipart/form-data');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<string>;
+      })
+    );
+  }
+
+  /**
+   * Upload licence application files: frontend use the keyCode to upload following files.
+   * Do not support parallel.
+   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost(params: {
+    keyCode: string;
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<string> {
+
+    return this.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<string>) => r.body as string)
+    );
+  }
+
+  /**
+   * Path part for operation apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost
+   */
+  static readonly ApiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPostPath = '/api/worker-licence-applications/anonymous/{keyCode}/submit';
+
+  /**
+   * Submit Security Worker Licence Application Json part Anonymously
+   * After fe done with the uploading files, then fe do post with json payload.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response(params: {
+    keyCode: string;
+    body?: WorkerLicenceAppAnonymousSubmitRequestJson
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPostPath, 'post');
+    if (params) {
+      rb.path('keyCode', params.keyCode, {"style":"simple"});
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+      })
+    );
+  }
+
+  /**
+   * Submit Security Worker Licence Application Json part Anonymously
+   * After fe done with the uploading files, then fe do post with json payload.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost(params: {
+    keyCode: string;
+    body?: WorkerLicenceAppAnonymousSubmitRequestJson
+  },
+  context?: HttpContext
+
+): Observable<WorkerLicenceAppUpsertResponse> {
+
+    return this.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
     );
   }

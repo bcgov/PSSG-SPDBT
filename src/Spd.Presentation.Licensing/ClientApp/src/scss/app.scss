@@ -175,10 +175,43 @@ body {
   }
 }
 
+.text-muted {
+  color: var(--color-grey-dark) !important;
+  line-height: 1.3em;
+  font-size: 0.9rem !important;
+}
+
+.text-data {
+  font-weight: 500;
+}
+
+.summary-text-data {
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  color: var(--color-primary);
+}
+
+.summary-card-section {
+  background-color: #f6f6f6 !important;
+  border-left: 3px solid #38598a;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
+
 .text-minor-heading {
   font-size: 1.1rem !important;
   color: var(--color-primary) !important;
     font-weight: 600 !important;
+}
+
+.checklist-label {
+  color: var(--color-primary);
+  line-height: initial;
+}
+
+.checklist-info {
+  margin-left: 3em;
 }
 
 .child-stepper {

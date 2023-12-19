@@ -7,10 +7,10 @@ import { Component, Input } from '@angular/core';
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<div class="title lh-base mb-4">
 					<div class="fs-3" [innerHtml]="title"></div>
-					<div class="fs-6 mt-4" *ngIf="subtitle" [innerHtml]="subtitle"></div>
-					<div class="fs-6 mt-4 text-start" *ngIf="info" [innerHtml]="info"></div>
+					<div class="fs-6 mt-3" *ngIf="subtitle" [innerHtml]="subtitle"></div>
+					<div class="fs-6 mt-3 text-start" *ngIf="info" [innerHtml]="info"></div>
+					<mat-divider *ngIf="showDivider" class="mat-divider-main my-3"></mat-divider>
 				</div>
-				<mat-divider *ngIf="showDivider" class="mat-divider-main mb-4"></mat-divider>
 			</div>
 		</div>
 	`,

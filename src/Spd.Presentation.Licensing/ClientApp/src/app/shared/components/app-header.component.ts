@@ -4,7 +4,6 @@ import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
 
 @Component({
 	selector: 'app-header',
@@ -22,7 +21,6 @@ import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/li
 					<mat-icon>more_vert</mat-icon> {{ loggedInUserDisplay }}
 				</button>
 				<mat-menu #menu="matMenu">
-					<button mat-menu-item (click)="onUserProfile()">Your Profile</button>
 					<button mat-menu-item (click)="onLogout()">Logout</button>
 				</mat-menu>
 			</div>
@@ -96,10 +94,6 @@ export class HeaderComponent implements OnInit {
 
 			this.getUserInfo();
 		});
-	}
-
-	onUserProfile(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_USER_PROFILE));
 	}
 
 	onLogout(): void {
