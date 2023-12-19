@@ -28,6 +28,10 @@ spec:
       labels:
         name: {{ .name }}
         role: {{ .Values.role }}
+        DataClass: {{ .Values.dataClass }}
+        {{- if .Values.allowInternet }}
+        Internet-Ingress: ALLOW
+        {{- end }}
       {{- if gt (len .Values.secrets) 0 }}
       annotations:
         checksum/secret: {{ .Values.secrets | toYaml | sha256sum }}
@@ -50,17 +54,21 @@ spec:
           {{- end -}}
 
           {{- if or .Values.volumeMounts .Values.secretFiles }}
-          volumeMounts: {{ .Values.volumeMounts | toYaml | nindent 12 }}
-          {{- if (.Values.secretFiles).files }}
+          volumeMounts:
+            {{- if .Values.volumeMounts }}
+            {{ .Values.volumeMounts | toYaml | nindent 12 }}
+            {{ end -}}
+            {{- if (.Values.secretFiles).files }}
             - name: {{ $.name}}-secret
               mountPath: {{ .Values.secretFiles.mountPath }}
-          {{ end -}}
-          {{- end -}}
+            {{ end -}}
+            {{- end }}
 
+          {{- if .Values.port }}
           ports:
             - containerPort: {{ .Values.port }}
-              protocol: {{ .Values.protocol | upper }}
-
+              protocol: {{ .Values.protocol | default "TCP" | upper }}
+          {{- end }}
 
           {{- if .Values.livenessProbe }}
           livenessProbe: {{ .Values.livenessProbe | toYaml | nindent 12 }}
@@ -79,23 +87,25 @@ spec:
       terminationGracePeriodSeconds: 30
 
       {{- if or .Values.volumes .Values.secretFiles }}
-      volumes: {{ tpl (.Values.volumes | toYaml) $ | nindent 8 }}
+      volumes:
+        {{- if .Values.volumes }}
+        {{ tpl (.Values.volumes | toYaml) $ | nindent 8 }}
+        {{ end -}}      
         {{- if (.Values.secretFiles).files }}
         - name: {{ $.name}}-secret
           secret:
             secretName: {{ $.name}}-secret
         {{- end }}
       {{- end }}
-
-  # triggers:
-  #   - type: ConfigChange
-  #   - type: ImageChange
-  #     imageChangeParams:
-  #       automatic: true
-  #       containerNames:
-  #         - {{ .name }}
-  #       from:
-  #         kind: ImageStreamTag
-  #         name: {{ base .Values.image.name }}:{{ .Values.image.tag }}
-  #         namespace: {{ .Values.image.triggerNamespace }}
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - {{ .name }}
+        from:
+          kind: ImageStreamTag
+          name: {{ base .Values.image.name }}:{{ .Values.image.tag }}
+          namespace: {{ .Values.image.triggerNamespace }}
 {{- end }}

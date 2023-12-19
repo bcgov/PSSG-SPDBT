@@ -1,5 +1,6 @@
 # service template
 {{- define "service.tpl" -}}
+{{- if .Values.port }}
 kind: Service
 apiVersion: v1
 metadata:
@@ -16,4 +17,5 @@ spec:
       protocol: {{ .Values.protocol | upper }}
       targetPort: {{ .Values.targetPort }}
   type: ClusterIP
+{{- end -}}
 {{- end -}}
