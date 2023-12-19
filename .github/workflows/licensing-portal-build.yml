@@ -37,4 +37,4 @@ jobs:
       # REGISTRY_USER: ${{ github.actor }}
       # REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
-      RESITRY_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      REGISTRY_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
