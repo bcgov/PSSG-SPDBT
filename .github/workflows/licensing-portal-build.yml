@@ -31,7 +31,10 @@ jobs:
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/licensing-portal.dockerfile
       IMAGE_NAME: ${{ github.repository }}/licensing-portal
-      REGISTRY: ghcr.io
+      # REGISTRY: ghcr.io
+      REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
     secrets:
-      REGISTRY_USER: ${{ github.actor }}
-      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      # REGISTRY_USER: ${{ github.actor }}
+      # REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
+      RESITRY_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
