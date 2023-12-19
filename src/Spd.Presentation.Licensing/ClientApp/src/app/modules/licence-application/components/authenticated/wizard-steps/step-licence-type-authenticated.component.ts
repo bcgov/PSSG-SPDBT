@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
+import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-selection-anonymous',
+	selector: 'app-step-licence-type-authenticated',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -82,7 +83,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 		</section>
 
 		<div class="row mt-4">
-			<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+			</div>
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 			</div>
 		</div>
@@ -108,8 +112,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 		`,
 	],
 })
-export class LicenceSelectionAnonymousComponent implements OnInit {
-	readonly image1 = '/assets/security-business-licence.png';
+export class StepLicenceTypeAuthenticatedComponent implements OnInit, LicenceChildStepperStepComponent {
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
@@ -121,7 +124,7 @@ export class LicenceSelectionAnonymousComponent implements OnInit {
 
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
-	imagePaths = [this.image1, this.image2, this.image3, this.image4];
+	imagePaths = [this.image2, this.image3, this.image4];
 
 	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
 
@@ -137,25 +140,24 @@ export class LicenceSelectionAnonymousComponent implements OnInit {
 			tmp.src = path;
 		});
 
-		this.workerLicenceTypeCode = this.form.value.workerLicenceTypeCode;
-	}
-
-	onStepNext(): void {
-		const isValid = this.isFormValid();
-
-		if (isValid) {
-			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-				)
-			);
-		}
+		this.workerLicenceTypeCode = this.form?.value.workerLicenceTypeCode;
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
+		// console.log('onLicenceTypeChange', _val);
 		this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
+		// console.log('onLicenceTypeChange', this.form.value);
+		// console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
+		// console.log(
+		// 	'onLicenceTypeChange licenceModelFormGroupAnonymous',
+		// 	this.licenceApplicationService.licenceModelFormGroupAnonymous.value
+		// );
+		// console.log(
+		// 	'onLicenceTypeChange licenceModelFormGroup',
+		// 	this.licenceApplicationService.licenceModelFormGroup.value
+		// );
 		this.isFormValid();
 	}
 
@@ -169,6 +171,24 @@ export class LicenceSelectionAnonymousComponent implements OnInit {
 		const isValid = this.form.valid;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
+	}
+
+	onStepPrevious(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED
+			)
+		);
+	}
+
+	onStepNext(): void {
+		if (this.isFormValid()) {
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED
+				)
+			);
+		}
 	}
 
 	private onImageLoaded() {

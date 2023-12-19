@@ -2,15 +2,13 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/step-review-licence-authenticated.component';
-import { StepBackgroundComponent } from '../shared/wizard-steps/step-background.component';
-import { StepLicenceSelectionComponent } from '../shared/wizard-steps/step-licence-selection.component';
-import { StepIdentificationAnonymousComponent } from './wizard-steps/step-identification-anonymous.component';
+import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
+import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
+import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
+import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-identification-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-renewal-wizard-anonymous',
@@ -26,46 +24,46 @@ import { StepIdentificationAnonymousComponent } from './wizard-steps/step-identi
 				>
 					<mat-step [completed]="step1Complete">
 						<ng-template matStepLabel> Licence Selection </ng-template>
-						<app-step-licence-selection
+						<app-steps-licence-selection
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-step-licence-selection>
+						></app-steps-licence-selection>
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Background</ng-template>
-						<app-step-background
+						<app-steps-background
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-step-background>
+						></app-steps-background>
 					</mat-step>
 
 					<mat-step [completed]="step3Complete">
 						<ng-template matStepLabel>Identification</ng-template>
-						<app-step-identification-anonymous
+						<app-steps-identification-anonymous
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-step-identification-anonymous>
+						></app-steps-identification-anonymous>
 					</mat-step>
 
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review and Confirm</ng-template>
 						<ng-template matStepContent>
-							<app-step-review-licence-anonymous
+							<app-steps-review-licence-anonymous
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 								(goToStep)="onGoToStep($event)"
-							></app-step-review-licence-anonymous>
+							></app-steps-review-licence-anonymous>
 						</ng-template>
 					</mat-step>
 
@@ -88,21 +86,21 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 	step2Complete = false;
 	step3Complete = false;
 
-	@ViewChild(StepLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepLicenceSelectionComponent;
+	@ViewChild(StepsLicenceSelectionComponent)
+	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
 
-	@ViewChild(StepBackgroundComponent)
-	stepBackgroundComponent!: StepBackgroundComponent;
+	@ViewChild(StepsBackgroundComponent)
+	stepBackgroundComponent!: StepsBackgroundComponent;
 
-	@ViewChild(StepIdentificationAnonymousComponent)
-	stepIdentificationComponent!: StepIdentificationAnonymousComponent;
+	@ViewChild(StepsIdentificationAnonymousComponent)
+	stepIdentificationComponent!: StepsIdentificationAnonymousComponent;
 
-	@ViewChild(StepReviewLicenceAuthenticatedComponent)
-	stepReviewLicenceComponent!: StepReviewLicenceAuthenticatedComponent;
+	@ViewChild(StepsReviewLicenceAuthenticatedComponent)
+	stepReviewLicenceComponent!: StepsReviewLicenceAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
+		// private router: Router,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -139,11 +137,11 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-						LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-					)
-				);
+				// this.router.navigateByUrl(
+				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+				// 		LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
+				// 	)
+				// );
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();

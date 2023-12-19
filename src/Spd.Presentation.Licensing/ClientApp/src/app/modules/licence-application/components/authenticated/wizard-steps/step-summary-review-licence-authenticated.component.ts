@@ -6,7 +6,7 @@ import {
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 } from 'src/app/api/models';
-import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
 
@@ -25,114 +25,6 @@ import { LicenceApplicationService } from '../../../services/licence-application
 							<div class="row mb-3">
 								<div class="col-12">
 									<mat-accordion multi="true">
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Profile Information</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 3"
-															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(0)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Contact</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
-														<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-														<div class="summary-text-data">
-															{{ contactPhoneNumber | mask : constants.phone.displayMask }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Residential Address</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="summary-text-data">{{ residentialCity | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="summary-text-data">
-															{{ residentialProvince | default }}
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="summary-text-data">
-															{{ residentialCountry | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Mailing Address</div>
-												<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-													<div class="row mt-0">
-														<div class="col-12 mt-lg-2">
-															<div class="summary-text-data">
-																Mailing address is the same as the residential address
-															</div>
-														</div>
-													</div>
-												</ng-container>
-												<ng-template #mailingIsDifferentThanResidential>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="summary-text-data">{{ mailingCity | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="summary-text-data">{{ mailingProvince | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="summary-text-data">{{ mailingCountry | default }}</div>
-														</div>
-													</div>
-												</ng-template>
-											</div>
-										</mat-expansion-panel>
-
 										<mat-expansion-panel class="mb-2" [expanded]="true">
 											<mat-expansion-panel-header>
 												<mat-panel-title class="review-panel-title">
@@ -182,7 +74,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 																Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
 															</div>
 															<div class="summary-text-data">
-																{{ category.desc }}
+																{{ category | options : 'WorkerCategoryTypes' }}
 															</div>
 														</div>
 													</ng-container>
@@ -397,7 +289,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 2"
 															aria-label="Go to Step 2"
-															(click)="$event.stopPropagation(); onEditStep(2)"
+															(click)="$event.stopPropagation(); onEditStep(1)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -494,7 +386,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 3"
 															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(3)"
+															(click)="$event.stopPropagation(); onEditStep(2)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -502,7 +394,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Personal Information</div>
+												<!-- <div class="text-minor-heading mt-4">Personal Information</div>
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
@@ -524,9 +416,9 @@ import { LicenceApplicationService } from '../../../services/licence-application
 														</div>
 													</div>
 												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
+												<mat-divider class="mt-4 mb-2"></mat-divider> -->
 
-												<div class="text-minor-heading">Aliases</div>
+												<div class="text-minor-heading mt-4">Aliases</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -738,15 +630,12 @@ export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 	get workerLicenceTypeCode(): string {
 		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
 	}
-
 	get applicationTypeCode(): string {
 		return this.licenceModelData.applicationTypeData?.applicationTypeCode ?? '';
 	}
-
 	get isSoleProprietor(): string {
 		return this.licenceModelData.soleProprietorData?.isSoleProprietor ?? '';
 	}
-
 	get categoryArmouredCarGuardAttachments(): File[] {
 		return this.licenceModelData.categoryArmouredCarGuardFormGroup.attachments ?? [];
 	}
@@ -850,25 +739,6 @@ export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 	}
 	get letterOfNoConflictAttachments(): File[] {
 		return this.licenceModelData.policeBackgroundData.attachments ?? [];
-	}
-
-	get givenName(): string {
-		return this.licenceModelData.personalInformationData.givenName ?? '';
-	}
-	get middleName1(): string {
-		return this.licenceModelData.personalInformationData.middleName1 ?? '';
-	}
-	get middleName2(): string {
-		return this.licenceModelData.personalInformationData.middleName2 ?? '';
-	}
-	get surname(): string {
-		return this.licenceModelData.personalInformationData.surname ?? '';
-	}
-	get genderCode(): string {
-		return this.licenceModelData.personalInformationData.genderCode ?? '';
-	}
-	get dateOfBirth(): string {
-		return this.licenceModelData.personalInformationData.dateOfBirth ?? '';
 	}
 
 	get previousNameFlag(): string {
@@ -976,135 +846,58 @@ export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
 	}
 
-	get contactEmailAddress(): string {
-		return this.licenceModelData.contactInformationData?.contactEmailAddress ?? '';
-	}
-	get contactPhoneNumber(): string {
-		return this.licenceModelData.contactInformationData?.contactPhoneNumber ?? '';
-	}
-
-	get residentialAddressLine1(): string {
-		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
-	}
-	get residentialAddressLine2(): string {
-		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
-	}
-	get residentialCity(): string {
-		return this.licenceModelData.residentialAddressData?.city ?? '';
-	}
-	get residentialPostalCode(): string {
-		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
-	}
-	get residentialProvince(): string {
-		return this.licenceModelData.residentialAddressData?.province ?? '';
-	}
-	get residentialCountry(): string {
-		return this.licenceModelData.residentialAddressData?.country ?? '';
-	}
-	get isMailingTheSameAsResidential(): string {
-		return this.licenceModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
-	}
-
-	get mailingAddressLine1(): string {
-		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
-	}
-	get mailingAddressLine2(): string {
-		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
-	}
-	get mailingCity(): string {
-		return this.licenceModelData.mailingAddressData?.city ?? '';
-	}
-	get mailingPostalCode(): string {
-		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
-	}
-	get mailingProvince(): string {
-		return this.licenceModelData.mailingAddressData?.province ?? '';
-	}
-	get mailingCountry(): string {
-		return this.licenceModelData.mailingAddressData?.country ?? '';
-	}
-	get categoryList(): Array<SelectOptions> {
-		const list: Array<SelectOptions> = [];
+	get categoryList(): Array<WorkerCategoryTypeCode> {
+		const list: Array<WorkerCategoryTypeCode> = [];
 		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.ArmouredCarGuard);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
 		}
-
 		if (this.licenceModelData.categoryBodyArmourSalesFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.BodyArmourSales);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.BodyArmourSales);
 		}
 		if (this.licenceModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 		}
 		if (this.licenceModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 		}
 		if (this.licenceModelData.categoryFireInvestigatorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.FireInvestigator);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.FireInvestigator);
 		}
 		if (this.licenceModelData.categoryLocksmithFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.Locksmith);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.Locksmith);
 		}
 		if (this.licenceModelData.categoryLocksmithSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.LocksmithUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
 		}
 		if (this.licenceModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.PrivateInvestigator);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
 		}
 		if (this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
 		}
 		if (this.licenceModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstaller);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
 		}
 		if (this.licenceModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
 		}
 		if (this.licenceModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmMonitor);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 		}
 		if (this.licenceModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmResponse);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
 		}
 		if (this.licenceModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmSales);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
 		}
 		if (this.licenceModelData.categorySecurityConsultantFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityConsultant);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityConsultant);
 		}
 		if (this.licenceModelData.categorySecurityGuardFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityGuard);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityGuard);
 		}
 		if (this.licenceModelData.categorySecurityGuardSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
 		}
 
 		return list;

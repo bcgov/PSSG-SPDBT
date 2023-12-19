@@ -16,7 +16,7 @@ import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps
 import { StepPersonalInformationAnonymousComponent } from './step-personal-information-anonymous.component';
 
 @Component({
-	selector: 'app-step-identification-anonymous',
+	selector: 'app-steps-identification-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -354,7 +354,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationAnonymousComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsIdentificationAnonymousComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_PERSONAL_INFORMATION = 0;
 	readonly STEP_ALIASES = 1;
 	readonly STEP_CITIZENSHIP = 2;

@@ -9,7 +9,7 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-
 import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
 
 @Component({
-	selector: 'app-step-identification-authenticated',
+	selector: 'app-steps-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -154,7 +154,7 @@ import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-ste
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsIdentificationAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_CITIZENSHIP = 2;
 	readonly STEP_ADDITIONAL_GOV_ID = 3;
 	readonly STEP_BC_DRIVERS_LICENCE = 4;

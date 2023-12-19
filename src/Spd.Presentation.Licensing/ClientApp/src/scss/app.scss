@@ -197,6 +197,18 @@ body {
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: rgba(0, 0, 0, 0.12);
+
+  &__orange {
+    border-left: 3px solid var(--color-orange);
+  }
+
+  &__green {
+    border-left: 3px solid var(--color-green);
+  }
+
+  &__red {
+    border-left: 3px solid var(--color-red);
+  }
 }
 
 .text-minor-heading {

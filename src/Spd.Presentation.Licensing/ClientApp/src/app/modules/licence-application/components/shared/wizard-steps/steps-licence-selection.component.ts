@@ -14,30 +14,42 @@ import { StepRestraintsAuthorizationComponent } from '../wizard-child-steps/step
 import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-proprietor.component';
 
 @Component({
-	selector: 'app-step-licence-selection',
+	selector: 'app-steps-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-checklist-new-worker></app-step-checklist-new-worker>
+
+					<div class="row mt-4">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-checklist-renewal-worker></app-step-checklist-renewal-worker>
+
+					<div class="row mt-4">
+						<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-step-checklist-update-worker></app-step-checklist-update-worker>
-				</ng-container>
 
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					<div class="row mt-4">
+						<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				</ng-container>
 			</mat-step>
 
 			<mat-step>
@@ -83,7 +95,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
@@ -199,7 +211,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_SOLE_PROPRIETOR = 1;
 	readonly STEP_LICENCE_EXPIRED = 5;
 	readonly STEP_LICENCE_CATEGORY = 6;

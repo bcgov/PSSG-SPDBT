@@ -142,6 +142,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		expiryDate: new FormControl(null),
+		caseNumber: new FormControl(null),
+		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
@@ -220,18 +223,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				if (this.initialized) {
 					this.hasValueChanged = true;
 
-					const step1Complete = this.isStep1Complete();
-					const step2Complete = this.isStepLicenceSelectionComplete();
-					const step3Complete = this.isStepBackgroundComplete();
-					const step4Complete = this.isStepIdentificationComplete();
-					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
+					// const step1Complete = this.isStep1Complete();
+					const step1Complete = this.isStepLicenceSelectionComplete();
+					const step2Complete = this.isStepBackgroundComplete();
+					const step3Complete = this.isStepIdentificationComplete();
+					const isValid = step1Complete && step2Complete && step3Complete;
 
 					console.log(
 						'licenceModelFormGroup CHANGED',
 						step1Complete,
 						step2Complete,
 						step3Complete,
-						step4Complete,
 						this.licenceModelFormGroup.getRawValue()
 					);
 
@@ -479,47 +481,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+
+				const residentialAddressData = {
+					isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
+				};
 
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						applicationTypeData,
-						// soleProprietorData,
-						// licenceTermData,
-						// bcDriversLicenceData,
-						// fingerprintProofData,
-						// aliasesData,
-						// citizenshipData,
-						// additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
+						residentialAddressData: { ...residentialAddressData },
 					},
 					{
 						emitEvent: false,
@@ -855,12 +826,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 
 				let mailingAddressData = {};
-				if (!isMailingTheSameAsResidential) {
-					mailingAddressData = {
-						...resp.mailingAddressData,
-						addressSelected: !!resp.mailingAddressData?.addressLine1,
-					};
-				}
+				// if (!isMailingTheSameAsResidential) {
+				mailingAddressData = {
+					...resp.mailingAddressData,
+					addressSelected: !!resp.mailingAddressData?.addressLine1,
+				};
+				// }
 
 				let restraintsAuthorizationData: any = {};
 				let dogsAuthorizationData: any = {};
@@ -1135,6 +1106,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
+						expiryDate: resp.expiryDate,
+						caseNumber: resp.caseNumber,
+						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
 						applicationTypeData,
 						soleProprietorData,

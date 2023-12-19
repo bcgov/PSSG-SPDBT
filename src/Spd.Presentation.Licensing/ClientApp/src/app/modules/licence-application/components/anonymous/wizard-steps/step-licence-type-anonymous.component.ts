@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
+import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
-	selector: 'app-step-licence-type-selection',
+	selector: 'app-step-licence-type-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -79,6 +80,12 @@ import { LicenceApplicationService } from '../../../services/licence-application
 				</div>
 			</div>
 		</section>
+
+		<div class="row mt-4">
+			<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+			</div>
+		</div>
 	`,
 	styles: [
 		`
@@ -101,7 +108,8 @@ import { LicenceApplicationService } from '../../../services/licence-application
 		`,
 	],
 })
-export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepLicenceTypeAnonymousComponent implements OnInit {
+	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
@@ -113,11 +121,11 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
-	imagePaths = [this.image2, this.image3, this.image4];
+	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 
 	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.imagePaths.forEach((path) => {
@@ -129,24 +137,25 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 			tmp.src = path;
 		});
 
-		this.workerLicenceTypeCode = this.form?.value.workerLicenceTypeCode;
+		this.workerLicenceTypeCode = this.form.value.workerLicenceTypeCode;
+	}
+
+	onStepNext(): void {
+		const isValid = this.isFormValid();
+
+		if (isValid) {
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
+				)
+			);
+		}
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		console.log('onLicenceTypeChange', _val);
 		this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
-		console.log('onLicenceTypeChange', this.form.value);
-		console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
-		// console.log(
-		// 	'onLicenceTypeChange licenceModelFormGroupAnonymous',
-		// 	this.licenceApplicationService.licenceModelFormGroupAnonymous.value
-		// );
-		// console.log(
-		// 	'onLicenceTypeChange licenceModelFormGroup',
-		// 	this.licenceApplicationService.licenceModelFormGroup.value
-		// );
 		this.isFormValid();
 	}
 

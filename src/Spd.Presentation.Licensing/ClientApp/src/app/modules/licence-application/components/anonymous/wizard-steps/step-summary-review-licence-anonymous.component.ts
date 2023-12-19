@@ -6,7 +6,7 @@ import {
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 } from 'src/app/api/models';
-import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../../../services/licence-application.service';
 
@@ -74,7 +74,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 																Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
 															</div>
 															<div class="summary-text-data">
-																{{ category.desc }}
+																{{ category | options : 'WorkerCategoryTypes' }}
 															</div>
 														</div>
 													</ng-container>
@@ -1023,88 +1023,59 @@ export class StepSummaryReviewLicenceAnonymousComponent implements OnInit {
 	get mailingCountry(): string {
 		return this.licenceModelData.mailingAddressData?.country ?? '';
 	}
-	get categoryList(): Array<SelectOptions> {
-		const list: Array<SelectOptions> = [];
-		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.ArmouredCarGuard);
-			if (element) list.push(element);
-		}
 
+	get categoryList(): Array<WorkerCategoryTypeCode> {
+		const list: Array<WorkerCategoryTypeCode> = [];
+		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
+		}
 		if (this.licenceModelData.categoryBodyArmourSalesFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.BodyArmourSales);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.BodyArmourSales);
 		}
 		if (this.licenceModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 		}
 		if (this.licenceModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 		}
 		if (this.licenceModelData.categoryFireInvestigatorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.FireInvestigator);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.FireInvestigator);
 		}
 		if (this.licenceModelData.categoryLocksmithFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.Locksmith);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.Locksmith);
 		}
 		if (this.licenceModelData.categoryLocksmithSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.LocksmithUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
 		}
 		if (this.licenceModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.PrivateInvestigator);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
 		}
 		if (this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
 		}
 		if (this.licenceModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstaller);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
 		}
 		if (this.licenceModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
 		}
 		if (this.licenceModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmMonitor);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 		}
 		if (this.licenceModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmResponse);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
 		}
 		if (this.licenceModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmSales);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
 		}
 		if (this.licenceModelData.categorySecurityConsultantFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityConsultant);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityConsultant);
 		}
 		if (this.licenceModelData.categorySecurityGuardFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityGuard);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityGuard);
 		}
 		if (this.licenceModelData.categorySecurityGuardSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
 		}
 
 		return list;

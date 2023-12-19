@@ -79,7 +79,7 @@ export interface ApplicationResponse {
 						<div class="mb-3" *ngIf="dataSource.data.length > 0">
 							<div class="section-title fs-5 py-3">In-Progress Licences/Permits</div>
 
-							<div class="row m-0">
+							<div class="row summary-card-section summary-card-section__orange m-0">
 								<div class="col-12" style="background-color: #f6f6f6 !important;">
 									<mat-table [dataSource]="dataSource" class="pb-3" style="background-color: #f6f6f6 !important;">
 										<ng-container matColumnDef="serviceTypeCode">
@@ -160,7 +160,10 @@ export interface ApplicationResponse {
 
 						<div class="mb-3" *ngIf="activeApplications.length > 0">
 							<div class="section-title fs-5 py-3">Active Licences/Permits</div>
-							<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
+							<div
+								class="summary-card-section summary-card-section__green mb-2 px-4 py-3"
+								*ngFor="let appl of activeApplications; let i = index"
+							>
 								<div class="row">
 									<div class="col-lg-2">
 										<div class="fs-5" style="color: var(--color-primary);">
@@ -182,10 +185,10 @@ export interface ApplicationResponse {
 												<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
-												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+												<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
 													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
 													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Active</span>
-												</mat-chip-option>
+												</mat-chip-option> -->
 											</div>
 											<mat-divider class="my-2"></mat-divider>
 										</div>
@@ -255,7 +258,10 @@ export interface ApplicationResponse {
 
 						<div class="mb-3" *ngIf="expiredApplications.length > 0">
 							<div class="section-title fs-5 py-3">Expired Licences/Permits</div>
-							<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
+							<div
+								class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
+								*ngFor="let appl of expiredApplications; let i = index"
+							>
 								<div class="row">
 									<div class="col-lg-3">
 										<div class="fs-5" style="color: var(--color-primary);">
@@ -277,10 +283,10 @@ export interface ApplicationResponse {
 												<div class="text-data">{{ appl.expiresOn | formatDate : constants.date.formalDateFormat }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
-												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
+												<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
 													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
 													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Expired</span>
-												</mat-chip-option>
+												</mat-chip-option> -->
 											</div>
 										</div>
 									</div>
@@ -335,8 +341,8 @@ export interface ApplicationResponse {
 				color: var(--color-green) !important;
 			}
 
-			.status-yellow {
-				color: var(--color-yellow-dark) !important;
+			.status-orange {
+				color: var(--color-orange) !important;
 			}
 		`,
 	],
@@ -428,7 +434,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
 			case ApplicationPortalStatusCode.Draft: {
-				return 'status-yellow';
+				return 'status-orange';
 			}
 			case ApplicationPortalStatusCode.InProgress: {
 				return 'status-green';
@@ -505,7 +511,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+							LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED
 						)
 					);
 				}),

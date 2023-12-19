@@ -13,14 +13,13 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepBackgroundComponent } from '../shared/wizard-steps/step-background.component';
-import { StepLicenceSelectionComponent } from '../shared/wizard-steps/step-licence-selection.component';
-import { StepIdentificationAuthenticatedComponent } from './wizard-steps/step-identification-authenticated.component';
-import { StepLicenceSetupAuthenticatedComponent } from './wizard-steps/step-licence-setup-authenticated.component';
-import { StepReviewLicenceAuthenticatedComponent } from './wizard-steps/step-review-licence-authenticated.component';
+import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
+import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
+import { StepsIdentificationAuthenticatedComponent } from './wizard-steps/steps-identification-authenticated.component';
+import { StepsReviewLicenceAuthenticatedComponent } from './wizard-steps/steps-review-licence-authenticated.component';
 
 @Component({
-	selector: 'app-security-worker-licence-wizard-authenticated',
+	selector: 'app-security-worker-licence-wizard-new-authenticated',
 	template: `
 		<ng-container *ngIf="isLoaded$ | async">
 			<div class="row">
@@ -33,61 +32,49 @@ import { StepReviewLicenceAuthenticatedComponent } from './wizard-steps/step-rev
 						#stepper
 					>
 						<mat-step [completed]="step1Complete">
-							<ng-template matStepLabel> Profile & Licence Setup </ng-template>
-							<app-step-licence-setup-authenticated
+							<ng-template matStepLabel> Licence Selection </ng-template>
+							<app-steps-licence-selection
 								(childNextStep)="onChildNextStep()"
 								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
-							></app-step-licence-setup-authenticated>
+							></app-steps-licence-selection>
 						</mat-step>
 
 						<mat-step [completed]="step2Complete">
-							<ng-template matStepLabel> Licence Selection </ng-template>
-							<app-step-licence-selection
+							<ng-template matStepLabel>Background</ng-template>
+							<app-steps-background
 								(childNextStep)="onChildNextStep()"
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
+								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
-							></app-step-licence-selection>
+							></app-steps-background>
 						</mat-step>
 
 						<mat-step [completed]="step3Complete">
-							<ng-template matStepLabel>Background</ng-template>
-							<app-step-background
-								(childNextStep)="onChildNextStep()"
-								(saveAndExit)="onSaveAndExit()"
-								(nextReview)="onGoToReview()"
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(scrollIntoView)="onScrollIntoView()"
-							></app-step-background>
-						</mat-step>
-
-						<mat-step [completed]="step4Complete">
 							<ng-template matStepLabel>Identification</ng-template>
-							<app-step-identification-authenticated
+							<app-steps-identification-authenticated
 								(childNextStep)="onChildNextStep()"
 								(saveAndExit)="onSaveAndExit()"
 								(nextReview)="onGoToReview()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
-							></app-step-identification-authenticated>
+							></app-steps-identification-authenticated>
 						</mat-step>
 
 						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
-								<app-step-review-licence-authenticated
+								<app-steps-review-licence-authenticated
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
 									(goToStep)="onGoToStep($event)"
-								></app-step-review-licence-authenticated>
+								></app-steps-review-licence-authenticated>
 							</ng-template>
 						</mat-step>
 
@@ -101,35 +88,30 @@ import { StepReviewLicenceAuthenticatedComponent } from './wizard-steps/step-rev
 	`,
 	styles: [],
 })
-export class SecurityWorkerLicenceWizardAuthenticatedComponent
+export class SecurityWorkerLicenceWizardNewAuthenticatedComponent
 	extends BaseWizardComponent
 	implements OnInit, OnDestroy, AfterViewInit
 {
-	readonly STEP_LICENCE_SETUP = 0; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_LICENCE_SELECTION = 1;
-	readonly STEP_BACKGROUND = 2;
-	readonly STEP_IDENTIFICATION = 3;
-	readonly STEP_REVIEW = 4;
+	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_BACKGROUND = 1;
+	readonly STEP_IDENTIFICATION = 2;
+	readonly STEP_REVIEW = 3;
 
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
-	step4Complete = false;
 
-	@ViewChild(StepLicenceSetupAuthenticatedComponent)
-	stepLicenceSetupAuthenticatedComponent!: StepLicenceSetupAuthenticatedComponent;
+	@ViewChild(StepsLicenceSelectionComponent)
+	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
 
-	@ViewChild(StepLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepLicenceSelectionComponent;
+	@ViewChild(StepsBackgroundComponent)
+	stepBackgroundComponent!: StepsBackgroundComponent;
 
-	@ViewChild(StepBackgroundComponent)
-	stepBackgroundComponent!: StepBackgroundComponent;
+	@ViewChild(StepsIdentificationAuthenticatedComponent)
+	stepIdentificationComponent!: StepsIdentificationAuthenticatedComponent;
 
-	@ViewChild(StepIdentificationAuthenticatedComponent)
-	stepIdentificationComponent!: StepIdentificationAuthenticatedComponent;
-
-	@ViewChild(StepReviewLicenceAuthenticatedComponent)
-	stepReviewAuthenticatedComponent!: StepReviewLicenceAuthenticatedComponent;
+	@ViewChild(StepsReviewLicenceAuthenticatedComponent)
+	stepReviewAuthenticatedComponent!: StepsReviewLicenceAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -157,17 +139,17 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 	}
 
 	ngAfterViewInit(): void {
-		if (this.step1Complete) {
-			if (this.step4Complete) {
-				this.stepper.selectedIndex = this.STEP_REVIEW;
-			} else if (this.step3Complete) {
-				this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-			} else if (this.step2Complete) {
-				this.stepper.selectedIndex = this.STEP_BACKGROUND;
-			} else {
-				this.stepper.selectedIndex = this.STEP_LICENCE_SELECTION;
-			}
+		// if (this.step1Complete) {
+		if (this.step3Complete) {
+			this.stepper.selectedIndex = this.STEP_REVIEW;
+		} else if (this.step2Complete) {
+			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
+		} else if (this.step1Complete) {
+			this.stepper.selectedIndex = this.STEP_BACKGROUND;
+			// } else {
+			// 	this.stepper.selectedIndex = this.STEP_LICENCE_SELECTION;
 		}
+		// }
 	}
 
 	ngOnDestroy() {
@@ -176,9 +158,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
-			case this.STEP_LICENCE_SETUP:
-				this.stepLicenceSetupAuthenticatedComponent?.onGoToFirstStep();
-				break;
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
 				break;
@@ -198,11 +177,12 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 		stepper.previous();
 
 		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_SETUP:
-				this.stepLicenceSetupAuthenticatedComponent?.onGoToLastStep();
-				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToLastStep();
+				// this.router.navigateByUrl(
+				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				// 		LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED
+				// 	)
+				// );
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();
@@ -225,9 +205,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 					stepper.next();
 
 					switch (stepper.selectedIndex) {
-						case this.STEP_LICENCE_SETUP:
-							this.stepLicenceSetupAuthenticatedComponent?.onGoToFirstStep();
-							break;
 						case this.STEP_LICENCE_SELECTION:
 							this.stepLicenceSelectionComponent?.onGoToFirstStep();
 							break;
@@ -253,12 +230,6 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 	}
 
 	onGoToStep(step: number) {
-		if (step == 99) {
-			this.stepper.selectedIndex = this.STEP_LICENCE_SETUP;
-			return;
-		}
-
-		this.stepLicenceSetupAuthenticatedComponent?.onGoToFirstStep();
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepBackgroundComponent?.onGoToFirstStep();
 		this.stepIdentificationComponent?.onGoToFirstStep();
@@ -334,10 +305,10 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStep1Complete();
-		this.step2Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step3Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step4Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		// this.step1Complete = this.licenceApplicationService.isStep1Complete();
+		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
 		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
@@ -384,9 +355,9 @@ export class SecurityWorkerLicenceWizardAuthenticatedComponent
 
 	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
-			case this.STEP_LICENCE_SETUP:
-				this.stepLicenceSetupAuthenticatedComponent?.onGoToNextStep();
-				break;
+			// case this.STEP_LICENCE_SETUP:
+			// 	this.stepLicenceSetupAuthenticatedComponent?.onGoToNextStep();
+			// 	break;
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
 				break;

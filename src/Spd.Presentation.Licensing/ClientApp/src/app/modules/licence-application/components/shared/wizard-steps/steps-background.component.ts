@@ -10,7 +10,7 @@ import { StepMentalHealthConditionsComponent } from '../wizard-child-steps/step-
 import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police-background.component';
 
 @Component({
-	selector: 'app-step-background',
+	selector: 'app-steps-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -159,7 +159,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepBackgroundComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsBackgroundComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_POLICE_BACKGROUND = 1;
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = 2;
 	readonly STEP_CRIMINAL_HISTORY = 3;

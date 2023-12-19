@@ -55,7 +55,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 })
 export class StepSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	title = 'Do you also want a Sole Proprietor Security Business Licence?';
+	title = '';
 	infoTitle = '';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
@@ -74,14 +74,14 @@ export class StepSoleProprietorComponent implements OnInit, LicenceChildStepperS
 
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.New: {
-				this.title = this.title_new;
-				this.infoTitle = this.subtitle_new;
-				break;
-			}
 			case ApplicationTypeCode.Renewal: {
 				this.title = this.title_renew;
 				this.infoTitle = this.subtitle_renew;
+				break;
+			}
+			default: {
+				this.title = this.title_new;
+				this.infoTitle = this.subtitle_new;
 				break;
 			}
 		}

@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { take, tap } from 'rxjs';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from 'src/app/api/models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../services/licence-application.service';
+import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
+import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-access-code-anonymous',
+	selector: 'app-step-licence-access-code-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -28,10 +28,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 				</app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 mx-auto">
+						<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
 							<form [formGroup]="form" novalidate>
 								<div class="row mt-4">
-									<div class="offset-xxl-1 col-xxl-4 offset-xl-1 col-xl-4 col-lg-4 col-md-12">
+									<div class="offset-xxl-1 col-xxl-4 offset-xl-1 col-xl-5 col-lg-5 col-md-12">
 										<mat-form-field>
 											<mat-label>Current Licence Number</mat-label>
 											<input
@@ -52,7 +52,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 											<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
-									<div class="col-xxl-2 col-xl-2 col-lg-4 col-md-12">
+									<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 										<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
 											<mat-icon>link</mat-icon>Link
 										</button>
@@ -85,7 +85,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 	`,
 	styles: [],
 })
-export class LicenceAccessCodeAnonymousComponent implements LicenceChildStepperStepComponent {
+export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
@@ -109,8 +109,9 @@ export class LicenceAccessCodeAnonymousComponent implements LicenceChildStepperS
 				'applicationTypeData.applicationTypeCode'
 			)?.value;
 
+			//'a60af04a-f150-4078-8908-40debd21e7f8'
 			this.licenceApplicationService
-				.loadLicence('a60af04a-f150-4078-8908-40debd21e7f8', workerLicenceTypeCode, applicationTypeCode)
+				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', workerLicenceTypeCode, applicationTypeCode)
 				.pipe(
 					tap((_resp: any) => {
 						switch (workerLicenceTypeCode) {

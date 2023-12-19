@@ -149,7 +149,7 @@ button.mat-red-button {
   color: var(--color-primary);
 }
 
-.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input, .mdc-text-field--disabled .mdc-text-field__input {
+.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input, .mdc-text-field--disabled .mdc-text-field__input, .mat-mdc-select-disabled {
   color: rgba(0, 0, 0, 0.9) !important;
 }
 

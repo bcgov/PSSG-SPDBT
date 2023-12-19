@@ -9,7 +9,7 @@ import { StepConsentAndDeclarationComponent } from '../../shared/wizard-child-st
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './step-summary-review-licence-authenticated.component';
 
 @Component({
-	selector: 'app-step-review-licence-authenticated',
+	selector: 'app-steps-review-licence-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -44,7 +44,7 @@ import { StepSummaryReviewLicenceAuthenticatedComponent } from './step-summary-r
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepReviewLicenceAuthenticatedComponent extends BaseWizardStepComponent {
+export class StepsReviewLicenceAuthenticatedComponent extends BaseWizardStepComponent {
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepSummaryReviewLicenceAuthenticatedComponent)
