@@ -110,27 +110,27 @@ export abstract class LicenceApplicationHelper {
 
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
-			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
+			hasExpiredLicence: new FormControl(''), //, [FormControlValidators.required]
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-			],
 		}
+		// {
+		// 	validators: [
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'expiredLicenceNumber',
+		// 			(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+		// 		),
+		// 		FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 			'expiredLicenceId',
+		// 			(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+		// 		),
+		// 		FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 			'expiryDate',
+		// 			(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+		// 		),
+		// 	],
+		// }
 	);
 
 	licenceTermFormGroup: FormGroup = this.formBuilder.group({

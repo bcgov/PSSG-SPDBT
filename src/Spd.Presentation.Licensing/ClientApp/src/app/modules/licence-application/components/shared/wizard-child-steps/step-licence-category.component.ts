@@ -12,7 +12,11 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
 					<app-renewal-alert title="" subtitle="">
 						<div class="row mt-0 mx-3 mb-4">
 							<div class="col-lg-4 col-md-12 mt-lg-2">

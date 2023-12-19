@@ -13,16 +13,20 @@ import { LicenceApplicationService } from '../../../services/licence-application
 				<div class="step-container">
 					<div class="row">
 						<div class="col-xxl-8 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<div class="row mt-0">
-								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 mt-lg-2">
+							<app-alert type="warning" icon="warning">
+								If any of this information is not correct, please call the Security Program's Licensing Unit during
+								regular office hours: 1-855-587-0185
+							</app-alert>
+							<div class="row mt-0 mb-3">
+								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
 									<div class="text-label d-block text-muted mt-2">Licence Holder Name</div>
 									<div class="summary-text-data">{{ licenceHolderName }}</div>
 								</div>
-								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 mt-lg-2">
+								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 									<div class="text-label d-block text-muted mt-2">Licence Number</div>
 									<div class="summary-text-data">{{ licenceNumber }}</div>
 								</div>
-								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 mt-lg-2">
+								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
 									<div class="text-label d-block text-muted mt-2">Licence Categories</div>
 									<div class="summary-text-data">
 										<ng-container *ngFor="let category of categoryList; let i = index">
@@ -30,24 +34,18 @@ import { LicenceApplicationService } from '../../../services/licence-application
 										</ng-container>
 									</div>
 								</div>
-								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 mt-lg-2">
+								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 									<div class="text-label d-block text-muted mt-2">Expiry Date</div>
 									<div class="summary-text-data">{{ expiryDate | formatDate : constants.date.formalDateFormat }}</div>
 								</div>
-								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 mt-lg-2">
+								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
 									<div class="text-label d-block text-muted mt-2">Licence Term</div>
 									<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 								</div>
-								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 mt-lg-2">
+								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 									<div class="text-label d-block text-muted mt-2">Replacement Fee</div>
 									<div class="summary-text-data">$20</div>
 								</div>
-							</div>
-							<div class="mt-5">
-								<app-alert type="warning" icon="warning">
-									If any of this information is not correct, please call the Security Program's Licensing Unit during
-									regular office hours: 1-855-587-0185
-								</app-alert>
 							</div>
 						</div>
 					</div>

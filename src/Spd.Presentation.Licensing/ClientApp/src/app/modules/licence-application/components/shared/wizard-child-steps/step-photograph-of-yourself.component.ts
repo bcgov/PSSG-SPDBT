@@ -14,7 +14,11 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
 					<app-renewal-alert></app-renewal-alert>
 				</ng-container>
 

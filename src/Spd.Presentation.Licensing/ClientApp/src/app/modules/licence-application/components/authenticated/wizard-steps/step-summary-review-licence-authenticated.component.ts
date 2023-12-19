@@ -207,7 +207,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+												<!-- <ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Expired Licence</div>
 													<div class="row mt-0">
@@ -222,7 +222,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															</div>
 														</div>
 													</div>
-												</ng-container>
+												</ng-container> -->
 
 												<ng-container *ngIf="showDogsAndRestraints">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
@@ -690,15 +690,15 @@ export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 		return feeItem?.amount ?? null;
 	}
 
-	get hasExpiredLicence(): string {
-		return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
-	}
-	get expiredLicenceNumber(): string {
-		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
-	}
-	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
-	}
+	// get hasExpiredLicence(): string {
+	// 	return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	// }
+	// get expiredLicenceNumber(): string {
+	// 	return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	// }
+	// get expiredLicenceExpiryDate(): string {
+	// 	return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+	// }
 
 	get carryAndUseRestraints(): string {
 		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';

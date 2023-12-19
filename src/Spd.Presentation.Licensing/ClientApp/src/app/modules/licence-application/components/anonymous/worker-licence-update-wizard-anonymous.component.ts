@@ -5,7 +5,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
 import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
@@ -139,11 +138,7 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-						LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-					)
-				);
+				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();
@@ -194,6 +189,7 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 	onChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
+				// applicationTypeCode !== applicationTypeCodes.Update
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
 				break;
 			case this.STEP_BACKGROUND:

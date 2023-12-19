@@ -147,7 +147,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
-		expiredLicenceData: this.expiredLicenceFormGroup,
+		// expiredLicenceData: this.expiredLicenceFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
@@ -650,12 +650,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
 				};
 
-				const expiredLicenceData = {
-					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
-					expiredLicenceNumber: resp.expiredLicenceNumber,
-					expiryDate: resp.expiryDate,
-					expiredLicenceId: resp.expiredLicenceId,
-				};
+				// const expiredLicenceData = {
+				// 	hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+				// 	expiredLicenceNumber: resp.expiredLicenceNumber,
+				// 	expiryDate: resp.expiryDate,
+				// 	expiredLicenceId: resp.expiredLicenceId,
+				// };
 
 				const licenceTermData = {
 					licenceTermCode: resp.licenceTermCode,
@@ -1112,7 +1112,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						workerLicenceTypeData,
 						applicationTypeData,
 						soleProprietorData,
-						expiredLicenceData,
+						// expiredLicenceData,
 						licenceTermData,
 						policeBackgroundData,
 						bcDriversLicenceData,
@@ -1477,7 +1477,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const soleProprietorData = { ...formValue.soleProprietorData };
 		const bcDriversLicenceData = { ...formValue.bcDriversLicenceData };
 		const contactInformationData = { ...formValue.contactInformationData };
-		const expiredLicenceData = { ...formValue.expiredLicenceData };
+		// const expiredLicenceData = { ...formValue.expiredLicenceData };
 		const characteristicsData = { ...formValue.characteristicsData };
 		const residentialAddressData = { ...formValue.residentialAddressData };
 		const mailingAddressData = { ...formValue.mailingAddressData };
@@ -1708,9 +1708,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
-		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
-			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
+		// const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
+		// 	? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+		// 	: null;
+
 		const body: WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest = {
 			licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
@@ -1729,12 +1730,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
-			expiredLicenceNumber:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
-			expiredLicenceId:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
+			// hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
+			// expiredLicenceNumber:
+			// 	expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
+			// expiredLicenceId:
+			// 	expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
+			// expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------

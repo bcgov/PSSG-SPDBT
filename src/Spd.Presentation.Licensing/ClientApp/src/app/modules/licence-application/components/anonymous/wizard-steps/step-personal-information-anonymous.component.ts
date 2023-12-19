@@ -15,7 +15,11 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
 					<app-renewal-alert></app-renewal-alert>
 				</ng-container>
 
@@ -128,7 +132,12 @@ import { LicenceApplicationService } from '../../../services/licence-application
 									</div>
 								</div>
 
-								<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+								<ng-container
+									*ngIf="
+										applicationTypeCode === applicationTypeCodes.Renewal ||
+										applicationTypeCode === applicationTypeCodes.Update
+									"
+								>
 									<mat-checkbox formControlName="isNeedProofOfLegalNameChange">
 										<span class="checklist-label">Update information</span>
 									</mat-checkbox>
@@ -234,7 +243,10 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 			}
 		);
 
-		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		) {
 			this.disableData(true);
 		}
 	}

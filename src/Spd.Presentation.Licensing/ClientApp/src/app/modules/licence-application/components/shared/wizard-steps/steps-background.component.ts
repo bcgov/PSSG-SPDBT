@@ -90,7 +90,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-criminal-history [applicationTypeCode]="applicationTypeCode"></app-step-criminal-history>
 
 				<div class="row mt-4">
@@ -125,7 +125,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-fingerprints></app-step-fingerprints>
 
 				<div class="row mt-4">
@@ -211,6 +211,19 @@ export class StepsBackgroundComponent extends BaseWizardStepComponent implements
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+	}
+
+	override onFormValidNextStep(_formNumber: number): void {
+		console.log('onFormValidNextStep', this.childstepper.selectedIndex);
+
+		const isValid = this.dirtyForm(_formNumber);
+		if (!isValid) return;
+
+		if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+		this.childNextStep.next(true);
 	}
 
 	override dirtyForm(step: number): boolean {

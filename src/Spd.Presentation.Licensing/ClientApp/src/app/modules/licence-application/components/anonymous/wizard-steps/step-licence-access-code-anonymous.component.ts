@@ -31,7 +31,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 						<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
 							<form [formGroup]="form" novalidate>
 								<div class="row mt-4">
-									<div class="offset-xxl-1 col-xxl-4 offset-xl-1 col-xl-5 col-lg-5 col-md-12">
+									<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-12">
 										<mat-form-field>
 											<mat-label>Current Licence Number</mat-label>
 											<input

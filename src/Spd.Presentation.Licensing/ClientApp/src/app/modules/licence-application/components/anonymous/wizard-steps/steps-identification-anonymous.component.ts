@@ -9,9 +9,9 @@ import { StepAliasesComponent } from '../../shared/wizard-child-steps/step-alias
 import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
 import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
 import { StepContactInformationComponent } from '../../shared/wizard-child-steps/step-contact-information.component';
-import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 import { StepMailingAddressComponent } from '../../shared/wizard-child-steps/step-mailing-address.component';
 import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps/step-residential-address.component';
 import { StepPersonalInformationAnonymousComponent } from './step-personal-information-anonymous.component';
 
@@ -20,7 +20,9 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-personal-information-anonymous [applicationTypeCode]="applicationTypeCode"></app-step-personal-information-anonymous>
+				<app-step-personal-information-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-personal-information-anonymous>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -59,7 +61,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-aliases></app-step-aliases>
 
 				<div class="row mt-4">
@@ -89,7 +91,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-citizenship></app-step-citizenship>
 
 				<div class="row mt-4">
@@ -119,7 +121,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showAdditionalGovermentIdStep">
+			<mat-step *ngIf="showAdditionalGovermentIdStep && applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-additional-gov-id></app-step-additional-gov-id>
 
 				<div class="row mt-4">
@@ -154,7 +156,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-bc-driver-licence></app-step-bc-driver-licence>
 
 				<div class="row mt-4">
@@ -190,7 +192,9 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			</mat-step>
 
 			<mat-step>
-				<app-step-physical-characteristics [applicationTypeCode]="applicationTypeCode"></app-step-physical-characteristics>
+				<app-step-physical-characteristics
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-physical-characteristics>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -375,7 +379,8 @@ export class StepsIdentificationAnonymousComponent extends BaseWizardStepCompone
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(StepPersonalInformationAnonymousComponent) personalInformationComponent!: StepPersonalInformationAnonymousComponent;
+	@ViewChild(StepPersonalInformationAnonymousComponent)
+	personalInformationComponent!: StepPersonalInformationAnonymousComponent;
 	@ViewChild(StepAliasesComponent) aliasesComponent!: StepAliasesComponent;
 	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
 	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;

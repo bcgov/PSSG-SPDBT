@@ -52,7 +52,27 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</ng-container>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+				<app-step-licence-confirmation></app-step-licence-confirmation>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+						>
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-sole-proprietor [applicationTypeCode]="applicationTypeCode"></app-step-sole-proprietor>
 
 				<div class="row mt-4">
@@ -72,7 +92,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<!-- <mat-step>
 				<app-step-licence-expired></app-step-licence-expired>
 
 				<div class="row mt-4">
@@ -95,7 +115,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
 				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
@@ -177,7 +197,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-licence-term>
 
 				<div class="row mt-4">
@@ -213,6 +233,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 })
 export class StepsLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_SOLE_PROPRIETOR = 1;
+	readonly STEP_LICENCE_CONFIRMATION = 2;
 	readonly STEP_LICENCE_EXPIRED = 5;
 	readonly STEP_LICENCE_CATEGORY = 6;
 	readonly STEP_DOGS = 8;
@@ -271,10 +292,21 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 		this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()]);
 	}
 
+	override onGoToNextStep() {
+		console.log('onGoToNextStep', this.childstepper.selectedIndex);
+		if (this.childstepper.selectedIndex === 2 && this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+		this.childstepper.next();
+	}
+
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
+			case this.STEP_LICENCE_CONFIRMATION:
+				return true;
 			case this.STEP_LICENCE_EXPIRED:
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:

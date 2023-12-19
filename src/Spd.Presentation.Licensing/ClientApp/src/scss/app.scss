@@ -218,12 +218,13 @@ body {
 }
 
 .checklist-label {
-  color: var(--color-primary);
+  color: var(--color-primary); 
+  font-size: 1.15em;
   line-height: initial;
 }
 
 .checklist-info {
-  margin-left: 3em;
+  margin-left: 3em !important;
 }
 
 .child-stepper {

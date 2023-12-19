@@ -5,8 +5,8 @@ import { LicenceStepperStepComponent } from 'src/app/modules/licence-application
 
 @Component({
 	selector: 'app-base-wizard-step',
-	template: ``,
-	styles: ``,
+	template: '',
+	styles: '',
 })
 export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
