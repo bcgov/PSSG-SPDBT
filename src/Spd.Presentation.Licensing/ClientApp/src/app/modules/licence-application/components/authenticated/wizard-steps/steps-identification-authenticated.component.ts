@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 import { StepAdditionalGovIdComponent } from '../../shared/wizard-child-steps/step-additional-gov-id.component';
 import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
 import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
-import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 
 @Component({
 	selector: 'app-steps-identification-authenticated',

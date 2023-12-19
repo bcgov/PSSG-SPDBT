@@ -1,13 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-police-background',

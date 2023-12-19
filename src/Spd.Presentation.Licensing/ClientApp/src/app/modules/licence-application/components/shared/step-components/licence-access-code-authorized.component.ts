@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
 
 @Component({
 	selector: 'app-step-access-code-authorized',

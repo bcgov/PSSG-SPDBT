@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from 'src/app/api/models';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
+import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-licence-term',

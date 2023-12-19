@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
+import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { AddressRetrieveResponse, ApplicationTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 import { ResidentialAddressComponent } from '../step-components/residential-address.component';
 
 @Component({

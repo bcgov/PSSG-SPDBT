@@ -1,15 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, HeightUnitCode } from 'src/app/api/models';
+import { ApplicationTypeCode, HeightUnitCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import {
 	EyeColourTypes,
 	HairColourTypes,
 	HeightUnitTypes,
 	WeightUnitTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-physical-characteristics',

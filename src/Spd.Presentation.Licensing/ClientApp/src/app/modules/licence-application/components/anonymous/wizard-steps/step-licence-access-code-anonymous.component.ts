@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@api/models';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { take, tap } from 'rxjs';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from 'src/app/api/models';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-licence-access-code-anonymous',

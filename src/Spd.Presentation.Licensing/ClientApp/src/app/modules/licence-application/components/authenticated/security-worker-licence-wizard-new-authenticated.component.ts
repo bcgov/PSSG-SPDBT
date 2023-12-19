@@ -5,6 +5,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -12,7 +13,6 @@ import { BaseWizardComponent } from 'src/app/core/components/base-wizard.compone
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
 import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
 import { StepsIdentificationAuthenticatedComponent } from './wizard-steps/steps-identification-authenticated.component';

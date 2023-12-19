@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { distinctUntilChanged } from 'rxjs';
-import { ApplicationTypeCode } from 'src/app/api/models';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
 import { StepMailingAddressComponent } from '../shared/wizard-child-steps/step-mailing-address.component';
 

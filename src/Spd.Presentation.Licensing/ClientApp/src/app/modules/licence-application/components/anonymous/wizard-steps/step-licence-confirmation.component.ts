@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { WorkerCategoryTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-licence-confirmation',

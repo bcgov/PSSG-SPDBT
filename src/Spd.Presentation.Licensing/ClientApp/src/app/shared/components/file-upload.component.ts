@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { HotToastService } from '@ngneat/hot-toast';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 export enum DocumentTypeCode {
 	Image = 'IMAGE',

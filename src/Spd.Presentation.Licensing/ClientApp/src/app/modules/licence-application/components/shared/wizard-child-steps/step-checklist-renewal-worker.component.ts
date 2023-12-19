@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
 	selector: 'app-step-checklist-renewal-worker',

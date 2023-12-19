@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Pipe({
 	name: 'formatDate',

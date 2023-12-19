@@ -7,9 +7,9 @@ import {
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppCategoryData,
-} from 'src/app/api/models';
+} from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';

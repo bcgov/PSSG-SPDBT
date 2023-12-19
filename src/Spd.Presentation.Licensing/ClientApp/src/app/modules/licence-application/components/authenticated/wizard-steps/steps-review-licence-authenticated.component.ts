@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 import { StepConsentAndDeclarationComponent } from '../../shared/wizard-child-steps/step-consent-and-declaration.component';
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './step-summary-review-licence-authenticated.component';
 

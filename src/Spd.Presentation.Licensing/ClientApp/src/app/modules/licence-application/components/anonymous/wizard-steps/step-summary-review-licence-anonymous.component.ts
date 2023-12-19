@@ -5,10 +5,10 @@ import {
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-} from 'src/app/api/models';
+} from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-summary-review-licence-anonymous',

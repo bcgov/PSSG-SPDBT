@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 @Component({
 	selector: 'app-payment-success',

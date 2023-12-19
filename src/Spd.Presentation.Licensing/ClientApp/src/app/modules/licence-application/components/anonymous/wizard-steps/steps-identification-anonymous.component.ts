@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
+import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeCode } from 'src/app/api/models';
-import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 import { StepAdditionalGovIdComponent } from '../../shared/wizard-child-steps/step-additional-gov-id.component';
 import { StepAliasesComponent } from '../../shared/wizard-child-steps/step-aliases.component';
 import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';

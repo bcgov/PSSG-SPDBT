@@ -1,18 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
-	BehaviorSubject,
-	debounceTime,
-	distinctUntilChanged,
-	forkJoin,
-	Observable,
-	of,
-	Subscription,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs';
-import {
 	AdditionalGovIdDocument,
 	ApplicationTypeCode,
 	BooleanTypeCode,
@@ -37,11 +25,23 @@ import {
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
-} from 'src/app/api/models';
+} from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import {
+	BehaviorSubject,
+	debounceTime,
+	distinctUntilChanged,
+	forkJoin,
+	Observable,
+	of,
+	Subscription,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { PrivateInvestigatorTrainingCode, RestraintDocumentTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';

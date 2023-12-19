@@ -4,19 +4,19 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Subscription, take, tap } from 'rxjs';
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	WorkerLicenceAppListResponse,
 	WorkerLicenceTypeCode,
-} from 'src/app/api/models';
+} from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { Subscription, take, tap } from 'rxjs';
 import { WorkerLicensingService } from 'src/app/api/services';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
 
 export interface ApplicationResponse {
 	id?: string;
