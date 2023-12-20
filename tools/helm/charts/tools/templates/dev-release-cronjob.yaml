@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dev-release-cronjob
+  labels:
+    DataClass: Low
+spec:
+  suspend: true
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 10
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            DataClass: Low
+        spec:
+          containers:
+            - name: job
+              image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+              env:
+              - name: HTTP_PROXY
+                value: http://swpxkam.gov.bc.ca:8080
+              - name: HTTPS_PROXY
+                value: http://swpxkam.gov.bc.ca:8080
+              - name: NO_PROXY
+                value: .cluster.local,.svc,10.91.0.0/16,172.30.0.0/16,127.0.0.1,localhost,.gov.bc.ca
+              resources:
+                  limits:
+                      cpu: 30m
+                      memory: 128Mi
+                  requests:
+                      cpu: 15m
+                      memory: 64Mi
+              command:
+                - "/bin/sh"
+                - "-c"
+                - "curl -O -sL https://tkn-cli-serve-openshift-pipelines.apps.emerald.devops.gov.bc.ca/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && tkn pipeline start dev-release-pipeline"              
+          restartPolicy: Never
