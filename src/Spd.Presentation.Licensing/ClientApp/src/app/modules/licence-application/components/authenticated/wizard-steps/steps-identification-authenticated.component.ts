@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 import { StepAdditionalGovIdComponent } from '../../shared/wizard-child-steps/step-additional-gov-id.component';
 import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
 import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
-import { StepHeightAndWeightComponent } from '../../shared/wizard-child-steps/step-height-and-weight.component';
 import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
 
 @Component({
-	selector: 'app-step-identification-authenticated',
+	selector: 'app-steps-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -98,7 +98,7 @@ import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-ste
 			</mat-step>
 
 			<mat-step>
-				<app-step-height-and-weight></app-step-height-and-weight>
+				<app-step-physical-characteristics></app-step-physical-characteristics>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -154,7 +154,7 @@ import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-ste
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsIdentificationAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_CITIZENSHIP = 2;
 	readonly STEP_ADDITIONAL_GOV_ID = 3;
 	readonly STEP_BC_DRIVERS_LICENCE = 4;
@@ -169,7 +169,7 @@ export class StepIdentificationAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepCitizenshipComponent) citizenshipComponent!: StepCitizenshipComponent;
 	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
 	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
-	@ViewChild(StepHeightAndWeightComponent) heightAndWeightComponent!: StepHeightAndWeightComponent;
+	@ViewChild(StepPhysicalCharacteristicsComponent) heightAndWeightComponent!: StepPhysicalCharacteristicsComponent;
 	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {

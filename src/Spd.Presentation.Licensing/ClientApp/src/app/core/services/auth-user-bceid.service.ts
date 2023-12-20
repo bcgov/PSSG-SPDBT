@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { OrgUserProfileResponse } from '@app/api/models';
 import { lastValueFrom } from 'rxjs';
-import { OrgUserProfileResponse } from 'src/app/api/models';
 import { UserProfileService } from 'src/app/api/services';
 
 @Injectable({ providedIn: 'root' })

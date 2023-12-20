@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { UserProfileComponent } from '../step-components/user-profile.component';
 
 @Component({
@@ -46,6 +46,15 @@ import { UserProfileComponent } from '../step-components/user-profile.component'
 				</div>
 			</div>
 		</section>
+
+		<div class="row mt-4">
+			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+			</div>
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+			</div>
+		</div>
 	`,
 	styles: [],
 })
@@ -67,5 +76,19 @@ export class StepLicenceUserProfileComponent implements LicenceChildStepperStepC
 
 		console.log('StepLicenceUserProfileComponent', isValid, isProfileValid);
 		return isValid && isProfileValid;
+	}
+
+	onStepPrevious(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+	}
+
+	onStepNext(): void {
+		if (this.isFormValid()) {
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+					LicenceApplicationRoutes.LICENCE_SELECTION_AUTHENTICATED
+				)
+			);
+		}
 	}
 }

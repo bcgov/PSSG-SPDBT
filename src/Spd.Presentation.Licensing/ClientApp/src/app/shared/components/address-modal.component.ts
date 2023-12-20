@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { AddressFindResponse } from 'src/app/api/models';
+import { AddressFindResponse } from '@app/api/models';
 
 export interface AddressDialogData {
 	addressAutocompleteFields: AddressFindResponse[];
