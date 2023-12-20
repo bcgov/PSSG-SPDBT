@@ -4,7 +4,7 @@ ORGANIZATION=$ORGANIZATION
 ACCESS_TOKEN=$ACCESS_TOKEN
 AGENT_NAME=$NAME
 
-cd /home/docker/actions-runner
+cd /home/runner/actions-runner
 
 ./config.sh --url https://github.com/${ORGANIZATION} --token ${ACCESS_TOKEN} --name ${AGENT_NAME} --unattended
 
