@@ -26,7 +26,10 @@ jobs:
       IMAGE_CONTEXT: tools/github-runner
       IMAGE_FILE: tools/github-runner/Dockerfile
       IMAGE_NAME: ${{ github.repository }}/gh-runner
-      REGISTRY: ghcr.io
+      # REGISTRY: ghcr.io
+      REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev
     secrets:
-      REGISTRY_USER: ${{ github.actor }}
-      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      # REGISTRY_USER: ${{ github.actor }}
+      # REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
