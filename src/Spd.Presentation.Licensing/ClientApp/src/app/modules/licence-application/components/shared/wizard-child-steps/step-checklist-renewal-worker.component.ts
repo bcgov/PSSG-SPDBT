@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
 	selector: 'app-step-checklist-renewal-worker',
@@ -75,7 +75,7 @@ import { LicenceChildStepperStepComponent } from '../../../services/licence-appl
 										href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
 										target="_blank"
 									>
-										Mental Health Condition form </a
+										Mental Health Condition form</a
 									>, and give it to your physician to fill out. You will need to upload the completed form.
 								</p>
 							</form>

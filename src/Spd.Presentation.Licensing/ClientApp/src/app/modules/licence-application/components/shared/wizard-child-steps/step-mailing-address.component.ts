@@ -1,22 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse } from 'src/app/api/models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-mailing-address',
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title
-					title="Provide your mailing address"
-					subtitle="Provide your mailing address, if different from your residential address. This cannot be a company address."
-				></app-step-title>
-				<!-- <app-address [form]="form"></app-address> -->
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
+
 				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
@@ -100,15 +105,41 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	`,
 	styles: [],
 })
-export class StepMailingAddressComponent implements LicenceChildStepperStepComponent {
+export class StepMailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+	title = '';
+	subtitle = '';
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
+	applicationTypeCodes = ApplicationTypeCode;
+
+	readonly title_new = 'Provide your mailing address';
+	readonly title_subtitle_new =
+		'Provide your mailing address, if different from your residential address. This cannot be a company address.';
+	readonly title_replacement = 'Review your mailing address';
+	readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				this.title = this.title_replacement;
+				this.subtitle = this.title_subtitle_replacement;
+				break;
+			}
+			default: {
+				this.title = this.title_new;
+				this.subtitle = this.title_subtitle_new;
+				break;
+			}
+		}
+	}
 
 	onAddressAutocomplete(address: Address): void {
 		if (!address) {

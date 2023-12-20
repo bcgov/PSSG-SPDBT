@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-application-type-anonymous',
+	selector: 'app-step-application-type-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -95,7 +95,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 	`,
 	styles: [],
 })
-export class LicenceApplicationTypeAnonymousComponent {
+export class StepApplicationTypeAnonymousComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;

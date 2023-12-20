@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from './modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceRoutes } from './modules/licence-portal/licence-routing.module';
 
 @Component({

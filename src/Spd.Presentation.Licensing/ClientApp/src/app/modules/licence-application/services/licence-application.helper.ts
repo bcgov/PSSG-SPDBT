@@ -7,9 +7,9 @@ import {
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppCategoryData,
-} from 'src/app/api/models';
+} from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -70,14 +70,39 @@ export abstract class LicenceApplicationHelper {
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 	});
 
-	personalInformationFormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		genderCode: new FormControl('', [FormControlValidators.required]),
-		dateOfBirth: new FormControl('', [Validators.required]),
-	});
+	personalInformationFormGroup = this.formBuilder.group(
+		{
+			givenName: new FormControl(''),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [FormControlValidators.required]),
+			genderCode: new FormControl('', [FormControlValidators.required]),
+			dateOfBirth: new FormControl('', [Validators.required]),
+			isNeedProofOfLegalNameChange: new FormControl(false),
+			newGivenName: new FormControl(''),
+			newMiddleName1: new FormControl(''),
+			newMiddleName2: new FormControl(''),
+			newSurname: new FormControl(''),
+			newGenderCode: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'newSurname',
+					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'newGenderCode',
+					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+				),
+			],
+		}
+	);
 
 	soleProprietorFormGroup = this.formBuilder.group({
 		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
@@ -85,27 +110,27 @@ export abstract class LicenceApplicationHelper {
 
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
-			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
+			hasExpiredLicence: new FormControl(''), //, [FormControlValidators.required]
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-			],
 		}
+		// {
+		// 	validators: [
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'expiredLicenceNumber',
+		// 			(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+		// 		),
+		// 		FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 			'expiredLicenceId',
+		// 			(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+		// 		),
+		// 		FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 			'expiryDate',
+		// 			(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+		// 		),
+		// 	],
+		// }
 	);
 
 	licenceTermFormGroup: FormGroup = this.formBuilder.group({

@@ -11,7 +11,7 @@ import {
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
-} from 'src/app/api/models';
+} from '@app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
 // export interface SelectOptions<k = string | number | boolean> {

@@ -197,6 +197,18 @@ body {
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: rgba(0, 0, 0, 0.12);
+
+  &__orange {
+    border-left: 3px solid var(--color-orange);
+  }
+
+  &__green {
+    border-left: 3px solid var(--color-green);
+  }
+
+  &__red {
+    border-left: 3px solid var(--color-red);
+  }
 }
 
 .text-minor-heading {
@@ -206,12 +218,13 @@ body {
 }
 
 .checklist-label {
-  color: var(--color-primary);
+  color: var(--color-primary); 
+  font-size: 1.15em;
   line-height: initial;
 }
 
 .checklist-info {
-  margin-left: 3em;
+  margin-left: 3em !important;
 }
 
 .child-stepper {

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
+import { WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
-	selector: 'app-licence-selection-anonymous',
+	selector: 'app-step-licence-type-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -108,7 +108,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 		`,
 	],
 })
-export class LicenceSelectionAnonymousComponent implements OnInit {
+export class StepLicenceTypeAnonymousComponent implements OnInit {
 	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
