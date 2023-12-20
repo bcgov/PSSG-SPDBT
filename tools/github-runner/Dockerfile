@@ -27,8 +27,12 @@ RUN curl -c oc.tar -sL https://downloads-openshift-console.apps.silver.devops.go
     && rm -f oc.tar
 
 # override start.sh
-COPY --chown=runner:runner start.sh start.sh
+COPY start.sh start.sh
 RUN chmod a+x start.sh
+
+# fix OpenShift random user id permission
+RUN chgrp -R 0 /home/runner && \
+    chmod -R g=u /home/runner
 
 USER runner
 
