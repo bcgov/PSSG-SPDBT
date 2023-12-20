@@ -1,0 +1,65 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: dev-release-pipeline
+  labels:
+    DataClass: Low
+spec:
+  tasks:
+
+    ## Promote dev ##
+    - name: dev-screening-portal
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/licensing-portal
+        - name: sourceTag
+          value: latest
+        - name: destinationImage
+          value: screening-portal1
+        - name: destinationTag
+          value: dev
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: dev-licensing-portal
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/licensing-portal
+        - name: sourceTag
+          value: latest
+        - name: destinationImage
+          value: licensing-portal1
+        - name: destinationTag
+          value: dev
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: dev-dynamics-helper
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/dynamics-helper
+        - name: sourceTag
+          value: latest
+        - name: destinationImage
+          value: dynamics-helper1
+        - name: destinationTag
+          value: dev
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: dev-job-scheduler
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/jag-jobscheduler
+        - name: sourceTag
+          value: main
+        - name: destinationImage
+          value: job-scheduler1
+        - name: destinationTag
+          value: dev
+      taskRef:
+        kind: Task
+        name: tag-image-task

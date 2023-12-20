@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: prod-release-pipeline
+spec:
+  tasks:
+
+   ## Promote test to prod ##
+    - name: prod-screening-portal
+      params:
+        - name: imageName
+          value: screening-portal
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: prod
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: prod-licensing-portal
+      params:
+        - name: imageName
+          value: licensing-portal
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: prod
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: prod-dynamics-helper
+      params:
+        - name: imageName
+          value: dynamics-helper
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: prod
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: prod-job-scheduler
+      params:
+        - name: imageName
+          value: job-scheduler
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: prod
+      taskRef:
+        kind: Task
+        name: promote-image-task
