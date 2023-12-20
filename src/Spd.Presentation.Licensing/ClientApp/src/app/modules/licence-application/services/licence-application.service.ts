@@ -134,7 +134,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	initialized = false;
 	hasValueChanged = false;
 
-	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	licenceFees: Array<LicenceFeeResponse> = [];
@@ -249,8 +248,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	loadUserProfile(): Observable<WorkerLicenceResponse> {
-		this.reset();
-
 		return this.createLicenceAuthenticated().pipe(
 			// TODO update
 			tap((_resp: any) => {
@@ -269,10 +266,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	loadLicence(
 		licenceAppId: string,
-		workerLicenceTypeCode: WorkerCategoryTypeCode,
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<WorkerLicenceResponse> {
-		this.reset();
+		// TODO add:  switch workerLicenceTypeCode
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
@@ -310,34 +307,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		}
 	}
 
-	// /**
-	//  * Load an existing draft licence application
-	//  * @param licenceAppId
-	//  * @returns
-	//  */
-	// loadDraftLicenceAuthenticated(licenceAppId: string): Observable<WorkerLicenceResponse> {
-	// 	this.reset();
-
-	// 	return this.loadSpecificLicence(licenceAppId).pipe(
-	// 		tap((resp: any) => {
-	// 			console.debug('LOAD LicenceApplicationService loadDraftLicenceAuthenticated', resp);
-	// 			this.initialized = true;
-	// 		})
-	// 	);
-	// }
-
 	/**
 	 * Load an existing draft licence application
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		this.reset();
-
+	private loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
-				this.initialized = true;
 			})
 		);
 	}
@@ -348,8 +326,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private loadLicenceRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		this.reset();
-
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
@@ -401,7 +377,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				this.initialized = true;
+				// this.initialized = true;
 			})
 		);
 	}
@@ -412,8 +388,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private loadLicenceUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		this.reset();
-
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
@@ -465,7 +439,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				this.initialized = true;
+				// this.initialized = true;
 			})
 		);
 	}
@@ -476,8 +450,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		this.reset();
-
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
@@ -498,7 +470,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				this.initialized = true;
+				// this.initialized = true;
 			})
 		);
 	}
@@ -509,8 +481,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	loadUpdateLicence(): Observable<WorkerLicenceResponse> {
-		this.reset();
-
 		return this.createLicenceAuthenticated().pipe(
 			// TODO update
 			tap((_resp: any) => {
@@ -527,8 +497,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	createNewLicenceAnonymous(): Observable<any> {
-		this.reset();
-
 		return this.createLicenceAnonymous().pipe(
 			tap((resp: any) => {
 				console.debug('NEW LicenceApplicationService createNewLicenceAnonymous', resp);
@@ -543,8 +511,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	createNewLicenceAuthenticated(): Observable<any> {
-		this.reset();
-
 		return this.createLicenceAuthenticated().pipe(
 			tap((resp: any) => {
 				console.debug('NEW LicenceApplicationService createNewLicenceAuthenticated', resp);
@@ -553,21 +519,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			})
 		);
 	}
-	/**
-	 * Create an empty licence
-	 * @returns
-	 */
-	// createNewUserProfile(): Observable<any> {
-	// 	this.reset();
-
-	// 	return this.createLicenceAuthenticated().pipe(
-	// 		tap((resp: any) => {
-	// 			console.debug('NEW LicenceApplicationService createNewUserProfile', resp);
-
-	// 			this.initialized = true;
-	// 		})
-	// 	);
-	// }
 
 	private createLicenceAnonymous(): Observable<any> {
 		this.reset();
@@ -1207,9 +1158,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Set the licence fees for the licence and application type
 	 * @returns list of fees
 	 */
-	private setLicenceTermsAndFees(): void {
-		const workerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence; // this.workerLicenceTypeFormGroup.value.workerLicenceTypeData?.workerLicenceTypeCode;
-		const applicationTypeCode = ApplicationTypeCode.New; // this.applicationTypeFormGroup.value.applicationTypeData?.applicationTypeCode;
+	public setLicenceTermsAndFees(): void {
+		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
+		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
+
 		// const businessTypeCode = //TODO what to do about business type code??
 
 		if (!workerLicenceTypeCode || !applicationTypeCode) {
@@ -1261,9 +1213,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
 		} else {
 			isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-		}
-		if (isValid && this.licenceFeeTermCodes.length === 0) {
-			this.setLicenceTermsAndFees();
 		}
 
 		return isValid;

@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepMailingAddressComponent } from '../shared/wizard-child-steps/step-mailing-address.component';
 
 @Component({
@@ -13,7 +14,7 @@ import { StepMailingAddressComponent } from '../shared/wizard-child-steps/step-m
 				<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 					<mat-step>
 						<ng-template matStepLabel> Licence Confirmation </ng-template>
-						<app-step-licence-confirmation></app-step-licence-confirmation>
+						<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
 
 						<div class="row mt-4">
 							<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
@@ -53,7 +54,10 @@ export class WorkerLicenceReplacementWizardAnonymousComponent extends BaseWizard
 	@ViewChild(StepMailingAddressComponent)
 	stepMailingAddressComponent!: StepMailingAddressComponent;
 
-	constructor(override breakpointObserver: BreakpointObserver) {
+	constructor(
+		override breakpointObserver: BreakpointObserver,
+		private licenceApplicationService: LicenceApplicationService
+	) {
 		super(breakpointObserver);
 	}
 
@@ -62,6 +66,8 @@ export class WorkerLicenceReplacementWizardAnonymousComponent extends BaseWizard
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+
+		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	onGoToNextStep(): void {

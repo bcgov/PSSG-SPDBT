@@ -17,19 +17,20 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert title="" subtitle="">
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+					<!-- <app-renewal-alert title="" subtitle="">
 						<div class="row mt-0 mx-3 mb-4">
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="summary-text-data text-center">DL5E39</div>
+								<div class="summary-text-data text-center">{{ licenceNumber }}</div>
 							</div>
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Current Licence Expiry Date</div>
-								<div class="summary-text-data text-center">Aug 10 2023</div>
+								<div class="summary-text-data text-center">{{ expiryDate | formatDate : constants.date.formalDateFormat }}</div>
 							</div>
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Term</div>
-								<div class="summary-text-data text-center">1 year</div>
+								<div class="summary-text-data text-center">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
 						</div>
 
@@ -37,7 +38,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							If any of this information is not correct, please call the Security Program's Licensing Unit during
 							regular office hours: 1-855-587-0185
 						</div>
-					</app-renewal-alert>
+					</app-renewal-alert> -->
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
@@ -982,6 +983,16 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 		this.isDirtyAndInvalid = this.categoryList.length == 0;
 		return isValid && !this.isDirtyAndInvalid;
 	}
+
+	// get licenceNumber(): string {
+	// 	return this.licenceModelData.caseNumber ?? '';
+	// }
+	// get expiryDate(): string {
+	// 	return this.licenceModelData.expiryDate ?? '';
+	// }
+	// get licenceTermCode(): string {
+	// 	return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+	// }
 
 	get categoryList(): Array<string> {
 		const list: Array<string> = [];

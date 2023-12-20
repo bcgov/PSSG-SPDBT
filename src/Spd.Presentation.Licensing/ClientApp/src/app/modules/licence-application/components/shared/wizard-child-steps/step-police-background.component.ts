@@ -19,7 +19,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert></app-renewal-alert>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>

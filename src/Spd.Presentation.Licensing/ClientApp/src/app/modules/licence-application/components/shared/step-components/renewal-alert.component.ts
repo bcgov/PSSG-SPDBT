@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 
 @Component({
 	selector: 'app-renewal-alert',
@@ -30,7 +31,25 @@ import { Component, Input } from '@angular/core';
 		`,
 	],
 })
-export class RenewalAlertComponent {
-	@Input() title = 'Confirm this information';
-	@Input() subtitle = 'Update any information that has changed since your last application';
+export class RenewalAlertComponent implements OnInit {
+	title = '';
+	subtitle = '';
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	ngOnInit() {
+		console.log('this.applicationTypeCode', this.applicationTypeCode);
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.Update: {
+				this.title = 'Confirm this information';
+				this.subtitle = 'Update any information that you would like to change';
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.title = 'Confirm this information';
+				this.subtitle = 'Update any information that has changed since your last application';
+				break;
+			}
+		}
+	}
 }

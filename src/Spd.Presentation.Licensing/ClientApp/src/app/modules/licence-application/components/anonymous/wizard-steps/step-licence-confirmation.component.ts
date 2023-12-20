@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { WorkerCategoryTypeCode } from '@app/api/models';
+import { Component, Input, OnInit } from '@angular/core';
+import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -43,8 +43,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 								</div>
 								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">Replacement Fee</div>
-									<div class="summary-text-data">$20</div>
+									<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
+									<div class="summary-text-data">{{ feeAmount }}</div>
 								</div>
 							</div>
 						</div>
@@ -57,13 +57,25 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepLicenceConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
+	feeAmount: null | string | undefined = '';
 
 	private licenceModelData: any = {};
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit() {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+
+		const fee = this.licenceApplicationService.licenceFeeTermCodes?.filter(
+			(item) => item.licenceTermCode == this.licenceTermCode
+		);
+		if (fee) {
+			this.feeAmount = `$${fee[0].amount}`;
+		} else {
+			this.feeAmount = '';
+		}
 	}
 
 	get licenceHolderName(): string {

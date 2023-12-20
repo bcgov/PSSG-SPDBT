@@ -21,7 +21,7 @@ import {
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert></app-renewal-alert>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title title="Provide identifying information"></app-step-title>

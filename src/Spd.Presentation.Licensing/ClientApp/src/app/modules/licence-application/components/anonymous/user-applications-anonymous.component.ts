@@ -41,8 +41,6 @@ export class UserApplicationsAnonymousComponent implements OnInit {
 	}
 
 	onCreateNew(): void {
-		// this.licenceApplicationService.reset();
-
 		this.licenceApplicationService
 			.createNewLicenceAnonymous()
 			.pipe(

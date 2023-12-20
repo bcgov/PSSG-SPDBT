@@ -20,7 +20,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert></app-renewal-alert>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title title="Your personal information"></app-step-title>

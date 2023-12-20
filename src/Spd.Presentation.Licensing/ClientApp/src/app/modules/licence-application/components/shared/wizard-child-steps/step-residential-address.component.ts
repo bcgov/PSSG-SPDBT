@@ -16,7 +16,7 @@ import { ResidentialAddressComponent } from '../step-components/residential-addr
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert></app-renewal-alert>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title title="Confirm your residential address" [subtitle]="subtitle"></app-step-title>

@@ -53,7 +53,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
-				<app-step-licence-confirmation></app-step-licence-confirmation>
+				<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">

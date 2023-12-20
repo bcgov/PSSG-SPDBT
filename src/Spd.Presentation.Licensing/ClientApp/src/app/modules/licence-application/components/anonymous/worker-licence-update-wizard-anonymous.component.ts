@@ -114,6 +114,8 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
+
+		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

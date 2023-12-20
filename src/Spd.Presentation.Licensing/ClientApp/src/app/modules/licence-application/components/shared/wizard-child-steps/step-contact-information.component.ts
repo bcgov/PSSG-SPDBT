@@ -13,7 +13,7 @@ import { ContactInformationComponent } from '../step-components/contact-informat
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert></app-renewal-alert>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title title="Provide your contact information"></app-step-title>
