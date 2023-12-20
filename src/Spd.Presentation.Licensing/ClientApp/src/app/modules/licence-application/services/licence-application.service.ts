@@ -141,6 +141,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		linkedLicenceAppId: new FormControl(null),
 		expiryDate: new FormControl(null),
 		caseNumber: new FormControl(null),
 		applicationPortalStatus: new FormControl(null),
@@ -360,6 +361,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
+						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						// soleProprietorData,
 						// licenceTermData,
@@ -422,6 +424,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
+						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						// soleProprietorData,
 						// licenceTermData,
@@ -461,6 +464,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
+						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						residentialAddressData: { ...residentialAddressData },
 					},
@@ -1161,22 +1165,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	public setLicenceTermsAndFees(): void {
 		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
 		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-
-		// const businessTypeCode = //TODO what to do about business type code??
+		const businessTypeCode = BusinessTypeCode.NonRegisteredPartnership; //TODO what to do about business type code??
 
 		if (!workerLicenceTypeCode || !applicationTypeCode) {
 			return;
 		}
 
+		//console.debug('licenceFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode, this.licenceFees);
+		this.licenceFeeTermCodes = [];
+
 		const fees = this.licenceFees?.filter(
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == BusinessTypeCode.NonRegisteredPartnership &&
+				item.businessTypeCode == businessTypeCode &&
 				item.applicationTypeCode == applicationTypeCode
 		);
 
 		this.licenceFeeTermCodes.push(...fees);
-		console.debug('this.licenceFeeTermCodes', this.licenceFeeTermCodes);
+		console.debug('licenceFeeTermCodes', this.licenceFeeTermCodes);
 	}
 
 	isShowAdditionalGovermentIdStep(): boolean {
@@ -1353,25 +1359,27 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isSaveStep(): boolean {
-		const shouldSaveStep =
-			this.hasValueChanged &&
-			((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
+		console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
+		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
+		// const shouldSaveStep =
+		// 	this.hasValueChanged &&
+		// 	((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
 
 		console.debug('shouldSaveStep', shouldSaveStep);
 		return shouldSaveStep;

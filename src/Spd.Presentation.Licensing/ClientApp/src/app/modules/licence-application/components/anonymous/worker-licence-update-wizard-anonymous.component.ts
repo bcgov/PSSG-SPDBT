@@ -28,7 +28,6 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 						<app-steps-licence-selection
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-licence-selection>

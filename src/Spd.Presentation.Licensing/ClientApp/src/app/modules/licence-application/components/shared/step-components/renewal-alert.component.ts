@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-renewal-alert',
@@ -11,11 +13,25 @@ import { ApplicationTypeCode } from '@app/api/models';
 						<div class="fs-3" [innerHtml]="title"></div>
 						<div class="fs-6 mt-3" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					</div>
-					<div class="my-2">
-						<ng-content #alertContent> </ng-content>
+
+					<div class="row mt-0 mx-3 mb-2" *ngIf="showLicenceData">
+						<mat-divider class="my-2" *ngIf="title"></mat-divider>
+						<div class="col-lg-4 col-md-12 mt-lg-2">
+							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+							<div class="summary-text-data text-center">{{ licenceNumber }}</div>
+						</div>
+						<div class="col-lg-4 col-md-12 mt-lg-2">
+							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Current Licence Expiry Date</div>
+							<div class="summary-text-data text-center">
+								{{ expiryDate | formatDate : constants.date.formalDateFormat }}
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-12 mt-lg-2">
+							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Term</div>
+							<div class="summary-text-data text-center">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+						</div>
 					</div>
 				</div>
-				<!-- <mat-divider class="mat-divider-main mb-4"></mat-divider> -->
 			</div>
 		</div>
 	`,
@@ -35,10 +51,19 @@ export class RenewalAlertComponent implements OnInit {
 	title = '';
 	subtitle = '';
 
+	licenceModelData: any = {};
+	constants = SPD_CONSTANTS;
+
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() showLicenceData = false;
+
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit() {
-		console.log('this.applicationTypeCode', this.applicationTypeCode);
+		if (this.showLicenceData) {
+			this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		}
+
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Update: {
 				this.title = 'Confirm this information';
@@ -51,5 +76,15 @@ export class RenewalAlertComponent implements OnInit {
 				break;
 			}
 		}
+	}
+
+	get licenceNumber(): string {
+		return this.licenceModelData.caseNumber ?? '';
+	}
+	get expiryDate(): string {
+		return this.licenceModelData.expiryDate ?? '';
+	}
+	get licenceTermCode(): string {
+		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
 }

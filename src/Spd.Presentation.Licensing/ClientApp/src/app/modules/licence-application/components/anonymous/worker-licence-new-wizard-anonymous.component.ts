@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
 import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
 import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
@@ -29,7 +28,6 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 						<app-steps-licence-selection
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-licence-selection>
@@ -141,11 +139,12 @@ export class WorkerLicenceNewWizardAnonymousComponent extends BaseWizardComponen
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-						LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-					)
-				);
+				this.stepLicenceSelectionComponent?.onGoToLastStep();
+				// this.router.navigateByUrl(
+				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+				// 		LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
+				// 	)
+				// );
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();

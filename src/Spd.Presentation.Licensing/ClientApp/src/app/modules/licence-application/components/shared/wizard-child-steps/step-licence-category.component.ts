@@ -18,27 +18,6 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 					"
 				>
 					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
-					<!-- <app-renewal-alert title="" subtitle="">
-						<div class="row mt-0 mx-3 mb-4">
-							<div class="col-lg-4 col-md-12 mt-lg-2">
-								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="summary-text-data text-center">{{ licenceNumber }}</div>
-							</div>
-							<div class="col-lg-4 col-md-12 mt-lg-2">
-								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Current Licence Expiry Date</div>
-								<div class="summary-text-data text-center">{{ expiryDate | formatDate : constants.date.formalDateFormat }}</div>
-							</div>
-							<div class="col-lg-4 col-md-12 mt-lg-2">
-								<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Term</div>
-								<div class="summary-text-data text-center">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
-							</div>
-						</div>
-
-						<div class="mx-3 text-center">
-							If any of this information is not correct, please call the Security Program's Licensing Unit during
-							regular office hours: 1-855-587-0185
-						</div>
-					</app-renewal-alert> -->
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
@@ -72,7 +51,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 						<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-accordion multi="false">
 								<ng-container *ngIf="showArmouredCarGuard">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandArmouredCarGuard">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
@@ -106,7 +85,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showBodyArmourSales">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandBodyArmourSales">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'WorkerCategoryTypes' }}
@@ -138,7 +117,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandClosedCircuitTelevisionInstaller">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
@@ -176,7 +155,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showElectronicLockingDeviceInstaller">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandElectronicLockingDeviceInstaller">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
@@ -214,7 +193,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showFireInvestigator">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandFireInvestigator">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
@@ -249,7 +228,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showLocksmith">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandLocksmith">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
@@ -282,7 +261,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showLocksmithUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandLocksmithUnderSupervision">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'WorkerCategoryTypes' }}
@@ -315,7 +294,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showPrivateInvestigator">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigator">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
@@ -351,7 +330,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showPrivateInvestigatorUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigatorUnderSupervision">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
@@ -389,7 +368,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityAlarmInstaller">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstaller">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
@@ -425,7 +404,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstallerUnderSupervision">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
@@ -464,7 +443,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityAlarmMonitor">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmMonitor">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'WorkerCategoryTypes' }}
@@ -500,7 +479,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityAlarmResponse">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmResponse">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'WorkerCategoryTypes' }}
@@ -536,7 +515,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityAlarmSales">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmSales">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'WorkerCategoryTypes' }}
@@ -571,7 +550,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityConsultant">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityConsultant">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
@@ -606,7 +585,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityGuard">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuard">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
@@ -638,7 +617,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 								</ng-container>
 
 								<ng-container *ngIf="showSecurityGuardUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="true">
+									<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuardUnderSupervision">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'WorkerCategoryTypes' }}
@@ -732,9 +711,29 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
+	expandArmouredCarGuard = false;
+	expandBodyArmourSales = false;
+	expandClosedCircuitTelevisionInstaller = false;
+	expandElectronicLockingDeviceInstaller = false;
+	expandFireInvestigator = false;
+	expandLocksmith = false;
+	expandLocksmithUnderSupervision = false;
+	expandPrivateInvestigator = false;
+	expandPrivateInvestigatorUnderSupervision = false;
+	expandSecurityGuard = false;
+	expandSecurityGuardUnderSupervision = false;
+	expandSecurityAlarmInstallerUnderSupervision = false;
+	expandSecurityAlarmInstaller = false;
+	expandSecurityAlarmMonitor = false;
+	expandSecurityAlarmResponse = false;
+	expandSecurityAlarmSales = false;
+	expandSecurityConsultant = false;
+
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
+		// this.isExpand = this.applicationTypeCode === ApplicationTypeCode.New;
+
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = this.title_new;
@@ -755,55 +754,72 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 		if (this.category) {
 			switch (this.category) {
 				case WorkerCategoryTypeCode.ArmouredCarGuard:
+					this.expandArmouredCarGuard = true;
 					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.BodyArmourSales:
+					this.expandBodyArmourSales = true;
 					this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+					this.expandClosedCircuitTelevisionInstaller = true;
 					this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+					this.expandElectronicLockingDeviceInstaller = true;
 					this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.FireInvestigator:
+					this.expandFireInvestigator = true;
 					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.Locksmith:
+					this.expandLocksmith = true;
 					this.categoryLocksmithFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
+					this.expandLocksmithUnderSupervision = true;
 					this.categoryLocksmithSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigator:
+					this.expandPrivateInvestigator = true;
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
 					this.onPromptFireInvestigator();
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+					this.expandPrivateInvestigatorUnderSupervision = true;
 					this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityGuard:
+					this.expandSecurityGuard = true;
 					this.categorySecurityGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
+					this.expandSecurityGuardUnderSupervision = true;
 					this.categorySecurityGuardSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+					this.expandSecurityAlarmInstaller = true;
 					this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+					this.expandSecurityAlarmInstallerUnderSupervision = true;
 					this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+					this.expandSecurityAlarmMonitor = true;
 					this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmResponse:
+					this.expandSecurityAlarmResponse = true;
 					this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmSales:
+					this.expandSecurityAlarmSales = true;
 					this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityConsultant:
+					this.expandSecurityConsultant = true;
 					this.categorySecurityConsultantFormGroup.patchValue({ isInclude: true });
 					break;
 			}

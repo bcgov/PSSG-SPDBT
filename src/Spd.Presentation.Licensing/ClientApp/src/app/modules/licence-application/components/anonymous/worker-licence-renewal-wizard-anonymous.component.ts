@@ -27,7 +27,6 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 						<app-steps-licence-selection
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-licence-selection>
@@ -139,11 +138,7 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				// this.router.navigateByUrl(
-				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-				// 		LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-				// 	)
-				// );
+				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();

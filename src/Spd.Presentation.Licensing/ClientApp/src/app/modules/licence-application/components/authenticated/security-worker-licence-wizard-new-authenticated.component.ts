@@ -128,21 +128,19 @@ export class SecurityWorkerLicenceWizardNewAuthenticatedComponent
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
+		this.updateCompleteStatus();
+
 		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	ngAfterViewInit(): void {
-		// if (this.step1Complete) {
 		if (this.step3Complete) {
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		} else if (this.step2Complete) {
 			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
 		} else if (this.step1Complete) {
 			this.stepper.selectedIndex = this.STEP_BACKGROUND;
-			// } else {
-			// 	this.stepper.selectedIndex = this.STEP_LICENCE_SELECTION;
 		}
-		// }
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
@@ -167,11 +165,7 @@ export class SecurityWorkerLicenceWizardNewAuthenticatedComponent
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				// this.router.navigateByUrl(
-				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				// 		LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED
-				// 	)
-				// );
+				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();
