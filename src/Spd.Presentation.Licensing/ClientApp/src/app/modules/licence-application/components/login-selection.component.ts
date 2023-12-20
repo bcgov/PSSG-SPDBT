@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
 	selector: 'app-login-selection',

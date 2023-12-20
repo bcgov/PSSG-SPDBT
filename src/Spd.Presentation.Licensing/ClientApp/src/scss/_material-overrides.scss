@@ -149,7 +149,7 @@ button.mat-red-button {
   color: var(--color-primary);
 }
 
-.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input, .mdc-text-field--disabled .mdc-text-field__input {
+.mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input, .mdc-text-field--disabled .mdc-text-field__input, .mat-mdc-select-disabled {
   color: rgba(0, 0, 0, 0.9) !important;
 }
 
@@ -365,6 +365,10 @@ button.mat-red-button {
 // MAT ERROR
 .mat-option-error {
   color: var(--mat-form-field-error-text-color);
+  font-size: var(--mat-form-field-subscript-text-size);
+}
+
+.mat-option-hint {
   font-size: var(--mat-form-field-subscript-text-size);
 }
 

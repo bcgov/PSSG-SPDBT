@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
+import { Component, Input, ViewChild } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
 
 @Component({
@@ -8,6 +8,14 @@ import { ContactInformationComponent } from '../step-components/contact-informat
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title title="Provide your contact information"></app-step-title>
 				<div class="step-container">
 					<div class="row">
@@ -22,9 +30,11 @@ import { ContactInformationComponent } from '../step-components/contact-informat
 	styles: [],
 })
 export class StepContactInformationComponent implements LicenceChildStepperStepComponent {
-	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
+	applicationTypeCodes = ApplicationTypeCode;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 
 	isFormValid(): boolean {
 		this.contactInformationComponent.form.markAllAsTouched();

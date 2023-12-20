@@ -1,24 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LicenceAccessCodeAnonymousComponent } from './components/anonymous/licence-access-code-anonymous.component';
-import { LicenceApplicationTypeAnonymousComponent } from './components/anonymous/licence-application-type-anonymous.component';
-import { LicenceSelectionAnonymousComponent } from './components/anonymous/licence-selection-anonymous.component';
 import { UserApplicationsAnonymousComponent } from './components/anonymous/user-applications-anonymous.component';
+import { StepLicenceAccessCodeAnonymousComponent } from './components/anonymous/wizard-steps/step-licence-access-code-anonymous.component';
+import { StepApplicationTypeAnonymousComponent } from './components/anonymous/wizard-steps/step-application-type-anonymous.component';
+import { StepLicenceTypeAnonymousComponent } from './components/anonymous/wizard-steps/step-licence-type-anonymous.component';
 import { WorkerLicenceNewWizardAnonymousComponent } from './components/anonymous/worker-licence-new-wizard-anonymous.component';
 import { WorkerLicenceRenewalWizardAnonymousComponent } from './components/anonymous/worker-licence-renewal-wizard-anonymous.component';
 import { WorkerLicenceReplacementWizardAnonymousComponent } from './components/anonymous/worker-licence-replacement-wizard-anonymous.component';
 import { WorkerLicenceUpdateWizardAnonymousComponent } from './components/anonymous/worker-licence-update-wizard-anonymous.component';
 import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
-import { SecurityWorkerLicenceWizardAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-authenticated.component';
+import { SecurityWorkerLicenceWizardNewAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-new-authenticated.component';
 import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-update-authenticated.component';
 import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
+import { StepAccessCodeAuthorizedComponent } from './components/authenticated/wizard-steps/step-access-code-authorized.component';
+import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/wizard-steps/step-application-type-authenticated.component';
+import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/wizard-steps/step-licence-type-authenticated.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { SecurityWorkerLicenceApplicationComponent } from './components/security-worker-licence-application.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
-import { LicenceAccessCodeAuthorizedComponent } from './components/shared/step-components/licence-access-code-authorized.component';
+import { StepLicenceUserProfileComponent } from './components/shared/wizard-child-steps/step-licence-user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
@@ -29,6 +32,9 @@ export class LicenceApplicationRoutes {
 	public static USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
 	public static APPLICATION_AUTHENTICATED = 'applications';
 	public static WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
+	public static LICENCE_USER_PROFILE_AUTHENTICATED = 'licence-user-profile';
+	public static LICENCE_SELECTION_AUTHENTICATED = 'licence-selection';
+	public static LICENCE_APPLICATION_TYPE_AUTHENTICATED = 'licence-application-type';
 
 	public static APPLICATION_ANONYMOUS = 'applications-anonymous';
 	public static LICENCE_SELECTION_ANONYMOUS = 'licence-selection';
@@ -80,14 +86,6 @@ const routes: Routes = [
 				path: LicenceApplicationRoutes.LOGIN_SELECTION,
 				component: LoginSelectionComponent,
 			},
-			// {
-			// 	path: LicenceApplicationRoutes.USER_APPLICATIONS_ANONYMOUS,
-			// 	component: WorkerLicenceUpdateWizardAnonymousComponent,
-			// },
-			{
-				path: LicenceApplicationRoutes.LICENCE_LINK,
-				component: LicenceAccessCodeAuthorizedComponent,
-			},
 			{
 				// ANONYMOUS
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
@@ -95,15 +93,15 @@ const routes: Routes = [
 				children: [
 					{
 						path: LicenceApplicationRoutes.LICENCE_SELECTION_ANONYMOUS,
-						component: LicenceSelectionAnonymousComponent,
+						component: StepLicenceTypeAnonymousComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS,
-						component: LicenceApplicationTypeAnonymousComponent,
+						component: StepApplicationTypeAnonymousComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS,
-						component: LicenceAccessCodeAnonymousComponent,
+						component: StepLicenceAccessCodeAnonymousComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
@@ -128,6 +126,10 @@ const routes: Routes = [
 				],
 			},
 			{
+				path: LicenceApplicationRoutes.LICENCE_LINK,
+				component: StepAccessCodeAuthorizedComponent,
+			},
+			{
 				path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,
 				component: UserApplicationsAuthenticatedComponent,
 			},
@@ -141,12 +143,24 @@ const routes: Routes = [
 						component: LoginUserProfileComponent,
 					},
 					{
+						path: LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED,
+						component: StepLicenceUserProfileComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.LICENCE_SELECTION_AUTHENTICATED,
+						component: StepLicenceTypeAuthenticatedComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED,
+						component: StepApplicationTypeAuthenticatedComponent,
+					},
+					{
 						path: LicenceApplicationRoutes.LICENCE_UPDATE,
 						component: SecurityWorkerLicenceWizardUpdateAuthenticatedComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED,
-						component: SecurityWorkerLicenceWizardAuthenticatedComponent,
+						component: SecurityWorkerLicenceWizardNewAuthenticatedComponent,
 					},
 					{
 						path: '',
