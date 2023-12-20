@@ -28,7 +28,7 @@ RUN curl -c oc.tar -sL https://downloads-openshift-console.apps.silver.devops.go
 
 # override start.sh
 COPY --chown=runner:runner start.sh start.sh
-RUN chmod u+x start.sh
+RUN chmod a+x start.sh
 
 USER runner
 
