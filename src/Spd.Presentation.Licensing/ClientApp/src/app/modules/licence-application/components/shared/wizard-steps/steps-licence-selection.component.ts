@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeCode } from 'src/app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
 import { StepLicenceCategoryComponent } from '../wizard-child-steps/step-licence-category.component';
 import { StepLicenceExpiredComponent } from '../wizard-child-steps/step-licence-expired.component';
@@ -14,34 +14,66 @@ import { StepRestraintsAuthorizationComponent } from '../wizard-child-steps/step
 import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-proprietor.component';
 
 @Component({
-	selector: 'app-step-licence-selection',
+	selector: 'app-steps-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-checklist-new-worker></app-step-checklist-new-worker>
+
+					<div class="row mt-4">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-checklist-renewal-worker></app-step-checklist-renewal-worker>
+
+					<div class="row mt-4">
+						<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-step-checklist-update-worker></app-step-checklist-update-worker>
+
+					<div class="row mt-4">
+						<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
 				</ng-container>
+			</mat-step>
+
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+				<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
 
-			<mat-step>
-				<app-step-sole-proprietor></app-step-sole-proprietor>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+				<app-step-sole-proprietor [applicationTypeCode]="applicationTypeCode"></app-step-sole-proprietor>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -60,7 +92,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<!-- <mat-step>
 				<app-step-licence-expired></app-step-licence-expired>
 
 				<div class="row mt-4">
@@ -83,10 +115,10 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
-				<app-step-licence-category></app-step-licence-category>
+				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -165,8 +197,8 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<mat-step>
-				<app-step-licence-term></app-step-licence-term>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+				<app-step-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-licence-term>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -199,8 +231,9 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_SOLE_PROPRIETOR = 1;
+	readonly STEP_LICENCE_CONFIRMATION = 2;
 	readonly STEP_LICENCE_EXPIRED = 5;
 	readonly STEP_LICENCE_CATEGORY = 6;
 	readonly STEP_DOGS = 8;
@@ -243,6 +276,7 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 			(_resp: any) => {
 				// console.debug('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
+
 				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
@@ -258,10 +292,21 @@ export class StepLicenceSelectionComponent extends BaseWizardStepComponent imple
 		this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()]);
 	}
 
+	override onGoToNextStep() {
+		console.log('onGoToNextStep', this.childstepper.selectedIndex);
+		if (this.childstepper.selectedIndex === 2 && this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+		this.childstepper.next();
+	}
+
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
+			case this.STEP_LICENCE_CONFIRMATION:
+				return true;
 			case this.STEP_LICENCE_EXPIRED:
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:

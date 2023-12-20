@@ -1,11 +1,11 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { LicenceAppDocumentResponse } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
-import { LicenceAppDocumentResponse } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
-import { SPD_CONSTANTS } from '../constants/constants';
 
 export interface SpdFile extends File {
 	name: string;

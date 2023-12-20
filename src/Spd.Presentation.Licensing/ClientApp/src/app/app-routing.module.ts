@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LandingComponent } from './landing.component';
-import { LicenceApplicationRoutes } from './modules/licence-application/licence-application-routing.module';
 import { LicenceRoutes } from './modules/licence-portal/licence-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 

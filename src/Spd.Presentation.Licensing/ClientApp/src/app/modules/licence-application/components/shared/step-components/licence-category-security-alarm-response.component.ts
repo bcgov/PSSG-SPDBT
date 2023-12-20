@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-alarm-response',

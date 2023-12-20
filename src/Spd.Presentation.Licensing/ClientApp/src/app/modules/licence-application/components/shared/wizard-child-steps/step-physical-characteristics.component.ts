@@ -1,21 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { HeightUnitCode } from 'src/app/api/models';
+import { ApplicationTypeCode, HeightUnitCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import {
 	EyeColourTypes,
 	HairColourTypes,
 	HeightUnitTypes,
 	WeightUnitTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
-	selector: 'app-step-height-and-weight',
+	selector: 'app-step-physical-characteristics',
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title title="Provide identifying information"></app-step-title>
 				<div class="step-container">
 					<div class="row">
@@ -121,16 +129,19 @@ import { LicenceApplicationService } from '../../../services/licence-application
 	`,
 	styles: [],
 })
-export class StepHeightAndWeightComponent implements LicenceChildStepperStepComponent {
+export class StepPhysicalCharacteristicsComponent implements LicenceChildStepperStepComponent {
 	hairColourTypes = HairColourTypes;
 	eyeColourTypes = EyeColourTypes;
 	heightUnitTypes = HeightUnitTypes;
 	weightUnitTypes = WeightUnitTypes;
 	heightUnitCodes = HeightUnitCode;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

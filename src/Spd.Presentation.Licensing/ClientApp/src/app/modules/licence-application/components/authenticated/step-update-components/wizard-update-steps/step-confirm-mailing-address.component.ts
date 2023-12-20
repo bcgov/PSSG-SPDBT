@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AddressRetrieveResponse } from 'src/app/api/models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AddressRetrieveResponse } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-confirm-mailing-address',

@@ -1,12 +1,12 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { LicenceStepperStepComponent } from 'src/app/modules/licence-application/services/licence-application.helper';
+import { LicenceStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
 	selector: 'app-base-wizard-step',
-	template: ``,
-	styles: ``,
+	template: '',
+	styles: '',
 })
 export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;

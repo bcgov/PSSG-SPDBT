@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { IdentityProviderTypeCode } from '@app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })

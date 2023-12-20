@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-consent-and-declaration',

@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { WorkerCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from '@app/api/models';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 export interface LicenceCategoryDialogData {
 	category: WorkerCategoryTypeCode | null;
