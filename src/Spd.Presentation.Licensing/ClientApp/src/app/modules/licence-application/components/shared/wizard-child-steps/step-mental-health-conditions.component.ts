@@ -1,22 +1,31 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { LicenceDocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
 
 @Component({
 	selector: 'app-step-mental-health-conditions',
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					title="Have you been treated for any of the following Mental Health Conditions?"
 					subtitle="An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment"
 				></app-step-title>
+
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
 						<div class="row">
@@ -81,8 +90,11 @@ import { LicenceApplicationService } from '../../../services/licence-application
 })
 export class StepMentalHealthConditionsComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

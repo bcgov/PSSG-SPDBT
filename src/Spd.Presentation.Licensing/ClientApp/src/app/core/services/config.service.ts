@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { ConfigurationResponse, IdentityProviderTypeCode } from '@app/api/models';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ConfigurationResponse, IdentityProviderTypeCode } from 'src/app/api/models';
 import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
@@ -59,7 +59,7 @@ export class ConfigService {
 	}
 
 	public getBcscIssuer(): string | null {
-		const resp = this.configs?.bcscConfiguration??{};
+		const resp = this.configs?.bcscConfiguration ?? {};
 		return resp.issuer ?? null;
 	}
 

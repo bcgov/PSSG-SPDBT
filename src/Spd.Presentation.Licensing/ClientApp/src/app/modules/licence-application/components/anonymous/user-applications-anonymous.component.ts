@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { take } from 'rxjs/internal/operators/take';
 import { tap } from 'rxjs/internal/operators/tap';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
 	selector: 'app-user-applications-anonymous',
@@ -41,8 +41,6 @@ export class UserApplicationsAnonymousComponent implements OnInit {
 	}
 
 	onCreateNew(): void {
-		// this.licenceApplicationService.reset();
-
 		this.licenceApplicationService
 			.createNewLicenceAnonymous()
 			.pipe(

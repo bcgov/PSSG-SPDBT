@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { HotToastService } from '@ngneat/hot-toast';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 export enum DocumentTypeCode {
 	Image = 'IMAGE',
@@ -141,9 +141,9 @@ export class FileUploadHelper {
 		</button>
 
 		<ng-template #infoText>
-			<div class="mat-option-error" *ngIf="accept">Accepted file formats: {{ accept }}</div>
-			<div class="mat-option-error" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
-			<div class="mat-option-error">Maximum number of files: {{ maxNumberOfFiles }}</div>
+			<div class="mat-option-hint" *ngIf="accept">Accepted file formats: {{ accept }}</div>
+			<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
+			<div class="mat-option-hint">Maximum number of files: {{ maxNumberOfFiles }}</div>
 		</ng-template>
 	`,
 	styles: [

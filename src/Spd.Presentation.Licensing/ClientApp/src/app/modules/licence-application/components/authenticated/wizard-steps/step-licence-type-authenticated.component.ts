@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { WorkerLicenceTypeCode } from 'src/app/api/models';
-import { LicenceChildStepperStepComponent } from '../../../services/licence-application.helper';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
+import { Router } from '@angular/router';
+import { WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
-	selector: 'app-step-licence-type-selection',
+	selector: 'app-step-licence-type-authenticated',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -79,6 +81,15 @@ import { LicenceApplicationService } from '../../../services/licence-application
 				</div>
 			</div>
 		</section>
+
+		<div class="row mt-4">
+			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+			</div>
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+			</div>
+		</div>
 	`,
 	styles: [
 		`
@@ -101,7 +112,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 		`,
 	],
 })
-export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepLicenceTypeAuthenticatedComponent implements OnInit, LicenceChildStepperStepComponent {
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
@@ -117,7 +128,7 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 
 	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.imagePaths.forEach((path) => {
@@ -133,12 +144,12 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		console.log('onLicenceTypeChange', _val);
+		// console.log('onLicenceTypeChange', _val);
 		this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
-		console.log('onLicenceTypeChange', this.form.value);
-		console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
+		// console.log('onLicenceTypeChange', this.form.value);
+		// console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
 		// console.log(
 		// 	'onLicenceTypeChange licenceModelFormGroupAnonymous',
 		// 	this.licenceApplicationService.licenceModelFormGroupAnonymous.value
@@ -160,6 +171,24 @@ export class StepLicenceTypeSelectionComponent implements OnInit, LicenceChildSt
 		const isValid = this.form.valid;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
+	}
+
+	onStepPrevious(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED
+			)
+		);
+	}
+
+	onStepNext(): void {
+		if (this.isFormValid()) {
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED
+				)
+			);
+		}
 	}
 
 	private onImageLoaded() {

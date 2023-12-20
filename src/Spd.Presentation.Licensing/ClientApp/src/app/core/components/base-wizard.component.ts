@@ -2,7 +2,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation } from '@angular/cdk/stepper';
 import { Component, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-base-wizard',
@@ -12,8 +11,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 export class BaseWizardComponent {
 	@ViewChild('stepper') stepper!: MatStepper;
 
-	licenceModelLoadedSubscription!: Subscription;
-	isLoaded$ = new BehaviorSubject<boolean>(false);
+	// licenceModelLoadedSubscription!: Subscription;
+	// isLoaded$ = new BehaviorSubject<boolean>(false);
 
 	orientation: StepperOrientation = 'vertical';
 

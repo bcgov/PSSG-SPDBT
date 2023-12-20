@@ -1,19 +1,21 @@
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { LicenceApplicationRoutes } from '../../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
-import { StepConsentAndDeclarationComponent } from '../wizard-child-steps/step-consent-and-declaration.component';
-import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-summary-review-licence.component';
+import { StepConsentAndDeclarationComponent } from '../../shared/wizard-child-steps/step-consent-and-declaration.component';
+import { StepSummaryReviewLicenceAuthenticatedComponent } from './step-summary-review-licence-authenticated.component';
 
 @Component({
-	selector: 'app-step-review-licence',
+	selector: 'app-steps-review-licence-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-summary-review-licence (editStep)="onGoToStep($event)"></app-step-summary-review-licence>
+				<app-step-summary-review-licence-authenticated
+					(editStep)="onGoToStep($event)"
+				></app-step-summary-review-licence-authenticated>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -42,10 +44,11 @@ import { StepSummaryReviewLicenceComponent } from '../wizard-child-steps/step-su
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepReviewLicenceComponent extends BaseWizardStepComponent {
+export class StepsReviewLicenceAuthenticatedComponent extends BaseWizardStepComponent {
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepSummaryReviewLicenceComponent) summaryReviewComponent!: StepSummaryReviewLicenceComponent;
+	@ViewChild(StepSummaryReviewLicenceAuthenticatedComponent)
+	summaryReviewComponent!: StepSummaryReviewLicenceAuthenticatedComponent;
 	@ViewChild(StepConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepConsentAndDeclarationComponent;
 
 	constructor(

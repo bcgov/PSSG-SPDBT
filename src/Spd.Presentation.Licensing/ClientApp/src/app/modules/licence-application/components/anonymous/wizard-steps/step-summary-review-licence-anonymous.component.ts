@@ -5,13 +5,13 @@ import {
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-} from 'src/app/api/models';
-import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService } from '../../../services/licence-application.service';
+} from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
-	selector: 'app-step-summary-review-licence',
+	selector: 'app-step-summary-review-licence-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -36,7 +36,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 1"
 															aria-label="Go to Step 1"
-															(click)="$event.stopPropagation(); onEditStep(1)"
+															(click)="$event.stopPropagation(); onEditStep(0)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -74,7 +74,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 																Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
 															</div>
 															<div class="summary-text-data">
-																{{ category.desc }}
+																{{ category | options : 'WorkerCategoryTypes' }}
 															</div>
 														</div>
 													</ng-container>
@@ -207,7 +207,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 													</div>
 												</ng-container>
 
-												<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+												<!-- <ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Expired Licence</div>
 													<div class="row mt-0">
@@ -222,7 +222,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															</div>
 														</div>
 													</div>
-												</ng-container>
+												</ng-container> -->
 
 												<ng-container *ngIf="showDogsAndRestraints">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
@@ -289,7 +289,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 2"
 															aria-label="Go to Step 2"
-															(click)="$event.stopPropagation(); onEditStep(2)"
+															(click)="$event.stopPropagation(); onEditStep(1)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -386,7 +386,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 3"
 															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(3)"
+															(click)="$event.stopPropagation(); onEditStep(2)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -532,7 +532,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 															class="go-to-step-button"
 															matTooltip="Go to Step 3"
 															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(4)"
+															(click)="$event.stopPropagation(); onEditStep(99)"
 														>
 															<mat-icon>edit</mat-icon>
 														</button>
@@ -683,7 +683,7 @@ import { LicenceApplicationService } from '../../../services/licence-application
 		`,
 	],
 })
-export class StepSummaryReviewLicenceComponent implements OnInit {
+export class StepSummaryReviewLicenceAnonymousComponent implements OnInit {
 	licenceModelData: any = {};
 
 	constants = SPD_CONSTANTS;
@@ -801,15 +801,15 @@ export class StepSummaryReviewLicenceComponent implements OnInit {
 		return feeItem?.amount ?? null;
 	}
 
-	get hasExpiredLicence(): string {
-		return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
-	}
-	get expiredLicenceNumber(): string {
-		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
-	}
-	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
-	}
+	// get hasExpiredLicence(): string {
+	// 	return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	// }
+	// get expiredLicenceNumber(): string {
+	// 	return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	// }
+	// get expiredLicenceExpiryDate(): string {
+	// 	return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+	// }
 
 	get carryAndUseRestraints(): string {
 		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
@@ -1023,88 +1023,59 @@ export class StepSummaryReviewLicenceComponent implements OnInit {
 	get mailingCountry(): string {
 		return this.licenceModelData.mailingAddressData?.country ?? '';
 	}
-	get categoryList(): Array<SelectOptions> {
-		const list: Array<SelectOptions> = [];
-		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.ArmouredCarGuard);
-			if (element) list.push(element);
-		}
 
+	get categoryList(): Array<WorkerCategoryTypeCode> {
+		const list: Array<WorkerCategoryTypeCode> = [];
+		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
+		}
 		if (this.licenceModelData.categoryBodyArmourSalesFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.BodyArmourSales);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.BodyArmourSales);
 		}
 		if (this.licenceModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 		}
 		if (this.licenceModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 		}
 		if (this.licenceModelData.categoryFireInvestigatorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.FireInvestigator);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.FireInvestigator);
 		}
 		if (this.licenceModelData.categoryLocksmithFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.Locksmith);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.Locksmith);
 		}
 		if (this.licenceModelData.categoryLocksmithSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.LocksmithUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
 		}
 		if (this.licenceModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.PrivateInvestigator);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
 		}
 		if (this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
 		}
 		if (this.licenceModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstaller);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
 		}
 		if (this.licenceModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
 		}
 		if (this.licenceModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmMonitor);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 		}
 		if (this.licenceModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmResponse);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
 		}
 		if (this.licenceModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmSales);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
 		}
 		if (this.licenceModelData.categorySecurityConsultantFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityConsultant);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityConsultant);
 		}
 		if (this.licenceModelData.categorySecurityGuardFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityGuard);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityGuard);
 		}
 		if (this.licenceModelData.categorySecurityGuardSupFormGroup.isInclude) {
-			const element = this.swlCategoryTypes.find(
-				(item) => item.code == WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-			if (element) list.push(element);
+			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
 		}
 
 		return list;
