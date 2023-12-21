@@ -1,10 +1,5 @@
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { StepConsentAndDeclarationComponent } from '../../shared/wizard-child-steps/step-consent-and-declaration.component';
 import { StepSummaryReviewLicenceAnonymousComponent } from './step-summary-review-licence-anonymous.component';
 
@@ -51,12 +46,7 @@ export class StepsReviewLicenceAnonymousComponent extends BaseWizardStepComponen
 	summaryReviewComponent!: StepSummaryReviewLicenceAnonymousComponent;
 	@ViewChild(StepConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepConsentAndDeclarationComponent;
 
-	constructor(
-		private router: Router,
-		private licenceApplicationService: LicenceApplicationService,
-		private authenticationService: AuthenticationService,
-		private hotToastService: HotToastService
-	) {
+	constructor() {
 		super();
 	}
 
@@ -64,20 +54,7 @@ export class StepsReviewLicenceAnonymousComponent extends BaseWizardStepComponen
 		const isValid = this.consentAndDeclarationComponent.isFormValid();
 		if (!isValid) return;
 
-		this.licenceApplicationService.submitLicence().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your licence has been successfully submitted');
-				if (this.authenticationService.isLoggedIn()) {
-					this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-				} else {
-					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
-				}
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
+		this.nextPayStep.emit();
 	}
 
 	onGoToStep(step: number): void {

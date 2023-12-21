@@ -4,15 +4,17 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
-import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
-import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/wizard-steps/steps-review-licence-authenticated.component';
+import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background.component';
+import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
 import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-identification-anonymous.component';
 
 @Component({
-	selector: 'app-worker-licence-update-wizard-anonymous',
+	selector: 'app-worker-licence-wizard-anonymous-new',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -28,7 +30,6 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 						<app-steps-licence-selection
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-licence-selection>
@@ -62,6 +63,7 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 							<app-steps-review-licence-anonymous
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
+								(nextPayStep)="onNextPayStep()"
 								(scrollIntoView)="onScrollIntoView()"
 								(goToStep)="onGoToStep($event)"
 							></app-steps-review-licence-anonymous>
@@ -77,7 +79,7 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 	`,
 	styles: [],
 })
-export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardComponent implements OnInit {
+export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -102,6 +104,7 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -141,6 +144,11 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToLastStep();
+				// this.router.navigateByUrl(
+				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+				// 		LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
+				// 	)
+				// );
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();
@@ -150,6 +158,40 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 				break;
 		}
 	}
+
+	onNextPayStep(): void {
+		this.licenceApplicationService.submitLicence().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your licence has been successfully submitted');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
+
+	// onPayNow(application: PaymentResponse): void {
+	// 	const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
+	// 	const body: PaymentLinkCreateRequest = {
+	// 		applicationId: application.id!,
+	// 		paymentMethod: PaymentMethodCode.CreditCard,
+	// 		description: `Payment for Case ID: ${application.applicationNumber}`,
+	// 	};
+	// 	this.paymentService
+	// 		.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
+	// 			orgId: orgId!,
+	// 			applicationId: application.id!,
+	// 			body,
+	// 		})
+	// 		.pipe()
+	// 		.subscribe((res: PaymentLinkResponse) => {
+	// 			if (res.paymentLinkUrl) {
+	// 				window.location.assign(res.paymentLinkUrl);
+	// 			}
+	// 		});
+	// }
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
@@ -191,7 +233,6 @@ export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardCompo
 	onChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				// applicationTypeCode !== applicationTypeCodes.Update
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
 				break;
 			case this.STEP_BACKGROUND:
