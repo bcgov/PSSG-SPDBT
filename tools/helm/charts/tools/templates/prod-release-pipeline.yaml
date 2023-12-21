@@ -45,7 +45,7 @@ spec:
     - name: prod-job-scheduler
       params:
         - name: imageName
-          value: job-scheduler
+          value: jag-jobscheduler
         - name: fromTag
           value: test
         - name: toTag

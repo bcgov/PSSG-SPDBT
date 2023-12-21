@@ -11,7 +11,7 @@ spec:
     - name: test-screening-portal
       params:
         - name: imageName
-          value: screening-portal1
+          value: screening-portal
         - name: fromTag
           value: dev
         - name: toTag
@@ -23,7 +23,7 @@ spec:
     - name: test-licensing-portal
       params:
         - name: imageName
-          value: licensing-portal1
+          value: licensing-portal
         - name: fromTag
           value: dev
         - name: toTag
@@ -35,7 +35,7 @@ spec:
     - name: test-dynamics-helper
       params:
         - name: imageName
-          value: dynamics-helper1
+          value: dynamics-helper
         - name: fromTag
           value: dev
         - name: toTag
@@ -47,7 +47,7 @@ spec:
     - name: test-job-scheduler
       params:
         - name: imageName
-          value: job-scheduler1
+          value: jag-jobscheduler
         - name: fromTag
           value: dev
         - name: toTag

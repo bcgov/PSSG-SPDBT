@@ -15,7 +15,7 @@ spec:
         - name: sourceTag
           value: latest
         - name: destinationImage
-          value: screening-portal1
+          value: screening-portal
         - name: destinationTag
           value: dev
       taskRef:
@@ -29,7 +29,7 @@ spec:
         - name: sourceTag
           value: latest
         - name: destinationImage
-          value: licensing-portal1
+          value: licensing-portal
         - name: destinationTag
           value: dev
       taskRef:
@@ -43,7 +43,7 @@ spec:
         - name: sourceTag
           value: latest
         - name: destinationImage
-          value: dynamics-helper1
+          value: dynamics-helper
         - name: destinationTag
           value: dev
       taskRef:
@@ -57,7 +57,7 @@ spec:
         - name: sourceTag
           value: main
         - name: destinationImage
-          value: job-scheduler1
+          value: jag-jobscheduler
         - name: destinationTag
           value: dev
       taskRef:
