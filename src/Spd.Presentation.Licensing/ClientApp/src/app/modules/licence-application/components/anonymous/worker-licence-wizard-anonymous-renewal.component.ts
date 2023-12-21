@@ -4,14 +4,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { distinctUntilChanged } from 'rxjs';
-import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
-import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
-import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/wizard-steps/steps-review-licence-authenticated.component';
+import { StepsBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background-renew-and-update.component';
+import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
 import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-identification-anonymous.component';
 
 @Component({
-	selector: 'app-worker-licence-renewal-wizard-anonymous',
+	selector: 'app-worker-licence-wizard-anonymous-renewal',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -27,7 +27,6 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 						<app-steps-licence-selection
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-licence-selection>
@@ -35,13 +34,13 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 
 					<mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Background</ng-template>
-						<app-steps-background
+						<app-steps-background-renew-and-update
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-background>
+						></app-steps-background-renew-and-update>
 					</mat-step>
 
 					<mat-step [completed]="step3Complete">
@@ -76,7 +75,7 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 	`,
 	styles: [],
 })
-export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComponent implements OnInit {
+export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -89,8 +88,8 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 	@ViewChild(StepsLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
 
-	@ViewChild(StepsBackgroundComponent)
-	stepBackgroundComponent!: StepsBackgroundComponent;
+	@ViewChild(StepsBackgroundRenewAndUpdateComponent)
+	stepBackgroundComponent!: StepsBackgroundRenewAndUpdateComponent;
 
 	@ViewChild(StepsIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepsIdentificationAnonymousComponent;
@@ -100,7 +99,6 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		// private router: Router,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -139,11 +137,7 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
-				// this.router.navigateByUrl(
-				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-				// 		LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-				// 	)
-				// );
+				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();

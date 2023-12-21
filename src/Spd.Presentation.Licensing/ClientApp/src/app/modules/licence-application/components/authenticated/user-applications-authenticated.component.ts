@@ -35,12 +35,12 @@ export interface ApplicationResponse {
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-							<h2 class="my-3 fs-3 fw-normal">Security Licences & Permits</h2>
+							<h2 class="fs-3 mb-3">Security Licences & Permits</h2>
 						</div>
 
 						<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
 							<div class="d-flex justify-content-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onUserProfile()">
+								<button mat-flat-button color="primary" class="large w-auto mb-3" (click)="onUserProfile()">
 									<mat-icon>person</mat-icon>
 									Your Profile
 								</button>
@@ -54,7 +54,7 @@ export interface ApplicationResponse {
 						fee?
 					</app-alert>
 
-					<app-alert type="warning">
+					<app-alert type="warning" icon="warning">
 						Your armoured vehicle permit is expiring in 71 days. Please renew by <strong>December 15, 2023</strong>.
 					</app-alert>
 
@@ -69,7 +69,7 @@ export interface ApplicationResponse {
 									<div class="text-data">You don't have an active licence</div>
 								</div>
 								<div class="col-lg-6 text-end">
-									<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
+									<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
 										<mat-icon>add</mat-icon>Apply for a New Licence or Permit
 									</button>
 								</div>
@@ -161,7 +161,7 @@ export interface ApplicationResponse {
 						<div class="mb-3" *ngIf="activeApplications.length > 0">
 							<div class="section-title fs-5 py-3">Active Licences/Permits</div>
 							<div
-								class="summary-card-section summary-card-section__green mb-2 px-4 py-3"
+								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 								*ngFor="let appl of activeApplications; let i = index"
 							>
 								<div class="row">
@@ -400,18 +400,18 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		this.activeApplications = [
 			{
 				id: '1',
-				licenceAppId: 'TEST-NWQ3X7Y',
+				licenceAppId: 'TEST-NWQ3X7A',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
-				action: 'Update',
+				action: ApplicationTypeCode.Update,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			{
 				id: '2',
-				licenceAppId: 'TEST-NWQ3X7Y',
+				licenceAppId: 'TEST-NWQ3X7B',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
-				action: 'Renew',
+				action: ApplicationTypeCode.Renewal,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 		];
@@ -486,18 +486,36 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.subscribe();
 	}
 
-	onUpdate(_appl: ApplicationResponse): void {
-		this.licenceApplicationService
-			.loadUpdateLicence()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LICENCE_UPDATE)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+	onUpdate(appl: ApplicationResponse): void {
+		if (appl.action === ApplicationTypeCode.Update) {
+			this.licenceApplicationService
+				.loadUpdateLicence()
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+							)
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+		} else {
+			this.licenceApplicationService
+				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.workerLicenceTypeCode!, ApplicationTypeCode.Renewal)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+							)
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+		}
 	}
 
 	onReapply(_appl: ApplicationResponse): void {

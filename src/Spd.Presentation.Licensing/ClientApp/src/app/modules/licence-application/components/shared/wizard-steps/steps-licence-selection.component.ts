@@ -22,20 +22,25 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 					<app-step-checklist-new-worker></app-step-checklist-new-worker>
 
 					<div class="row mt-4">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
+					<!-- <div class="row mt-4">
 						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 						</div>
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
-					</div>
+					</div> -->
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-checklist-renewal-worker></app-step-checklist-renewal-worker>
 
 					<div class="row mt-4">
-						<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
@@ -45,14 +50,18 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 					<app-step-checklist-update-worker></app-step-checklist-update-worker>
 
 					<div class="row mt-4">
-						<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
 				</ng-container>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+			<mat-step
+				*ngIf="
+					applicationTypeCode === applicationTypeCodes.Update || applicationTypeCode === applicationTypeCodes.Renewal
+				"
+			>
 				<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
 
 				<div class="row mt-4">
@@ -92,7 +101,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<!-- <mat-step>
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-step-licence-expired></app-step-licence-expired>
 
 				<div class="row mt-4">
@@ -115,7 +124,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
@@ -293,7 +302,8 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 	}
 
 	override onGoToNextStep() {
-		console.log('onGoToNextStep', this.childstepper.selectedIndex);
+		console.debug('onGoToNextStep', this.childstepper.selectedIndex);
+
 		if (this.childstepper.selectedIndex === 2 && this.applicationTypeCode === ApplicationTypeCode.Update) {
 			this.nextStepperStep.emit(true);
 			return;
