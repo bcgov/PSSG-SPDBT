@@ -5,6 +5,12 @@ apiVersion: apps.openshift.io/v1
 metadata:
   name: {{ .name }}
   labels: {{ .labels | nindent 4 }}
+  {{- if (.Values.secretFiles).files }}
+  annotations:
+  {{- range $file :=.Values.secretFiles.files }}
+    checksum/{{ base $file | replace "." "-" }}: {{ $.Files.Get $file | toString | sha256sum }}
+  {{- end -}}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   revisionHistoryLimit: 10
