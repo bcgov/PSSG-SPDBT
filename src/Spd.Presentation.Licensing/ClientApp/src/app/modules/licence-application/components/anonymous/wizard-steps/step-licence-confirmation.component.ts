@@ -71,7 +71,7 @@ export class StepLicenceConfirmationComponent implements OnInit {
 		const fee = this.licenceApplicationService.licenceFeeTermCodes?.filter(
 			(item) => item.licenceTermCode == this.licenceTermCode
 		);
-		if (fee) {
+		if (fee?.length > 0) {
 			this.feeAmount = `$${fee[0].amount}`;
 		} else {
 			this.feeAmount = '';
