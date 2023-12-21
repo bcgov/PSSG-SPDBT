@@ -223,7 +223,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				if (this.initialized) {
 					this.hasValueChanged = true;
 
-					// const step1Complete = this.isStep1Complete();
 					const step1Complete = this.isStepLicenceSelectionComplete();
 					const step2Complete = this.isStepBackgroundComplete();
 					const step3Complete = this.isStepIdentificationComplete();
@@ -1197,30 +1196,30 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep1Complete(): boolean {
-		// console.debug(
-		// 	'isStep1Complete',
-		// 	this.profileFormGroup.valid,
-		// 	this.workerLicenceTypeFormGroup.valid,
-		// 	this.applicationTypeFormGroup.valid,
-		// );
+	// isStep1Complete(): boolean {
+	// 	// console.debug(
+	// 	// 	'isStep1Complete',
+	// 	// 	this.profileFormGroup.valid,
+	// 	// 	this.workerLicenceTypeFormGroup.valid,
+	// 	// 	this.applicationTypeFormGroup.valid,
+	// 	// );
 
-		let isValid!: boolean;
-		if (this.authenticationService.isLoggedIn()) {
-			isValid =
-				this.profileConfirmationFormGroup.valid &&
-				this.personalInformationFormGroup.valid &&
-				this.aliasesFormGroup.valid &&
-				this.residentialAddressFormGroup.valid &&
-				this.mailingAddressFormGroup.valid &&
-				this.contactInformationFormGroup.valid;
-			this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-		} else {
-			isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-		}
+	// 	let isValid!: boolean;
+	// 	if (this.authenticationService.isLoggedIn()) {
+	// 		isValid =
+	// 			this.profileConfirmationFormGroup.valid &&
+	// 			this.personalInformationFormGroup.valid &&
+	// 			this.aliasesFormGroup.valid &&
+	// 			this.residentialAddressFormGroup.valid &&
+	// 			this.mailingAddressFormGroup.valid &&
+	// 			this.contactInformationFormGroup.valid;
+	// 		this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+	// 	} else {
+	// 		isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+	// 	}
 
-		return isValid;
-	}
+	// 	return isValid;
+	// }
 
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
@@ -1415,6 +1414,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private submitLicenceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
 		console.debug('submitLicenceAuthenticated body', body);
+
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
@@ -1685,7 +1685,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			// hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
+			hasExpiredLicence: false, // TODO remove?
 			// expiredLicenceNumber:
 			// 	expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			// expiredLicenceId:

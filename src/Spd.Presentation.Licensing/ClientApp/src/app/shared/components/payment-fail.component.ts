@@ -5,49 +5,53 @@ import { Router } from '@angular/router';
 	selector: 'app-payment-fail',
 	template: `
 		<div class="row">
-			<div class="col-xl-6 col-lg-4 col-md-12">
-				<h3 class="fw-normal m-2">
-					<span *ngIf="isCancelledPaymentFlow; else paymentFailedHeader">Payment Cancelled</span>
-					<ng-template #paymentFailedHeader>Payment Failed </ng-template>
-				</h3>
-			</div>
-			<div class="col-xl-6 col-lg-8 col-md-12">
-				<div class="d-flex justify-content-end">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto m-2"
-						aria-label="Back"
-						*ngIf="isBackRoute"
-						(click)="onBack()"
-					>
-						<mat-icon>arrow_back</mat-icon>Back
-					</button>
-					<button
-						mat-flat-button
-						color="primary"
-						class="large w-auto m-2"
-						*ngIf="!isCancelledPaymentFlow && numberOfAttemptsRemaining > 0"
-						aria-label="Try again"
-						(click)="onPayNow()"
-					>
-						<mat-icon>payment</mat-icon>Try Again
-					</button>
+			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="row">
+					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
+						<h2 class="fs-3 mt-0 mt-md-3">
+							<span *ngIf="isCancelledPaymentFlow; else paymentFailedHeader">Payment Cancelled</span>
+							<ng-template #paymentFailedHeader>Payment Failed </ng-template>
+						</h2>
+					</div>
+
+					<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
+						<div class="d-flex justify-content-end">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large w-auto m-2"
+								aria-label="Back"
+								*ngIf="isBackRoute"
+								(click)="onBack()"
+							>
+								<mat-icon>arrow_back</mat-icon>Back
+							</button>
+							<button
+								mat-flat-button
+								color="primary"
+								class="large w-auto m-2"
+								*ngIf="!isCancelledPaymentFlow && numberOfAttemptsRemaining > 0"
+								aria-label="Try again"
+								(click)="onPayNow()"
+							>
+								<mat-icon>payment</mat-icon>Try Again
+							</button>
+						</div>
+					</div>
 				</div>
+				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 			</div>
 		</div>
 
-		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
-
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-fail.png"  alt="Payment fail"/>
+				<img class="payment__image__item" src="/assets/payment-fail.png" alt="Payment fail" />
 			</div>
 		</div>
 
 		<div class="row mx-4">
 			<!-- <div class="col-12 mt-4">
-				<div class="fw-normal fs-3 text-center">
+				<div class="fs-4 text-center">
 					<span *ngIf="isCancelledPaymentFlow; else paymentFailedSubHeader"
 						>Your payment attempt has been cancelled</span
 					>
@@ -60,7 +64,7 @@ import { Router } from '@angular/router';
 
 			<ng-container *ngIf="isCancelledPaymentFlow; else paymentFailed">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="lead fs-4 mt-4 text-center">
+					<div class="mt-4 text-center">
 						Your application is submitted, but it won't be processed until payment is received.
 					</div>
 				</div>
@@ -69,28 +73,37 @@ import { Router } from '@angular/router';
 			<ng-template #paymentFailed>
 				<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="lead fs-4 mt-4">
+						<div class="mt-4">
 							Your application has been submitted, but it won't be processed until payment is received.
 						</div>
-						<div class="lead fs-4 my-4">
+						<div class="my-4">
 							Please download and complete the
-							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keydown)="onKeydownDownloadManualPaymentForm($event)">Manual Payment Form</a> then follow the instructions on the
-							form to submit payment to the Security Programs Division.
+							<a
+								tabindex="0"
+								(click)="onDownloadManualPaymentForm()"
+								(keydown)="onKeydownDownloadManualPaymentForm($event)"
+								>Manual Payment Form</a
+							>
+							then follow the instructions on the form to submit payment to the Security Programs Division.
 						</div>
 					</div>
 				</ng-container>
 
 				<ng-template #remainingAttempts>
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="lead fs-4 mt-4">
+						<div class="mt-4">
 							Please ensure the information you entered is correct and try again, or use a different credit card. You
 							have
 							{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
 						</div>
-						<div class="lead fs-4 my-4">
+						<div class="my-4">
 							Alternatively, you can download the
-							<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keydown)="onKeydownDownloadManualPaymentForm($event)">Manual Payment Form</a>. Fill it out, and follow the
-							instructions to submit it to the Security Programs Division.
+							<a
+								tabindex="0"
+								(click)="onDownloadManualPaymentForm()"
+								(keydown)="onKeydownDownloadManualPaymentForm($event)"
+								>Manual Payment Form</a
+							>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
 						</div>
 					</div>
 				</ng-template>

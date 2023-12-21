@@ -14,7 +14,7 @@ import { UserProfileComponent } from '../shared/step-components/user-profile.com
 			<section class="step-section">
 				<div class="row">
 					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<h2 class="my-3 fs-3 fw-normal">Your Profile</h2>
+						<h2 class="fs-3 mb-3">Your Profile</h2>
 						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>

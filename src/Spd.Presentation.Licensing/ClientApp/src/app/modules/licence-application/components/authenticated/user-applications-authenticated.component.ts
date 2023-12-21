@@ -35,12 +35,12 @@ export interface ApplicationResponse {
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-							<h2 class="my-3 fs-3 fw-normal">Security Licences & Permits</h2>
+							<h2 class="fs-3 mb-3">Security Licences & Permits</h2>
 						</div>
 
 						<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
 							<div class="d-flex justify-content-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onUserProfile()">
+								<button mat-flat-button color="primary" class="large w-auto mb-3" (click)="onUserProfile()">
 									<mat-icon>person</mat-icon>
 									Your Profile
 								</button>
@@ -54,7 +54,7 @@ export interface ApplicationResponse {
 						fee?
 					</app-alert>
 
-					<app-alert type="warning">
+					<app-alert type="warning" icon="warning">
 						Your armoured vehicle permit is expiring in 71 days. Please renew by <strong>December 15, 2023</strong>.
 					</app-alert>
 
@@ -69,7 +69,7 @@ export interface ApplicationResponse {
 									<div class="text-data">You don't have an active licence</div>
 								</div>
 								<div class="col-lg-6 text-end">
-									<button mat-flat-button color="primary" class="large w-auto" (click)="onCreateNew()">
+									<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
 										<mat-icon>add</mat-icon>Apply for a New Licence or Permit
 									</button>
 								</div>

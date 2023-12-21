@@ -2,12 +2,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { distinctUntilChanged } from 'rxjs';
-import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepMailingAddressComponent } from '../shared/wizard-child-steps/step-mailing-address.component';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { StepMailingAddressComponent } from '@app/modules/licence-application/components/shared/wizard-child-steps/step-mailing-address.component';
 
 @Component({
-	selector: 'app-worker-licence-replacement-wizard-anonymous',
+	selector: 'app-worker-licence-wizard-anonymous-replacement',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -48,7 +48,7 @@ import { StepMailingAddressComponent } from '../shared/wizard-child-steps/step-m
 	`,
 	styles: [],
 })
-export class WorkerLicenceReplacementWizardAnonymousComponent extends BaseWizardComponent implements OnInit {
+export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizardComponent implements OnInit {
 	applicationTypeCode = ApplicationTypeCode.Replacement;
 
 	@ViewChild(StepMailingAddressComponent)

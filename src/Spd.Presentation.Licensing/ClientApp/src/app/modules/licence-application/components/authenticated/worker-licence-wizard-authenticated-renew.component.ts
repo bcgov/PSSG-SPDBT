@@ -8,18 +8,18 @@ import { Router } from '@angular/router';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { AppRoutes } from 'src/app/app-routing.module';
-import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
-import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
+import { AppRoutes } from '@app/app-routing.module';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { AuthenticationService } from '@app/core/services/authentication.service';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background.component';
+import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
 import { StepsIdentificationAuthenticatedComponent } from './wizard-steps/steps-identification-authenticated.component';
 import { StepsReviewLicenceAuthenticatedComponent } from './wizard-steps/steps-review-licence-authenticated.component';
 
 @Component({
-	selector: 'app-security-worker-licence-wizard-new-authenticated',
+	selector: 'app-worker-licence-wizard-authenticated-renew',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -86,7 +86,7 @@ import { StepsReviewLicenceAuthenticatedComponent } from './wizard-steps/steps-r
 	`,
 	styles: [],
 })
-export class SecurityWorkerLicenceWizardNewAuthenticatedComponent
+export class WorkerLicenceWizardAuthenticatedRenewComponent
 	extends BaseWizardComponent
 	implements OnInit, AfterViewInit
 {
@@ -288,12 +288,11 @@ export class SecurityWorkerLicenceWizardNewAuthenticatedComponent
 	}
 
 	private updateCompleteStatus(): void {
-		// this.step1Complete = this.licenceApplicationService.isStep1Complete();
 		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
 		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
 		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	onChildNextStep() {

@@ -5,14 +5,14 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { distinctUntilChanged } from 'rxjs';
-import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
-import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
-import { StepsBackgroundRenewAndUpdateComponent } from '../shared/wizard-steps/steps-background-renew-and-update.component';
-import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/wizard-steps/steps-review-licence-authenticated.component';
+import { StepsBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background-renew-and-update.component';
+import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
 import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-identification-anonymous.component';
 
 @Component({
-	selector: 'app-worker-licence-update-wizard-anonymous',
+	selector: 'app-worker-licence-wizard-anonymous-update',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -76,7 +76,7 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 	`,
 	styles: [],
 })
-export class WorkerLicenceUpdateWizardAnonymousComponent extends BaseWizardComponent implements OnInit {
+export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
