@@ -276,7 +276,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+						console.debug('LOAD loadLicenceRenewal', resp);
 						this.initialized = true;
 					})
 				);
@@ -284,7 +284,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Update: {
 				return this.loadLicenceUpdate(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceUpdate', resp);
+						console.debug('LOAD loadLicenceUpdate', resp);
 						this.initialized = true;
 					})
 				);
@@ -292,7 +292,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Replacement: {
 				return this.loadLicenceReplacement(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceReplacement', resp);
+						console.debug('LOAD loadLicenceReplacement', resp);
 						this.initialized = true;
 					})
 				);
@@ -300,7 +300,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			default: {
 				return this.loadLicenceNew(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
+						console.debug('LOAD loadLicenceNew', resp);
 						this.initialized = true;
 					})
 				);
@@ -316,7 +316,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
+				console.debug('LOAD loadLicenceNew', resp);
 			})
 		);
 	}
@@ -331,9 +331,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
+				const soleProprietorData = {
+					isSoleProprietor: null,
+				};
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -363,7 +363,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						licenceAppId: null,
 						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
-						// soleProprietorData,
+						soleProprietorData,
 						// licenceTermData,
 						// bcDriversLicenceData,
 						// fingerprintProofData,
@@ -379,7 +379,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				// this.initialized = true;
 			})
 		);
 	}
@@ -394,9 +393,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
+				const soleProprietorData = {
+					isSoleProprietor: null,
+				};
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -426,7 +425,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						licenceAppId: null,
 						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
-						// soleProprietorData,
+						soleProprietorData,
 						// licenceTermData,
 						// bcDriversLicenceData,
 						// fingerprintProofData,
@@ -442,7 +441,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				// this.initialized = true;
 			})
 		);
 	}

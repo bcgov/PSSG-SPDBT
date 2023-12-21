@@ -21,25 +21,29 @@ import { UtilService } from 'src/app/core/services/util.service';
 				to update this information on your BC Services Card. Any changes you make will then be updated here.
 			</app-alert>
 
-			<div class="row mx-0 mb-4">
-				<div class="col-xl-6 col-lg-6 col-md-12 mt-2 mt-lg-0 p-3" style="background-color: whitesmoke;">
-					<div class="fs-6 text-muted me-3">Full Name</div>
+			<div class="row mx-0">
+				<div
+					class="col-xl-5 col-lg-5 col-md-12 col-sm-12 p-2"
+					style="background-color: whitesmoke; height: fit-content;"
+				>
+					<div class="fs-6 text-muted mt-2 mt-lg-0">Full Name</div>
 					<div class="fs-5" style="color: var(--color-primary);">
 						{{ fullname }}
 					</div>
 				</div>
 
-				<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mt-2 mt-lg-0 p-3" style="background-color: whitesmoke;">
-					<div class="fs-6 text-muted me-3">Date of Birth</div>
+				<div
+					class="col-xl-5 col-lg-5 col-md-12 col-sm-12 p-2"
+					style="background-color: whitesmoke; height: fit-content;"
+				>
+					<div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
 					<div class="fs-5" style="color: var(--color-primary);">
 						{{ dateOfBirth.value | formatDate : constants.date.formalDateFormat }}
 					</div>
 				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-lg-4 col-md-6 col-sm-12">
-					<mat-form-field>
+				<div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 px-lg-2 px-0">
+					<mat-form-field class="mt-2 mt-lg-0">
 						<mat-label>Sex</mat-label>
 						<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
 							<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
@@ -60,10 +64,8 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceC
 	matcher = new FormErrorStateMatcher();
 
 	readonly title_confirm = 'Confirm your personal information';
-	readonly title_view = 'View your personal information';
 	readonly subtitle_auth_new =
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
-	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
 	maxBirthDate = this.utilService.getBirthDateMax();
 	isLoggedIn = false;

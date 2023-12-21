@@ -8,22 +8,22 @@ import { MailingAddressComponent } from './mailing-address.component';
 @Component({
 	selector: 'app-user-profile',
 	template: `
-		<mat-divider class="mat-divider-main2 mt-2"></mat-divider>
-		<div class="fs-5 pt-2 pb-3">Personal Information</div>
+		<!-- <mat-divider class="mat-divider-main2"></mat-divider> -->
+		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
 		<app-personal-information></app-personal-information>
 
-		<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
-		<div class="fs-5 pt-2 pb-3">Aliases or Previous Names</div>
+		<mat-divider class="mat-divider-main2"></mat-divider>
+		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
 		<app-alias-list></app-alias-list>
 
-		<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
-		<div class="fs-5 pt-2 pb-3">Contact Information</div>
+		<mat-divider class="mat-divider-main2 mt-3"></mat-divider>
+		<div class="text-minor-heading pt-2 pb-3">Contact Information</div>
 		<app-contact-information [isWizardStep]="false"></app-contact-information>
 
 		<div class="row">
 			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
-				<div class="fs-5 pt-2 pb-3">Residential Address</div>
+				<mat-divider class="mat-divider-main2"></mat-divider>
+				<div class="text-minor-heading pt-2 pb-3">Residential Address</div>
 
 				<app-alert type="info" icon="">
 					Has your residential address changed?
@@ -35,8 +35,8 @@ import { MailingAddressComponent } from './mailing-address.component';
 			</div>
 
 			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
-				<div class="fs-5 pt-2 pb-3">Mailing Address</div>
+				<mat-divider class="mat-divider-main2"></mat-divider>
+				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
 				<app-alert type="info" icon="">
 					Provide your mailing address, if different from your residential address. This cannot be a company address.
 				</app-alert>

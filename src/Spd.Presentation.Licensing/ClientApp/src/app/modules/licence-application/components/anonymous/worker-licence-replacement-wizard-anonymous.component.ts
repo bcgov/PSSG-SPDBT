@@ -17,7 +17,7 @@ import { StepMailingAddressComponent } from '../shared/wizard-child-steps/step-m
 						<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
 
 						<div class="row mt-4">
-							<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>

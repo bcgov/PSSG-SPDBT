@@ -6,7 +6,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from 'src/app/core/components/base-wizard.component';
 import { StepsReviewLicenceAuthenticatedComponent } from '../authenticated/wizard-steps/steps-review-licence-authenticated.component';
-import { StepsBackgroundComponent } from '../shared/wizard-steps/steps-background.component';
+import { StepsBackgroundRenewAndUpdateComponent } from '../shared/wizard-steps/steps-background-renew-and-update.component';
 import { StepsLicenceSelectionComponent } from '../shared/wizard-steps/steps-licence-selection.component';
 import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-identification-anonymous.component';
 
@@ -34,13 +34,13 @@ import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-iden
 
 					<mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Background</ng-template>
-						<app-steps-background
+						<app-steps-background-renew-and-update
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-background>
+						></app-steps-background-renew-and-update>
 					</mat-step>
 
 					<mat-step [completed]="step3Complete">
@@ -88,8 +88,8 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 	@ViewChild(StepsLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
 
-	@ViewChild(StepsBackgroundComponent)
-	stepBackgroundComponent!: StepsBackgroundComponent;
+	@ViewChild(StepsBackgroundRenewAndUpdateComponent)
+	stepBackgroundComponent!: StepsBackgroundRenewAndUpdateComponent;
 
 	@ViewChild(StepsIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepsIdentificationAnonymousComponent;
@@ -99,7 +99,6 @@ export class WorkerLicenceRenewalWizardAnonymousComponent extends BaseWizardComp
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		// private router: Router,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);

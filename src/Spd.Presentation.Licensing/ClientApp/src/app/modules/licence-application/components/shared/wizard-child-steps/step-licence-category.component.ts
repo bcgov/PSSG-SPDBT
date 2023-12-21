@@ -17,10 +17,11 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode" [showLicenceData]="true"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
+
 				<div class="step-container">
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-2 col-xl-8 col-lg-12 mx-auto">
@@ -707,7 +708,10 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 	readonly subtitle_new = 'You can add up to a total of 6 categories';
 
 	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
-	readonly subtitle_renew = 'You can remove existing categories and add new ones';
+	readonly subtitle_renew = 'You can change and remove existing categories as well as add new ones';
+
+	readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
+	readonly subtitle_update = 'You can change and remove existing categories as well as add new ones';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
@@ -732,8 +736,6 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.isExpand = this.applicationTypeCode === ApplicationTypeCode.New;
-
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = this.title_new;
@@ -743,6 +745,11 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 			case ApplicationTypeCode.Renewal: {
 				this.title = this.title_renew;
 				this.infoTitle = this.subtitle_renew;
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.title = this.title_update;
+				this.infoTitle = this.subtitle_update;
 				break;
 			}
 		}

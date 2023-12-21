@@ -15,6 +15,7 @@ import { WorkerLicenceReplacementWizardAnonymousComponent } from './components/a
 import { WorkerLicenceUpdateWizardAnonymousComponent } from './components/anonymous/worker-licence-update-wizard-anonymous.component';
 import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
 import { SecurityWorkerLicenceWizardNewAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-new-authenticated.component';
+import { SecurityWorkerLicenceWizardRenewAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-renew-authenticated.component';
 import { SecurityWorkerLicenceWizardUpdateAuthenticatedComponent } from './components/authenticated/security-worker-licence-wizard-update-authenticated.component';
 import { UpdateAddDogsModalComponent } from './components/authenticated/step-update-components/update-add-dogs-modal.component';
 import { UpdateAddRestraintsModalComponent } from './components/authenticated/step-update-components/update-add-restraints-modal.component';
@@ -37,6 +38,8 @@ import { LicencePaymentErrorComponent } from './components/shared/licence-paymen
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
+import { RenewalAlertComponent } from './components/shared/renewal-alert.component';
+import { RenewalValueChangedComponent } from './components/shared/renewal-value-changed.component';
 import { AliasListComponent } from './components/shared/step-components/alias-list.component';
 import { AliasesComponent } from './components/shared/step-components/aliases.component';
 import { ContactInformationComponent } from './components/shared/step-components/contact-information.component';
@@ -60,7 +63,6 @@ import { LicenceCategorySecurityGuardSupComponent } from './components/shared/st
 import { LicenceCategorySecurityGuardComponent } from './components/shared/step-components/licence-category-security-guard.component';
 import { MailingAddressComponent } from './components/shared/step-components/mailing-address.component';
 import { PersonalInformationComponent } from './components/shared/step-components/personal-information.component';
-import { RenewalAlertComponent } from './components/shared/step-components/renewal-alert.component';
 import { ResidentialAddressComponent } from './components/shared/step-components/residential-address.component';
 import { UserProfileComponent } from './components/shared/step-components/user-profile.component';
 import { StepAdditionalGovIdComponent } from './components/shared/wizard-child-steps/step-additional-gov-id.component';
@@ -83,10 +85,12 @@ import { StepMailingAddressComponent } from './components/shared/wizard-child-st
 import { StepMentalHealthConditionsComponent } from './components/shared/wizard-child-steps/step-mental-health-conditions.component';
 import { StepPhotographOfYourselfComponent } from './components/shared/wizard-child-steps/step-photograph-of-yourself.component';
 import { StepPhysicalCharacteristicsComponent } from './components/shared/wizard-child-steps/step-physical-characteristics.component';
+import { StepPoliceBackgroundRenewAndUpdateComponent } from './components/shared/wizard-child-steps/step-police-background-renew-and-update.component';
 import { StepPoliceBackgroundComponent } from './components/shared/wizard-child-steps/step-police-background.component';
 import { StepResidentialAddressComponent } from './components/shared/wizard-child-steps/step-residential-address.component';
 import { StepRestraintsAuthorizationComponent } from './components/shared/wizard-child-steps/step-restraints-authorization.component';
 import { StepSoleProprietorComponent } from './components/shared/wizard-child-steps/step-sole-proprietor.component';
+import { StepsBackgroundRenewAndUpdateComponent } from './components/shared/wizard-steps/steps-background-renew-and-update.component';
 import { StepsBackgroundComponent } from './components/shared/wizard-steps/steps-background.component';
 import { StepsLicenceSelectionComponent } from './components/shared/wizard-steps/steps-licence-selection.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
@@ -134,6 +138,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepMailingAddressComponent,
 		StepsLicenceSelectionComponent,
 		StepsBackgroundComponent,
+		StepsBackgroundRenewAndUpdateComponent,
+		StepPoliceBackgroundRenewAndUpdateComponent,
 		StepsIdentificationAuthenticatedComponent,
 		StepsIdentificationAnonymousComponent,
 		StepPersonalInformationAnonymousComponent,
@@ -166,6 +172,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		WorkerLicenceReplacementWizardAnonymousComponent,
 		WorkerLicenceUpdateWizardAnonymousComponent,
 		SecurityWorkerLicenceWizardNewAuthenticatedComponent,
+		SecurityWorkerLicenceWizardRenewAuthenticatedComponent,
 		SecurityWorkerLicenceWizardUpdateAuthenticatedComponent,
 		StepLicenceUpdatesComponent,
 		StepConfirmMailingAddressComponent,
@@ -184,6 +191,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepLicenceTypeAnonymousComponent,
 		StepApplicationTypeAnonymousComponent,
 		RenewalAlertComponent,
+		RenewalValueChangedComponent,
 		StepLicenceConfirmationComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],

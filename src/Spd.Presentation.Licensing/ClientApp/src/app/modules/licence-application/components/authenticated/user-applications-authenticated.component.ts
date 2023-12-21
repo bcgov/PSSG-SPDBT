@@ -400,18 +400,18 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		this.activeApplications = [
 			{
 				id: '1',
-				licenceAppId: 'TEST-NWQ3X7Y',
+				licenceAppId: 'TEST-NWQ3X7A',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
-				action: 'Update',
+				action: ApplicationTypeCode.Update,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			{
 				id: '2',
-				licenceAppId: 'TEST-NWQ3X7Y',
+				licenceAppId: 'TEST-NWQ3X7B',
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
-				action: 'Renew',
+				action: ApplicationTypeCode.Renewal,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 		];
@@ -486,18 +486,36 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.subscribe();
 	}
 
-	onUpdate(_appl: ApplicationResponse): void {
-		this.licenceApplicationService
-			.loadUpdateLicence()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LICENCE_UPDATE)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+	onUpdate(appl: ApplicationResponse): void {
+		if (appl.action === ApplicationTypeCode.Update) {
+			this.licenceApplicationService
+				.loadUpdateLicence()
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+							)
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+		} else {
+			this.licenceApplicationService
+				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.workerLicenceTypeCode!, ApplicationTypeCode.Renewal)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+							)
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+		}
 	}
 
 	onReapply(_appl: ApplicationResponse): void {
