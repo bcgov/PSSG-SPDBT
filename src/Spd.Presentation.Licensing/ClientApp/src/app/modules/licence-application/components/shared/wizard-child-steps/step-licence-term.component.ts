@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -10,12 +10,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
-					<app-renewal-alert title="" subtitle="">
-						<div class="text-center">
-							<div class="text-label d-block text-muted">Current Licence Expiry Date</div>
-							<div class="summary-text-data">Aug 10 2023</div>
-						</div>
-					</app-renewal-alert>
+					<app-renewal-alert title="" subtitle="" [showLicenceData]="true"></app-renewal-alert>
 				</ng-container>
 
 				<app-step-title
@@ -55,14 +50,17 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepLicenceTermComponent implements LicenceChildStepperStepComponent {
-	termCodes = this.licenceApplicationService.licenceFeeTermCodes;
+export class StepLicenceTermComponent implements OnInit, LicenceChildStepperStepComponent {
+	termCodes: Array<LicenceFeeResponse> = [];
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
+	ngOnInit() {
+		this.termCodes = this.licenceApplicationService.licenceFeeTermCodes;
+	}
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {

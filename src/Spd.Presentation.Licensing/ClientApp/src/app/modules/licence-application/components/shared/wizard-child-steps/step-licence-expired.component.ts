@@ -85,6 +85,14 @@ import { UtilService } from 'src/app/core/services/util.service';
 										<app-alert type="warning" *ngIf="isFound && !isExpired">
 											The licence is still valid. Please renew it when you get your renewal notice in the mail.
 										</app-alert>
+										<app-alert type="warning" *ngIf="isFound && !isExpired">
+											Your licence is still valid, and needs to be renewed. Please exit and
+											<a
+												href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing"
+												target="_blank"
+												>renew your licence</a
+											>.
+										</app-alert>
 										<app-alert type="danger" icon="error" *ngIf="!isFound">
 											This licence number does not match any existing licences.
 										</app-alert>

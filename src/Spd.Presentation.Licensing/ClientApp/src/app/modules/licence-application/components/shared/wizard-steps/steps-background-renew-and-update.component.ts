@@ -7,14 +7,16 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { StepCriminalHistoryComponent } from '../wizard-child-steps/step-criminal-history.component';
 import { StepFingerprintsComponent } from '../wizard-child-steps/step-fingerprints.component';
 import { StepMentalHealthConditionsComponent } from '../wizard-child-steps/step-mental-health-conditions.component';
-import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police-background.component';
+import { StepPoliceBackgroundRenewAndUpdateComponent } from '../wizard-child-steps/step-police-background-renew-and-update.component';
 
 @Component({
-	selector: 'app-steps-background',
+	selector: 'app-steps-background-renew-and-update',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-police-background></app-step-police-background>
+				<app-step-police-background-renew-and-update
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-police-background-renew-and-update>
 
 				<div class="row mt-4" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -159,7 +161,7 @@ import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBackgroundComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsBackgroundRenewAndUpdateComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_POLICE_BACKGROUND = 1;
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = 2;
 	readonly STEP_CRIMINAL_HISTORY = 3;
@@ -177,7 +179,8 @@ export class StepsBackgroundComponent extends BaseWizardStepComponent implements
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(StepPoliceBackgroundComponent) policeBackgroundComponent!: StepPoliceBackgroundComponent;
+	@ViewChild(StepPoliceBackgroundRenewAndUpdateComponent)
+	policeBackgroundComponent!: StepPoliceBackgroundRenewAndUpdateComponent;
 	@ViewChild(StepMentalHealthConditionsComponent) mentalHealthConditionsComponent!: StepMentalHealthConditionsComponent;
 	@ViewChild(StepCriminalHistoryComponent) criminalHistoryComponent!: StepCriminalHistoryComponent;
 	@ViewChild(StepFingerprintsComponent) fingerprintsComponent!: StepFingerprintsComponent;
@@ -214,8 +217,6 @@ export class StepsBackgroundComponent extends BaseWizardStepComponent implements
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
-		console.log('onFormValidNextStep', this.childstepper.selectedIndex);
-
 		const isValid = this.dirtyForm(_formNumber);
 		if (!isValid) return;
 

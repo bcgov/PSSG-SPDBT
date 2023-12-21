@@ -82,7 +82,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		</section>
 
 		<div class="row mt-4">
-			<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 			</div>
 		</div>

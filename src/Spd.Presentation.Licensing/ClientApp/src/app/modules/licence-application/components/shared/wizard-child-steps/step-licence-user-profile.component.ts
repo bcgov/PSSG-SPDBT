@@ -24,8 +24,8 @@ import { UserProfileComponent } from '../step-components/user-profile.component'
 
 							<form [formGroup]="form" novalidate>
 								<div>
-									<mat-divider class="mat-divider-main2 mt-4"></mat-divider>
-									<div class="fs-5 pt-2 pb-3">Confirmation</div>
+									<mat-divider class="mat-divider-main2 mt-2"></mat-divider>
+									<div class="text-minor-heading pt-2 pb-3">Confirmation</div>
 									<mat-checkbox formControlName="isProfileUpToDate">
 										I confirm that this information is up-to-date
 									</mat-checkbox>

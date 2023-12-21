@@ -141,6 +141,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		linkedLicenceAppId: new FormControl(null),
 		expiryDate: new FormControl(null),
 		caseNumber: new FormControl(null),
 		applicationPortalStatus: new FormControl(null),
@@ -222,7 +223,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				if (this.initialized) {
 					this.hasValueChanged = true;
 
-					// const step1Complete = this.isStep1Complete();
 					const step1Complete = this.isStepLicenceSelectionComplete();
 					const step2Complete = this.isStepBackgroundComplete();
 					const step3Complete = this.isStepIdentificationComplete();
@@ -275,7 +275,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+						console.debug('LOAD loadLicenceRenewal', resp);
 						this.initialized = true;
 					})
 				);
@@ -283,7 +283,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Update: {
 				return this.loadLicenceUpdate(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceUpdate', resp);
+						console.debug('LOAD loadLicenceUpdate', resp);
 						this.initialized = true;
 					})
 				);
@@ -291,7 +291,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Replacement: {
 				return this.loadLicenceReplacement(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceReplacement', resp);
+						console.debug('LOAD loadLicenceReplacement', resp);
 						this.initialized = true;
 					})
 				);
@@ -299,7 +299,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			default: {
 				return this.loadLicenceNew(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
+						console.debug('LOAD loadLicenceNew', resp);
 						this.initialized = true;
 					})
 				);
@@ -315,7 +315,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD LicenceApplicationService loadLicenceNew', resp);
+				console.debug('LOAD loadLicenceNew', resp);
 			})
 		);
 	}
@@ -330,9 +330,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
+				const soleProprietorData = {
+					isSoleProprietor: null,
+				};
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -360,8 +360,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
+						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
-						// soleProprietorData,
+						soleProprietorData,
 						// licenceTermData,
 						// bcDriversLicenceData,
 						// fingerprintProofData,
@@ -377,7 +378,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				// this.initialized = true;
 			})
 		);
 	}
@@ -392,9 +392,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
+				const soleProprietorData = {
+					isSoleProprietor: null,
+				};
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -422,8 +422,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
+						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
-						// soleProprietorData,
+						soleProprietorData,
 						// licenceTermData,
 						// bcDriversLicenceData,
 						// fingerprintProofData,
@@ -439,7 +440,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				// this.initialized = true;
 			})
 		);
 	}
@@ -461,6 +461,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
+						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						residentialAddressData: { ...residentialAddressData },
 					},
@@ -1161,22 +1162,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	public setLicenceTermsAndFees(): void {
 		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
 		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-
-		// const businessTypeCode = //TODO what to do about business type code??
+		const businessTypeCode = BusinessTypeCode.NonRegisteredPartnership; //TODO what to do about business type code??
 
 		if (!workerLicenceTypeCode || !applicationTypeCode) {
 			return;
 		}
 
+		//console.debug('licenceFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode, this.licenceFees);
+		this.licenceFeeTermCodes = [];
+
 		const fees = this.licenceFees?.filter(
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == BusinessTypeCode.NonRegisteredPartnership &&
+				item.businessTypeCode == businessTypeCode &&
 				item.applicationTypeCode == applicationTypeCode
 		);
 
 		this.licenceFeeTermCodes.push(...fees);
-		console.debug('this.licenceFeeTermCodes', this.licenceFeeTermCodes);
+		console.debug('licenceFeeTermCodes', this.licenceFeeTermCodes);
 	}
 
 	isShowAdditionalGovermentIdStep(): boolean {
@@ -1193,30 +1196,30 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
 	 */
-	isStep1Complete(): boolean {
-		// console.debug(
-		// 	'isStep1Complete',
-		// 	this.profileFormGroup.valid,
-		// 	this.workerLicenceTypeFormGroup.valid,
-		// 	this.applicationTypeFormGroup.valid,
-		// );
+	// isStep1Complete(): boolean {
+	// 	// console.debug(
+	// 	// 	'isStep1Complete',
+	// 	// 	this.profileFormGroup.valid,
+	// 	// 	this.workerLicenceTypeFormGroup.valid,
+	// 	// 	this.applicationTypeFormGroup.valid,
+	// 	// );
 
-		let isValid!: boolean;
-		if (this.authenticationService.isLoggedIn()) {
-			isValid =
-				this.profileConfirmationFormGroup.valid &&
-				this.personalInformationFormGroup.valid &&
-				this.aliasesFormGroup.valid &&
-				this.residentialAddressFormGroup.valid &&
-				this.mailingAddressFormGroup.valid &&
-				this.contactInformationFormGroup.valid;
-			this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-		} else {
-			isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-		}
+	// 	let isValid!: boolean;
+	// 	if (this.authenticationService.isLoggedIn()) {
+	// 		isValid =
+	// 			this.profileConfirmationFormGroup.valid &&
+	// 			this.personalInformationFormGroup.valid &&
+	// 			this.aliasesFormGroup.valid &&
+	// 			this.residentialAddressFormGroup.valid &&
+	// 			this.mailingAddressFormGroup.valid &&
+	// 			this.contactInformationFormGroup.valid;
+	// 		this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+	// 	} else {
+	// 		isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
+	// 	}
 
-		return isValid;
-	}
+	// 	return isValid;
+	// }
 
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
@@ -1353,25 +1356,27 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isSaveStep(): boolean {
-		const shouldSaveStep =
-			this.hasValueChanged &&
-			((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
-				(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
+		console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
+		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
+		// const shouldSaveStep =
+		// 	this.hasValueChanged &&
+		// 	((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
+		// 		(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
 
 		console.debug('shouldSaveStep', shouldSaveStep);
 		return shouldSaveStep;
@@ -1409,6 +1414,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private submitLicenceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
 		console.debug('submitLicenceAuthenticated body', body);
+
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
@@ -1679,7 +1685,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			// hasExpiredLicence: this.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence),
+			hasExpiredLicence: false, // TODO remove?
 			// expiredLicenceNumber:
 			// 	expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			// expiredLicenceId:

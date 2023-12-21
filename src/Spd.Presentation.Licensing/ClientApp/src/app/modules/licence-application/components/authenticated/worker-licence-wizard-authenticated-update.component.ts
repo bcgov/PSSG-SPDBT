@@ -2,10 +2,10 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper, StepperOrientation } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
-	selector: 'app-security-worker-licence-wizard-update-authenticated',
+	selector: 'app-worker-licence-wizard-authenticated-update',
 	template: `
 		<ng-container>
 			<!--  *ngIf="isLoaded$ | async" -->
@@ -74,7 +74,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class SecurityWorkerLicenceWizardUpdateAuthenticatedComponent {
+export class WorkerLicenceWizardAuthenticatedUpdateComponent {
 	orientation: StepperOrientation = 'vertical';
 
 	@ViewChild('stepper') stepper!: MatStepper;
