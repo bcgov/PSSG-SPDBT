@@ -1,11 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Connected Services\OData Service\OData ServiceCsdl.xml" />
   </ItemGroup>
@@ -15,16 +9,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="6.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.OData.Client" Version="7.18.0" />
-    <PackageReference Include="Microsoft.OData.Core" Version="7.18.0" />
-    <PackageReference Include="Microsoft.OData.Edm" Version="7.18.0" />
-    <PackageReference Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
-    <PackageReference Include="Microsoft.Spatial" Version="7.18.0" />
-    <PackageReference Include="Polly" Version="8.1.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="IdentityModel" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.OData.Client" />
+    <PackageReference Include="Microsoft.OData.Core" />
+    <PackageReference Include="Microsoft.OData.Edm" />
+    <PackageReference Include="Microsoft.OData.Extensions.Client" />
+    <PackageReference Include="Microsoft.Spatial" />
+    <PackageReference Include="Polly" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>

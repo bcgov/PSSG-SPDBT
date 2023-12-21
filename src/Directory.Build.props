@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<WarningLevel>7</WarningLevel>
+		<LangVersion>latest</LangVersion>
+		<AnalysisMode>all</AnalysisMode>
+		<AnalysisLevel>latest-all</AnalysisLevel>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+		<DebugType>portable</DebugType>
+		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+		<NoWarn>1701;1702;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Quartech Systems Limited</Authors>
+		<Company>Province of British Columbia</Company>
+		<Description>Early Childcare Educators Registry</Description>
+		<Copyright>Copyright 2023 Province of British Columbia</Copyright>
+		<RepositoryUrl>https://github.com/bcgov/ECC-ECER</RepositoryUrl>
+		<RepositoryType>GIT</RepositoryType>
+	</PropertyGroup>
+</Project>
