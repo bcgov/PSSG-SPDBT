@@ -38,5 +38,18 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             return await _mediator.Send(new LicenceLookupQuery(licenceNumber));
         }
+
+        /// <summary>
+        /// Get licence by licence number and access code
+        /// </summary>
+        /// <param name="licenceNumber"></param>
+        /// <param name="accessCode"></param>
+        /// <returns></returns>
+        [Route("api/licence-lookup/access-code")]
+        [HttpGet]
+        public async Task<LicenceLookupResponse> GetLicenceAccessCodeLookup([FromQuery][Required] string licenceNumber, [FromQuery][Required] string accessCode)
+        {
+            return await _mediator.Send(new LicenceAccessCodeLookupQuery(licenceNumber, accessCode));
+        }
     }
 }

@@ -15,6 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
+	LicenceLookupResponse,
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
@@ -39,7 +40,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
+import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { PrivateInvestigatorTrainingCode, RestraintDocumentTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -204,6 +205,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		private licenceFeeService: LicenceFeeService,
 		private workerLicensingService: WorkerLicensingService,
+		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private utilService: UtilService
@@ -257,6 +259,34 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.log('this.initialized', this.initialized);
 			})
 		);
+	}
+
+	/**
+	 * Load an existing licence application using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @returns
+	 */
+	loadLicenceWithAccessCode(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode,
+		licenceNumber: string,
+		accessCode: string
+	): Observable<WorkerLicenceResponse> {
+		return this.licenceLookupService
+			.apiLicenceLookupAccessCodeGet({ licenceNumber, accessCode })
+			.pipe(
+				tap((resp: any) => {
+					console.debug('loadLicenceWithAccessCode', resp);
+				}),
+				switchMap((resp: LicenceLookupResponse) => {
+					console.log('LicenceLookupResponse', resp);
+
+					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025';
+					return this.loadLicence(licenceAppId, workerLicenceTypeCode, applicationTypeCode);
+				})
+			)
+			.pipe(take(1));
 	}
 
 	/**
@@ -675,6 +705,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						surname: bcscUserWhoamiProfile.lastName,
 						genderCode: bcscUserWhoamiProfile.gender,
 						dateOfBirth: bcscUserWhoamiProfile.birthDate,
+						origGivenName: bcscUserWhoamiProfile.firstName,
+						origMiddleName1: bcscUserWhoamiProfile.middleName1,
+						origMiddleName2: bcscUserWhoamiProfile.middleName2,
+						origSurname: bcscUserWhoamiProfile.lastName,
+						origGenderCode: bcscUserWhoamiProfile.gender,
+						origDateOfBirth: bcscUserWhoamiProfile.birthDate,
 					};
 				} else {
 					personalInformationData = {
@@ -684,6 +720,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						surname: resp.surname,
 						genderCode: resp.genderCode,
 						dateOfBirth: resp.dateOfBirth,
+						origGivenName: resp.givenName,
+						origMiddleName1: resp.middleName1,
+						origMiddleName2: resp.middleName2,
+						origSurname: resp.surname,
+						origGenderCode: resp.genderCode,
+						origDateOfBirth: resp.dateOfBirth,
 					};
 				}
 

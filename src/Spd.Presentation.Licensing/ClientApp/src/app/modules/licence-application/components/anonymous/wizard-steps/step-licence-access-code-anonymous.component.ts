@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -22,7 +23,7 @@ import { take, tap } from 'rxjs';
 						</p>
 						<p>
 							If you do not know your access code, you may call Security Program's Licensing Unit during regular office
-							hours and answer identifying questions to get your access code: 1-855-587-0185.
+							hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
 						</p>"
 				>
 				</app-step-title>
@@ -37,6 +38,7 @@ import { take, tap } from 'rxjs';
 											<input
 												matInput
 												formControlName="currentLicenceNumber"
+												oninput="this.value = this.value.toUpperCase()"
 												[errorStateMatcher]="matcher"
 												maxlength="10"
 											/>
@@ -87,6 +89,7 @@ import { take, tap } from 'rxjs';
 })
 export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
+	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
 
@@ -109,9 +112,11 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 				'applicationTypeData.applicationTypeCode'
 			)?.value;
 
+			// CAS-2023-T3X5Q10930
 			//'a60af04a-f150-4078-8908-40debd21e7f8'
+			// TODO use real values
 			this.licenceApplicationService
-				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', workerLicenceTypeCode, applicationTypeCode)
+				.loadLicenceWithAccessCode(workerLicenceTypeCode, applicationTypeCode, 'TEST-01', 'bbb')
 				.pipe(
 					tap((_resp: any) => {
 						switch (workerLicenceTypeCode) {
@@ -159,13 +164,17 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 
 	onLink(): void {
 		// TODO search for linked licence
-		this.form.patchValue({ linkedLicenceId: 'Found' });
+		// this.form.patchValue({ linkedLicenceId: 'Found' });
+		this.form.patchValue({
+			currentLicenceNumber: 'TDB',
+			accessCode: 'TBD',
+			linkedLicenceId: 'Found',
+		});
 	}
 }

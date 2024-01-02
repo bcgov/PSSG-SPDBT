@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -45,7 +46,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 						</p>
 						<p>
 							If you do not know your access code, you may call Security Program's Licensing Unit during regular office
-							hours and answer identifying questions to get your access code: 1-855-587-0185.
+							hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
 						</p>
 					</app-alert>
 
@@ -82,6 +83,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 })
 export class StepAccessCodeAuthorizedComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
+	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 	authenticationSubscription!: Subscription;

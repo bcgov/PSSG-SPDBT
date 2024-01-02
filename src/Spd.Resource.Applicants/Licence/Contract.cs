@@ -12,9 +12,9 @@ namespace Spd.Resource.Applicants.Licence
     {
         public Guid? LicenceId { get; set; } = null;
         public string? LicenceNumber { get; set; } = null;
-        public Guid? ContactId { get; set; } = null; 
+        public Guid? ContactId { get; set; } = null;
         public Guid? AccountId { get; set; } = null;
-        public WorkerLicenceTypeEnum? Type { get; set; }=null;
+        public WorkerLicenceTypeEnum? Type { get; set; } = null;
         public bool IncludeInactive { get; set; } = false;
         public bool? IsExpired { get; set; } = null;
     };
