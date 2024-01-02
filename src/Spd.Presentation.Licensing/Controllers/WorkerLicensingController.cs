@@ -235,11 +235,11 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
-            //var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
-            //if (!isValid)
-            //{
-            //    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
-            //}
+            var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
+            if (!isValid)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+            }
             Guid keyCode = Guid.NewGuid();
             await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(30));
             return keyCode;
