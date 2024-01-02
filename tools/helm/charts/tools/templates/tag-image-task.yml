@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tag-image-task
+spec:
+  params:
+    - name: sourceImage
+      type: string
+    - name: sourceTag
+      type: string
+    - name: destinationImage
+      type: string
+    - name: destinationTag
+      type: string
+  steps:
+    - name: tag
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
+      resources:
+        limits:
+          cpu: 25m
+          memory: 64Mi
+        requests:
+          cpu: 5m
+          memory: 32Mi
+      script: |
+        oc tag $(params.sourceImage):$(params.sourceTag) $(params.destinationImage):$(params.destinationTag)
