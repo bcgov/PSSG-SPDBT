@@ -32,9 +32,17 @@ spec:
         {{- if .Values.allowInternet }}
         Internet-Ingress: ALLOW
         {{- end }}
+      {{- if or (gt (len .Values.secrets) 0) (.Values.secretFiles).files -}}
       {{- if gt (len .Values.secrets) 0 }}
       annotations:
         checksum/secret: {{ .Values.secrets | toYaml | sha256sum }}
+      {{- end }}
+      {{- if (.Values.secretFiles).files }}
+      annotations:
+      {{- range $file :=.Values.secretFiles.files }}
+        checksum/{{ base $file | replace "." "-" }}: {{ $.Files.Get $file | toYaml | sha256sum }}
+      {{- end -}}
+      {{- end -}}
       {{- end }}
     spec:
       imagePullSecrets:
