@@ -12,7 +12,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<h2 class="my-3 fw-normal">Security Licences & Permits</h2>
+					<h2 class="fs-3 mb-3">Security Licences & Permits</h2>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<app-alert type="info" icon="info">
