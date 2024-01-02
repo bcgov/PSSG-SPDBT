@@ -35,7 +35,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 			.gov-bc-logo {
 				padding-bottom: 12px;
-				cursor: pointer;
 			}
 
 			.app-header {
@@ -46,7 +45,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 			.app-header-text {
 				white-space: normal;
 				font-size: 1.3rem;
-				cursor: pointer;
 				line-height: 20px;
 			}
 

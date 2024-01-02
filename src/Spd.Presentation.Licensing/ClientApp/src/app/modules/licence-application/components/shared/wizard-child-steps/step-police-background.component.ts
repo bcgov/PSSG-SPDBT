@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -14,14 +14,6 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
-				</ng-container>
-
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<div class="step-container">
@@ -139,23 +131,16 @@ export class StepPoliceBackgroundComponent implements OnInit, LicenceChildSteppe
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
-	applicationTypeCodes = ApplicationTypeCode;
-
-	policeOfficerSummaryText = '';
 
 	matcher = new FormErrorStateMatcher();
 	title = '';
 	subtitle = '';
 
 	readonly title_confirm = 'Are you currently a Police Officer or Peace Officer?';
-	readonly title_view = 'Confirm your Police Officer or Peace Officer information';
 	readonly subtitle_auth_new =
 		'A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence.';
-	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
-
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

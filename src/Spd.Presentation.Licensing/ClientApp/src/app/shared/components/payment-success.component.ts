@@ -6,35 +6,30 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	selector: 'app-payment-success',
 	template: `
 		<div class="row">
-			<div class="col-xl-6 col-lg-4 col-md-12">
-				<h3 class="fw-normal m-2">Payment Succeeded</h3>
-			</div>
-			<div class="col-xl-6 col-lg-8 col-md-12">
-				<div class="d-flex justify-content-end">
-					<button
-						mat-stroked-button
-						color="primary"
-						class="large w-auto m-2"
-						aria-label="Back"
-						*ngIf="isBackRoute"
-						(click)="onBack()"
-					>
-						<mat-icon>arrow_back</mat-icon>Back
-					</button>
-					<button
-						mat-flat-button
-						color="primary"
-						class="large w-auto m-2"
-						aria-label="Download Receipt"
-						(click)="onDownloadReceipt()"
-					>
-						<mat-icon>file_download</mat-icon>Download Receipt
-					</button>
+			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="row">
+					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
+						<h2 class="fs-3 mt-0 mt-md-3">Payment Succeeded</h2>
+					</div>
+
+					<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
+						<div class="d-flex justify-content-end">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large w-auto m-2"
+								aria-label="Back"
+								*ngIf="isBackRoute"
+								(click)="onBack()"
+							>
+								<mat-icon>arrow_back</mat-icon>Back
+							</button>
+						</div>
+					</div>
 				</div>
+				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 			</div>
 		</div>
-
-		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
@@ -43,8 +38,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 		</div>
 
 		<div class="row">
-			<div class="col-12 mt-4">
-				<div class="fw-normal fs-3 text-center">
+			<div class="col-12 my-4">
+				<div class="fs-4 text-center">
 					<ng-container *ngIf="isApplicationReceived; else notApplicationReceived">
 						Your application has been received
 					</ng-container>
@@ -74,10 +69,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 			class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12"
 			*ngIf="isApplicationReceived; else noApplicationReceivedMessage"
 		>
-			<div class="lead fs-4 mt-4">
-				Thank you for submitting your application to the Criminal Records Review Program.
-			</div>
-			<div class="lead fs-4 my-4">
+			<div class="mt-4">Thank you for submitting your application to the Criminal Records Review Program.</div>
+			<div class="my-4">
 				Your application will be reviewed shortly. We will contact you if further information is required.
 			</div>
 		</div>
@@ -85,7 +78,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 		<ng-template #noApplicationReceivedMessage>
 			<div class="row" *ngIf="sendEmailTo; else successMessage">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="lead fs-4 mb-4">
+					<div class="mb-4">
 						Your payment has been received and your application will be reviewed shortly. You will be contacted if it is
 						found to be incomplete or inaccurate. An email with a receipt has been sent to:
 						<strong>{{ sendEmailTo }}</strong
@@ -97,7 +90,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 			<ng-template #successMessage>
 				<div class="row">
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="lead fs-4 mb-4">
+						<div class="mb-4">
 							Thank you for your payment. This application will be reviewed shortly. We will contact the applicant if
 							further information is required.
 						</div>
@@ -134,7 +127,6 @@ export class PaymentSuccessComponent implements OnInit {
 	}
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
-	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
 	constructor(private router: Router) {}
 
@@ -144,9 +136,5 @@ export class PaymentSuccessComponent implements OnInit {
 
 	onBack(): void {
 		this.backRoute.emit();
-	}
-
-	onDownloadReceipt(): void {
-		this.downloadReceipt.emit();
 	}
 }
