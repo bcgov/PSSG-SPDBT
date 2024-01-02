@@ -1,0 +1,17 @@
+images:
+  licensing-portal:
+    image: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/licensing-portal
+    tags:
+      dev: latest
+  screening-portal:
+    image: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/screening-portal
+    tags:
+      dev: latest
+  dynamics-helper:
+    image: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/dynamics-helper
+    tags:
+      dev: latest
+  jag-jobscheduler:
+    image: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/jag-jobscheduler
+    tags:
+      dev: main
