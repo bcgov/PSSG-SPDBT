@@ -1,19 +1,21 @@
 # Sparc Helm Chart
 
-This directory contains a Helm chart to deploy SPD Sparc applications
+This directory contains a Helm chart to deploy SPD Sparc applications.
+
+Each environment has its own folder under 'envs' that need to be mapped from the shared secured storage.
 
 ## Usage
 
 To install a new environment, ensure the values.yaml matches the environment, then run the following command:
 
 ```sh
-helm -n [namespace] install [env name] .
+helm -n [namespace] install [env name] /envs/[env name]
 ```
 
 To upgrade an existing environment, run the following command:
 
 ```sh
-helm -n [namespace] upgrade [env name] .
+helm -n [namespace] upgrade [env name] /envs/[env name]
 ```
 
 To remove an existing environment, run the following command:
