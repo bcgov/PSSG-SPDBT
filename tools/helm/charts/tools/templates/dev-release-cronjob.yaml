@@ -2,8 +2,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: dev-release-cronjob
-  labels:
-    DataClass: Low
 spec:
   suspend: true
   schedule: "*/5 * * * *"
@@ -12,7 +10,7 @@ spec:
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      backoffLimit: 1
+      backoffLimit: 0
       template:
         metadata:
           labels:

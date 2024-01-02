@@ -2,6 +2,8 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: prod-release-pipeline
+  labels:
+    DataClass: Low
 spec:
   tasks:
 
