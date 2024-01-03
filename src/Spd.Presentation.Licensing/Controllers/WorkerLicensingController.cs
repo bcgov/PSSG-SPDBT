@@ -287,8 +287,9 @@ namespace Spd.Presentation.Licensing.Controllers
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command);
-            await UpdateCache(_cache,keyCode,newFileInfos);
-            return keyCode;
+            Guid fileKeyCode = Guid.NewGuid();
+            await _cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
+            return fileKeyCode;
         }
 
         /// <summary>
@@ -314,32 +315,6 @@ namespace Spd.Presentation.Licensing.Controllers
 
             AnonymousWorkerLicenceAppSubmitCommand command = new AnonymousWorkerLicenceAppSubmitCommand(jsonRequest, keyCode);
             return await _mediator.Send(command);
-        }
-
-        private static async Task UpdateCache(IDistributedCache cache, Guid keyCode, IEnumerable<LicAppFileInfo> newFileInfos)
-        {
-            try
-            {
-                mutex.WaitOne();
-            }
-            catch (AbandonedMutexException)
-            {
-                return;
-            }
-            try
-            {
-                LicenceAppDocumentsCache existingFileInfo = await cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
-                if (existingFileInfo == null)
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-                }
-                existingFileInfo.Items.AddRange(newFileInfos);
-                await cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
-            }
-            finally
-            {
-                mutex.ReleaseMutex();
-            }            
         }
         #endregion
     }
