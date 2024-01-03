@@ -142,6 +142,7 @@ namespace Spd.Utilities.Dynamics
             {"PrivateInvestigatorUnderSupervision", Guid.Parse("edbc7549-0cea-ed11-b840-005056830319")},
             {"PrivateSecurityTrainingNetworkCompletion", Guid.Parse("65bf0317-d47d-ee11-b846-00505683fbf4") },
             {"RecommendationLetters", Guid.Parse("8cc3dc2d-d47d-ee11-b846-00505683fbf4") },
+            {"Resume", Guid.Parse("e943e5c7-f2a9-ee11-b849-00505683fbf4") },
             {"SecurityAlarmInstaller", Guid.Parse("e5bc7549-0cea-ed11-b840-005056830319")},
             {"SecurityConsultant", Guid.Parse("f1bc7549-0cea-ed11-b840-005056830319")},
             {"SecurityGuard", Guid.Parse("efbc7549-0cea-ed11-b840-005056830319")},
