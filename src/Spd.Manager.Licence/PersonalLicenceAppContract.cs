@@ -176,6 +176,7 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase 
 {
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
+    public Guid[]? FileKeyCodes { get; set; }
 }
 
 public record WorkerLicenceCreateResponse
