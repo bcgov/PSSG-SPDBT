@@ -1,4 +1,4 @@
-name: Screening Protal Build
+name: Screening Portal Build
 on:
   push:
     branches:
