@@ -247,7 +247,6 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Upload licence application files: frontend use the keyCode to upload following files.
-        /// Do not support parallel.
         /// Uploading file only save files in cache, the files are not connected to the appliation yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
@@ -294,7 +293,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Submit Security Worker Licence Application Json part Anonymously
-        /// After fe done with the uploading files, then fe do post with json payload
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
