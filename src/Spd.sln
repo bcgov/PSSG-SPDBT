@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Payment", "Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.BCeIDWS", "Spd.Utilities.BCeIDWS\Spd.Utilities.BCeIDWS.csproj", "{C16D353E-67D6-4EA0-9400-167234A5DC35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.Licence", "Spd.Manager.Licence\Spd.Manager.Licence.csproj", "{119B3695-6918-46DD-82B7-493C9F6CAB77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Licence", "Spd.Manager.Licence\Spd.Manager.Licence.csproj", "{119B3695-6918-46DD-82B7-493C9F6CAB77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
