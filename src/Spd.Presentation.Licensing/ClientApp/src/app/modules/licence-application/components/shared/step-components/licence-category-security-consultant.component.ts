@@ -64,13 +64,13 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 				<div>
 					You must meet the following experience requirements:
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
-						<mat-radio-button [value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters">
-							Written reference letters from previous employers (must be on company letterhead, dated and signed)
-						</mat-radio-button>
-						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
 							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters"
 						>
+							Written reference letters from previous employers (must be on company letterhead, dated and signed)
+						</mat-radio-button>
+						<mat-divider class="my-2"></mat-divider>
+						<mat-radio-button [value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters">
 							Clients verifying your experience
 						</mat-radio-button>
 					</mat-radio-group>
@@ -153,7 +153,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	onFileResumeAdded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			this.licenceApplicationService
-				.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters, file)
+				.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityConsultantResume, file)
 				.subscribe({
 					next: (resp: any) => {
 						const matchingFile = this.resumeAttachments.value.find((item: File) => item.name == file.name);

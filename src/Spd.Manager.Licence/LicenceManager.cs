@@ -7,7 +7,6 @@ namespace Spd.Manager.Licence;
 
 internal class LicenceManager :
         IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
-        IRequestHandler<LicenceAccessCodeLookupQuery, LicenceLookupResponse>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -25,24 +24,6 @@ internal class LicenceManager :
     }
 
     public async Task<LicenceLookupResponse?> Handle(LicenceLookupQuery query, CancellationToken ct)
-    {
-        var response = await _licenceRepository.QueryAsync(
-            new LicenceQry
-            {
-                LicenceNumber = query.LicenceNumber
-            }, ct);
-
-        if (!response.Items.Any())
-        {
-            _logger.LogDebug("No licence found.");
-            return null;
-        }
-
-        LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response.Items.First());
-        return result;
-    }
-
-    public async Task<LicenceLookupResponse?> Handle(LicenceAccessCodeLookupQuery query, CancellationToken ct)
     {
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry

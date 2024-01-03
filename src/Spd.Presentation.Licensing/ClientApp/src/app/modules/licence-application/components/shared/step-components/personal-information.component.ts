@@ -13,7 +13,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	selector: 'app-personal-information',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<app-alert type="info" icon="">
+			<app-alert type="info" icon="" [showBorder]="false">
 				Have you changed your name?
 				<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
 					>Visit ICBC</a

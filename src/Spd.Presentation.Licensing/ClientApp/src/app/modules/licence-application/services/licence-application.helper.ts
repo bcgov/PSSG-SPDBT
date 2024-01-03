@@ -843,7 +843,7 @@ export abstract class LicenceApplicationHelper {
 
 			documents.push({
 				documentResponses: securityConsultantResumeDocuments,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantResume,
 			});
 		}
 

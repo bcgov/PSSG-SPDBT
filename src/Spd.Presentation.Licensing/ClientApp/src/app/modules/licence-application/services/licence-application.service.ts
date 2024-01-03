@@ -242,9 +242,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 			});
 	}
-	async delay(ms: number) {
-		await new Promise<void>((resolve) => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
-	}
+
 	/**
 	 * Load a user profile
 	 * @returns
@@ -280,9 +278,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					console.debug('loadLicenceWithAccessCode', resp);
 				}),
 				switchMap((resp: LicenceLookupResponse) => {
-					console.log('LicenceLookupResponse', resp);
-
-					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025';
+					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
 					return this.loadLicence(licenceAppId, workerLicenceTypeCode, applicationTypeCode);
 				})
 			)
@@ -1069,16 +1065,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 							category.documents?.forEach((doc: Document) => {
 								const licenceDocumentTypeCodeSecurityConsultant = doc.licenceDocumentTypeCode ?? '';
 								if (
-									licenceDocumentTypeCodeSecurityConsultant !=
-									LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters
+									licenceDocumentTypeCodeSecurityConsultant != LicenceDocumentTypeCode.CategorySecurityConsultantResume
 								) {
 									requirementCodeSecurityConsultant = doc.licenceDocumentTypeCode ?? '';
 								}
 								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 									const aFile = this.utilService.dummyFile(item);
 									if (
-										licenceDocumentTypeCodeSecurityConsultant !=
-										LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters
+										licenceDocumentTypeCodeSecurityConsultant ===
+										LicenceDocumentTypeCode.CategorySecurityConsultantResume
 									) {
 										attachments1SecurityConsultant.push(aFile);
 									} else {
@@ -2085,7 +2080,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantResume,
 					documents: docs,
 				});
 			}

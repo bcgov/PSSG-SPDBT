@@ -237,7 +237,7 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 		this.givenName.enable({ emitEvent: false });
 		this.middleName1.enable({ emitEvent: false });
 		this.middleName2.enable({ emitEvent: false });
-		this.dateOfBirth.enable({ emitEvent: false });
+		// this.dateOfBirth.enable({ emitEvent: false });
 		this.genderCode.enable({ emitEvent: false });
 	}
 
@@ -249,7 +249,7 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 				middleName2: this.origMiddleName2.value,
 				surname: this.origSurname.value,
 				genderCode: this.origGenderCode.value,
-				dateOfBirth: this.origDateOfBirth.value,
+				// dateOfBirth: this.origDateOfBirth.value,
 			},
 			{ emitEvent: false }
 		);
