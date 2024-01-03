@@ -49,6 +49,7 @@ public enum LicenceDocumentTypeCode
     CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
     CategorySecurityConsultant_ExperienceLetters,
     CategorySecurityConsultant_RecommendationLetters,
+    CategorySecurityConsultant_Resume,
     CategorySecurityGuard_BasicSecurityTrainingCertificate,
     CategorySecurityGuard_PoliceExperienceOrTraining,
     CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
