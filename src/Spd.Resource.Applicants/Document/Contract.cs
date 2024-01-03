@@ -132,5 +132,6 @@ namespace Spd.Resource.Applicants.Document
         ASTCertificate,
         UseForceEmployerLetter,
         UseForceEmployerLetterASTEquivalent,
+        Resume,
     }
 }
