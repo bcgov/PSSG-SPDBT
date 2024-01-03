@@ -166,20 +166,28 @@ internal partial class PersonalLicenceAppManager :
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
-        foreach (LicAppFileInfo licAppFile in appDocCache.Items)
+        if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
         {
-            DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-            DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-            //create bcgov_documenturl and file
-            await _documentRepository.ManageAsync(new CreateDocumentCmd
+            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
             {
-                TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                ApplicationId = response.LicenceAppId,
-                DocumentType = docType1,
-                DocumentType2 = docType2,
-                SubmittedByApplicantId = response.ContactId
-            }, ct);
+                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                foreach (LicAppFileInfo licAppFile in items)
+                {
+                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(new CreateDocumentCmd
+                    {
+                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                        ApplicationId = response.LicenceAppId,
+                        DocumentType = docType1,
+                        DocumentType2 = docType2,
+                        SubmittedByApplicantId = response.ContactId
+                    }, ct);
+                }
+            }
         }
+        
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
