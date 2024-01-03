@@ -247,7 +247,6 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Upload licence application files: frontend use the keyCode to upload following files.
-        /// Do not support parallel.
         /// Uploading file only save files in cache, the files are not connected to the appliation yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
@@ -287,13 +286,14 @@ namespace Spd.Presentation.Licensing.Controllers
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command);
-            await UpdateCache(_cache,keyCode,newFileInfos);
-            return keyCode;
+            Guid fileKeyCode = Guid.NewGuid();
+            await _cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
+            return fileKeyCode;
         }
 
         /// <summary>
         /// Submit Security Worker Licence Application Json part Anonymously
-        /// After fe done with the uploading files, then fe do post with json payload
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
@@ -314,32 +314,6 @@ namespace Spd.Presentation.Licensing.Controllers
 
             AnonymousWorkerLicenceAppSubmitCommand command = new AnonymousWorkerLicenceAppSubmitCommand(jsonRequest, keyCode);
             return await _mediator.Send(command);
-        }
-
-        private static async Task UpdateCache(IDistributedCache cache, Guid keyCode, IEnumerable<LicAppFileInfo> newFileInfos)
-        {
-            try
-            {
-                mutex.WaitOne();
-            }
-            catch (AbandonedMutexException)
-            {
-                return;
-            }
-            try
-            {
-                LicenceAppDocumentsCache existingFileInfo = await cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
-                if (existingFileInfo == null)
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-                }
-                existingFileInfo.Items.AddRange(newFileInfos);
-                await cache.Set($"{keyCode}", existingFileInfo, TimeSpan.FromMinutes(30));
-            }
-            finally
-            {
-                mutex.ReleaseMutex();
-            }            
         }
         #endregion
     }
