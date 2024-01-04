@@ -53,12 +53,11 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies
 
 //add cache
 var redisConnection = builder.Configuration.GetSection("RedisConnection");
-if (redisConnection != null)
-{
-    string? endpoint = (string?)(redisConnection.GetValue(typeof(string), "endpoint"));
-    string? password = (string?)(redisConnection.GetValue(typeof(string), "password"));
+string? endpoint = (string?)(redisConnection.GetValue(typeof(string), "endpoint"));
+string? password = (string?)(redisConnection.GetValue(typeof(string), "password"));
 
-    if (endpoint == null) throw new ConfigurationErrorsException("redis endpoint url is needed.");
+if (endpoint != null)
+{
     var configurationOptions = new ConfigurationOptions
     {
         EndPoints = { endpoint },
