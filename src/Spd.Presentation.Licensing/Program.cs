@@ -10,6 +10,8 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
+using StackExchange.Redis;
+using System.Configuration;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -48,7 +50,27 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddValidatorsFromAssemblies(assemblies);
 builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-builder.Services.AddDistributedMemoryCache();
+
+//add cache
+var redisConnection = builder.Configuration.GetSection("RedisConnection");
+string? endpoint = (string?)(redisConnection.GetValue(typeof(string), "endpoint"));
+string? password = (string?)(redisConnection.GetValue(typeof(string), "password"));
+
+if (endpoint != null)
+{
+    var configurationOptions = new ConfigurationOptions
+    {
+        EndPoints = { endpoint },
+        Password = password,
+        Ssl = false // Set this to true if your Redis instance can handle connection using SSL
+    };
+    builder.Services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = configurationOptions);
+}
+else
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+
 builder.Services.AddAutoMapper(assemblies);
 builder.Services.AddTempFileStorageService();
 builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>();

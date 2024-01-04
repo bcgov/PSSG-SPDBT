@@ -49,7 +49,7 @@ spec:
         - name: artifactory-pull-secret
       containers:
         - name: {{ .name }}
-          image: {{ .Values.image.name}}:{{ .Values.image.tag }}
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: Always
           resources: {{ .Values.resources | toYaml | nindent 12 }}
 

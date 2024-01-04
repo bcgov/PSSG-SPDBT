@@ -9,13 +9,13 @@ Each environment has its own folder under 'envs' that need to be mapped from the
 To install a new environment, ensure the values.yaml matches the environment, then run the following command:
 
 ```sh
-helm -n [namespace] install [env name] /envs/[env name]
+helm -n [namespace] install [env name] -f ./envs/[env name]/values.yml
 ```
 
 To upgrade an existing environment, run the following command:
 
 ```sh
-helm -n [namespace] upgrade [env name] /envs/[env name]
+helm -n [namespace] upgrade [env name] -f ./envs/[env name]/values.yml
 ```
 
 To remove an existing environment, run the following command:
