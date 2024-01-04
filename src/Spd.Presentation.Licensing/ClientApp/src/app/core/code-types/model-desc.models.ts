@@ -109,10 +109,12 @@ export const SecurityAlarmInstallerRequirementCode: Record<SecurityAlarmInstalle
 
 type SecurityConsultantRequirementCodeSubset = Extract<
 	LicenceDocumentTypeCode,
+	| LicenceDocumentTypeCode.CategorySecurityConsultantResume
 	| LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters
 	| LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters
 >;
 export const SecurityConsultantRequirementCode: Record<SecurityConsultantRequirementCodeSubset, string> = {
+	[LicenceDocumentTypeCode.CategorySecurityConsultantResume]: LicenceDocumentTypeCode.CategorySecurityConsultantResume,
 	[LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters]:
 		LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
 	[LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters]:

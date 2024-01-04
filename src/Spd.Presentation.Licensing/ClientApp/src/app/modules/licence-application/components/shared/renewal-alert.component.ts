@@ -66,7 +66,7 @@ export class RenewalAlertComponent implements OnInit {
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Update: {
 				this.title = 'Confirm this information';
-				this.subtitle = 'Update any information that you would like to change';
+				this.subtitle = 'Update any information that has changed';
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
