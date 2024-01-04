@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { AliasListComponent } from './alias-list.component';
@@ -55,7 +55,7 @@ import { MailingAddressComponent } from './mailing-address.component';
 	`,
 	styles: [],
 })
-export class UserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
+export class UserProfileComponent implements LicenceChildStepperStepComponent {
 	@ViewChild(AliasListComponent) aliasesComponent!: AliasListComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
@@ -65,10 +65,6 @@ export class UserProfileComponent implements OnInit, LicenceChildStepperStepComp
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		// temp
-	}
 
 	isFormValid(): boolean {
 		const contactIsValid = this.contactInformationComponent.isFormValid();
