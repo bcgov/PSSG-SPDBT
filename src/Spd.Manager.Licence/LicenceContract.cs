@@ -10,8 +10,9 @@ public interface ILicenceManager
 public record LicenceLookupResponse
 {
     public Guid? LicenceId { get; set; } = null;
+    public Guid? LicenceAppId { get; set; } = null;
     public string? LicenceNumber { get; set; } = null;
     public DateOnly ExpiryDate { get; set; }
 };
 
-public record LicenceLookupQuery(string LicenceNumber) : IRequest<LicenceLookupResponse>;
+public record LicenceLookupQuery(string LicenceNumber, string AccessCode) : IRequest<LicenceLookupResponse>;

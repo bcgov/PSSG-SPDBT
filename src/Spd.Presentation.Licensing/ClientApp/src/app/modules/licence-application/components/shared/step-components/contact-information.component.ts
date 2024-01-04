@@ -46,6 +46,7 @@ export class ContactInformationComponent implements LicenceChildStepperStepCompo
 	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
 
 	@Input() isWizardStep = true;
+	@Input() isReadOnly = false;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

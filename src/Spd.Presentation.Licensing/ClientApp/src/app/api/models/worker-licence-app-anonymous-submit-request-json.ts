@@ -27,6 +27,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;
+  fileKeyCodes?: null | Array<string>;
   genderCode?: GenderCode;
   givenName?: null | string;
   hairColourCode?: HairColourCode;

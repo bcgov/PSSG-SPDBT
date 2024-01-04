@@ -79,25 +79,18 @@ export abstract class LicenceApplicationHelper {
 			genderCode: new FormControl('', [FormControlValidators.required]),
 			dateOfBirth: new FormControl('', [Validators.required]),
 			isNeedProofOfLegalNameChange: new FormControl(false),
-			newGivenName: new FormControl(''),
-			newMiddleName1: new FormControl(''),
-			newMiddleName2: new FormControl(''),
-			newSurname: new FormControl(''),
-			newGenderCode: new FormControl(''),
+			origGivenName: new FormControl(''),
+			origMiddleName1: new FormControl(''),
+			origMiddleName2: new FormControl(''),
+			origSurname: new FormControl(''),
+			origGenderCode: new FormControl(''),
+			origDateOfBirth: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('isNeedProofOfLegalNameChange')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'newSurname',
-					(form) => form.get('isNeedProofOfLegalNameChange')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'newGenderCode',
 					(form) => form.get('isNeedProofOfLegalNameChange')?.value
 				),
 			],
@@ -850,7 +843,7 @@ export abstract class LicenceApplicationHelper {
 
 			documents.push({
 				documentResponses: securityConsultantResumeDocuments,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantResume,
 			});
 		}
 

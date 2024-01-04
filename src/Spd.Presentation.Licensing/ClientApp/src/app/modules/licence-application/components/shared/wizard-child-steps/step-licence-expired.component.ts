@@ -58,6 +58,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 												matInput
 												type="search"
 												formControlName="expiredLicenceNumber"
+												oninput="this.value = this.value.toUpperCase()"
 												maxlength="20"
 												[errorStateMatcher]="matcher"
 												(keydown.enter)="onSearchKeyDown($event)"

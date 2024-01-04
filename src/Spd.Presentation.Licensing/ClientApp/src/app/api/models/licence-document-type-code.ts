@@ -23,6 +23,7 @@ export enum LicenceDocumentTypeCode {
   CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent = 'CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent',
   CategorySecurityConsultantExperienceLetters = 'CategorySecurityConsultant_ExperienceLetters',
   CategorySecurityConsultantRecommendationLetters = 'CategorySecurityConsultant_RecommendationLetters',
+  CategorySecurityConsultantResume = 'CategorySecurityConsultant_Resume',
   CategorySecurityGuardBasicSecurityTrainingCertificate = 'CategorySecurityGuard_BasicSecurityTrainingCertificate',
   CategorySecurityGuardPoliceExperienceOrTraining = 'CategorySecurityGuard_PoliceExperienceOrTraining',
   CategorySecurityGuardBasicSecurityTrainingCourseEquivalent = 'CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent',

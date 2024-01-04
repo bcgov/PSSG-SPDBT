@@ -138,7 +138,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 										applicationTypeCode === applicationTypeCodes.Update
 									"
 								>
-									<mat-checkbox formControlName="isNeedProofOfLegalNameChange">
+									<mat-checkbox formControlName="isNeedProofOfLegalNameChange" (change)="onUpdateInformation()">
 										<span class="checklist-label">Update information</span>
 									</mat-checkbox>
 								</ng-container>
@@ -147,46 +147,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class="row mt-2" *ngIf="isNeedProofOfLegalNameChange.value" @showHideTriggerSlideAnimation>
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
-								<div class="row">
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>New Given Name <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="newGivenName" [errorStateMatcher]="matcher" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>New Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="newMiddleName1" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>New Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="newMiddleName2" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>New Surname</mat-label>
-											<input matInput formControlName="newSurname" [errorStateMatcher]="matcher" maxlength="40" />
-											<mat-error *ngIf="form.get('newSurname')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
-
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Sex</mat-label>
-											<mat-select formControlName="newGenderCode" [errorStateMatcher]="matcher">
-												<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-													{{ gdr.desc }}
-												</mat-option>
-											</mat-select>
-											<mat-error *ngIf="form.get('newGenderCode')?.hasError('required')">This is required</mat-error>
-										</mat-form-field>
-									</div>
-								</div>
 
 								<div class="text-minor-heading fw-normal mb-2">Upload your proof of legal name change:</div>
 								<app-file-upload
@@ -264,7 +224,36 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 		this.licenceApplicationService.hasValueChanged = true;
 	}
 
+	onUpdateInformation(): void {
+		if (this.isNeedProofOfLegalNameChange.value) {
+			this.enableData();
+		} else {
+			this.disableData(true);
+		}
+	}
+
+	private enableData(): void {
+		this.surname.enable({ emitEvent: false });
+		this.givenName.enable({ emitEvent: false });
+		this.middleName1.enable({ emitEvent: false });
+		this.middleName2.enable({ emitEvent: false });
+		// this.dateOfBirth.enable({ emitEvent: false });
+		this.genderCode.enable({ emitEvent: false });
+	}
+
 	private disableData(isAllData: boolean | undefined = false): void {
+		this.form.patchValue(
+			{
+				givenName: this.origGivenName.value,
+				middleName1: this.origMiddleName1.value,
+				middleName2: this.origMiddleName2.value,
+				surname: this.origSurname.value,
+				genderCode: this.origGenderCode.value,
+				// dateOfBirth: this.origDateOfBirth.value,
+			},
+			{ emitEvent: false }
+		);
+
 		this.surname.disable({ emitEvent: false });
 		this.givenName.disable({ emitEvent: false });
 		this.middleName1.disable({ emitEvent: false });
@@ -279,25 +268,39 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 	get surname(): FormControl {
 		return this.form.get('surname') as FormControl;
 	}
-
 	get givenName(): FormControl {
 		return this.form.get('givenName') as FormControl;
 	}
-
 	get middleName1(): FormControl {
 		return this.form.get('middleName1') as FormControl;
 	}
-
 	get middleName2(): FormControl {
 		return this.form.get('middleName2') as FormControl;
 	}
-
 	get dateOfBirth(): FormControl {
 		return this.form.get('dateOfBirth') as FormControl;
 	}
-
 	get genderCode(): FormControl {
 		return this.form.get('genderCode') as FormControl;
+	}
+
+	get origGivenName(): FormControl {
+		return this.form.get('origGivenName') as FormControl;
+	}
+	get origMiddleName1(): FormControl {
+		return this.form.get('origMiddleName1') as FormControl;
+	}
+	get origMiddleName2(): FormControl {
+		return this.form.get('origMiddleName2') as FormControl;
+	}
+	get origSurname(): FormControl {
+		return this.form.get('origSurname') as FormControl;
+	}
+	get origGenderCode(): FormControl {
+		return this.form.get('origGenderCode') as FormControl;
+	}
+	get origDateOfBirth(): FormControl {
+		return this.form.get('origDateOfBirth') as FormControl;
 	}
 
 	get isNeedProofOfLegalNameChange(): FormControl {
