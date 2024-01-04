@@ -1772,6 +1772,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+		let keyCode = '';
 		const body = this.getSaveBodyAnonymous();
 		console.debug('submitLicenceAnonymous body', body);
 
@@ -1786,8 +1787,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((resp: string) => {
-					// console.log('resp', resp);
-					const keyCode = resp;
+					keyCode = resp;
 
 					const documentsToSave: Observable<string>[] = [];
 					documentInfos.forEach((docBody: DocumentsToSave) => {
@@ -1802,14 +1802,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						);
 					});
 
-					// console.log('documentsToSave', documentsToSave);
-
 					return forkJoin(documentsToSave);
 				}),
 				switchMap((resps: string[]) => {
-					// console.log('resps', resps);
-					const keyCode = resps[0];
-
 					// pass in the list of document key codes
 					body.fileKeyCodes = resps;
 
