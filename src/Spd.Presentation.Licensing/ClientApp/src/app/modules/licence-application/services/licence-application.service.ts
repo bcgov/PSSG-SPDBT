@@ -15,6 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
+	LicenceLookupResponse,
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
@@ -39,7 +40,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, WorkerLicensingService } from 'src/app/api/services';
+import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { PrivateInvestigatorTrainingCode, RestraintDocumentTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -204,6 +205,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		private licenceFeeService: LicenceFeeService,
 		private workerLicensingService: WorkerLicensingService,
+		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private utilService: UtilService
@@ -228,7 +230,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					console.log(
+					console.debug(
 						'licenceModelFormGroup CHANGED',
 						step1Complete,
 						step2Complete,
@@ -240,9 +242,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 			});
 	}
-	async delay(ms: number) {
-		await new Promise<void>((resolve) => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
-	}
+
 	/**
 	 * Load a user profile
 	 * @returns
@@ -254,9 +254,35 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('loadUserProfile');
 
 				this.initialized = true;
-				console.log('this.initialized', this.initialized);
+				console.debug('this.initialized', this.initialized);
 			})
 		);
+	}
+
+	/**
+	 * Load an existing licence application using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @returns
+	 */
+	loadLicenceWithAccessCode(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode,
+		licenceNumber: string,
+		accessCode: string
+	): Observable<WorkerLicenceResponse> {
+		return this.licenceLookupService
+			.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
+			.pipe(
+				tap((resp: any) => {
+					console.debug('loadLicenceWithAccessCode', resp);
+				}),
+				switchMap((_resp: LicenceLookupResponse) => {
+					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
+					return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
+				})
+			)
+			.pipe(take(1));
 	}
 
 	/**
@@ -488,7 +514,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('loadUserProfile');
 
 				this.initialized = true;
-				console.log('this.initialized', this.initialized);
+				console.debug('this.initialized', this.initialized);
 			})
 		);
 	}
@@ -675,6 +701,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						surname: bcscUserWhoamiProfile.lastName,
 						genderCode: bcscUserWhoamiProfile.gender,
 						dateOfBirth: bcscUserWhoamiProfile.birthDate,
+						origGivenName: bcscUserWhoamiProfile.firstName,
+						origMiddleName1: bcscUserWhoamiProfile.middleName1,
+						origMiddleName2: bcscUserWhoamiProfile.middleName2,
+						origSurname: bcscUserWhoamiProfile.lastName,
+						origGenderCode: bcscUserWhoamiProfile.gender,
+						origDateOfBirth: bcscUserWhoamiProfile.birthDate,
 					};
 				} else {
 					personalInformationData = {
@@ -684,6 +716,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						surname: resp.surname,
 						genderCode: resp.genderCode,
 						dateOfBirth: resp.dateOfBirth,
+						origGivenName: resp.givenName,
+						origMiddleName1: resp.middleName1,
+						origMiddleName2: resp.middleName2,
+						origSurname: resp.surname,
+						origGenderCode: resp.genderCode,
+						origDateOfBirth: resp.dateOfBirth,
 					};
 				}
 
@@ -1027,16 +1065,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 							category.documents?.forEach((doc: Document) => {
 								const licenceDocumentTypeCodeSecurityConsultant = doc.licenceDocumentTypeCode ?? '';
 								if (
-									licenceDocumentTypeCodeSecurityConsultant !=
-									LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters
+									licenceDocumentTypeCodeSecurityConsultant != LicenceDocumentTypeCode.CategorySecurityConsultantResume
 								) {
 									requirementCodeSecurityConsultant = doc.licenceDocumentTypeCode ?? '';
 								}
 								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 									const aFile = this.utilService.dummyFile(item);
 									if (
-										licenceDocumentTypeCodeSecurityConsultant !=
-										LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters
+										licenceDocumentTypeCodeSecurityConsultant ===
+										LicenceDocumentTypeCode.CategorySecurityConsultantResume
 									) {
 										attachments1SecurityConsultant.push(aFile);
 									} else {
@@ -1118,7 +1155,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	reset(): void {
 		this.initialized = false;
-		console.log('reset.initialized', this.initialized);
+		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
 		this.licenceFeeTermCodes = [];
 
@@ -1356,7 +1393,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isSaveStep(): boolean {
-		console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
+		// console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
 		// const shouldSaveStep =
 		// 	this.hasValueChanged &&
@@ -1738,20 +1775,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const body = this.getSaveBodyAnonymous();
 		console.debug('submitLicenceAnonymous body', body);
 
-		// const formValue = this.licenceModelFormGroup.getRawValue();
-
 		const documentInfos = this.getSaveDocsAnonymous();
-		console.log('documentInfos', documentInfos);
+		// console.log('documentInfos', documentInfos);
 
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
-		console.debug('submitLicenceAnonymous', formValue);
+		// console.debug('submitLicenceAnonymous', formValue);
 
 		const googleRecaptcha = { recaptchaCode: formValue.recaptcha };
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((resp: string) => {
-					console.log('resp', resp);
+					// console.log('resp', resp);
 					const keyCode = resp;
 
 					const documentsToSave: Observable<string>[] = [];
@@ -1767,13 +1802,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						);
 					});
 
-					console.log('documentsToSave', documentsToSave);
+					// console.log('documentsToSave', documentsToSave);
 
 					return forkJoin(documentsToSave);
 				}),
 				switchMap((resps: string[]) => {
-					console.log('resps', resps);
+					// console.log('resps', resps);
 					const keyCode = resps[0];
+
+					// pass in the list of document key codes
+					body.fileKeyCodes = resps;
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
@@ -1792,7 +1830,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const savebody = this.getSaveBody();
 
 		const documentInfos = this.getSaveDocumentInfosAnonymous();
-		console.log('documentInfos', documentInfos);
+		// console.log('documentInfos', documentInfos);
 
 		const categoryData = savebody.categoryData ?? [];
 
@@ -1844,7 +1882,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categoryCodes: categoryCodes,
 			documentInfos,
 		};
-		console.log('requestBody', requestBody);
+		// console.log('requestBody', requestBody);
 
 		return requestBody;
 	}
@@ -2043,7 +2081,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CategorySecurityConsultantResume,
 					documents: docs,
 				});
 			}

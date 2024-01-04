@@ -39,6 +39,7 @@ export class LicenceLookupService extends BaseService {
    */
   apiLicenceLookupLicenceNumberGet$Response(params: {
     licenceNumber: string;
+    accessCode?: string;
   },
   context?: HttpContext
 
@@ -47,6 +48,7 @@ export class LicenceLookupService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, LicenceLookupService.ApiLicenceLookupLicenceNumberGetPath, 'get');
     if (params) {
       rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
+      rb.query('accessCode', params.accessCode, {"style":"form"});
     }
 
     return this.http.request(rb.build({
@@ -73,6 +75,7 @@ export class LicenceLookupService extends BaseService {
    */
   apiLicenceLookupLicenceNumberGet(params: {
     licenceNumber: string;
+    accessCode?: string;
   },
   context?: HttpContext
 

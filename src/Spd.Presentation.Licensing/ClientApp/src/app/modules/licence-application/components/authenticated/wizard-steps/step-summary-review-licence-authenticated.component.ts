@@ -394,55 +394,6 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="panel-body">
-												<!-- <div class="text-minor-heading mt-4">Personal Information</div>
-												<div class="row mt-0">
-													<div class="col-lg-6 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
-														<div class="summary-text-data">
-															{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-															{{ surname }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
-														<div class="summary-text-data">
-															{{ dateOfBirth | formatDate | default }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
-														<div class="summary-text-data">
-															{{ genderCode | options : 'GenderTypes' | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider> -->
-
-												<div class="text-minor-heading mt-4">Aliases</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Do you have any previous names?
-														</div>
-														<div class="summary-text-data">{{ previousNameFlag }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
-															<div class="summary-text-data">
-																<div
-																	*ngFor="let alias of aliases; let i = index; let first = first"
-																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-																>
-																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																	{{ alias.surname }}
-																</div>
-															</div>
-														</ng-container>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
 												<div class="text-minor-heading">Identification</div>
 												<div class="row mt-0">
 													<div class="col-lg-8 col-md-12">
@@ -739,13 +690,6 @@ export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 	}
 	get letterOfNoConflictAttachments(): File[] {
 		return this.licenceModelData.policeBackgroundData.attachments ?? [];
-	}
-
-	get previousNameFlag(): string {
-		return this.licenceModelData.aliasesData.previousNameFlag ?? '';
-	}
-	get aliases(): Array<any> {
-		return this.licenceModelData.aliasesData.aliases ?? [];
 	}
 
 	get isTreatedForMHC(): string {

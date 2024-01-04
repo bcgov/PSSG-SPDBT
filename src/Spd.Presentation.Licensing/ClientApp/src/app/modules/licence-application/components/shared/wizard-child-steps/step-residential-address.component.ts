@@ -1,9 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { ResidentialAddressComponent } from '../step-components/residential-address.component';
 
 @Component({
@@ -35,19 +33,12 @@ export class StepResidentialAddressComponent implements LicenceChildStepperStepC
 
 	subtitle = '';
 
-	isLoggedIn = false;
-
 	authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(ResidentialAddressComponent) residentialAddressComponent!: ResidentialAddressComponent;
-
-	constructor(
-		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
 
 	isFormValid(): boolean {
 		return this.residentialAddressComponent.isFormValid();

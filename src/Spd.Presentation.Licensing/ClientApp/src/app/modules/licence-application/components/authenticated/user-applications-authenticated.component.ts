@@ -381,7 +381,6 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
-
 		await this.authProcessService.initializeLicencingBCSC();
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
@@ -425,6 +424,11 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 				expiresOn: '2022-09-26T19:43:25+00:00',
 			},
 		];
+
+		// TODO Handle first time login
+		// this.dialog.open(FirstTimeUserModalComponent, {
+		// 	width: '800px',
+		// });
 	}
 
 	ngOnDestroy() {

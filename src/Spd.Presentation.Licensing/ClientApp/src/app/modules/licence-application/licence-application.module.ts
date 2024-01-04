@@ -9,11 +9,13 @@ import { StepPersonalInformationAnonymousComponent } from './components/anonymou
 import { StepSummaryReviewLicenceAnonymousComponent } from './components/anonymous/wizard-steps/step-summary-review-licence-anonymous.component';
 import { StepsIdentificationAnonymousComponent } from './components/anonymous/wizard-steps/steps-identification-anonymous.component';
 import { StepsReviewLicenceAnonymousComponent } from './components/anonymous/wizard-steps/steps-review-licence-anonymous.component';
+import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
 import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/anonymous/worker-licence-wizard-anonymous-replacement.component';
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
+import { FirstTimeUserModalComponent } from './components/authenticated/step-update-components/first-time-user-modal.component';
 import { UpdateAddDogsModalComponent } from './components/authenticated/step-update-components/update-add-dogs-modal.component';
 import { UpdateAddRestraintsModalComponent } from './components/authenticated/step-update-components/update-add-restraints-modal.component';
 import { UpdateApplyNameChangeModalComponent } from './components/authenticated/step-update-components/update-apply-name-change-modal.component';
@@ -29,6 +31,7 @@ import { StepLicenceTypeAuthenticatedComponent } from './components/authenticate
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './components/authenticated/wizard-steps/step-summary-review-licence-authenticated.component';
 import { StepsIdentificationAuthenticatedComponent } from './components/authenticated/wizard-steps/steps-identification-authenticated.component';
 import { StepsReviewLicenceAuthenticatedComponent } from './components/authenticated/wizard-steps/steps-review-licence-authenticated.component';
+import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
@@ -92,7 +95,6 @@ import { StepSoleProprietorComponent } from './components/shared/wizard-child-st
 import { StepsBackgroundRenewAndUpdateComponent } from './components/shared/wizard-steps/steps-background-renew-and-update.component';
 import { StepsBackgroundComponent } from './components/shared/wizard-steps/steps-background.component';
 import { StepsLicenceSelectionComponent } from './components/shared/wizard-steps/steps-licence-selection.component';
-import { WorkerLicenceApplicationBaseComponent } from './components/shared/worker-licence-application-base.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { LicenceApplicationService } from './services/licence-application.service';
@@ -103,6 +105,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		AliasesComponent,
 		ContactInformationComponent,
 		FingerprintTearOffModalComponent,
+		FirstTimeUserModalComponent,
 		LicenceApplicationComponent,
 		LicenceCategoryArmouredCarGuardComponent,
 		LicenceCategoryBodyArmourSalesComponent,
@@ -185,7 +188,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		UserApplicationsAnonymousComponent,
 		UserApplicationsAuthenticatedComponent,
 		UserProfileComponent,
-		WorkerLicenceApplicationBaseComponent,
+		WorkerLicenceApplicationBaseAnonymousComponent,
+		WorkerLicenceApplicationBaseAuthenticatedComponent,
 		WorkerLicenceWizardAnonymousNewComponent,
 		WorkerLicenceWizardAnonymousRenewalComponent,
 		WorkerLicenceWizardAnonymousReplacementComponent,
