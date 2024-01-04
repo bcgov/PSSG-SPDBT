@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { AliasListComponent } from './alias-list.component';
@@ -10,15 +10,15 @@ import { MailingAddressComponent } from './mailing-address.component';
 	template: `
 		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
-		<app-personal-information></app-personal-information>
+		<app-personal-information [isReadOnly]="isReadOnly"></app-personal-information>
 
 		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
-		<app-alias-list></app-alias-list>
+		<app-alias-list [isReadOnly]="isReadOnly"></app-alias-list>
 
 		<mat-divider class="mat-divider-main mt-3"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Contact Information</div>
-		<app-contact-information [isWizardStep]="false"></app-contact-information>
+		<app-contact-information [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-contact-information>
 
 		<div class="row">
 			<div class="col-lg-6 col-md-12">
@@ -48,21 +48,27 @@ import { MailingAddressComponent } from './mailing-address.component';
 					</div>
 				</ng-container>
 				<ng-template #mailingIsDifferentThanResidential>
-					<app-mailing-address [isWizardStep]="false"></app-mailing-address>
+					<app-mailing-address [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-mailing-address>
 				</ng-template>
 			</div>
 		</div>
 	`,
 	styles: [],
 })
-export class UserProfileComponent implements LicenceChildStepperStepComponent {
+export class UserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	@ViewChild(AliasListComponent) aliasesComponent!: AliasListComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
 
+	isReadOnly = true;
+
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		// temp
+	}
 
 	isFormValid(): boolean {
 		const contactIsValid = this.contactInformationComponent.isFormValid();

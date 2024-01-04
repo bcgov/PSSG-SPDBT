@@ -99,6 +99,7 @@ export class AliasListComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
 
 	@Input() isWizardStep = true;
+	@Input() isReadOnly = false;
 
 	constructor(
 		private formBuilder: FormBuilder,

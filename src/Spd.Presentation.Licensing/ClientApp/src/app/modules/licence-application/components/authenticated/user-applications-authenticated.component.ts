@@ -381,7 +381,6 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
-
 		await this.authProcessService.initializeLicencingBCSC();
 
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(

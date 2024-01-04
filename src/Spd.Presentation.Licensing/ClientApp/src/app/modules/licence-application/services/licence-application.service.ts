@@ -230,7 +230,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					console.log(
+					console.debug(
 						'licenceModelFormGroup CHANGED',
 						step1Complete,
 						step2Complete,
@@ -254,7 +254,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('loadUserProfile');
 
 				this.initialized = true;
-				console.log('this.initialized', this.initialized);
+				console.debug('this.initialized', this.initialized);
 			})
 		);
 	}
@@ -514,7 +514,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('loadUserProfile');
 
 				this.initialized = true;
-				console.log('this.initialized', this.initialized);
+				console.debug('this.initialized', this.initialized);
 			})
 		);
 	}
@@ -1155,7 +1155,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	reset(): void {
 		this.initialized = false;
-		console.log('reset.initialized', this.initialized);
+		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
 		this.licenceFeeTermCodes = [];
 
@@ -1393,7 +1393,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isSaveStep(): boolean {
-		console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
+		// console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
 		// const shouldSaveStep =
 		// 	this.hasValueChanged &&
@@ -1775,20 +1775,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const body = this.getSaveBodyAnonymous();
 		console.debug('submitLicenceAnonymous body', body);
 
-		// const formValue = this.licenceModelFormGroup.getRawValue();
-
 		const documentInfos = this.getSaveDocsAnonymous();
-		console.log('documentInfos', documentInfos);
+		// console.log('documentInfos', documentInfos);
 
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
-		console.debug('submitLicenceAnonymous', formValue);
+		// console.debug('submitLicenceAnonymous', formValue);
 
 		const googleRecaptcha = { recaptchaCode: formValue.recaptcha };
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((resp: string) => {
-					console.log('resp', resp);
+					// console.log('resp', resp);
 					const keyCode = resp;
 
 					const documentsToSave: Observable<string>[] = [];
@@ -1804,13 +1802,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						);
 					});
 
-					console.log('documentsToSave', documentsToSave);
+					// console.log('documentsToSave', documentsToSave);
 
 					return forkJoin(documentsToSave);
 				}),
 				switchMap((resps: string[]) => {
-					console.log('resps', resps);
+					// console.log('resps', resps);
 					const keyCode = resps[0];
+
+					// pass in the list of document key codes
+					body.fileKeyCodes = resps;
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
@@ -1829,7 +1830,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const savebody = this.getSaveBody();
 
 		const documentInfos = this.getSaveDocumentInfosAnonymous();
-		console.log('documentInfos', documentInfos);
+		// console.log('documentInfos', documentInfos);
 
 		const categoryData = savebody.categoryData ?? [];
 
@@ -1881,7 +1882,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categoryCodes: categoryCodes,
 			documentInfos,
 		};
-		console.log('requestBody', requestBody);
+		// console.log('requestBody', requestBody);
 
 		return requestBody;
 	}
