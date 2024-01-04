@@ -272,14 +272,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		accessCode: string
 	): Observable<WorkerLicenceResponse> {
 		return this.licenceLookupService
-			.apiLicenceLookupAccessCodeGet({ licenceNumber, accessCode })
+			.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
 			.pipe(
 				tap((resp: any) => {
 					console.debug('loadLicenceWithAccessCode', resp);
 				}),
-				switchMap((resp: LicenceLookupResponse) => {
+				switchMap((_resp: LicenceLookupResponse) => {
 					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
-					return this.loadLicence(licenceAppId, workerLicenceTypeCode, applicationTypeCode);
+					return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
 				})
 			)
 			.pipe(take(1));

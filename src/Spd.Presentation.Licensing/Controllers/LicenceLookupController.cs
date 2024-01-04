@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -32,10 +31,11 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Get licence by licence number
         /// </summary>
         /// <param name="licenceNumber"></param>
+        /// <param name="accessCode"></param>
         /// <returns></returns>
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
-        public async Task<LicenceLookupResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery][Optional] string accessCode)
+        public async Task<LicenceLookupResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string accessCode = null)
         {
             return await _mediator.Send(new LicenceLookupQuery(licenceNumber, accessCode));
         }

@@ -10,6 +10,7 @@ public interface ILicenceManager
 public record LicenceLookupResponse
 {
     public Guid? LicenceId { get; set; } = null;
+    public Guid? LicenceAppId { get; set; } = null;
     public string? LicenceNumber { get; set; } = null;
     public DateOnly ExpiryDate { get; set; }
 };

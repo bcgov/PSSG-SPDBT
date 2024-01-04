@@ -12,6 +12,7 @@ namespace Spd.Resource.Applicants.Licence
     {
         public Guid? LicenceId { get; set; } = null;
         public string? LicenceNumber { get; set; } = null;
+        public string? AccessCode { get; set; } = null;
         public Guid? ContactId { get; set; } = null;
         public Guid? AccountId { get; set; } = null;
         public WorkerLicenceTypeEnum? Type { get; set; } = null;
@@ -27,6 +28,7 @@ namespace Spd.Resource.Applicants.Licence
     public record LicenceResp()
     {
         public Guid? LicenceId { get; set; }
+        public Guid? LicenceAppId { get; set; }
         public string? LicenceNumber { get; set; } = null;
         public DateOnly ExpiryDate { get; set; }
     }

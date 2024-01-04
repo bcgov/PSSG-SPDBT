@@ -2,12 +2,14 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
 import { StepLicenceCategoryComponent } from '../wizard-child-steps/step-licence-category.component';
+import { StepLicenceExpiredComponent } from '../wizard-child-steps/step-licence-expired.component';
 import { StepLicenceTermComponent } from '../wizard-child-steps/step-licence-term.component';
 import { StepRestraintsAuthorizationComponent } from '../wizard-child-steps/step-restraints-authorization.component';
 import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-proprietor.component';
@@ -100,7 +102,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<!-- <mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New && !isLoggedIn">
 				<app-step-licence-expired></app-step-licence-expired>
 
 				<div class="row mt-4">
@@ -123,7 +125,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
@@ -248,6 +250,7 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 	readonly STEP_RESTRAINTS = 9;
 	readonly STEP_LICENCE_TERM = 7;
 
+	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
@@ -258,8 +261,8 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 	@ViewChild(StepSoleProprietorComponent)
 	soleProprietorComponent!: StepSoleProprietorComponent;
 
-	// @ViewChild(StepLicenceExpiredComponent)
-	// licenceExpiredComponent!: StepLicenceExpiredComponent;
+	@ViewChild(StepLicenceExpiredComponent)
+	licenceExpiredComponent!: StepLicenceExpiredComponent;
 
 	@ViewChild(StepLicenceCategoryComponent)
 	licenceCategoryComponent!: StepLicenceCategoryComponent;
@@ -275,11 +278,21 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {
+	constructor(
+		private router: Router,
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
 		super();
 	}
 
 	ngOnInit(): void {
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+			}
+		);
+
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: any) => {
 				// console.debug('licenceModelValueChanges$', _resp);
@@ -294,6 +307,7 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 	}
 
 	onCancel(): void {
@@ -316,8 +330,8 @@ export class StepsLicenceSelectionComponent extends BaseWizardStepComponent impl
 				return this.soleProprietorComponent.isFormValid();
 			case this.STEP_LICENCE_CONFIRMATION:
 				return true;
-			// case this.STEP_LICENCE_EXPIRED:
-			// 	return this.licenceExpiredComponent.isFormValid();
+			case this.STEP_LICENCE_EXPIRED:
+				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:
 				return this.licenceCategoryComponent.isFormValid();
 			case this.STEP_RESTRAINTS:

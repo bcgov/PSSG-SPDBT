@@ -14,6 +14,7 @@ import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anony
 import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/anonymous/worker-licence-wizard-anonymous-replacement.component';
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
+import { FirstTimeUserModalComponent } from './components/authenticated/step-update-components/first-time-user-modal.component';
 import { UpdateAddDogsModalComponent } from './components/authenticated/step-update-components/update-add-dogs-modal.component';
 import { UpdateAddRestraintsModalComponent } from './components/authenticated/step-update-components/update-add-restraints-modal.component';
 import { UpdateApplyNameChangeModalComponent } from './components/authenticated/step-update-components/update-apply-name-change-modal.component';
@@ -103,6 +104,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		AliasesComponent,
 		ContactInformationComponent,
 		FingerprintTearOffModalComponent,
+		FirstTimeUserModalComponent,
 		LicenceApplicationComponent,
 		LicenceCategoryArmouredCarGuardComponent,
 		LicenceCategoryBodyArmourSalesComponent,
