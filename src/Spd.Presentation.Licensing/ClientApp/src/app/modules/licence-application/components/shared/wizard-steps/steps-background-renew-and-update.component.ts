@@ -7,16 +7,17 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { StepCriminalHistoryComponent } from '../wizard-child-steps/step-criminal-history.component';
 import { StepFingerprintsComponent } from '../wizard-child-steps/step-fingerprints.component';
 import { StepMentalHealthConditionsComponent } from '../wizard-child-steps/step-mental-health-conditions.component';
-import { StepPoliceBackgroundRenewAndUpdateComponent } from '../wizard-child-steps/step-police-background-renew-and-update.component';
+import { StepPoliceBackgroundComponent } from '../wizard-child-steps/step-police-background.component';
 
 @Component({
 	selector: 'app-steps-background-renew-and-update',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-police-background-renew-and-update
+				<app-step-police-background [applicationTypeCode]="applicationTypeCode"></app-step-police-background>
+				<!-- <app-step-police-background-renew-and-update // TODO which one to use?
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-police-background-renew-and-update>
+				></app-step-police-background-renew-and-update> -->
 
 				<div class="row mt-4" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -179,8 +180,9 @@ export class StepsBackgroundRenewAndUpdateComponent extends BaseWizardStepCompon
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(StepPoliceBackgroundRenewAndUpdateComponent)
-	policeBackgroundComponent!: StepPoliceBackgroundRenewAndUpdateComponent;
+	// @ViewChild(StepPoliceBackgroundRenewAndUpdateComponent)
+	// policeBackgroundComponent!: StepPoliceBackgroundRenewAndUpdateComponent;
+	@ViewChild(StepPoliceBackgroundComponent) policeBackgroundComponent!: StepPoliceBackgroundComponent;
 	@ViewChild(StepMentalHealthConditionsComponent) mentalHealthConditionsComponent!: StepMentalHealthConditionsComponent;
 	@ViewChild(StepCriminalHistoryComponent) criminalHistoryComponent!: StepCriminalHistoryComponent;
 	@ViewChild(StepFingerprintsComponent) fingerprintsComponent!: StepFingerprintsComponent;

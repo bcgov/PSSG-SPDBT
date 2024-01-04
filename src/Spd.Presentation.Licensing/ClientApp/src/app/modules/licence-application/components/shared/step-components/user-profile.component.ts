@@ -8,24 +8,24 @@ import { MailingAddressComponent } from './mailing-address.component';
 @Component({
 	selector: 'app-user-profile',
 	template: `
-		<!-- <mat-divider class="mat-divider-main2"></mat-divider> -->
+		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
-		<app-personal-information></app-personal-information>
+		<app-personal-information [isReadOnly]="isReadOnly"></app-personal-information>
 
-		<mat-divider class="mat-divider-main2"></mat-divider>
+		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
-		<app-alias-list></app-alias-list>
+		<app-alias-list [isReadOnly]="isReadOnly"></app-alias-list>
 
-		<mat-divider class="mat-divider-main2 mt-3"></mat-divider>
+		<mat-divider class="mat-divider-main mt-3"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Contact Information</div>
-		<app-contact-information [isWizardStep]="false"></app-contact-information>
+		<app-contact-information [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-contact-information>
 
 		<div class="row">
 			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main2"></mat-divider>
+				<mat-divider class="mat-divider-main"></mat-divider>
 				<div class="text-minor-heading pt-2 pb-3">Residential Address</div>
 
-				<app-alert type="info" icon="">
+				<app-alert type="info" icon="" [showBorder]="false">
 					Has your residential address changed?
 					<a href="https://www.addresschange.gov.bc.ca/" target="_blank">Change your address online</a> to update this
 					information on your BC Services Card. Any changes you make will then be updated here.
@@ -35,9 +35,9 @@ import { MailingAddressComponent } from './mailing-address.component';
 			</div>
 
 			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main2"></mat-divider>
+				<mat-divider class="mat-divider-main"></mat-divider>
 				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
-				<app-alert type="info" icon="">
+				<app-alert type="info" icon="" [showBorder]="false">
 					Provide your mailing address, if different from your residential address. This cannot be a company address.
 				</app-alert>
 
@@ -48,7 +48,7 @@ import { MailingAddressComponent } from './mailing-address.component';
 					</div>
 				</ng-container>
 				<ng-template #mailingIsDifferentThanResidential>
-					<app-mailing-address [isWizardStep]="false"></app-mailing-address>
+					<app-mailing-address [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-mailing-address>
 				</ng-template>
 			</div>
 		</div>
@@ -59,6 +59,8 @@ export class UserProfileComponent implements LicenceChildStepperStepComponent {
 	@ViewChild(AliasListComponent) aliasesComponent!: AliasListComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
+
+	isReadOnly = true;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 

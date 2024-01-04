@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -93,7 +93,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 	`,
 	styles: [],
 })
-export class MailingAddressComponent implements LicenceChildStepperStepComponent {
+export class MailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	// phoneMask = SPD_CONSTANTS.phone.displayMask;
 

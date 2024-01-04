@@ -67,7 +67,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	}
 
 	// need to override
-	dirtyForm(step: number): boolean {
+	dirtyForm(_step: number): boolean {
 		return false;
 	}
 }
