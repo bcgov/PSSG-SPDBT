@@ -618,7 +618,6 @@ export class WorkerLicensingService extends BaseService {
 
   /**
    * Upload licence application files: frontend use the keyCode to upload following files.
-   * Do not support parallel.
    * Uploading file only save files in cache, the files are not connected to the appliation yet.
    *
    *
@@ -659,7 +658,6 @@ export class WorkerLicensingService extends BaseService {
 
   /**
    * Upload licence application files: frontend use the keyCode to upload following files.
-   * Do not support parallel.
    * Uploading file only save files in cache, the files are not connected to the appliation yet.
    *
    *
@@ -692,7 +690,7 @@ export class WorkerLicensingService extends BaseService {
 
   /**
    * Submit Security Worker Licence Application Json part Anonymously
-   * After fe done with the uploading files, then fe do post with json payload.
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    *
    *
    *
@@ -729,7 +727,7 @@ export class WorkerLicensingService extends BaseService {
 
   /**
    * Submit Security Worker Licence Application Json part Anonymously
-   * After fe done with the uploading files, then fe do post with json payload.
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    *
    *
    *

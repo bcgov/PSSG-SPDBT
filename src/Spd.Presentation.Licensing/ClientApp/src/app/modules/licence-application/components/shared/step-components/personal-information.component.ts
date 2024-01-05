@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -13,7 +13,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	selector: 'app-personal-information',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<app-alert type="info" icon="">
+			<app-alert type="info" icon="" [showBorder]="false">
 				Have you changed your name?
 				<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
 					>Visit ICBC</a
@@ -75,6 +75,8 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceC
 
 	authenticationSubscription!: Subscription;
 	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
+
+	@Input() isReadOnly = false;
 
 	constructor(
 		private utilService: UtilService,

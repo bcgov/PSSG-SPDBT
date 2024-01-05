@@ -15,7 +15,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class="col-xxl-8 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<app-alert type="warning" icon="warning">
 								If any of this information is not correct, please call the Security Program's Licensing Unit during
-								regular office hours: 1-855-587-0185
+								regular office hours: {{ spdPhoneNumber }}
 							</app-alert>
 							<div class="row mt-0 mb-3">
 								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
@@ -58,6 +58,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class StepLicenceConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	feeAmount: null | string | undefined = '';
+	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	private licenceModelData: any = {};
 

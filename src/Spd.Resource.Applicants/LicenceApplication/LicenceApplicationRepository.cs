@@ -95,6 +95,19 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return _mapper.Map<LicenceApplicationResp>(app);
     }
 
+    public async Task<LicenceApplicationResp> GetLicenceApplicationAccessCodeAsync(string licenceNumber, string accessCode, CancellationToken ct)
+    {
+        var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_ApplicantId_contact)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Where(a => a.spd_name == licenceNumber).SingleOrDefaultAsync(ct);
+        if (app == null)
+            throw new ArgumentException("invalid app id");
+
+        return _mapper.Map<LicenceApplicationResp>(app);
+    }
+
     public async Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken)
     {
         IQueryable<spd_application> apps = _context.spd_applications.Expand(a => a.spd_ServiceTypeId);

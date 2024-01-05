@@ -28,7 +28,8 @@ internal class LicenceManager :
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
             {
-                LicenceNumber = query.LicenceNumber
+                LicenceNumber = query.LicenceNumber,
+                AccessCode = query.AccessCode
             }, ct);
 
         if (!response.Items.Any())

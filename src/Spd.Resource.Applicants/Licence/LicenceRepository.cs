@@ -21,7 +21,9 @@ internal class LicenceRepository : ILicenceRepository
             throw new ArgumentException("at least need 1 parameter to do licence query.");
         }
 
-        IQueryable<spd_licence> lics = _context.spd_licences;
+        IQueryable<spd_licence> lics = _context.spd_licences
+            .Expand(i => i.spd_LicenceHolder_contact)
+            .Expand(i => i.spd_CaseId);
         if (!qry.IncludeInactive)
             lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
@@ -46,6 +48,10 @@ internal class LicenceRepository : ILicenceRepository
         {
             lics = (bool)qry.IsExpired ? lics.Where(l => l.spd_expirydate <= DateTimeOffset.UtcNow) :
                 lics.Where(l => l.spd_expirydate > DateTimeOffset.UtcNow);
+        }
+        if (qry.AccessCode != null)
+        {
+            lics = lics.Where(a => a.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode);
         }
 
         return new LicenceListResp()
