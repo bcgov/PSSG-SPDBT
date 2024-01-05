@@ -3,6 +3,7 @@
 This directory contains a Helm chart to deploy SPD Sparc applications.
 
 Each environment has its own folder under 'envs' that need to be mapped from the shared secured storage.
+Start a command prompt with Administrator, then login to your openshift account.
 
 ## Usage
 
