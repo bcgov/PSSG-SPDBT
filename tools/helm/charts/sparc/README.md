@@ -11,6 +11,10 @@ To install a new environment, ensure the values.yaml matches the environment, th
 ```sh
 helm -n [namespace] install [env name] -f ./envs/[env name]/values.yml
 ```
+Example: 
+```
+C:\projects\spd\tools\helm\charts\sparc>helm -n fe7e29-test install . -f ./envs/test/values.yml --generate-name
+```
 
 To upgrade an existing environment, run the following command:
 
