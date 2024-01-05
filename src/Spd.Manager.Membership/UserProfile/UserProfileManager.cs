@@ -174,6 +174,10 @@ namespace Spd.Manager.Membership.UserProfile
             });
             _logger.LogDebug($"userGuid = {cmd.IdirUserIdentity.UserGuid}");
             _logger.LogDebug($"from webservice orgCode = {idirDetail.MinistryCode}");
+
+            OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
+            Guid orgId = orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BC_GOV_ORG_ID;
+
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
@@ -182,7 +186,7 @@ namespace Spd.Manager.Membership.UserProfile
             bool isFirstTimeLogin = false;
             if (identity == null)
             {
-                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, SpdConstants.BC_GOV_ORG_ID, IdentityProviderTypeEnum.Idir), ct);
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, orgId, IdentityProviderTypeEnum.Idir), ct);
                 identityId = id?.Id;
                 isFirstTimeLogin = true;
             }
@@ -199,7 +203,7 @@ namespace Spd.Manager.Membership.UserProfile
                 {
                     CreatePortalUserCmd createUserCmd = new CreatePortalUserCmd()
                     {
-                        OrgId = SpdConstants.BC_GOV_ORG_ID,
+                        OrgId = orgId,
                         EmailAddress = cmd.IdirUserIdentity.Email,
                         FirstName = cmd.IdirUserIdentity.FirstName,
                         LastName = cmd.IdirUserIdentity.LastName,
@@ -213,7 +217,7 @@ namespace Spd.Manager.Membership.UserProfile
                     UpdatePortalUserCmd updateUserCmd = new UpdatePortalUserCmd()
                     {
                         Id = result.Id,
-                        OrgId = SpdConstants.BC_GOV_ORG_ID,
+                        OrgId = orgId,
                         EmailAddress = cmd.IdirUserIdentity.Email,
                         FirstName = cmd.IdirUserIdentity.FirstName,
                         LastName = cmd.IdirUserIdentity.LastName,
@@ -227,8 +231,7 @@ namespace Spd.Manager.Membership.UserProfile
                 response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
                 response.IsFirstTimeLogin = isFirstTimeLogin;
-                //todo: temp hardcode
-                response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
+                response.OrgId = orgId;
                 return response;
             }
             else
@@ -254,7 +257,7 @@ namespace Spd.Manager.Membership.UserProfile
                     response.UserGuid = qry.IdirUserIdentity?.UserGuid;
                     response.UserDisplayName = qry.IdirUserIdentity?.DisplayName;
                     response.IdirUserName = qry.IdirUserIdentity?.IdirUserName;
-                    response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
+                    response.OrgId = result.OrganizationId ?? SpdConstants.BC_GOV_ORG_ID;
                     return response;
                 }
                 return null;
