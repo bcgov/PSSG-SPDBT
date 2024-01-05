@@ -118,7 +118,9 @@ namespace Spd.Resource.Organizations.Org
                 accounts = accounts.Where(a => a.spd_orgguid == query.OrgGuid.ToString());
             if (query.ParentOrgId != null)
                 accounts = accounts.Where(a => a._parentaccountid_value == query.ParentOrgId);
-               
+            if (query.OrgCode != null)
+                accounts = accounts.Where(a => a.spd_orgcode == query.OrgCode);
+
             return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accounts.ToList()));
         }
 
