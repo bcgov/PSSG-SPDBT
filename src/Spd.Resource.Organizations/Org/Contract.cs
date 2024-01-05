@@ -16,7 +16,7 @@ namespace Spd.Resource.Organizations.Org
 
     //query
     public abstract record OrgQry;
-    public record OrgsQry(Guid? OrgGuid, Guid? ParentOrgId = null, bool IncludeInactive = false) : OrgQry;
+    public record OrgsQry(Guid? OrgGuid = null, Guid? ParentOrgId = null, bool IncludeInactive = false, string? OrgCode = null) : OrgQry;
     public record OrgByIdentifierQry(Guid? OrgId, string? AccessCode = null) : OrgQry;
     public record SearchOrgQry : OrgQry
     {
