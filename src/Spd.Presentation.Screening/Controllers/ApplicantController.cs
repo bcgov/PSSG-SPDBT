@@ -3,12 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Screening;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -245,7 +245,7 @@ namespace Spd.Presentation.Screening.Controllers
             var content = new MemoryStream(response?.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
-            
+
         }
         #endregion
     }

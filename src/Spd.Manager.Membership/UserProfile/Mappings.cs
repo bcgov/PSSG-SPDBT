@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.User;
-using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Manager.Membership.UserProfile

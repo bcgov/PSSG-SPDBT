@@ -1,10 +1,10 @@
 ﻿using Alba;
 using Microsoft.Dynamics.CRM;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Presentation.Screening.Controllers;
 using System.Net;
 using Xunit.Abstractions;
-using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 
@@ -55,7 +55,7 @@ public class OrgRegistrationScenarios : ScenarioContextBase
         {
             _.Get.Url($"/api/org-registrations/{reg.spd_registrationnumber}/status");
             _.StatusCodeShouldBe(HttpStatusCode.OK);
-        }) ;
+        });
     }
     private AnonymousOrgRegistrationCreateRequest Create_AnonymousOrgRegistrationCreateRequest() =>
         new AnonymousOrgRegistrationCreateRequest

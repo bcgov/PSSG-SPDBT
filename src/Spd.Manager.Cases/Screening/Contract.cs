@@ -1,11 +1,11 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Resource.Applicants.Delegates;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
-using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
+using GenderCode = Spd.Manager.Common.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Screening
 {

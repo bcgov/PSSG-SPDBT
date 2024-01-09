@@ -69,7 +69,7 @@ public class OrgScenarios : ScenarioContextBase
             Id = orgId,
             AddressCity = "city",
             Email = "test@test.com",
-            PayerPreference = Spd.Utilities.Shared.ManagerContract.PayerPreferenceTypeCode.Applicant,
+            PayerPreference = Spd.Manager.Common.ManagerContract.PayerPreferenceTypeCode.Applicant,
             PhoneNumber = "111-111-1111",
             AddressLine1 = "line1",
             AddressCountry = "canada",

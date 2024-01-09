@@ -5,7 +5,7 @@ using Spd.Resource.Organizations.Org;
 using Spd.Utilities.Address;
 using Spd.Utilities.Shared;
 
-namespace Spd.Manager.Admin
+namespace Spd.Manager.Common.Admin
 {
     internal class AdminManager :
         IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,

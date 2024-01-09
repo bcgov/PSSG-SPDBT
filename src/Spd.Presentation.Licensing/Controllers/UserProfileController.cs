@@ -2,10 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.ManagerContract;
 using System.Security.Principal;
 using System.Text.Json;
 
