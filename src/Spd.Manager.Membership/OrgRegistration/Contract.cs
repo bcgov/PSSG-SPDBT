@@ -1,6 +1,6 @@
 using FluentValidation;
 using MediatR;
-using Spd.Utilities.Shared.ManagerContract;
+using Spd.Manager.Common.ManagerContract;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgRegistration

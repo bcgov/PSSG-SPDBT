@@ -2,9 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Manager.Membership.Report;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.ManagerContract;
 using System.Security.Claims;
 using System.Security.Principal;
 

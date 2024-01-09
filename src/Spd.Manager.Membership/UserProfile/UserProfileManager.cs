@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.PortalUser;
@@ -11,7 +12,6 @@ using Spd.Resource.Organizations.User;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
 {
@@ -160,7 +160,7 @@ namespace Spd.Manager.Membership.UserProfile
                 }
                 //update address
             }
-            
+
             return _mapper.Map<ApplicantProfileResponse>(contactResp);
         }
 

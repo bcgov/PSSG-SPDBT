@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Manager.Cases.Payment;
+using Spd.Manager.Common.Payment;
 using Spd.Utilities.Payment;
 using Xunit.Abstractions;
 

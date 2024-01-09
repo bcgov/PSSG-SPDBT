@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spd.Manager.Cases.Screening;
-using Spd.Manager.Cases.Payment;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Manager.Cases
@@ -10,7 +9,6 @@ namespace Spd.Manager.Cases
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
             configurationServices.Services.AddTransient<IApplicationManager, ApplicationManager>();
-            configurationServices.Services.AddTransient<IPaymentManager, PaymentManager>();
         }
     }
 }
