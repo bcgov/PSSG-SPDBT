@@ -1,8 +1,8 @@
 using MediatR;
-using Spd.Utilities.Shared.ManagerContract;
+using Spd.Manager.Common.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 
-namespace Spd.Manager.Cases.Payment
+namespace Spd.Manager.Common.Payment
 {
     public interface IPaymentManager
     {

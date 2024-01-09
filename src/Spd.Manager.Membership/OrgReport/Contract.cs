@@ -1,5 +1,5 @@
 using MediatR;
-using Spd.Utilities.Shared.ManagerContract;
+using Spd.Manager.Common.ManagerContract;
 
 namespace Spd.Manager.Membership.Report
 {

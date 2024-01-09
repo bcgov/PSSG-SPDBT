@@ -8,6 +8,7 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
 using StackExchange.Redis;
@@ -78,7 +79,7 @@ builder.Services.AddFileStorageProxy(builder.Configuration);
 builder.Services
   .AddGoogleRecaptcha(builder.Configuration)
   .AddBCeIDService(builder.Configuration)
-  // .AddPaymentService(builder.Configuration)
+  .AddPaymentService(builder.Configuration)
   .AddDynamicsProxy(builder.Configuration)
   .AddAddressAutoComplete(builder.Configuration);
 builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);

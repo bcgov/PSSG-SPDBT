@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Spd.Manager.Admin;
+using Spd.Manager.Common.Admin;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
