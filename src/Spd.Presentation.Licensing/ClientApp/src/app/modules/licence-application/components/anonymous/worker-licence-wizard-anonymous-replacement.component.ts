@@ -1,10 +1,10 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { distinctUntilChanged } from 'rxjs';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { StepMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-child-steps/step-mailing-address.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { StepMailingAddressComponent } from '@app/modules/licence-application/components/shared/wizard-child-steps/step-mailing-address.component';
+import { distinctUntilChanged } from 'rxjs';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-replacement',
