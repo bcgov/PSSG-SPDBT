@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Spd.Manager.Admin
+namespace Spd.Manager.Common.Admin
 {
     public interface IAdminManager
     {
