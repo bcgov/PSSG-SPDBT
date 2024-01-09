@@ -1,13 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Spd.Manager.Common.Admin;
+using Spd.Manager.Common.Payment;
 using Spd.Utilities.Hosting;
 
-namespace Spd.Manager.Admin
+namespace Spd.Manager.Common
 {
     public class ServiceExtension : IConfigureComponentServices
     {
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
             configurationServices.Services.AddTransient<IAdminManager, AdminManager>();
+            configurationServices.Services.AddTransient<IPaymentManager, PaymentManager>();
         }
     }
 }
