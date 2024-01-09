@@ -102,7 +102,7 @@ import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-pro
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New && !isLoggedIn">
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-step-licence-expired></app-step-licence-expired>
 
 				<div class="row mt-4">

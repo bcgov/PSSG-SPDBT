@@ -218,6 +218,10 @@ button.mat-red-button {
 //   }
 // }
 
+.expanded-detail-row:has(.mat-column-expandedDetail:empty) {
+  display: none;
+}
+
 .mat-mdc-header-cell {
   font-weight: 600 !important;
 }

@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { Subscription } from 'rxjs';
 import { ResidentialAddressComponent } from '../step-components/residential-address.component';
@@ -28,8 +29,7 @@ export class StepResidentialAddressComponent implements LicenceChildStepperStepC
 	applicationTypeCodes = ApplicationTypeCode;
 
 	readonly subtitle_unauth_new = 'This is the address where you currently live';
-	readonly subtitle_auth_new =
-		'This is the address from your BC Services Card. If you need to make any updates, visit <a href="https://www.addresschange.gov.bc.ca/" target="_blank">addresschange.gov.bc.ca</a>';
+	readonly subtitle_auth_new = `This is the address from your BC Services Card. If you need to make any updates, visit <a href="${SPD_CONSTANTS.urls.addressChangeUrl}" target="_blank">addresschange.gov.bc.ca</a>`;
 
 	subtitle = '';
 

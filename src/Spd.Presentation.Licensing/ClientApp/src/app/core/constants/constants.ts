@@ -45,4 +45,12 @@ export const SPD_CONSTANTS = {
 	// 	crcPortalStateKey: 'crc-state',
 	// 	bannerMessageKey: 'banner-message',
 	// },
+	urls: {
+		requestReplacementUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
+		contactSpdUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
+		setupAccountUrl: 'https://id.gov.bc.ca/account/',
+		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
+	},
 };

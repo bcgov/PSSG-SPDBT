@@ -27,12 +27,12 @@ import { StepLicenceUserProfileComponent } from './components/shared/wizard-chil
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
-	public static LICENCE_APPLICATION = 'licence-application';
+	public static LICENCE_APPLICATION = 'licensing';
 
 	public static LOGIN_SELECTION = 'login-selection';
 
-	public static USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
-	public static APPLICATION_AUTHENTICATED = 'applications';
+	public static USER_APPLICATIONS_AUTHENTICATED = 'applications';
+	public static APPLICATION_AUTHENTICATED = 'user';
 	public static WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
 	public static WORKER_LICENCE_RENEW_AUTHENTICATED = 'worker-licence-renew';
 	public static WORKER_LICENCE_UPDATE_AUTHENTICATED = 'worker-licence-update';
@@ -64,7 +64,7 @@ export class LicenceApplicationRoutes {
 	}
 
 	public static pathUserApplications(): string {
-		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED}`;
+		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_AUTHENTICATED}/${LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED}`;
 	}
 
 	public static pathSecurityWorkerLicenceAuthenticated(route: string | null = null): string {
@@ -129,18 +129,18 @@ const routes: Routes = [
 				],
 			},
 			{
-				path: LicenceApplicationRoutes.LICENCE_LINK,
-				component: StepAccessCodeAuthorizedComponent,
-			},
-			{
-				path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,
-				component: UserApplicationsAuthenticatedComponent,
-			},
-			{
 				// SWL - NEW - AUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
 				component: WorkerLicenceApplicationBaseAuthenticatedComponent,
 				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_LINK,
+						component: StepAccessCodeAuthorizedComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,
+						component: UserApplicationsAuthenticatedComponent,
+					},
 					{
 						path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
 						component: LoginUserProfileComponent,
