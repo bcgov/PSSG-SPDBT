@@ -315,4 +315,11 @@ namespace Spd.Utilities.Dynamics
         DetectionExplosives = 100000002,
         Protection = 100000000
     }
+
+    public enum AliasSourceTypeOptionSet
+    {
+        UserEntered = 100000000,
+        SpdEntered = 100000001,
+        MigratedFromFigaro = 100000002
+    }
 }
