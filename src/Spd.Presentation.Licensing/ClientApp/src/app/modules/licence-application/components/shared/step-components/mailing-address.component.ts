@@ -101,7 +101,7 @@ export class MailingAddressComponent implements OnInit, LicenceChildStepperStepC
 
 	// readonly subtitle_unauth_new = 'This is the address where you currently live';
 	// readonly subtitle_auth_new =
-	// 	'This is the address from your BC Services Card. If you need to make any updates, visit <a href="https://www.addresschange.gov.bc.ca/" target="_blank">addresschange.gov.bc.ca</a>';
+	// 	`This is the address from your BC Services Card. If you need to make any updates, visit <a href="${SPD_CONSTANTS.urls.addressChangeUrl}" target="_blank">addresschange.gov.bc.ca</a>`;
 
 	subtitle = '';
 
