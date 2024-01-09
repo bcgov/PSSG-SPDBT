@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
+import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
+import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
@@ -48,6 +51,10 @@ export class LicenceApplicationRoutes {
 	public static WORKER_LICENCE_REPLACEMENT_ANONYMOUS = 'worker-licence-replacement';
 	public static WORKER_LICENCE_UPDATE_ANONYMOUS = 'worker-licence-update';
 
+	public static PERMIT_ANONYMOUS = 'permit-anonymous';
+	public static PERMIT_TYPE_ANONYMOUS = 'permit-type';
+	public static PERMIT_NEW_ANONYMOUS = 'permit-new';
+
 	public static LICENCE_LINK = 'licence-link';
 	public static LOGIN_USER_PROFILE = 'user-profile';
 
@@ -77,6 +84,12 @@ export class LicenceApplicationRoutes {
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}/${route}`
 			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}`;
 	}
+
+	public static pathPermitAnonymous(route: string | null = null): string {
+		return route
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}`;
+	}
 }
 
 const routes: Routes = [
@@ -89,7 +102,7 @@ const routes: Routes = [
 				component: LoginSelectionComponent,
 			},
 			{
-				// ANONYMOUS
+				// SECURITY WORKER LICENCE - ANONYMOUS
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
 				component: WorkerLicenceApplicationBaseAnonymousComponent,
 				children: [
@@ -120,6 +133,53 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS,
 						component: WorkerLicenceWizardAnonymousUpdateComponent,
+					},
+					{
+						path: '',
+						component: StepLicenceTypeAnonymousComponent,
+					},
+				],
+			},
+			{
+				// PERMIT - ANONYMOUS
+				path: LicenceApplicationRoutes.PERMIT_ANONYMOUS,
+				component: PermitApplicationBaseAnonymousComponent,
+				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_SELECTION_ANONYMOUS,
+						component: StepLicenceTypeAnonymousComponent,
+					},
+					// {
+					// 	path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS,
+					// 	component: StepApplicationTypeAnonymousComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS,
+					// 	component: StepLicenceAccessCodeAnonymousComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousNewComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousRenewalComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousReplacementComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousUpdateComponent,
+					// },
+					{
+						path: LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS,
+						component: StepPermitTypeAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.PERMIT_NEW_ANONYMOUS,
+						component: PermitWizardAnonymousNewComponent,
 					},
 					{
 						path: '',

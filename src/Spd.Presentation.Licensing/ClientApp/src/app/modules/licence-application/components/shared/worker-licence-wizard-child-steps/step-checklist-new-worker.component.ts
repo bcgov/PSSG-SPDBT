@@ -26,8 +26,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 										aria-label="Request for Fingerprinting form"
 										href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
 										target="_blank"
-									>
-										Request for Fingerprinting form </a
+										>Request for Fingerprinting form</a
 									>, take it your local police department, and return to this application when you have this form
 									completed.
 								</p>

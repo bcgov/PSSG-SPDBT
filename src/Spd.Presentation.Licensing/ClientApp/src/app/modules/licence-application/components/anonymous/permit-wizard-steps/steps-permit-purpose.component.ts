@@ -1,0 +1,198 @@
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { Subscription } from 'rxjs';
+import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { StepPermitEmployerInformationComponent } from './step-permit-employer-information.component';
+import { StepPermitRationaleComponent } from './step-permit-rationale.component';
+import { StepPermitReasonComponent } from './step-permit-reason.component';
+
+@Component({
+	selector: 'app-steps-permit-purpose',
+	template: `
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step>
+				<app-step-permit-reason></app-step-permit-reason>
+
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_PERMIT_REASON)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_PERMIT_REASON)"
+						>
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PERMIT_REASON)">
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-employer-information></app-step-permit-employer-information>
+
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_EMPLOYER_INFORMATION)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
+						>
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onNextReview(STEP_EMPLOYER_INFORMATION)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-rationale></app-step-permit-rationale>
+
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_PERMIT_RATIONALE)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PERMIT_RATIONALE)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PERMIT_RATIONALE)">
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+		</mat-stepper>
+	`,
+	styles: [],
+	encapsulation: ViewEncapsulation.None,
+})
+export class StepsPermitPurposeComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+	readonly STEP_PERMIT_REASON = 1;
+	readonly STEP_EMPLOYER_INFORMATION = 2;
+	readonly STEP_PERMIT_RATIONALE = 3;
+
+	private authenticationSubscription!: Subscription;
+	private licenceModelChangedSubscription!: Subscription;
+
+	isLoggedIn = false;
+	isFormValid = false;
+
+	applicationTypeCode: ApplicationTypeCode | null = null;
+	applicationTypeCodes = ApplicationTypeCode;
+
+	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
+	@ViewChild(StepPermitEmployerInformationComponent)
+	stepEmployerInformationComponent!: StepPermitEmployerInformationComponent;
+	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
+
+	constructor(
+		private authProcessService: AuthProcessService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super();
+	}
+
+	ngOnInit(): void {
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: any) => {
+				// console.debug('licenceModelValueChanges$', _resp);
+				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+			}
+		);
+
+		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
+			(isLoggedIn: boolean) => {
+				this.isLoggedIn = isLoggedIn;
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+	}
+
+	override onFormValidNextStep(_formNumber: number): void {
+		console.log('onFormValidNextStep', this.childstepper.selectedIndex);
+
+		const isValid = this.dirtyForm(_formNumber);
+		if (!isValid) return;
+
+		// if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
+		// 	this.nextStepperStep.emit(true);
+		// 	return;
+		// }
+		this.childNextStep.next(true);
+	}
+
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_PERMIT_REASON:
+				return this.stepPermitReasonComponent.isFormValid();
+			case this.STEP_EMPLOYER_INFORMATION:
+				return this.stepEmployerInformationComponent.isFormValid();
+			case this.STEP_PERMIT_RATIONALE:
+				return this.stepPermitRationaleComponent.isFormValid();
+		}
+		return false;
+	}
+}

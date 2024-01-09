@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -110,43 +110,32 @@ export class StepApplicationTypeAnonymousComponent {
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			const workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-				'workerLicenceTypeData.workerLicenceTypeCode'
-			)?.value;
+			// const workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			// 	'workerLicenceTypeData.workerLicenceTypeCode'
+			// )?.value;
 			const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 				'applicationTypeData.applicationTypeCode'
 			)?.value;
-			console.log('workerLicenceTypeCode', workerLicenceTypeCode);
-			console.log('applicationTypeCode', applicationTypeCode);
+			// console.log('workerLicenceTypeCode', workerLicenceTypeCode);
+			// console.log('applicationTypeCode', applicationTypeCode);
 
-			switch (workerLicenceTypeCode) {
-				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-					switch (applicationTypeCode) {
-						case ApplicationTypeCode.New: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS
-								)
-							);
-							break;
-						}
-						case ApplicationTypeCode.Update:
-						case ApplicationTypeCode.Replacement:
-						case ApplicationTypeCode.Renewal: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-									LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
-								)
-							);
-							break;
-						}
-					}
+			switch (applicationTypeCode) {
+				case ApplicationTypeCode.New: {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+							LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS
+						)
+					);
 					break;
 				}
-				case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
-					break;
-				}
-				case WorkerLicenceTypeCode.BodyArmourPermit: {
+				case ApplicationTypeCode.Update:
+				case ApplicationTypeCode.Replacement:
+				case ApplicationTypeCode.Renewal: {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+							LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS
+						)
+					);
 					break;
 				}
 			}
