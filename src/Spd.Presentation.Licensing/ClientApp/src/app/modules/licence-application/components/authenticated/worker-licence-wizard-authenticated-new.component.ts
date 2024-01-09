@@ -5,16 +5,16 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background.component';
 import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { HotToastService } from '@ngneat/hot-toast';
+import { distinctUntilChanged } from 'rxjs';
 import { StepsIdentificationAuthenticatedComponent } from './wizard-steps/steps-identification-authenticated.component';
 import { StepsReviewLicenceAuthenticatedComponent } from './wizard-steps/steps-review-licence-authenticated.component';
 
@@ -86,10 +86,7 @@ import { StepsReviewLicenceAuthenticatedComponent } from './wizard-steps/steps-r
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAuthenticatedNewComponent
-	extends BaseWizardComponent
-	implements OnInit, AfterViewInit
-{
+export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, AfterViewInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -127,6 +124,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+		}
 
 		this.updateCompleteStatus();
 

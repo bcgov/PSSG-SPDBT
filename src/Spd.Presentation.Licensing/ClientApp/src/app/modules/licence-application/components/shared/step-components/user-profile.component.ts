@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { AliasListComponent } from './alias-list.component';
@@ -27,8 +28,8 @@ import { MailingAddressComponent } from './mailing-address.component';
 
 				<app-alert type="info" icon="" [showBorder]="false">
 					Has your residential address changed?
-					<a href="https://www.addresschange.gov.bc.ca/" target="_blank">Change your address online</a> to update this
-					information on your BC Services Card. Any changes you make will then be updated here.
+					<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information on your
+					BC Services Card. Any changes you make will then be updated here.
 				</app-alert>
 
 				<app-residential-address [isWizardStep]="false" [isReadOnly]="true"></app-residential-address>
@@ -56,6 +57,8 @@ import { MailingAddressComponent } from './mailing-address.component';
 	styles: [],
 })
 export class UserProfileComponent implements LicenceChildStepperStepComponent {
+	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
+
 	@ViewChild(AliasListComponent) aliasesComponent!: AliasListComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;

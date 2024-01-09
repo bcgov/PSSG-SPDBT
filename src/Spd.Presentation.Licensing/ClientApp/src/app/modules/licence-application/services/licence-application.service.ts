@@ -507,17 +507,19 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadUpdateLicence(): Observable<WorkerLicenceResponse> {
-		return this.createLicenceAuthenticated().pipe(
-			// TODO update
-			tap((_resp: any) => {
-				console.debug('loadUserProfile');
+	// loadUpdateLicence(): Observable<WorkerLicenceResponse> { // TODO remove?
 
-				this.initialized = true;
-				console.debug('this.initialized', this.initialized);
-			})
-		);
-	}
+	// 	return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode).pipe(
+	// 	// return this.createLicenceAuthenticated().pipe(
+	// 		// TODO update
+	// 		tap((_resp: any) => {
+	// 			console.debug('loadUserProfile');
+
+	// 			this.initialized = true;
+	// 			console.debug('this.initialized', this.initialized);
+	// 		})
+	// 	);
+	// }
 
 	/**
 	 * Create an empty licence
@@ -628,12 +630,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
 				};
 
-				// const expiredLicenceData = {
-				// 	hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
-				// 	expiredLicenceNumber: resp.expiredLicenceNumber,
-				// 	expiryDate: resp.expiryDate,
-				// 	expiredLicenceId: resp.expiredLicenceId,
-				// };
+				const expiredLicenceData = {
+					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+					expiredLicenceNumber: resp.expiredLicenceNumber,
+					expiryDate: resp.expiryDate,
+					expiredLicenceId: resp.expiredLicenceId,
+				};
 
 				const licenceTermData = {
 					licenceTermCode: resp.licenceTermCode,
@@ -1101,7 +1103,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						workerLicenceTypeData,
 						applicationTypeData,
 						soleProprietorData,
-						// expiredLicenceData,
+						expiredLicenceData,
 						licenceTermData,
 						policeBackgroundData,
 						bcDriversLicenceData,
