@@ -4,15 +4,15 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { StepAdditionalGovIdComponent } from '../../shared/wizard-child-steps/step-additional-gov-id.component';
-import { StepAliasesComponent } from '../../shared/wizard-child-steps/step-aliases.component';
-import { StepBcDriverLicenceComponent } from '../../shared/wizard-child-steps/step-bc-driver-licence.component';
-import { StepCitizenshipComponent } from '../../shared/wizard-child-steps/step-citizenship.component';
-import { StepContactInformationComponent } from '../../shared/wizard-child-steps/step-contact-information.component';
-import { StepMailingAddressComponent } from '../../shared/wizard-child-steps/step-mailing-address.component';
-import { StepPhotographOfYourselfComponent } from '../../shared/wizard-child-steps/step-photograph-of-yourself.component';
-import { StepPhysicalCharacteristicsComponent } from '../../shared/wizard-child-steps/step-physical-characteristics.component';
-import { StepResidentialAddressComponent } from '../../shared/wizard-child-steps/step-residential-address.component';
+import { StepAdditionalGovIdComponent } from '../../shared/worker-licence-wizard-child-steps/step-additional-gov-id.component';
+import { StepAliasesComponent } from '../../shared/worker-licence-wizard-child-steps/step-aliases.component';
+import { StepBcDriverLicenceComponent } from '../../shared/worker-licence-wizard-child-steps/step-bc-driver-licence.component';
+import { StepCitizenshipComponent } from '../../shared/worker-licence-wizard-child-steps/step-citizenship.component';
+import { StepContactInformationComponent } from '../../shared/worker-licence-wizard-child-steps/step-contact-information.component';
+import { StepMailingAddressComponent } from '../../shared/worker-licence-wizard-child-steps/step-mailing-address.component';
+import { StepPhotographOfYourselfComponent } from '../../shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licence-wizard-child-steps/step-physical-characteristics.component';
+import { StepResidentialAddressComponent } from '../../shared/worker-licence-wizard-child-steps/step-residential-address.component';
 import { StepPersonalInformationAnonymousComponent } from './step-personal-information-anonymous.component';
 
 @Component({
