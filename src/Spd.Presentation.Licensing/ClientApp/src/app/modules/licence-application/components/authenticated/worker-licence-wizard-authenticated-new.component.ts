@@ -8,15 +8,15 @@ import { Router } from '@angular/router';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background.component';
-import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
+import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-background.component';
+import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-licence-selection.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { StepsIdentificationAuthenticatedComponent } from './wizard-steps/steps-identification-authenticated.component';
-import { StepsReviewLicenceAuthenticatedComponent } from './wizard-steps/steps-review-licence-authenticated.component';
+import { StepsIdentificationAuthenticatedComponent } from './worker-licence-wizard-steps/steps-identification-authenticated.component';
+import { StepsReviewLicenceAuthenticatedComponent } from './worker-licence-wizard-steps/steps-review-licence-authenticated.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-authenticated-new',

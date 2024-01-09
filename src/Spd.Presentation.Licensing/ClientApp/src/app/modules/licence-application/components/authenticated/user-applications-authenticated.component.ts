@@ -345,9 +345,9 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 											<div class="text-data">{{ appl.expiresOn | formatDate : constants.date.formalDateFormat }}</div>
 										</div>
 										<div class="col-lg-3 text-end">
-											<button mat-flat-button color="primary" class="large w-auto" (click)="onReapply(appl)">
+											<!-- <button mat-flat-button color="primary" class="large w-auto" (click)="onReapply(appl)">
 												<mat-icon>play_arrow</mat-icon>Reapply
-											</button>
+											</button> -->
 											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
 													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
 													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Expired</span>
@@ -646,21 +646,21 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.subscribe();
 	}
 
-	onReapply(appl: WorkerLicenceInProgress): void {
-		this.licenceApplicationService
-			.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Renewal)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
-						)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
+	// onReapply(appl: WorkerLicenceInProgress): void {
+	// 	this.licenceApplicationService
+	// 		.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Renewal)
+	// 		.pipe(
+	// 			tap((_resp: any) => {
+	// 				this.router.navigateByUrl(
+	// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+	// 						LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+	// 					)
+	// 				);
+	// 			}),
+	// 			take(1)
+	// 		)
+	// 		.subscribe();
+	// }
 
 	onCreateNew(): void {
 		this.licenceApplicationService

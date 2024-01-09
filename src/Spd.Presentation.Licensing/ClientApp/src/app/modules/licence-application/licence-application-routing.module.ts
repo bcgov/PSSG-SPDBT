@@ -1,29 +1,28 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserApplicationsAnonymousComponent } from './components/anonymous/user-applications-anonymous.component';
-import { StepApplicationTypeAnonymousComponent } from './components/anonymous/wizard-steps/step-application-type-anonymous.component';
-import { StepLicenceAccessCodeAnonymousComponent } from './components/anonymous/wizard-steps/step-licence-access-code-anonymous.component';
-import { StepLicenceTypeAnonymousComponent } from './components/anonymous/wizard-steps/step-licence-type-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
 import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/anonymous/worker-licence-wizard-anonymous-replacement.component';
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
+import { StepApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-application-type-anonymous.component';
+import { StepLicenceAccessCodeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-licence-access-code-anonymous.component';
+import { StepLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-licence-type-anonymous.component';
 import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
 import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
-import { StepAccessCodeAuthorizedComponent } from './components/authenticated/wizard-steps/step-access-code-authorized.component';
-import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/wizard-steps/step-application-type-authenticated.component';
-import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/wizard-steps/step-licence-type-authenticated.component';
 import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
+import { StepAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-access-code-authorized.component';
+import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component';
+import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
-import { StepLicenceUserProfileComponent } from './components/shared/wizard-child-steps/step-licence-user-profile.component';
+import { StepLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-child-steps/step-licence-user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
@@ -124,7 +123,7 @@ const routes: Routes = [
 					},
 					{
 						path: '',
-						component: UserApplicationsAnonymousComponent,
+						component: StepLicenceTypeAnonymousComponent,
 					},
 				],
 			},
