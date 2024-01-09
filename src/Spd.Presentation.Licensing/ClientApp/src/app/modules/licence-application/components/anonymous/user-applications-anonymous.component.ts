@@ -29,6 +29,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 	styles: [],
 })
 export class UserApplicationsAnonymousComponent implements OnInit {
+	// TODO can this component be deleted?
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,

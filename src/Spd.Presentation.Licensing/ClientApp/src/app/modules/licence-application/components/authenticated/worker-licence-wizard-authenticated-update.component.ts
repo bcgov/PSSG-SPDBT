@@ -1,8 +1,9 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper, StepperOrientation } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
 	selector: 'app-worker-licence-wizard-authenticated-update',
@@ -74,12 +75,22 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class WorkerLicenceWizardAuthenticatedUpdateComponent {
+export class WorkerLicenceWizardAuthenticatedUpdateComponent implements OnInit {
 	orientation: StepperOrientation = 'vertical';
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+		}
+
+		// this.updateCompleteStatus(); // TODO what to set?
+
+		// this.licenceApplicationService.setLicenceTermsAndFees();
+	}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		//empty

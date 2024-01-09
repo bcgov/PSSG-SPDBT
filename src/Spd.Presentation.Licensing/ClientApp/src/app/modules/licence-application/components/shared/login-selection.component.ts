@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
@@ -127,9 +128,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 										</div>
 										<div class="step-container__box__footer mx-4 my-3">
 											Don't have BC Services Card?<br />
-											<a class="large" href="https://id.gov.bc.ca/account/" target="_blank">
-												Set up your account today
-											</a>
+											<a class="large" [href]="setupAccountUrl" target="_blank"> Set up your account today </a>
 										</div>
 									</div>
 								</div>
@@ -177,9 +176,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 										</div>
 										<div class="step-container__box__footer mx-4 my-3">
 											Don't have BC Services Card?<br />
-											<a class="large" href="https://id.gov.bc.ca/account/" target="_blank">
-												Set up your account today
-											</a>
+											<a class="large" [href]="setupAccountUrl" target="_blank"> Set up your account today </a>
 										</div>
 									</div>
 								</div>
@@ -231,6 +228,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 	],
 })
 export class LoginSelectionComponent {
+	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
+
 	constructor(private router: Router) {}
 
 	async onRegisterWithBceid(): Promise<void> {
