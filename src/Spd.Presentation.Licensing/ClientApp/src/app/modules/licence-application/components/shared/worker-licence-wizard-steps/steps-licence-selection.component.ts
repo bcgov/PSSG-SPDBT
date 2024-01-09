@@ -7,12 +7,12 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { StepDogsAuthorizationComponent } from '../wizard-child-steps/step-dogs-authorization.component';
-import { StepLicenceCategoryComponent } from '../wizard-child-steps/step-licence-category.component';
-import { StepLicenceExpiredComponent } from '../wizard-child-steps/step-licence-expired.component';
-import { StepLicenceTermComponent } from '../wizard-child-steps/step-licence-term.component';
-import { StepRestraintsAuthorizationComponent } from '../wizard-child-steps/step-restraints-authorization.component';
-import { StepSoleProprietorComponent } from '../wizard-child-steps/step-sole-proprietor.component';
+import { StepDogsAuthorizationComponent } from '../worker-licence-wizard-child-steps/step-dogs-authorization.component';
+import { StepLicenceCategoryComponent } from '../worker-licence-wizard-child-steps/step-licence-category.component';
+import { StepLicenceExpiredComponent } from '../worker-licence-wizard-child-steps/step-licence-expired.component';
+import { StepLicenceTermComponent } from '../worker-licence-wizard-child-steps/step-licence-term.component';
+import { StepRestraintsAuthorizationComponent } from '../worker-licence-wizard-child-steps/step-restraints-authorization.component';
+import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-steps/step-sole-proprietor.component';
 
 @Component({
 	selector: 'app-steps-licence-selection',

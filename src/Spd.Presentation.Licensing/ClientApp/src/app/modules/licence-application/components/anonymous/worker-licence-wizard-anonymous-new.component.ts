@@ -3,15 +3,15 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-review-licence-authenticated.component';
+import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-background.component';
+import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-licence-selection.component';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/wizard-steps/steps-review-licence-authenticated.component';
-import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-background.component';
-import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/wizard-steps/steps-licence-selection.component';
-import { StepsIdentificationAnonymousComponent } from './wizard-steps/steps-identification-anonymous.component';
+import { StepsIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-identification-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-new',

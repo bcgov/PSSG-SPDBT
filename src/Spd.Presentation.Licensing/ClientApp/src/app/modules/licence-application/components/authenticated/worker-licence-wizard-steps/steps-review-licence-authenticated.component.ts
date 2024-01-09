@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { StepConsentAndDeclarationComponent } from '../../shared/wizard-child-steps/step-consent-and-declaration.component';
+import { StepConsentAndDeclarationComponent } from '../../shared/worker-licence-wizard-child-steps/step-consent-and-declaration.component';
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './step-summary-review-licence-authenticated.component';
 
 @Component({
