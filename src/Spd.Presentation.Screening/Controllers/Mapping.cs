@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Spd.Manager.Cases.Screening;
-using Spd.Manager.Cases.Payment;
+using Spd.Manager.Common.Payment;
 using Spd.Manager.Membership.Org;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;

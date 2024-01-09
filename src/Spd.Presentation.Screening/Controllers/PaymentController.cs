@@ -2,10 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases.Payment;
+using Spd.Manager.Common.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -307,7 +306,7 @@ namespace Spd.Presentation.Screening.Controllers
 
                 return Redirect($"{hostUrl}{failPath}{paymentId}");
             }
-            catch( Exception ex ) 
+            catch (Exception ex)
             {
                 _logger.LogError($"ProcessApplicantInvitePaymentResult Payment result processing has errors +{ex}");
                 return Redirect($"{hostUrl}{errorPath}");

@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases.Payment;
+using Spd.Manager.Common.Payment;
 using Spd.Utilities.Shared;
 using System.Configuration;
 
@@ -88,7 +88,7 @@ public class PaymentController : SpdControllerBase
     /// </returns>
     [HttpGet]
     [Route("api/payment/invoices/create-one-in-cas/{invoiceId}")]
-    public async Task<CreateOneInvoiceInCasResponse> CreateOneInvoiceInCasAsync([FromRoute]Guid invoiceId, CancellationToken ct)
+    public async Task<CreateOneInvoiceInCasResponse> CreateOneInvoiceInCasAsync([FromRoute] Guid invoiceId, CancellationToken ct)
     {
         return await _mediator.Send(new CreateOneInvoiceInCasCommand(invoiceId), ct);
     }
