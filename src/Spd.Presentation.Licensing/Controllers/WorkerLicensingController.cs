@@ -87,7 +87,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/{licenceAppId}")]
         [HttpGet]
         public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
-        {
+        {            
             return await _mediator.Send(new GetWorkerLicenceQuery(licenceAppId));
         }
 
@@ -168,7 +168,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
         #endregion
 
-        #region anonymous APIs
+        #region anonymous 
         /// <summary>
         /// Submit Security Worker Licence Application Anonymously
         /// deprecated as the request body is too big. the proxy won't let it through.
