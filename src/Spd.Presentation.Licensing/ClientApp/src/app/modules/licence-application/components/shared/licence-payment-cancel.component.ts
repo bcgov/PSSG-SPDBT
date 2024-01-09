@@ -1,31 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from '@app/api/models';
+import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { switchMap } from 'rxjs';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-licence-payment-fail',
+	selector: 'app-licence-payment-cancel',
 	template: `
 		<div class="container mt-4">
 			<section class="step-section">
-				<app-payment-fail
-					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
+				<app-payment-cancel
 					(payNow)="onPayNow()"
 					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-				></app-payment-fail>
+				></app-payment-cancel>
 			</section>
 		</div>
 	`,
 	styles: [],
 })
-export class LicencePaymentFailComponent implements OnInit {
-	numberOfAttemptsRemaining = 0;
-	payment: PaymentResponse | null = null;
+export class LicencePaymentCancelComponent implements OnInit {
+	licenceAppId = '';
 
 	constructor(
 		private route: ActivatedRoute,
@@ -35,36 +31,22 @@ export class LicencePaymentFailComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const paymentId = this.route.snapshot.paramMap.get('id');
-		if (!paymentId) {
-			console.debug('LicencePaymentFailComponent - missing paymentId');
+		const licenceAppId = this.route.snapshot.paramMap.get('id');
+		if (!licenceAppId) {
+			console.debug('LicencePaymentCancelComponent - missing licenceAppId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
-		this.paymentService
-			.apiUnauthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
-			.pipe(
-				switchMap((paymentResp: PaymentResponse) => {
-					this.payment = paymentResp;
-					return this.paymentService.apiUnauthLicenceApplicationIdPaymentAttemptsGet({
-						applicationId: paymentResp.applicationId!,
-					});
-				})
-			)
-			.subscribe((numberOfFails) => {
-				const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - numberOfFails;
-				this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
-			});
 	}
 
 	onPayNow(): void {
 		const body: PaymentLinkCreateRequest = {
-			applicationId: this.payment!.applicationId!,
+			applicationId: this.licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
+			description: `Payment for Licence Application`,
 		};
 		this.paymentService
 			.apiUnauthLicenceApplicationIdPaymentLinkPost({
-				applicationId: this.payment!.applicationId!,
+				applicationId: this.licenceAppId,
 				body,
 			})
 			.pipe()
@@ -78,7 +60,7 @@ export class LicencePaymentFailComponent implements OnInit {
 	onDownloadManualPaymentForm(): void {
 		this.paymentService
 			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
-				applicationId: this.payment?.applicationId!,
+				applicationId: this.licenceAppId,
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {

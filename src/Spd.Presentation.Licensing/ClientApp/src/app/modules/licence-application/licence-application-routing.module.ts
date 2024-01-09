@@ -20,9 +20,9 @@ import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/au
 import { StepAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-access-code-authorized.component';
 import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component';
 import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component';
+import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
-import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { StepLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-child-steps/step-licence-user-profile.component';
@@ -60,7 +60,7 @@ export class LicenceApplicationRoutes {
 
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
-	public static PAYMENT_MANUAL = 'payment-manual';
+	public static PAYMENT_CANCEL = 'payment-cancel';
 	public static PAYMENT_ERROR = 'payment-error';
 
 	public static MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
@@ -236,7 +236,7 @@ const routes: Routes = [
 			},
 			{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },
-			{ path: LicenceApplicationRoutes.PAYMENT_MANUAL, component: LicencePaymentManualComponent },
+			{ path: `${LicenceApplicationRoutes.PAYMENT_CANCEL}/:id`, component: LicencePaymentCancelComponent },
 			{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: LicencePaymentErrorComponent },
 			{
 				path: '',

@@ -47,9 +47,9 @@ import { StepLicenceTypeAuthenticatedComponent } from './components/authenticate
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-summary-review-licence-authenticated.component';
 import { StepsIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-identification-authenticated.component';
 import { StepsReviewLicenceAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-review-licence-authenticated.component';
+import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
-import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { RenewalAlertComponent } from './components/shared/renewal-alert.component';
@@ -136,9 +136,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicenceCategorySecurityConsultantComponent,
 		LicenceCategorySecurityGuardComponent,
 		LicenceCategorySecurityGuardSupComponent,
+		LicencePaymentCancelComponent,
 		LicencePaymentErrorComponent,
 		LicencePaymentFailComponent,
-		LicencePaymentManualComponent,
 		LicencePaymentSuccessComponent,
 		LoginSelectionComponent,
 		LoginUserProfileComponent,

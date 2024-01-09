@@ -39,6 +39,9 @@ export const SPD_CONSTANTS = {
 	api: {
 		debounceTime: 500, // milliseconds
 	},
+	payment: {
+		maxNumberOfAttempts: 3,
+	},
 	maxNumberOfAliases: 3,
 	// sessionStorage: {
 	// 	organizationRegStateKey: 'state',
