@@ -1,5 +1,5 @@
 using MediatR;
-using Spd.Utilities.Shared.ManagerContract;
+using Spd.Manager.Common.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Common.Payment

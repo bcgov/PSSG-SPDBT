@@ -1,6 +1,7 @@
 using AutoMapper;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Delegates;
@@ -8,9 +9,7 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
-using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Manager.Cases.Screening
 {

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
+using Spd.Manager.Common.ManagerContract;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
@@ -17,7 +18,6 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.ManagerContract;
 using System.Net;
 
 namespace Spd.Manager.Common.Payment
