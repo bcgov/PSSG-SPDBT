@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Admin;
+using Spd.Manager.Common.Admin;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 

@@ -2,7 +2,7 @@
 using Spd.Resource.Organizations.Org;
 using Spd.Utilities.Address;
 
-namespace Spd.Manager.Admin
+namespace Spd.Manager.Common.Admin
 {
     public class Mappings : Profile
     {
