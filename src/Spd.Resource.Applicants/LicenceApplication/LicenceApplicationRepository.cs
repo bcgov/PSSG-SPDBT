@@ -91,8 +91,13 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Where(a => a.spd_applicationid == licenceApplicationId).SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");
-
-        return _mapper.Map<LicenceApplicationResp>(app);
+        if (app.spd_ApplicantId_contact == null)
+            throw new ArgumentException("cannot find the applicant for this application");
+        var temp = app.spd_ApplicantId_contact;
+        var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
+        LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
+        appResp.Aliases = _mapper.Map<Alias[]>(aliases);
+        return appResp;
     }
 
     public async Task<LicenceApplicationResp> GetLicenceApplicationAccessCodeAsync(string licenceNumber, string accessCode, CancellationToken ct)
@@ -240,7 +245,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
 
     private void AddAlias(Alias createAliasCmd, contact contact)
     {
-        spd_alias? matchingAlias = GetAlias(createAliasCmd, contact);
+        spd_alias? matchingAlias = CheckAlias(createAliasCmd, contact);
         // if not found, create new alias
         if (matchingAlias == null)
         {
@@ -276,7 +281,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
     }
 
-    private spd_alias? GetAlias(Alias aliasCreateCmd, contact contact)
+    private spd_alias? CheckAlias(Alias aliasCreateCmd, contact contact)
     {
         var matchingAlias = _context.spd_aliases.Where(o =>
            o.spd_firstname == aliasCreateCmd.GivenName &&
@@ -284,8 +289,19 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
            o.spd_middlename2 == aliasCreateCmd.MiddleName2 &&
            o.spd_surname == aliasCreateCmd.Surname &&
            o.statecode != DynamicsConstants.StateCode_Inactive &&
-           o._spd_contactid_value == contact.contactid
+           o._spd_contactid_value == contact.contactid &&
+           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
        ).FirstOrDefault();
         return matchingAlias;
+    }
+
+    private List<spd_alias>? GetAliases(Guid contactId)
+    {
+        var matchingAliases = _context.spd_aliases.Where(o =>
+           o._spd_contactid_value == contactId &&
+           o.statecode != DynamicsConstants.StateCode_Inactive &&
+           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+       ).ToList();
+        return matchingAliases;
     }
 }
