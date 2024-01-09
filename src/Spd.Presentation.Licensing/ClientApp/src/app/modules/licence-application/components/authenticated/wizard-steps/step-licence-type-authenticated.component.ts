@@ -131,6 +131,10 @@ export class StepLicenceTypeAuthenticatedComponent implements OnInit, LicenceChi
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
+		// TODO  If the licence holder has a SWL, they can add a new Body Armour and/or Armoured Vehicle permit
+		// TODO If the licence holder has a Body Armour permit, they can add a new Armoured Vehicle permit and/or a security worker licence
+		// TODO If the licence holder has an Armoured vehicle permit, they can add a new Body Armour permit and/or a security worker licence
+
 		this.imagePaths.forEach((path) => {
 			// Preload the 'icon' images
 			const tmp = new Image();

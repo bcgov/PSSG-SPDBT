@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -6,7 +6,6 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 @Component({
@@ -80,7 +79,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 	`,
 	styles: [],
 })
-export class StepAccessCodeAuthorizedComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepAccessCodeAuthorizedComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
@@ -89,17 +88,7 @@ export class StepAccessCodeAuthorizedComponent implements OnInit, LicenceChildSt
 		accessCode: new FormControl(null, [FormControlValidators.required]),
 	});
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private router: Router,
-		private authProcessService: AuthProcessService,
-		private hotToastService: HotToastService
-	) {}
-
-	async ngOnInit(): Promise<void> {
-		this.authProcessService.logoutBceid();
-		await this.authProcessService.initializeLicencingBCSC();
-	}
+	constructor(private formBuilder: FormBuilder, private router: Router, private hotToastService: HotToastService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
