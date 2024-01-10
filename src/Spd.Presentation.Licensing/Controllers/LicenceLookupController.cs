@@ -29,6 +29,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Get licence by licence number
+        /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
         /// </summary>
         /// <param name="licenceNumber"></param>
         /// <param name="accessCode"></param>
