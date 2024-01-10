@@ -22,637 +22,623 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
 
-				<div class="step-container">
-					<div class="row">
-						<div class="offset-xxl-2 col-xxl-8 offset-xl-2 col-xl-8 col-lg-12 mx-auto">
-							<div class="row">
-								<div class="col-md-8 col-sm-12">
-									<mat-form-field>
-										<mat-label>Category</mat-label>
-										<mat-select [(ngModel)]="category">
-											<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
-												{{ item.desc }}
-											</mat-option>
-										</mat-select>
-									</mat-form-field>
-									<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-										At least one category must be added
-									</mat-error>
-								</div>
-								<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
-									<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
-										Add Category
-									</button>
-								</div>
+				<div class="row">
+					<div class="offset-xxl-2 col-xxl-8 offset-xl-2 col-xl-8 col-lg-12 mx-auto">
+						<div class="row">
+							<div class="col-md-8 col-sm-12">
+								<mat-form-field>
+									<mat-label>Category</mat-label>
+									<mat-select [(ngModel)]="category">
+										<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
+											{{ item.desc }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+									At least one category must be added
+								</mat-error>
+							</div>
+							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
+								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+									Add Category
+								</button>
 							</div>
 						</div>
 					</div>
+				</div>
 
-					<div class="row">
-						<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<mat-accordion multi="false">
-								<ng-container *ngIf="showArmouredCarGuard">
-									<mat-expansion-panel class="my-3" [expanded]="expandArmouredCarGuard">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+				<div class="row">
+					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<mat-accordion multi="false">
+							<ng-container *ngIf="showArmouredCarGuard">
+								<mat-expansion-panel class="my-3" [expanded]="expandArmouredCarGuard">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
-										<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
-									</mat-expansion-panel>
-								</ng-container>
+									</div>
+									<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showBodyArmourSales">
-									<mat-expansion-panel class="my-3" [expanded]="expandBodyArmourSales">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="categoryBodyArmourSalesFormGroup?.touched && categoryBodyArmourSalesFormGroup?.invalid"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showBodyArmourSales">
+								<mat-expansion-panel class="my-3" [expanded]="expandBodyArmourSales">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categoryBodyArmourSalesFormGroup?.touched && categoryBodyArmourSalesFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
-										<app-licence-category-body-armour-sales></app-licence-category-body-armour-sales>
-									</mat-expansion-panel>
-								</ng-container>
+									</div>
+									<app-licence-category-body-armour-sales></app-licence-category-body-armour-sales>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
-									<mat-expansion-panel class="my-3" [expanded]="expandClosedCircuitTelevisionInstaller">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{
-													workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'WorkerCategoryTypes'
-												}}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categoryClosedCircuitTelevisionInstallerFormGroup?.touched &&
-														categoryClosedCircuitTelevisionInstallerFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
+								<mat-expansion-panel class="my-3" [expanded]="expandClosedCircuitTelevisionInstaller">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categoryClosedCircuitTelevisionInstallerFormGroup?.touched &&
+													categoryClosedCircuitTelevisionInstallerFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-closed-circuit-television-installer></app-licence-category-closed-circuit-television-installer>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-closed-circuit-television-installer></app-licence-category-closed-circuit-television-installer>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showElectronicLockingDeviceInstaller">
-									<mat-expansion-panel class="my-3" [expanded]="expandElectronicLockingDeviceInstaller">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{
-													workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'WorkerCategoryTypes'
-												}}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categoryElectronicLockingDeviceInstallerFormGroup?.touched &&
-														categoryElectronicLockingDeviceInstallerFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
+								<mat-expansion-panel class="my-3" [expanded]="expandElectronicLockingDeviceInstaller">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categoryElectronicLockingDeviceInstallerFormGroup?.touched &&
+													categoryElectronicLockingDeviceInstallerFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-electronic-locking-device-installer></app-licence-category-electronic-locking-device-installer>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-electronic-locking-device-installer></app-licence-category-electronic-locking-device-installer>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showFireInvestigator">
-									<mat-expansion-panel class="my-3" [expanded]="expandFireInvestigator">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categoryFireInvestigatorFormGroup?.touched && categoryFireInvestigatorFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showFireInvestigator">
+								<mat-expansion-panel class="my-3" [expanded]="expandFireInvestigator">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categoryFireInvestigatorFormGroup?.touched && categoryFireInvestigatorFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showLocksmith">
-									<mat-expansion-panel class="my-3" [expanded]="expandLocksmith">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="categoryLocksmithFormGroup?.touched && categoryLocksmithFormGroup?.invalid"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showLocksmith">
+								<mat-expansion-panel class="my-3" [expanded]="expandLocksmith">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categoryLocksmithFormGroup?.touched && categoryLocksmithFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-locksmith></app-licence-category-locksmith>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-locksmith></app-licence-category-locksmith>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showLocksmithUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="expandLocksmithUnderSupervision">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="categoryLocksmithSupFormGroup?.touched && categoryLocksmithSupFormGroup?.invalid"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showLocksmithUnderSupervision">
+								<mat-expansion-panel class="my-3" [expanded]="expandLocksmithUnderSupervision">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categoryLocksmithSupFormGroup?.touched && categoryLocksmithSupFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-locksmith-sup></app-licence-category-locksmith-sup>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-locksmith-sup></app-licence-category-locksmith-sup>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showPrivateInvestigator">
-									<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigator">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categoryPrivateInvestigatorFormGroup?.touched &&
-														categoryPrivateInvestigatorFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showPrivateInvestigator">
+								<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigator">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categoryPrivateInvestigatorFormGroup?.touched && categoryPrivateInvestigatorFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-private-investigator></app-licence-category-private-investigator>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-private-investigator></app-licence-category-private-investigator>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showPrivateInvestigatorUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigatorUnderSupervision">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{
-													workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
-												}}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categoryPrivateInvestigatorSupFormGroup?.touched &&
-														categoryPrivateInvestigatorSupFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showPrivateInvestigatorUnderSupervision">
+								<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigatorUnderSupervision">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{
+												workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
+											}}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categoryPrivateInvestigatorSupFormGroup?.touched &&
+													categoryPrivateInvestigatorSupFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityAlarmInstaller">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstaller">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityAlarmInstallerFormGroup?.touched &&
-														categorySecurityAlarmInstallerFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityAlarmInstaller">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstaller">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categorySecurityAlarmInstallerFormGroup?.touched &&
+													categorySecurityAlarmInstallerFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstallerUnderSupervision">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{
-													workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision
-														| options : 'WorkerCategoryTypes'
-												}}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityAlarmInstallerSupFormGroup?.touched &&
-														categorySecurityAlarmInstallerSupFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstallerUnderSupervision">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{
+												workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision | options : 'WorkerCategoryTypes'
+											}}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categorySecurityAlarmInstallerSupFormGroup?.touched &&
+													categorySecurityAlarmInstallerSupFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-alarm-installer-sup></app-licence-category-security-alarm-installer-sup>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-security-alarm-installer-sup></app-licence-category-security-alarm-installer-sup>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityAlarmMonitor">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmMonitor">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityAlarmMonitorFormGroup?.touched &&
-														categorySecurityAlarmMonitorFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityAlarmMonitor">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmMonitor">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categorySecurityAlarmMonitorFormGroup?.touched &&
+													categorySecurityAlarmMonitorFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-alarm-monitor></app-licence-category-security-alarm-monitor>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-security-alarm-monitor></app-licence-category-security-alarm-monitor>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityAlarmResponse">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmResponse">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityAlarmResponseFormGroup?.touched &&
-														categorySecurityAlarmResponseFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityAlarmResponse">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmResponse">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categorySecurityAlarmResponseFormGroup?.touched &&
+													categorySecurityAlarmResponseFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-alarm-response></app-licence-category-security-alarm-response>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-security-alarm-response></app-licence-category-security-alarm-response>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityAlarmSales">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmSales">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityAlarmSalesFormGroup?.touched && categorySecurityAlarmSalesFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityAlarmSales">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmSales">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categorySecurityAlarmSalesFormGroup?.touched && categorySecurityAlarmSalesFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-alarm-sales></app-licence-category-security-alarm-sales>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-security-alarm-sales></app-licence-category-security-alarm-sales>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityConsultant">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityConsultant">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityConsultantFormGroup?.touched && categorySecurityConsultantFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityConsultant">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityConsultant">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categorySecurityConsultantFormGroup?.touched && categorySecurityConsultantFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-consultant></app-licence-category-security-consultant>
-									</mat-expansion-panel>
-								</ng-container>
+									<app-licence-category-security-consultant></app-licence-category-security-consultant>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityGuard">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuard">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityGuard">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuard">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
-										<app-licence-category-security-guard></app-licence-category-security-guard>
-									</mat-expansion-panel>
-								</ng-container>
+									</div>
+									<app-licence-category-security-guard></app-licence-category-security-guard>
+								</mat-expansion-panel>
+							</ng-container>
 
-								<ng-container *ngIf="showSecurityGuardUnderSupervision">
-									<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuardUnderSupervision">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'WorkerCategoryTypes' }}
-											</mat-panel-title>
-											<mat-panel-description>
-												<mat-icon
-													class="w-100 text-end"
-													color="warn"
-													matTooltip="One or more errors exist in this category"
-													*ngIf="
-														categorySecurityGuardSupFormGroup?.touched && categorySecurityGuardSupFormGroup?.invalid
-													"
-													>error</mat-icon
-												>
-											</mat-panel-description>
-										</mat-expansion-panel-header>
-										<div class="row my-3">
-											<div class="col-12 mx-auto">
-												<button
-													mat-stroked-button
-													class="w-auto float-end"
-													aria-label="Remove category"
-													(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
-												>
-													<mat-icon>delete_outline</mat-icon>Remove this Category
-												</button>
-											</div>
+							<ng-container *ngIf="showSecurityGuardUnderSupervision">
+								<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuardUnderSupervision">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="title text-nowrap"
+											>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
+										<mat-panel-description>
+											<mat-icon
+												class="w-100 text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="categorySecurityGuardSupFormGroup?.touched && categorySecurityGuardSupFormGroup?.invalid"
+												>error</mat-icon
+											>
+										</mat-panel-description>
+									</mat-expansion-panel-header>
+									<div class="row my-3">
+										<div class="col-12 mx-auto">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												aria-label="Remove category"
+												(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove this Category
+											</button>
 										</div>
+									</div>
 
-										<app-licence-category-security-guard-sup></app-licence-category-security-guard-sup>
-									</mat-expansion-panel>
-								</ng-container>
-							</mat-accordion>
-						</div>
+									<app-licence-category-security-guard-sup></app-licence-category-security-guard-sup>
+								</mat-expansion-panel>
+							</ng-container>
+						</mat-accordion>
 					</div>
 				</div>
 			</div>

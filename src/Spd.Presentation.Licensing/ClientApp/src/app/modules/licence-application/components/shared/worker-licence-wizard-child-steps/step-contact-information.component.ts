@@ -17,11 +17,9 @@ import { ContactInformationComponent } from '../step-components/contact-informat
 				</ng-container>
 
 				<app-step-title title="Provide your contact information"></app-step-title>
-				<div class="step-container">
-					<div class="row">
-						<div class="col-12 mx-auto">
-							<app-contact-information></app-contact-information>
-						</div>
+				<div class="row">
+					<div class="col-12 mx-auto">
+						<app-contact-information></app-contact-information>
 					</div>
 				</div>
 			</div>

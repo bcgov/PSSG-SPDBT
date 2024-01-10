@@ -15,67 +15,66 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Provide an additional piece of government-issued photo ID"></app-step-title>
-				<div class="step-container">
-					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="offset-md-2 col-md-8 col-sm-12">
-								<div class="row my-2">
-									<div class="col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Select other ID</mat-label>
-											<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
-												<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
-													{{ item.desc }}
-												</mat-option>
-											</mat-select>
-											<mat-hint>Other ID can be from another country</mat-hint>
-											<mat-error *ngIf="form.get('governmentIssuedPhotoTypeCode')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Document Expiry Date</mat-label>
-											<input
-												matInput
-												[matDatepicker]="picker"
-												formControlName="expiryDate"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
+
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<div class="row my-2">
+								<div class="col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Select other ID</mat-label>
+										<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
+											<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
+												{{ item.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-hint>Other ID can be from another country</mat-hint>
+										<mat-error *ngIf="form.get('governmentIssuedPhotoTypeCode')?.hasError('required')">
+											This is required
+										</mat-error>
+									</mat-form-field>
 								</div>
-								<div *ngIf="governmentIssuedPhotoTypeCode.value" @showHideTriggerSlideAnimation>
-									<div class="row mb-2">
-										<div class="col-12">
-											<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
-											<app-file-upload
-												(fileUploaded)="onFileUploaded($event)"
-												(fileRemoved)="onFileRemoved()"
-												[maxNumberOfFiles]="10"
-												[control]="attachments"
-												[files]="attachments.value"
-											></app-file-upload>
-											<mat-error
-												class="mat-option-error"
-												*ngIf="
-													(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-													form.get('attachments')?.invalid &&
-													form.get('attachments')?.hasError('required')
-												"
-												>This is required</mat-error
-											>
-										</div>
+								<div class="col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Document Expiry Date</mat-label>
+										<input
+											matInput
+											[matDatepicker]="picker"
+											formControlName="expiryDate"
+											[errorStateMatcher]="matcher"
+										/>
+										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+										<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
+							</div>
+							<div *ngIf="governmentIssuedPhotoTypeCode.value" @showHideTriggerSlideAnimation>
+								<div class="row mb-2">
+									<div class="col-12">
+										<div class="text-minor-heading mb-2">Upload a photo of your ID:</div>
+										<app-file-upload
+											(fileUploaded)="onFileUploaded($event)"
+											(fileRemoved)="onFileRemoved()"
+											[maxNumberOfFiles]="10"
+											[control]="attachments"
+											[files]="attachments.value"
+										></app-file-upload>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
 									</div>
 								</div>
 							</div>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	`,

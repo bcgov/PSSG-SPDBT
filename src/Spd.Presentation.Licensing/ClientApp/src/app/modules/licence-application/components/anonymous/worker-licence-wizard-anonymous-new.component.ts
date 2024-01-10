@@ -2,12 +2,18 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
+import {
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	WorkerLicenceAppUpsertResponse,
+} from '@app/api/models';
+import { PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-review-licence-authenticated.component';
 import { StepsBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-background.component';
 import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-licence-selection.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
@@ -89,6 +95,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	step2Complete = false;
 	step3Complete = false;
 
+	licenceAppId: string | null = null;
+
 	@ViewChild(StepsLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
 
@@ -103,9 +111,9 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationService: LicenceApplicationService,
+		private paymentService: PaymentService
 	) {
 		super(breakpointObserver);
 	}
@@ -144,11 +152,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				// this.router.navigateByUrl(
-				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-				// 		LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-				// 	)
-				// );
 				break;
 			case this.STEP_BACKGROUND:
 				this.stepBackgroundComponent?.onGoToLastStep();
@@ -160,38 +163,25 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onNextPayStep(): void {
-		this.licenceApplicationService.submitLicence().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
-	}
+		// If the creation worked and the payment failed, do not post again
+		if (this.licenceAppId) {
+			this.payNow(this.licenceAppId);
+		} else {
+			this.licenceApplicationService.submitLicence().subscribe({
+				next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+					// save this locally just in case payment fails
+					this.licenceAppId = resp.body.licenceAppId!;
 
-	// onPayNow(application: PaymentResponse): void {
-	// 	const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-	// 	const body: PaymentLinkCreateRequest = {
-	// 		applicationId: application.id!,
-	// 		paymentMethod: PaymentMethodCode.CreditCard,
-	// 		description: `Payment for Case ID: ${application.applicationNumber}`,
-	// 	};
-	// 	this.paymentService
-	// 		.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
-	// 			orgId: orgId!,
-	// 			applicationId: application.id!,
-	// 			body,
-	// 		})
-	// 		.pipe()
-	// 		.subscribe((res: PaymentLinkResponse) => {
-	// 			if (res.paymentLinkUrl) {
-	// 				window.location.assign(res.paymentLinkUrl);
-	// 			}
-	// 		});
-	// }
+					this.hotToastService.success('Your licence has been successfully submitted');
+					this.payNow(this.licenceAppId);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		}
+	}
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
@@ -243,5 +233,24 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 				break;
 		}
 		this.updateCompleteStatus();
+	}
+
+	private payNow(licenceAppId: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Licence Application`,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 }
