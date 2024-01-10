@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Common.ManagerContract;
 using Spd.Manager.Common.Payment;
@@ -78,7 +77,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                 {
                     _logger.LogInformation("Payment is being cancelled.");
-                    return Redirect($"{hostUrl}{cancelPath}");
+                    return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
                 }
 
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
