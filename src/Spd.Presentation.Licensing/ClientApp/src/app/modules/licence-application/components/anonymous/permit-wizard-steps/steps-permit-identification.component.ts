@@ -4,6 +4,9 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { StepPermitAliasesComponent } from './step-permit-aliases.component';
+import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
+import { StepPermitCitizenshipComponent } from './step-permit-citizenship.component';
 import { StepPermitCriminalHistoryComponent } from './step-permit-criminal-history.component';
 import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.component';
 
@@ -48,7 +51,7 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 				</div>
 			</mat-step> -->
 
-			<!-- <mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<!-- <mat-step>
 				<app-step-permit-fingerprints></app-step-permit-fingerprints>
 
 				<div class="row mt-4">
@@ -78,38 +81,109 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 				</div>
 			</mat-step> -->
 
-			<!-- <mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-	<app-step-citizenship></app-step-citizenship>
+			<!-- <mat-step>
+				<app-step-permit-aliases></app-step-permit-aliases>
 
-	<div class="row mt-4">
-		<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-			<button
-				mat-flat-button
-				class="large bordered mb-2"
-				(click)="onSaveAndExit(STEP_CITIZENSHIP)"
-				*ngIf="isLoggedIn"
-			>
-				Save and Exit
-			</button>
-		</div>
-		<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-			<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-		</div>
-		<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-			<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
-				Next
-			</button>
-		</div>
-		<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-			<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
-				Next: Review
-			</button>
-		</div>
-	</div>
-</mat-step> -->
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_ALIASES)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_ALIASES)">Next</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ALIASES)">
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step> -->
+
+			<!-- <mat-step>
+				<app-step-permit-citizenship></app-step-permit-citizenship>
+
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step> -->
+
+			<mat-step>
+				<app-step-permit-bc-driver-licence></app-step-permit-bc-driver-licence>
+
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+						>
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<!--
+			driver licence-application
+			app-step-physical-characteristics
+			photo of app-step-photograph-of-yourself
+		 -->
+
+			<!--  -->
 
 			<!-- 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step>
 				<app-step-aliases></app-step-aliases>
 
 				<div class="row mt-4">
@@ -139,7 +213,7 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step>
 				<app-step-citizenship></app-step-citizenship>
 
 				<div class="row mt-4">
@@ -204,7 +278,7 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 				</div>
 			</mat-step> -->
 			<!-- 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step>
 				<app-step-bc-driver-licence></app-step-bc-driver-licence>
 
 				<div class="row mt-4">
@@ -308,6 +382,9 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 export class StepsPermitIdentificationComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_CRIMINAL_HISTORY = 1;
 	readonly STEP_FINGERPRINTS = 2;
+	readonly STEP_ALIASES = 3;
+	readonly STEP_CITIZENSHIP = 4;
+	readonly STEP_BC_DRIVERS_LICENCE = 5;
 
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -320,6 +397,10 @@ export class StepsPermitIdentificationComponent extends BaseWizardStepComponent 
 
 	@ViewChild(StepPermitCriminalHistoryComponent) stepCriminalHistoryComponent!: StepPermitCriminalHistoryComponent;
 	@ViewChild(StepPermitFingerprintsComponent) stepFingerprintsComponent!: StepPermitFingerprintsComponent;
+	@ViewChild(StepPermitAliasesComponent) stepAliasesComponent!: StepPermitAliasesComponent;
+	@ViewChild(StepPermitCitizenshipComponent) stepCitizenshipComponent!: StepPermitCitizenshipComponent;
+	@ViewChild(StepPermitBcDriverLicenceComponent)
+	stepPermitBcDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
 
 	constructor(
 		private authProcessService: AuthProcessService,
@@ -371,6 +452,12 @@ export class StepsPermitIdentificationComponent extends BaseWizardStepComponent 
 				return this.stepCriminalHistoryComponent.isFormValid();
 			case this.STEP_FINGERPRINTS:
 				return this.stepFingerprintsComponent.isFormValid();
+			case this.STEP_ALIASES:
+				return this.stepAliasesComponent.isFormValid();
+			case this.STEP_CITIZENSHIP:
+				return this.stepCitizenshipComponent.isFormValid();
+			case this.STEP_BC_DRIVERS_LICENCE:
+				return this.stepPermitBcDriverLicenceComponent.isFormValid();
 		}
 		return false;
 	}

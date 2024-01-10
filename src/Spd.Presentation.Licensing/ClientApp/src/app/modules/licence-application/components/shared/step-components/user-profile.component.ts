@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { AliasListComponent } from './alias-list.component';
+import { CommonAliasListComponent } from './common-alias-list.component';
 import { ContactInformationComponent } from './contact-information.component';
 import { MailingAddressComponent } from './mailing-address.component';
 
@@ -15,7 +15,7 @@ import { MailingAddressComponent } from './mailing-address.component';
 
 		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or previous names</div>
-		<app-alias-list [isReadOnly]="isReadOnly"></app-alias-list>
+		<app-common-alias-list [isReadOnly]="isReadOnly"></app-common-alias-list>
 
 		<mat-divider class="mat-divider-main mt-3"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Contact information</div>
@@ -59,7 +59,7 @@ import { MailingAddressComponent } from './mailing-address.component';
 export class UserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 
-	@ViewChild(AliasListComponent) aliasesComponent!: AliasListComponent;
+	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
 

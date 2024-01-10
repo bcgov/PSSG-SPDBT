@@ -1,14 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { AliasesComponent } from '../step-components/aliases.component';
 
 @Component({
 	selector: 'app-step-aliases',
@@ -17,7 +11,8 @@ import { AliasesComponent } from '../step-components/aliases.component';
 			<div class="step">
 				<app-step-title title="Do you have any previous names?"></app-step-title>
 
-				<form [formGroup]="form" novalidate>
+				<app-common-aliases [form]="form"></app-common-aliases>
+				<!-- <form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group
@@ -101,19 +96,20 @@ import { AliasesComponent } from '../step-components/aliases.component';
 							</div>
 						</div>
 					</div>
-				</form>
+				</form> -->
 			</div>
 		</section>
 	`,
 	styles: [],
 })
 export class StepAliasesComponent implements LicenceChildStepperStepComponent {
-	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
-	booleanTypeCodes = BooleanTypeCode;
+	// @ViewChild(CommonAliasesComponent) aliasesComponent!: CommonAliasesComponent;
+
+	// booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
 
-	matcher = new FormErrorStateMatcher();
+	// matcher = new FormErrorStateMatcher();
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -121,80 +117,80 @@ export class StepAliasesComponent implements LicenceChildStepperStepComponent {
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
-	onPreviousNameFlagChange(): void {
-		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
-			this.onAddRow();
-		} else {
-			const control = this.form.get('aliases') as FormArray;
-			control.clear();
-		}
-	}
+	// onPreviousNameFlagChange(): void {
+	// 	if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
+	// 		this.onAddRow();
+	// 	} else {
+	// 		const control = this.form.get('aliases') as FormArray;
+	// 		control.clear();
+	// 	}
+	// }
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	onAddRow() {
-		const control = this.form.get('aliases') as FormArray;
-		control.push(this.newAliasRow());
-	}
+	// onAddRow() {
+	// 	const control = this.form.get('aliases') as FormArray;
+	// 	control.push(this.newAliasRow());
+	// }
 
-	onDeleteRow(index: number) {
-		const control = this.form.get('aliases') as FormArray;
-		if (control.length == 1) {
-			const data: DialogOptions = {
-				icon: 'warning',
-				title: 'Remove row',
-				message: 'This row cannot be removed. At least one row must exist.',
-				cancelText: 'Close',
-			};
+	// onDeleteRow(index: number) {
+	// 	const control = this.form.get('aliases') as FormArray;
+	// 	if (control.length == 1) {
+	// 		const data: DialogOptions = {
+	// 			icon: 'warning',
+	// 			title: 'Remove row',
+	// 			message: 'This row cannot be removed. At least one row must exist.',
+	// 			cancelText: 'Close',
+	// 		};
 
-			this.dialog.open(DialogComponent, { data });
-			return;
-		}
+	// 		this.dialog.open(DialogComponent, { data });
+	// 		return;
+	// 	}
 
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Are you sure you want to remove this previous name?',
-			actionText: 'Yes, remove name',
-			cancelText: 'Cancel',
-		};
+	// 	const data: DialogOptions = {
+	// 		icon: 'warning',
+	// 		title: 'Confirmation',
+	// 		message: 'Are you sure you want to remove this previous name?',
+	// 		actionText: 'Yes, remove name',
+	// 		cancelText: 'Cancel',
+	// 	};
 
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					const control = this.form.get('aliases') as FormArray;
-					control.removeAt(index);
-				}
-			});
-	}
+	// 	this.dialog
+	// 		.open(DialogComponent, { data })
+	// 		.afterClosed()
+	// 		.subscribe((response: boolean) => {
+	// 			if (response) {
+	// 				const control = this.form.get('aliases') as FormArray;
+	// 				control.removeAt(index);
+	// 			}
+	// 		});
+	// }
 
-	private newAliasRow(): FormGroup {
-		return this.formBuilder.group({
-			givenName: [''],
-			middleName1: [''],
-			middleName2: [''],
-			surname: ['', [FormControlValidators.required]],
-		});
-	}
+	// private newAliasRow(): FormGroup {
+	// 	return this.formBuilder.group({
+	// 		givenName: [''],
+	// 		middleName1: [''],
+	// 		middleName2: [''],
+	// 		surname: ['', [FormControlValidators.required]],
+	// 	});
+	// }
 
-	get previousNameFlag(): FormControl {
-		return this.form.get('previousNameFlag') as FormControl;
-	}
+	// get previousNameFlag(): FormControl {
+	// 	return this.form.get('previousNameFlag') as FormControl;
+	// }
 
-	get moreThanOneRowExists(): boolean {
-		return this.aliasesArray.length > 1;
-	}
+	// get moreThanOneRowExists(): boolean {
+	// 	return this.aliasesArray.length > 1;
+	// }
 
-	get isAllowAliasAdd(): boolean {
-		return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
-	}
+	// get isAllowAliasAdd(): boolean {
+	// 	return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
+	// }
 
-	get aliasesArray(): FormArray {
-		return <FormArray>this.form.get('aliases');
-	}
+	// get aliasesArray(): FormArray {
+	// 	return <FormArray>this.form.get('aliases');
+	// }
 }

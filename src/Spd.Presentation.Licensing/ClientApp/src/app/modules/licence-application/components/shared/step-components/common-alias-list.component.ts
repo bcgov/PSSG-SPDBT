@@ -5,12 +5,12 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 
 @Component({
-	selector: 'app-alias-list',
+	selector: 'app-common-alias-list',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
@@ -90,7 +90,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 		`,
 	],
 })
-export class AliasListComponent implements LicenceChildStepperStepComponent {
+export class CommonAliasListComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 

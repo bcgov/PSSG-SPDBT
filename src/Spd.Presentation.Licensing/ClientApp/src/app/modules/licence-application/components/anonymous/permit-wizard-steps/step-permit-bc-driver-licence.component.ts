@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 
 @Component({
-	selector: 'app-step-bc-driver-licence',
+	selector: 'app-step-permit-bc-driver-licence',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -21,10 +21,10 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
+export class StepPermitBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
+	form: FormGroup = this.permitApplicationService.bcDriversLicenceFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

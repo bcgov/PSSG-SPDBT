@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-step-criminal-history',
@@ -20,7 +19,9 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title>
 
-				<div class="row">
+				<app-common-criminal-history [form]="form"></app-common-criminal-history>
+
+				<!-- <div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
 							<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
@@ -39,14 +40,14 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 							>
 						</form>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</section>
 	`,
 	styles: [],
 })
 export class StepCriminalHistoryComponent implements LicenceChildStepperStepComponent {
-	booleanTypeCodes = BooleanTypeCode;
+	// booleanTypeCodes = BooleanTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
