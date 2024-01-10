@@ -16,93 +16,92 @@ import { AliasesComponent } from '../step-components/aliases.component';
 		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Do you have any previous names?"></app-step-title>
-				<div class="step-container">
-					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group
-									aria-label="Select an option"
-									formControlName="previousNameFlag"
-									(change)="onPreviousNameFlagChange()"
-								>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-									<mat-divider class="my-2"></mat-divider>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
-										form.get('previousNameFlag')?.invalid &&
-										form.get('previousNameFlag')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
+
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<mat-radio-group
+								aria-label="Select an option"
+								formControlName="previousNameFlag"
+								(change)="onPreviousNameFlagChange()"
+							>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-2"></mat-divider>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+									form.get('previousNameFlag')?.invalid &&
+									form.get('previousNameFlag')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
-						<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
-							<div class="row">
-								<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-									<div class="text-minor-heading mb-2">Previous names:</div>
-									<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
-										<div class="row" [formGroupName]="i">
-											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-												<mat-form-field>
-													<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-													<input matInput type="text" formControlName="givenName" maxlength="40" />
-												</mat-form-field>
-											</div>
-											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-												<mat-form-field>
-													<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-													<input matInput type="text" formControlName="middleName1" maxlength="40" />
-												</mat-form-field>
-											</div>
-											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-												<mat-form-field>
-													<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-													<input matInput type="text" formControlName="middleName2" maxlength="40" />
-												</mat-form-field>
-											</div>
-											<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-												<mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
-													<mat-label>Surname</mat-label>
-													<input
-														matInput
-														type="text"
-														formControlName="surname"
-														required
-														[errorStateMatcher]="matcher"
-														maxlength="40"
-													/>
-													<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
-												</mat-form-field>
-												<button
-													mat-mini-fab
-													class="delete-row-button ms-1 mb-3"
-													matTooltip="Remove previous name"
-													(click)="onDeleteRow(i)"
-													*ngIf="moreThanOneRowExists"
-													aria-label="Remove row"
-												>
-													<mat-icon>delete_outline</mat-icon>
-												</button>
-											</div>
+					</div>
+					<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
+						<div class="row">
+							<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+								<div class="text-minor-heading mb-2">Previous names</div>
+								<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
+									<div class="row" [formGroupName]="i">
+										<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+											<mat-form-field>
+												<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+												<input matInput type="text" formControlName="givenName" maxlength="40" />
+											</mat-form-field>
 										</div>
-									</ng-container>
-									<div class="row mb-2" *ngIf="isAllowAliasAdd">
-										<div class="col-12">
-											<button mat-stroked-button (click)="onAddRow()" class="w-auto">
-												<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+										<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+											<mat-form-field>
+												<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+												<input matInput type="text" formControlName="middleName1" maxlength="40" />
+											</mat-form-field>
+										</div>
+										<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+											<mat-form-field>
+												<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+												<input matInput type="text" formControlName="middleName2" maxlength="40" />
+											</mat-form-field>
+										</div>
+										<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+											<mat-form-field [ngClass]="moreThanOneRowExists ? 'more-than-one-row' : ''">
+												<mat-label>Surname</mat-label>
+												<input
+													matInput
+													type="text"
+													formControlName="surname"
+													required
+													[errorStateMatcher]="matcher"
+													maxlength="40"
+												/>
+												<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
+											</mat-form-field>
+											<button
+												mat-mini-fab
+												class="delete-row-button ms-1 mb-3"
+												matTooltip="Remove previous name"
+												(click)="onDeleteRow(i)"
+												*ngIf="moreThanOneRowExists"
+												aria-label="Remove row"
+											>
+												<mat-icon>delete_outline</mat-icon>
 											</button>
 										</div>
+									</div>
+								</ng-container>
+								<div class="row mb-2" *ngIf="isAllowAliasAdd">
+									<div class="col-12">
+										<button mat-stroked-button (click)="onAddRow()" class="w-auto">
+											<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+										</button>
 									</div>
 								</div>
 							</div>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	`,

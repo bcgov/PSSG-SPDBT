@@ -8,6 +8,7 @@ import { AddressAutoCompleteService } from './services/address-auto-complete.ser
 import { ConfigurationService } from './services/configuration.service';
 import { LicenceFeeService } from './services/licence-fee.service';
 import { LicenceLookupService } from './services/licence-lookup.service';
+import { PaymentService } from './services/payment.service';
 import { UserProfileService } from './services/user-profile.service';
 import { WorkerLicensingService } from './services/worker-licensing.service';
 
@@ -23,6 +24,7 @@ import { WorkerLicensingService } from './services/worker-licensing.service';
     ConfigurationService,
     LicenceFeeService,
     LicenceLookupService,
+    PaymentService,
     UserProfileService,
     WorkerLicensingService,
     ApiConfiguration

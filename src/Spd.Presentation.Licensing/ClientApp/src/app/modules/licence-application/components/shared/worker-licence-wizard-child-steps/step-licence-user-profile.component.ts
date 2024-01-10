@@ -12,36 +12,35 @@ import { UserProfileComponent } from '../step-components/user-profile.component'
 		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Confirm your profile"></app-step-title>
-				<div class="step-container">
-					<div class="row">
-						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<app-alert type="warning" icon="warning"
-								>Make sure your profile information is up-to-date before renewing or updating your licence or permit, or
-								starting a new application
-							</app-alert>
 
-							<app-user-profile></app-user-profile>
+				<div class="row">
+					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<app-alert type="warning" icon="warning"
+							>Make sure your profile information is up-to-date before renewing or updating your licence or permit, or
+							starting a new application
+						</app-alert>
 
-							<form [formGroup]="form" novalidate>
-								<div>
-									<mat-divider class="mat-divider-main mt-2"></mat-divider>
-									<div class="text-minor-heading pt-2 pb-3">Confirmation</div>
-									<mat-checkbox formControlName="isProfileUpToDate">
-										I confirm that this information is up-to-date
-									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-											form.get('isProfileUpToDate')?.invalid &&
-											form.get('isProfileUpToDate')?.hasError('required')
-										"
-									>
-										This is required
-									</mat-error>
-								</div>
-							</form>
-						</div>
+						<app-user-profile></app-user-profile>
+
+						<form [formGroup]="form" novalidate>
+							<div>
+								<mat-divider class="mat-divider-main mt-2"></mat-divider>
+								<div class="text-minor-heading pt-2 pb-3">Confirmation</div>
+								<mat-checkbox formControlName="isProfileUpToDate">
+									I confirm that this information is up-to-date
+								</mat-checkbox>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+										form.get('isProfileUpToDate')?.invalid &&
+										form.get('isProfileUpToDate')?.hasError('required')
+									"
+								>
+									This is required
+								</mat-error>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>

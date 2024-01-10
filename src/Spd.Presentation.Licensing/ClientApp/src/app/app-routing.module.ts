@@ -31,7 +31,7 @@ const routes: Routes = [
 		path: AppRoutes.LICENCE_APPLICATION,
 		loadChildren: () =>
 			import('./modules/licence-application/licence-application.module').then((m) => m.LicenceApplicationModule),
-		data: { title: 'Licence Application' },
+		data: { title: 'Licensing Application' },
 	},
 	{
 		path: AppRoutes.ACCESS_DENIED,

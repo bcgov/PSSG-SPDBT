@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
+import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
+import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
@@ -17,9 +20,9 @@ import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/au
 import { StepAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-access-code-authorized.component';
 import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component';
 import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component';
+import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
-import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { StepLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-child-steps/step-licence-user-profile.component';
@@ -48,12 +51,16 @@ export class LicenceApplicationRoutes {
 	public static WORKER_LICENCE_REPLACEMENT_ANONYMOUS = 'worker-licence-replacement';
 	public static WORKER_LICENCE_UPDATE_ANONYMOUS = 'worker-licence-update';
 
+	public static PERMIT_ANONYMOUS = 'permit-anonymous';
+	public static PERMIT_TYPE_ANONYMOUS = 'permit-type';
+	public static PERMIT_NEW_ANONYMOUS = 'permit-new';
+
 	public static LICENCE_LINK = 'licence-link';
 	public static LOGIN_USER_PROFILE = 'user-profile';
 
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
-	public static PAYMENT_MANUAL = 'payment-manual';
+	public static PAYMENT_CANCEL = 'payment-cancel';
 	public static PAYMENT_ERROR = 'payment-error';
 
 	public static MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
@@ -77,6 +84,12 @@ export class LicenceApplicationRoutes {
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}/${route}`
 			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}`;
 	}
+
+	public static pathPermitAnonymous(route: string | null = null): string {
+		return route
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}`;
+	}
 }
 
 const routes: Routes = [
@@ -89,7 +102,7 @@ const routes: Routes = [
 				component: LoginSelectionComponent,
 			},
 			{
-				// ANONYMOUS
+				// SECURITY WORKER LICENCE - ANONYMOUS
 				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
 				component: WorkerLicenceApplicationBaseAnonymousComponent,
 				children: [
@@ -120,6 +133,53 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS,
 						component: WorkerLicenceWizardAnonymousUpdateComponent,
+					},
+					{
+						path: '',
+						component: StepLicenceTypeAnonymousComponent,
+					},
+				],
+			},
+			{
+				// PERMIT - ANONYMOUS
+				path: LicenceApplicationRoutes.PERMIT_ANONYMOUS,
+				component: PermitApplicationBaseAnonymousComponent,
+				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_SELECTION_ANONYMOUS,
+						component: StepLicenceTypeAnonymousComponent,
+					},
+					// {
+					// 	path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS,
+					// 	component: StepApplicationTypeAnonymousComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS,
+					// 	component: StepLicenceAccessCodeAnonymousComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousNewComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousRenewalComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousReplacementComponent,
+					// },
+					// {
+					// 	path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS,
+					// 	component: WorkerLicenceWizardAnonymousUpdateComponent,
+					// },
+					{
+						path: LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS,
+						component: StepPermitTypeAnonymousComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.PERMIT_NEW_ANONYMOUS,
+						component: PermitWizardAnonymousNewComponent,
 					},
 					{
 						path: '',
@@ -176,7 +236,7 @@ const routes: Routes = [
 			},
 			{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },
-			{ path: LicenceApplicationRoutes.PAYMENT_MANUAL, component: LicencePaymentManualComponent },
+			{ path: `${LicenceApplicationRoutes.PAYMENT_CANCEL}/:id`, component: LicencePaymentCancelComponent },
 			{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: LicencePaymentErrorComponent },
 			{
 				path: '',

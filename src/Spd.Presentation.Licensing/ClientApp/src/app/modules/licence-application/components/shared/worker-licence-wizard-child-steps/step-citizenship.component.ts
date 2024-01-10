@@ -19,126 +19,123 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
-				<div class="step-container">
-					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="isCanadianCitizen">
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-									<mat-divider class="my-2"></mat-divider>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('isCanadianCitizen')?.dirty || form.get('isCanadianCitizen')?.touched) &&
-										form.get('isCanadianCitizen')?.invalid &&
-										form.get('isCanadianCitizen')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
+
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<mat-radio-group aria-label="Select an option" formControlName="isCanadianCitizen">
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-2"></mat-divider>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('isCanadianCitizen')?.dirty || form.get('isCanadianCitizen')?.touched) &&
+									form.get('isCanadianCitizen')?.invalid &&
+									form.get('isCanadianCitizen')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
+					</div>
 
-						<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
-							<div class="offset-md-2 col-md-8 col-sm-12">
-								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+					<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-								<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
-									<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload:</div>
-								</ng-container>
-								<ng-template #notCanadianCitizenHeading>
-									<div class="text-minor-heading mb-2">Select proof of ability to work in Canada:</div>
-								</ng-template>
+							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
+								<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload</div>
+							</ng-container>
+							<ng-template #notCanadianCitizenHeading>
+								<div class="text-minor-heading mb-2">Select proof of ability to work in Canada</div>
+							</ng-template>
 
-								<ng-container>
-									<div class="row my-2">
-										<div class="col-lg-7 col-md-12">
-											<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
-												<mat-form-field>
-													<mat-label>Proof of Canadian citizenship</mat-label>
-													<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
-														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
-															{{ item.desc }}
-														</mat-option>
-													</mat-select>
-													<mat-error *ngIf="form.get('canadianCitizenProofTypeCode')?.hasError('required')">
-														This is required
-													</mat-error>
-												</mat-form-field>
-											</ng-container>
-											<ng-template #notCanadianCitizen>
-												<mat-form-field>
-													<mat-label>Proof of ability to work in Canada</mat-label>
-													<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
-														<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
-															{{ item.desc }}
-														</mat-option>
-													</mat-select>
-													<mat-error *ngIf="form.get('notCanadianCitizenProofTypeCode')?.hasError('required')">
-														This is required
-													</mat-error>
-												</mat-form-field>
-											</ng-template>
-										</div>
-										<div class="col-lg-5 col-md-12">
+							<ng-container>
+								<div class="row my-2">
+									<div class="col-lg-7 col-md-12">
+										<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 											<mat-form-field>
-												<mat-label>Document Expiry Date</mat-label>
-												<input
-													matInput
-													[matDatepicker]="picker"
-													formControlName="expiryDate"
-													[errorStateMatcher]="matcher"
-												/>
-												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-												<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+												<mat-label>Proof of Canadian citizenship</mat-label>
+												<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+													<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
+														{{ item.desc }}
+													</mat-option>
+												</mat-select>
+												<mat-error *ngIf="form.get('canadianCitizenProofTypeCode')?.hasError('required')">
+													This is required
+												</mat-error>
 											</mat-form-field>
+										</ng-container>
+										<ng-template #notCanadianCitizen>
+											<mat-form-field>
+												<mat-label>Proof of ability to work in Canada</mat-label>
+												<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+													<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
+														{{ item.desc }}
+													</mat-option>
+												</mat-select>
+												<mat-error *ngIf="form.get('notCanadianCitizenProofTypeCode')?.hasError('required')">
+													This is required
+												</mat-error>
+											</mat-form-field>
+										</ng-template>
+									</div>
+									<div class="col-lg-5 col-md-12">
+										<mat-form-field>
+											<mat-label>Document Expiry Date</mat-label>
+											<input
+												matInput
+												[matDatepicker]="picker"
+												formControlName="expiryDate"
+												[errorStateMatcher]="matcher"
+											/>
+											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+											<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+										</mat-form-field>
+									</div>
+								</div>
+								<div
+									*ngIf="
+										(isCanadianCitizen.value === booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
+										(isCanadianCitizen.value === booleanTypeCodes.No && notCanadianCitizenProofTypeCode.value)
+									"
+									@showHideTriggerSlideAnimation
+								>
+									<div class="row mb-2">
+										<div class="col-12">
+											<ng-container
+												*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
+											>
+												<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
+											</ng-container>
+											<ng-template #notCanadianCitizenTitle>
+												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
+											</ng-template>
+											<app-file-upload
+												(fileUploaded)="onFileUploaded($event)"
+												(fileRemoved)="onFileRemoved()"
+												[control]="attachments"
+												[maxNumberOfFiles]="10"
+												[files]="attachments.value"
+											></app-file-upload>
+											<mat-error
+												class="mat-option-error"
+												*ngIf="
+													(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+													form.get('attachments')?.invalid &&
+													form.get('attachments')?.hasError('required')
+												"
+												>This is required</mat-error
+											>
 										</div>
 									</div>
-									<div
-										*ngIf="
-											(isCanadianCitizen.value === booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
-											(isCanadianCitizen.value === booleanTypeCodes.No && notCanadianCitizenProofTypeCode.value)
-										"
-										@showHideTriggerSlideAnimation
-									>
-										<div class="row mb-2">
-											<div class="col-12">
-												<ng-container
-													*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
-												>
-													<div class="text-minor-heading mb-2">
-														Upload a photo of your proof of Canadian citizenship:
-													</div>
-												</ng-container>
-												<ng-template #notCanadianCitizenTitle>
-													<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
-												</ng-template>
-												<app-file-upload
-													(fileUploaded)="onFileUploaded($event)"
-													(fileRemoved)="onFileRemoved()"
-													[control]="attachments"
-													[maxNumberOfFiles]="10"
-													[files]="attachments.value"
-												></app-file-upload>
-												<mat-error
-													class="mat-option-error"
-													*ngIf="
-														(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-														form.get('attachments')?.invalid &&
-														form.get('attachments')?.hasError('required')
-													"
-													>This is required</mat-error
-												>
-											</div>
-										</div>
-									</div>
-								</ng-container>
-							</div>
+								</div>
+							</ng-container>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	`,

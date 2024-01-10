@@ -1,5 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from '@app/api/models';
+import { PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routing.module';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { switchMap } from 'rxjs';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -9,7 +15,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<section class="step-section">
 				<app-payment-fail
 					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
-					(backRoute)="onBackRoute()"
 					(payNow)="onPayNow()"
 					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
 				></app-payment-fail>
@@ -18,75 +23,66 @@ import { UtilService } from 'src/app/core/services/util.service';
 	`,
 	styles: [],
 })
-export class LicencePaymentFailComponent {
+export class LicencePaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;
 	payment: PaymentResponse | null = null;
 
-	constructor(private route: ActivatedRoute, private router: Router, private utilService: UtilService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router,
+		private utilService: UtilService,
+		private paymentService: PaymentService
+	) {}
 
-	// ngOnInit(): void {
-		// const paymentId = this.route.snapshot.paramMap.get('id');
-		// if (!paymentId) {
-		// 	console.debug('LicencePaymentFailComponent - missing paymentId');
-		// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		// }
-		// const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		// if (!orgId) {
-		// 	console.debug('LicencePaymentFailComponent - missing orgId');
-		// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		// 	return;
-		// }
-		// this.paymentService
-		// 	.apiOrgsOrgIdPaymentsPaymentIdGet({ paymentId: paymentId!, orgId })
-		// 	.pipe(
-		// 		switchMap((paymentResp: PaymentResponse) => {
-		// 			this.payment = paymentResp;
-		// 			return this.paymentService.apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet({
-		// 				orgId,
-		// 				applicationId: paymentResp.applicationId!,
-		// 			});
-		// 		})
-		// 	)
-		// 	.subscribe((numberOfFails) => {
-		// 		const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - numberOfFails;
-		// 		this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
-		// 	});
-	// }
-
-	onBackRoute(): void {
-		// this.router.navigate([LicenceRoutes.path(LicenceRoutes.PAYMENTS)]);
+	ngOnInit(): void {
+		const paymentId = this.route.snapshot.paramMap.get('id');
+		if (!paymentId) {
+			console.debug('LicencePaymentFailComponent - missing paymentId');
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
+		this.paymentService
+			.apiUnauthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
+			.pipe(
+				switchMap((paymentResp: PaymentResponse) => {
+					this.payment = paymentResp;
+					return this.paymentService.apiUnauthLicenceApplicationIdPaymentAttemptsGet({
+						applicationId: paymentResp.applicationId!,
+					});
+				})
+			)
+			.subscribe((numberOfFails) => {
+				const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - numberOfFails;
+				this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
+			});
 	}
 
 	onPayNow(): void {
-		// const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		// const body: PaymentLinkCreateRequest = {
-		// 	applicationId: this.payment!.applicationId!,
-		// 	paymentMethod: PaymentMethodCode.CreditCard,
-		// 	description: `Payment for Case ID: ${this.payment!.caseNumber}`,
-		// };
-		// this.paymentService
-		// 	.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
-		// 		orgId: orgId!,
-		// 		applicationId: this.payment!.applicationId!,
-		// 		body,
-		// 	})
-		// 	.pipe()
-		// 	.subscribe((res: PaymentLinkResponse) => {
-		// 		if (res.paymentLinkUrl) {
-		// 			window.location.assign(res.paymentLinkUrl);
-		// 		}
-		// 	});
+		const body: PaymentLinkCreateRequest = {
+			applicationId: this.payment!.applicationId!,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: this.payment!.applicationId!,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 
 	onDownloadManualPaymentForm(): void {
-		// this.paymentService
-		// 	.apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Response({
-		// 		orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
-		// 		applicationId: this.payment?.applicationId!,
-		// 	})
-		// 	.pipe()
-		// 	.subscribe((resp: StrictHttpResponse<Blob>) => {
-		// 		this.utilService.downloadFile(resp.headers, resp.body);
-		// 	});
+		this.paymentService
+			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
+				applicationId: this.payment?.applicationId!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 }
