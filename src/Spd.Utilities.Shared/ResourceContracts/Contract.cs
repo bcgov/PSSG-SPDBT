@@ -77,4 +77,5 @@ namespace Spd.Utilities.Shared.ResourceContracts
         F,
         U
     }
+
 }

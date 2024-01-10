@@ -3,9 +3,17 @@ using Spd.Resource.Applicants.LicenceApplication;
 namespace Spd.Resource.Applicants.LicenceFee;
 public partial interface ILicenceFeeRepository
 {
-    public Task<LicenceFeeListResp> GetLicenceFeeAsync(WorkerLicenceTypeEnum workerLicenceTypeCode, CancellationToken cancellationToken);
+    public Task<LicenceFeeListResp> QueryAsync(LicenceFeeQry query, CancellationToken cancellationToken);
 }
 
+
+public record LicenceFeeQry
+{
+    public WorkerLicenceTypeEnum? WorkerLicenceTypeEnum { get; set; } = null;
+    public LicenceTermEnum? LicenceTermEnum { get; set; } = null;
+    public ApplicationTypeEnum? ApplicationTypeEnum { get; set; } = null;
+    public bool IncludeInactive { get; set; } = false;
+};
 
 public record LicenceFeeResp()
 {
@@ -13,11 +21,12 @@ public record LicenceFeeResp()
     public BusinessTypeEnum? BusinessTypeCode { get; set; }
     public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
-    public int? Amount { get; set; }
+    public decimal? Amount { get; set; }
 }
 
 public record LicenceFeeListResp
 {
     public IEnumerable<LicenceFeeResp> LicenceFees { get; set; } = Array.Empty<LicenceFeeResp>();
 }
+
 
