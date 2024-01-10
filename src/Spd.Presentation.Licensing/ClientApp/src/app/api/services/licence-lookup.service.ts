@@ -28,7 +28,8 @@ export class LicenceLookupService extends BaseService {
   static readonly ApiLicenceLookupLicenceNumberGetPath = '/api/licence-lookup/{licenceNumber}';
 
   /**
-   * Get licence by licence number.
+   * Get licence by licence number
+   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
    *
    *
    *
@@ -64,7 +65,8 @@ export class LicenceLookupService extends BaseService {
   }
 
   /**
-   * Get licence by licence number.
+   * Get licence by licence number
+   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
    *
    *
    *

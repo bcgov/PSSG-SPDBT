@@ -21,7 +21,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	styles: [],
 })
 export class LicencePaymentCancelComponent implements OnInit {
-	licenceAppId = '';
+	licenceAppId: string | null = null;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -31,8 +31,8 @@ export class LicencePaymentCancelComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const licenceAppId = this.route.snapshot.paramMap.get('id');
-		if (!licenceAppId) {
+		this.licenceAppId = this.route.snapshot.paramMap.get('id');
+		if (!this.licenceAppId) {
 			console.debug('LicencePaymentCancelComponent - missing licenceAppId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
@@ -46,7 +46,7 @@ export class LicencePaymentCancelComponent implements OnInit {
 		};
 		this.paymentService
 			.apiUnauthLicenceApplicationIdPaymentLinkPost({
-				applicationId: this.licenceAppId,
+				applicationId: this.licenceAppId!,
 				body,
 			})
 			.pipe()
@@ -60,7 +60,7 @@ export class LicencePaymentCancelComponent implements OnInit {
 	onDownloadManualPaymentForm(): void {
 		this.paymentService
 			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
-				applicationId: this.licenceAppId,
+				applicationId: this.licenceAppId!,
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
