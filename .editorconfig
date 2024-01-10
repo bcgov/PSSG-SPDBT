@@ -23,6 +23,9 @@ csharp_style_prefer_local_over_anonymous_function = true:suggestion
 csharp_indent_labels = one_less_than_current
 csharp_style_prefer_index_operator = true:suggestion
 
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA2007.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 
