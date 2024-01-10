@@ -1,3 +1,4 @@
+export { ActionResult } from './models/action-result';
 export { AdditionalGovIdDocument } from './models/additional-gov-id-document';
 export { Address } from './models/address';
 export { AddressFindResponse } from './models/address-find-response';
@@ -35,6 +36,12 @@ export { OrgRegistrationStatusCode } from './models/org-registration-status-code
 export { OrgSettings } from './models/org-settings';
 export { OrgUserProfileResponse } from './models/org-user-profile-response';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
+export { PaymentLinkCreateRequest } from './models/payment-link-create-request';
+export { PaymentLinkResponse } from './models/payment-link-response';
+export { PaymentMethodCode } from './models/payment-method-code';
+export { PaymentResponse } from './models/payment-response';
+export { PaymentStatusCode } from './models/payment-status-code';
+export { PaymentTypeCode } from './models/payment-type-code';
 export { PoliceOfficerDocument } from './models/police-officer-document';
 export { PoliceOfficerRoleCode } from './models/police-officer-role-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';

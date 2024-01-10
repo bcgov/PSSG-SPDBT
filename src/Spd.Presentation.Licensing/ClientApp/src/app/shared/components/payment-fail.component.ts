@@ -8,10 +8,7 @@ import { Router } from '@angular/router';
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
 					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-						<h2 class="fs-3 mt-0 mt-md-3">
-							<span *ngIf="isCancelledPaymentFlow; else paymentFailedHeader">Payment Cancelled</span>
-							<ng-template #paymentFailedHeader>Payment Failed </ng-template>
-						</h2>
+						<h2 class="fs-3 mt-0 mt-md-3">Payment Failed</h2>
 					</div>
 
 					<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
@@ -30,7 +27,7 @@ import { Router } from '@angular/router';
 								mat-flat-button
 								color="primary"
 								class="large w-auto m-2"
-								*ngIf="!isCancelledPaymentFlow && numberOfAttemptsRemaining > 0"
+								*ngIf="numberOfAttemptsRemaining > 0"
 								aria-label="Try again"
 								(click)="onPayNow()"
 							>
@@ -50,63 +47,40 @@ import { Router } from '@angular/router';
 		</div>
 
 		<div class="row mx-4">
-			<!-- <div class="col-12 mt-4">
-				<div class="fs-4 text-center">
-					<span *ngIf="isCancelledPaymentFlow; else paymentFailedSubHeader"
-						>Your payment attempt has been cancelled</span
-					>
-					<ng-template #paymentFailedSubHeader>
-						Your payment transaction has failed for<br />
-						Case ID: {{ payment?.caseNumber }}
-					</ng-template>
-				</div>
-			</div> -->
-
-			<ng-container *ngIf="isCancelledPaymentFlow; else paymentFailed">
+			<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="mt-4 text-center">
-						Your application is submitted, but it won't be processed until payment is received.
+					<div class="mt-4">
+						Your application has been submitted, but it won't be processed until payment is received.
+					</div>
+					<div class="my-4">
+						Please download and complete the
+						<a
+							tabindex="0"
+							(click)="onDownloadManualPaymentForm()"
+							(keydown)="onKeydownDownloadManualPaymentForm($event)"
+							>Manual Payment Form</a
+						>
+						then follow the instructions on the form to submit payment to the Security Programs Division.
 					</div>
 				</div>
 			</ng-container>
 
-			<ng-template #paymentFailed>
-				<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
-					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="mt-4">
-							Your application has been submitted, but it won't be processed until payment is received.
-						</div>
-						<div class="my-4">
-							Please download and complete the
-							<a
-								tabindex="0"
-								(click)="onDownloadManualPaymentForm()"
-								(keydown)="onKeydownDownloadManualPaymentForm($event)"
-								>Manual Payment Form</a
-							>
-							then follow the instructions on the form to submit payment to the Security Programs Division.
-						</div>
+			<ng-template #remainingAttempts>
+				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+					<div class="mt-4">
+						Please ensure the information you entered is correct and try again, or use a different credit card. You have
+						{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
 					</div>
-				</ng-container>
-
-				<ng-template #remainingAttempts>
-					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="mt-4">
-							Please ensure the information you entered is correct and try again, or use a different credit card. You
-							have
-							{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
-						</div>
-						<div class="my-4">
-							Alternatively, you can download the
-							<a
-								tabindex="0"
-								(click)="onDownloadManualPaymentForm()"
-								(keydown)="onKeydownDownloadManualPaymentForm($event)"
-								>Manual Payment Form</a
-							>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
-						</div>
+					<div class="my-4">
+						Alternatively, you can download the
+						<a
+							tabindex="0"
+							(click)="onDownloadManualPaymentForm()"
+							(keydown)="onKeydownDownloadManualPaymentForm($event)"
+							>Manual Payment Form</a
+						>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
 					</div>
-				</ng-template>
+				</div>
 			</ng-template>
 		</div>
 	`,
@@ -121,8 +95,6 @@ import { Router } from '@angular/router';
 export class PaymentFailComponent implements OnInit {
 	isBackRoute = false;
 	payBySecureLink = true;
-
-	@Input() isCancelledPaymentFlow = false;
 
 	private _payment: PaymentResponse | null = null;
 	@Input()

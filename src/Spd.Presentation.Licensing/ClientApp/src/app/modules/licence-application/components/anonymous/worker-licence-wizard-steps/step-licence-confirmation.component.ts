@@ -10,42 +10,41 @@ import { UtilService } from 'src/app/core/services/util.service';
 		<section class="step-section">
 			<div class="step">
 				<app-step-title title="Confirm your current licence information"></app-step-title>
-				<div class="step-container">
-					<div class="row">
-						<div class="col-xxl-8 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<app-alert type="warning" icon="warning">
-								If any of this information is not correct, please call the Security Program's Licensing Unit during
-								regular office hours: {{ spdPhoneNumber }}
-							</app-alert>
-							<div class="row mt-0 mb-3">
-								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">Licence Holder Name</div>
-									<div class="summary-text-data">{{ licenceHolderName }}</div>
+
+				<div class="row">
+					<div class="col-xxl-8 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<app-alert type="warning" icon="warning">
+							If any of this information is not correct, please call the Security Program's Licensing Unit during
+							regular office hours: {{ spdPhoneNumber }}
+						</app-alert>
+						<div class="row mt-0 mb-3">
+							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Licence Holder Name</div>
+								<div class="summary-text-data">{{ licenceHolderName }}</div>
+							</div>
+							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Licence Number</div>
+								<div class="summary-text-data">{{ licenceNumber }}</div>
+							</div>
+							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Licence Categories</div>
+								<div class="summary-text-data">
+									<ng-container *ngFor="let category of categoryList; let i = index">
+										<div>{{ category | options : 'WorkerCategoryTypes' }}</div>
+									</ng-container>
 								</div>
-								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">Licence Number</div>
-									<div class="summary-text-data">{{ licenceNumber }}</div>
-								</div>
-								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">Licence Categories</div>
-									<div class="summary-text-data">
-										<ng-container *ngFor="let category of categoryList; let i = index">
-											<div>{{ category | options : 'WorkerCategoryTypes' }}</div>
-										</ng-container>
-									</div>
-								</div>
-								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">Expiry Date</div>
-									<div class="summary-text-data">{{ expiryDate | formatDate : constants.date.formalDateFormat }}</div>
-								</div>
-								<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">Licence Term</div>
-									<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
-								</div>
-								<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-									<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
-									<div class="summary-text-data">{{ feeAmount }}</div>
-								</div>
+							</div>
+							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Expiry Date</div>
+								<div class="summary-text-data">{{ expiryDate | formatDate : constants.date.formalDateFormat }}</div>
+							</div>
+							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Licence Term</div>
+								<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+							</div>
+							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
+								<div class="summary-text-data">{{ feeAmount }}</div>
 							</div>
 						</div>
 					</div>

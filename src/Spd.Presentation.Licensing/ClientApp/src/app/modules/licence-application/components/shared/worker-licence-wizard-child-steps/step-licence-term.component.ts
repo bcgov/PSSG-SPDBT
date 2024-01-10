@@ -18,31 +18,29 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					subtitle="The licence term will apply to all licence categories"
 				></app-step-title>
 
-				<div class="step-container">
-					<div class="row">
-						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<form [formGroup]="form" novalidate>
-								<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
-									<ng-container *ngFor="let term of termCodes; let i = index; let last = last">
-										<mat-radio-button class="radio-label" [value]="term.licenceTermCode">
-											{{ term.licenceTermCode | options : 'LicenceTermTypes' }} ({{
-												term.amount | currency : 'CAD' : 'symbol-narrow' : '1.0'
-											}})
-										</mat-radio-button>
-										<mat-divider *ngIf="!last" class="my-2"></mat-divider>
-									</ng-container>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('licenceTermCode')?.dirty || form.get('licenceTermCode')?.touched) &&
-										form.get('licenceTermCode')?.invalid &&
-										form.get('licenceTermCode')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</form>
-						</div>
+				<div class="row">
+					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<form [formGroup]="form" novalidate>
+							<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
+								<ng-container *ngFor="let term of termCodes; let i = index; let last = last">
+									<mat-radio-button class="radio-label" [value]="term.licenceTermCode">
+										{{ term.licenceTermCode | options : 'LicenceTermTypes' }} ({{
+											term.amount | currency : 'CAD' : 'symbol-narrow' : '1.0'
+										}})
+									</mat-radio-button>
+									<mat-divider *ngIf="!last" class="my-2"></mat-divider>
+								</ng-container>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('licenceTermCode')?.dirty || form.get('licenceTermCode')?.touched) &&
+									form.get('licenceTermCode')?.invalid &&
+									form.get('licenceTermCode')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</form>
 					</div>
 				</div>
 			</div>

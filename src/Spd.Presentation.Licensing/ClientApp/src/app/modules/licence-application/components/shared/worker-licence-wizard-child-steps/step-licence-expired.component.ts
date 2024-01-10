@@ -20,89 +20,84 @@ import { UtilService } from 'src/app/core/services/util.service';
 					title="Do you have an expired licence?"
 					subtitle="Processing time will be reduced if you provide info from your past licence"
 				></app-step-title>
-				<div class="step-container">
-					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="hasExpiredLicence">
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-									<mat-divider class="my-2"></mat-divider>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('hasExpiredLicence')?.dirty || form.get('hasExpiredLicence')?.touched) &&
-										form.get('hasExpiredLicence')?.invalid &&
-										form.get('hasExpiredLicence')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
+
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<mat-radio-group aria-label="Select an option" formControlName="hasExpiredLicence">
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-2"></mat-divider>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('hasExpiredLicence')?.dirty || form.get('hasExpiredLicence')?.touched) &&
+									form.get('hasExpiredLicence')?.invalid &&
+									form.get('hasExpiredLicence')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
+					</div>
 
-						<div
-							class="row mt-4"
-							*ngIf="hasExpiredLicence.value === booleanTypeCodes.Yes"
-							@showHideTriggerSlideAnimation
-						>
-							<div class="offset-md-2 col-md-8 col-sm-12">
-								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+					<div class="row mt-4" *ngIf="hasExpiredLicence.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-								<div class="text-minor-heading mb-2">Expired licence information:</div>
-								<div class="row mt-2">
-									<div class="col-lg-8 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Expired Licence Number</mat-label>
-											<input
-												matInput
-												type="search"
-												formControlName="expiredLicenceNumber"
-												oninput="this.value = this.value.toUpperCase()"
-												maxlength="20"
-												[errorStateMatcher]="matcher"
-												(keydown.enter)="onSearchKeyDown($event)"
-											/>
-											<button
-												mat-button
-												matSuffix
-												mat-flat-button
-												aria-label="search"
-												(click)="onSearch()"
-												class="search-icon-button"
-											>
-												<mat-icon>search</mat-icon>
-											</button>
-											<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<ng-container *ngIf="isAfterSearch">
-										<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
-											This is a valid expired licence with an expiry date of
-											{{ expiryDate.value | formatDate : constants.date.formalDateFormat }}.
-										</app-alert>
-										<app-alert type="warning" *ngIf="isFound && !isExpired">
-											The licence is still valid. Please renew it when you get your renewal notice in the mail.
-										</app-alert>
-										<app-alert type="warning" *ngIf="isFound && !isExpired">
-											Your licence is still valid, and needs to be renewed. Please exit and
-											<a
-												href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing"
-												target="_blank"
-												>renew your licence</a
-											>.
-										</app-alert>
-										<app-alert type="danger" icon="error" *ngIf="!isFound">
-											This licence number does not match any existing licences.
-										</app-alert>
-									</ng-container>
+							<div class="text-minor-heading mb-2">Expired licence information</div>
+							<div class="row mt-2">
+								<div class="col-lg-8 col-md-12 col-sm-12">
+									<mat-form-field>
+										<mat-label>Expired Licence Number</mat-label>
+										<input
+											matInput
+											type="search"
+											formControlName="expiredLicenceNumber"
+											oninput="this.value = this.value.toUpperCase()"
+											maxlength="20"
+											[errorStateMatcher]="matcher"
+											(keydown.enter)="onSearchKeyDown($event)"
+										/>
+										<button
+											mat-button
+											matSuffix
+											mat-flat-button
+											aria-label="search"
+											(click)="onSearch()"
+											class="search-icon-button"
+										>
+											<mat-icon>search</mat-icon>
+										</button>
+										<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')">
+											This is required
+										</mat-error>
+									</mat-form-field>
 								</div>
+								<ng-container *ngIf="isAfterSearch">
+									<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
+										This is a valid expired licence with an expiry date of
+										{{ expiryDate.value | formatDate : constants.date.formalDateFormat }}.
+									</app-alert>
+									<app-alert type="warning" *ngIf="isFound && !isExpired">
+										The licence is still valid. Please renew it when you get your renewal notice in the mail.
+									</app-alert>
+									<app-alert type="warning" *ngIf="isFound && !isExpired">
+										Your licence is still valid, and needs to be renewed. Please exit and
+										<a
+											href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing"
+											target="_blank"
+											>renew your licence</a
+										>.
+									</app-alert>
+									<app-alert type="danger" icon="error" *ngIf="!isFound">
+										This licence number does not match any existing licences.
+									</app-alert>
+								</ng-container>
 							</div>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	`,

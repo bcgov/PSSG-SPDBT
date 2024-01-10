@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-step-licence-type-anonymous',
@@ -123,9 +124,13 @@ export class StepLicenceTypeAnonymousComponent implements OnInit {
 	isImagesLoaded = false;
 	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 
-	form: FormGroup = this.licenceApplicationService.workerLicenceTypeFormGroup;
+	// form!: FormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.imagePaths.forEach((path) => {
@@ -136,24 +141,52 @@ export class StepLicenceTypeAnonymousComponent implements OnInit {
 			};
 			tmp.src = path;
 		});
-
-		this.workerLicenceTypeCode = this.form.value.workerLicenceTypeCode;
 	}
 
 	onStepNext(): void {
 		const isValid = this.isFormValid();
 
 		if (isValid) {
-			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-				)
-			);
+			switch (this.workerLicenceTypeCode) {
+				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+					this.licenceApplicationService
+						.createNewLicenceAnonymous(this.workerLicenceTypeCode)
+						.pipe(
+							tap((_resp: any) => {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
+									)
+								);
+							}),
+							take(1)
+						)
+						.subscribe();
+
+					break;
+				}
+				case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+				case WorkerLicenceTypeCode.BodyArmourPermit: {
+					this.permitApplicationService
+						.createNewPermitAnonymous(this.workerLicenceTypeCode)
+						.pipe(
+							tap((_resp: any) => {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS)
+								);
+							}),
+							take(1)
+						)
+						.subscribe();
+
+					break;
+				}
+			}
 		}
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		this.form.patchValue({ workerLicenceTypeCode: _val });
+		// this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
 		this.isFormValid();
@@ -166,7 +199,7 @@ export class StepLicenceTypeAnonymousComponent implements OnInit {
 	}
 
 	isFormValid(): boolean {
-		const isValid = this.form.valid;
+		const isValid = !!this.workerLicenceTypeCode; //this.form.valid;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
 	}
