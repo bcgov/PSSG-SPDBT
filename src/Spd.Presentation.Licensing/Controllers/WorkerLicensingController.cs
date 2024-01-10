@@ -36,7 +36,6 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
-        private static Mutex mutex = new(false);
 
         public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
             IPrincipal currentUser,
