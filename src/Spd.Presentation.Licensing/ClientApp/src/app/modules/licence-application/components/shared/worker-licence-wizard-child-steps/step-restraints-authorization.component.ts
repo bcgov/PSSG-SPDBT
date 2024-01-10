@@ -17,82 +17,77 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 					*ngIf="!isCalledFromModal"
 					title="Do you want to request authorization to use restraints?"
 				></app-step-title>
-				<div class="step-container">
-					<form [formGroup]="form" novalidate>
-						<div class="row" *ngIf="!isCalledFromModal">
-							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRestraints">
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-									<mat-divider class="my-2"></mat-divider>
-									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-								</mat-radio-group>
+
+				<form [formGroup]="form" novalidate>
+					<div class="row" *ngIf="!isCalledFromModal">
+						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRestraints">
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-2"></mat-divider>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('carryAndUseRestraints')?.dirty || form.get('carryAndUseRestraints')?.touched) &&
+									form.get('carryAndUseRestraints')?.invalid &&
+									form.get('carryAndUseRestraints')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</div>
+					</div>
+
+					<div class="row" *ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
+							<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
+
+							<div class="text-minor-heading my-2">Document Type</div>
+							<mat-radio-group
+								class="category-radio-group"
+								aria-label="Select an option"
+								formControlName="carryAndUseRestraintsDocument"
+							>
+								<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index">
+									<mat-radio-button class="radio-label" [value]="doc.code">
+										{{ doc.desc }}
+									</mat-radio-button>
+								</ng-container>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('carryAndUseRestraintsDocument')?.dirty ||
+										form.get('carryAndUseRestraintsDocument')?.touched) &&
+									form.get('carryAndUseRestraintsDocument')?.invalid &&
+									form.get('carryAndUseRestraintsDocument')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+
+							<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
+
+							<div class="my-2">
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[control]="attachments"
+									[maxNumberOfFiles]="10"
+									[files]="attachments.value"
+								></app-file-upload>
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
-										(form.get('carryAndUseRestraints')?.dirty || form.get('carryAndUseRestraints')?.touched) &&
-										form.get('carryAndUseRestraints')?.invalid &&
-										form.get('carryAndUseRestraints')?.hasError('required')
+										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+										form.get('attachments')?.invalid &&
+										form.get('attachments')?.hasError('required')
 									"
 									>This is required</mat-error
 								>
 							</div>
 						</div>
-
-						<div
-							class="row"
-							*ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes"
-							@showHideTriggerSlideAnimation
-						>
-							<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
-								<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
-
-								<div class="text-minor-heading my-2">Document type:</div>
-								<mat-radio-group
-									class="category-radio-group"
-									aria-label="Select an option"
-									formControlName="carryAndUseRestraintsDocument"
-								>
-									<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index">
-										<mat-radio-button class="radio-label" [value]="doc.code">
-											{{ doc.desc }}
-										</mat-radio-button>
-									</ng-container>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('carryAndUseRestraintsDocument')?.dirty ||
-											form.get('carryAndUseRestraintsDocument')?.touched) &&
-										form.get('carryAndUseRestraintsDocument')?.invalid &&
-										form.get('carryAndUseRestraintsDocument')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-
-								<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
-
-								<div class="my-2">
-									<app-file-upload
-										(fileUploaded)="onFileUploaded($event)"
-										(fileRemoved)="onFileRemoved()"
-										[control]="attachments"
-										[maxNumberOfFiles]="10"
-										[files]="attachments.value"
-									></app-file-upload>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-											form.get('attachments')?.invalid &&
-											form.get('attachments')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
-								</div>
-							</div>
-						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	`,

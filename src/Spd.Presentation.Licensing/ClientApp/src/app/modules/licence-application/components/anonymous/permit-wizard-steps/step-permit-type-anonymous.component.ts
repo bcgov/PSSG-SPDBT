@@ -11,90 +11,89 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 		<section class="step-section">
 			<div class="step">
 				<app-step-title title="What type of permit are you applying for?"></app-step-title>
-				<div class="step-container">
-					<div class="row">
-						<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<form [formGroup]="form" novalidate>
-								<mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
-									<div class="row">
-										<div class="col-xl-5 col-lg-4">
-											<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New"
-												>New ($xx for a 5-year term)</mat-radio-button
-											>
-										</div>
-										<div class="col-xl-7 col-lg-8">
-											<app-alert type="info" icon="">
-												Apply for a new permit if you've never held this type of permit, or if your existing permit has
-												expired.
-											</app-alert>
-										</div>
+
+				<div class="row">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<form [formGroup]="form" novalidate>
+							<mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
+								<div class="row">
+									<div class="col-xl-5 col-lg-4">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New"
+											>New ($xx for a 5-year term)</mat-radio-button
+										>
 									</div>
-									<mat-divider class="mb-3"></mat-divider>
-									<div class="row">
-										<div class="col-xl-5 col-lg-4">
-											<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal"
-												>Renewal ($xx for a 5-year term)</mat-radio-button
-											>
-										</div>
-										<div class="col-xl-7 col-lg-8">
-											<app-alert type="info" icon="">
-												Renew your existing permit before it expires, within 90 days of the expiry date.
-											</app-alert>
-										</div>
+									<div class="col-xl-7 col-lg-8">
+										<app-alert type="info" icon="">
+											Apply for a new permit if you've never held this type of permit, or if your existing permit has
+											expired.
+										</app-alert>
 									</div>
-									<mat-divider class="mb-3"></mat-divider>
-									<div class="row">
-										<div class="col-xl-5 col-lg-4">
-											<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
-												Update (free)
-											</mat-radio-button>
-										</div>
-										<div class="col-xl-7 col-lg-8">
-											<app-alert type="info" icon="">
-												Update contact details, report new criminal charges, and more. If your permit has been lost or
-												stolen, please request an update.
-											</app-alert>
-										</div>
+								</div>
+								<mat-divider class="mb-3"></mat-divider>
+								<div class="row">
+									<div class="col-xl-5 col-lg-4">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal"
+											>Renewal ($xx for a 5-year term)</mat-radio-button
+										>
 									</div>
-									<mat-divider class="mb-3"></mat-divider>
-									<div class="row">
-										<div class="col-xl-5 col-lg-4">
-											<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
-												>90-day Exemption (free)</mat-radio-button
-											>
-										</div>
-										<div class="col-xl-7 col-lg-8">
-											<app-alert type="info" icon="">
-												Apply for an exemption if you are temporarily visiting B.C. and need body armour for your
-												activities in the province, or if there is imminent risk to your safety.
-											</app-alert>
-										</div>
+									<div class="col-xl-7 col-lg-8">
+										<app-alert type="info" icon="">
+											Renew your existing permit before it expires, within 90 days of the expiry date.
+										</app-alert>
 									</div>
-									<mat-divider class="mb-3"></mat-divider>
-									<div class="row">
-										<div class="col-xl-5 col-lg-4">
-											<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
-												>90-day Exemption Extension (free)</mat-radio-button
-											>
-										</div>
-										<div class="col-xl-7 col-lg-8">
-											<app-alert type="info" icon="">
-												Apply to extend your exemption if you have a 90-day exemption and need it for another 90 days.
-											</app-alert>
-										</div>
+								</div>
+								<mat-divider class="mb-3"></mat-divider>
+								<div class="row">
+									<div class="col-xl-5 col-lg-4">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
+											Update (free)
+										</mat-radio-button>
 									</div>
-								</mat-radio-group>
-							</form>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
-									form.get('applicationTypeCode')?.invalid &&
-									form.get('applicationTypeCode')?.hasError('required')
-								"
-								>An option must be selected</mat-error
-							>
-						</div>
+									<div class="col-xl-7 col-lg-8">
+										<app-alert type="info" icon="">
+											Update contact details, report new criminal charges, and more. If your permit has been lost or
+											stolen, please request an update.
+										</app-alert>
+									</div>
+								</div>
+								<mat-divider class="mb-3"></mat-divider>
+								<div class="row">
+									<div class="col-xl-5 col-lg-4">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
+											>90-day Exemption (free)</mat-radio-button
+										>
+									</div>
+									<div class="col-xl-7 col-lg-8">
+										<app-alert type="info" icon="">
+											Apply for an exemption if you are temporarily visiting B.C. and need body armour for your
+											activities in the province, or if there is imminent risk to your safety.
+										</app-alert>
+									</div>
+								</div>
+								<mat-divider class="mb-3"></mat-divider>
+								<div class="row">
+									<div class="col-xl-5 col-lg-4">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
+											>90-day Exemption Extension (free)</mat-radio-button
+										>
+									</div>
+									<div class="col-xl-7 col-lg-8">
+										<app-alert type="info" icon="">
+											Apply to extend your exemption if you have a 90-day exemption and need it for another 90 days.
+										</app-alert>
+									</div>
+								</div>
+							</mat-radio-group>
+						</form>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
+								form.get('applicationTypeCode')?.invalid &&
+								form.get('applicationTypeCode')?.hasError('required')
+							"
+							>An option must be selected</mat-error
+						>
 					</div>
 				</div>
 			</div>

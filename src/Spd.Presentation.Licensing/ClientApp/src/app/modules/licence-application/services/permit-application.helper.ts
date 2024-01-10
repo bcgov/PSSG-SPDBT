@@ -135,205 +135,62 @@ export abstract class PermitApplicationHelper {
 		aliases: this.formBuilder.array([]),
 	});
 
-	categoryBodyArmourSalesFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
+	bodyArmourRequirementFormGroup: FormGroup = this.formBuilder.group({
+		isOutdoorRecreation: new FormControl(false),
+		isPersonalProtection: new FormControl(false),
+		isMyEmployment: new FormControl(false),
+		isTravelForConflict: new FormControl(false),
+		isOther: new FormControl(false),
+		isOtherReason: new FormControl(),
 	});
-	categoryClosedCircuitTelevisionInstallerFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryElectronicLockingDeviceInstallerFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryLocksmithSupFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmInstallerSupFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmMonitorFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmResponseFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityAlarmSalesFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categorySecurityGuardSupFormGroup = this.formBuilder.group({
-		isInclude: new FormControl(false),
-	});
-	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categoryFireInvestigatorFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			fireCourseCertificateAttachments: new FormControl([]),
-			fireVerificationLetterAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'fireCourseCertificateAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'fireVerificationLetterAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-			],
-		}
-	);
-	categoryLocksmithFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categoryPrivateInvestigatorSupFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			trainingCode: new FormControl(''),
-			attachments: new FormControl([]),
-			trainingAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalRequiredValidator('trainingCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'trainingAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-			],
-		}
-	);
-	categorySecurityAlarmInstallerFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
-	categorySecurityConsultantFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-			resumeAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'resumeAttachments',
-					(form) => form.get('isInclude')?.value
-				),
-			],
-		}
-	);
-	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isInclude: new FormControl(false),
-			requirementCode: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
-			],
-		}
-	);
 
-	restraintsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
-		{
-			carryAndUseRestraints: new FormControl(''),
-			carryAndUseRestraintsDocument: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'carryAndUseRestraints',
-					(_form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'carryAndUseRestraintsDocument',
-					(form) => form.get('carryAndUseRestraints')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('carryAndUseRestraints')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
+	permitRationaleFormGroup: FormGroup = this.formBuilder.group({
+		rationale: new FormControl('', [FormControlValidators.required]),
+		attachments: new FormControl(''),
+	});
 
-	dogsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
+	employerInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			useDogs: new FormControl(''),
-			dogsPurposeFormGroup: new FormGroup(
-				{
-					isDogsPurposeProtection: new FormControl(false),
-					isDogsPurposeDetectionDrugs: new FormControl(false),
-					isDogsPurposeDetectionExplosives: new FormControl(false),
-				},
-				FormGroupValidators.atLeastOneCheckboxValidator('useDogs', BooleanTypeCode.Yes)
-			),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'useDogs',
-					(_form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
-				),
-			],
+			businessName: new FormControl('', [FormControlValidators.required]),
+			supervisorName: new FormControl('', [FormControlValidators.required]),
+			supervisorEmailAddress: new FormControl('', [FormControlValidators.required]),
+			supervisorPhoneNumber: new FormControl('', [FormControlValidators.required]),
+			addressSelected: new FormControl(false),
+			addressLine1: new FormControl(''),
+			addressLine2: new FormControl(''),
+			city: new FormControl(''),
+			postalCode: new FormControl(''),
+			province: new FormControl(''),
+			country: new FormControl(''),
 		}
+		// {
+		// 	validators: [
+		// 		FormGroupValidators.conditionalDefaultRequiredTrueValidator(
+		// 			'addressSelected',
+		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+		// 		),
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'addressLine1',
+		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+		// 		),
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'city',
+		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+		// 		),
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'postalCode',
+		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+		// 		),
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'province',
+		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+		// 		),
+		// 		FormGroupValidators.conditionalRequiredValidator(
+		// 			'country',
+		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+		// 		),
+		// 	],
+		// }
 	);
 
 	policeBackgroundFormGroup: FormGroup = this.formBuilder.group(

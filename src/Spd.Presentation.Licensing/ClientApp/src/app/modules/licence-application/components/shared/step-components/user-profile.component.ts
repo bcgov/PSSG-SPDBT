@@ -10,21 +10,21 @@ import { MailingAddressComponent } from './mailing-address.component';
 	selector: 'app-user-profile',
 	template: `
 		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
-		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
+		<div class="text-minor-heading pt-2 pb-3">Personal information</div>
 		<app-personal-information [isReadOnly]="isReadOnly"></app-personal-information>
 
 		<mat-divider class="mat-divider-main"></mat-divider>
-		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
+		<div class="text-minor-heading pt-2 pb-3">Aliases or previous names</div>
 		<app-alias-list [isReadOnly]="isReadOnly"></app-alias-list>
 
 		<mat-divider class="mat-divider-main mt-3"></mat-divider>
-		<div class="text-minor-heading pt-2 pb-3">Contact Information</div>
+		<div class="text-minor-heading pt-2 pb-3">Contact information</div>
 		<app-contact-information [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-contact-information>
 
 		<div class="row">
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Residential Address</div>
+				<div class="text-minor-heading pt-2 pb-3">Residential address</div>
 
 				<app-alert type="info" icon="" [showBorder]="false">
 					Has your residential address changed?
@@ -37,7 +37,7 @@ import { MailingAddressComponent } from './mailing-address.component';
 
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
+				<div class="text-minor-heading pt-2 pb-3">Mailing address</div>
 				<app-alert type="info" icon="" [showBorder]="false">
 					Provide your mailing address, if different from your residential address. This cannot be a company address.
 				</app-alert>

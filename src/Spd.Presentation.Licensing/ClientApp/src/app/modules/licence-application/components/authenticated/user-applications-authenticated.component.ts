@@ -484,8 +484,9 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 							const inProgressResults = resp.filter(
 								(item: WorkerLicenceAppListResponse) =>
 									item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+									// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 									(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-										moment().isSameOrBefore(moment(item.createdOn).add(30, 'days')))
+										moment().isBefore(moment(item.createdOn).add(31, 'days')))
 							);
 
 							const activeResults = resp.filter(

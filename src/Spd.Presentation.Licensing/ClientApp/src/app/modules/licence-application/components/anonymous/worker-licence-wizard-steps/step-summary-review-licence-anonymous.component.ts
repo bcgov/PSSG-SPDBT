@@ -19,195 +19,192 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 					title="Application Summary"
 					subtitle="Review your information before submitting your application"
 				></app-step-title>
-				<div class="step-container">
-					<div class="row">
-						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<div class="row mb-3">
-								<div class="col-12">
-									<mat-accordion multi="true">
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Licence Selection</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 1"
-															aria-label="Go to Step 1"
-															(click)="$event.stopPropagation(); onEditStep(0)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Licence Information</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
-														<div class="summary-text-data">
-															{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-														</div>
+
+				<div class="row">
+					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="row mb-3">
+							<div class="col-12">
+								<mat-accordion multi="true">
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header fs-4 my-2">Licence Selection</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 1"
+														aria-label="Go to Step 1"
+														(click)="$event.stopPropagation(); onEditStep(0)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Licence Information</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
+													<div class="summary-text-data">
+														{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
-														<div class="summary-text-data">
-															{{ applicationTypeCode | options : 'ApplicationTypes' }}
-														</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
+													<div class="summary-text-data">
+														{{ applicationTypeCode | options : 'ApplicationTypes' }}
 													</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														Sole Proprietorship Security Business Licence
+													</div>
+													<div class="summary-text-data">{{ isSoleProprietor }}</div>
+												</div>
+											</div>
+											<div class="row mt-0">
+												<ng-container
+													*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
+												>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Sole Proprietorship Security Business Licence
+															Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
 														</div>
-														<div class="summary-text-data">{{ isSoleProprietor }}</div>
-													</div>
-												</div>
-												<div class="row mt-0">
-													<ng-container
-														*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
-													>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
-															</div>
-															<div class="summary-text-data">
-																{{ category | options : 'WorkerCategoryTypes' }}
-															</div>
-														</div>
-													</ng-container>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-														<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
 														<div class="summary-text-data">
-															{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
-														</div>
-													</div>
-												</div>
-
-												<ng-container *ngIf="isAnyDocuments">
-													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Documents Uploaded</div>
-													<div class="row mt-0">
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showArmouredCarGuard">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showFireInvestigator">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-																<div *ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showLocksmith">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of categoryLocksmithAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
-																Documents
-															</div>
-															<div class="summary-text-data">
-																<div class="summary-text-data">
-																	<div *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
-																		{{ doc.name }}
-																	</div>
-
-																	<div
-																		*ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index"
-																	>
-																		{{ doc.name }}
-																	</div>
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigatorUnderSupervision">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{
-																	categoryTypeCodes.PrivateInvestigatorUnderSupervision
-																		| options : 'WorkerCategoryTypes'
-																}}
-																Documents
-															</div>
-															<div class="summary-text-data">
-																<div
-																	*ngFor="
-																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
-																		let i = index
-																	"
-																>
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityAlarmInstaller">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
-																Documents
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityConsultant">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-																<div *ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityGuard">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
+															{{ category | options : 'WorkerCategoryTypes' }}
 														</div>
 													</div>
 												</ng-container>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
+													<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
+													<div class="summary-text-data">
+														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+													</div>
+												</div>
+											</div>
 
-												<!-- <ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+											<ng-container *ngIf="isAnyDocuments">
+												<mat-divider class="mt-4 mb-2"></mat-divider>
+												<div class="text-minor-heading">Documents Uploaded</div>
+												<div class="row mt-0">
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showArmouredCarGuard">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showFireInvestigator">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+															<div *ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showLocksmith">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of categoryLocksmithAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+															Documents
+														</div>
+														<div class="summary-text-data">
+															<div class="summary-text-data">
+																<div *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
+																	{{ doc.name }}
+																</div>
+
+																<div *ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigatorUnderSupervision">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{
+																categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
+															}}
+															Documents
+														</div>
+														<div class="summary-text-data">
+															<div
+																*ngFor="
+																	let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
+																	let i = index
+																"
+															>
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityAlarmInstaller">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
+															Documents
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityConsultant">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+															<div *ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityGuard">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+												</div>
+											</ng-container>
+
+											<!-- <ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Expired Licence</div>
 													<div class="row mt-0">
@@ -224,412 +221,403 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													</div>
 												</ng-container> -->
 
-												<ng-container *ngIf="showDogsAndRestraints">
-													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Restraints Authorization</div>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
-															<div class="summary-text-data">
-																{{ carryAndUseRestraints | options : 'BooleanTypes' }}
-															</div>
-														</div>
-														<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
-															<div class="col-lg-8 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
-																</div>
-																<div class="summary-text-data">
-																	<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-																		{{ doc.name }}
-																	</div>
-																</div>
-															</div>
-														</ng-container>
-													</div>
-
-													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Dogs Authorization</div>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
-															<div class="summary-text-data">{{ useDogs }}</div>
-														</div>
-														<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
-															<div class="col-lg-4 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
-																<div class="summary-text-data">
-																	<div *ngIf="isDogsPurposeProtection">Protection</div>
-																	<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-																	<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-																</div>
-															</div>
-															<div class="col-lg-4 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
-																<div class="summary-text-data">
-																	<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																		{{ doc.name }}
-																	</div>
-																</div>
-															</div>
-														</ng-container>
-													</div>
-												</ng-container>
-											</div>
-										</mat-expansion-panel>
-
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Background Information</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 2"
-															aria-label="Go to Step 2"
-															(click)="$event.stopPropagation(); onEditStep(1)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Police Background</div>
+											<ng-container *ngIf="showDogsAndRestraints">
+												<mat-divider class="mt-4 mb-2"></mat-divider>
+												<div class="text-minor-heading">Restraints Authorization</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Police Officer or Peace Officer Roles
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
+														<div class="summary-text-data">
+															{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 														</div>
-														<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
 													</div>
-													<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
-															<div class="summary-text-data">
-																<span
-																	*ngIf="
-																		policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
-																		else otherPoliceOfficerRole
-																	"
-																	>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
-																>
-																<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
+													<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
+														<div class="col-lg-8 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 															</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2" *ngIf="letterOfNoConflictAttachments">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Letter of No Conflict</div>
 															<div class="summary-text-data">
-																<div *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
+																<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
 															</div>
 														</div>
 													</ng-container>
 												</div>
+
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Mental Health Conditions</div>
-												<div class="row mt-0">
-													<div class="col-lg-6 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Conditions?</div>
-														<div class="summary-text-data">{{ isTreatedForMHC }}</div>
-													</div>
-													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="mentalHealthConditionAttachments.length > 0">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Condition Form</div>
-														<div class="summary-text-data">
-															<div *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Criminal History</div>
-												<div class="row mt-0">
-													<div class="col-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Have you previously been charged or convicted of a crime?
-														</div>
-														<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Fingerprints</div>
-												<div class="row mt-0">
-													<div class="col-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Request for Fingerprinting Form
-														</div>
-														<div class="summary-text-data">
-															<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</mat-expansion-panel>
-
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Identification</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 3"
-															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(2)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Personal Information</div>
-												<div class="row mt-0">
-													<div class="col-lg-6 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
-														<div class="summary-text-data">
-															{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-															{{ surname }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
-														<div class="summary-text-data">
-															{{ dateOfBirth | formatDate | default }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
-														<div class="summary-text-data">
-															{{ genderCode | options : 'GenderTypes' | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Aliases</div>
+												<div class="text-minor-heading">Dogs Authorization</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Do you have any previous names?
-														</div>
-														<div class="summary-text-data">{{ previousNameFlag }}</div>
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
+														<div class="summary-text-data">{{ useDogs }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
+													<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
 															<div class="summary-text-data">
-																<div
-																	*ngFor="let alias of aliases; let i = index; let first = first"
-																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-																>
-																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																	{{ alias.surname }}
-																</div>
-															</div>
-														</ng-container>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Identification</div>
-												<div class="row mt-0">
-													<div class="col-lg-8 col-md-12">
-														<div class="row mt-0">
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-																<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	<span *ngIf="canadianCitizenProofTypeCode">
-																		{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-																	</span>
-																	<span *ngIf="notCanadianCitizenProofTypeCode">
-																		{{
-																			notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes'
-																		}}
-																	</span>
-																</div>
-																<div class="summary-text-data">
-																	<div *ngFor="let doc of attachments; let i = index">
-																		{{ doc.name }}
-																	</div>
-																</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
-																<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-																</div>
-																<div class="summary-text-data">
-																	<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																		{{ doc.name }}
-																	</div>
-																</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
-																<div class="summary-text-data">
-																	{{ height }}
-																	{{ heightUnitCode | options : 'HeightUnitTypes' }}
-																	{{ heightInches }}
-																</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
-																<div class="summary-text-data">
-																	{{ weight }}
-																	{{ weightUnitCode | options : 'WeightUnitTypes' }}
-																</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
-																<div class="summary-text-data">
-																	{{ hairColourCode | options : 'HairColourTypes' }}
-																</div>
-															</div>
-															<div class="col-lg-6 col-md-12 mt-lg-2">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
-																<div class="summary-text-data">
-																	{{ eyeColourCode | options : 'EyeColourTypes' }}
-																</div>
+																<div *ngIf="isDogsPurposeProtection">Protection</div>
+																<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+																<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
 															</div>
 														</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
-														<div class="summary-text-data">
-															<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
-														</div>
-													</div>
-												</div>
-											</div>
-										</mat-expansion-panel>
-
-										<mat-expansion-panel class="mb-2" [expanded]="true">
-											<mat-expansion-panel-header>
-												<mat-panel-title class="review-panel-title">
-													<mat-toolbar class="d-flex justify-content-between">
-														<div class="panel-header fs-4 my-2">Contact Information</div>
-														<button
-															mat-mini-fab
-															color="primary"
-															class="go-to-step-button"
-															matTooltip="Go to Step 3"
-															aria-label="Go to Step 3"
-															(click)="$event.stopPropagation(); onEditStep(99)"
-														>
-															<mat-icon>edit</mat-icon>
-														</button>
-													</mat-toolbar>
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-											<div class="panel-body">
-												<div class="text-minor-heading mt-4">Contact</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
-														<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-														<div class="summary-text-data">
-															{{ contactPhoneNumber | mask : constants.phone.displayMask }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Residential Address</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="summary-text-data">{{ residentialCity | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="summary-text-data">
-															{{ residentialProvince | default }}
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="summary-text-data">
-															{{ residentialCountry | default }}
-														</div>
-													</div>
-												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Mailing Address</div>
-												<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-													<div class="row mt-0">
-														<div class="col-12 mt-lg-2">
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Dog Validation Certificate</div>
 															<div class="summary-text-data">
-																Mailing address is the same as the residential address
+																<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+													</ng-container>
+												</div>
+											</ng-container>
+										</div>
+									</mat-expansion-panel>
+
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header fs-4 my-2">Background Information</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 2"
+														aria-label="Go to Step 2"
+														(click)="$event.stopPropagation(); onEditStep(1)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Police Background</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														Police Officer or Peace Officer Roles
+													</div>
+													<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
+												</div>
+												<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
+														<div class="summary-text-data">
+															<span
+																*ngIf="
+																	policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
+																	else otherPoliceOfficerRole
+																"
+																>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
+															>
+															<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2" *ngIf="letterOfNoConflictAttachments">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Letter of No Conflict</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
+																{{ doc.name }}
 															</div>
 														</div>
 													</div>
 												</ng-container>
-												<ng-template #mailingIsDifferentThanResidential>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="summary-text-data">{{ mailingCity | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="summary-text-data">{{ mailingProvince | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="summary-text-data">{{ mailingCountry | default }}</div>
+											</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Mental Health Conditions</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Conditions?</div>
+													<div class="summary-text-data">{{ isTreatedForMHC }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="mentalHealthConditionAttachments.length > 0">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Condition Form</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
+															{{ doc.name }}
 														</div>
 													</div>
-												</ng-template>
+												</div>
 											</div>
-										</mat-expansion-panel>
-									</mat-accordion>
-								</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Criminal History</div>
+											<div class="row mt-0">
+												<div class="col-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														Have you previously been charged or convicted of a crime?
+													</div>
+													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+												</div>
+											</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Fingerprints</div>
+											<div class="row mt-0">
+												<div class="col-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Request for Fingerprinting Form</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</mat-expansion-panel>
+
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header fs-4 my-2">Identification</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 3"
+														aria-label="Go to Step 3"
+														(click)="$event.stopPropagation(); onEditStep(2)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Personal Information</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
+													<div class="summary-text-data">
+														{{ givenName }} {{ middleName1 }} {{ middleName2 }}
+														{{ surname }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
+													<div class="summary-text-data">
+														{{ dateOfBirth | formatDate | default }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
+													<div class="summary-text-data">
+														{{ genderCode | options : 'GenderTypes' | default }}
+													</div>
+												</div>
+											</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Aliases</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Do you have any previous names?</div>
+													<div class="summary-text-data">{{ previousNameFlag }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
+														<div class="summary-text-data">
+															<div
+																*ngFor="let alias of aliases; let i = index; let first = first"
+																[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
+															>
+																{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
+																{{ alias.surname }}
+															</div>
+														</div>
+													</ng-container>
+												</div>
+											</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Identification</div>
+											<div class="row mt-0">
+												<div class="col-lg-8 col-md-12">
+													<div class="row mt-0">
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
+															<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																<span *ngIf="canadianCitizenProofTypeCode">
+																	{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+																</span>
+																<span *ngIf="notCanadianCitizenProofTypeCode">
+																	{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+																</span>
+															</div>
+															<div class="summary-text-data">
+																<div *ngFor="let doc of attachments; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
+															<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+															</div>
+															<div class="summary-text-data">
+																<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
+															<div class="summary-text-data">
+																{{ height }}
+																{{ heightUnitCode | options : 'HeightUnitTypes' }}
+																{{ heightInches }}
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
+															<div class="summary-text-data">
+																{{ weight }}
+																{{ weightUnitCode | options : 'WeightUnitTypes' }}
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
+															<div class="summary-text-data">
+																{{ hairColourCode | options : 'HairColourTypes' }}
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
+															<div class="summary-text-data">
+																{{ eyeColourCode | options : 'EyeColourTypes' }}
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
+													<div class="summary-text-data">
+														<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</mat-expansion-panel>
+
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header fs-4 my-2">Contact Information</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 3"
+														aria-label="Go to Step 3"
+														(click)="$event.stopPropagation(); onEditStep(99)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Contact</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
+													<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
+													<div class="summary-text-data">
+														{{ contactPhoneNumber | mask : constants.phone.displayMask }}
+													</div>
+												</div>
+											</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Residential Address</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+													<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+													<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+													<div class="summary-text-data">{{ residentialCity | default }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+													<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+													<div class="summary-text-data">
+														{{ residentialProvince | default }}
+													</div>
+												</div>
+												<div class="col-lg-4 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+													<div class="summary-text-data">
+														{{ residentialCountry | default }}
+													</div>
+												</div>
+											</div>
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Mailing Address</div>
+											<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
+												<div class="row mt-0">
+													<div class="col-12 mt-lg-2">
+														<div class="summary-text-data">Mailing address is the same as the residential address</div>
+													</div>
+												</div>
+											</ng-container>
+											<ng-template #mailingIsDifferentThanResidential>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+														<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+														<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+														<div class="summary-text-data">{{ mailingCity | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+														<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+														<div class="summary-text-data">{{ mailingProvince | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+														<div class="summary-text-data">{{ mailingCountry | default }}</div>
+													</div>
+												</div>
+											</ng-template>
+										</div>
+									</mat-expansion-panel>
+								</mat-accordion>
 							</div>
 						</div>
 					</div>
@@ -656,10 +644,6 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 				font-size: 1.1rem !important;
 				color: var(--color-primary-light) !important;
 				font-weight: 300 !important;
-			}
-
-			.text-label {
-				font-size: 0.9rem !important;
 			}
 
 			.review-panel-title {

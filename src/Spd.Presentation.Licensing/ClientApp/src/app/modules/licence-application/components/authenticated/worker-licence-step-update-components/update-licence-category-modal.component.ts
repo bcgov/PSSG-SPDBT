@@ -21,100 +21,98 @@ export interface LicenceCategoryDialogData {
 		<div mat-dialog-content>
 			<section class="step-section-modal">
 				<div class="step mt-3">
-					<div class="step-container">
-						<div class="row" *ngIf="!category">
-							<div class="col-md-6 col-sm-12 mx-auto">
-								<mat-form-field>
-									<mat-label>Category</mat-label>
-									<mat-select (selectionChange)="onAddCategory($event)">
-										<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
-											{{ item.desc }}
-										</mat-option>
-									</mat-select>
-								</mat-form-field>
-								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-									At least one category must be added
-								</mat-error>
-							</div>
-							<!-- <div class="col-md-6 col-sm-12" *ngIf="categoryList.length < 6">
+					<div class="row" *ngIf="!category">
+						<div class="col-md-6 col-sm-12 mx-auto">
+							<mat-form-field>
+								<mat-label>Category</mat-label>
+								<mat-select (selectionChange)="onAddCategory($event)">
+									<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
+										{{ item.desc }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+							<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+								At least one category must be added
+							</mat-error>
+						</div>
+						<!-- <div class="col-md-6 col-sm-12" *ngIf="categoryList.length < 6">
 								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
 									Add Category
 								</button>
 							</div> -->
-						</div>
+					</div>
 
-						<div class="row" *ngIf="category" @showHideTriggerSlideAnimation>
-							<div class="col-12">
-								<mat-accordion multi="false">
-									<ng-container *ngIf="category === workerCategoryTypeCodes.ArmouredCarGuard">
-										<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
-									</ng-container>
+					<div class="row" *ngIf="category" @showHideTriggerSlideAnimation>
+						<div class="col-12">
+							<mat-accordion multi="false">
+								<ng-container *ngIf="category === workerCategoryTypeCodes.ArmouredCarGuard">
+									<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.BodyArmourSales">
-										<app-licence-category-body-armour-sales></app-licence-category-body-armour-sales>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.BodyArmourSales">
+									<app-licence-category-body-armour-sales></app-licence-category-body-armour-sales>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
-										<app-licence-category-closed-circuit-television-installer></app-licence-category-closed-circuit-television-installer>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
+									<app-licence-category-closed-circuit-television-installer></app-licence-category-closed-circuit-television-installer>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.ElectronicLockingDeviceInstaller">
-										<app-licence-category-electronic-locking-device-installer></app-licence-category-electronic-locking-device-installer>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.ElectronicLockingDeviceInstaller">
+									<app-licence-category-electronic-locking-device-installer></app-licence-category-electronic-locking-device-installer>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.FireInvestigator">
-										<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.FireInvestigator">
+									<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.Locksmith">
-										<app-licence-category-locksmith></app-licence-category-locksmith>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.Locksmith">
+									<app-licence-category-locksmith></app-licence-category-locksmith>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.LocksmithUnderSupervision">
-										<app-licence-category-locksmith-sup></app-licence-category-locksmith-sup>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.LocksmithUnderSupervision">
+									<app-licence-category-locksmith-sup></app-licence-category-locksmith-sup>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.PrivateInvestigator">
-										<app-licence-category-private-investigator></app-licence-category-private-investigator>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.PrivateInvestigator">
+									<app-licence-category-private-investigator></app-licence-category-private-investigator>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
-										<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
+									<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmInstaller">
-										<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmInstaller">
+									<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
-										<app-licence-category-security-alarm-installer-sup></app-licence-category-security-alarm-installer-sup>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
+									<app-licence-category-security-alarm-installer-sup></app-licence-category-security-alarm-installer-sup>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmMonitor">
-										<app-licence-category-security-alarm-monitor></app-licence-category-security-alarm-monitor>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmMonitor">
+									<app-licence-category-security-alarm-monitor></app-licence-category-security-alarm-monitor>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmResponse">
-										<app-licence-category-security-alarm-response></app-licence-category-security-alarm-response>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmResponse">
+									<app-licence-category-security-alarm-response></app-licence-category-security-alarm-response>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmSales">
-										<app-licence-category-security-alarm-sales></app-licence-category-security-alarm-sales>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityAlarmSales">
+									<app-licence-category-security-alarm-sales></app-licence-category-security-alarm-sales>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityConsultant">
-										<app-licence-category-security-consultant></app-licence-category-security-consultant>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityConsultant">
+									<app-licence-category-security-consultant></app-licence-category-security-consultant>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityGuard">
-										<app-licence-category-security-guard></app-licence-category-security-guard>
-									</ng-container>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityGuard">
+									<app-licence-category-security-guard></app-licence-category-security-guard>
+								</ng-container>
 
-									<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityGuardUnderSupervision">
-										<app-licence-category-security-guard-sup></app-licence-category-security-guard-sup>
-									</ng-container>
-								</mat-accordion>
-							</div>
+								<ng-container *ngIf="category === workerCategoryTypeCodes.SecurityGuardUnderSupervision">
+									<app-licence-category-security-guard-sup></app-licence-category-security-guard-sup>
+								</ng-container>
+							</mat-accordion>
 						</div>
 					</div>
 				</div>

@@ -24,7 +24,7 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 					(selectionChange)="onStepSelectionChange($event)"
 					#stepper
 				>
-					<mat-step [completed]="step1Complete">
+					<!-- <mat-step [completed]="step1Complete">
 						<ng-template matStepLabel> Permit Details </ng-template>
 						<app-steps-permit-details
 							(childNextStep)="onChildNextStep()"
@@ -32,9 +32,9 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-permit-details>
-					</mat-step>
+					</mat-step> -->
 
-					<mat-step [completed]="step2Complete">
+					<!-- <mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Purpose & Rationale</ng-template>
 						<app-steps-permit-purpose
 							(childNextStep)="onChildNextStep()"
@@ -43,7 +43,7 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-permit-purpose>
-					</mat-step>
+					</mat-step> -->
 
 					<mat-step [completed]="step3Complete">
 						<ng-template matStepLabel>Identification</ng-template>

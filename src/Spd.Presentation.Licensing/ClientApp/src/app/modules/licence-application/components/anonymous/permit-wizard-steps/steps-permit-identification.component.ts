@@ -11,7 +11,7 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 	selector: 'app-steps-permit-identification',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<!-- <mat-step>
 				<app-step-permit-criminal-history
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-criminal-history>
@@ -46,9 +46,9 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<!-- <mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-permit-fingerprints></app-step-permit-fingerprints>
 
 				<div class="row mt-4">
@@ -76,7 +76,37 @@ import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.comp
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
+
+			<!-- <mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+	<app-step-citizenship></app-step-citizenship>
+
+	<div class="row mt-4">
+		<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+			<button
+				mat-flat-button
+				class="large bordered mb-2"
+				(click)="onSaveAndExit(STEP_CITIZENSHIP)"
+				*ngIf="isLoggedIn"
+			>
+				Save and Exit
+			</button>
+		</div>
+		<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+			<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+		</div>
+		<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+			<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
+				Next
+			</button>
+		</div>
+		<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+			<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
+				Next: Review
+			</button>
+		</div>
+	</div>
+</mat-step> -->
 
 			<!-- 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">

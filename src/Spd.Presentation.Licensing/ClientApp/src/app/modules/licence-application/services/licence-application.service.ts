@@ -25,7 +25,7 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
@@ -38,7 +38,7 @@ import {
 	Subscription,
 	switchMap,
 	take,
-	tap,
+	tap
 } from 'rxjs';
 import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -230,13 +230,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					console.debug(
-						'licenceModelFormGroup CHANGED',
-						step1Complete,
-						step2Complete,
-						step3Complete,
-						this.licenceModelFormGroup.getRawValue()
-					);
+					// console.debug(
+					// 	'licenceModelFormGroup CHANGED',
+					// 	step1Complete,
+					// 	step2Complete,
+					// 	step3Complete,
+					// 	this.licenceModelFormGroup.getRawValue()
+					// );
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -277,9 +277,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				tap((resp: any) => {
 					console.debug('loadLicenceWithAccessCode', resp);
 				}),
-				switchMap((_resp: LicenceLookupResponse) => {
-					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
-					return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
+				switchMap((resp: LicenceLookupResponse) => {
+					return this.loadLicence(resp.licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
 				})
 			)
 			.pipe(take(1));
@@ -296,6 +295,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<WorkerLicenceResponse> {
 		// TODO add:  switch workerLicenceTypeCode
+
+		console.debug('loadLicence', licenceAppId, workerLicenceTypeCode, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
