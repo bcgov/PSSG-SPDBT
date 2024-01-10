@@ -39,10 +39,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 			.summary-text-data {
 				line-height: 1.3em;
 			}
-
-			.text-label {
-				font-size: 0.9rem !important;
-			}
 		`,
 	],
 })

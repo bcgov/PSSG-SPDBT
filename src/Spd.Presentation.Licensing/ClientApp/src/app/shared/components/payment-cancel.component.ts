@@ -1,13 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-	selector: 'app-payment-manual',
+	selector: 'app-payment-cancel',
 	template: `
 		<div class="row">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
 					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-						<h2 class="fs-3 mt-0 mt-md-3">Manual Payment</h2>
+						<h2 class="fs-3 mt-0 mt-md-3">Payment Cancelled</h2>
 					</div>
 
 					<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
@@ -15,12 +16,21 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 							<button
 								mat-stroked-button
 								color="primary"
-								class="large w-auto mb-3"
+								class="large w-auto m-2"
 								aria-label="Back"
 								*ngIf="isBackRoute"
 								(click)="onBack()"
 							>
 								<mat-icon>arrow_back</mat-icon>Back
+							</button>
+							<button
+								mat-flat-button
+								color="primary"
+								class="large w-auto m-2"
+								aria-label="Try again"
+								(click)="onPayNow()"
+							>
+								<mat-icon>payment</mat-icon>Try Again
 							</button>
 						</div>
 					</div>
@@ -36,17 +46,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 		</div>
 
 		<div class="row mx-4">
-			<div class="col-12 mt-4">
-				<div class="fs-4 text-center">Your payment must be completed manually</div>
-			</div>
-
 			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-				<div class="my-4">
-					Please download and complete the
-					<a tabindex="0" (click)="onDownloadManualPaymentForm()" (keydown)="onKeydownDownloadManualPaymentForm($event)"
-						>Manual Payment Form</a
-					>
-					then follow the instructions on the form to submit payment to the Security Programs Division.
+				<div class="mt-4 text-center">
+					Your application is submitted, but it won't be processed until payment is received.
 				</div>
 			</div>
 		</div>
@@ -59,11 +61,15 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 		`,
 	],
 })
-export class PaymentManualComponent implements OnInit {
+export class PaymentCancelComponent implements OnInit {
 	isBackRoute = false;
+	payBySecureLink = true;
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+	@Output() payNow: EventEmitter<any> = new EventEmitter();
 	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
+
+	constructor(private router: Router) {}
 
 	ngOnInit(): void {
 		this.isBackRoute = this.backRoute.observed;
@@ -77,6 +83,10 @@ export class PaymentManualComponent implements OnInit {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onDownloadManualPaymentForm();
+	}
+
+	onPayNow(): void {
+		this.payNow.emit();
 	}
 
 	onBack(): void {

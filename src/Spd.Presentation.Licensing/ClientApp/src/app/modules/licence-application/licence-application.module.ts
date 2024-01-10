@@ -1,5 +1,18 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
+import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
+import { StepChecklistNewPermitComponent } from './components/anonymous/permit-wizard-steps/step-checklist-new-permit.component';
+import { StepPermitCriminalHistoryComponent } from './components/anonymous/permit-wizard-steps/step-permit-criminal-history.component';
+import { StepPermitEmployerInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-employer-information.component';
+import { StepPermitExpiredComponent } from './components/anonymous/permit-wizard-steps/step-permit-expired.component';
+import { StepPermitFingerprintsComponent } from './components/anonymous/permit-wizard-steps/step-permit-fingerprints.component';
+import { StepPermitRationaleComponent } from './components/anonymous/permit-wizard-steps/step-permit-rationale.component';
+import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
+import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
+import { StepsPermitDetailsComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component';
+import { StepsPermitIdentificationComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification.component';
+import { StepsPermitPurposeComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
@@ -34,9 +47,9 @@ import { StepLicenceTypeAuthenticatedComponent } from './components/authenticate
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-summary-review-licence-authenticated.component';
 import { StepsIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-identification-authenticated.component';
 import { StepsReviewLicenceAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-review-licence-authenticated.component';
+import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
-import { LicencePaymentManualComponent } from './components/shared/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { RenewalAlertComponent } from './components/shared/renewal-alert.component';
@@ -123,9 +136,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicenceCategorySecurityConsultantComponent,
 		LicenceCategorySecurityGuardComponent,
 		LicenceCategorySecurityGuardSupComponent,
+		LicencePaymentCancelComponent,
 		LicencePaymentErrorComponent,
 		LicencePaymentFailComponent,
-		LicencePaymentManualComponent,
 		LicencePaymentSuccessComponent,
 		LoginSelectionComponent,
 		LoginUserProfileComponent,
@@ -195,6 +208,19 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		WorkerLicenceWizardAuthenticatedNewComponent,
 		WorkerLicenceWizardAuthenticatedRenewComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
+		PermitApplicationBaseAnonymousComponent,
+		StepChecklistNewPermitComponent,
+		StepPermitTypeAnonymousComponent,
+		StepPermitExpiredComponent,
+		StepPermitReasonComponent,
+		StepPermitRationaleComponent,
+		StepPermitEmployerInformationComponent,
+		StepPermitCriminalHistoryComponent,
+		StepPermitFingerprintsComponent,
+		StepsPermitDetailsComponent,
+		StepsPermitPurposeComponent,
+		StepsPermitIdentificationComponent,
+		PermitWizardAnonymousNewComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

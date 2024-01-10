@@ -39,6 +39,9 @@ export const SPD_CONSTANTS = {
 	api: {
 		debounceTime: 500, // milliseconds
 	},
+	payment: {
+		maxNumberOfAttempts: 3,
+	},
 	maxNumberOfAliases: 3,
 	// sessionStorage: {
 	// 	organizationRegStateKey: 'state',
@@ -52,5 +55,9 @@ export const SPD_CONSTANTS = {
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
 		setupAccountUrl: 'https://id.gov.bc.ca/account/',
 		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
+		permitBodyAmourViewExemptions:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/body-armour/possessing',
+		permitArmouredVehicleViewExemptions:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/armoured-vehicles/who-not-require-permit',
 	},
 };
