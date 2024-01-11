@@ -145,6 +145,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		expiryDate: new FormControl(null),
 		caseNumber: new FormControl(null),
 		applicationPortalStatus: new FormControl(null),
+
+		permitRequirementData: this.permitRequirementFormGroup,
+		permitRationaleData: this.permitRationaleFormGroup,
+		employerInformationData: this.employerInformationFormGroup,
+
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
@@ -248,7 +253,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param accessCode
 	 * @returns
 	 */
-	loadLicenceWithAccessCode(
+	loadPermitWithAccessCode(
 		workerLicenceTypeCode: WorkerLicenceTypeCode,
 		applicationTypeCode: ApplicationTypeCode,
 		licenceNumber: string,
@@ -258,11 +263,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
 			.pipe(
 				tap((resp: any) => {
-					console.debug('loadLicenceWithAccessCode', resp);
+					console.debug('loadPermitWithAccessCode', resp);
 				}),
 				switchMap((_resp: LicenceLookupResponse) => {
 					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
-					return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
+					return this.loadPermit(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
 				})
 			)
 			.pipe(take(1));
@@ -273,7 +278,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadLicence(
+	loadPermit(
 		licenceAppId: string,
 		workerLicenceTypeCode: WorkerLicenceTypeCode,
 		applicationTypeCode: ApplicationTypeCode
@@ -282,33 +287,33 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadLicenceRenewal(licenceAppId).pipe(
+				return this.loadPermitRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD loadLicenceRenewal', resp);
+						console.debug('LOAD loadPermitRenewal', resp);
 						this.initialized = true;
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadLicenceUpdate(licenceAppId).pipe(
+				return this.loadPermitUpdate(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD loadLicenceUpdate', resp);
+						console.debug('LOAD loadPermitUpdate', resp);
 						this.initialized = true;
 					})
 				);
 			}
-			case ApplicationTypeCode.Replacement: {
-				return this.loadLicenceReplacement(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadLicenceReplacement', resp);
-						this.initialized = true;
-					})
-				);
-			}
+			// case ApplicationTypeCode.Replacement: {
+			// 	return this.loadPermitReplacement(licenceAppId).pipe(
+			// 		tap((resp: any) => {
+			// 			console.debug('LOAD loadPermitReplacement', resp);
+			// 			this.initialized = true;
+			// 		})
+			// 	);
+			// }
 			default: {
-				return this.loadLicenceNew(licenceAppId).pipe(
+				return this.loadPermitNew(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD loadLicenceNew', resp);
+						console.debug('LOAD loadPermitNew', resp);
 						this.initialized = true;
 					})
 				);
@@ -321,10 +326,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadPermitNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD loadLicenceNew', resp);
+				console.debug('LOAD loadPermitNew', resp);
 			})
 		);
 	}
@@ -334,7 +339,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadPermitRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
@@ -386,7 +391,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('LOAD LicenceApplicationService loadPermitRenewal', resp);
 			})
 		);
 	}
@@ -396,7 +401,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadPermitUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
@@ -448,7 +453,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('LOAD LicenceApplicationService loadPermitRenewal', resp);
 			})
 		);
 	}
@@ -458,7 +463,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadPermitReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
@@ -479,7 +484,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('LOAD LicenceApplicationService loadPermitRenewal', resp);
 				// this.initialized = true;
 			})
 		);
@@ -492,7 +497,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	// loadUpdateLicence(): Observable<WorkerLicenceResponse> { // TODO remove?
 
-	// 	return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode).pipe(
+	// 	return this.loadPermit(licenceAppId!, workerLicenceTypeCode, applicationTypeCode).pipe(
 	// 	// return this.createLicenceAuthenticated().pipe(
 	// 		// TODO update
 	// 		tap((_resp: any) => {
@@ -536,10 +541,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
 
 		this.permitModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
+				permitRequirementData,
 				profileConfirmationData: { isProfileUpToDate: true },
 			},
 			{

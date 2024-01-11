@@ -13,7 +13,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-reason></app-step-permit-reason>
+				<app-step-permit-reason [applicationTypeCode]="applicationTypeCode"></app-step-permit-reason>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -48,7 +48,9 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-employer-information></app-step-permit-employer-information>
+				<app-step-permit-employer-information
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-employer-information>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -88,7 +90,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-rationale></app-step-permit-rationale>
+				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

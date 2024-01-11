@@ -6,6 +6,7 @@ import {
 	LicenceDocumentTypeCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppCategoryData,
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -134,14 +135,46 @@ export abstract class PermitApplicationHelper {
 		aliases: this.formBuilder.array([]),
 	});
 
-	bodyArmourRequirementFormGroup: FormGroup = this.formBuilder.group({
-		isOutdoorRecreation: new FormControl(false),
-		isPersonalProtection: new FormControl(false),
-		isMyEmployment: new FormControl(false),
-		isTravelForConflict: new FormControl(false),
-		isOther: new FormControl(false),
-		isOtherReason: new FormControl(),
-	});
+	permitRequirementFormGroup: FormGroup = this.formBuilder.group(
+		{
+			workerLicenceTypeCode: new FormControl(),
+			bodyArmourRequirementFormGroup: new FormGroup(
+				{
+					isOutdoorRecreation: new FormControl(false),
+					isPersonalProtection: new FormControl(false),
+					isMyEmployment: new FormControl(false),
+					isTravelForConflict: new FormControl(false),
+					isOther: new FormControl(false),
+				},
+				FormGroupValidators.atLeastOneCheckboxValidator('workerLicenceTypeCode', WorkerLicenceTypeCode.BodyArmourPermit)
+			),
+			armouredVehicleRequirementFormGroup: new FormGroup(
+				{
+					isPersonalProtection: new FormControl(false),
+					isMyEmployment: new FormControl(false),
+					isProtectionOfAnotherPerson: new FormControl(false),
+					isProtectionOfPersonalProperty: new FormControl(false),
+					isProtectionOfOthersProperty: new FormControl(false),
+					isOther: new FormControl(false),
+				},
+				FormGroupValidators.atLeastOneCheckboxValidator(
+					'workerLicenceTypeCode',
+					WorkerLicenceTypeCode.ArmouredVehiclePermit
+				)
+			),
+			otherReason: new FormControl(),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'otherReason',
+					(form) =>
+						form.get('bodyArmourRequirementFormGroup.isOther')?.value == true ||
+						form.get('armouredVehicleRequirementFormGroup.isOther')?.value == true
+				),
+			],
+		}
+	);
 
 	permitRationaleFormGroup: FormGroup = this.formBuilder.group({
 		rationale: new FormControl('', [FormControlValidators.required]),

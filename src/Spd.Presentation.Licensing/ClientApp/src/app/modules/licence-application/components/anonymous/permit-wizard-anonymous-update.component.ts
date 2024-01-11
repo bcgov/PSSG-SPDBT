@@ -12,10 +12,9 @@ import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-
 import { StepsPermitDetailsComponent } from './permit-wizard-steps/steps-permit-details.component';
 import { StepsPermitIdentificationComponent } from './permit-wizard-steps/steps-permit-identification.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
-import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
 
 @Component({
-	selector: 'app-permit-wizard-anonymous-new',
+	selector: 'app-permit-wizard-anonymous-update',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -69,18 +68,20 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 						></app-steps-permit-contact>
 					</mat-step>
 
+					<!-- 
+
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<ng-template matStepContent>
-							<app-steps-permit-review-anonymous
+							<app-steps-review-licence-anonymous
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(nextPayStep)="onNextPayStep()"
 								(scrollIntoView)="onScrollIntoView()"
 								(goToStep)="onGoToStep($event)"
-							></app-steps-permit-review-anonymous>
+							></app-steps-review-licence-anonymous>
 						</ng-template>
-					</mat-step>
+					</mat-step> -->
 
 					<mat-step completed="false">
 						<ng-template matStepLabel>Pay</ng-template>
@@ -91,7 +92,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 	`,
 	styles: [],
 })
-export class PermitWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit {
+export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PURPOSE_AND_RATIONALE = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -115,8 +116,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	@ViewChild(StepsPermitContactComponent)
 	stepsPermitContactComponent!: StepsPermitContactComponent;
 
-	@ViewChild(StepsPermitReviewAnonymousComponent)
-	stepsPermitReviewComponent!: StepsPermitReviewAnonymousComponent;
+	// @ViewChild(StepsReviewLicenceAuthenticatedComponent)
+	// stepReviewLicenceComponent!: StepsReviewLicenceAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -152,9 +153,9 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 			case this.STEP_CONTACT_INFORMATION:
 				this.stepsPermitContactComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsPermitReviewComponent?.onGoToFirstStep();
-				break;
+			// case this.STEP_REVIEW_AND_CONFIRM:
+			// 	this.stepReviewLicenceComponent?.onGoToFirstStep();
+			// 	break;
 		}
 	}
 

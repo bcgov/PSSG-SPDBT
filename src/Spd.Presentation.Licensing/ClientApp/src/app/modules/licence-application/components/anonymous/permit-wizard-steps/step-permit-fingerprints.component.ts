@@ -1,17 +1,25 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { CommonFingerprintsComponent } from '@app/modules/licence-application/components/shared/step-components/common-fingerprints.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CommonFingerprintsComponent } from '@app/modules/licence-application/components/shared/step-components/common-fingerprints.component';
 
 @Component({
 	selector: 'app-step-permit-fingerprints',
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					title="Upload proof of fingerprinting request"
 					subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
@@ -87,6 +95,9 @@ import { CommonFingerprintsComponent } from '@app/modules/licence-application/co
 })
 export class StepPermitFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.fingerprintProofFormGroup;
+
+	applicationTypeCodes = ApplicationTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonFingerprintsComponent) commonFingerprintsComponent!: CommonFingerprintsComponent;
 

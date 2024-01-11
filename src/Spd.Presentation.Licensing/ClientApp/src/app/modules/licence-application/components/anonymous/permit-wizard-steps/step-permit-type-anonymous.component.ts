@@ -45,7 +45,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-xl-5 col-lg-4">
-										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update">
 											Update (free)
 										</mat-radio-button>
 									</div>
@@ -56,7 +56,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 										</app-alert>
 									</div>
 								</div>
-								<mat-divider class="mb-3"></mat-divider>
+								<!-- <mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-xl-5 col-lg-4">
 										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
@@ -82,7 +82,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 											Apply to extend your exemption if you have a 90-day exemption and need it for another 90 days.
 										</app-alert>
 									</div>
-								</div>
+								</div> -->
 							</mat-radio-group>
 						</form>
 						<mat-error
@@ -124,39 +124,39 @@ export class StepPermitTypeAnonymousComponent {
 	}
 
 	onStepNext(): void {
-		if (this.isFormValid()) {
-			const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-				'workerLicenceTypeData.workerLicenceTypeCode'
-			)?.value;
-			const applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-				'applicationTypeData.applicationTypeCode'
-			)?.value;
-			console.log('workerLicenceTypeCode', workerLicenceTypeCode);
-			console.log('applicationTypeCode', applicationTypeCode);
+		if (!this.isFormValid()) {
+			return;
+		}
 
-			switch (workerLicenceTypeCode) {
-				case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-				case WorkerLicenceTypeCode.BodyArmourPermit: {
-					switch (applicationTypeCode) {
-						case ApplicationTypeCode.New: {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_NEW_ANONYMOUS)
-							);
-							break;
-						}
-						// case ApplicationTypeCode.Update:
-						// case ApplicationTypeCode.Replacement:
-						// case ApplicationTypeCode.Renewal: {
-						// 	this.router.navigateByUrl(
-						// 		LicenceApplicationRoutes.pathPermitAnonymous(
-						// 			LicenceApplicationRoutes.PERMIT_ACCESS_CODE_ANONYMOUS
-						// 		)
-						// 	);
-						// 	break;
-						// }
+		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
+		const applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'applicationTypeData.applicationTypeCode'
+		)?.value;
+
+		// console.log('workerLicenceTypeCode', workerLicenceTypeCode);
+		// console.log('applicationTypeCode', applicationTypeCode);
+
+		switch (workerLicenceTypeCode) {
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				switch (applicationTypeCode) {
+					case ApplicationTypeCode.New: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_NEW_ANONYMOUS)
+						);
+						break;
 					}
-					break;
+					case ApplicationTypeCode.Update:
+					case ApplicationTypeCode.Renewal: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_ACCESS_CODE_ANONYMOUS)
+						);
+						break;
+					}
 				}
+				break;
 			}
 		}
 	}

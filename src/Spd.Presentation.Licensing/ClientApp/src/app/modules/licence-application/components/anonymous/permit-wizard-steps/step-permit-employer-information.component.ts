@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse } from '@app/api/models';
+import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -12,13 +12,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<!-- <ng-container
+				<ng-container
 					*ngIf="
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
 					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
-				</ng-container> -->
+				</ng-container>
 
 				<app-step-title [title]="title"></app-step-title>
 
@@ -172,7 +172,8 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	readonly title_new = 'Provide your employer’s information';
 	readonly title_replacement = 'Review your employer’s information';
 
-	// @Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	applicationTypeCodes = ApplicationTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 

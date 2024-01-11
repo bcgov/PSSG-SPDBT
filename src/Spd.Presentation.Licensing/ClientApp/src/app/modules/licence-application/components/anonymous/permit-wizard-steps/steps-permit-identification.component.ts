@@ -96,7 +96,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-fingerprints></app-step-permit-fingerprints>
+				<app-step-permit-fingerprints [applicationTypeCode]="applicationTypeCode"></app-step-permit-fingerprints>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -126,7 +126,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-aliases></app-step-permit-aliases>
+				<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -156,7 +156,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-citizenship></app-step-permit-citizenship>
+				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -186,7 +186,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-bc-driver-licence></app-step-permit-bc-driver-licence>
+				<app-step-permit-bc-driver-licence
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-bc-driver-licence>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -221,7 +223,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-physical-characteristics></app-step-permit-physical-characteristics>
+				<app-step-permit-physical-characteristics
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-physical-characteristics>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

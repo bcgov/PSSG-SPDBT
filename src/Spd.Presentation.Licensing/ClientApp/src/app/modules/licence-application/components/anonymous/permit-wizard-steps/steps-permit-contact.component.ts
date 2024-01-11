@@ -50,7 +50,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-mailing-address></app-step-permit-mailing-address>
+				<app-step-permit-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-permit-mailing-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

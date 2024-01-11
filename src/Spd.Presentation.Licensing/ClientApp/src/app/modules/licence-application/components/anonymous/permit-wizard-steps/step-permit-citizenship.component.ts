@@ -36,10 +36,9 @@ import {
 	styles: [],
 })
 export class StepPermitCitizenshipComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.permitApplicationService.citizenshipFormGroup;
 
+	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonCitizenshipComponent) commonCitizenshipComponent!: CommonCitizenshipComponent;
