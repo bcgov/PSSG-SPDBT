@@ -50,7 +50,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Tests.Presentation.Dyna
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03AFB695-813D-4F33-900A-5F4992DF0568}"
 	ProjectSection(SolutionItems) = preProject
-		..\.editorconfig = ..\.editorconfig
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Recaptcha", "Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj", "{0427917A-E353-474B-9AC9-1816277FDED5}"
@@ -66,6 +69,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Licence", "Spd.Manager.Licence\Spd.Manager.Licence.csproj", "{119B3695-6918-46DD-82B7-493C9F6CAB77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.Common", "Spd.Manager.Common\Spd.Manager.Common.csproj", "{D0A77F21-2E69-4526-87F9-649BEF9422E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Printing", "Spd.Utilities.Printing\Spd.Utilities.Printing.csproj", "{6CF6C34F-23B4-4700-94A5-8BFA19D95238}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Tests", "Spd.Tests\Spd.Tests.csproj", "{614AE12B-8E11-4466-A4AC-9A6D47150375}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,6 +176,14 @@ Global
 		{D0A77F21-2E69-4526-87F9-649BEF9422E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0A77F21-2E69-4526-87F9-649BEF9422E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0A77F21-2E69-4526-87F9-649BEF9422E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CF6C34F-23B4-4700-94A5-8BFA19D95238}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CF6C34F-23B4-4700-94A5-8BFA19D95238}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CF6C34F-23B4-4700-94A5-8BFA19D95238}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CF6C34F-23B4-4700-94A5-8BFA19D95238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{614AE12B-8E11-4466-A4AC-9A6D47150375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{614AE12B-8E11-4466-A4AC-9A6D47150375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{614AE12B-8E11-4466-A4AC-9A6D47150375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{614AE12B-8E11-4466-A4AC-9A6D47150375}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,6 +213,8 @@ Global
 		{C16D353E-67D6-4EA0-9400-167234A5DC35} = {744553C0-C41C-4315-9592-92A97938234E}
 		{119B3695-6918-46DD-82B7-493C9F6CAB77} = {AFA7034A-A8B1-489C-9A24-030B05C5412B}
 		{D0A77F21-2E69-4526-87F9-649BEF9422E3} = {AFA7034A-A8B1-489C-9A24-030B05C5412B}
+		{6CF6C34F-23B4-4700-94A5-8BFA19D95238} = {744553C0-C41C-4315-9592-92A97938234E}
+		{614AE12B-8E11-4466-A4AC-9A6D47150375} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}
