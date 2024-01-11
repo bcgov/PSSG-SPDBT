@@ -414,16 +414,16 @@ namespace Spd.Manager.Common.Payment
                         WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
                         ApplicationTypeEnum = licApp.ApplicationTypeCode,
                         LicenceTermEnum = licApp.LicenceTermCode,
-                        BusinessTypeEnum = licApp.BusinessTypeCode,
+                        BusinessTypeEnum = licApp.BusinessTypeCode ?? BusinessTypeEnum.None,
                     },
                     ct);
 
                 decimal? price = feeList.LicenceFees.First()?.Amount;
-                if(price == null)
+                if (price == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
                 SpdPaymentConfig spdPaymentConfig = new()
                 {
-                    PbcRefNumber = "10016",
+                    PbcRefNumber = pbcRefnumberConfig.Value, //"10016" //todo: Waiting for PBC 's response, if it is different ref number, then change it accordingly.
                     PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
                     ServiceCost = Decimal.Round((decimal)price, 2)
                 };
