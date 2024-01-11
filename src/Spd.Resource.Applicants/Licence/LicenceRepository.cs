@@ -7,7 +7,6 @@ internal class LicenceRepository : ILicenceRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
-
     public LicenceRepository(IDynamicsContextFactory ctx,
         IMapper mapper)
     {

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.LicenceFee;
@@ -15,16 +14,37 @@ internal class LicenceFeeRepository : ILicenceFeeRepository
         _mapper = mapper;
     }
 
-    public async Task<LicenceFeeListResp> GetLicenceFeeAsync(WorkerLicenceTypeEnum workerLicenceTypeCode, CancellationToken cancellationToken)
+    public async Task<LicenceFeeListResp> QueryAsync(LicenceFeeQry qry, CancellationToken cancellationToken)
     {
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(workerLicenceTypeCode.ToString(), out Guid stGuid);
+        IQueryable<spd_licencefee> fees = _context.spd_licencefees.Expand(a => a.spd_ServiceTypeId);
 
-        IQueryable<spd_licencefee> fees = _context.spd_licencefees.Expand(a => a.spd_ServiceTypeId)
-            .Where(d => d._spd_servicetypeid_value == stGuid && d.statecode != DynamicsConstants.StateCode_Inactive);
+        if (!qry.IncludeInactive)
+            fees = fees.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
-        var result = fees.ToList();
-        var list = _mapper.Map<IEnumerable<LicenceFeeResp>>(result);
+        if (qry.WorkerLicenceTypeEnum != null)
+        {
+            DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.WorkerLicenceTypeEnum.ToString(), out Guid stGuid);
+            fees = fees.Where(f => f._spd_servicetypeid_value == stGuid);
+        }
 
+        if (qry.LicenceTermEnum != null)
+        {
+            int term = (int)Enum.Parse<LicenceTermOptionSet>(qry.LicenceTermEnum.ToString());
+            fees = fees.Where(f => f.spd_term == term);
+        }
+
+        if (qry.ApplicationTypeEnum != null)
+        {
+            int type = (int)Enum.Parse<LicenceApplicationTypeOptionSet>(qry.ApplicationTypeEnum.ToString());
+            fees = fees.Where(f => f.spd_type == type);
+        }
+
+        if(qry.BusinessTypeEnum != null) 
+        { 
+            int bizType = (int)Enum.Parse<BusinessTypeOptionSet>(qry.BusinessTypeEnum.ToString());
+            fees = fees.Where(f => f.spd_businesstype == bizType);
+        }
+        var list = _mapper.Map<IEnumerable<LicenceFeeResp>>(fees);
         var response = new LicenceFeeListResp();
         response.LicenceFees = list;
         return response;
