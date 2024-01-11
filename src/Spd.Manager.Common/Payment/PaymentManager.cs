@@ -11,6 +11,7 @@ using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
 using Spd.Resource.Applicants.Invoice;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
@@ -49,6 +50,7 @@ namespace Spd.Manager.Common.Payment
         private readonly IFileStorageService _fileStorageService;
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly ILicenceFeeRepository _licFeeRepository;
+        private readonly ILicenceApplicationRepository _licAppRepository;
         private readonly ILogger<IPaymentManager> _logger;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
@@ -64,6 +66,7 @@ namespace Spd.Manager.Common.Payment
             IFileStorageService fileStorageService,
             IInvoiceRepository invoiceRepository,
             ILicenceFeeRepository licFeeRepository,
+            ILicenceApplicationRepository licAppRepository,
             ILogger<IPaymentManager> logger)
         {
             _paymentService = paymentService;
@@ -77,6 +80,7 @@ namespace Spd.Manager.Common.Payment
             _fileStorageService = fileStorageService;
             _invoiceRepository = invoiceRepository;
             _licFeeRepository = licFeeRepository;
+            _licAppRepository = licAppRepository;
             _logger = logger;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
@@ -391,8 +395,11 @@ namespace Spd.Manager.Common.Payment
             }
             else
             {
+                var licApp = await _licAppRepository.GetLicenceApplicationAsync(app.Id, ct);
                 //licensing price and payment setting
                 var configs = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
+
+                //todo, get to know if there will be a new setting in config entity.
                 var pbcRefnumberConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
                 if (pbcRefnumberConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set pbcRefNumber correctly.");
@@ -402,18 +409,24 @@ namespace Spd.Manager.Common.Payment
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
 
                 LicenceFeeListResp feeList = await _licFeeRepository.QueryAsync(
-                    new LicenceFeeQry { WorkerLicenceTypeEnum = app.ServiceType, 
-                        ApplicationTypeEnum=app.ApplicationType, 
-                        LicenceTermEnum = app.Term }, 
+                    new LicenceFeeQry
+                    {
+                        WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
+                        ApplicationTypeEnum = licApp.ApplicationTypeCode,
+                        LicenceTermEnum = licApp.LicenceTermCode,
+                    },
                     ct);
 
+                decimal? price = feeList.LicenceFees.First()?.Amount;
+                if(price == null)
+                    throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
                 SpdPaymentConfig spdPaymentConfig = new()
                 {
                     PbcRefNumber = "10016",
                     PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
-                    ServiceCost = Decimal.Round(Decimal.Parse(feeList.LicenceFees.First().Amount), 2)
+                    ServiceCost = Decimal.Round((decimal)price, 2)
                 };
-                return null;
+                return spdPaymentConfig;
             }
         }
 
