@@ -9,7 +9,7 @@ RUN dotnet tool install --tool-path /tools dotnet-dump
 WORKDIR /src
 
 # Copy the main source project files
-COPY ["Spd.sln", "./"]
+COPY ["Spd.sln", "global.json", "Directory.Build.props", "Directory.Packages.props", ".editorconfig", "./"]
 COPY */*.csproj ./
 
 RUN cat Spd.sln \

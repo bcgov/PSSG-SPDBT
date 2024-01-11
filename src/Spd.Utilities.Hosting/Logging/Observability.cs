@@ -74,14 +74,13 @@ public static class Observability
             .Enrich.WithProperty("service", serviceName)
             .Enrich.WithEnvironmentName()
             .Enrich.WithEnvironmentUserName()
-            .Enrich.WithClientAgent()
             .Enrich.WithClientIp()
             .Enrich.WithSpan(new SpanOptions() { IncludeBaggage = true, IncludeTags = true, IncludeOperationName = true, IncludeTraceFlags = true })
             .WriteTo.Console(outputTemplate: LogOutputTemplate, formatProvider: CultureInfo.InvariantCulture)
             ;
 
         var splunkConfiguration = configuration.GetSection("Splunk");
-        if (splunkConfiguration == null)
+        if (splunkConfiguration == null || !splunkConfiguration.GetChildren().Any())
         {
             Log.Warning($"Logs will not be forwarded to Splunk - configuration is missing");
         }
