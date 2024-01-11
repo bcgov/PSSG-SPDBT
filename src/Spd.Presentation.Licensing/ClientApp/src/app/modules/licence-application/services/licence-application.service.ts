@@ -25,7 +25,7 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
@@ -38,7 +38,7 @@ import {
 	Subscription,
 	switchMap,
 	take,
-	tap,
+	tap
 } from 'rxjs';
 import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -50,7 +50,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
-export class DocumentsToSave {
+export class LicenceDocumentsToSave {
 	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
 	'documents': Array<Blob>;
 }
@@ -137,7 +137,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	licenceFees: Array<LicenceFeeResponse> = [];
+	licenceFeesSecurityWorkerLicence: Array<LicenceFeeResponse> = [];
 	licenceFeeTermCodes: Array<LicenceFeeResponse> = [];
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
@@ -148,7 +148,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
-		// expiredLicenceData: this.expiredLicenceFormGroup,
+		expiredLicenceData: this.expiredLicenceFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
@@ -216,7 +216,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
 			.pipe()
 			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFees = resp.licenceFees ?? [];
+				this.licenceFeesSecurityWorkerLicence = resp.licenceFees ?? [];
 			});
 
 		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
@@ -230,13 +230,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					console.debug(
-						'licenceModelFormGroup CHANGED',
-						step1Complete,
-						step2Complete,
-						step3Complete,
-						this.licenceModelFormGroup.getRawValue()
-					);
+					// console.debug(
+					// 	'licenceModelFormGroup CHANGED',
+					// 	step1Complete,
+					// 	step2Complete,
+					// 	step3Complete,
+					// 	this.licenceModelFormGroup.getRawValue()
+					// );
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -277,9 +277,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				tap((resp: any) => {
 					console.debug('loadLicenceWithAccessCode', resp);
 				}),
-				switchMap((_resp: LicenceLookupResponse) => {
-					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
-					return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
+				switchMap((resp: LicenceLookupResponse) => {
+					return this.loadLicence(resp.licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
 				})
 			)
 			.pipe(take(1));
@@ -296,6 +295,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<WorkerLicenceResponse> {
 		// TODO add:  switch workerLicenceTypeCode
+
+		console.debug('loadLicence', licenceAppId, workerLicenceTypeCode, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
@@ -525,8 +526,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewLicenceAnonymous(): Observable<any> {
-		return this.createLicenceAnonymous().pipe(
+	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+		return this.createLicenceAnonymous(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
 				console.debug('NEW LicenceApplicationService createNewLicenceAnonymous', resp);
 
@@ -549,11 +550,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 	}
 
-	private createLicenceAnonymous(): Observable<any> {
+	private createLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
+
+		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
 
 		this.licenceModelFormGroup.patchValue(
 			{
+				workerLicenceTypeData,
 				profileConfirmationData: { isProfileUpToDate: true },
 			},
 			{
@@ -1207,10 +1211,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			return;
 		}
 
-		//console.debug('licenceFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode, this.licenceFees);
+		console.debug(
+			'licence licenceFees',
+			workerLicenceTypeCode,
+			applicationTypeCode,
+			businessTypeCode,
+			this.licenceFeesSecurityWorkerLicence
+		);
 		this.licenceFeeTermCodes = [];
 
-		const fees = this.licenceFees?.filter(
+		const fees = this.licenceFeesSecurityWorkerLicence?.filter(
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&
 				item.businessTypeCode == businessTypeCode &&
@@ -1218,7 +1228,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 
 		this.licenceFeeTermCodes.push(...fees);
-		console.debug('licenceFeeTermCodes', this.licenceFeeTermCodes);
+		// console.debug('licenceFeeTermCodes', this.licenceFeeTermCodes);
 	}
 
 	isShowAdditionalGovermentIdStep(): boolean {
@@ -1471,7 +1481,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const soleProprietorData = { ...formValue.soleProprietorData };
 		const bcDriversLicenceData = { ...formValue.bcDriversLicenceData };
 		const contactInformationData = { ...formValue.contactInformationData };
-		// const expiredLicenceData = { ...formValue.expiredLicenceData };
+		const expiredLicenceData = { ...formValue.expiredLicenceData };
 		const characteristicsData = { ...formValue.characteristicsData };
 		const residentialAddressData = { ...formValue.residentialAddressData };
 		const mailingAddressData = { ...formValue.mailingAddressData };
@@ -1702,9 +1712,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
-		// const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
-		// 	? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-		// 	: null;
+		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
+			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
 
 		const body: WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest = {
 			licenceAppId,
@@ -1724,12 +1734,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			hasExpiredLicence: false, // TODO remove?
-			// expiredLicenceNumber:
-			// 	expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
-			// expiredLicenceId:
-			// 	expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			// expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
+			hasExpiredLicence: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes, // TODO remove?
+			expiredLicenceNumber:
+				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
+			expiredLicenceId:
+				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
+			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------
@@ -1792,7 +1802,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					keyCode = resp;
 
 					const documentsToSave: Observable<string>[] = [];
-					documentInfos.forEach((docBody: DocumentsToSave) => {
+					documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
 						documentsToSave.push(
 							this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
 								keyCode,
@@ -1914,8 +1924,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return documents;
 	}
 
-	getSaveDocsAnonymous(): Array<DocumentsToSave> {
-		const documents: Array<DocumentsToSave> = [];
+	getSaveDocsAnonymous(): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
 		const formValue = this.licenceModelFormGroup.getRawValue();
 
 		const citizenshipData = { ...formValue.citizenshipData };

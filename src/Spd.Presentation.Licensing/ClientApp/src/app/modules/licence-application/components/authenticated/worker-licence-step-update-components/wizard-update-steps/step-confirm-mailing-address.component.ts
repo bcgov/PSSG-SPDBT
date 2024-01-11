@@ -38,7 +38,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 						<div class="row">
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 								<mat-divider class="mat-divider-primary my-3"></mat-divider>
-								<div class="text-minor-heading mb-2">Address information:</div>
+								<div class="text-minor-heading mb-2">Address Information</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
 									<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />

@@ -17,9 +17,9 @@ import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { PaymentCancelComponent } from './components/payment-cancel.component';
 import { PaymentErrorComponent } from './components/payment-error.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
-import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
@@ -48,10 +48,10 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
+	PaymentCancelComponent,
 	PaymentSuccessComponent,
 	PaymentErrorComponent,
 	PaymentFailComponent,
-	PaymentManualComponent,
 	BaseFilterComponent,
 ];
 

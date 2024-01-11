@@ -7,6 +7,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { take, tap } from 'rxjs';
 
 @Component({
@@ -27,38 +28,43 @@ import { take, tap } from 'rxjs';
 						</p>"
 				>
 				</app-step-title>
-				<div class="step-container">
-					<div class="row">
-						<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
-							<form [formGroup]="form" novalidate>
-								<div class="row mt-4">
-									<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-12">
-										<mat-form-field>
-											<mat-label>Current Licence Number</mat-label>
-											<input
-												matInput
-												formControlName="currentLicenceNumber"
-												oninput="this.value = this.value.toUpperCase()"
-												[errorStateMatcher]="matcher"
-												maxlength="10"
-											/>
-											<mat-error *ngIf="form.get('currentLicenceNumber')?.hasError('required')">
-												This is required
-											</mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12">
-										<mat-form-field>
-											<mat-label>Access Code</mat-label>
-											<input matInput formControlName="accessCode" [errorStateMatcher]="matcher" />
-											<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-										<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
-											<mat-icon>link</mat-icon>Link
-										</button>
-										<mat-error
+
+				<div class="row">
+					<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
+						<form [formGroup]="form" novalidate>
+							<div class="row mt-4">
+								<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-12">
+									<mat-form-field>
+										<mat-label>Current Licence Number</mat-label>
+										<input
+											matInput
+											formControlName="currentLicenceNumber"
+											oninput="this.value = this.value.toUpperCase()"
+											[errorStateMatcher]="matcher"
+											maxlength="10"
+										/>
+										<mat-error *ngIf="form.get('currentLicenceNumber')?.hasError('required')">
+											This is required
+										</mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12">
+									<mat-form-field>
+										<mat-label>Access Code</mat-label>
+										<input
+											matInput
+											formControlName="accessCode"
+											oninput="this.value = this.value.toUpperCase()"
+											[errorStateMatcher]="matcher"
+										/>
+										<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+									<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
+										<mat-icon>link</mat-icon>Link
+									</button>
+									<!-- <mat-error
 											class="mat-option-error"
 											*ngIf="
 												(form.get('linkedLicenceId')?.dirty || form.get('linkedLicenceId')?.touched) &&
@@ -66,20 +72,22 @@ import { take, tap } from 'rxjs';
 												form.get('linkedLicenceId')?.hasError('required')
 											"
 											>This must link to a valid licence</mat-error
-										>
-									</div>
-
-									<ng-container *ngIf="isAfterSearch">
-										<app-alert type="info" icon="check_circle" *ngIf="linkedLicenceId.value">
-											Licence has been found
-										</app-alert>
-										<app-alert type="danger" icon="error" *ngIf="!linkedLicenceId.value">
-											This licence number and access code is not valid
-										</app-alert>
-									</ng-container>
+										> -->
 								</div>
-							</form>
-						</div>
+
+								<ng-container *ngIf="isAfterSearch">
+									<app-alert type="info" icon="check_circle" *ngIf="linkedLicenceId.value">
+										Licence has been found
+									</app-alert>
+									<app-alert type="danger" icon="error" *ngIf="!linkedLicenceId.value && !doNotMatch">
+										This licence number and access code is not valid
+									</app-alert>
+									<app-alert type="danger" icon="error" *ngIf="doNotMatch">
+										{{ doNotMatchMessage }}
+									</app-alert>
+								</ng-container>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -101,10 +109,16 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	isAfterSearch = false;
+	doNotMatch = false;
+	doNotMatchMessage = '';
 
 	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
@@ -115,6 +129,8 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 	}
 
 	onStepNext(): void {
+		console.log('this.form', this.form.value);
+		console.log('valid', this.isFormValid());
 		if (!this.isFormValid()) {
 			return;
 		}
@@ -125,6 +141,8 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 		const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
+
+		console.log('workerLicenceTypeCode', workerLicenceTypeCode, 'applicationTypeCode', applicationTypeCode);
 
 		switch (workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
@@ -172,6 +190,7 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 
 	onLink(): void {
 		this.isAfterSearch = false;
+		this.doNotMatch = false;
 
 		this.form.markAllAsTouched();
 
@@ -186,13 +205,24 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		// CAS-2023-T3X5Q10930
-		//'a60af04a-f150-4078-8908-40debd21e7f8'
-		// TODO use real values
 		this.licenceApplicationService
-			.loadLicenceWithAccessCode(workerLicenceTypeCode, applicationTypeCode, 'TEST-01', 'bbb')
+			.loadLicenceWithAccessCode(
+				workerLicenceTypeCode,
+				applicationTypeCode,
+				this.currentLicenceNumber.value,
+				this.accessCode.value
+			)
 			.pipe(
 				tap((resp: WorkerLicenceResponse) => {
+					if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
+						const respWorkerLicenceType = this.optionsPipe.transform(resp.workerLicenceTypeCode, 'WorkerLicenceTypes');
+						const selWorkerLicenceType = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
+
+						this.isAfterSearch = true;
+						this.doNotMatch = true;
+						this.doNotMatchMessage = `A licence has been found with this Licence Number and Access Code, but the licence type for this licence (${respWorkerLicenceType}) does not match what has been selected on the previous screen (${selWorkerLicenceType}).`;
+						return;
+					}
 					this.form.patchValue({
 						linkedLicenceId: resp.licenceAppId,
 					});

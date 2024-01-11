@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-licence-payment-error',
@@ -12,6 +11,4 @@ import { Router } from '@angular/router';
 	`,
 	styles: [],
 })
-export class LicencePaymentErrorComponent {
-	constructor(private router: Router) {}
-}
+export class LicencePaymentErrorComponent {}

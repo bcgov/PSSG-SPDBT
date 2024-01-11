@@ -38,7 +38,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 						<div class="row">
 							<div class="col-12">
 								<mat-divider class="mat-divider-primary mb-3" *ngIf="!isReadOnly"></mat-divider>
-								<div class="text-minor-heading mb-2" *ngIf="isWizardStep">Address information:</div>
+								<div class="text-minor-heading mb-2" *ngIf="isWizardStep">Address information</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
 									<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
