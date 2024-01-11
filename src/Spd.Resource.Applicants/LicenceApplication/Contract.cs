@@ -18,7 +18,7 @@ public record LicenceApplication
     public Guid? LicenceAppId { get; set; }
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public bool isSoleProprietor { get; set; }
+    public BusinessTypeEnum? BusinessTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -142,7 +142,8 @@ public enum BusinessTypeEnum
     NonRegisteredPartnership,
     RegisteredSoleProprietor,
     RegisteredPartnership,
-    Corporation
+    Corporation,
+    None
 }
 
 public enum PoliceOfficerRoleEnum

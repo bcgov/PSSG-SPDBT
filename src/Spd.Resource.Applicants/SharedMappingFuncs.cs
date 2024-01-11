@@ -72,6 +72,12 @@ internal static class SharedMappingFuncs
         return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
     }
 
+    internal static int? GetBusinessType(BusinessTypeEnum? code)
+    {
+        if (code == null) return (int)BusinessTypeOptionSet.None;
+        return (int)Enum.Parse<BusinessTypeOptionSet>(code.ToString());
+    }
+
     internal static ApplicationTypeEnum? GetLicenceApplicationTypeEnum(int? applicationTypeOptionSet)
     {
         if (applicationTypeOptionSet == null)

@@ -12,6 +12,7 @@ public record LicenceFeeQry
     public WorkerLicenceTypeEnum? WorkerLicenceTypeEnum { get; set; } = null;
     public LicenceTermEnum? LicenceTermEnum { get; set; } = null;
     public ApplicationTypeEnum? ApplicationTypeEnum { get; set; } = null;
+    public BusinessTypeEnum? BusinessTypeEnum { get; set; } = null;
     public bool IncludeInactive { get; set; } = false;
 };
 

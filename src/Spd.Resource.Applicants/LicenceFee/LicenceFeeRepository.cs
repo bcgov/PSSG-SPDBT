@@ -38,6 +38,12 @@ internal class LicenceFeeRepository : ILicenceFeeRepository
             int type = (int)Enum.Parse<LicenceApplicationTypeOptionSet>(qry.ApplicationTypeEnum.ToString());
             fees = fees.Where(f => f.spd_type == type);
         }
+
+        if(qry.BusinessTypeEnum != null) 
+        { 
+            int bizType = (int)Enum.Parse<BusinessTypeOptionSet>(qry.BusinessTypeEnum.ToString());
+            fees = fees.Where(f => f.spd_businesstype == bizType);
+        }
         var list = _mapper.Map<IEnumerable<LicenceFeeResp>>(fees);
         var response = new LicenceFeeListResp();
         response.LicenceFees = list;

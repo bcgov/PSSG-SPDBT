@@ -414,6 +414,7 @@ namespace Spd.Manager.Common.Payment
                         WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
                         ApplicationTypeEnum = licApp.ApplicationTypeCode,
                         LicenceTermEnum = licApp.LicenceTermCode,
+                        BusinessTypeEnum = licApp.BusinessTypeCode,
                     },
                     ct);
 
