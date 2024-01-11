@@ -25,7 +25,8 @@ internal class FeeManager :
 
     public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeListQuery query, CancellationToken ct)
     {
-        var fees = await _licenceFeeRepository.GetLicenceFeeAsync((WorkerLicenceTypeEnum)query.WorkerLicenceTypeCode, ct);
+        LicenceFeeQry qry = new LicenceFeeQry() { WorkerLicenceTypeEnum = (WorkerLicenceTypeEnum)query.WorkerLicenceTypeCode };
+        var fees = await _licenceFeeRepository.QueryAsync(qry, ct);
         var feeResps = _mapper.Map<IEnumerable<LicenceFeeResponse>>(fees.LicenceFees);
 
         return new LicenceFeeListResponse
