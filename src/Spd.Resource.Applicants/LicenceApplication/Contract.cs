@@ -7,7 +7,6 @@ public partial interface ILicenceApplicationRepository
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
     public Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid LicenceAppId, CancellationToken cancellationToken);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
-    public Task<LicenceApplicationResp> GetLicenceApplicationAccessCodeAsync(string licenceNumber, string accessCode, CancellationToken cancellationToken);
     public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
 }
 
@@ -19,7 +18,7 @@ public record LicenceApplication
     public Guid? LicenceAppId { get; set; }
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public bool isSoleProprietor { get; set; }
+    public BusinessTypeEnum? BusinessTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -143,7 +142,8 @@ public enum BusinessTypeEnum
     NonRegisteredPartnership,
     RegisteredSoleProprietor,
     RegisteredPartnership,
-    Corporation
+    Corporation,
+    None
 }
 
 public enum PoliceOfficerRoleEnum
