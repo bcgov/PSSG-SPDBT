@@ -4,58 +4,25 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { StepPermitEmployerInformationComponent } from './step-permit-employer-information.component';
-import { StepPermitRationaleComponent } from './step-permit-rationale.component';
-import { StepPermitReasonComponent } from './step-permit-reason.component';
+import { StepPermitContactInformationComponent } from './step-permit-contact-information.component';
+import { StepPermitMailingAddressComponent } from './step-permit-mailing-address.component';
+import { StepPermitResidentialAddressComponent } from './step-permit-residential-address.component';
 
 @Component({
-	selector: 'app-steps-permit-purpose',
+	selector: 'app-steps-permit-contact',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-reason></app-step-permit-reason>
+				<app-step-permit-residential-address
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-residential-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PERMIT_REASON)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERMIT_REASON)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PERMIT_REASON)">
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-employer-information></app-step-permit-employer-information>
-
-				<div class="row mt-4">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_EMPLOYER_INFORMATION)"
+							(click)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
 							*ngIf="isLoggedIn"
 						>
 							Save and Exit
@@ -69,18 +36,13 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 							mat-flat-button
 							color="primary"
 							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
+							(click)="onFormValidNextStep(STEP_RESIDENTIAL_ADDRESS)"
 						>
 							Next
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onNextReview(STEP_EMPLOYER_INFORMATION)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
 							Next: Review
 						</button>
 					</div>
@@ -88,14 +50,14 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-rationale></app-step-permit-rationale>
+				<app-step-permit-mailing-address></app-step-permit-mailing-address>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PERMIT_RATIONALE)"
+							(click)="onSaveAndExit(STEP_MAILING_ADDRESS)"
 							*ngIf="isLoggedIn"
 						>
 							Save and Exit
@@ -105,12 +67,49 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PERMIT_RATIONALE)">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+						>
 							Next
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PERMIT_RATIONALE)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-contact-information
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-contact-information>
+
+				<div class="row mt-4">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_CONTACT_INFORMATION)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_CONTACT_INFORMATION)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CONTACT_INFORMATION)">
 							Next: Review
 						</button>
 					</div>
@@ -121,10 +120,10 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitPurposeComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
-	readonly STEP_PERMIT_REASON = 1;
-	readonly STEP_EMPLOYER_INFORMATION = 2;
-	readonly STEP_PERMIT_RATIONALE = 3;
+export class StepsPermitContactComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+	readonly STEP_RESIDENTIAL_ADDRESS = 1;
+	readonly STEP_MAILING_ADDRESS = 2;
+	readonly STEP_CONTACT_INFORMATION = 3;
 
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -135,10 +134,11 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
-	@ViewChild(StepPermitEmployerInformationComponent)
-	stepEmployerInformationComponent!: StepPermitEmployerInformationComponent;
-	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
+	@ViewChild(StepPermitResidentialAddressComponent)
+	stepResidentialAddressComponent!: StepPermitResidentialAddressComponent;
+	@ViewChild(StepPermitMailingAddressComponent) stepMailingAddressComponent!: StepPermitMailingAddressComponent;
+	@ViewChild(StepPermitContactInformationComponent)
+	stepContactInformationComponent!: StepPermitContactInformationComponent;
 
 	constructor(
 		private authProcessService: AuthProcessService,
@@ -172,26 +172,21 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
-		console.log('onFormValidNextStep', this.childstepper.selectedIndex);
-
 		const isValid = this.dirtyForm(_formNumber);
+		console.log('onFormValidNextStep isValid', this.childstepper.selectedIndex, isValid);
 		if (!isValid) return;
 
-		// if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
-		// 	this.nextStepperStep.emit(true);
-		// 	return;
-		// }
 		this.childNextStep.next(true);
 	}
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
-			case this.STEP_PERMIT_REASON:
-				return this.stepPermitReasonComponent.isFormValid();
-			case this.STEP_EMPLOYER_INFORMATION:
-				return this.stepEmployerInformationComponent.isFormValid();
-			case this.STEP_PERMIT_RATIONALE:
-				return this.stepPermitRationaleComponent.isFormValid();
+			case this.STEP_RESIDENTIAL_ADDRESS:
+				return this.stepResidentialAddressComponent.isFormValid();
+			case this.STEP_MAILING_ADDRESS:
+				return this.stepMailingAddressComponent.isFormValid();
+			case this.STEP_CONTACT_INFORMATION:
+				return this.stepContactInformationComponent.isFormValid();
 		}
 		return false;
 	}

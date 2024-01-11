@@ -214,15 +214,15 @@ export class StepLicenceAccessCodeAnonymousComponent implements LicenceChildStep
 			)
 			.pipe(
 				tap((resp: WorkerLicenceResponse) => {
-					if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
-						const respWorkerLicenceType = this.optionsPipe.transform(resp.workerLicenceTypeCode, 'WorkerLicenceTypes');
-						const selWorkerLicenceType = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
+					// if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
+					// 	const respWorkerLicenceType = this.optionsPipe.transform(resp.workerLicenceTypeCode, 'WorkerLicenceTypes');
+					// 	const selWorkerLicenceType = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
 
-						this.isAfterSearch = true;
-						this.doNotMatch = true;
-						this.doNotMatchMessage = `A licence has been found with this Licence Number and Access Code, but the licence type for this licence (${respWorkerLicenceType}) does not match what has been selected on the previous screen (${selWorkerLicenceType}).`;
-						return;
-					}
+					// 	this.isAfterSearch = true;
+					// 	this.doNotMatch = true;
+					// 	this.doNotMatchMessage = `A licence has been found with this Licence Number and Access Code, but the licence type for this licence (${respWorkerLicenceType}) does not match what has been selected on the previous screen (${selWorkerLicenceType}).`;
+					// 	return;
+					// }
 					this.form.patchValue({
 						linkedLicenceId: resp.licenceAppId,
 					});

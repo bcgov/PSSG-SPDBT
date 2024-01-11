@@ -8,6 +8,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
+import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsComponent } from './permit-wizard-steps/steps-permit-details.component';
 import { StepsPermitIdentificationComponent } from './permit-wizard-steps/steps-permit-identification.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
@@ -24,7 +25,7 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 					(selectionChange)="onStepSelectionChange($event)"
 					#stepper
 				>
-					<!-- <mat-step [completed]="step1Complete">
+					<mat-step [completed]="step1Complete">
 						<ng-template matStepLabel> Permit Details </ng-template>
 						<app-steps-permit-details
 							(childNextStep)="onChildNextStep()"
@@ -32,9 +33,9 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-permit-details>
-					</mat-step> -->
+					</mat-step>
 
-					<!-- <mat-step [completed]="step2Complete">
+					<mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Purpose & Rationale</ng-template>
 						<app-steps-permit-purpose
 							(childNextStep)="onChildNextStep()"
@@ -43,7 +44,7 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-permit-purpose>
-					</mat-step> -->
+					</mat-step>
 
 					<mat-step [completed]="step3Complete">
 						<ng-template matStepLabel>Identification</ng-template>
@@ -56,16 +57,18 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 						></app-steps-permit-identification>
 					</mat-step>
 
-					<!-- <mat-step [completed]="step4Complete">
+					<mat-step [completed]="step4Complete">
 						<ng-template matStepLabel>Contact Information</ng-template>
-						<app-steps-identification-anonymous
+						<app-steps-permit-contact
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-identification-anonymous>
+						></app-steps-permit-contact>
 					</mat-step>
+
+					<!-- 
 
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
@@ -110,8 +113,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	@ViewChild(StepsPermitIdentificationComponent)
 	stepsPermitIdentificationComponent!: StepsPermitIdentificationComponent;
 
-	// @ViewChild(StepsIdentificationAnonymousComponent)
-	// stepContactInformationComponent!: StepsIdentificationAnonymousComponent;
+	@ViewChild(StepsPermitContactComponent)
+	stepsPermitContactComponent!: StepsPermitContactComponent;
 
 	// @ViewChild(StepsReviewLicenceAuthenticatedComponent)
 	// stepReviewLicenceComponent!: StepsReviewLicenceAuthenticatedComponent;
@@ -147,9 +150,9 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 			case this.STEP_IDENTIFICATION:
 				this.stepsPermitIdentificationComponent?.onGoToFirstStep();
 				break;
-			// case this.STEP_CONTACT_INFORMATION:
-			// 	this.stepContactInformationComponent?.onGoToFirstStep();
-			// 	break;
+			case this.STEP_CONTACT_INFORMATION:
+				this.stepsPermitContactComponent?.onGoToFirstStep();
+				break;
 			// case this.STEP_REVIEW_AND_CONFIRM:
 			// 	this.stepReviewLicenceComponent?.onGoToFirstStep();
 			// 	break;
@@ -169,9 +172,9 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 			case this.STEP_IDENTIFICATION:
 				this.stepsPermitIdentificationComponent?.onGoToLastStep();
 				break;
-			// case this.STEP_CONTACT_INFORMATION:
-			// 	this.stepContactInformationComponent?.onGoToLastStep();
-			// 	break;
+			case this.STEP_CONTACT_INFORMATION:
+				this.stepsPermitContactComponent?.onGoToLastStep();
+				break;
 		}
 	}
 
@@ -226,6 +229,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		this.stepsPermitDetailsComponent?.onGoToFirstStep();
 		this.stepsPermitPurposeComponent?.onGoToFirstStep();
 		this.stepsPermitIdentificationComponent?.onGoToFirstStep();
+		this.stepsPermitContactComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -242,11 +246,12 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
 		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
 		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
-		// this.step4Complete = this.permitApplicationService.isStepIdentificationComplete(); // TODO fix
+		this.step4Complete = this.permitApplicationService.isStepContactComplete();
 		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete); //, this.step4Complete);
 	}
 
 	onChildNextStep() {
+		console.log('onChildNextStep', this.stepper.selectedIndex);
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
 				this.stepsPermitDetailsComponent?.onGoToNextStep();
@@ -257,9 +262,9 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 			case this.STEP_IDENTIFICATION:
 				this.stepsPermitIdentificationComponent?.onGoToNextStep();
 				break;
-			// case this.STEP_CONTACT_INFORMATION:
-			// 	this.stepContactInformationComponent?.onGoToNextStep();
-			// 	break;
+			case this.STEP_CONTACT_INFORMATION:
+				this.stepsPermitContactComponent?.onGoToNextStep();
+				break;
 		}
 		this.updateCompleteStatus();
 	}

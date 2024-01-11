@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { CommonAliasListComponent } from './common-alias-list.component';
-import { ContactInformationComponent } from './contact-information.component';
-import { MailingAddressComponent } from './mailing-address.component';
+import { CommonContactInformationComponent } from './common-contact-information.component';
+import { CommonMailingAddressComponent } from './common-mailing-address.component';
 
 @Component({
 	selector: 'app-user-profile',
@@ -15,11 +16,15 @@ import { MailingAddressComponent } from './mailing-address.component';
 
 		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or previous names</div>
-		<app-common-alias-list [isReadOnly]="isReadOnly"></app-common-alias-list>
+		<app-common-alias-list [form]="aliasesFormGroup" [isReadOnly]="isReadOnly"></app-common-alias-list>
 
 		<mat-divider class="mat-divider-main mt-3"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Contact information</div>
-		<app-contact-information [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-contact-information>
+		<app-common-contact-information
+			[form]="contactInformationFormGroup"
+			[isWizardStep]="false"
+			[isReadOnly]="isReadOnly"
+		></app-common-contact-information>
 
 		<div class="row">
 			<div class="col-lg-6 col-md-12">
@@ -32,7 +37,11 @@ import { MailingAddressComponent } from './mailing-address.component';
 					BC Services Card. Any changes you make will then be updated here.
 				</app-alert>
 
-				<app-residential-address [isWizardStep]="false" [isReadOnly]="true"></app-residential-address>
+				<app-common-residential-address
+					[form]="residentialAddressFormGroup"
+					[isWizardStep]="false"
+					[isReadOnly]="true"
+				></app-common-residential-address>
 			</div>
 
 			<div class="col-lg-6 col-md-12">
@@ -49,7 +58,11 @@ import { MailingAddressComponent } from './mailing-address.component';
 					</div>
 				</ng-container>
 				<ng-template #mailingIsDifferentThanResidential>
-					<app-mailing-address [isWizardStep]="false" [isReadOnly]="isReadOnly"></app-mailing-address>
+					<app-common-mailing-address
+						[form]="mailingAddressFormGroup"
+						[isWizardStep]="false"
+						[isReadOnly]="isReadOnly"
+					></app-common-mailing-address>
 				</ng-template>
 			</div>
 		</div>
@@ -59,9 +72,14 @@ import { MailingAddressComponent } from './mailing-address.component';
 export class UserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 
+	contactInformationFormGroup: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	aliasesFormGroup: FormGroup = this.licenceApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
-	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
-	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
+	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
+	@ViewChild(CommonMailingAddressComponent) mailingAddressComponent!: CommonMailingAddressComponent;
 
 	isReadOnly = true;
 
@@ -70,15 +88,30 @@ export class UserProfileComponent implements LicenceChildStepperStepComponent {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const contactIsValid = this.contactInformationComponent.isFormValid();
-		const aliasesIsValid = this.aliasesComponent.isFormValid();
-		const mailingIsValid = this.isMailingTheSameAsResidential ? true : this.mailingAddressComponent.isFormValid();
+		const contactIsValid = this.isContactInformationFormGroupFormValid();
+		const aliasesIsValid = this.isAliasesFormGroupFormValid();
+		const mailingIsValid = this.isMailingTheSameAsResidential ? true : this.isMailingAddressFormGroupValid();
 
 		console.log('UserProfileComponent', contactIsValid, aliasesIsValid, mailingIsValid);
 		return contactIsValid && aliasesIsValid && mailingIsValid;
 	}
 
+	isContactInformationFormGroupFormValid(): boolean {
+		this.contactInformationFormGroup.markAllAsTouched();
+		return this.contactInformationFormGroup.valid;
+	}
+
+	isAliasesFormGroupFormValid(): boolean {
+		this.aliasesFormGroup.markAllAsTouched();
+		return this.aliasesFormGroup.valid;
+	}
+
+	isMailingAddressFormGroupValid(): boolean {
+		this.mailingAddressFormGroup.markAllAsTouched();
+		return this.mailingAddressFormGroup.valid;
+	}
+
 	get isMailingTheSameAsResidential(): boolean {
-		return this.licenceApplicationService.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value;
+		return this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value;
 	}
 }

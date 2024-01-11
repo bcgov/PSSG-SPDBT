@@ -124,7 +124,6 @@ export class CommonAliasesComponent {
 	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;
-
 	@Input() isWizardStep = true;
 
 	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}

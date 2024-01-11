@@ -1,12 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
+import { CommonFingerprintsComponent } from '@app/modules/licence-application/components/shared/step-components/common-fingerprints.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { CommonFingerprintsComponent } from '@app/modules/licence-application/components/shared/step-components/common-fingerprints.component';
 
 @Component({
 	selector: 'app-step-fingerprints',
@@ -32,8 +31,6 @@ export class StepFingerprintsComponent implements LicenceChildStepperStepCompone
 	form: FormGroup = this.licenceApplicationService.fingerprintProofFormGroup;
 
 	@ViewChild(CommonFingerprintsComponent) commonFingerprintsComponent!: CommonFingerprintsComponent;
-
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
 		private authenticationService: AuthenticationService,

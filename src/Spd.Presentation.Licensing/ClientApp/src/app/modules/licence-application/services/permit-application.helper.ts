@@ -4,7 +4,6 @@ import {
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppCategoryData,
 } from '@app/api/models';
@@ -97,9 +96,9 @@ export abstract class PermitApplicationHelper {
 		}
 	);
 
-	soleProprietorFormGroup = this.formBuilder.group({
-		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-	});
+	// soleProprietorFormGroup = this.formBuilder.group({
+	// 	isSoleProprietor: new FormControl('', [FormControlValidators.required]),
+	// });
 
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
@@ -193,45 +192,45 @@ export abstract class PermitApplicationHelper {
 		// }
 	);
 
-	policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
-			policeOfficerRoleCode: new FormControl(''),
-			otherOfficerRole: new FormControl(''),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'policeOfficerRoleCode',
-					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'otherOfficerRole',
-					(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
+	// policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
+	// 	{
+	// 		isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
+	// 		policeOfficerRoleCode: new FormControl(''),
+	// 		otherOfficerRole: new FormControl(''),
+	// 		attachments: new FormControl(''),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'policeOfficerRoleCode',
+	// 				(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'otherOfficerRole',
+	// 				(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'attachments',
+	// 				(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
+	// 			),
+	// 		],
+	// 	}
+	// );
 
-	mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
+	// mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
+	// 	{
+	// 		isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
+	// 		attachments: new FormControl(''),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'attachments',
+	// 				(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	criminalHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
@@ -269,11 +268,11 @@ export abstract class PermitApplicationHelper {
 		}
 	);
 
-	additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
-		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
-		expiryDate: new FormControl(''),
-		attachments: new FormControl([], [Validators.required]),
-	});
+	// additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
+	// 	governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
+	// 	expiryDate: new FormControl(''),
+	// 	attachments: new FormControl([], [Validators.required]),
+	// });
 
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
 		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
