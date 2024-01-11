@@ -87,7 +87,8 @@ public enum BusinessTypeCode
     NonRegisteredPartnership,
     RegisteredSoleProprietor,
     RegisteredPartnership,
-    Corporation
+    Corporation,
+    None
 }
 
 public enum PoliceOfficerRoleCode

@@ -72,6 +72,12 @@ internal static class SharedMappingFuncs
         return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
     }
 
+    internal static int? GetBusinessType(BusinessTypeEnum? code)
+    {
+        if (code == null) return (int)BusinessTypeOptionSet.None;
+        return (int)Enum.Parse<BusinessTypeOptionSet>(code.ToString());
+    }
+
     internal static ApplicationTypeEnum? GetLicenceApplicationTypeEnum(int? applicationTypeOptionSet)
     {
         if (applicationTypeOptionSet == null)
@@ -80,7 +86,7 @@ internal static class SharedMappingFuncs
         {
             (int)LicenceApplicationTypeOptionSet.Update => ApplicationTypeEnum.Update,
             (int)LicenceApplicationTypeOptionSet.Replacement => ApplicationTypeEnum.Replacement,
-            (int)LicenceApplicationTypeOptionSet.New_Expired => ApplicationTypeEnum.New,
+            (int)LicenceApplicationTypeOptionSet.New => ApplicationTypeEnum.New,
             (int)LicenceApplicationTypeOptionSet.Renewal => ApplicationTypeEnum.Renewal,
             _ => throw new ArgumentException("invalid int application type option set")
         };
@@ -94,7 +100,7 @@ internal static class SharedMappingFuncs
         {
             ApplicationTypeEnum.Update => (int)LicenceApplicationTypeOptionSet.Update,
             ApplicationTypeEnum.Replacement => (int)LicenceApplicationTypeOptionSet.Replacement,
-            ApplicationTypeEnum.New => (int)LicenceApplicationTypeOptionSet.New_Expired,
+            ApplicationTypeEnum.New => (int)LicenceApplicationTypeOptionSet.New,
             ApplicationTypeEnum.Renewal => (int)LicenceApplicationTypeOptionSet.Renewal,
             _ => throw new ArgumentException("invalid application type code")
         };
