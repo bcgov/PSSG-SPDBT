@@ -7,9 +7,9 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Organizations.Identity;
+using Spd.Utilities.Cache;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
-using Spd.Utilities.Cache;
 
 namespace Spd.Manager.Licence;
 internal partial class PersonalLicenceAppManager :
@@ -160,34 +160,41 @@ internal partial class PersonalLicenceAppManager :
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
 
-        LicenceAppDocumentsCache? appDocCache = await _cache.Get<LicenceAppDocumentsCache>(cmd.KeyCode.ToString());
-
         //todo: add checking if all necessary files have been uploaded
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
-        if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode == ApplicationTypeCode.New)
         {
-            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
+            //new application, all file keys are in cache
+            if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
             {
-                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                foreach (LicAppFileInfo licAppFile in items)
+                foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
                 {
-                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-                    //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(new CreateDocumentCmd
+                    IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                    foreach (LicAppFileInfo licAppFile in items)
                     {
-                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                        ApplicationId = response.LicenceAppId,
-                        DocumentType = docType1,
-                        DocumentType2 = docType2,
-                        SubmittedByApplicantId = response.ContactId
-                    }, ct);
+                        DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                        DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                        //create bcgov_documenturl and file
+                        await _documentRepository.ManageAsync(new CreateDocumentCmd
+                        {
+                            TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                            ApplicationId = response.LicenceAppId,
+                            DocumentType = docType1,
+                            DocumentType2 = docType2,
+                            SubmittedByApplicantId = response.ContactId
+                        }, ct);
+                    }
                 }
             }
         }
-        
+        else if (cmd.LicenceAnonymousRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+        {
+
+        }
+
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
