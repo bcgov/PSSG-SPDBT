@@ -248,7 +248,7 @@ namespace Spd.Utilities.Dynamics
 
     public enum LicenceApplicationTypeOptionSet
     {
-        New_Expired = 100000000,
+        New = 100000000,
         Renewal = 100000001,
         Update = 100000002,
         Replacement = 100000003
@@ -269,7 +269,8 @@ namespace Spd.Utilities.Dynamics
         NonRegisteredPartnership = 100000001,
         RegisteredSoleProprietor = 100000002,
         RegisteredPartnership = 100000003,
-        Corporation = 100000004
+        Corporation = 100000004,
+        None = 100000005
     }
 
     public enum WorkerLicenceTypeOptionSet

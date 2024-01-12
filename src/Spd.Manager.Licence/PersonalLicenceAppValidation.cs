@@ -10,7 +10,6 @@ public class WorkerLicenceAppBaseValidator<T> : AbstractValidator<T> where T : W
     {
         RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
-        RuleFor(r => r.IsSoleProprietor).NotEmpty();
         RuleFor(r => r.Surname).NotEmpty();
         RuleFor(r => r.DateOfBirth).NotEmpty();
         RuleFor(r => r.GenderCode).NotEmpty();

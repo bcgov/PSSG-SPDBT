@@ -72,6 +72,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_hasdriverslicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasBcDriversLicence)))
          .ForMember(d => d.spd_hasexpiredlicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasExpiredLicence)))
          .ForMember(d => d.spd_haspreviousnames, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasPreviousName)))
+         .ForMember(d => d.spd_businesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBusinessType(s.BusinessTypeCode)))
          .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseDogs)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Incomplete))
@@ -82,6 +83,7 @@ internal class Mappings : Profile
          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
+         .ForMember(d => d.BusinessTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBusinessTypeEnum(s.spd_businesstype)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
          .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => GetHairColorEnum(s.spd_applicanthaircolour)))
@@ -117,6 +119,9 @@ internal class Mappings : Profile
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
           .IncludeBase<LicenceApplication, spd_application>();
+
+        _ = CreateMap<SaveLicenceApplicationCmd, contact>()
+          .IncludeBase<LicenceApplication, contact>();
 
         _ = CreateMap<spd_application, LicenceApplicationResp>()
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
