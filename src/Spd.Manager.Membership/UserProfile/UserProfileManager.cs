@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Common.ManagerContract;
 using Spd.Manager.Membership.OrgRegistration;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
@@ -88,7 +89,9 @@ namespace Spd.Manager.Membership.UserProfile
             }
 
             //get all orgs
-            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(orgGuid), ct);
+            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(
+                new OrgsQry(orgGuid, ServiceTypes: IApplicationRepository.ScreeningServiceTypes),
+                ct);
             foreach (OrgResult org in orgResult.OrgResults)
             {
                 UserInfo ui = new UserInfo();
