@@ -1,17 +1,16 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { GenderTypes } from '@app/core/code-types/model-desc.models';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { Subscription } from 'rxjs';
-import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-personal-information-anonymous',
+	selector: 'app-common-personal-information-renew-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -25,16 +24,13 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 				<app-step-title title="Your personal information"></app-step-title>
 
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else IsRenewal">
-					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
-				</ng-container>
-
-				<ng-template #IsRenewal> </ng-template>
-
-				<!-- <form [formGroup]="form" novalidate>
+				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<div class="row">
+								<!-- <div class="w-100">
+									<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
+								</div> -->
 								<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else IsRenewal">
 									<div class="col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
@@ -168,14 +164,14 @@ import { UtilService } from 'src/app/core/services/util.service';
 							>
 						</div>
 					</div>
-				</form> -->
+				</form>
 			</div>
 		</section>
 	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepPersonalInformationAnonymousComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
+export class CommonPersonalInformationRenewAnonymousComponent implements OnInit, OnDestroy {
 	genderTypes = GenderTypes;
 	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -184,8 +180,8 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 	isLoggedIn = false;
 
 	authenticationSubscription!: Subscription;
-	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
 
+	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
@@ -214,11 +210,6 @@ export class StepPersonalInformationAnonymousComponent implements OnInit, OnDest
 
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	}
-
-	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
 	}
 
 	onFileRemoved(): void {

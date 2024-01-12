@@ -4,11 +4,11 @@ import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonResidentialAddressComponent } from '@app/modules/licence-application/components/shared/step-components/common-residential-address.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-	selector: 'app-step-residential-address',
+	selector: 'app-step-permit-residential-address',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -28,7 +28,7 @@ import { Subscription } from 'rxjs';
 	`,
 	styles: [],
 })
-export class StepResidentialAddressComponent implements LicenceChildStepperStepComponent {
+export class StepPermitResidentialAddressComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	readonly subtitle_unauth_new = 'This is the address where you currently live';
@@ -39,13 +39,13 @@ export class StepResidentialAddressComponent implements LicenceChildStepperStepC
 	authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
-	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	form: FormGroup = this.permitApplicationService.residentialAddressFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonResidentialAddressComponent) residentialAddressComponent!: CommonResidentialAddressComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
