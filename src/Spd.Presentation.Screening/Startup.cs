@@ -1,4 +1,7 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Spd.Manager.Membership;
 using Spd.Presentation.Screening.Swagger;
@@ -12,9 +15,6 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {
@@ -59,7 +59,7 @@ namespace Spd.Presentation.Screening
                 {
                     fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>();
                     fv.ImplicitlyValidateChildProperties = true;
-                });           
+                });
 
             services.AddGoogleRecaptcha(configuration);
             services.AddValidatorsFromAssemblies(assemblies);
@@ -81,6 +81,7 @@ namespace Spd.Presentation.Screening
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
+            services.AddHealthChecks();
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
@@ -103,7 +104,7 @@ namespace Spd.Presentation.Screening
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}");
-
+            app.MapHealthChecks("/health");
             app.MapFallbackToFile("index.html");
 
             app.Run();
