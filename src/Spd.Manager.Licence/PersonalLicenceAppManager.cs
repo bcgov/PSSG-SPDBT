@@ -18,8 +18,9 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
-        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,//not used
         IRequestHandler<AnonymousWorkerLicenceAppSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
@@ -52,6 +53,7 @@ internal partial class PersonalLicenceAppManager :
         _cache = cache;
     }
 
+    #region for portal
     //authenticated save
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
@@ -129,6 +131,9 @@ internal partial class PersonalLicenceAppManager :
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
 
+    #endregion
+
+    #region anonymous
     //deprecated
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
     {
@@ -165,39 +170,46 @@ internal partial class PersonalLicenceAppManager :
         saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
-        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+        //new application, all file keys are in cache
+        if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
         {
-            //new application, all file keys are in cache
-            if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
+            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
             {
-                foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
+                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                foreach (LicAppFileInfo licAppFile in items)
                 {
-                    IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                    foreach (LicAppFileInfo licAppFile in items)
+                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(new CreateDocumentCmd
                     {
-                        DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-                        DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-                        //create bcgov_documenturl and file
-                        await _documentRepository.ManageAsync(new CreateDocumentCmd
-                        {
-                            TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                            ApplicationId = response.LicenceAppId,
-                            DocumentType = docType1,
-                            DocumentType2 = docType2,
-                            SubmittedByApplicantId = response.ContactId
-                        }, ct);
-                    }
+                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                        ApplicationId = response.LicenceAppId,
+                        DocumentType = docType1,
+                        DocumentType2 = docType2,
+                        SubmittedByApplicantId = response.ContactId
+                    }, ct);
                 }
             }
         }
-        else if (cmd.LicenceAnonymousRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
-        {
-
-        }
-
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
+            throw new ArgumentException("should be a replacement request");
+
+        //validation: check if original licence meet replacement condition.
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        //todo: add file copying here.
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+    }
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
