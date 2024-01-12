@@ -100,10 +100,10 @@ app.UseAuthentication();
 app.UseMiddleware<UsersMiddleware>();
 app.UseAuthorization();
 
+app.MapHealthChecks("/health").ShortCircuit();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-app.MapHealthChecks("/health");
 app.MapFallbackToFile("index.html");
 
 await app.RunAsync();
