@@ -311,8 +311,18 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-            AnonymousWorkerLicenceAppSubmitCommand command = new AnonymousWorkerLicenceAppSubmitCommand(jsonRequest, keyCode);
-            return await _mediator.Send(command);
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                AnonymousWorkerLicenceAppSubmitCommand command = new (jsonRequest, keyCode);
+                return await _mediator.Send(command);
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                AnonymousWorkerLicenceAppReplaceCommand command = new (jsonRequest, keyCode);
+                return await _mediator.Send(command);
+            }
+            return null;
         }
         #endregion
     }

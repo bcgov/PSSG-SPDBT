@@ -10,8 +10,10 @@ public interface IPersonalLicenceAppManager
     public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
+    //deprecated
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppSubmitCommand command, CancellationToken ct);
+    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
     public Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
 }
 
@@ -23,9 +25,13 @@ public record AnonymousWorkerLicenceSubmitCommand(
     WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     ICollection<UploadFileRequest> UploadFileRequests)
     : IRequest<WorkerLicenceAppUpsertResponse>;
-//
 
 public record AnonymousWorkerLicenceAppSubmitCommand(
+    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    Guid KeyCode)
+    : IRequest<WorkerLicenceAppUpsertResponse>;
+
+public record AnonymousWorkerLicenceAppReplaceCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
     : IRequest<WorkerLicenceAppUpsertResponse>;
@@ -177,6 +183,7 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase 
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
     public Guid[]? FileKeyCodes { get; set; }
+    public Guid? OriginalApplicationId { get; set; } = null;//for new, it should be null. for renew, replace, update, it should be original application id.
 }
 
 public record WorkerLicenceCreateResponse
