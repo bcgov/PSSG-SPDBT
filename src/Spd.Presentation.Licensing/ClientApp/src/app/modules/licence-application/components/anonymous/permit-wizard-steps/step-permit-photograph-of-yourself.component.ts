@@ -2,14 +2,14 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CommonPhotographOfYourselfComponent } from '../step-components/common-photograph-of-yourself.component';
+import { CommonPhotographOfYourselfComponent } from '../../shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
-	selector: 'app-step-photograph-of-yourself',
+	selector: 'app-step-permit-photograph-of-yourself',
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
@@ -45,10 +45,10 @@ import { CommonPhotographOfYourselfComponent } from '../step-components/common-p
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
+export class StepPermitPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
+	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 
 	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
@@ -58,13 +58,13 @@ export class StepPhotographOfYourselfComponent implements LicenceChildStepperSte
 
 	constructor(
 		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService,
+		private permitApplicationService: PermitApplicationService,
 		private hotToastService: HotToastService
 	) {}
 
 	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
+			this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 					matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -79,7 +79,7 @@ export class StepPhotographOfYourselfComponent implements LicenceChildStepperSte
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.permitApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

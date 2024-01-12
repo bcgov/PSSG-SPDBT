@@ -15,7 +15,6 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
-	LicenceLookupResponse,
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
@@ -25,7 +24,7 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
@@ -38,7 +37,7 @@ import {
 	Subscription,
 	switchMap,
 	take,
-	tap
+	tap,
 } from 'rxjs';
 import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -271,17 +270,22 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		licenceNumber: string,
 		accessCode: string
 	): Observable<WorkerLicenceResponse> {
-		return this.licenceLookupService
-			.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
-			.pipe(
-				tap((resp: any) => {
-					console.debug('loadLicenceWithAccessCode', resp);
-				}),
-				switchMap((resp: LicenceLookupResponse) => {
-					return this.loadLicence(resp.licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
-				})
-			)
-			.pipe(take(1));
+		return this.loadLicence(
+			'ef0b27ee-db15-409a-8f8f-6a7922a2332b',
+			WorkerLicenceTypeCode.SecurityWorkerLicence,
+			ApplicationTypeCode.Renewal
+		);
+		// return this.licenceLookupService // TODO remove later
+		// 	.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
+		// 	.pipe(
+		// 		tap((resp: any) => {
+		// 			console.debug('loadLicenceWithAccessCode', resp);
+		// 		}),
+		// 		switchMap((resp: LicenceLookupResponse) => {
+		// 			return this.loadLicence(resp.licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
+		// 		})
+		// 	)
+		// 	.pipe(take(1));
 	}
 
 	/**
@@ -1211,13 +1215,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			return;
 		}
 
-		console.debug(
-			'licence licenceFees',
-			workerLicenceTypeCode,
-			applicationTypeCode,
-			businessTypeCode,
-			this.licenceFeesSecurityWorkerLicence
-		);
+		// console.debug(
+		// 	'licence licenceFees',
+		// 	workerLicenceTypeCode,
+		// 	applicationTypeCode,
+		// 	businessTypeCode,
+		// 	this.licenceFeesSecurityWorkerLicence
+		// );
 		this.licenceFeeTermCodes = [];
 
 		const fees = this.licenceFeesSecurityWorkerLicence?.filter(

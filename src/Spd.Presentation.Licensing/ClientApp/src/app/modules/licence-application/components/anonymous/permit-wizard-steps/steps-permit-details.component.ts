@@ -13,7 +13,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-					<app-step-checklist-new-permit></app-step-checklist-new-permit>
+					<app-step-permit-checklist-new></app-step-permit-checklist-new>
 
 					<div class="row mt-4">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
@@ -23,7 +23,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
-					<app-step-checklist-renewal-worker></app-step-checklist-renewal-worker>
+					<app-step-permit-checklist-renewal></app-step-permit-checklist-renewal>
 
 					<div class="row mt-4">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
@@ -33,7 +33,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
-					<app-step-checklist-update-worker></app-step-checklist-update-worker>
+					<app-step-permit-checklist-update></app-step-permit-checklist-update>
 
 					<div class="row mt-4">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
@@ -41,6 +41,25 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 						</div>
 					</div>
 				</ng-container>
+			</mat-step>
+
+			<mat-step
+				*ngIf="
+					applicationTypeCode === applicationTypeCodes.Update || applicationTypeCode === applicationTypeCodes.Renewal
+				"
+			>
+				<app-step-permit-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-permit-confirmation>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PERMIT_CONFIRMATION)">
+							Next
+						</button>
+					</div>
+				</div>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
@@ -68,7 +87,8 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsPermitDetailsComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
-	readonly STEP_PERMIT_EXPIRED = 1;
+	readonly STEP_PERMIT_CONFIRMATION = 1;
+	readonly STEP_PERMIT_EXPIRED = 2;
 
 	// private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -87,7 +107,7 @@ export class StepsPermitDetailsComponent extends BaseWizardStepComponent impleme
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
-				// console.debug('licenceModelValueChanges$', _resp);
+				// console.debug('permitModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
@@ -117,6 +137,8 @@ export class StepsPermitDetailsComponent extends BaseWizardStepComponent impleme
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_PERMIT_CONFIRMATION:
+				return true;
 			case this.STEP_PERMIT_EXPIRED:
 				return this.stepPermitExpiredComponent.isFormValid();
 			default:

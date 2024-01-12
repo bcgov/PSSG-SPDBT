@@ -45,7 +45,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-							<div class="text-minor-heading mb-2">Expired licence information</div>
+							<div class="text-minor-heading mb-2">Expired Licence Information</div>
 							<div class="row mt-2">
 								<div class="col-lg-8 col-md-12 col-sm-12">
 									<mat-form-field>

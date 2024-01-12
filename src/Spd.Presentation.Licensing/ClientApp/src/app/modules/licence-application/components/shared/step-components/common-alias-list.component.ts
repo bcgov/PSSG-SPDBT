@@ -1,16 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 
 @Component({
-	selector: 'app-alias-list',
+	selector: 'app-common-alias-list',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
@@ -90,22 +88,17 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 		`,
 	],
 })
-export class AliasListComponent implements LicenceChildStepperStepComponent {
+export class CommonAliasListComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
 	aliases: FormArray = this.formBuilder.array([]);
 
-	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
-
+	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadOnly = false;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private dialog: MatDialog,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	onPreviousNameFlagChange(): void {
 		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
@@ -114,11 +107,6 @@ export class AliasListComponent implements LicenceChildStepperStepComponent {
 			const control = this.form.get('aliases') as FormArray;
 			control.clear();
 		}
-	}
-
-	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
 	}
 
 	onAddRow() {
