@@ -32,3 +32,29 @@ To remove an existing environment, run the following command:
 ```sh
 helm -n [namespace] uninstall [env name]
 ```
+
+## Dependencies
+
+This chart depends on redis-sentinal chart.
+
+Run the following command to initially build the chart's dependencies:
+
+```sh
+helm dep build
+```
+
+Run the following command to update the chart's dependencies:
+
+```sh
+helm dep update
+```
+
+## Development
+
+To debug the generated yaml by this chart, run the followign command:
+
+```sh
+helm template . -f envs/[env]/values.yaml > debug.yaml
+```
+
+**warning**: do not commit debug.yaml to source control!

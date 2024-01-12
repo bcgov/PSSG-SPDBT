@@ -1,0 +1,49 @@
+{{- $name := include "standard.name" . -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $name }}-netpol
+  labels: {{ include "standard.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      name: {{ $name }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: {{ $name }}
+      ports:
+        - port: {{ .Values.redisPort }}
+          protocol: TCP
+        - port: {{ .Values.sentinelPort }}
+          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels: {}
+      ports:
+        - port: {{ .Values.redisPort }}
+          protocol: TCP
+        - port: {{ .Values.sentinelPort }}
+          protocol: TCP
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              name: {{ $name }}
+      ports:
+        - port: {{ .Values.redisPort }}
+          protocol: TCP
+        - port: {{ .Values.sentinelPort }}
+          protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels: {}
+      ports:
+        - port: {{ .Values.redisPort }}
+          protocol: TCP
+        - port: {{ .Values.sentinelPort }}
+          protocol: TCP          
