@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+      <NoWarn>1701;1702;CS8981</NoWarn>
+  </PropertyGroup>	
+    
   <ItemGroup>
     <None Remove="Connected Services\OData Service\OData ServiceCsdl.xml" />
   </ItemGroup>
