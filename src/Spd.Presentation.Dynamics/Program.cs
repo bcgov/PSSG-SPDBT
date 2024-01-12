@@ -89,9 +89,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-app.UseDefaultHttpRequestLogging();
+app.MapHealthChecks("/health").ShortCircuit();
 
+app.UseDefaultHttpRequestLogging();
 app.MapControllers();
-app.MapHealthChecks("/health");
 
 await app.RunAsync();
