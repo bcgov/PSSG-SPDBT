@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -13,7 +13,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-reason></app-step-permit-reason>
+				<app-step-permit-reason [applicationTypeCode]="applicationTypeCode"></app-step-permit-reason>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -48,7 +48,9 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-employer-information></app-step-permit-employer-information>
+				<app-step-permit-employer-information
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-employer-information>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -88,7 +90,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-rationale></app-step-permit-rationale>
+				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -142,18 +144,18 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 
 	constructor(
 		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
+		private permitApplicationService: PermitApplicationService
 	) {
 		super();
 	}
 
 	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
-				// console.debug('licenceModelValueChanges$', _resp);
+				// console.debug('permitModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 			}

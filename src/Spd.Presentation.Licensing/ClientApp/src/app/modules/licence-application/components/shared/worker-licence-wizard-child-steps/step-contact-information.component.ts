@@ -1,7 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { CommonContactInformationComponent } from '@app/modules/licence-application/components/shared/step-components/common-contact-information.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { ContactInformationComponent } from '../step-components/contact-information.component';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-contact-information',
@@ -19,7 +21,7 @@ import { ContactInformationComponent } from '../step-components/contact-informat
 				<app-step-title title="Provide your contact information"></app-step-title>
 				<div class="row">
 					<div class="col-12 mx-auto">
-						<app-contact-information></app-contact-information>
+						<app-common-contact-information [form]="form"></app-common-contact-information>
 					</div>
 				</div>
 			</div>
@@ -30,12 +32,16 @@ import { ContactInformationComponent } from '../step-components/contact-informat
 export class StepContactInformationComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
+	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
+
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
+	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
+
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		this.contactInformationComponent.form.markAllAsTouched();
-		return this.contactInformationComponent.form.valid;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 }

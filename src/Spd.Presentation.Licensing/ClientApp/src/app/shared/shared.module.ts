@@ -17,6 +17,7 @@ import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { FingerprintTearOffModalComponent } from './components/fingerprint-tear-off-modal.component';
 import { PaymentCancelComponent } from './components/payment-cancel.component';
 import { PaymentErrorComponent } from './components/payment-error.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
@@ -53,6 +54,7 @@ const SHARED_COMPONENTS = [
 	PaymentErrorComponent,
 	PaymentFailComponent,
 	BaseFilterComponent,
+	FingerprintTearOffModalComponent,
 ];
 
 @NgModule({

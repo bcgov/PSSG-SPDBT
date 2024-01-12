@@ -1,9 +1,11 @@
 import { Component, Input, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonResidentialAddressComponent } from '@app/modules/licence-application/components/shared/step-components/common-residential-address.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { ResidentialAddressComponent } from '../step-components/residential-address.component';
 
 @Component({
 	selector: 'app-step-residential-address',
@@ -19,7 +21,8 @@ import { ResidentialAddressComponent } from '../step-components/residential-addr
 				</ng-container>
 
 				<app-step-title title="Confirm your residential address" [subtitle]="subtitle"></app-step-title>
-				<app-residential-address></app-residential-address>
+
+				<app-common-residential-address [form]="form"></app-common-residential-address>
 			</div>
 		</section>
 	`,
@@ -36,11 +39,16 @@ export class StepResidentialAddressComponent implements LicenceChildStepperStepC
 	authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
+	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(ResidentialAddressComponent) residentialAddressComponent!: ResidentialAddressComponent;
+	@ViewChild(CommonResidentialAddressComponent) residentialAddressComponent!: CommonResidentialAddressComponent;
+
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		return this.residentialAddressComponent.isFormValid();
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 }

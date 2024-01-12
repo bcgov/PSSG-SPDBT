@@ -124,8 +124,6 @@ export class StepLicenceTypeAnonymousComponent implements OnInit {
 	isImagesLoaded = false;
 	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 
-	// form!: FormGroup;
-
 	constructor(
 		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
@@ -186,9 +184,7 @@ export class StepLicenceTypeAnonymousComponent implements OnInit {
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		// this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
-
 		this.isFormValid();
 	}
 

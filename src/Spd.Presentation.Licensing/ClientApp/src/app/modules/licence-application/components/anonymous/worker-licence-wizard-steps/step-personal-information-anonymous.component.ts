@@ -25,13 +25,16 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 				<app-step-title title="Your personal information"></app-step-title>
 
-				<form [formGroup]="form" novalidate>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else IsRenewal">
+					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
+				</ng-container>
+
+				<ng-template #IsRenewal> </ng-template>
+
+				<!-- <form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<div class="row">
-								<!-- <div class="w-100">
-									<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
-								</div> -->
 								<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else IsRenewal">
 									<div class="col-xl-6 col-lg-6 col-md-12">
 										<mat-form-field>
@@ -165,7 +168,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							>
 						</div>
 					</div>
-				</form>
+				</form> -->
 			</div>
 		</section>
 	`,
