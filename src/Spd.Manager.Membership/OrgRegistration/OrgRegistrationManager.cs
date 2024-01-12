@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.LogonUser;
@@ -85,7 +86,9 @@ namespace Spd.Manager.Membership.OrgRegistration
             //duplicated in organization
             if (_currentUser.IsAuthenticated())
             {
-                var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(userIdentityInfo.BizGuid), cancellationToken);
+                var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(
+                    new OrgsQry(userIdentityInfo.BizGuid, ServiceTypes: IApplicationRepository.ScreeningServiceTypes), 
+                    cancellationToken);
                 if (org != null && org.OrgResults.Any())
                 {
                     resp.HasPotentialDuplicate = true;
