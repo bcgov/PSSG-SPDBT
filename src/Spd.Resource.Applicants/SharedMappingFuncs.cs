@@ -1,4 +1,5 @@
 ﻿using Microsoft.OData.Edm;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
@@ -104,5 +105,17 @@ internal static class SharedMappingFuncs
             ApplicationTypeEnum.Renewal => (int)LicenceApplicationTypeOptionSet.Renewal,
             _ => throw new ArgumentException("invalid application type code")
         };
+    }
+
+    internal static int? GetApplicationStatus(ApplicationStatusEnum? code)
+    {
+        if (code == null) return (int)ApplicationStatusOptionSet.Incomplete;
+        return (int)Enum.Parse<ApplicationStatusOptionSet>(code.ToString());
+    }
+
+    internal static ApplicationStatusEnum? GetApplicationStatusEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<ApplicationStatusEnum>(Enum.GetName(typeof(ApplicationStatusOptionSet), optionset));
     }
 }

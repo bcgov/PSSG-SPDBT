@@ -7,9 +7,9 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Organizations.Identity;
+using Spd.Utilities.Cache;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
-using Spd.Utilities.Cache;
 
 namespace Spd.Manager.Licence;
 internal partial class PersonalLicenceAppManager :
@@ -18,8 +18,9 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
-        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,//not used
         IRequestHandler<AnonymousWorkerLicenceAppSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
@@ -52,6 +53,7 @@ internal partial class PersonalLicenceAppManager :
         _cache = cache;
     }
 
+    #region for portal
     //authenticated save
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
@@ -129,6 +131,9 @@ internal partial class PersonalLicenceAppManager :
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
 
+    #endregion
+
+    #region anonymous
     //deprecated
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
     {
@@ -160,12 +165,12 @@ internal partial class PersonalLicenceAppManager :
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
 
-        LicenceAppDocumentsCache? appDocCache = await _cache.Get<LicenceAppDocumentsCache>(cmd.KeyCode.ToString());
-
         //todo: add checking if all necessary files have been uploaded
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
+        //new application, all file keys are in cache
         if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
         {
             foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
@@ -187,9 +192,25 @@ internal partial class PersonalLicenceAppManager :
                 }
             }
         }
-        
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
+            throw new ArgumentException("should be a replacement request");
+
+        //validation: check if original licence meet replacement condition.
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
+        saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        //todo: add file copying here.
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+    }
+    #endregion
 
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
