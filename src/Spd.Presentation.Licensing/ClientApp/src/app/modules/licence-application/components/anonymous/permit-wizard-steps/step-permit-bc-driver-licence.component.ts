@@ -3,9 +3,10 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 
 @Component({
-	selector: 'app-step-permit-criminal-history',
+	selector: 'app-step-permit-bc-driver-licence',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -17,19 +18,22 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
-				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title>
+				<app-step-title
+					title="Do you have a BC Driver's Licence?"
+					subtitle="Providing your driver's licence number will speed up processing times"
+				></app-step-title>
 
-				<app-common-criminal-history [form]="form"></app-common-criminal-history>
+				<app-common-bc-driver-licence [form]="form"></app-common-bc-driver-licence>
 			</div>
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
-export class StepPermitCriminalHistoryComponent implements LicenceChildStepperStepComponent {
+export class StepPermitBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
+	form: FormGroup = this.permitApplicationService.bcDriversLicenceFormGroup;
+
 	applicationTypeCodes = ApplicationTypeCode;
-
-	form: FormGroup = this.permitApplicationService.criminalHistoryFormGroup;
-
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}

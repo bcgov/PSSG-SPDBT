@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-contact-information',
+	selector: 'app-common-contact-information',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -39,19 +37,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class ContactInformationComponent implements LicenceChildStepperStepComponent {
+export class CommonContactInformationComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
-
+	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadOnly = false;
-
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
-	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
-	}
 }

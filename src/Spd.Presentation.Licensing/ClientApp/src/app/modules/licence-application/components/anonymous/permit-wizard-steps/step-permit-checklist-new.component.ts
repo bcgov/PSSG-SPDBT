@@ -1,23 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { WorkerLicenceTypeCode } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
-	selector: 'app-step-checklist-new-permit',
+	selector: 'app-step-permit-checklist-new',
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title title="Checklist"></app-step-title>
+				<app-step-title
+					title="Checklist"
+					subtitle="Make sure you have the following items before you continue"
+				></app-step-title>
 
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-alert type="info" icon="info">
+						<!-- <app-alert type="info" icon="info">
 							{{ subTitle }}
 							<a class="large" [href]="viewExemptionsLink" target="_blank">View exemptions</a>
-						</app-alert>
+						</app-alert> -->
 
 						<form [formGroup]="form" novalidate>
 							<div class="fw-semibold fs-6">For all applicants:</div>
@@ -59,7 +60,13 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								You will need to upload a passport-quality photo of your face looking straight at the camera against a
 								plain, white background. Uploading a photo that does not meet the criteria will delay your application's
 								processing time. For further information on Passport Quality Photographs, please review the Government
-								of Canada’s passport photograph requirements.
+								of Canada’s
+								<a
+									aria-label="Request for Fingerprinting form"
+									href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html"
+									target="_blank"
+									>passport photograph requirements</a
+								>.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -85,41 +92,41 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [],
 })
-export class StepChecklistNewPermitComponent implements OnInit, LicenceChildStepperStepComponent {
-	subTitle = '';
-	viewExemptionsLink = '';
+export class StepPermitChecklistNewComponent implements LicenceChildStepperStepComponent {
+	// subTitle = '';
+	// viewExemptionsLink = '';
 
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
 
-	readonly body_armour_subtitle =
-		'You may be exempt from a body armour permit depending on your job or if you have a valid firearms licence.';
-	readonly armoured_vehicle_subtitle =
-		'You may be allowed to operate an armoured vehicle without a permit while performing your job.';
+	// readonly body_armour_subtitle =
+	// 	'You may be exempt from a body armour permit depending on your job or if you have a valid firearms licence.';
+	// readonly armoured_vehicle_subtitle =
+	// 	'You may be allowed to operate an armoured vehicle without a permit while performing your job.';
 
 	constructor(private formBuilder: FormBuilder, private permitApplicationService: PermitApplicationService) {}
 
-	ngOnInit(): void {
-		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
+	// ngOnInit(): void {
+	// 	const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+	// 		'workerLicenceTypeData.workerLicenceTypeCode'
+	// 	)?.value;
 
-		console.log('workerLicenceTypeCode', workerLicenceTypeCode);
+	// 	console.log('workerLicenceTypeCode', workerLicenceTypeCode);
 
-		switch (workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
-				this.subTitle = this.armoured_vehicle_subtitle;
-				this.viewExemptionsLink = SPD_CONSTANTS.urls.permitArmouredVehicleViewExemptions;
-				break;
-			}
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				this.subTitle = this.body_armour_subtitle;
-				this.viewExemptionsLink = SPD_CONSTANTS.urls.permitBodyAmourViewExemptions;
-				break;
-			}
-		}
-	}
+	// 	switch (workerLicenceTypeCode) {
+	// 		case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
+	// 			this.subTitle = this.armoured_vehicle_subtitle;
+	// 			this.viewExemptionsLink = SPD_CONSTANTS.urls.permitArmouredVehicleViewExemptions;
+	// 			break;
+	// 		}
+	// 		case WorkerLicenceTypeCode.BodyArmourPermit: {
+	// 			this.subTitle = this.body_armour_subtitle;
+	// 			this.viewExemptionsLink = SPD_CONSTANTS.urls.permitBodyAmourViewExemptions;
+	// 			break;
+	// 		}
+	// 	}
+	// }
 
 	isFormValid(): boolean {
 		return true;

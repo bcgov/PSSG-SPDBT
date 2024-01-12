@@ -1,25 +1,36 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { CommonFingerprintsComponent } from '@app/modules/licence-application/components/shared/step-components/common-fingerprints.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { FingerprintTearOffModalComponent } from '../../shared/step-components/fingerprint-tear-off-modal.component';
 
 @Component({
 	selector: 'app-step-permit-fingerprints',
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					title="Upload proof of fingerprinting request"
 					subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
 				></app-step-title>
 
-				<div class="row">
+				<app-common-fingerprints
+					[form]="form"
+					(fileUploaded)="onFileUploaded($event)"
+					(fileRemoved)="onFileRemoved()"
+				></app-common-fingerprints>
+				<!-- <div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<app-alert type="info" icon="">
 							<div class="d-flex">
@@ -76,7 +87,7 @@ import { FingerprintTearOffModalComponent } from '../../shared/step-components/f
 							</mat-error>
 						</form>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</section>
 	`,
@@ -84,12 +95,13 @@ import { FingerprintTearOffModalComponent } from '../../shared/step-components/f
 })
 export class StepPermitFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.fingerprintProofFormGroup;
-	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+	applicationTypeCodes = ApplicationTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	@ViewChild(CommonFingerprintsComponent) commonFingerprintsComponent!: CommonFingerprintsComponent;
 
 	constructor(
-		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private permitApplicationService: PermitApplicationService,
 		private hotToastService: HotToastService
@@ -105,7 +117,7 @@ export class StepPermitFingerprintsComponent implements LicenceChildStepperStepC
 				error: (error: any) => {
 					console.log('An error occurred during file upload', error);
 					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
+					this.commonFingerprintsComponent.fileUploadComponent.removeFailedFile(file);
 				},
 			});
 		}
@@ -113,10 +125,6 @@ export class StepPermitFingerprintsComponent implements LicenceChildStepperStepC
 
 	onFileRemoved(): void {
 		this.permitApplicationService.hasValueChanged = true;
-	}
-
-	onShowSampleTearOffModal(): void {
-		this.dialog.open(FingerprintTearOffModalComponent);
 	}
 
 	isFormValid(): boolean {
