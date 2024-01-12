@@ -99,12 +99,13 @@ namespace Spd.Presentation.Screening
             app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
+            app.MapHealthChecks("/health").ShortCircuit();
+
             app.UseDefaultHttpRequestLogging();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}");
-            app.MapHealthChecks("/health");
             app.MapFallbackToFile("index.html");
 
             app.Run();
