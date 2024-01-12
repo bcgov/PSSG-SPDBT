@@ -1,14 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { Address } from 'src/app/shared/components/address-autocomplete.component';
 
 @Component({
-	selector: 'app-residential-address',
+	selector: 'app-common-mailing-address',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row" *ngIf="!isReadOnly">
@@ -37,7 +34,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 					<section *ngIf="form.get('addressSelected')?.value">
 						<div class="row">
 							<div class="col-12">
-								<mat-divider class="mat-divider-primary mb-3" *ngIf="isWizardStep"></mat-divider>
+								<mat-divider class="mat-divider-primary mb-3" *ngIf="!isReadOnly"></mat-divider>
 								<div class="text-minor-heading mb-2" *ngIf="isWizardStep">Address information</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
@@ -85,11 +82,6 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 									<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-12">
-								<mat-checkbox formControlName="isMailingTheSameAsResidential">
-									My residential address and mailing address are the same
-								</mat-checkbox>
-							</div>
 						</div>
 					</section>
 				</div>
@@ -98,35 +90,17 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 	`,
 	styles: [],
 })
-export class ResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
+export class CommonMailingAddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
-	// phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
-
-	// readonly subtitle_unauth_new = 'This is the address where you currently live';
-	// readonly subtitle_auth_new =
-	// 	`This is the address from your BC Services Card. If you need to make any updates, visit <a href="${SPD_CONSTANTS.urls.addressChangeUrl}" target="_blank">addresschange.gov.bc.ca</a>`;
-
-	subtitle = '';
-
-	// authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
+	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadOnly = false;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
-
 	ngOnInit(): void {
-		// this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-		// (isReadOnly: boolean) => {
-		// this.isReadOnly = isReadOnly;
 		if (this.isReadOnly) {
-			// this.subtitle = this.subtitle_auth_new;
 			this.addressLine1.disable({ emitEvent: false });
 			this.addressLine2.disable({ emitEvent: false });
 			this.city.disable({ emitEvent: false });
@@ -134,7 +108,6 @@ export class ResidentialAddressComponent implements OnInit, LicenceChildStepperS
 			this.province.disable({ emitEvent: false });
 			this.country.disable({ emitEvent: false });
 		} else {
-			// this.subtitle = this.subtitle_unauth_new;
 			this.addressLine1.enable();
 			this.addressLine2.enable();
 			this.city.enable();
@@ -142,13 +115,7 @@ export class ResidentialAddressComponent implements OnInit, LicenceChildStepperS
 			this.province.enable();
 			this.country.enable();
 		}
-		// 	}
-		// );
 	}
-
-	// ngOnDestroy() {
-	// 	if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	// }
 
 	onAddressAutocomplete(address: Address): void {
 		if (!address) {
@@ -180,11 +147,6 @@ export class ResidentialAddressComponent implements OnInit, LicenceChildStepperS
 		this.form.patchValue({
 			addressSelected: true,
 		});
-	}
-
-	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
 	}
 
 	get addressLine1(): FormControl {

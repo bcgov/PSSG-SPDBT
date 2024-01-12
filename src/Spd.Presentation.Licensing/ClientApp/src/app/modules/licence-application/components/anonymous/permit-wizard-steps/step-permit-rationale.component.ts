@@ -1,14 +1,24 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-permit-rationale',
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					title="Provide your rationale for requiring body armour"
 					subtitle="The information you provide will assist the Registrar in deciding whether to issue your body armour permit"
@@ -19,7 +29,12 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 							<mat-form-field>
 								<mat-label>Rationale</mat-label>
-								<textarea matInput formControlName="rationale" style="min-height: 200px"></textarea>
+								<textarea
+									matInput
+									formControlName="rationale"
+									style="min-height: 200px"
+									[errorStateMatcher]="matcher"
+								></textarea>
 								<mat-error *ngIf="form.get('rationale')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
@@ -47,8 +62,11 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: ``,
 })
 export class StepPermitRationaleComponent implements LicenceChildStepperStepComponent {
+	matcher = new FormErrorStateMatcher();
 	form: FormGroup = this.permitApplicationService.permitRationaleFormGroup;
-	// applicationTypeCodes = ApplicationTypeCode;
+
+	applicationTypeCodes = ApplicationTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

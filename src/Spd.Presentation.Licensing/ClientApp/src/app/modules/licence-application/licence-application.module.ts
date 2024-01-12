@@ -2,24 +2,43 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
 import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
-import { StepChecklistNewPermitComponent } from './components/anonymous/permit-wizard-steps/step-checklist-new-permit.component';
+import { PermitWizardAnonymousRenewalComponent } from './components/anonymous/permit-wizard-anonymous-renewal.component';
+import { PermitWizardAnonymousUpdateComponent } from './components/anonymous/permit-wizard-anonymous-update.component';
+import { StepPermitAccessCodeComponent } from './components/anonymous/permit-wizard-steps/step-permit-access-code.component';
+import { StepPermitAliasesComponent } from './components/anonymous/permit-wizard-steps/step-permit-aliases.component';
+import { StepPermitBcDriverLicenceComponent } from './components/anonymous/permit-wizard-steps/step-permit-bc-driver-licence.component';
+import { StepPermitChecklistNewComponent } from './components/anonymous/permit-wizard-steps/step-permit-checklist-new.component';
+import { StepPermitChecklistRenewalComponent } from './components/anonymous/permit-wizard-steps/step-permit-checklist-renewal.component';
+import { StepPermitChecklistUpdateComponent } from './components/anonymous/permit-wizard-steps/step-permit-checklist-update.component';
+import { StepPermitCitizenshipComponent } from './components/anonymous/permit-wizard-steps/step-permit-citizenship.component';
+import { StepPermitConfirmationComponent } from './components/anonymous/permit-wizard-steps/step-permit-confirmation.component';
+import { StepPermitConsentAndDeclarationComponent } from './components/anonymous/permit-wizard-steps/step-permit-consent-and-declaration.component';
+import { StepPermitContactInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-contact-information.component';
 import { StepPermitCriminalHistoryComponent } from './components/anonymous/permit-wizard-steps/step-permit-criminal-history.component';
 import { StepPermitEmployerInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-employer-information.component';
 import { StepPermitExpiredComponent } from './components/anonymous/permit-wizard-steps/step-permit-expired.component';
 import { StepPermitFingerprintsComponent } from './components/anonymous/permit-wizard-steps/step-permit-fingerprints.component';
+import { StepPermitMailingAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-mailing-address.component';
+import { StepPermitPersonalInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-personal-information.component';
+import { StepPermitPhotographOfYourselfComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself.component';
+import { StepPermitPhysicalCharacteristicsComponent } from './components/anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitRationaleComponent } from './components/anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
+import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
+import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
+import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component';
 import { StepsPermitIdentificationComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification.component';
 import { StepsPermitPurposeComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component';
+import { StepsPermitReviewAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-review-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
 import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/anonymous/worker-licence-wizard-anonymous-replacement.component';
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { StepApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-application-type-anonymous.component';
-import { StepLicenceAccessCodeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-licence-access-code-anonymous.component';
+import { StepLicenceAccessCodeComponent } from './components/anonymous/worker-licence-wizard-steps/step-licence-access-code.component';
 import { StepLicenceConfirmationComponent } from './components/anonymous/worker-licence-wizard-steps/step-licence-confirmation.component';
 import { StepLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-licence-type-anonymous.component';
 import { StepPersonalInformationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-personal-information-anonymous.component';
@@ -54,10 +73,20 @@ import { LicencePaymentSuccessComponent } from './components/shared/licence-paym
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { RenewalAlertComponent } from './components/shared/renewal-alert.component';
 import { RenewalValueChangedComponent } from './components/shared/renewal-value-changed.component';
-import { AliasListComponent } from './components/shared/step-components/alias-list.component';
-import { AliasesComponent } from './components/shared/step-components/aliases.component';
-import { ContactInformationComponent } from './components/shared/step-components/contact-information.component';
-import { FingerprintTearOffModalComponent } from './components/shared/step-components/fingerprint-tear-off-modal.component';
+import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
+import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
+import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
+import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
+import { CommonCitizenshipComponent } from './components/shared/step-components/common-citizenship.component';
+import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
+import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
+import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
+import { CommonMailingAddressComponent } from './components/shared/step-components/common-mailing-address.component';
+import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
+import { CommonPersonalInformationRenewAnonymousComponent } from './components/shared/step-components/common-personal-information-renew-anonymous.component';
+import { CommonPhotographOfYourselfComponent } from './components/shared/step-components/common-photograph-of-yourself.component';
+import { CommonPhysicalCharacteristicsComponent } from './components/shared/step-components/common-physical-characteristics.component';
+import { CommonResidentialAddressComponent } from './components/shared/step-components/common-residential-address.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './components/shared/step-components/licence-category-armoured-car-guard.component';
 import { LicenceCategoryBodyArmourSalesComponent } from './components/shared/step-components/licence-category-body-armour-sales.component';
 import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from './components/shared/step-components/licence-category-closed-circuit-television-installer.component';
@@ -75,9 +104,7 @@ import { LicenceCategorySecurityAlarmSalesComponent } from './components/shared/
 import { LicenceCategorySecurityConsultantComponent } from './components/shared/step-components/licence-category-security-consultant.component';
 import { LicenceCategorySecurityGuardSupComponent } from './components/shared/step-components/licence-category-security-guard-sup.component';
 import { LicenceCategorySecurityGuardComponent } from './components/shared/step-components/licence-category-security-guard.component';
-import { MailingAddressComponent } from './components/shared/step-components/mailing-address.component';
 import { PersonalInformationComponent } from './components/shared/step-components/personal-information.component';
-import { ResidentialAddressComponent } from './components/shared/step-components/residential-address.component';
 import { UserProfileComponent } from './components/shared/step-components/user-profile.component';
 import { StepAdditionalGovIdComponent } from './components/shared/worker-licence-wizard-child-steps/step-additional-gov-id.component';
 import { StepAliasesComponent } from './components/shared/worker-licence-wizard-child-steps/step-aliases.component';
@@ -113,10 +140,17 @@ import { LicenceApplicationService } from './services/licence-application.servic
 
 @NgModule({
 	declarations: [
-		AliasListComponent,
-		AliasesComponent,
-		ContactInformationComponent,
-		FingerprintTearOffModalComponent,
+		CommonAliasListComponent,
+		CommonAliasesComponent,
+		CommonBcDriverLicenceComponent,
+		CommonCitizenshipComponent,
+		CommonCriminalHistoryComponent,
+		CommonFingerprintsComponent,
+		CommonPersonalInformationNewAnonymousComponent,
+		CommonPersonalInformationRenewAnonymousComponent,
+		CommonPhysicalCharacteristicsComponent,
+		CommonPhotographOfYourselfComponent,
+		CommonContactInformationComponent,
 		FirstTimeUserModalComponent,
 		LicenceApplicationComponent,
 		LicenceCategoryArmouredCarGuardComponent,
@@ -142,11 +176,11 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessComponent,
 		LoginSelectionComponent,
 		LoginUserProfileComponent,
-		MailingAddressComponent,
+		CommonMailingAddressComponent,
 		PersonalInformationComponent,
 		RenewalAlertComponent,
 		RenewalValueChangedComponent,
-		ResidentialAddressComponent,
+		CommonResidentialAddressComponent,
 		StepAccessCodeAuthorizedComponent,
 		StepAdditionalGovIdComponent,
 		StepAliasesComponent,
@@ -164,7 +198,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepCriminalHistoryComponent,
 		StepDogsAuthorizationComponent,
 		StepFingerprintsComponent,
-		StepLicenceAccessCodeAnonymousComponent,
+		CommonAccessCodeAnonymousComponent,
+		StepLicenceAccessCodeComponent,
 		StepLicenceCategoryComponent,
 		StepLicenceConfirmationComponent,
 		StepLicenceExpiredComponent,
@@ -209,18 +244,37 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		WorkerLicenceWizardAuthenticatedRenewComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
 		PermitApplicationBaseAnonymousComponent,
-		StepChecklistNewPermitComponent,
+		StepPermitChecklistNewComponent,
+		StepPermitChecklistRenewalComponent,
+		StepPermitChecklistUpdateComponent,
+		StepPermitAliasesComponent,
+		StepPermitCitizenshipComponent,
+		StepPermitContactInformationComponent,
 		StepPermitTypeAnonymousComponent,
 		StepPermitExpiredComponent,
+		StepPermitMailingAddressComponent,
+		StepPermitResidentialAddressComponent,
 		StepPermitReasonComponent,
 		StepPermitRationaleComponent,
+		StepPermitPersonalInformationComponent,
 		StepPermitEmployerInformationComponent,
 		StepPermitCriminalHistoryComponent,
 		StepPermitFingerprintsComponent,
 		StepsPermitDetailsComponent,
 		StepsPermitPurposeComponent,
+		StepsPermitContactComponent,
+		StepPermitAccessCodeComponent,
+		StepPermitConfirmationComponent,
 		StepsPermitIdentificationComponent,
+		StepPermitBcDriverLicenceComponent,
+		StepPermitPhysicalCharacteristicsComponent,
+		StepPermitPhotographOfYourselfComponent,
 		PermitWizardAnonymousNewComponent,
+		PermitWizardAnonymousRenewalComponent,
+		PermitWizardAnonymousUpdateComponent,
+		StepsPermitReviewAnonymousComponent,
+		StepPermitSummaryAnonymousComponent,
+		StepPermitConsentAndDeclarationComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

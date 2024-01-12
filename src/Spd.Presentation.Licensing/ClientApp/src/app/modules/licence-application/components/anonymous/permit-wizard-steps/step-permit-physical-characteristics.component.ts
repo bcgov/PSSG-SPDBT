@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
-	selector: 'app-step-physical-characteristics',
+	selector: 'app-step-permit-physical-characteristics',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -25,14 +25,14 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepPhysicalCharacteristicsComponent implements LicenceChildStepperStepComponent {
+export class StepPermitPhysicalCharacteristicsComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
+	form: FormGroup = this.permitApplicationService.characteristicsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
