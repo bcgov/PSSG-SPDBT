@@ -210,6 +210,8 @@ internal partial class PersonalLicenceAppManager :
         //todo: add file copying here.
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
+    #endregion
+
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
