@@ -265,9 +265,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-photograph-of-yourself
+				<app-step-permit-photograph-of-yourself-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-photograph-of-yourself>
+				></app-step-permit-photograph-of-yourself-anonymous>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

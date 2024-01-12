@@ -33,6 +33,12 @@ import { CommonPhotographOfYourselfComponent } from '../step-components/common-p
 					subtitle="If not, you will be allowed upload a new photo."
 				></app-step-title>
 
+				<div class="row mb-2">
+					<div class="col-12 text-center">
+						<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
+					</div>
+				</div>
+
 				<app-common-photograph-of-yourself
 					[form]="form"
 					[isCalledFromModal]="isCalledFromModal"

@@ -97,9 +97,20 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	soleProprietorFormGroup = this.formBuilder.group({
-		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-	});
+	soleProprietorFormGroup = this.formBuilder.group(
+		{
+			isSoleProprietor: new FormControl('', [FormControlValidators.required]),
+			businessTypeCode: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'businessTypeCode',
+					(form) => form.get('isSoleProprietor')?.value == this.booleanTypeCodes.Yes
+				),
+			],
+		}
+	);
 
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{

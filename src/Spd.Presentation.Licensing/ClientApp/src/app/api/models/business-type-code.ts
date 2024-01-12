@@ -5,5 +5,6 @@ export enum BusinessTypeCode {
   NonRegisteredPartnership = 'NonRegisteredPartnership',
   RegisteredSoleProprietor = 'RegisteredSoleProprietor',
   RegisteredPartnership = 'RegisteredPartnership',
-  Corporation = 'Corporation'
+  Corporation = 'Corporation',
+  None = 'None'
 }

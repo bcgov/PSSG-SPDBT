@@ -57,7 +57,7 @@ export class LicenceDocumentsToSave {
 export class WorkerLicenceAppAnonymousSubmitRequest {
 	'workerLicenceTypeCode'?: string | null;
 	'applicationTypeCode'?: string | null;
-	'isSoleProprietor'?: boolean | null;
+	'businessTypeCode'?: boolean | null;
 	'givenName'?: string | null;
 	'middleName1'?: string | null;
 	'middleName2'?: string | null;
@@ -363,6 +363,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				// TODO renewal - remove data that should be re-prompted for
 				const soleProprietorData = {
 					isSoleProprietor: null,
+					BusinessTypeCode: null,
 				};
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
@@ -425,6 +426,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				// TODO renewal - remove data that should be re-prompted for
 				const soleProprietorData = {
 					isSoleProprietor: null,
+					businessTypeCode: null,
 				};
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
@@ -635,7 +637,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 				const soleProprietorData = {
-					isSoleProprietor: this.booleanToBooleanType(resp.isSoleProprietor),
+					isSoleProprietor: resp.businessTypeCode === BusinessTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
+					businessTypeCode: resp.businessTypeCode,
 				};
 
 				const expiredLicenceData = {
@@ -1725,7 +1728,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
-			isSoleProprietor: this.booleanTypeToBoolean(soleProprietorData.isSoleProprietor),
+			businessTypeCode:
+				soleProprietorData.isSoleProprietor === BooleanTypeCode.No
+					? BusinessTypeCode.None
+					: soleProprietorData.businessTypeCode,
 			//-----------------------------------
 			hasPreviousName: this.booleanTypeToBoolean(formValue.aliasesData.previousNameFlag),
 			aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
@@ -1852,7 +1858,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
 			applicationTypeCode: savebody.applicationTypeCode,
-			isSoleProprietor: savebody.isSoleProprietor,
+			businessTypeCode: savebody.businessTypeCode,
 			givenName: savebody.givenName,
 			middleName1: savebody.middleName1,
 			middleName2: savebody.middleName2,
