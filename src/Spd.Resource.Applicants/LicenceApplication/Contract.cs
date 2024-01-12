@@ -68,6 +68,7 @@ public record WorkerLicenceAppCategory
 public record SaveLicenceApplicationCmd() : LicenceApplication
 {
     public string? BcscGuid { get; set; }
+    public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 };
 
 public record LicenceApplicationResp() : LicenceApplication

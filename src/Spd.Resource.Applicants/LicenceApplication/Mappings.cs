@@ -75,7 +75,6 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_businesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBusinessType(s.BusinessTypeCode)))
          .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseDogs)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
-         .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Incomplete))
          .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
          .ReverseMap()
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
@@ -118,6 +117,7 @@ internal class Mappings : Profile
           opt => opt.MapFrom(s => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(s.spd_licencecategoryid))));
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
+          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
           .IncludeBase<LicenceApplication, spd_application>();
 
         _ = CreateMap<SaveLicenceApplicationCmd, contact>()
