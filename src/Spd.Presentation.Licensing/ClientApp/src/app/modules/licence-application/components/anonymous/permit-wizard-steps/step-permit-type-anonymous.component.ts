@@ -56,33 +56,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 										</app-alert>
 									</div>
 								</div>
-								<!-- <mat-divider class="mb-3"></mat-divider>
-								<div class="row">
-									<div class="col-xl-5 col-lg-4">
-										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
-											>90-day Exemption (free)</mat-radio-button
-										>
-									</div>
-									<div class="col-xl-7 col-lg-8">
-										<app-alert type="info" icon="">
-											Apply for an exemption if you are temporarily visiting B.C. and need body armour for your
-											activities in the province, or if there is imminent risk to your safety.
-										</app-alert>
-									</div>
-								</div>
-								<mat-divider class="mb-3"></mat-divider>
-								<div class="row">
-									<div class="col-xl-5 col-lg-4">
-										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
-											>90-day Exemption Extension (free)</mat-radio-button
-										>
-									</div>
-									<div class="col-xl-7 col-lg-8">
-										<app-alert type="info" icon="">
-											Apply to extend your exemption if you have a 90-day exemption and need it for another 90 days.
-										</app-alert>
-									</div>
-								</div> -->
 							</mat-radio-group>
 						</form>
 						<mat-error

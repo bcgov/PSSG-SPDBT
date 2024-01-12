@@ -11,15 +11,15 @@ import { CommonMailingAddressComponent } from './common-mailing-address.componen
 	selector: 'app-user-profile',
 	template: `
 		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
-		<div class="text-minor-heading pt-2 pb-3">Personal information</div>
+		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
 		<app-personal-information [isReadOnly]="isReadOnly"></app-personal-information>
 
 		<mat-divider class="mat-divider-main"></mat-divider>
-		<div class="text-minor-heading pt-2 pb-3">Aliases or previous names</div>
+		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
 		<app-common-alias-list [form]="aliasesFormGroup" [isReadOnly]="isReadOnly"></app-common-alias-list>
 
 		<mat-divider class="mat-divider-main mt-3"></mat-divider>
-		<div class="text-minor-heading pt-2 pb-3">Contact information</div>
+		<div class="text-minor-heading pt-2 pb-3">Contact Information</div>
 		<app-common-contact-information
 			[form]="contactInformationFormGroup"
 			[isWizardStep]="false"
@@ -29,7 +29,7 @@ import { CommonMailingAddressComponent } from './common-mailing-address.componen
 		<div class="row">
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Residential address</div>
+				<div class="text-minor-heading pt-2 pb-3">Residential Address</div>
 
 				<app-alert type="info" icon="" [showBorder]="false">
 					Has your residential address changed?
@@ -46,7 +46,7 @@ import { CommonMailingAddressComponent } from './common-mailing-address.componen
 
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Mailing address</div>
+				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
 				<app-alert type="info" icon="" [showBorder]="false">
 					Provide your mailing address, if different from your residential address. This cannot be a company address.
 				</app-alert>

@@ -97,10 +97,6 @@ export abstract class PermitApplicationHelper {
 		}
 	);
 
-	// soleProprietorFormGroup = this.formBuilder.group({
-	// 	isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-	// });
-
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredPermit: new FormControl('', [FormControlValidators.required]),
@@ -181,89 +177,19 @@ export abstract class PermitApplicationHelper {
 		attachments: new FormControl(''),
 	});
 
-	employerInformationFormGroup: FormGroup = this.formBuilder.group(
-		{
-			businessName: new FormControl('', [FormControlValidators.required]),
-			supervisorName: new FormControl('', [FormControlValidators.required]),
-			supervisorEmailAddress: new FormControl('', [FormControlValidators.required]),
-			supervisorPhoneNumber: new FormControl('', [FormControlValidators.required]),
-			addressSelected: new FormControl(false),
-			addressLine1: new FormControl(''),
-			addressLine2: new FormControl(''),
-			city: new FormControl(''),
-			postalCode: new FormControl(''),
-			province: new FormControl(''),
-			country: new FormControl(''),
-		}
-		// {
-		// 	validators: [
-		// 		FormGroupValidators.conditionalDefaultRequiredTrueValidator(
-		// 			'addressSelected',
-		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-		// 		),
-		// 		FormGroupValidators.conditionalRequiredValidator(
-		// 			'addressLine1',
-		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-		// 		),
-		// 		FormGroupValidators.conditionalRequiredValidator(
-		// 			'city',
-		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-		// 		),
-		// 		FormGroupValidators.conditionalRequiredValidator(
-		// 			'postalCode',
-		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-		// 		),
-		// 		FormGroupValidators.conditionalRequiredValidator(
-		// 			'province',
-		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-		// 		),
-		// 		FormGroupValidators.conditionalRequiredValidator(
-		// 			'country',
-		// 			(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-		// 		),
-		// 	],
-		// }
-	);
-
-	// policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
-	// 	{
-	// 		isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
-	// 		policeOfficerRoleCode: new FormControl(''),
-	// 		otherOfficerRole: new FormControl(''),
-	// 		attachments: new FormControl(''),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'policeOfficerRoleCode',
-	// 				(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'otherOfficerRole',
-	// 				(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'attachments',
-	// 				(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-	// 			),
-	// 		],
-	// 	}
-	// );
-
-	// mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
-	// 	{
-	// 		isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
-	// 		attachments: new FormControl(''),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'attachments',
-	// 				(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
-	// 			),
-	// 		],
-	// 	}
-	// );
+	employerInformationFormGroup: FormGroup = this.formBuilder.group({
+		businessName: new FormControl('', [FormControlValidators.required]),
+		supervisorName: new FormControl('', [FormControlValidators.required]),
+		supervisorEmailAddress: new FormControl('', [FormControlValidators.required]),
+		supervisorPhoneNumber: new FormControl('', [FormControlValidators.required]),
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+	});
 
 	criminalHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),

@@ -98,60 +98,60 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							>
 								This is required
 							</mat-error>
-						</div>
 
-						<section *ngIf="form.get('addressSelected')?.value">
-							<div class="row">
-								<div class="col-12">
-									<mat-divider class="mat-divider-primary my-3"></mat-divider>
-									<div class="text-minor-heading mb-2">Address Information</div>
-									<mat-form-field>
-										<mat-label>Street Address 1</mat-label>
-										<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
-										<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
+							<section *ngIf="form.get('addressSelected')?.value">
+								<div class="row">
+									<div class="col-12">
+										<mat-divider class="mat-divider-primary my-3"></mat-divider>
+										<div class="text-minor-heading mb-2">Address Information</div>
+										<mat-form-field>
+											<mat-label>Street Address 1</mat-label>
+											<input matInput formControlName="addressLine1" [errorStateMatcher]="matcher" maxlength="100" />
+											<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
+										</mat-form-field>
+									</div>
+									<div class="col-12">
+										<mat-form-field>
+											<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
+											<input matInput formControlName="addressLine2" maxlength="100" />
+										</mat-form-field>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<mat-form-field>
+											<mat-label>City</mat-label>
+											<input matInput formControlName="city" maxlength="100" />
+											<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
+										</mat-form-field>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<mat-form-field>
+											<mat-label>Postal/Zip Code</mat-label>
+											<input
+												matInput
+												formControlName="postalCode"
+												oninput="this.value = this.value.toUpperCase()"
+												maxlength="20"
+											/>
+											<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
+										</mat-form-field>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<mat-form-field>
+											<mat-label>Province/State</mat-label>
+											<input matInput formControlName="province" maxlength="100" />
+											<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
+										</mat-form-field>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<mat-form-field>
+											<mat-label>Country</mat-label>
+											<input matInput formControlName="country" maxlength="100" />
+											<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
+										</mat-form-field>
+									</div>
 								</div>
-								<div class="col-12">
-									<mat-form-field>
-										<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="addressLine2" maxlength="100" />
-									</mat-form-field>
-								</div>
-								<div class="col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>City</mat-label>
-										<input matInput formControlName="city" maxlength="100" />
-										<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>Postal/Zip Code</mat-label>
-										<input
-											matInput
-											formControlName="postalCode"
-											oninput="this.value = this.value.toUpperCase()"
-											maxlength="20"
-										/>
-										<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>Province/State</mat-label>
-										<input matInput formControlName="province" maxlength="100" />
-										<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-md-6 col-sm-12">
-									<mat-form-field>
-										<mat-label>Country</mat-label>
-										<input matInput formControlName="country" maxlength="100" />
-										<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-							</div>
-						</section>
+							</section>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -167,7 +167,6 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	title = '';
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
-	// applicationTypeCodes = ApplicationTypeCode;
 
 	readonly title_new = 'Provide your employer’s information';
 	readonly title_replacement = 'Review your employer’s information';
@@ -178,17 +177,16 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
-		// switch (this.applicationTypeCode) {
-		// 	case ApplicationTypeCode.Replacement: {
-		// 		this.title = this.title_replacement;
-		// 		this.subtitle = this.title_subtitle_replacement;
-		// 		break;
-		// 	}
-		// 	default: {
-		this.title = this.title_new;
-		// 		break;
-		// 	}
-		// }
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = this.title_new;
+				break;
+			}
+			default: {
+				this.title = this.title_replacement;
+				break;
+			}
+		}
 	}
 
 	onAddressAutocomplete(address: Address): void {
@@ -224,8 +222,7 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 }
