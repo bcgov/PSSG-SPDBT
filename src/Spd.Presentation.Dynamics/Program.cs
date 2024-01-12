@@ -1,3 +1,6 @@
+using System.Configuration;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Spd.Presentation.Dynamics.Swagger;
@@ -7,9 +10,6 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.Payment;
 using Spd.Utilities.TempFileStorage;
-using System.Configuration;
-using System.Reflection;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
@@ -77,6 +77,8 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme)!;
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -90,5 +92,6 @@ app.UseAuthorization();
 app.UseDefaultHttpRequestLogging();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
-app.Run();
+await app.RunAsync();
