@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
@@ -12,10 +15,6 @@ using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
 using StackExchange.Redis;
-using System.Configuration;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +83,8 @@ builder.Services
   .AddAddressAutoComplete(builder.Configuration);
 builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -102,6 +103,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+app.MapHealthChecks("/health");
 app.MapFallbackToFile("index.html");
 
-app.Run();
+await app.RunAsync();
