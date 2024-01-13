@@ -52,19 +52,11 @@ builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpC
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 
 //add cache
-var redisConnection = builder.Configuration.GetSection("RedisConnection");
-string? endpoint = (string?)(redisConnection.GetValue(typeof(string), "endpoint"));
-string? password = (string?)(redisConnection.GetValue(typeof(string), "password"));
+string? redisConnection = builder.Configuration.GetValue<string>("RedisConnection");
 
-if (endpoint != null)
+if (redisConnection != null && !string.IsNullOrWhiteSpace(redisConnection))
 {
-    var configurationOptions = new ConfigurationOptions
-    {
-        EndPoints = { endpoint },
-        Password = password,
-        Ssl = false // Set this to true if your Redis instance can handle connection using SSL
-    };
-    builder.Services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = configurationOptions);
+    builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
 }
 else
 {
