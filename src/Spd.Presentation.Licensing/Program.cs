@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
@@ -12,10 +15,6 @@ using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
 using StackExchange.Redis;
-using System.Configuration;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,19 +52,11 @@ builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpC
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 
 //add cache
-var redisConnection = builder.Configuration.GetSection("RedisConnection");
-string? endpoint = (string?)(redisConnection.GetValue(typeof(string), "endpoint"));
-string? password = (string?)(redisConnection.GetValue(typeof(string), "password"));
+string? redisConnection = builder.Configuration.GetValue<string>("RedisConnection");
 
-if (endpoint != null)
+if (redisConnection != null && !string.IsNullOrWhiteSpace(redisConnection))
 {
-    var configurationOptions = new ConfigurationOptions
-    {
-        EndPoints = { endpoint },
-        Password = password,
-        Ssl = false // Set this to true if your Redis instance can handle connection using SSL
-    };
-    builder.Services.AddStackExchangeRedisCache(options => options.ConfigurationOptions = configurationOptions);
+    builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
 }
 else
 {
@@ -84,6 +75,8 @@ builder.Services
   .AddAddressAutoComplete(builder.Configuration);
 builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -99,9 +92,10 @@ app.UseAuthentication();
 app.UseMiddleware<UsersMiddleware>();
 app.UseAuthorization();
 
+app.MapHealthChecks("/health").ShortCircuit();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 app.MapFallbackToFile("index.html");
 
-app.Run();
+await app.RunAsync();

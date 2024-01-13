@@ -6,6 +6,7 @@ using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ResourceContracts;
+using System.Collections.Immutable;
 using System.Net;
 
 namespace Spd.Resource.Organizations.Org
@@ -26,7 +27,7 @@ namespace Spd.Resource.Organizations.Org
                 OrgsQry q => await GetOrgsAsync(q, ct),
                 OrgByIdentifierQry q => await GetOrgByIdentifierAsync(q, ct),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
-            }; 
+            };
         }
 
         public async Task<OrgManageResult?> ManageOrgAsync(OrgCmd cmd, CancellationToken ct)
@@ -111,8 +112,8 @@ namespace Spd.Resource.Organizations.Org
 
         private async Task<OrgsQryResult> GetOrgsAsync(OrgsQry query, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts;
-            if(!query.IncludeInactive)
+            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_account_spd_servicetype);
+            if (!query.IncludeInactive)
                 accounts = accounts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
             if (query.OrgGuid != null)
                 accounts = accounts.Where(a => a.spd_orgguid == query.OrgGuid.ToString());
@@ -120,6 +121,14 @@ namespace Spd.Resource.Organizations.Org
                 accounts = accounts.Where(a => a._parentaccountid_value == query.ParentOrgId);
             if (query.OrgCode != null)
                 accounts = accounts.Where(a => a.spd_orgcode == query.OrgCode);
+            if (query.ServiceTypes != null && query.ServiceTypes.Any())
+            {
+                IEnumerable<Guid> stIds = query.ServiceTypes.Select(t => DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.GetValueOrDefault(t.ToString()));
+                var accountsList = accounts
+                    .AsEnumerable()
+                    .Where(a => stIds.Any(t => a.spd_account_spd_servicetype.Any(st => st.spd_servicetypeid == t)));
+                return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accountsList));
+            }
 
             return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accounts.ToList()));
         }
@@ -142,7 +151,7 @@ namespace Spd.Resource.Organizations.Org
                 .Where(so => so.accountid == org.accountid)
                 .ToList();
 
-            if (!serviceTypes.Any()) 
+            if (!serviceTypes.Any())
                 throw new ApiException(HttpStatusCode.InternalServerError, $"organization {org.name} does not have service type.");
 
             var response = _mapper.Map<OrgResult>(org);
