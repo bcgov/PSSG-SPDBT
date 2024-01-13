@@ -40,6 +40,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 
 				<app-common-photograph-of-yourself
 					[form]="form"
+					[isAnonymous]="false"
 					[isCalledFromModal]="isCalledFromModal"
 					(fileUploaded)="onFileUploaded($event)"
 					(fileRemoved)="onFileRemoved()"

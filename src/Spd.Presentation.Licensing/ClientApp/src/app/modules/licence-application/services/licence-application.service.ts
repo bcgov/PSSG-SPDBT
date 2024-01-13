@@ -560,10 +560,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		const photographOfYourselfData = { useBcServicesCardPhoto: BooleanTypeCode.No };
 
 		this.licenceModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
+				photographOfYourselfData,
 				profileConfirmationData: { isProfileUpToDate: true },
 			},
 			{

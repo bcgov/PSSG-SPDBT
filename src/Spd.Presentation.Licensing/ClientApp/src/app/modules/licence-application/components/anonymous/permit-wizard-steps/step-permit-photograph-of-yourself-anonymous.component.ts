@@ -25,19 +25,9 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 					subtitle="This will appear on your licence. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
 				></app-step-title>
 
-				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<app-alert type="warning" icon="warning">
-							<strong>Warning</strong>: uploading a photo that is dissimilar from your submitted government-issued photo
-							ID will delay your application's processing time.
-						</app-alert>
-					</div>
-				</div>
-
-				<div class="text-minor-heading mb-2">Upload your photo</div>
-
 				<app-common-photograph-of-yourself
 					[form]="form"
+					[isAnonymous]="true"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
 			</div>
