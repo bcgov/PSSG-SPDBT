@@ -3,6 +3,7 @@
 import { AdditionalGovIdDocument } from './additional-gov-id-document';
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
+import { BusinessTypeCode } from './business-type-code';
 import { CitizenshipDocument } from './citizenship-document';
 import { EyeColourCode } from './eye-colour-code';
 import { FingerprintProofDocument } from './fingerprint-proof-document';
@@ -24,6 +25,7 @@ export interface WorkerLicenceAppSubmitRequest {
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
+  businessTypeCode?: BusinessTypeCode;
   carryAndUseRestraints?: null | boolean;
   categoryData?: null | Array<WorkerLicenceAppCategoryData>;
   citizenshipDocument?: CitizenshipDocument;
@@ -50,7 +52,6 @@ export interface WorkerLicenceAppSubmitRequest {
   isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
-  isSoleProprietor?: null | boolean;
   isTreatedForMHC?: null | boolean;
   licenceAppId?: null | string;
   licenceTermCode?: LicenceTermCode;

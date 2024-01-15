@@ -4,6 +4,7 @@ import { AdditionalGovIdDocument } from './additional-gov-id-document';
 import { Alias } from './alias';
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
+import { BusinessTypeCode } from './business-type-code';
 import { CitizenshipDocument } from './citizenship-document';
 import { EyeColourCode } from './eye-colour-code';
 import { FingerprintProofDocument } from './fingerprint-proof-document';
@@ -26,6 +27,7 @@ export interface WorkerLicenceResponse {
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
+  businessTypeCode?: BusinessTypeCode;
   carryAndUseRestraints?: null | boolean;
   caseNumber?: null | string;
   categoryData?: null | Array<WorkerLicenceAppCategoryData>;
@@ -54,7 +56,6 @@ export interface WorkerLicenceResponse {
   isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
-  isSoleProprietor?: null | boolean;
   isTreatedForMHC?: null | boolean;
   licenceAppId?: string;
   licenceTermCode?: LicenceTermCode;

@@ -276,9 +276,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 
 				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -341,9 +338,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// };
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -1242,7 +1236,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
 			applicationTypeCode: savebody.applicationTypeCode,
-			isSoleProprietor: savebody.isSoleProprietor,
 			givenName: savebody.givenName,
 			middleName1: savebody.middleName1,
 			middleName2: savebody.middleName2,
