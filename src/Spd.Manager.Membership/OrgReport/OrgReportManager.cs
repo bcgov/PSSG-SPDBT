@@ -1,6 +1,6 @@
 using AutoMapper;
 using MediatR;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Organizations.Report;
 using Spd.Utilities.FileStorage;

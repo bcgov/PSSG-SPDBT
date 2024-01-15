@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Screening;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;

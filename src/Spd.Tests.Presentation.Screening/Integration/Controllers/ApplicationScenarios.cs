@@ -1,6 +1,6 @@
 using Alba;
 using Spd.Manager.Cases.Screening;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;

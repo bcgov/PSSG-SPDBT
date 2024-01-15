@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Spd.Manager.Common.ManagerContract
+namespace Spd.Manager.Shared
 {
     public record PaginationRequest(int Page, int PageSize);
     public record PaginationResponse

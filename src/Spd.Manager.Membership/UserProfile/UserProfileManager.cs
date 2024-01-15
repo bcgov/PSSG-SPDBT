@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Contact;

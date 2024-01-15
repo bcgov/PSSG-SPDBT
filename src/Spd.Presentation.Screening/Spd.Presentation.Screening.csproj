@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spd.Manager.Cases\Spd.Manager.Cases.csproj" />
+    <ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
     <ProjectReference Include="..\Spd.Manager.Membership\Spd.Manager.Membership.csproj" />
     <ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />

@@ -1,4 +1,4 @@
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 
 namespace Spd.Engine.Search
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 using Spd.Resource.Organizations.Org;
 
 namespace Spd.Manager.Membership.Org

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;   
 using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;

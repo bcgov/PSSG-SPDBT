@@ -1,7 +1,7 @@
 using AutoMapper;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
-using Spd.Manager.Common.ManagerContract;
+using Spd.Manager.Shared;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Delegates;
