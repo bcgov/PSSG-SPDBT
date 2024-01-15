@@ -1,10 +1,10 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: dev-release-cronjob
+  name: test-release-cronjob
 spec:
-  suspend: true
-  schedule: "*/5 * * * *"
+  suspend: false
+  schedule: "0 13 * * Mon-Fri"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
   successfulJobsHistoryLimit: 1
@@ -38,7 +38,7 @@ spec:
               command:
                 - "/bin/sh"
                 - "-c"
-                - "cd /tmp && curl -o tkn-linux-amd64.tar.gz -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && ./tkn pipeline start dev-release-pipeline"
+                - "cd /tmp && curl -o tkn-linux-amd64.tar.gz -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && ./tkn pipeline start test-release-pipeline"
               volumeMounts:
                 - name: temp
                   mountPath: /tmp
