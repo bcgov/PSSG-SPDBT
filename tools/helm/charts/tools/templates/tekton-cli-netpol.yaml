@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tekton-cli-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: CD
+  egress:
+  - ports:
+    - port: 8080
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: tkn-cli-serve
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: openshift-pipelines
+  policyTypes:
+  - Egress
