@@ -367,7 +367,7 @@ export class WorkerLicensingService extends BaseService {
 'WorkerLicenceAppAnonymousSubmitRequest'?: {
 'workerLicenceTypeCode'?: string | null;
 'applicationTypeCode'?: string | null;
-'isSoleProprietor'?: boolean | null;
+'businessTypeCode'?: string | null;
 'givenName'?: string | null;
 'middleName1'?: string | null;
 'middleName2'?: string | null;
@@ -475,7 +475,7 @@ export class WorkerLicensingService extends BaseService {
 'WorkerLicenceAppAnonymousSubmitRequest'?: {
 'workerLicenceTypeCode'?: string | null;
 'applicationTypeCode'?: string | null;
-'isSoleProprietor'?: boolean | null;
+'businessTypeCode'?: string | null;
 'givenName'?: string | null;
 'middleName1'?: string | null;
 'middleName2'?: string | null;

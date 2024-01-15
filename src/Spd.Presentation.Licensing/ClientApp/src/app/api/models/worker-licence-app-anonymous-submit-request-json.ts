@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
+import { BusinessTypeCode } from './business-type-code';
 import { DocumentBase } from './document-base';
 import { EyeColourCode } from './eye-colour-code';
 import { GenderCode } from './gender-code';
@@ -18,6 +19,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
+  businessTypeCode?: BusinessTypeCode;
   carryAndUseRestraints?: null | boolean;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   contactEmailAddress?: null | string;
@@ -43,7 +45,6 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
-  isSoleProprietor?: null | boolean;
   isTreatedForMHC?: null | boolean;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;
