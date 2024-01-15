@@ -22,12 +22,12 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-checklist-new-worker></app-step-checklist-new-worker>
 
-					<div class="row mt-4">
+					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
-					<!-- <div class="row mt-4">
+					<!-- <div class="row wizard-button-row">
 						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 						</div>
@@ -40,7 +40,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-checklist-renewal-worker></app-step-checklist-renewal-worker>
 
-					<div class="row mt-4">
+					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
@@ -50,7 +50,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-step-checklist-update-worker></app-step-checklist-update-worker>
 
-					<div class="row mt-4">
+					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
@@ -65,7 +65,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			>
 				<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
@@ -85,7 +85,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-sole-proprietor [applicationTypeCode]="applicationTypeCode"></app-step-sole-proprietor>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
@@ -105,7 +105,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-step-licence-expired></app-step-licence-expired>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
@@ -130,7 +130,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			<mat-step>
 				<app-step-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-licence-category>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
@@ -155,7 +155,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			<mat-step *ngIf="showStepDogsAndRestraints">
 				<app-step-restraints-authorization></app-step-restraints-authorization>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -185,7 +185,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			<mat-step *ngIf="showStepDogsAndRestraints">
 				<app-step-dogs-authorization></app-step-dogs-authorization>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_DOGS)" *ngIf="isLoggedIn">
 							Save and Exit
@@ -210,7 +210,7 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-licence-term>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button

@@ -13,65 +13,61 @@ import { StepsIdentificationAnonymousComponent } from './worker-licence-wizard-s
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-renewal',
 	template: `
-		<div class="row">
-			<div class="col-12">
-				<mat-stepper
-					linear
-					labelPosition="bottom"
-					[orientation]="orientation"
-					(selectionChange)="onStepSelectionChange($event)"
-					#stepper
-				>
-					<mat-step [completed]="step1Complete">
-						<ng-template matStepLabel> Licence Selection </ng-template>
-						<app-steps-licence-selection
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-licence-selection>
-					</mat-step>
+		<mat-stepper
+			linear
+			labelPosition="bottom"
+			[orientation]="orientation"
+			(selectionChange)="onStepSelectionChange($event)"
+			#stepper
+		>
+			<mat-step [completed]="step1Complete">
+				<ng-template matStepLabel> Licence Selection </ng-template>
+				<app-steps-licence-selection
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-licence-selection>
+			</mat-step>
 
-					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Background</ng-template>
-						<app-steps-background-renew-and-update
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-background-renew-and-update>
-					</mat-step>
+			<mat-step [completed]="step2Complete">
+				<ng-template matStepLabel>Background</ng-template>
+				<app-steps-background-renew-and-update
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-background-renew-and-update>
+			</mat-step>
 
-					<mat-step [completed]="step3Complete">
-						<ng-template matStepLabel>Identification</ng-template>
-						<app-steps-identification-anonymous
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-identification-anonymous>
-					</mat-step>
+			<mat-step [completed]="step3Complete">
+				<ng-template matStepLabel>Identification</ng-template>
+				<app-steps-identification-anonymous
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-identification-anonymous>
+			</mat-step>
 
-					<mat-step completed="false">
-						<ng-template matStepLabel>Review and Confirm</ng-template>
-						<ng-template matStepContent>
-							<app-steps-review-licence-anonymous
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(scrollIntoView)="onScrollIntoView()"
-								(goToStep)="onGoToStep($event)"
-							></app-steps-review-licence-anonymous>
-						</ng-template>
-					</mat-step>
+			<mat-step completed="false">
+				<ng-template matStepLabel>Review and Confirm</ng-template>
+				<ng-template matStepContent>
+					<app-steps-review-licence-anonymous
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+						(goToStep)="onGoToStep($event)"
+					></app-steps-review-licence-anonymous>
+				</ng-template>
+			</mat-step>
 
-					<mat-step completed="false">
-						<ng-template matStepLabel>Pay</ng-template>
-					</mat-step>
-				</mat-stepper>
-			</div>
-		</div>
+			<mat-step completed="false">
+				<ng-template matStepLabel>Pay</ng-template>
+			</mat-step>
+		</mat-stepper>
 	`,
 	styles: [],
 })

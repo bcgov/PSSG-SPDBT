@@ -10,7 +10,7 @@ import { StepPermitCitizenshipComponent } from './step-permit-citizenship.compon
 import { StepPermitCriminalHistoryComponent } from './step-permit-criminal-history.component';
 import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.component';
 import { StepPermitPersonalInformationComponent } from './step-permit-personal-information.component';
-import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
+import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physical-characteristics.component';
 
 @Component({
@@ -22,7 +22,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-personal-information>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -63,7 +63,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-criminal-history>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -98,7 +98,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			<mat-step>
 				<app-step-permit-fingerprints [applicationTypeCode]="applicationTypeCode"></app-step-permit-fingerprints>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -128,7 +128,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			<mat-step>
 				<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -158,7 +158,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			<mat-step>
 				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -190,7 +190,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-bc-driver-licence>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -227,7 +227,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-physical-characteristics>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -269,7 +269,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-photograph-of-yourself-anonymous>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -339,8 +339,8 @@ export class StepsPermitIdentificationComponent extends BaseWizardStepComponent 
 	stepDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
 	@ViewChild(StepPermitPhysicalCharacteristicsComponent)
 	stepCharacteristicsComponent!: StepPermitPhysicalCharacteristicsComponent;
-	@ViewChild(StepPermitPhotographOfYourselfComponent)
-	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
+	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
+	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
 	constructor(
 		private authProcessService: AuthProcessService,

@@ -265,10 +265,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	loadLicenceWithAccessCode(
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode,
-		licenceNumber: string,
-		accessCode: string
+		_workerLicenceTypeCode: WorkerLicenceTypeCode,
+		_applicationTypeCode: ApplicationTypeCode,
+		_licenceNumber: string,
+		_accessCode: string
 	): Observable<WorkerLicenceResponse> {
 		return this.loadLicence(
 			'ef0b27ee-db15-409a-8f8f-6a7922a2332b',

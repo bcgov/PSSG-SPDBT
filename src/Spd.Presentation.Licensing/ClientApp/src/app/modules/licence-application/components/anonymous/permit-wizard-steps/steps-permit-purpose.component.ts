@@ -15,7 +15,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			<mat-step>
 				<app-step-permit-reason [applicationTypeCode]="applicationTypeCode"></app-step-permit-reason>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -52,7 +52,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-employer-information>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -92,7 +92,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			<mat-step>
 				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
