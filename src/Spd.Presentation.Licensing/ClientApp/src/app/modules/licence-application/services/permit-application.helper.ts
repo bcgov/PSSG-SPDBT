@@ -227,12 +227,6 @@ export abstract class PermitApplicationHelper {
 		}
 	);
 
-	// additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
-	// 	governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
-	// 	expiryDate: new FormControl(''),
-	// 	attachments: new FormControl([], [Validators.required]),
-	// });
-
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
 		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
 		bcDriversLicenceNumber: new FormControl(),
