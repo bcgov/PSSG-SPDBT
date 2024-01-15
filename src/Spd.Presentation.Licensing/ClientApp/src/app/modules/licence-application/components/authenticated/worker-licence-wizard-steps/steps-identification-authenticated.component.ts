@@ -15,7 +15,7 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 			<mat-step>
 				<app-step-citizenship></app-step-citizenship>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_CITIZENSHIP)">
 							Save and Exit
@@ -40,7 +40,7 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 			<mat-step *ngIf="showAdditionalGovermentIdStep">
 				<app-step-additional-gov-id></app-step-additional-gov-id>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_ADDITIONAL_GOV_ID)">
 							Save and Exit
@@ -70,7 +70,7 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 			<mat-step>
 				<app-step-bc-driver-licence></app-step-bc-driver-licence>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)">
 							Save and Exit
@@ -100,7 +100,7 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 			<mat-step>
 				<app-step-physical-characteristics></app-step-physical-characteristics>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)">
 							Save and Exit
@@ -130,7 +130,7 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 			<mat-step>
 				<app-step-photograph-of-yourself></app-step-photograph-of-yourself>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_PHOTO)">
 							Save and Exit

@@ -17,7 +17,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-residential-address>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -52,7 +52,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 			<mat-step>
 				<app-step-permit-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-permit-mailing-address>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -89,7 +89,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-contact-information>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
