@@ -78,7 +78,6 @@ import { CommonAccessCodeAnonymousComponent } from './components/shared/step-com
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
-import { CommonCitizenshipComponent } from './components/shared/step-components/common-citizenship.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
@@ -145,7 +144,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
-		CommonCitizenshipComponent,
 		CommonCriminalHistoryComponent,
 		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,

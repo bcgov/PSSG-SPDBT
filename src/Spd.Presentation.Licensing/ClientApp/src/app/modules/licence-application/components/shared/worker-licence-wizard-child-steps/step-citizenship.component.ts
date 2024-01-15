@@ -4,6 +4,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
 	ProofOfAbilityToWorkInCanadaTypes,
@@ -11,7 +12,6 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { CitizenshipFileUploadEmitResponse } from '../step-components/common-citizenship.component';
 
 @Component({
 	selector: 'app-step-citizenship',
@@ -20,12 +20,7 @@ import { CitizenshipFileUploadEmitResponse } from '../step-components/common-cit
 			<div class="step">
 				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
 
-				<app-common-citizenship
-					[form]="form"
-					(fileUploaded)="onFileUploaded($event)"
-					(fileRemoved)="onFileRemoved()"
-				></app-common-citizenship>
-				<!-- <form [formGroup]="form" novalidate>
+				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="isCanadianCitizen">
@@ -140,12 +135,12 @@ import { CitizenshipFileUploadEmitResponse } from '../step-components/common-cit
 							</ng-container>
 						</div>
 					</div>
-				</form> -->
+				</form>
 			</div>
 		</section>
 	`,
 	styles: [],
-	// animations: [showHideTriggerSlideAnimation],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class StepCitizenshipComponent implements LicenceChildStepperStepComponent {
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
@@ -164,21 +159,21 @@ export class StepCitizenshipComponent implements LicenceChildStepperStepComponen
 		private hotToastService: HotToastService
 	) {}
 
-	onFileUploaded(resp: CitizenshipFileUploadEmitResponse): void {
+	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
 			const proofTypeCode =
 				this.isCanadianCitizen.value == BooleanTypeCode.Yes
 					? this.canadianCitizenProofTypeCode.value
 					: this.notCanadianCitizenProofTypeCode.value;
-			this.licenceApplicationService.addUploadDocument(proofTypeCode, resp.file).subscribe({
+			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
 				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == resp.file.name);
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 					matchingFile.documentUrlId = resp.body[0].documentUrlId;
 				},
 				error: (error: any) => {
 					console.log('An error occurred during file upload', error);
 					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(resp.file);
+					this.fileUploadComponent.removeFailedFile(file);
 				},
 			});
 		}

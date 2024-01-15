@@ -19,7 +19,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				></app-step-title>
 
 				<div class="row">
-					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
 							<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
 								<ng-container *ngFor="let term of termCodes; let i = index; let last = last">

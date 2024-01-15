@@ -475,6 +475,48 @@ ngx-dropzone-remove-badge {
   }
 }
 
+.wizard-button-row {  
+  margin-top: 1rem!important;
+}
+
+.outside-wizard-button-row {  
+  margin: 1rem!important;
+}
+
+.login-selection-container {
+    border-radius: 4px;
+    border: 4px solid var(--color-yellow);
+    box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+    text-align: center;
+
+    &__info {
+      padding: 4px;
+      display: grid;
+      justify-content: end;
+    }
+
+    &__title {
+      font-size: 1.2em;
+      font-weight: 500;
+      // text-align: center;
+  
+      &__icon {
+        color: var(--color-primary);
+        font-size: 100px !important;
+        height: 100px !important;
+        width: 100px !important;
+      }
+    }
+
+    // &__help-wrapper {
+    //   text-align: left;
+    // }
+  
+    // &__help-title {
+    //   font-size: 1.3em;
+    // }
+}
+
 .payment{
   &__image {
     max-height: 8em;

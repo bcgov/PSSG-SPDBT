@@ -20,7 +20,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-updates>
 
-							<div class="row mt-4">
+							<div class="row wizard-button-row">
 								<div
 									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
 								>
@@ -36,7 +36,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 							<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
 							<app-step-confirm-mailing-address></app-step-confirm-mailing-address>
 
-							<div class="row mt-4">
+							<div class="row wizard-button-row">
 								<div
 									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
 								>
@@ -52,7 +52,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 							<!-- <ng-template matStepLabel>Confirm Updates</ng-template> -->
 							<app-step-confirm-updates></app-step-confirm-updates>
 
-							<div class="row mt-4">
+							<div class="row wizard-button-row">
 								<div
 									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
 								>

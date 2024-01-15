@@ -24,7 +24,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-personal-information-anonymous>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -64,7 +64,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-aliases></app-step-aliases>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -94,7 +94,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-citizenship></app-step-citizenship>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -124,7 +124,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step *ngIf="showAdditionalGovermentIdStep && applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-additional-gov-id></app-step-additional-gov-id>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -159,7 +159,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-bc-driver-licence></app-step-bc-driver-licence>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -196,7 +196,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-physical-characteristics>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -233,7 +233,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-photograph-of-yourself-anonymous>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_PHOTO)" *ngIf="isLoggedIn">
 							Save and Exit
@@ -258,7 +258,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step>
 				<app-step-residential-address [applicationTypeCode]="applicationTypeCode"></app-step-residential-address>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -293,7 +293,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step *ngIf="showMailingAddressStep">
 				<app-step-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-mailing-address>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -328,7 +328,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			<mat-step>
 				<app-step-contact-information [applicationTypeCode]="applicationTypeCode"></app-step-contact-information>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button

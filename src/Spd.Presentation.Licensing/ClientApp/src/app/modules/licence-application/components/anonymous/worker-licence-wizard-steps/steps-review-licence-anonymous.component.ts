@@ -12,7 +12,7 @@ import { StepSummaryReviewLicenceAnonymousComponent } from './step-summary-revie
 					(editStep)="onGoToStep($event)"
 				></app-step-summary-review-licence-anonymous>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
@@ -25,7 +25,7 @@ import { StepSummaryReviewLicenceAnonymousComponent } from './step-summary-revie
 			<mat-step>
 				<app-step-consent-and-declaration></app-step-consent-and-declaration>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>

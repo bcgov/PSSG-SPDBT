@@ -15,7 +15,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-permit-checklist-new></app-step-permit-checklist-new>
 
-					<div class="row mt-4">
+					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
@@ -25,7 +25,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-permit-checklist-renewal></app-step-permit-checklist-renewal>
 
-					<div class="row mt-4">
+					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
@@ -35,7 +35,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-step-permit-checklist-update></app-step-permit-checklist-update>
 
-					<div class="row mt-4">
+					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
@@ -50,7 +50,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 			>
 				<app-step-permit-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-permit-confirmation>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
@@ -65,7 +65,7 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-step-permit-expired></app-step-permit-expired>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
