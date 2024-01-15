@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -16,31 +17,87 @@ import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 conditions px-3 mb-3">
 							<br />
-							<ul>
-								<li>
-									I hereby consent to the Registrar carrying out a criminal record check, police information check and
-									correctional services information check on me and to use the copy of my fingerprints for that purpose.
-									This consent will remain in effect for the duration of the period for which the licence is valid.
-								</li>
-								<li>
-									I hereby authorize the release to the Registrar any documents in the custody of the police,
-									corrections, the court, and crown counsel relating to these checks.
-								</li>
-								<li>
-									I hereby consent to my licence information (i.e., licence number and licence status) being available
-									for viewing
-								</li>
-							</ul>
+							<ng-container
+								*ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit; else bodyArmour"
+							>
+								<div class="fw-bold">I HEREBY AUTHORIZE:</div>
+								<ul>
+									<li>
+										The Registrar, Security Services, to conduct a criminal record check through any city, municipal or
+										provincial police department or public body including the police information check and correctional
+										service information check, to determine whether I have a record for any provincial and/or federal
+										charges, convictions, peace bonds or restraining orders, etc. This consent will remain in effect for
+										the duration of the period for which my permit is valid.
+									</li>
+									<li>
+										Where the results of this check indicated that a criminal record or outstanding charge may exist, I
+										agree to provide my fingerprints to verify any such criminal record.
+									</li>
+									<li>
+										I further authorize the RCMP, or designated authority, to provide a copy of my record to the
+										Registrar, Security Services.
+									</li>
+								</ul>
+
+								<div class="fw-bold">I UNDERSTAND THAT:</div>
+								<div class="mb-3">
+									As a result of the checks, the Registrar may require further information from me including copies of
+									all criminal proceedings or information to assess good character and to assist in determining needs
+									for operating an armoured vehicle.
+								</div>
+
+								<div class="fw-bold">I HEREBY CERTIFY THAT:</div>
+								<div class="mb-3">
+									I have read and understand all portions of this application form and the information set out by me in
+									this application is true and correct to the best of my knowledge and belief. I have read and
+									understand the Armoured Vehicle and After-Market Compartment Control Act and Regulations; and I am
+									aware of and understand the conditions that will be placed on me as an operator of an armoured
+									vehicle.
+								</div>
+							</ng-container>
+
+							<ng-template #bodyArmour>
+								<div class="fw-bold">I HEREBY AUTHORIZE:</div>
+								<ul>
+									<li>
+										The Registrar, Security Services, to conduct a criminal record check through any city, municipal or
+										provincial police department or public body including the police information check and correctional
+										service information check, to determine whether I have a record for any provincial and/or federal
+										charges, convictions, peace bonds or restraining orders, etc. This consent will remain in effect for
+										the duration of the period for which my permit is valid.
+									</li>
+									<li>
+										Where the results of this check indicated that a criminal record or outstanding charge may exist, I
+										agree to provide my fingerprints to verify any such criminal record.
+									</li>
+									<li>
+										I further authorize the RCMP, or designated authority, to provide a copy of my record to the
+										Registrar, Security Services.
+									</li>
+								</ul>
+
+								<div class="fw-bold">I UNDERSTAND THAT:</div>
+								<div class="mb-3">
+									As a result of the checks, the Registrar may require further information from me including copies of
+									all criminal proceedings or information to assess good character and to assist in determining needs
+									for operating an Body Armour.
+								</div>
+
+								<div class="fw-bold">I HEREBY CERTIFY THAT:</div>
+								<div class="mb-3">
+									I have read and understand all portions of this application form and the information set out by me in
+									this application is true and correct to the best of my knowledge and belief. I have read and
+									understand the Body Armour and After-Market Compartment Control Act and Regulations; and I am aware of
+									and understand the conditions that will be placed on me as an operator of an Body Armour.
+								</div>
+							</ng-template>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="readTerms" (click)="onCheckboxChange()">
-								I HEREBY CERTIFY THAT I have read and understand all portions of this application form and the
-								information set out by me in this application is true and correct to the best of my knowledge and
-								belief. I have read and understand the Security Services Act and Regulations; and I am aware of and
-								understand the conditions that will be placed on me as a licensee
+								Declaration & Sign Off
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
@@ -99,6 +156,9 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 	captchaResponse: CaptchaResponse | null = null;
 
 	form: FormGroup = this.permitApplicationService.consentAndDeclarationFormGroup;
+
+	workerLicenceTypeCodes = WorkerLicenceTypeCode;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	constructor(
 		private utilService: UtilService,

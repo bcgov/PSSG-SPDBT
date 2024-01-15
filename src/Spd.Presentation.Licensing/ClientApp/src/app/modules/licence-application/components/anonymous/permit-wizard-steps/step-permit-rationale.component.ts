@@ -77,19 +77,19 @@ export class StepPermitRationaleComponent implements LicenceChildStepperStepComp
 	) {}
 
 	onFileUploaded(_file: File): void {
-		// 	if (this.authenticationService.isLoggedIn()) {
-		// 		this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
-		// 			next: (resp: any) => {
-		// 				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-		// 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 			},
-		// 			error: (error: any) => {
-		// 				console.log('An error occurred during file upload', error);
-		// 				this.hotToastService.error('An error occurred during the file upload. Please try again.');
-		// 				this.fileUploadComponent.removeFailedFile(file);
-		// 			},
-		// 		});
-		// 	}
+		// if (this.authenticationService.isLoggedIn()) {
+		// 	this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
+		// 		next: (resp: any) => {
+		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during file upload', error);
+		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
+		// 			this.fileUploadComponent.removeFailedFile(file);
+		// 		},
+		// 	});
+		// }
 	}
 
 	onFileRemoved(): void {
