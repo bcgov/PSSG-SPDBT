@@ -5,7 +5,6 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CommonPhotographOfYourselfComponent } from '../../shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
@@ -33,8 +32,15 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 					subtitle="If not, you will be allowed upload a new photo."
 				></app-step-title>
 
+				<div class="row mb-2">
+					<div class="col-12 text-center">
+						<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
+					</div>
+				</div>
+
 				<app-common-photograph-of-yourself
 					[form]="form"
+					[isAnonymous]="false"
 					[isCalledFromModal]="isCalledFromModal"
 					(fileUploaded)="onFileUploaded($event)"
 					(fileRemoved)="onFileRemoved()"
@@ -56,26 +62,20 @@ export class StepPermitPhotographOfYourselfComponent implements LicenceChildStep
 	@ViewChild(CommonPhotographOfYourselfComponent)
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private permitApplicationService: PermitApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private permitApplicationService: PermitApplicationService, private hotToastService: HotToastService) {}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
-			this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
-				},
-			});
-		}
+		this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {

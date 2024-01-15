@@ -1,24 +1,15 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 
 @Component({
 	selector: 'app-common-photograph-of-yourself',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row mb-2">
-				<div class="col-12 text-center">
-					<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
-				</div>
-			</div>
-
-			<div class="row">
+			<div class="row" *ngIf="!isAnonymous">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 					<mat-radio-group aria-label="Select an option" formControlName="useBcServicesCardPhoto">
 						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -39,15 +30,17 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 
 			<div class="row my-2" *ngIf="useBcServicesCardPhoto.value === booleanTypeCodes.No" @showHideTriggerSlideAnimation>
 				<div [ngClass]="isCalledFromModal ? 'col-12' : 'col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto'">
-					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-					<div class="text-minor-heading mb-2">Upload a photo of yourself:</div>
+					<ng-container *ngIf="!isAnonymous">
+						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+						<div class="text-minor-heading mb-2">Upload a photo of yourself:</div>
 
-					<p>
-						This will appear on your licence. It must be a passport-quality photo of your face looking straight at the
-						camera, against a plain, white background. It must be from within the last year.
-					</p>
+						<p>
+							This will appear on your licence. It must be a passport-quality photo of your face looking straight at the
+							camera, against a plain, white background. It must be from within the last year.
+						</p>
+					</ng-container>
 
-					<app-alert type="warning" *ngIf="!isCalledFromModal">
+					<app-alert type="warning" icon="warning" *ngIf="!isCalledFromModal">
 						<div>
 							Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
 							application's processing time.
@@ -83,6 +76,7 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	@Input() form!: FormGroup;
+	@Input() isAnonymous = false;
 	@Input() isCalledFromModal = false;
 
 	@Output() fileUploaded = new EventEmitter<File>();
@@ -90,32 +84,12 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService,
-		private hotToastService: HotToastService
-	) {}
-
 	onFileUploaded(file: File): void {
 		this.fileUploaded.emit(file);
-		// if (this.authenticationService.isLoggedIn()) {
-		// 	this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
-		// 		next: (resp: any) => {
-		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during file upload', error);
-		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
-		// 			this.fileUploadComponent.removeFailedFile(file);
-		// 		},
-		// 	});
-		// }
 	}
 
 	onFileRemoved(): void {
 		this.fileRemoved.emit();
-		// this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

@@ -229,7 +229,9 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			</mat-step>
 
 			<mat-step>
-				<app-step-photograph-of-yourself [applicationTypeCode]="applicationTypeCode"></app-step-photograph-of-yourself>
+				<app-step-photograph-of-yourself-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-photograph-of-yourself-anonymous>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

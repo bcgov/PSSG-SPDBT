@@ -20,6 +20,7 @@ import { StepPermitExpiredComponent } from './components/anonymous/permit-wizard
 import { StepPermitFingerprintsComponent } from './components/anonymous/permit-wizard-steps/step-permit-fingerprints.component';
 import { StepPermitMailingAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-mailing-address.component';
 import { StepPermitPersonalInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-personal-information.component';
+import { StepPermitPhotographOfYourselfAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhotographOfYourselfComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitRationaleComponent } from './components/anonymous/permit-wizard-steps/step-permit-rationale.component';
@@ -125,6 +126,7 @@ import { StepLicenceUserProfileComponent } from './components/shared/worker-lice
 import { StepMailingAddressComponent } from './components/shared/worker-licence-wizard-child-steps/step-mailing-address.component';
 import { StepMentalHealthConditionsComponent } from './components/shared/worker-licence-wizard-child-steps/step-mental-health-conditions.component';
 import { StepPhotographOfYourselfComponent } from './components/shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component';
+import { StepPhotographOfYourselfAnonymousComponent } from './components/shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component-anonymous';
 import { StepPhysicalCharacteristicsComponent } from './components/shared/worker-licence-wizard-child-steps/step-physical-characteristics.component';
 import { StepPoliceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-child-steps/step-police-background-renew-and-update.component';
 import { StepPoliceBackgroundComponent } from './components/shared/worker-licence-wizard-child-steps/step-police-background.component';
@@ -273,6 +275,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		PermitWizardAnonymousRenewalComponent,
 		PermitWizardAnonymousUpdateComponent,
 		StepsPermitReviewAnonymousComponent,
+		StepPermitPhotographOfYourselfAnonymousComponent,
+		StepPhotographOfYourselfAnonymousComponent,
 		StepPermitSummaryAnonymousComponent,
 		StepPermitConsentAndDeclarationComponent,
 	],
