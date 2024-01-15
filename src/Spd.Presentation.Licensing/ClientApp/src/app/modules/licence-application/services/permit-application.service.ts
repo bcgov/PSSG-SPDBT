@@ -469,21 +469,62 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private createPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		return this.loadPermit(
+			'ef0b27ee-db15-409a-8f8f-6a7922a2332b',
+			WorkerLicenceTypeCode.ArmouredVehiclePermit,
+			ApplicationTypeCode.New
+		).pipe(
+			tap((resp: any) => {
+				const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+				// const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
+				const photographOfYourselfData = {
+					useBcServicesCardPhoto: BooleanTypeCode.No,
+				};
 
-		this.permitModelFormGroup.patchValue(
-			{
-				workerLicenceTypeData,
-				permitRequirementData,
-				profileConfirmationData: { isProfileUpToDate: true },
-			},
-			{
-				emitEvent: false,
-			}
+				// temp
+				const permitRequirementData = {
+					workerLicenceTypeCode: workerLicenceTypeCode,
+					armouredVehicleRequirementFormGroup: {
+						isPersonalProtection: true,
+					},
+				};
+				// temp
+				const employerInformationData = {
+					businessName: 'aaa',
+					supervisorName: 'bbb',
+					supervisorEmailAddress: 'test@test.com',
+					supervisorPhoneNumber: '3334445555',
+					addressSelected: true,
+					addressLine1: 'aaa',
+					addressLine2: 'bbb',
+					city: 'ccc',
+					postalCode: 'ddd',
+					province: 'eee',
+					country: 'fff',
+				};
+				// temp
+				const permitRationaleData = {
+					rationale:
+						'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+				};
+
+				this.permitModelFormGroup.patchValue(
+					{
+						workerLicenceTypeData,
+						permitRequirementData,
+						photographOfYourselfData,
+						profileConfirmationData: { isProfileUpToDate: true },
+						employerInformationData, //temp
+						permitRationaleData, //temp
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				return of(this.permitModelFormGroup.value);
+			})
 		);
-
-		return of(this.permitModelFormGroup.value);
 	}
 
 	private createPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
@@ -1160,7 +1201,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			//-----------------------------------
 			fingerprintProofDocument,
 			//-----------------------------------
-			useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			// useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
 			idPhotoDocument,
 			//-----------------------------------
 		};

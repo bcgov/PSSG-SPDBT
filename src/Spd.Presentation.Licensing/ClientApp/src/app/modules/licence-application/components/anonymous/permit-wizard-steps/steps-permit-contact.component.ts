@@ -49,7 +49,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="showMailingAddressStep">
 				<app-step-permit-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-permit-mailing-address>
 
 				<div class="row wizard-button-row">
@@ -189,5 +189,10 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 				return this.stepContactInformationComponent.isFormValid();
 		}
 		return false;
+	}
+
+	get showMailingAddressStep(): boolean {
+		const form = this.permitApplicationService.residentialAddressFormGroup;
+		return !form.value.isMailingTheSameAsResidential;
 	}
 }

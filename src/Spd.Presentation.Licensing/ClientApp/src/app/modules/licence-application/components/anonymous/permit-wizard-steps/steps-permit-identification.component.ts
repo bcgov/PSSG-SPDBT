@@ -10,7 +10,7 @@ import { StepPermitCitizenshipComponent } from './step-permit-citizenship.compon
 import { StepPermitCriminalHistoryComponent } from './step-permit-criminal-history.component';
 import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.component';
 import { StepPermitPersonalInformationComponent } from './step-permit-personal-information.component';
-import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
+import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physical-characteristics.component';
 
 @Component({
@@ -339,8 +339,8 @@ export class StepsPermitIdentificationComponent extends BaseWizardStepComponent 
 	stepDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
 	@ViewChild(StepPermitPhysicalCharacteristicsComponent)
 	stepCharacteristicsComponent!: StepPermitPhysicalCharacteristicsComponent;
-	@ViewChild(StepPermitPhotographOfYourselfComponent)
-	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
+	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
+	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
 	constructor(
 		private authProcessService: AuthProcessService,

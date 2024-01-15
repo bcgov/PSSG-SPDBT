@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { WorkerLicenceTypeCode } from '@app/api/models';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from './step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anonymous.component';
@@ -21,7 +23,9 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-consent-and-declaration></app-step-permit-consent-and-declaration>
+				<app-step-permit-consent-and-declaration
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+				></app-step-permit-consent-and-declaration>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -37,15 +41,23 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent {
+export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepPermitSummaryAnonymousComponent) summaryReviewComponent!: StepPermitSummaryAnonymousComponent;
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor() {
+	constructor(private permitApplicationService: PermitApplicationService) {
 		super();
+	}
+
+	ngOnInit(): void {
+		this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
 	}
 
 	onPayNow(): void {
