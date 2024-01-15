@@ -39,9 +39,6 @@ spec:
           protocol: TCP
         - port: {{ .Values.sentinelPort }}
           protocol: TCP
-    - to:
-        - podSelector:
-            matchLabels: {}
       ports:
         - port: {{ .Values.redisPort }}
           protocol: TCP
