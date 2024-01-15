@@ -3,7 +3,7 @@ using Spd.Resource.Applicants.Invoice;
 using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Payment;
 
-namespace Spd.Manager.Common.Payment
+namespace Spd.Manager.Payment
 {
     internal class Mappings : Profile
     {

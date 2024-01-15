@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Spd.Manager.Cases.Screening;
-using Spd.Manager.Common.Payment;
 using Spd.Manager.Membership.Org;
 using Spd.Manager.Membership.UserProfile;
+using Spd.Manager.Payment;
 using Spd.Utilities.LogonUser;
 using System.Globalization;
 
@@ -51,7 +51,7 @@ internal class Mappings : Profile
 
     private static Guid GetPaymentId(string ref2)
     {
-       return Guid.Parse(ref2.Split("*")[0]);
+        return Guid.Parse(ref2.Split("*")[0]);
     }
 
     private static Guid GetAppicationId(string ref2)

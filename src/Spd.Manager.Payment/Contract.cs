@@ -2,7 +2,7 @@ using MediatR;
 using Spd.Manager.Common.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 
-namespace Spd.Manager.Common.Payment
+namespace Spd.Manager.Payment
 {
     public interface IPaymentManager
     {

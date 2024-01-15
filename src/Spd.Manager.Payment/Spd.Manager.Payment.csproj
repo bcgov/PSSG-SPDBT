@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
+  </ItemGroup>
+
+</Project>

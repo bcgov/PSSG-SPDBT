@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Common.ManagerContract;
-using Spd.Manager.Common.Payment;
+using Spd.Manager.Payment;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;

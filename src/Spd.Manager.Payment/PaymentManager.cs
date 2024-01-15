@@ -23,7 +23,7 @@ using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
-namespace Spd.Manager.Common.Payment
+namespace Spd.Manager.Payment
 {
     internal class PaymentManager :
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
