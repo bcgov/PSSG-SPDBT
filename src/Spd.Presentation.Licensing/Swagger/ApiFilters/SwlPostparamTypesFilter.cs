@@ -65,10 +65,10 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
                                             }
                                         },
                                         {
-                                            "isSoleProprietor",
+                                            "businessTypeCode",
                                             new OpenApiSchema
                                             {
-                                                Type = "boolean",
+                                                Type = "string",
                                                 Nullable= true
                                             }
                                         },
