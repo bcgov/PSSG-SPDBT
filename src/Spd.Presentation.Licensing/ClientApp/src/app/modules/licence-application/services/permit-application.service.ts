@@ -474,7 +474,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			WorkerLicenceTypeCode.ArmouredVehiclePermit,
 			ApplicationTypeCode.New
 		).pipe(
-			tap((resp: any) => {
+			tap((_resp: any) => {
 				const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
 				// const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
 				const photographOfYourselfData = {
