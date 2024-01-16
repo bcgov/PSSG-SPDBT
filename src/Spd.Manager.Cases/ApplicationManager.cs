@@ -22,7 +22,7 @@ using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 using System.Net;
 
-namespace Spd.Manager.Cases.Screening
+namespace Spd.Manager.Screening
 
 {
     internal partial class ApplicationManager :

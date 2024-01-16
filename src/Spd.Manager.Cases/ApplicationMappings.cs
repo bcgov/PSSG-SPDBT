@@ -11,11 +11,11 @@ using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ResourceContracts;
 
-namespace Spd.Manager.Cases.Screening
+namespace Spd.Manager.Screening
 {
-    internal class Mappings : Profile
+    internal class ApplicationMappings : Profile
     {
-        public Mappings()
+        public ApplicationMappings()
         {
             _ = CreateMap<ApplicationInvitesCreateRequest, ApplicationInvitesCreateCmd>()
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));

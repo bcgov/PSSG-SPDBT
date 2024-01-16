@@ -1,5 +1,5 @@
 using Alba;
-using Spd.Manager.Cases.Screening;
+using Spd.Manager.Screening;
 using Spd.Manager.Shared;
 using System.Net.Http.Json;
 using System.Net.Mime;

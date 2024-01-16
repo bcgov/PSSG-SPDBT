@@ -7,7 +7,7 @@ using Spd.Utilities.Shared;
 using System.ComponentModel;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
-namespace Spd.Manager.Cases.Screening
+namespace Spd.Manager.Screening
 {
     public interface IApplicationManager
     {

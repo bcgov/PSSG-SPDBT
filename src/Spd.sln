@@ -4,7 +4,7 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Licensing", "Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj", "{358EC078-F4C0-4280-B155-EB5F2DAECB77}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Cases", "Spd.Manager.Cases\Spd.Manager.Cases.csproj", "{70E3BF6A-32CC-4372-905F-B3BEC6543B21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Screening", "Spd.Manager.Cases\Spd.Manager.Screening.csproj", "{70E3BF6A-32CC-4372-905F-B3BEC6543B21}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Membership", "Spd.Manager.Membership\Spd.Manager.Membership.csproj", "{C5E66F85-1929-460B-90A2-CDD9C07F2E43}"
 EndProject
