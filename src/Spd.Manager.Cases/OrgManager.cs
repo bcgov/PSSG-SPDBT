@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Organizations.Org;
 using Spd.Utilities.Cache;
 
-namespace Spd.Manager.Membership.Org
+namespace Spd.Manager.Screening
 {
     internal class OrgManager :
         IRequestHandler<OrgUpdateCommand, OrgResponse>,

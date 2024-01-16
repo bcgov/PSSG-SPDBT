@@ -3,12 +3,11 @@ using MediatR;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
-using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 using System.Security.Principal;
 
-namespace Spd.Manager.Membership.OrgRegistration
+namespace Spd.Manager.Screening
 {
     internal class OrgRegistrationManager :
         IRequestHandler<RegisterOrganizationCommand, OrgRegistrationCreateResponse>,
@@ -87,7 +86,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             if (_currentUser.IsAuthenticated())
             {
                 var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(
-                    new OrgsQry(userIdentityInfo.BizGuid, ServiceTypes: IApplicationRepository.ScreeningServiceTypes), 
+                    new OrgsQry(userIdentityInfo.BizGuid, ServiceTypes: IApplicationRepository.ScreeningServiceTypes),
                     cancellationToken);
                 if (org != null && org.OrgResults.Any())
                 {

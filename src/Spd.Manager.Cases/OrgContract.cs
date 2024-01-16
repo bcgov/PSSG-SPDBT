@@ -2,7 +2,7 @@
 using MediatR;
 using Spd.Manager.Shared;
 
-namespace Spd.Manager.Membership.Org
+namespace Spd.Manager.Screening
 {
     public interface IOrgManager
     {

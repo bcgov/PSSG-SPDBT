@@ -1,11 +1,11 @@
 using AutoMapper;
 using Spd.Resource.Organizations.Report;
 
-namespace Spd.Manager.Membership.Report
+namespace Spd.Manager.Screening
 {
-    internal class Mappings : Profile
+    internal class OrgReportMappings : Profile
     {
-        public Mappings()
+        public OrgReportMappings()
         {
             CreateMap<OrgReportResult, OrgReportResponse>();
         }

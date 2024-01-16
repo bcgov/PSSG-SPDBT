@@ -1,7 +1,7 @@
 using MediatR;
 using Spd.Manager.Shared;
 
-namespace Spd.Manager.Membership.Report
+namespace Spd.Manager.Screening
 {
     public interface IReportManager
     {

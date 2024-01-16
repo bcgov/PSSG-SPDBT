@@ -3,7 +3,7 @@ using MediatR;
 using Spd.Manager.Shared;
 using System.ComponentModel;
 
-namespace Spd.Manager.Membership.OrgRegistration
+namespace Spd.Manager.Screening
 {
     public interface IOrgRegistrationManager
     {

@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using System.ComponentModel;
 
-namespace Spd.Manager.Membership.OrgUser
+namespace Spd.Manager.Screening
 {
     public interface IOrgUserManager
     {

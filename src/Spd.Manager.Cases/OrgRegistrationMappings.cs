@@ -2,11 +2,11 @@ using AutoMapper;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 
-namespace Spd.Manager.Membership.OrgRegistration
+namespace Spd.Manager.Screening
 {
-    internal class Mappings : Profile
+    internal class OrgRegistrationMappings : Profile
     {
-        public Mappings()
+        public OrgRegistrationMappings()
         {
             CreateMap<OrgRegistrationCreateRequest, Spd.Resource.Organizations.Registration.OrgRegistration>();
             CreateMap<OrgRegistrationCreateRequest, SearchRegistrationQry>();

@@ -2,11 +2,11 @@
 using Spd.Manager.Shared;
 using Spd.Resource.Organizations.Org;
 
-namespace Spd.Manager.Membership.Org
+namespace Spd.Manager.Screening
 {
-    internal class Mappings : Profile
+    internal class OrgMappings : Profile
     {
-        public Mappings()
+        public OrgMappings()
         {
             CreateMap<OrgUpdateRequest, Spd.Resource.Organizations.Org.Org>();
             CreateMap<Spd.Resource.Organizations.Org.Org, OrgResponse>();

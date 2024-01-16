@@ -5,7 +5,7 @@ using Spd.Resource.Organizations.User;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
-namespace Spd.Manager.Membership.OrgUser
+namespace Spd.Manager.Screening
 {
     internal class OrgUserManager
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,

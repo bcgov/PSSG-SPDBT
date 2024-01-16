@@ -1,11 +1,11 @@
 using AutoMapper;
 using Spd.Resource.Organizations.User;
 
-namespace Spd.Manager.Membership.OrgUser
+namespace Spd.Manager.Screening
 {
-    internal class Mappings : Profile
+    internal class OrgUserMappings : Profile
     {
-        public Mappings()
+        public OrgUserMappings()
         {
             CreateMap<OrgUserCreateRequest, UserCreateCmd>();
             CreateMap<OrgUserUpdateRequest, UserUpdateCmd>();

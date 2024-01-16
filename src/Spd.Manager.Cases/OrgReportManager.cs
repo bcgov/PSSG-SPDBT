@@ -5,7 +5,7 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Organizations.Report;
 using Spd.Utilities.FileStorage;
 
-namespace Spd.Manager.Membership.Report
+namespace Spd.Manager.Screening
 {
     internal class OrgReportManager
     : IRequestHandler<OrgReportListQuery, OrgReportListResponse>,
