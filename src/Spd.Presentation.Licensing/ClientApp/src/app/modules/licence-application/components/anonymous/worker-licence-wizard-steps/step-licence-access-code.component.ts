@@ -6,6 +6,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { take, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-step-licence-access-code',
@@ -77,37 +78,59 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 			return;
 		}
 
-		switch (this.workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				switch (this.applicationTypeCode) {
-					case ApplicationTypeCode.Renewal: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-								LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
-							)
-						);
-						break;
+		console.log('step next', this.form.value);
+
+		const accessCodeData = this.form.value;
+
+		accessCodeData.linkedLicenceId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
+
+		this.licenceApplicationService
+			.loadLicence(accessCodeData.linkedLicenceId, this.workerLicenceTypeCode, this.applicationTypeCode!)
+			.pipe(
+				tap((_resp: any) => {
+					this.licenceApplicationService.licenceModelFormGroup.patchValue(
+						{
+							licenceNumber: accessCodeData.licenceNumber,
+							licenceExpiryDate: accessCodeData.expiryDate,
+						},
+						{ emitEvent: false }
+					);
+
+					switch (this.workerLicenceTypeCode) {
+						case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+							switch (this.applicationTypeCode) {
+								case ApplicationTypeCode.Renewal: {
+									this.router.navigateByUrl(
+										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+											LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
+										)
+									);
+									break;
+								}
+								case ApplicationTypeCode.Replacement: {
+									this.router.navigateByUrl(
+										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+											LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
+										)
+									);
+									break;
+								}
+								case ApplicationTypeCode.Update: {
+									this.router.navigateByUrl(
+										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+											LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
+										)
+									);
+									break;
+								}
+							}
+							break;
+						}
 					}
-					case ApplicationTypeCode.Replacement: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-								LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
-							)
-						);
-						break;
-					}
-					case ApplicationTypeCode.Update: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
-							)
-						);
-						break;
-					}
-				}
-				break;
-			}
-		}
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	isFormValid(): boolean {

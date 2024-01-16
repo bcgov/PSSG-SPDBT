@@ -15,6 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
+	LicenceLookupResponse,
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
@@ -52,6 +53,10 @@ import { LicenceApplicationHelper, LicenceDocument } from './licence-application
 export class LicenceDocumentsToSave {
 	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
 	'documents': Array<Blob>;
+}
+
+export interface AccessCodeWorkerLicenceResponse extends WorkerLicenceResponse {
+	_licenceExpiryDate: string | null;
 }
 
 export class WorkerLicenceAppAnonymousSubmitRequest {
@@ -137,13 +142,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	licenceFeesSecurityWorkerLicence: Array<LicenceFeeResponse> = [];
-	licenceFeeTermCodes: Array<LicenceFeeResponse> = [];
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
+		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
 		linkedLicenceAppId: new FormControl(null),
-		expiryDate: new FormControl(null),
-		caseNumber: new FormControl(null),
+		expiryDate: new FormControl(null), // TODO needed?
+		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
@@ -259,33 +265,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Load an existing licence application using access code
+	 * Search for an existing licence using access code
 	 * @param licenceNumber
 	 * @param accessCode
 	 * @returns
 	 */
-	loadLicenceWithAccessCode(
-		_workerLicenceTypeCode: WorkerLicenceTypeCode,
-		_applicationTypeCode: ApplicationTypeCode,
-		_licenceNumber: string,
-		_accessCode: string
-	): Observable<WorkerLicenceResponse> {
-		return this.loadLicence(
-			'ef0b27ee-db15-409a-8f8f-6a7922a2332b',
-			WorkerLicenceTypeCode.SecurityWorkerLicence,
-			ApplicationTypeCode.Renewal
-		);
-		// return this.licenceLookupService // TODO remove later
-		// 	.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
-		// 	.pipe(
-		// 		tap((resp: any) => {
-		// 			console.debug('loadLicenceWithAccessCode', resp);
-		// 		}),
-		// 		switchMap((resp: LicenceLookupResponse) => {
-		// 			return this.loadLicence(resp.licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
-		// 		})
-		// 	)
-		// 	.pipe(take(1));
+	getLicenceWithAccessCode(licenceNumber: string, accessCode: string): Observable<LicenceLookupResponse> {
+		return this.licenceLookupService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(take(1));
 	}
 
 	/**
@@ -1172,7 +1158,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.initialized = false;
 		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
-		this.licenceFeeTermCodes = [];
 
 		// this.licenceUserModelFormGroup.reset();
 		// const aliases3 = this.licenceUserModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
@@ -1182,6 +1167,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// aliases2.clear();
 
 		this.licenceModelFormGroup.reset();
+
 		const aliases1 = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
 		aliases1.clear();
 	}
@@ -1208,36 +1194,35 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Set the licence fees for the licence and application type
+	 * Get the licence fees for the licence and application type and business type
 	 * @returns list of fees
 	 */
-	public setLicenceTermsAndFees(): void {
+	public getLicenceTermsAndFees(): Array<LicenceFeeResponse> {
 		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
 		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-		const businessTypeCode = BusinessTypeCode.NonRegisteredPartnership; //TODO what to do about business type code??
+		const businessTypeCode =
+			this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value ?? BusinessTypeCode.None; // TODO remove default
 
-		if (!workerLicenceTypeCode || !applicationTypeCode) {
-			return;
+		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode);
+
+		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
+			return [];
 		}
 
 		// console.debug(
-		// 	'licence licenceFees',
+		// 	'getLicenceTermsAndFees',
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
 		// 	businessTypeCode,
 		// 	this.licenceFeesSecurityWorkerLicence
 		// );
-		this.licenceFeeTermCodes = [];
 
-		const fees = this.licenceFeesSecurityWorkerLicence?.filter(
+		return this.licenceFeesSecurityWorkerLicence?.filter(
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&
 				item.businessTypeCode == businessTypeCode &&
 				item.applicationTypeCode == applicationTypeCode
 		);
-
-		this.licenceFeeTermCodes.push(...fees);
-		// console.debug('licenceFeeTermCodes', this.licenceFeeTermCodes);
 	}
 
 	isShowAdditionalGovermentIdStep(): boolean {

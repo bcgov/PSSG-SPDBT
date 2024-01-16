@@ -130,8 +130,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		}
 
 		this.updateCompleteStatus();
-
-		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	ngAfterViewInit(): void {

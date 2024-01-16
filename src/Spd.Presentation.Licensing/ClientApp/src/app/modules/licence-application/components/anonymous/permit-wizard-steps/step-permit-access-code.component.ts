@@ -6,6 +6,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { take, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-step-permit-access-code',
@@ -79,25 +80,44 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 			return;
 		}
 
-		switch (this.workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				switch (this.applicationTypeCode) {
-					case ApplicationTypeCode.Update: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS)
-						);
-						break;
+		const accessCodeData = this.form.value;
+		accessCodeData.linkedLicenceId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
+
+		this.permitApplicationService
+			.loadPermit(accessCodeData.linkedLicenceId, this.workerLicenceTypeCode, this.applicationTypeCode!)
+			.pipe(
+				tap((_resp: any) => {
+					this.permitApplicationService.permitModelFormGroup.patchValue(
+						{
+							licenceNumber: accessCodeData.licenceNumber,
+							licenceExpiryDate: accessCodeData.expiryDate,
+						},
+						{ emitEvent: false }
+					);
+
+					switch (this.workerLicenceTypeCode) {
+						case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+						case WorkerLicenceTypeCode.BodyArmourPermit: {
+							switch (this.applicationTypeCode) {
+								case ApplicationTypeCode.Update: {
+									this.router.navigateByUrl(
+										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS)
+									);
+									break;
+								}
+								case ApplicationTypeCode.Renewal: {
+									this.router.navigateByUrl(
+										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS)
+									);
+									break;
+								}
+							}
+						}
 					}
-					case ApplicationTypeCode.Renewal: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS)
-						);
-						break;
-					}
-				}
-			}
-		}
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	isFormValid(): boolean {

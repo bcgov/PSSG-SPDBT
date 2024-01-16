@@ -15,6 +15,7 @@ import {
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
 	LicenceLookupResponse,
+	LicenceTermCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
@@ -63,13 +64,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	licenceFeesArmouredVehiclePermit: Array<LicenceFeeResponse> = [];
 	licenceFeesBodyArmourPermit: Array<LicenceFeeResponse> = [];
-	licenceFeeTermCodes: Array<LicenceFeeResponse> = [];
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
+		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
 		linkedLicenceAppId: new FormControl(null),
-		expiryDate: new FormControl(null),
-		caseNumber: new FormControl(null),
+		expiryDate: new FormControl(null), // TODO needed?
+		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
@@ -161,45 +163,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Load a user profile
-	 * @returns
-	 */
-	// loadUserProfile(): Observable<WorkerLicenceResponse> {
-	// 	return this.createPermitAuthenticated().pipe(
-	// 		// TODO update
-	// 		tap((_resp: any) => {
-	// 			console.debug('loadUserProfile');
-
-	// 			this.initialized = true;
-	// 			console.debug('this.initialized', this.initialized);
-	// 		})
-	// 	);
-	// }
-
-	/**
-	 * Load an existing licence application using access code
+	 * Search for an existing permit using access code
 	 * @param licenceNumber
 	 * @param accessCode
 	 * @returns
 	 */
-	loadPermitWithAccessCode(
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode,
-		licenceNumber: string,
-		accessCode: string
-	): Observable<WorkerLicenceResponse> {
-		return this.licenceLookupService
-			.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode })
-			.pipe(
-				tap((resp: any) => {
-					console.debug('loadPermitWithAccessCode', resp);
-				}),
-				switchMap((_resp: LicenceLookupResponse) => {
-					const licenceAppId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
-					return this.loadPermit(licenceAppId!, workerLicenceTypeCode, applicationTypeCode);
-				})
-			)
-			.pipe(take(1));
+	getPermitWithAccessCode(licenceNumber: string, accessCode: string): Observable<LicenceLookupResponse> {
+		return this.licenceLookupService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(take(1));
 	}
 
 	/**
@@ -805,9 +775,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('reset.initialized', this.initialized);
 
 		this.hasValueChanged = false;
-		this.licenceFeeTermCodes = [];
 
 		this.permitModelFormGroup.reset();
+
 		const aliases1 = this.permitModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
 		aliases1.clear();
 	}
@@ -834,47 +804,36 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Set the licence fees for the licence and application type
+	 * Get the licence fees for the licence and application type and business type
 	 * @returns list of fees
 	 */
-	public setLicenceTermsAndFees(): void {
+	public getLicenceTermsAndFees(): Array<LicenceFeeResponse> {
 		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
-		const applicationTypeCode = this.permitModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-		const businessTypeCode = BusinessTypeCode.NonRegisteredPartnership; //TODO what to do about business type code??
+		const businessTypeCode = BusinessTypeCode.None;
+		// ** Permits are always 5 years
 
-		if (!workerLicenceTypeCode || !applicationTypeCode) {
-			return;
+		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, businessTypeCode);
+
+		if (!workerLicenceTypeCode || !businessTypeCode) {
+			return [];
 		}
 
-		console.debug(
-			'permit licenceFees',
-			workerLicenceTypeCode,
-			applicationTypeCode,
-			businessTypeCode,
-			this.licenceFeesArmouredVehiclePermit
-		);
-		this.licenceFeeTermCodes = [];
+		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, businessTypeCode);
 
 		if (workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			const fees = this.licenceFeesArmouredVehiclePermit?.filter(
+			return this.licenceFeesArmouredVehiclePermit?.filter(
 				(item) =>
 					item.workerLicenceTypeCode == workerLicenceTypeCode &&
 					item.businessTypeCode == businessTypeCode &&
-					item.applicationTypeCode == applicationTypeCode
+					item.licenceTermCode == LicenceTermCode.FiveYears
 			);
-
-			this.licenceFeeTermCodes.push(...fees);
-			// console.debug('licenceFeesArmouredVehiclePermit fees', this.licenceFeeTermCodes);
 		} else {
-			const fees = this.licenceFeesBodyArmourPermit?.filter(
+			return this.licenceFeesBodyArmourPermit?.filter(
 				(item) =>
 					item.workerLicenceTypeCode == workerLicenceTypeCode &&
 					item.businessTypeCode == businessTypeCode &&
-					item.applicationTypeCode == applicationTypeCode
+					item.licenceTermCode == LicenceTermCode.FiveYears
 			);
-
-			this.licenceFeeTermCodes.push(...fees);
-			// console.debug('licenceFeesBodyArmourPermit fees', this.licenceFeeTermCodes);
 		}
 	}
 
