@@ -44,7 +44,7 @@ spec:
         kind: Task
         name: promote-image-task
 
-    - name: test-job-scheduler
+    - name: training-job-scheduler
       params:
         - name: imageName
           value: jag-jobscheduler
