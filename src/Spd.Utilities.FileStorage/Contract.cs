@@ -6,6 +6,12 @@
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
+    public interface ITransientFileStorageService
+    {
+        Task<string> HandleCommand(StorageCommand cmd, CancellationToken cancellationToken);
+        Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
+    }
+
     public abstract record StorageCommand(string Key, string? Folder);
 
     public record UploadFileCommand(string Key, string? Folder, File File, FileTag FileTag) : StorageCommand(Key, Folder);
