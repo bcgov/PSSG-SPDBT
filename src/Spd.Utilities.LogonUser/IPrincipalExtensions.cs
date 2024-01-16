@@ -6,6 +6,7 @@ namespace Spd.Utilities.LogonUser
 {
     public static class IPrincipalExtensions
     {
+#pragma warning disable CA1707 // Identifiers should not contain underscores
         public static readonly string[] BCeID_IDENTITY_PROVIDERS = { "bceidboth", "bceidbusiness" };
         public static readonly string IDIR_IDENTITY_PROVIDER = "idir";
         public static readonly string BCeID_USER_NAME = "bceid_username";
@@ -19,6 +20,7 @@ namespace Spd.Utilities.LogonUser
         public static readonly string ISSUER = "iss";
         public static readonly string SUB = "sub";
         public static readonly string SPD_IDIR_IsPSA = "SPD_IDIR_IsPSA";
+#pragma warning restore CA1707 // Identifiers should not contain underscores
         public static bool IsAuthenticated(this IPrincipal principal)
         {
             var claimPrincipal = ValidatePrincipal(principal);

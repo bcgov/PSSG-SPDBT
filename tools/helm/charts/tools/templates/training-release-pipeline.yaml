@@ -1,0 +1,57 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: training-release-pipeline
+  labels:
+    DataClass: Low
+spec:
+  tasks:
+
+    ## Promote test to training ##
+    - name: training-screening-portal
+      params:
+        - name: imageName
+          value: screening-portal
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: training
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: training-licensing-portal
+      params:
+        - name: imageName
+          value: licensing-portal
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: training
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: training-dynamics-helper
+      params:
+        - name: imageName
+          value: dynamics-helper
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: training
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: test-job-scheduler
+      params:
+        - name: imageName
+          value: jag-jobscheduler
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: training
+      taskRef:
+        kind: Task
+        name: promote-image-task

@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Common.Payment;
+using Spd.Manager.Payment;
 using Spd.Utilities.Shared;
 using System.Configuration;
 

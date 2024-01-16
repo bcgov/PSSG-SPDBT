@@ -7,10 +7,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
+    <ProjectReference Include="..\Spd.Manager.Shared\Spd.Manager.Shared.csproj" />
     <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
     <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="FluentValidation.AspNetCore" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Polly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spd.Engine.Search\Spd.Engine.Search.csproj" />
+    <ProjectReference Include="..\Spd.Engine.Validation\Spd.Engine.Validation.csproj" />
+    <ProjectReference Include="..\Spd.Manager.Shared\Spd.Manager.Shared.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.BCeIDWS\Spd.Utilities.BCeIDWS.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
+  </ItemGroup>
+
+</Project>

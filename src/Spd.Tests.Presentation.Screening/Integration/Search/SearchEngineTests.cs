@@ -19,7 +19,7 @@ public class SearchEngineTests : ScenarioContextBase
         var org2 = await fixture.testData.CreateOrg("org4");
 
         ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await searchEngine.SearchAsync(
-            new ShareableClearanceSearchRequest((Guid)org2.accountid, bcscId, Spd.Manager.Common.ManagerContract.ServiceTypeCode.CRRP_EMPLOYEE),
+            new ShareableClearanceSearchRequest((Guid)org2.accountid, bcscId, Spd.Manager.Shared.ServiceTypeCode.CRRP_EMPLOYEE),
             CancellationToken.None);
         searchResponse.Items.Count().ShouldBe(1);
     }
