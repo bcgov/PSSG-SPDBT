@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases.Screening;
+using Spd.Manager.Screening;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;

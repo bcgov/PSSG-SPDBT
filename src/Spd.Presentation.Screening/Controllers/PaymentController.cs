@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Common.ManagerContract;
-using Spd.Manager.Common.Payment;
+using Spd.Manager.Shared;
+using Spd.Manager.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
