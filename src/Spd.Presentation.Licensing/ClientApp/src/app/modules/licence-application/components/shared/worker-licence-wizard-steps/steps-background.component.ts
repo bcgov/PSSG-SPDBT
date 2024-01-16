@@ -16,7 +16,7 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 			<mat-step>
 				<app-step-police-background></app-step-police-background>
 
-				<div class="row mt-4" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
+				<div class="row wizard-button-row" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -53,7 +53,7 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-mental-health-conditions>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -93,7 +93,7 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-criminal-history [applicationTypeCode]="applicationTypeCode"></app-step-criminal-history>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
@@ -128,7 +128,7 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-fingerprints></app-step-fingerprints>
 
-				<div class="row mt-4">
+				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button

@@ -16,59 +16,57 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 @Component({
 	selector: 'app-permit-wizard-anonymous-update',
 	template: `
-		<div class="row">
-			<div class="col-12">
-				<mat-stepper
-					linear
-					labelPosition="bottom"
-					[orientation]="orientation"
-					(selectionChange)="onStepSelectionChange($event)"
-					#stepper
-				>
-					<mat-step [completed]="step1Complete">
-						<ng-template matStepLabel> Permit Details </ng-template>
-						<app-steps-permit-details
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-permit-details>
-					</mat-step>
+		<mat-stepper
+			linear
+			labelPosition="bottom"
+			[orientation]="orientation"
+			(selectionChange)="onStepSelectionChange($event)"
+			#stepper
+		>
+			<mat-step [completed]="step1Complete">
+				<ng-template matStepLabel> Permit Details </ng-template>
+				<app-steps-permit-details
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-permit-details>
+			</mat-step>
 
-					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Purpose & Rationale</ng-template>
-						<app-steps-permit-purpose
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-permit-purpose>
-					</mat-step>
+			<mat-step [completed]="step2Complete">
+				<ng-template matStepLabel>Purpose & Rationale</ng-template>
+				<app-steps-permit-purpose
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-permit-purpose>
+			</mat-step>
 
-					<mat-step [completed]="step3Complete">
-						<ng-template matStepLabel>Identification</ng-template>
-						<app-steps-permit-identification
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-permit-identification>
-					</mat-step>
+			<mat-step [completed]="step3Complete">
+				<ng-template matStepLabel>Identification</ng-template>
+				<app-steps-permit-identification
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-permit-identification>
+			</mat-step>
 
-					<mat-step [completed]="step4Complete">
-						<ng-template matStepLabel>Contact Information</ng-template>
-						<app-steps-permit-contact
-							(childNextStep)="onChildNextStep()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-permit-contact>
-					</mat-step>
+			<mat-step [completed]="step4Complete">
+				<ng-template matStepLabel>Contact Information</ng-template>
+				<app-steps-permit-contact
+					(childNextStep)="onChildNextStep()"
+					(nextReview)="onGoToReview()"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-steps-permit-contact>
+			</mat-step>
 
-					<!-- 
+			<!-- 
 
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
@@ -83,12 +81,10 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 						</ng-template>
 					</mat-step> -->
 
-					<mat-step completed="false">
-						<ng-template matStepLabel>Pay</ng-template>
-					</mat-step>
-				</mat-stepper>
-			</div>
-		</div>
+			<mat-step completed="false">
+				<ng-template matStepLabel>Pay</ng-template>
+			</mat-step>
+		</mat-stepper>
 	`,
 	styles: [],
 })
