@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Manager.Common.Payment;
+using Spd.Manager.Payment;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Dynamics.Integration.Managers;

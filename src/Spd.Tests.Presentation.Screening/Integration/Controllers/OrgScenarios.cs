@@ -1,5 +1,5 @@
 ﻿using Alba;
-using Spd.Manager.Membership.Org;
+using Spd.Manager.Screening;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
@@ -69,7 +69,7 @@ public class OrgScenarios : ScenarioContextBase
             Id = orgId,
             AddressCity = "city",
             Email = "test@test.com",
-            PayerPreference = Spd.Manager.Common.ManagerContract.PayerPreferenceTypeCode.Applicant,
+            PayerPreference = Spd.Manager.Shared.PayerPreferenceTypeCode.Applicant,
             PhoneNumber = "111-111-1111",
             AddressLine1 = "line1",
             AddressCountry = "canada",
