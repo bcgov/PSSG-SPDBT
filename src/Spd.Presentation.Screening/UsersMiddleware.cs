@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Manager.Membership.UserProfile;
+using Spd.Manager.Screening;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Shared;

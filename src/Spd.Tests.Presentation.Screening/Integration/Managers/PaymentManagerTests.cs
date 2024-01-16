@@ -1,9 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using Spd.Manager.Common.Payment;
-using Spd.Utilities.Payment;
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Managers;
 

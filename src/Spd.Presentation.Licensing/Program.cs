@@ -6,7 +6,6 @@ using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
 using Spd.Utilities.Address;
-using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
@@ -69,7 +68,6 @@ builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>
 builder.Services.AddFileStorageProxy(builder.Configuration);
 builder.Services
   .AddGoogleRecaptcha(builder.Configuration)
-  .AddBCeIDService(builder.Configuration)
   .AddPaymentService(builder.Configuration)
   .AddDynamicsProxy(builder.Configuration)
   .AddAddressAutoComplete(builder.Configuration);

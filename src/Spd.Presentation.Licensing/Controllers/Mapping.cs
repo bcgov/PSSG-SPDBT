@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Spd.Manager.Common.Payment;
 using Spd.Manager.Licence;
+using Spd.Manager.Payment;
 using Spd.Presentation.Licensing.Services;
 using System.Globalization;
 
