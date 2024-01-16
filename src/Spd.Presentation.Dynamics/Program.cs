@@ -1,6 +1,3 @@
-using System.Configuration;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Spd.Presentation.Dynamics.Swagger;
@@ -10,8 +7,17 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.Payment;
 using Spd.Utilities.TempFileStorage;
+using System.Configuration;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//todo: remove,just testing
+ILogger logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+logger.LogInformation("This is a testlog");
+//end
+
 var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
      .Where(assembly =>
      {
