@@ -3,6 +3,7 @@ using MediatR;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 using System.Security.Principal;

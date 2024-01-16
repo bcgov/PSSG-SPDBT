@@ -1,5 +1,6 @@
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Screening
 {

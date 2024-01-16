@@ -7,11 +7,11 @@ using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.Shared.ResourceContracts;
 
-namespace Spd.Manager.Membership.UserProfile
+namespace Spd.Manager.Licence
 {
-    internal class Mappings : Profile
+    internal class UserProfileMappings : Profile
     {
-        public Mappings()
+        public UserProfileMappings()
         {
             CreateMap<OrgResult, OrgSettings>();
             CreateMap<UserResult, UserInfo>()

@@ -118,15 +118,7 @@ public record AdditionalGovIdDocument : Document;
 public record IdPhotoDocument : Document;
 public record ResidentialAddress : Address;
 public record MailingAddress : Address;
-public abstract record Address
-{
-    public string? AddressLine1 { get; set; }
-    public string? AddressLine2 { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
-    public string? PostalCode { get; set; }
-    public string? Province { get; set; }
-}
+
 public record Alias
 {
     public string? GivenName { get; set; }

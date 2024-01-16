@@ -9,6 +9,7 @@ using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 
