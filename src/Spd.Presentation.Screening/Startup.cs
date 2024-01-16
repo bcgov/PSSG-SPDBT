@@ -1,9 +1,6 @@
-﻿using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using Spd.Manager.Membership;
+using Spd.Manager.Screening;
 using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
@@ -15,6 +12,9 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {

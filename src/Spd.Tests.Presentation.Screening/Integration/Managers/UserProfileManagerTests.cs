@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Manager.Screening;
-using Spd.Manager.Membership.UserProfile;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Managers;

@@ -1,5 +1,5 @@
 ﻿using Alba;
-using Spd.Manager.Membership.Org;
+using Spd.Manager.Screening;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;

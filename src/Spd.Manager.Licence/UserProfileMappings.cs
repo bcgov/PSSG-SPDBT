@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Manager.Shared;   
 using Spd.Resource.Applicants.Contact;
-using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.User;
@@ -25,11 +23,6 @@ namespace Spd.Manager.Licence
                 .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId))
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress))
             ;
-
-            CreateMap<PortalUserResp, IdirUserProfileResponse>()
-               .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId))
-               .ForMember(d => d.IdentityProviderType, opt => opt.MapFrom(s => IdentityProviderTypeCode.Idir))
-               .ForMember(d => d.UserId, opt => opt.MapFrom(s => s.Id));
 
             CreateMap<ManageApplicantProfileCommand, CreateContactCmd>()
                .ForMember(d => d.Sub, opt => opt.MapFrom(s => s.BcscIdentityInfo.Sub))

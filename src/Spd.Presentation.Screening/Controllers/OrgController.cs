@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Screening;
-using Spd.Manager.Membership.Org;
 using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Screening.Controllers
@@ -17,7 +16,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public OrgController( IMediator mediator, IMapper mapper)
+        public OrgController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -49,7 +48,7 @@ namespace Spd.Presentation.Screening.Controllers
         [AllowAnonymous]
         public async Task<AppOrgResponse> GetOrgFromAccessCode([FromRoute] string accessCode)
         {
-            var orgResponse =  await _mediator.Send(new OrgGetQuery(null, accessCode));
+            var orgResponse = await _mediator.Send(new OrgGetQuery(null, accessCode));
             return _mapper.Map<AppOrgResponse>(orgResponse);
         }
     }

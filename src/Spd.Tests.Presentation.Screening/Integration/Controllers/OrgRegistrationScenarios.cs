@@ -1,7 +1,7 @@
 ﻿using Alba;
 using Microsoft.Dynamics.CRM;
 using Spd.Manager.Shared;
-using Spd.Manager.Membership.OrgRegistration;
+using Spd.Manager.Screening;
 using Spd.Presentation.Screening.Controllers;
 using System.Net;
 using Xunit.Abstractions;

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Membership.OrgRegistration;
+using Spd.Manager.Screening;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -78,7 +78,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/org-registrations/{registrationNumber}/status")]
         [HttpGet]
-        public async Task<OrgRegistrationPortalStatusResponse> Status([FromRoute]string registrationNumber)
+        public async Task<OrgRegistrationPortalStatusResponse> Status([FromRoute] string registrationNumber)
         {
             return await _mediator.Send(new GetOrgRegistrationStatusQuery(registrationNumber));
         }
