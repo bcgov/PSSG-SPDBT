@@ -987,9 +987,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	submitLicence(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	submitPermit(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		if (this.authenticationService.isLoggedIn()) {
-			return this.submitLicenceAuthenticated();
+			return this.submitPermitAuthenticated();
 		} else {
 			return this.submitPermitAnonymous();
 		}
@@ -999,7 +999,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the licence data
 	 * @returns
 	 */
-	private submitLicenceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
 		console.debug('submitLicenceAuthenticated body', body);
 

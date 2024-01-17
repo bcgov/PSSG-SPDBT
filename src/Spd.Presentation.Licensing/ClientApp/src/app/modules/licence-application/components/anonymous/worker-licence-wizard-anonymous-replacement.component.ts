@@ -30,7 +30,7 @@ import { distinctUntilChanged } from 'rxjs';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onGoToNextStep()">Pay</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onPay()">Pay</button>
 					</div>
 				</div>
 			</mat-step>
@@ -62,10 +62,36 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			.subscribe(() => this.breakpointChanged());
 	}
 
-	onGoToNextStep(): void {
+	onPay(): void {
 		const isFormValid = this.stepMailingAddressComponent.isFormValid();
+
+		console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
+		console.log(
+			'onPay isStepLicenceSelectionComplete',
+			this.licenceApplicationService.isStepLicenceSelectionComplete()
+		);
+		console.log('onPay isStepBackgroundComplete', this.licenceApplicationService.isStepBackgroundComplete());
+		console.log('onPay isStepIdentificationComplete', this.licenceApplicationService.isStepIdentificationComplete());
+		console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
+
 		if (isFormValid) {
-			// PAY
+			// If the creation worked and the payment failed, do not post again
+			// if (this.licenceAppId) {
+			// 	this.payNow(this.licenceAppId);
+			// } else {
+			// 	this.licenceApplicationService.submitLicence().subscribe({
+			// 		next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+			// 			// save this locally just in case payment fails
+			// 			this.licenceAppId = resp.body.licenceAppId!;
+			// 			this.hotToastService.success('Your licence has been successfully submitted');
+			// 			this.payNow(this.licenceAppId);
+			// 		},
+			// 		error: (error: any) => {
+			// 			console.log('An error occurred during save', error);
+			// 			this.hotToastService.error('An error occurred during the save. Please try again.');
+			// 		},
+			// 	});
+			// }
 		}
 	}
 }

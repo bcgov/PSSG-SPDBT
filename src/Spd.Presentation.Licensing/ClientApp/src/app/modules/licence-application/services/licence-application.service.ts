@@ -337,10 +337,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 				// TODO renewal - remove data that should be re-prompted for
-				const soleProprietorData = {
-					isSoleProprietor: null,
-					BusinessTypeCode: null,
-				};
+				// const soleProprietorData = {
+				// 	isSoleProprietor: null,
+				// 	BusinessTypeCode: null,
+				// };
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -370,7 +370,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						licenceAppId: null,
 						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
-						soleProprietorData,
+						// soleProprietorData,
 						// licenceTermData,
 						// bcDriversLicenceData,
 						// fingerprintProofData,
@@ -400,10 +400,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 				// TODO renewal - remove data that should be re-prompted for
-				const soleProprietorData = {
-					isSoleProprietor: null,
-					businessTypeCode: null,
-				};
+				// const soleProprietorData = {
+				// 	isSoleProprietor: null,
+				// 	businessTypeCode: null,
+				// };
 				// const licenceTermData = {
 				// 	licenceTermCode: null,
 				// };
@@ -433,7 +433,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						licenceAppId: null,
 						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
-						soleProprietorData,
+						// soleProprietorData,
 						// licenceTermData,
 						// bcDriversLicenceData,
 						// fingerprintProofData,
@@ -480,29 +480,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
-				// this.initialized = true;
 			})
 		);
 	}
-
-	/**
-	 * Load an existing licence application for update
-	 * @param licenceAppId
-	 * @returns
-	 */
-	// loadUpdateLicence(): Observable<WorkerLicenceResponse> { // TODO remove?
-
-	// 	return this.loadLicence(licenceAppId!, workerLicenceTypeCode, applicationTypeCode).pipe(
-	// 	// return this.createLicenceAuthenticated().pipe(
-	// 		// TODO update
-	// 		tap((_resp: any) => {
-	// 			console.debug('loadUserProfile');
-
-	// 			this.initialized = true;
-	// 			console.debug('this.initialized', this.initialized);
-	// 		})
-	// 	);
-	// }
 
 	/**
 	 * Create an empty licence
@@ -1259,6 +1239,86 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isStepLicenceSelectionComplete(): boolean {
+		// console.debug(
+		// 	'personalInformationData',
+		// 	this.personalInformationFormGroup.valid,
+		// 	'aliasesData',
+		// 	this.aliasesFormGroup.valid,
+		// 	'expiredLicenceData',
+		// 	this.expiredLicenceFormGroup.valid,
+		// 	'residentialAddressData',
+		// 	this.residentialAddressFormGroup.valid,
+		// 	'mailingAddressData',
+		// 	this.mailingAddressFormGroup.valid,
+		// 	'contactInformationData',
+		// 	this.contactInformationFormGroup.valid,
+		// 	'profileConfirmationData',
+		// 	this.profileConfirmationFormGroup.valid,
+		// 	'workerLicenceTypeData',
+		// 	this.workerLicenceTypeFormGroup.valid,
+		// 	'applicationTypeData',
+		// 	this.applicationTypeFormGroup.valid,
+		// 	'soleProprietorData',
+		// 	this.soleProprietorFormGroup.valid,
+		// 	'licenceTermData',
+		// 	this.licenceTermFormGroup.valid,
+		// 	'restraintsAuthorizationData',
+		// 	this.restraintsAuthorizationFormGroup.valid,
+		// 	'dogsAuthorizationData',
+		// 	this.dogsAuthorizationFormGroup.valid,
+		// 	'categoryArmouredCarGuardFormGroup',
+		// 	this.categoryArmouredCarGuardFormGroup.valid,
+		// 	'categoryBodyArmourSalesFormGroup',
+		// 	this.categoryBodyArmourSalesFormGroup.valid,
+		// 	'categoryClosedCircuitTelevisionInstallerFormGroup',
+		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,
+		// 	'categoryElectronicLockingDeviceInstallerFormGroup',
+		// 	this.categoryElectronicLockingDeviceInstallerFormGroup.valid,
+		// 	'categoryFireInvestigatorFormGroup',
+		// 	this.categoryFireInvestigatorFormGroup.valid,
+		// 	'categoryLocksmithFormGroup',
+		// 	this.categoryLocksmithFormGroup.valid,
+		// 	'categoryLocksmithSupFormGroup',
+		// 	this.categoryLocksmithSupFormGroup.valid,
+		// 	'categoryPrivateInvestigatorFormGroup',
+		// 	this.categoryPrivateInvestigatorFormGroup.valid,
+		// 	'categoryPrivateInvestigatorSupFormGroup',
+		// 	this.categoryPrivateInvestigatorSupFormGroup.valid,
+		// 	'categorySecurityAlarmInstallerFormGroup',
+		// 	this.categorySecurityAlarmInstallerFormGroup.valid,
+		// 	'categorySecurityAlarmInstallerSupFormGroup',
+		// 	this.categorySecurityAlarmInstallerSupFormGroup.valid,
+		// 	'categorySecurityConsultantFormGroup',
+		// 	this.categorySecurityConsultantFormGroup.valid,
+		// 	'categorySecurityAlarmMonitorFormGroup',
+		// 	this.categorySecurityAlarmMonitorFormGroup.valid,
+		// 	'categorySecurityAlarmResponseFormGroup',
+		// 	this.categorySecurityAlarmResponseFormGroup.valid,
+		// 	'categorySecurityAlarmSalesFormGroup',
+		// 	this.categorySecurityAlarmSalesFormGroup.valid,
+		// 	'categorySecurityGuardFormGroup',
+		// 	this.categorySecurityGuardFormGroup.valid,
+		// 	'categorySecurityGuardSupFormGroup',
+		// 	this.categorySecurityGuardSupFormGroup.valid,
+		// 	'policeBackgroundData',
+		// 	this.policeBackgroundFormGroup.valid,
+		// 	'mentalHealthConditionsData',
+		// 	this.mentalHealthConditionsFormGroup.valid,
+		// 	'criminalHistoryData',
+		// 	this.criminalHistoryFormGroup.valid,
+		// 	'fingerprintProofData',
+		// 	this.fingerprintProofFormGroup.valid,
+		// 	'citizenshipData',
+		// 	this.citizenshipFormGroup.valid,
+		// 	'additionalGovIdData',
+		// 	this.additionalGovIdFormGroup.valid,
+		// 	'bcDriversLicenceData',
+		// 	this.bcDriversLicenceFormGroup.valid,
+		// 	'characteristicsData',
+		// 	this.characteristicsFormGroup.valid,
+		// 	'photographOfYourselfData',
+		// 	this.photographOfYourselfFormGroup.valid
+		// );
 		// console.debug(
 		// 	'isStepLicenceSelectionComplete',
 		// 	this.soleProprietorFormGroup.valid,
