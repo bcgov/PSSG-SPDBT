@@ -547,7 +547,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		// if (!this.licenceTermCode) {
 		// 	return null;
 		// }
-
+		// TODO FEES fix
 		// const feeItem = this.permitApplicationService.licenceFeeTermCodes.find(
 		// 	(item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode
 		// );

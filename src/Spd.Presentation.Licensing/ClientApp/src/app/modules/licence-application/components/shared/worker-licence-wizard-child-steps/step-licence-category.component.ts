@@ -993,16 +993,6 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 		return isValid && !this.isDirtyAndInvalid;
 	}
 
-	// get licenceNumber(): string {
-	// 	return this.licenceModelData.caseNumber ?? '';
-	// }
-	// get expiryDate(): string {
-	// 	return this.licenceModelData.expiryDate ?? '';
-	// }
-	// get licenceTermCode(): string {
-	// 	return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
-	// }
-
 	get categoryList(): Array<string> {
 		const list: Array<string> = [];
 		if (this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value) {

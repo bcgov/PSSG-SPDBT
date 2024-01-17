@@ -1,8 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.OData.Edm;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.Shared.Tools;
 using System.Text.RegularExpressions;
 
@@ -78,7 +76,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
          .ReverseMap()
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
-         .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
+         .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
@@ -132,7 +130,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<spd_application, LicenceAppListResp>()
           .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
-          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
+          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
           .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
           .ForMember(d => d.SubmittedOn, opt => opt.MapFrom(s => s.spd_submittedon))
           .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
@@ -146,12 +144,6 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered))
           .ReverseMap();
-    }
-
-    private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
-    {
-        if (serviceTypeGuid == null) return null;
-        return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)

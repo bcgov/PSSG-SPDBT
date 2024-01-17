@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceFeeResponse } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -48,21 +48,22 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepLicenceTermComponent implements OnInit, LicenceChildStepperStepComponent {
-	termCodes: Array<LicenceFeeResponse> = [];
+export class StepLicenceTermComponent implements LicenceChildStepperStepComponent {
+	// termCodes: Array<LicenceFeeResponse> = [];
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	ngOnInit() {
-		this.termCodes = this.licenceApplicationService.licenceFeeTermCodes;
-	}
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get termCodes(): Array<LicenceFeeResponse> {
+		return this.licenceApplicationService.getLicenceTermsAndFees();
 	}
 }
