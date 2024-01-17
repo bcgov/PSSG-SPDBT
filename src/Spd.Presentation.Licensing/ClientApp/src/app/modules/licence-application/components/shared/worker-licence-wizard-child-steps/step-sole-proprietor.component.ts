@@ -29,8 +29,11 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<mat-radio-group aria-label="Select an option" formControlName="isSoleProprietor">
-								<!--	(change)="onSoleProprietorChange()"-->
+							<mat-radio-group
+								aria-label="Select an option"
+								formControlName="isSoleProprietor"
+								(change)="onSoleProprietorChange()"
+							>
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-divider class="my-2"></mat-divider>
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -112,13 +115,30 @@ export class StepSoleProprietorComponent implements OnInit, LicenceChildStepperS
 		}
 	}
 
-	// onSoleProprietorChange(): void {
-	// 	if (this.form.value.isSoleProprietor == BooleanTypeCode.No) {
-	// 		this.form.value.businessTypeCode = BusinessTypeCode.None;
-	// 	} else {
-	// 		this.form.value.businessTypeCode = null;
-	// 	}
-	// }
+	onSoleProprietorChange(): void {
+		if (this.form.value.isSoleProprietor == BooleanTypeCode.No) {
+			// this.form.value.businessTypeCode = BusinessTypeCode.None;
+			this.form.patchValue({ businessTypeCode: BusinessTypeCode.None });
+		} else {
+			this.form.patchValue({ businessTypeCode: null });
+			// this.form.value.businessTypeCode = null;
+		}
+
+		// const soleProprietorData = {
+		// 	isSoleProprietor: null,
+		// 	BusinessTypeCode: null,
+		// };
+
+		// this.licenceApplicationService.licenceModelFormGroup.patchValue({
+		// 	businessTypeCode:
+		// 		this.form.value.isSoleProprietor === BooleanTypeCode.No
+		// 			? BusinessTypeCode.None
+		// 			: this.form.value.businessTypeCode,
+		// });
+
+		console.log('onSoleProprietorChange', this.form.value);
+		console.log('onSoleProprietorChange2', this.licenceApplicationService.licenceModelFormGroup.value);
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

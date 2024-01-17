@@ -60,8 +60,6 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
-
-		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	onGoToNextStep(): void {

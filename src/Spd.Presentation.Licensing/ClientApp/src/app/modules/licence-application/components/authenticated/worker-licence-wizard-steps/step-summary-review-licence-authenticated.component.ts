@@ -622,9 +622,9 @@ export class StepSummaryReviewLicenceAuthenticatedComponent implements OnInit {
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationService.licenceFeeTermCodes.find(
-			(item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode
-		);
+		const feeItem = this.licenceApplicationService
+			.getLicenceTermsAndFees()
+			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return feeItem?.amount ?? null;
 	}
 

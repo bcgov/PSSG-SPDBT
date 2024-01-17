@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { take, tap } from 'rxjs';
+import { LicenceApplicationService } from '../../services/licence-application.service';
+import { PermitApplicationService } from '../../services/permit-application.service';
 
 @Component({
 	selector: 'app-login-selection',
@@ -18,21 +22,21 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 								<table>
 									<tr>
 										<td>
-											<mat-icon class="icon me-2">radio_button_checked</mat-icon>
+											<mat-icon class="icon me-2">circle</mat-icon>
 										</td>
-										<td class="py-2">Save your application</td>
+										<td class="pb-2">Save your application</td>
 									</tr>
 									<tr>
 										<td>
-											<mat-icon class="icon me-2">radio_button_checked</mat-icon>
+											<mat-icon class="icon me-2">circle</mat-icon>
 										</td>
-										<td class="py-2">See the progress of your application</td>
+										<td class="pb-2">See the progress of your application</td>
 									</tr>
 									<tr>
 										<td>
-											<mat-icon class="icon me-2">radio_button_checked</mat-icon>
+											<mat-icon class="icon me-2">circle</mat-icon>
 										</td>
-										<td class="py-2">Manage your licence renewal and updates</td>
+										<td class="pb-2">Manage your licence renewal and updates</td>
 									</tr>
 								</table>
 								<div class="mt-3">
@@ -60,8 +64,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 										<a
 											tabindex="0"
 											class="large login-link"
-											(click)="onContinue()"
-											(keydown)="onKeydownContinue($event)"
+											(click)="onContinue(workerLicenceTypeCodes.SecurityWorkerLicence)"
+											(keydown)="onKeydownContinue($event, workerLicenceTypeCodes.SecurityWorkerLicence)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -70,7 +74,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 							</div>
 						</div>
 
-						<div class="login-selection-container my-4 my-lg-5">
+						<div class="login-selection-container mb-4 mb-lg-5">
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
@@ -98,7 +102,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 							</div>
 						</div>
 
-						<div class="login-selection-container my-4 my-lg-5">
+						<div class="login-selection-container mb-4 mb-lg-5">
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
@@ -116,8 +120,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 										<a
 											tabindex="0"
 											class="large login-link"
-											(click)="onContinue()"
-											(keydown)="onKeydownContinue($event)"
+											(click)="onContinue(workerLicenceTypeCodes.BodyArmourPermit)"
+											(keydown)="onKeydownContinue($event, workerLicenceTypeCodes.BodyArmourPermit)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -144,8 +148,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 										<a
 											tabindex="0"
 											class="large login-link"
-											(click)="onContinue()"
-											(keydown)="onKeydownContinue($event)"
+											(click)="onContinue(workerLicenceTypeCodes.ArmouredVehiclePermit)"
+											(keydown)="onKeydownContinue($event, workerLicenceTypeCodes.ArmouredVehiclePermit)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -165,6 +169,10 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 				color: var(--color-primary) !important;
 			}
 
+			.icon {
+				color: var(--color-yellow) !important;
+			}
+
 			.image {
 				margin-right: 1rem;
 				height: 3em;
@@ -174,8 +182,13 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 })
 export class LoginSelectionComponent {
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
+	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 
-	constructor(private router: Router) {}
+	constructor(
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {}
 
 	async onRegisterWithBceid(): Promise<void> {
 		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
@@ -185,13 +198,47 @@ export class LoginSelectionComponent {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 
-	onContinue(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+	onContinue(workerLicenceTypeCode: WorkerLicenceTypeCode): void {
+		switch (workerLicenceTypeCode) {
+			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				this.licenceApplicationService
+					.createNewLicenceAnonymous(workerLicenceTypeCode)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+									LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+
+				break;
+			}
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				this.permitApplicationService
+					.createNewPermitAnonymous(workerLicenceTypeCode)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+
+				break;
+			}
+		}
 	}
 
-	onKeydownContinue(event: KeyboardEvent) {
+	onKeydownContinue(event: KeyboardEvent, workerLicenceTypeCode: WorkerLicenceTypeCode) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onContinue();
+		this.onContinue(workerLicenceTypeCode);
 	}
 }

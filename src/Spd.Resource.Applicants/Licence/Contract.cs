@@ -31,5 +31,6 @@ namespace Spd.Resource.Applicants.Licence
         public Guid? LicenceAppId { get; set; }
         public string? LicenceNumber { get; set; } = null;
         public DateOnly ExpiryDate { get; set; }
+        public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
     }
 }

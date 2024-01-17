@@ -61,7 +61,7 @@ import { StepLicenceUpdatesComponent } from './components/authenticated/worker-l
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-access-code-authorized.component';
+import { StepLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-access-code-authorized.component';
 import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component';
 import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component';
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-summary-review-licence-authenticated.component';
@@ -181,7 +181,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		RenewalAlertComponent,
 		RenewalValueChangedComponent,
 		CommonResidentialAddressComponent,
-		StepAccessCodeAuthorizedComponent,
+		StepLicenceAccessCodeAuthorizedComponent,
 		StepAdditionalGovIdComponent,
 		StepAliasesComponent,
 		StepApplicationTypeAnonymousComponent,
