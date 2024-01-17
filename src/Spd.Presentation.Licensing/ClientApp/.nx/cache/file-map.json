@@ -87,7 +87,7 @@
       },
       {
         "file": ".nx/cache/file-map.json",
-        "hash": "8334336200047552064"
+        "hash": "509937833778042236"
       },
       {
         "file": ".nx/cache/lockfile.hash",
@@ -214,10 +214,6 @@
         "hash": "3872334593921033656"
       },
       {
-        "file": "src/app/api/models/contact-authorization-type-code.ts",
-        "hash": "7594419930114176676"
-      },
-      {
         "file": "src/app/api/models/document-base.ts",
         "hash": "16564521065091111334"
       },
@@ -275,7 +271,7 @@
       },
       {
         "file": "src/app/api/models/licence-lookup-response.ts",
-        "hash": "18131248392085906962"
+        "hash": "8696757787484223492"
       },
       {
         "file": "src/app/api/models/licence-term-code.ts",
@@ -292,10 +288,6 @@
       {
         "file": "src/app/api/models/oidc-configuration.ts",
         "hash": "3048514842015352159"
-      },
-      {
-        "file": "src/app/api/models/org-registration-status-code.ts",
-        "hash": "3364455885041880542"
       },
       {
         "file": "src/app/api/models/org-settings.ts",
@@ -355,7 +347,7 @@
       },
       {
         "file": "src/app/api/models/user-info.ts",
-        "hash": "13146137555046981628"
+        "hash": "1305281606154071172"
       },
       {
         "file": "src/app/api/models/weight-unit-code.ts",
@@ -399,7 +391,7 @@
       },
       {
         "file": "src/app/api/models.ts",
-        "hash": "6258148284039421139"
+        "hash": "17288780380715090601"
       },
       {
         "file": "src/app/api/request-builder.ts",
@@ -555,7 +547,7 @@
       },
       {
         "file": "src/app/modules/licence-application/components/anonymous/permit-wizard-steps/step-permit-access-code.component.ts",
-        "hash": "8141940318203562273"
+        "hash": "8053711516490131267"
       },
       {
         "file": "src/app/modules/licence-application/components/anonymous/permit-wizard-steps/step-permit-aliases.component.ts",
@@ -695,11 +687,11 @@
       },
       {
         "file": "src/app/modules/licence-application/components/anonymous/worker-licence-wizard-steps/step-licence-access-code.component.ts",
-        "hash": "6282889295472640155"
+        "hash": "3078489583827913308"
       },
       {
         "file": "src/app/modules/licence-application/components/anonymous/worker-licence-wizard-steps/step-licence-confirmation.component.ts",
-        "hash": "8044648565876888469"
+        "hash": "7980824043471437944"
       },
       {
         "file": "src/app/modules/licence-application/components/anonymous/worker-licence-wizard-steps/step-licence-type-anonymous.component.ts",
@@ -782,12 +774,12 @@
         "hash": "15831010724008170242"
       },
       {
-        "file": "src/app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/step-access-code-authorized.component.ts",
-        "hash": "9172484270885406679"
-      },
-      {
         "file": "src/app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component.ts",
         "hash": "11319786597800719188"
+      },
+      {
+        "file": "src/app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/step-licence-access-code-authorized.component.ts",
+        "hash": "3893182538200324630"
       },
       {
         "file": "src/app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component.ts",
@@ -835,7 +827,7 @@
       },
       {
         "file": "src/app/modules/licence-application/components/shared/step-components/common-access-code-anonymous.component.ts",
-        "hash": "1595984844568122686"
+        "hash": "2144447900906973381"
       },
       {
         "file": "src/app/modules/licence-application/components/shared/step-components/common-alias-list.component.ts",
@@ -1011,7 +1003,7 @@
       },
       {
         "file": "src/app/modules/licence-application/components/shared/worker-licence-wizard-child-steps/step-licence-category.component.ts",
-        "hash": "8296564541068628181"
+        "hash": "15009823995386634972"
       },
       {
         "file": "src/app/modules/licence-application/components/shared/worker-licence-wizard-child-steps/step-licence-expired.component.ts",
@@ -1079,7 +1071,7 @@
       },
       {
         "file": "src/app/modules/licence-application/licence-application-routing.module.ts",
-        "hash": "4964193410197447363"
+        "hash": "7030828396616958080"
       },
       {
         "file": "src/app/modules/licence-application/licence-application.component.ts",
@@ -1087,23 +1079,23 @@
       },
       {
         "file": "src/app/modules/licence-application/licence-application.module.ts",
-        "hash": "10342210031159576994"
+        "hash": "2932798054397701042"
       },
       {
         "file": "src/app/modules/licence-application/services/licence-application.helper.ts",
-        "hash": "11876989241804692608"
+        "hash": "6226828735327190122"
       },
       {
         "file": "src/app/modules/licence-application/services/licence-application.service.ts",
-        "hash": "6583048963069493776"
+        "hash": "13395453065370133746"
       },
       {
         "file": "src/app/modules/licence-application/services/permit-application.helper.ts",
-        "hash": "17011768831667633879"
+        "hash": "7035018015195134244"
       },
       {
         "file": "src/app/modules/licence-application/services/permit-application.service.ts",
-        "hash": "16522978599222170229"
+        "hash": "3651606952645580921"
       },
       {
         "file": "src/app/modules/licence-portal/components/active-licences.component.ts",

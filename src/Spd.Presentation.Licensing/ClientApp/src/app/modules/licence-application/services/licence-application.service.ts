@@ -55,10 +55,6 @@ export class LicenceDocumentsToSave {
 	'documents': Array<Blob>;
 }
 
-export interface AccessCodeWorkerLicenceResponse extends WorkerLicenceResponse {
-	_licenceExpiryDate: string | null;
-}
-
 export class WorkerLicenceAppAnonymousSubmitRequest {
 	'workerLicenceTypeCode'?: string | null;
 	'applicationTypeCode'?: string | null;
@@ -148,7 +144,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
 		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
 		linkedLicenceAppId: new FormControl(null),
-		expiryDate: new FormControl(null), // TODO needed?
+		// expiryDate: new FormControl(null), // TODO needed?
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
@@ -279,14 +275,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadLicence(
-		licenceAppId: string,
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
-		// TODO add:  switch workerLicenceTypeCode
-
-		console.debug('loadLicence', licenceAppId, workerLicenceTypeCode, applicationTypeCode);
+	loadLicence(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+		console.debug('loadLicence', licenceAppId, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
@@ -1096,7 +1086,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
-						expiryDate: resp.expiryDate,
+						// expiryDate: resp.expiryDate, // TODO fix??
 						caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
@@ -1731,7 +1721,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			hasExpiredLicence: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes, // TODO remove?
+			hasExpiredLicence: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes,
 			expiredLicenceNumber:
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			expiredLicenceId:

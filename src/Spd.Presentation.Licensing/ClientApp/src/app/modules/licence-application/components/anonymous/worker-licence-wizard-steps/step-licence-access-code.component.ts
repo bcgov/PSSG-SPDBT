@@ -78,20 +78,17 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 			return;
 		}
 
-		console.log('step next', this.form.value);
-
 		const accessCodeData = this.form.value;
-
-		accessCodeData.linkedLicenceId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO fix
+		accessCodeData.linkedLicenceId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO hardcoded ID fix
 
 		this.licenceApplicationService
-			.loadLicence(accessCodeData.linkedLicenceId, this.workerLicenceTypeCode, this.applicationTypeCode!)
+			.loadLicence(accessCodeData.linkedLicenceId, this.applicationTypeCode!)
 			.pipe(
 				tap((_resp: any) => {
 					this.licenceApplicationService.licenceModelFormGroup.patchValue(
 						{
 							licenceNumber: accessCodeData.licenceNumber,
-							licenceExpiryDate: accessCodeData.expiryDate,
+							licenceExpiryDate: accessCodeData.licenceExpiryDate,
 						},
 						{ emitEvent: false }
 					);

@@ -68,7 +68,7 @@ export abstract class LicenceApplicationHelper {
 		licenceNumber: new FormControl(null, [FormControlValidators.required]),
 		accessCode: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
-		expiryDate: new FormControl(null),
+		licenceExpiryDate: new FormControl(null),
 	});
 
 	personalInformationFormGroup = this.formBuilder.group(

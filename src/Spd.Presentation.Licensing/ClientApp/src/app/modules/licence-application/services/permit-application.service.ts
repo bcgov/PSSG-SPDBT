@@ -70,7 +70,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
 		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
 		linkedLicenceAppId: new FormControl(null),
-		expiryDate: new FormControl(null), // TODO needed?
+		// expiryDate: new FormControl(null), // TODO needed?
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 
@@ -734,7 +734,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
-						expiryDate: resp.expiryDate,
+						// expiryDate: resp.expiryDate, // TODO fix??
 						caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
