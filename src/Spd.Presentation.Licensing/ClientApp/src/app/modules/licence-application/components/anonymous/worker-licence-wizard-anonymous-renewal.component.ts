@@ -107,8 +107,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
-
-		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

@@ -13,6 +13,7 @@ public record LicenceLookupResponse
     public Guid? LicenceAppId { get; set; } = null;
     public string? LicenceNumber { get; set; } = null;
     public DateOnly ExpiryDate { get; set; }
+    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
 };
 
 public record LicenceLookupQuery(string LicenceNumber, string AccessCode) : IRequest<LicenceLookupResponse>;

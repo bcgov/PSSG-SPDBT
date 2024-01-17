@@ -130,8 +130,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
-
-		this.permitApplicationService.setLicenceTermsAndFees();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

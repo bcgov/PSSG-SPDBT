@@ -12,6 +12,14 @@ export const SPD_CONSTANTS = {
 		dateTimeFormat: 'YYYY-MM-DD HH:mm',
 		backendDateFormat: 'YYYY-MM-DD',
 	},
+	periods: {
+		notSubmittedLicenceWarningDays: 14, // show warning 14 days before the 30 day mark
+		notSubmittedLicenceErrorDays: 7, // show error 7 days before the 30 day mark
+		notSubmittedLicenceHide: 30, // do not show licence 30 days after created
+		replacementPeriodPreventionDays: 14, // cannot replace within 14 days of expiry
+		updatePeriodPreventionDays: 14, // cannot update within 14 days of expiry
+		renewPeriodDays: 90, // can only renew within 90 days of expiry
+	},
 	phone: {
 		spdPhoneNumber: '1-855-587-0185',
 		displayMask: '(000) 000-0000',

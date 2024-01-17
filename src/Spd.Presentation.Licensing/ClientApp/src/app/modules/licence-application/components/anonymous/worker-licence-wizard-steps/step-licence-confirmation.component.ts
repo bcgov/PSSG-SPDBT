@@ -36,7 +36,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</div>
 							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">Expiry Date</div>
-								<div class="summary-text-data">{{ expiryDate | formatDate : constants.date.formalDateFormat }}</div>
+								<div class="summary-text-data">
+									{{ licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+								</div>
 							</div>
 							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">Licence Term</div>
@@ -68,9 +70,9 @@ export class StepLicenceConfirmationComponent implements OnInit {
 	ngOnInit() {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 
-		const fee = this.licenceApplicationService.licenceFeeTermCodes?.filter(
-			(item) => item.licenceTermCode == this.licenceTermCode
-		);
+		const fee = this.licenceApplicationService
+			.getLicenceTermsAndFees()
+			.filter((item) => item.licenceTermCode == this.licenceTermCode);
 		if (fee?.length > 0) {
 			this.feeAmount = `$${fee[0].amount}`;
 		} else {
@@ -87,10 +89,10 @@ export class StepLicenceConfirmationComponent implements OnInit {
 		);
 	}
 	get licenceNumber(): string {
-		return this.licenceModelData.caseNumber ?? '';
+		return this.licenceModelData.licenceNumber ?? '';
 	}
-	get expiryDate(): string {
-		return this.licenceModelData.expiryDate ?? '';
+	get licenceExpiryDate(): string {
+		return this.licenceModelData.licenceExpiryDate ?? '';
 	}
 	get licenceTermCode(): string {
 		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
