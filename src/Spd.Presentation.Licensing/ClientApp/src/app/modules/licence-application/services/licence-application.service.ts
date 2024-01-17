@@ -1779,9 +1779,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// console.log('documentInfos', documentInfos);
 
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
-		// console.debug('submitLicenceAnonymous', formValue);
+		console.debug('submitLicenceAnonymous consentAndDeclarationFormGroup', formValue);
 
-		const googleRecaptcha = { recaptchaCode: formValue.recaptcha };
+		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(

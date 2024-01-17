@@ -1024,7 +1024,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const residentialAddressData = { ...formValue.residentialAddressData };
 		const mailingAddressData = { ...formValue.mailingAddressData };
 		const citizenshipData = { ...formValue.citizenshipData };
-		// const additionalGovIdData = { ...formValue.additionalGovIdData };
 		const fingerprintProofData = { ...formValue.fingerprintProofData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
@@ -1182,7 +1181,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
 		// console.debug('submitPermitAnonymous', formValue);
 
-		const googleRecaptcha = { recaptchaCode: formValue.recaptcha };
+		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
