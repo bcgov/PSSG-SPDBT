@@ -13,7 +13,8 @@ namespace Spd.Utilities.FileStorage
             var options = configuration.GetSection("storage").Get<StorageSetting>()!;
 
             services.Configure<StorageSetting>(opts => configuration.GetSection("storage").Bind(opts));
-
+            
+            //create main bucket
             var mainBucketConfig = new AmazonS3Config
             {
                 ServiceURL = options.MainBucketSettings.Url.ToString(),
@@ -28,6 +29,7 @@ namespace Spd.Utilities.FileStorage
                 mainClient,
                 Options.Create(options.TransientBucketSettings)));
 
+            //create transient bucket
             if (options.TransientBucketSettings.Url != null || string.IsNullOrWhiteSpace(options.TransientBucketSettings.Url.ToString()))
             {
                 var transientBucketConfig = new AmazonS3Config

@@ -207,7 +207,20 @@ internal partial class PersonalLicenceAppManager :
         saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
-        //todo: add file copying here.
+        //add photo file copying here.
+        if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
+            throw new ArgumentException("replacement request must have original application id");
+        var photos = await _documentRepository.QueryAsync(
+            new DocumentQry(
+                ApplicantId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
+                FileType: DocumentTypeEnum.Photograph),
+            ct);
+        if (photos.Items.Any())
+        {
+            await _documentRepository.ManageAsync(
+                new CopyDocumentCmd(photos.Items.First().DocumentUrlId, response.LicenceAppId, response.ContactId), 
+                ct);
+        }
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion

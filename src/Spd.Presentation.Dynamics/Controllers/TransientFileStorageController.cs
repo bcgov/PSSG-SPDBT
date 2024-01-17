@@ -15,16 +15,16 @@ namespace Spd.Presentation.Dynamics.Controllers;
 /// For upload and download file
 /// </summary>
 [Authorize]
-public class FileStorageController : SpdControllerBase
+public class TransientFileStorageController : SpdControllerBase
 {
-    private readonly IFileStorageService _storageService;
-    public FileStorageController(IFileStorageService storageService) : base()
+    private readonly ITransientFileStorageService _storageService;
+    public TransientFileStorageController(ITransientFileStorageService storageService) : base()
     {
         _storageService = storageService;
     }
 
     /// <summary>
-    /// Upload  or overwrite file
+    /// Upload  or overwrite file to transient bucket
     /// If the file guid exists, the file content is overwritten by the new file
     /// all the tags must be sent in the requests, tags that do not exist will be removed from the file storage
     /// The maximum file size would be 30M.
@@ -41,7 +41,7 @@ public class FileStorageController : SpdControllerBase
     /// <returns>
     /// </returns>
     [HttpPost]
-    [Route("api/files/{fileId}")]
+    [Route("api/transient-files/{fileId}")]
     public async Task<IActionResult> UploadFileAsync(
         [FromForm] UploadFileRequest request,
         [FromRoute] Guid fileId,
@@ -77,7 +77,7 @@ public class FileStorageController : SpdControllerBase
     }
 
     /// <summary>
-    /// Download the file with fileId and folder name. 
+    /// Download the file with fileId and folder name from to transient bucket. 
     /// If a file is expected to be in a folder, the client must pass the correct folder name in the request header, 
     /// otherwise no file will found; the default header value is the root folder 
     /// </summary>
@@ -89,7 +89,7 @@ public class FileStorageController : SpdControllerBase
     /// <response code="404">Not Found</response>
     /// <response code="400">Bad Request, file id is not a valid guid</response>
     [HttpGet]
-    [Route("api/files/{fileId}")]
+    [Route("api/transient-files/{fileId}")]
     public async Task<FileStreamResult> DownloadFileAsync(
         Guid fileId,
         [FromHeader(Name = "file-folder")] string? folder,
@@ -129,7 +129,7 @@ public class FileStorageController : SpdControllerBase
     }
 
     /// <summary>
-    /// Only updates the tags passed in the header and will not affect the content of the file
+    /// To transient bucket, Only updates the tags passed in the header and will not affect the content of the file
     /// any tags not present in the request will be deleted
     /// tags must be in the form key=value, key must contain only alphanumeric characters(i.e.tag1= value1)
     /// classification must contain only alphanumeric characters(i.e.confidential/internal/public)
@@ -144,7 +144,7 @@ public class FileStorageController : SpdControllerBase
     /// <response code="404">Not Found</response>
     /// <response code="400">Bad Request, file id is not a valid guid</response>
     [HttpPost]
-    [Route("api/files/{fileId}/tags")]
+    [Route("api/transient-files/{fileId}/tags")]
     public async Task<IActionResult> UpdateTagsAsync(
         [FromRoute] Guid fileId,
         [FromHeader(Name = "file-classification")][Required] string classification,
@@ -175,13 +175,13 @@ public class FileStorageController : SpdControllerBase
     }
 
     /// <summary>
-    /// copy file for one location in main bucket to another location in the same main bucket
+    /// copy file for one location in transient bucket to another location in the same transient bucket
     /// </summary>
     /// <param name="copyFileRequest"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("api/files/copy-file")]
+    [Route("api/transient-files/copy-file")]
     public async Task<IActionResult> CopyFileAsync(
     [FromBody] CopyFileRequest copyFileRequest,
     CancellationToken ct)
@@ -200,4 +200,6 @@ public class FileStorageController : SpdControllerBase
 
         return StatusCode(StatusCodes.Status201Created);
     }
+
+
 }

@@ -16,8 +16,10 @@
 
     public record UploadFileCommand(string Key, string? Folder, File File, FileTag FileTag) : StorageCommand(Key, Folder);
     public record UploadFileStreamCommand(string Key, string? Folder, FileStream FileStream, FileTag FileTag) : StorageCommand(Key, Folder);
-
     public record UpdateTagsCommand(string Key, string? Folder, FileTag? FileTag) : StorageCommand(Key, Folder);
+
+    //copy the file from source to dest for the same bucket.
+    public record CopyFileCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder) : StorageCommand(SourceKey, SourceFolder);
 
     public record FileTag
     {
