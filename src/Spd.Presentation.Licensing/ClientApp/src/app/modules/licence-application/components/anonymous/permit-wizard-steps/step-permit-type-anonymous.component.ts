@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
@@ -19,7 +19,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								<div class="row">
 									<div class="col-xl-5 col-lg-4">
 										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New"
-											>New ($xx for a 5-year term)</mat-radio-button
+											>New ({{ newCost }} for a 5-year term)</mat-radio-button
 										>
 									</div>
 									<div class="col-xl-7 col-lg-8">
@@ -33,7 +33,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								<div class="row">
 									<div class="col-xl-5 col-lg-4">
 										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal"
-											>Renewal ($xx for a 5-year term)</mat-radio-button
+											>Renewal ({{ renewCost }} for a 5-year term)</mat-radio-button
 										>
 									</div>
 									<div class="col-xl-7 col-lg-8">
@@ -83,12 +83,26 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [],
 })
-export class StepPermitTypeAnonymousComponent {
+export class StepPermitTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
+	newCost = '$0';
+	renewCost = '$0';
 
 	form: FormGroup = this.permitApplicationService.applicationTypeFormGroup;
 
 	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {}
+
+	ngOnInit(): void {
+		const fee = this.permitApplicationService.getLicenceTermsAndFees();
+		console.log('fee', fee);
+		fee.forEach((item: LicenceFeeResponse) => {
+			if (item.applicationTypeCode === ApplicationTypeCode.New) {
+				this.newCost = `$${fee[0].amount}`;
+			} else if (item.applicationTypeCode === ApplicationTypeCode.Renewal) {
+				this.renewCost = `$${fee[0].amount}`;
+			}
+		});
+	}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(

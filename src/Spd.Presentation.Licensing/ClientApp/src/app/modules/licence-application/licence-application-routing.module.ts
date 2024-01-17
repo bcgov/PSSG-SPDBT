@@ -20,7 +20,7 @@ import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-access-code-authorized.component';
+import { StepLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-access-code-authorized.component';
 import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component';
 import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
@@ -188,7 +188,7 @@ const routes: Routes = [
 				children: [
 					{
 						path: LicenceApplicationRoutes.LICENCE_LINK,
-						component: StepAccessCodeAuthorizedComponent,
+						component: StepLicenceAccessCodeAuthorizedComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,

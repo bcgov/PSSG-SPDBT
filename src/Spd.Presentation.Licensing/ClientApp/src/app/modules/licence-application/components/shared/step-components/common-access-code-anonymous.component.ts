@@ -1,11 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, WorkerLicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { Router } from '@angular/router';
+import { ApplicationTypeCode, LicenceLookupResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import * as moment from 'moment';
 import { take, tap } from 'rxjs';
 
 @Component({
@@ -20,12 +24,12 @@ import { take, tap } from 'rxjs';
 								<mat-label>Current {{ licenceNumberName }} Number</mat-label>
 								<input
 									matInput
-									formControlName="currentLicenceNumber"
+									formControlName="licenceNumber"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
 									maxlength="10"
 								/>
-								<mat-error *ngIf="form.get('currentLicenceNumber')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('licenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12">
@@ -36,6 +40,7 @@ import { take, tap } from 'rxjs';
 									formControlName="accessCode"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
+									maxlength="10"
 								/>
 								<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
@@ -44,27 +49,25 @@ import { take, tap } from 'rxjs';
 							<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
 								<mat-icon>link</mat-icon>Link
 							</button>
-							<!-- <mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('linkedLicenceId')?.dirty || form.get('linkedLicenceId')?.touched) &&
-												form.get('linkedLicenceId')?.invalid &&
-												form.get('linkedLicenceId')?.hasError('required')
-											"
-											>This must link to a valid licence</mat-error
-										> -->
 						</div>
 
 						<ng-container *ngIf="isAfterSearch">
 							<app-alert type="info" icon="check_circle" *ngIf="linkedLicenceId.value">
 								{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} has been found
 							</app-alert>
-							<app-alert type="danger" icon="error" *ngIf="!linkedLicenceId.value && !doNotMatch">
-								This {{ licenceNumberName }} number and access code is not valid
+							<app-alert type="danger" icon="error" *ngIf="errorMessage">
+								{{ errorMessage }}
 							</app-alert>
-							<app-alert type="danger" icon="error" *ngIf="doNotMatch">
-								{{ doNotMatchMessage }}
-							</app-alert>
+							<ng-container *ngIf="isExpired">
+								<a
+									class="w-auto"
+									tabindex="0"
+									(click)="onCreateNewLicence()"
+									(keydown)="onKeydownCreateNewLicence($event)"
+								>
+									Apply for a new Licence
+								</a>
+							</ng-container>
 						</ng-container>
 					</div>
 				</form>
@@ -76,10 +79,11 @@ import { take, tap } from 'rxjs';
 export class CommonAccessCodeAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	licenceApplicationRoutes = LicenceApplicationRoutes;
 
+	errorMessage: string | null = null;
+	isExpired = false;
 	isAfterSearch = false;
-	doNotMatch = false;
-	doNotMatchMessage = '';
 
 	licenceNumberName = '';
 
@@ -88,6 +92,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit, LicenceChildS
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(
+		private optionsPipe: OptionsPipe,
+		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
@@ -104,38 +110,22 @@ export class CommonAccessCodeAnonymousComponent implements OnInit, LicenceChildS
 
 	onLink(): void {
 		this.isAfterSearch = false;
-		this.doNotMatch = false;
+		this.isExpired = false;
+		this.errorMessage = null;
 
 		this.form.markAllAsTouched();
 
-		if (!this.currentLicenceNumber.value || !this.accessCode.value) {
+		if (!this.licenceNumber.value || !this.accessCode.value) {
 			return;
 		}
 
 		switch (this.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.loadLicenceWithAccessCode(
-						this.workerLicenceTypeCode,
-						this.applicationTypeCode,
-						this.currentLicenceNumber.value,
-						this.accessCode.value
-					)
+					.getLicenceWithAccessCode(this.licenceNumber.value, this.accessCode.value)
 					.pipe(
-						tap((resp: WorkerLicenceResponse) => {
-							// if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
-							// 	const respWorkerLicenceType = this.optionsPipe.transform(resp.workerLicenceTypeCode, 'WorkerLicenceTypes');
-							// 	const selWorkerLicenceType = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-
-							// 	this.isAfterSearch = true;
-							// 	this.doNotMatch = true;
-							// 	this.doNotMatchMessage = `A licence has been found with this Licence Number and Access Code, but the licence type for this licence (${respWorkerLicenceType}) does not match what has been selected on the previous screen (${selWorkerLicenceType}).`;
-							// 	return;
-							// }
-							this.form.patchValue({
-								linkedLicenceId: resp.licenceAppId,
-							});
-							this.isAfterSearch = true;
+						tap((resp: LicenceLookupResponse) => {
+							this.handleLookupResponse(resp);
 						}),
 						take(1)
 					)
@@ -145,27 +135,10 @@ export class CommonAccessCodeAnonymousComponent implements OnInit, LicenceChildS
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
-					.loadPermitWithAccessCode(
-						this.workerLicenceTypeCode,
-						this.applicationTypeCode,
-						this.currentLicenceNumber.value,
-						this.accessCode.value
-					)
+					.getPermitWithAccessCode(this.licenceNumber.value, this.accessCode.value)
 					.pipe(
-						tap((resp: WorkerLicenceResponse) => {
-							// if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
-							// 	const respWorkerLicenceType = this.optionsPipe.transform(resp.workerLicenceTypeCode, 'WorkerLicenceTypes');
-							// 	const selWorkerLicenceType = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-
-							// 	this.isAfterSearch = true;
-							// 	this.doNotMatch = true;
-							// 	this.doNotMatchMessage = `A licence has been found with this Licence Number and Access Code, but the licence type for this licence (${respWorkerLicenceType}) does not match what has been selected on the previous screen (${selWorkerLicenceType}).`;
-							// 	return;
-							// }
-							this.form.patchValue({
-								linkedLicenceId: resp.licenceAppId,
-							});
-							this.isAfterSearch = true;
+						tap((resp: LicenceLookupResponse) => {
+							this.handleLookupResponse(resp);
 						}),
 						take(1)
 					)
@@ -175,8 +148,71 @@ export class CommonAccessCodeAnonymousComponent implements OnInit, LicenceChildS
 		}
 	}
 
-	get currentLicenceNumber(): FormControl {
-		return this.form.get('currentLicenceNumber') as FormControl;
+	onCreateNewLicence(): void {
+		this.form.reset();
+
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+	}
+
+	onKeydownCreateNewLicence(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onCreateNewLicence();
+	}
+
+	private handleLookupResponse(resp: LicenceLookupResponse): void {
+		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.replacementPeriodPreventionDays;
+		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
+		const renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
+
+		if (!resp) {
+			// access code / licence are not found
+			this.errorMessage = `This ${this.licenceNumberName} number and access code are not a valid combination.`;
+		} else if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
+			//  access code matches licence, but the WorkerLicenceType does not match
+			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
+		} else if (moment().isAfter(resp.expiryDate)) {
+			// access code matches licence, but the licence is expired
+			this.isExpired = true;
+			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+				this.errorMessage = 'This licence has expired so you can no longer renew it. Please apply for a new licence.';
+			} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+				this.errorMessage = 'This licence has expired so you cannot update it. Please apply for a new licence.';
+			} else {
+				this.errorMessage = 'This licence has expired so you cannot replace it. Please apply for a new licence.';
+			}
+		} else if (
+			this.applicationTypeCode === ApplicationTypeCode.Replacement &&
+			moment().isSameOrBefore(resp.expiryDate) &&
+			moment(resp.expiryDate).diff(moment(), 'days') <= replacementPeriodPreventionDays
+		) {
+			// access code matches licence, but the licence is not within the replacement period
+			this.errorMessage = 'This licence is too close to its expiry date to allow replacement.';
+		} else if (
+			this.applicationTypeCode === ApplicationTypeCode.Update &&
+			moment().isSameOrBefore(resp.expiryDate) &&
+			moment(resp.expiryDate).diff(moment(), 'days') <= updatePeriodPreventionDays
+		) {
+			// access code matches licence, but the licence is not within the update period
+			this.errorMessage = 'This licence is too close to its expiry date to allow update.';
+		} else if (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal &&
+			moment().diff(resp.expiryDate, 'days') <= renewPeriodDays
+		) {
+			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
+			this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
+		} else {
+			this.form.patchValue({
+				linkedLicenceId: resp.licenceAppId,
+				licenceExpiryDate: resp.expiryDate,
+			});
+		}
+		this.isAfterSearch = true;
+	}
+
+	get licenceNumber(): FormControl {
+		return this.form.get('licenceNumber') as FormControl;
 	}
 	get accessCode(): FormControl {
 		return this.form.get('accessCode') as FormControl;

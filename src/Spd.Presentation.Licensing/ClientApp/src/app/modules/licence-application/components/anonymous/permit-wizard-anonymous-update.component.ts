@@ -131,8 +131,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
-
-		this.permitApplicationService.setLicenceTermsAndFees();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

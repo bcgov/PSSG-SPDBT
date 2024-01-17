@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 @Component({
-	selector: 'app-step-access-code-authorized',
+	selector: 'app-step-licence-access-code-authorized',
 	template: `
 		<section class="step-section">
 			<div class="row">
@@ -53,10 +53,8 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 							<div class="offset-xxl-1 col-xxl-4 offset-xl-1 col-xl-4 col-lg-4 col-md-12">
 								<mat-form-field>
 									<mat-label>Current Licence Number</mat-label>
-									<input matInput formControlName="currentLicenceNumber" [errorStateMatcher]="matcher" maxlength="10" />
-									<mat-error *ngIf="form.get('currentLicenceNumber')?.hasError('required')">
-										This is required
-									</mat-error>
+									<input matInput formControlName="licenceNumber" [errorStateMatcher]="matcher" maxlength="10" />
+									<mat-error *ngIf="form.get('licenceNumber')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12">
@@ -79,16 +77,18 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 	`,
 	styles: [],
 })
-export class StepAccessCodeAuthorizedComponent implements LicenceChildStepperStepComponent {
+export class StepLicenceAccessCodeAuthorizedComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	form: FormGroup = this.formBuilder.group({
-		currentLicenceNumber: new FormControl(null, [FormControlValidators.required]),
-		accessCode: new FormControl(null, [FormControlValidators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
 
-	constructor(private formBuilder: FormBuilder, private router: Router, private hotToastService: HotToastService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private router: Router,
+		private hotToastService: HotToastService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
