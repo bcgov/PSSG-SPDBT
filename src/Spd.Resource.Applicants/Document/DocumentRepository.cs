@@ -63,6 +63,7 @@ internal class DocumentRepository : IDocumentRepository
             RemoveDocumentCmd c => await DocumentRemoveAsync(c, ct),
             ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
             UpdateDocumentCmd c => await DocumentUpdateAsync(c, ct),
+            CopyDocumentCmd c => await DocumentCopyAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -108,6 +109,59 @@ internal class DocumentRepository : IDocumentRepository
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = application.spd_applicationid;
         return _mapper.Map<DocumentResp>(documenturl);
+    }
+
+    private async Task<DocumentResp> DocumentCopyAsync(CopyDocumentCmd cmd, CancellationToken ct)
+    {
+        spd_application? application = await _context.GetApplicationById(cmd.DestApplicationId, ct);
+        if (application == null)
+            throw new ArgumentException("invalid application id");
+
+        bcgov_documenturl sourceDoc = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.SourceDocumentUrlId).FirstOrDefault();
+        if (sourceDoc == null)
+            throw new ArgumentException("cannot find the source documenturl for copying");
+        bcgov_documenturl destDoc = new bcgov_documenturl();
+        destDoc.bcgov_documenturlid = Guid.NewGuid();
+        destDoc.bcgov_url = $"spd_application/{cmd.DestApplicationId}";
+        destDoc.bcgov_filename = sourceDoc.bcgov_filename;
+        destDoc.bcgov_filesize = sourceDoc.bcgov_filesize;
+        destDoc.bcgov_origincode = (int)BcGovOriginCode.Web;
+        destDoc.bcgov_receiveddate = sourceDoc.bcgov_receiveddate;
+        destDoc.bcgov_fileextension = sourceDoc.bcgov_fileextension;
+        destDoc.spd_expirydate = sourceDoc.spd_expirydate;
+        _context.AddTobcgov_documenturls(destDoc);
+        _context.SetLink(destDoc, nameof(destDoc.spd_ApplicationId), application);
+        if (sourceDoc._bcgov_tag1id_value != null)
+        {
+            var tag1 = _context.bcgov_tags.Where(t => t.bcgov_tagid == sourceDoc._bcgov_tag1id_value).FirstOrDefault();
+            _context.SetLink(destDoc, nameof(destDoc.bcgov_Tag1Id), tag1);
+        }
+        if (sourceDoc._bcgov_tag2id_value != null)
+        {
+            var tag2 = _context.bcgov_tags.Where(t => t.bcgov_tagid == sourceDoc._bcgov_tag2id_value).FirstOrDefault();
+            _context.SetLink(destDoc, nameof(destDoc.bcgov_Tag2Id), tag2);
+        }
+        if (sourceDoc._bcgov_tag3id_value != null)
+        {
+            var tag3 = _context.bcgov_tags.Where(t => t.bcgov_tagid == sourceDoc._bcgov_tag3id_value).FirstOrDefault();
+            _context.SetLink(destDoc, nameof(destDoc.bcgov_Tag3Id), tag3);
+        }
+        if (cmd.SubmittedByApplicantId != null)
+        {
+            contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
+            _context.SetLink(destDoc, nameof(destDoc.spd_SubmittedById), contact);
+        }
+
+        await _fileStorageService.HandleCommand(new CopyFileCommand(
+            SourceKey: cmd.SourceDocumentUrlId.ToString(),
+            SourceFolder: $"spd_application/{sourceDoc._spd_applicationid_value}",
+            DestKey: destDoc.bcgov_documenturlid.ToString(),
+            DestFolder: $"spd_application/{cmd.DestApplicationId}"
+            ), ct);
+
+        await _context.SaveChangesAsync(ct);
+        destDoc._spd_applicationid_value = application.spd_applicationid;
+        return _mapper.Map<DocumentResp>(destDoc);
     }
 
     private async Task<DocumentResp> DocumentRemoveAsync(RemoveDocumentCmd cmd, CancellationToken ct)
@@ -234,6 +288,7 @@ internal class DocumentRepository : IDocumentRepository
             ), ct);
 
     }
+
 }
 
 
