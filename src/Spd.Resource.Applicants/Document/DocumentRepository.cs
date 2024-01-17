@@ -289,11 +289,6 @@ internal class DocumentRepository : IDocumentRepository
 
     }
 
-    private async Task CopyFileAsync(Guid sourceApplicationId, Guid srcDocumenturlId, Guid destApplicationId, Guid destDocumenturlId, CancellationToken ct)
-    {
-
-
-    }
 }
 
 

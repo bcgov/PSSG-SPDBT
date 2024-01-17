@@ -300,10 +300,10 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
         {
             //validate keyCode
-            //if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
-            //{
-            //    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-            //}
+            if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
 
             _logger.LogInformation("validate payload");
             var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
