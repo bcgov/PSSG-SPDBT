@@ -133,8 +133,6 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 		}
 
 		this.updateCompleteStatus();
-
-		this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	ngAfterViewInit(): void {

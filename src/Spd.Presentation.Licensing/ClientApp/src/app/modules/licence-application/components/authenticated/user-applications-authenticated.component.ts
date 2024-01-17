@@ -18,6 +18,7 @@ import { Subscription, take, tap } from 'rxjs';
 import { WorkerLicensingService } from 'src/app/api/services';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { PermitApplicationService } from '../../services/permit-application.service';
 
 export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 	isWarningMessage: boolean;
@@ -468,6 +469,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
 		private workerLicensingService: WorkerLicensingService,
+		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
@@ -479,6 +481,10 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 						.apiWorkerLicenceApplicationsGet()
 						.pipe()
 						.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
+							const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
+							const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
+							const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
+
 							// TODO remove when backend updated...
 							// If 30 days or more have passed since the last save, the application does not appear in this list
 							const inProgressResults = resp.filter(
@@ -486,7 +492,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 									item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
 									// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 									(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-										moment().isBefore(moment(item.createdOn).add(31, 'days')))
+										moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
 							);
 
 							const activeResults = resp.filter(
@@ -507,13 +513,15 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 
 							inProgressResults.map((item: any) => {
 								if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
-									item.expiresOn = moment(item.createdOn).add(30, 'days');
+									item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
 									item.isWarningMessage = false;
 									item.isErrorMessage = false;
 
-									if (moment().isSameOrAfter(moment(item.expiresOn).subtract(7, 'days'))) {
+									if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
 										item.isErrorMessage = true;
-									} else if (moment().isSameOrAfter(moment(item.expiresOn).subtract(14, 'days'))) {
+									} else if (
+										moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))
+									) {
 										item.isWarningMessage = true;
 									}
 								}
@@ -616,35 +624,67 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onResume(appl: WorkerLicenceAppListResponse): void {
-		this.licenceApplicationService
-			.loadLicence(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-						)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			this.licenceApplicationService
+				.loadLicence(appl.licenceAppId!, appl.applicationTypeCode!)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+							)
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+			// } else {
+			// 	this.permitApplicationService
+			// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
+			// 		.pipe(
+			// 			tap((_resp: any) => {
+			// 				this.router.navigateByUrl(
+			// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+			// 						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+			// 					)
+			// 				);
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
+		}
 	}
 
 	onUpdate(appl: WorkerLicenceInProgress): void {
-		this.licenceApplicationService
-			.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Update)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-						)
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
+		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			this.licenceApplicationService
+				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', ApplicationTypeCode.Update) //TODO hardcoded ID
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+							)
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+			// } else {
+			// 	this.permitApplicationService
+			// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
+			// 		.pipe(
+			// 			tap((_resp: any) => {
+			// 				this.router.navigateByUrl(
+			// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+			// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
+			// 					)
+			// 				);
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
+		}
 	}
 
 	// onReapply(appl: WorkerLicenceInProgress): void {

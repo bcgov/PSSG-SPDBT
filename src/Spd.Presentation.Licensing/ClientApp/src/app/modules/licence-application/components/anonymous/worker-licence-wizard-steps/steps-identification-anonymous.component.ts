@@ -10,7 +10,7 @@ import { StepBcDriverLicenceComponent } from '../../shared/worker-licence-wizard
 import { StepCitizenshipComponent } from '../../shared/worker-licence-wizard-child-steps/step-citizenship.component';
 import { StepContactInformationComponent } from '../../shared/worker-licence-wizard-child-steps/step-contact-information.component';
 import { StepMailingAddressComponent } from '../../shared/worker-licence-wizard-child-steps/step-mailing-address.component';
-import { StepPhotographOfYourselfComponent } from '../../shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component';
+import { StepPhotographOfYourselfAnonymousComponent } from '../../shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component-anonymous';
 import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licence-wizard-child-steps/step-physical-characteristics.component';
 import { StepResidentialAddressComponent } from '../../shared/worker-licence-wizard-child-steps/step-residential-address.component';
 import { StepPersonalInformationAnonymousComponent } from './step-personal-information-anonymous.component';
@@ -388,7 +388,8 @@ export class StepsIdentificationAnonymousComponent extends BaseWizardStepCompone
 	@ViewChild(StepAdditionalGovIdComponent) additionalGovIdComponent!: StepAdditionalGovIdComponent;
 	@ViewChild(StepBcDriverLicenceComponent) bcDriverLicenceComponent!: StepBcDriverLicenceComponent;
 	@ViewChild(StepPhysicalCharacteristicsComponent) heightAndWeightComponent!: StepPhysicalCharacteristicsComponent;
-	@ViewChild(StepPhotographOfYourselfComponent) photoComponent!: StepPhotographOfYourselfComponent;
+	@ViewChild(StepPhotographOfYourselfAnonymousComponent)
+	photoComponent!: StepPhotographOfYourselfAnonymousComponent;
 	@ViewChild(StepResidentialAddressComponent) residentialAddressComponent!: StepResidentialAddressComponent;
 	@ViewChild(StepMailingAddressComponent) mailingAddressComponent!: StepMailingAddressComponent;
 	@ViewChild(StepContactInformationComponent) stepContactInformationComponent!: StepContactInformationComponent;

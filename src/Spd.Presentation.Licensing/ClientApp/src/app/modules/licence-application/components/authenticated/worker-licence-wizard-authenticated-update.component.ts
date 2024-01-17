@@ -88,8 +88,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent implements OnInit {
 		}
 
 		// this.updateCompleteStatus(); // TODO what to set?
-
-		// this.licenceApplicationService.setLicenceTermsAndFees();
 	}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
