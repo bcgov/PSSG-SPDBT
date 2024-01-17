@@ -27,10 +27,10 @@ namespace Spd.Utilities.FileStorage
             var mainClient = new AmazonS3Client(new BasicAWSCredentials(options.MainBucketSettings.AccessKey, options.MainBucketSettings.Secret), mainBucketConfig);
             services.AddSingleton<IFileStorageService>(sp => new FileStorageService(
                 mainClient,
-                Options.Create(options.TransientBucketSettings)));
+                Options.Create(options.MainBucketSettings)));
 
             //create transient bucket
-            if (options.TransientBucketSettings.Url != null || string.IsNullOrWhiteSpace(options.TransientBucketSettings.Url.ToString()))
+            if (options.TransientBucketSettings?.Url != null && string.IsNullOrWhiteSpace(options.TransientBucketSettings?.Url.ToString()))
             {
                 var transientBucketConfig = new AmazonS3Config
                 {

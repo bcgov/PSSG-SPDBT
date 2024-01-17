@@ -117,7 +117,7 @@ internal class DocumentRepository : IDocumentRepository
         if (application == null)
             throw new ArgumentException("invalid application id");
 
-        bcgov_documenturl sourceDoc = _context.bcgov_documenturls.FirstOrDefault(d => d.bcgov_documenturlid == cmd.SourceDocumentUrlId);
+        bcgov_documenturl sourceDoc = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.SourceDocumentUrlId).FirstOrDefault();
         if (sourceDoc == null)
             throw new ArgumentException("cannot find the source documenturl for copying");
         bcgov_documenturl destDoc = new bcgov_documenturl();
@@ -133,17 +133,17 @@ internal class DocumentRepository : IDocumentRepository
         _context.SetLink(destDoc, nameof(destDoc.spd_ApplicationId), application);
         if (sourceDoc._bcgov_tag1id_value != null)
         {
-            var tag1 = _context.bcgov_tags.FirstOrDefault(t => t.bcgov_tagid == sourceDoc._bcgov_tag1id_value);
+            var tag1 = _context.bcgov_tags.Where(t => t.bcgov_tagid == sourceDoc._bcgov_tag1id_value).FirstOrDefault();
             _context.SetLink(destDoc, nameof(destDoc.bcgov_Tag1Id), tag1);
         }
         if (sourceDoc._bcgov_tag2id_value != null)
         {
-            var tag2 = _context.bcgov_tags.FirstOrDefault(t => t.bcgov_tagid == sourceDoc._bcgov_tag2id_value);
+            var tag2 = _context.bcgov_tags.Where(t => t.bcgov_tagid == sourceDoc._bcgov_tag2id_value).FirstOrDefault();
             _context.SetLink(destDoc, nameof(destDoc.bcgov_Tag2Id), tag2);
         }
         if (sourceDoc._bcgov_tag3id_value != null)
         {
-            var tag3 = _context.bcgov_tags.FirstOrDefault(t => t.bcgov_tagid == sourceDoc._bcgov_tag3id_value);
+            var tag3 = _context.bcgov_tags.Where(t => t.bcgov_tagid == sourceDoc._bcgov_tag3id_value).FirstOrDefault();
             _context.SetLink(destDoc, nameof(destDoc.bcgov_Tag3Id), tag3);
         }
         if (cmd.SubmittedByApplicantId != null)
@@ -154,7 +154,7 @@ internal class DocumentRepository : IDocumentRepository
 
         await _fileStorageService.HandleCommand(new CopyFileCommand(
             SourceKey: cmd.SourceDocumentUrlId.ToString(),
-            SourceFolder: $"spd_application/{sourceDoc.spd_ApplicationId}",
+            SourceFolder: $"spd_application/{sourceDoc._spd_applicationid_value}",
             DestKey: destDoc.bcgov_documenturlid.ToString(),
             DestFolder: $"spd_application/{cmd.DestApplicationId}"
             ), ct);

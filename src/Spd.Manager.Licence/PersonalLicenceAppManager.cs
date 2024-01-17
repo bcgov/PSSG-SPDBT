@@ -212,14 +212,17 @@ internal partial class PersonalLicenceAppManager :
             throw new ArgumentException("replacement request must have original application id");
         var photos = await _documentRepository.QueryAsync(
             new DocumentQry(
-                ApplicantId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
+                ApplicationId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
                 FileType: DocumentTypeEnum.Photograph),
             ct);
         if (photos.Items.Any())
         {
-            await _documentRepository.ManageAsync(
-                new CopyDocumentCmd(photos.Items.First().DocumentUrlId, response.LicenceAppId, response.ContactId), 
-                ct);
+            foreach (var photo in photos.Items)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(photo.DocumentUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
         }
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
