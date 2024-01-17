@@ -67,6 +67,12 @@ internal static class SharedMappingFuncs
         return Enum.Parse<LicenceTermEnum>(Enum.GetName(typeof(LicenceTermOptionSet), optionset));
     }
 
+    internal static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
+    {
+        if (serviceTypeGuid == null) return null;
+        return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
+    }
+
     internal static BusinessTypeEnum? GetBusinessTypeEnum(int? optionset)
     {
         if (optionset == null) return null;
