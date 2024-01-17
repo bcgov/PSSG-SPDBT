@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Spd.Utilities.FileStorage
 {
-    internal class FileStorageService : IFileStorageService
+    internal class FileStorageService : IFileStorageService, ITransientFileStorageService
     {
         private readonly AmazonS3Client _amazonS3Client;
         private readonly IOptions<S3Settings> _config;
@@ -22,6 +22,7 @@ namespace Spd.Utilities.FileStorage
                 UploadFileCommand c => await UploadStorageItem(c, cancellationToken),
                 UploadFileStreamCommand c => await UploadStorageItemStream(c, cancellationToken),
                 UpdateTagsCommand c => await UpdateTags(c, cancellationToken),
+                CopyFileCommand c => await CopyStorageItem(c, cancellationToken),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -110,6 +111,26 @@ namespace Spd.Utilities.FileStorage
             return cmd.Key;
         }
 
+        private async Task<string> CopyStorageItem(CopyFileCommand cmd, CancellationToken cancellationToken)
+        {
+            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
+            var key = $"{folder}{cmd.Key}";
+
+            var destFolder = cmd.DestFolder == null ? "" : $"{cmd.DestFolder}/";
+            var destKey = $"{destFolder}/{cmd.DestKey}";
+            var request = new CopyObjectRequest
+            {
+                SourceBucket = this._config.Value.Bucket,
+                SourceKey = key,
+                DestinationBucket = this._config.Value.Bucket,
+                DestinationKey = destKey,
+            };
+
+            var response = await _amazonS3Client.CopyObjectAsync(request, cancellationToken);
+            response.EnsureSuccess();
+
+            return cmd.Key;
+        }
         private async Task<FileQueryResult> DownloadStorageItem(string key, string? folder, CancellationToken ct)
         {
             var dir = folder == null ? "" : $"{folder}/";

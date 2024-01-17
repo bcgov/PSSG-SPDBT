@@ -1,5 +1,10 @@
 ﻿namespace Spd.Utilities.FileStorage
 {
+    internal record StorageSetting
+    {
+        public S3Settings MainBucketSettings { get; set; }
+        public S3Settings TransientBucketSettings { get; set; }
+    }
     internal record S3Settings
     {
         public string AccessKey { get; set; } = null!;
