@@ -424,14 +424,14 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 				color: #721c24;
 				background-color: #fceded;
 				border-radius: 0;
-				border: 1px solid #721c24;
+				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 			}
 
 			.draft-warning-message {
 				color: #856404;
 				background-color: #fff9e5;
 				border-radius: 0;
-				border: 1px solid #856404;
+				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 			}
 		`,
 	],
@@ -658,7 +658,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	onUpdate(appl: WorkerLicenceInProgress): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', ApplicationTypeCode.Update) //TODO hardcoded ID
+				.loadLicence('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

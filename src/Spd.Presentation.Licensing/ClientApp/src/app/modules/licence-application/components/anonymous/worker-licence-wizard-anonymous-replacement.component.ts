@@ -1,9 +1,18 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import {
+	ApplicationTypeCode,
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	WorkerLicenceAppUpsertResponse,
+} from '@app/api/models';
+import { PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-child-steps/step-mailing-address.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -30,7 +39,7 @@ import { distinctUntilChanged } from 'rxjs';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onGoToNextStep()">Pay</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onPay()">Pay</button>
 					</div>
 				</div>
 			</mat-step>
@@ -44,12 +53,15 @@ import { distinctUntilChanged } from 'rxjs';
 })
 export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizardComponent implements OnInit {
 	applicationTypeCode = ApplicationTypeCode.Replacement;
+	newLicenceAppId: string | null = null;
 
 	@ViewChild(StepMailingAddressComponent)
 	stepMailingAddressComponent!: StepMailingAddressComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private hotToastService: HotToastService,
+		private paymentService: PaymentService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -62,10 +74,48 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			.subscribe(() => this.breakpointChanged());
 	}
 
-	onGoToNextStep(): void {
+	onPay(): void {
 		const isFormValid = this.stepMailingAddressComponent.isFormValid();
+
+		console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
+		console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
+
 		if (isFormValid) {
-			// PAY
+			if (this.newLicenceAppId) {
+				this.payNow(this.newLicenceAppId);
+			} else {
+				this.licenceApplicationService.submitLicence().subscribe({
+					next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+						// save this locally just in application payment fails
+						this.newLicenceAppId = resp.body.licenceAppId!;
+						this.hotToastService.success('Your licence replacement has been successfully submitted');
+						this.payNow(this.newLicenceAppId);
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+						this.hotToastService.error('An error occurred during the save. Please try again.');
+					},
+				});
+			}
 		}
+	}
+
+	private payNow(licenceAppId: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Licence Replacement`,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 }

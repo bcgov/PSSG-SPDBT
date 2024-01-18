@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 
 @Component({
 	selector: 'app-step-consent-and-declaration',
@@ -64,12 +63,20 @@ import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/
 						</div>
 					</div>
 
-					<div class="row mb-4" *ngIf="displayCaptcha">
+					<div class="row my-4" *ngIf="displayCaptcha.value">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
-							<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
-								This is required
-							</mat-error>
+							<div formGroupName="captchaFormGroup">
+								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+										captchaFormGroup.get('token')?.invalid &&
+										captchaFormGroup.get('token')?.hasError('required')
+									"
+									>This is required</mat-error
+								>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -93,11 +100,6 @@ import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/
 	],
 })
 export class StepConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
-	displayValidationErrors = false;
-	displayCaptcha = false;
-	captchaPassed = false;
-	captchaResponse: CaptchaResponse | null = null;
-
 	form: FormGroup = this.licenceApplicationService.consentAndDeclarationFormGroup;
 
 	constructor(
@@ -108,20 +110,12 @@ export class StepConsentAndDeclarationComponent implements OnInit, LicenceChildS
 
 	ngOnInit(): void {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			this.displayCaptcha = !isLoggedIn;
+			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
 		});
 	}
 
 	isFormValid(): boolean {
-		if (this.displayCaptcha) {
-			this.displayValidationErrors = !this.captchaPassed;
-
-			if (this.captchaPassed) {
-				this.form.patchValue({ recaptcha: this.captchaResponse?.resolved });
-			}
-			return this.form.valid && this.displayCaptcha && this.captchaPassed;
-		}
-
+		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
@@ -134,12 +128,10 @@ export class StepConsentAndDeclarationComponent implements OnInit, LicenceChildS
 		}
 	}
 
-	onTokenResponse($event: CaptchaResponse) {
-		this.captchaResponse = $event;
-		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
-			this.captchaPassed = true;
-		} else {
-			this.captchaPassed = false;
-		}
+	get captchaFormGroup(): FormGroup {
+		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get displayCaptcha(): FormControl {
+		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 }
