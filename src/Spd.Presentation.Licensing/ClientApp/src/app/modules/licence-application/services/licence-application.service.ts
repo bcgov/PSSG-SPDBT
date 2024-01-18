@@ -266,8 +266,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param accessCode
 	 * @returns
 	 */
-	getLicenceWithAccessCode(licenceNumber: string, accessCode: string): Observable<LicenceLookupResponse> {
-		return this.licenceLookupService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(take(1));
+	getLicenceWithAccessCode(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceLookupResponse> {
+		return this.licenceLookupService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(take(1));
 	}
 
 	/**

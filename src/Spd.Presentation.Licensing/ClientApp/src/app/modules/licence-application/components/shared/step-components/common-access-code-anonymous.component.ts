@@ -13,10 +13,10 @@ import { take, tap } from 'rxjs';
 	selector: 'app-common-access-code-anonymous',
 	template: `
 		<div class="row">
-			<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
+			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
 				<form [formGroup]="form" novalidate>
-					<div class="row mt-4">
-						<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-12">
+					<div class="row my-4">
+						<div class="col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Current {{ licenceNumberName }} Number</mat-label>
 								<input
@@ -29,7 +29,7 @@ import { take, tap } from 'rxjs';
 								<mat-error *ngIf="form.get('licenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12">
+						<div class="col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Access Code</mat-label>
 								<input
@@ -42,42 +42,40 @@ import { take, tap } from 'rxjs';
 								<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
+						<div class="col-12">
+							<div class="mt-2 mb-3" formGroupName="captchaFormGroup">
+								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+										captchaFormGroup.get('token')?.invalid &&
+										captchaFormGroup.get('token')?.hasError('required')
+									"
+									>This is required</mat-error
+								>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-12">
+							<button mat-flat-button color="primary" class="large" (click)="onLink()">
 								<mat-icon>link</mat-icon>Link
 							</button>
 						</div>
-
-						<app-alert type="info" icon="check_circle" *ngIf="linkedLicenceId.value">
-							{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} has been found
-						</app-alert>
-						<app-alert type="danger" icon="error" *ngIf="errorMessage">
-							{{ errorMessage }}
-						</app-alert>
-						<ng-container *ngIf="isExpired">
-							<a
-								class="w-auto"
-								tabindex="0"
-								(click)="onCreateNewLicence()"
-								(keydown)="onKeydownCreateNewLicence($event)"
-							>
-								Apply for a new Licence
-							</a>
-						</ng-container>
-
-						<div class="col-12 my-3" formGroupName="captchaFormGroup">
-							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-									captchaFormGroup.get('token')?.invalid &&
-									captchaFormGroup.get('token')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
 					</div>
+
+					<app-alert type="info" icon="check_circle" *ngIf="linkedLicenceId.value">
+						{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} has been found
+					</app-alert>
+
+					<app-alert type="danger" icon="error" *ngIf="errorMessage">
+						{{ errorMessage }}
+					</app-alert>
+
+					<ng-container *ngIf="isExpired">
+						<a class="w-auto" tabindex="0" (click)="onCreateNewLicence()" (keydown)="onKeydownCreateNewLicence($event)">
+							Apply for a new Licence
+						</a>
+					</ng-container>
 				</form>
 			</div>
 		</div>
@@ -122,8 +120,9 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 
 		let licenceNumber = this.licenceNumber.value;
 		let accessCode = this.accessCode.value;
+		const recaptchaCode = this.captchaFormGroup.get('token')?.value;
 
-		if (!licenceNumber || !accessCode) {
+		if (!licenceNumber || !accessCode || !recaptchaCode) {
 			return;
 		}
 
@@ -133,7 +132,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		switch (this.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithAccessCode(licenceNumber, accessCode)
+					.getLicenceWithAccessCode(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceLookupResponse) => {
 							this.handleLookupResponse(resp);

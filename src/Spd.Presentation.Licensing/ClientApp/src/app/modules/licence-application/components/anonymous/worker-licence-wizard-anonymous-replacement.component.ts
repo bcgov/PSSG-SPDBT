@@ -1,9 +1,18 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import {
+	ApplicationTypeCode,
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	WorkerLicenceAppUpsertResponse,
+} from '@app/api/models';
+import { PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-child-steps/step-mailing-address.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -44,12 +53,15 @@ import { distinctUntilChanged } from 'rxjs';
 })
 export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizardComponent implements OnInit {
 	applicationTypeCode = ApplicationTypeCode.Replacement;
+	newLicenceAppId: string | null = null;
 
 	@ViewChild(StepMailingAddressComponent)
 	stepMailingAddressComponent!: StepMailingAddressComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private hotToastService: HotToastService,
+		private paymentService: PaymentService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -66,32 +78,44 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 		const isFormValid = this.stepMailingAddressComponent.isFormValid();
 
 		console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
-		console.log(
-			'onPay isStepLicenceSelectionComplete',
-			this.licenceApplicationService.isStepLicenceSelectionComplete()
-		);
-		console.log('onPay isStepBackgroundComplete', this.licenceApplicationService.isStepBackgroundComplete());
-		console.log('onPay isStepIdentificationComplete', this.licenceApplicationService.isStepIdentificationComplete());
 		console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
 
 		if (isFormValid) {
-			// If the creation worked and the payment failed, do not post again
-			// if (this.licenceAppId) {
-			// 	this.payNow(this.licenceAppId);
-			// } else {
-			// 	this.licenceApplicationService.submitLicence().subscribe({
-			// 		next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
-			// 			// save this locally just in case payment fails
-			// 			this.licenceAppId = resp.body.licenceAppId!;
-			// 			this.hotToastService.success('Your licence has been successfully submitted');
-			// 			this.payNow(this.licenceAppId);
-			// 		},
-			// 		error: (error: any) => {
-			// 			console.log('An error occurred during save', error);
-			// 			this.hotToastService.error('An error occurred during the save. Please try again.');
-			// 		},
-			// 	});
-			// }
+			if (this.newLicenceAppId) {
+				this.payNow(this.newLicenceAppId);
+			} else {
+				this.licenceApplicationService.submitLicence().subscribe({
+					next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+						// save this locally just in application payment fails
+						this.newLicenceAppId = resp.body.licenceAppId!;
+						this.hotToastService.success('Your licence replacement has been successfully submitted');
+						this.payNow(this.newLicenceAppId);
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+						this.hotToastService.error('An error occurred during the save. Please try again.');
+					},
+				});
+			}
 		}
+	}
+
+	private payNow(licenceAppId: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Licence Replacement`,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 }
