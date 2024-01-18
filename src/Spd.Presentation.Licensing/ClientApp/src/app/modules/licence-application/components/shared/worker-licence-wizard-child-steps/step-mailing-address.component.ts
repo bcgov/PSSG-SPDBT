@@ -12,11 +12,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.New">
 					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
@@ -120,7 +116,7 @@ export class StepMailingAddressComponent implements OnInit, LicenceChildStepperS
 	readonly title_subtitle_new =
 		'Provide your mailing address, if different from your residential address. This cannot be a company address.';
 	readonly title_replacement = 'Review your mailing address';
-	readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
+	// readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
@@ -130,7 +126,7 @@ export class StepMailingAddressComponent implements OnInit, LicenceChildStepperS
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				this.title = this.title_replacement;
-				this.subtitle = this.title_subtitle_replacement;
+				// this.subtitle = this.title_subtitle_replacement;
 				break;
 			}
 			default: {
