@@ -424,14 +424,14 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 				color: #721c24;
 				background-color: #fceded;
 				border-radius: 0;
-				border: 1px solid #721c24;
+				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 			}
 
 			.draft-warning-message {
 				color: #856404;
 				background-color: #fff9e5;
 				border-radius: 0;
-				border: 1px solid #856404;
+				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 			}
 		`,
 	],
