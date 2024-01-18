@@ -20,6 +20,15 @@ internal class ContactRepository : IContactRepository
         _logger = logger;
     }
 
+    public async Task<ContactResp> GetAsync(Guid contactId, CancellationToken ct)
+    {
+        contact? contact = await _context.contacts.Expand(c => c.spd_Contact_Alias)
+            .Where(c => c.contactid == contactId)
+            .FirstOrDefaultAsync(ct);
+        if (contact == null) throw new ArgumentException($"cannot find the contact with contactId : {contactId}");
+        return _mapper.Map<ContactResp>(contact);
+    }
+
     public async Task<ContactListResp> QueryAsync(ContactQry qry, CancellationToken ct)
     {
         IQueryable<contact> contacts = _context.contacts;

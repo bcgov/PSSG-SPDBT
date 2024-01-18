@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.Contact
 {
@@ -17,6 +18,9 @@ namespace Spd.Resource.Applicants.Contact
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
             .ForMember(d => d.Email, opt => opt.MapFrom(s => s.emailaddress1))
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
+            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
+            .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
             ;
 
             _ = CreateMap<ContactCmd, contact>()
@@ -35,6 +39,14 @@ namespace Spd.Resource.Applicants.Contact
             _ = CreateMap<UpdateContactCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => s.Id))
             .IncludeBase<ContactCmd, contact>();
+
+            _ = CreateMap<Alias, spd_alias>()
+              .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
+              .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
+              .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
+              .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+              .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered))
+              .ReverseMap();
         }
 
         private static bool? GetBool(int? value)
@@ -42,6 +54,32 @@ namespace Spd.Resource.Applicants.Contact
             if (value == null) return null;
             if (value == (int)YesNoOptionSet.Yes) return true;
             return false;
+        }
+
+        private static ResidentialAddr? GetResidentialAddress(contact contact)
+        {
+            if (string.IsNullOrWhiteSpace(contact.address2_line1) && string.IsNullOrEmpty(contact.address2_line2)) return null;
+            ResidentialAddr addr = new();
+            addr.AddressLine1 = contact.address2_line1;
+            addr.AddressLine2 = contact.address2_line2;
+            addr.City = contact.address2_city;
+            addr.Country = contact.address2_country;
+            addr.Province = contact.address2_county;
+            addr.PostalCode = contact.address2_postalcode;
+            return addr;
+        }
+
+        private static MailingAddr? GetMailingAddress(contact contact)
+        {
+            if (string.IsNullOrWhiteSpace(contact.address1_line1) && string.IsNullOrEmpty(contact.address1_line2)) return null;
+            MailingAddr addr = new();
+            addr.AddressLine1 = contact.address1_line1;
+            addr.AddressLine2 = contact.address1_line2;
+            addr.City = contact.address1_city;
+            addr.Country = contact.address1_country;
+            addr.Province = contact.address1_county;
+            addr.PostalCode = contact.address1_postalcode;
+            return addr;
         }
     }
 }

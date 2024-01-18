@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.Shared.Tools;
 using System.Text.RegularExpressions;
 

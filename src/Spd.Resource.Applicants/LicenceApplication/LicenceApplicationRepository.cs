@@ -3,6 +3,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
