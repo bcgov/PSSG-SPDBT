@@ -69,6 +69,9 @@ export abstract class PermitApplicationHelper {
 		accessCode: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		expiryDate: new FormControl(null),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', FormControlValidators.required),
+		}),
 	});
 
 	personalInformationFormGroup = this.formBuilder.group(
@@ -321,7 +324,20 @@ export abstract class PermitApplicationHelper {
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
-		recaptcha: new FormControl(),
+		captchaFormGroup: new FormGroup(
+			{
+				displayCaptcha: new FormControl(false),
+				token: new FormControl('', FormControlValidators.required),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'token',
+						(form) => form.get('displayCaptcha')?.value == true
+					),
+				],
+			}
+		),
 	});
 
 	constructor(

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -15,6 +16,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
 			<div class="app-header-text pl-3">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
+
+			<button mat-button class="w-auto" (click)="onHome()">
+				<mat-icon style="font-size: 32px !important; height: 32px !important; width: 32px !important;">home</mat-icon>
+			</button>
 
 			<div *ngIf="loggedInUserDisplay">
 				<button mat-button [matMenuTriggerFor]="menu" class="login-user-menu-button w-auto" style="font-size: inherit;">
@@ -92,6 +97,14 @@ export class HeaderComponent implements OnInit {
 
 			this.getUserInfo();
 		});
+	}
+
+	onHome(): void {
+		if (this.loggedInUserDisplay) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		} else {
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+		}
 	}
 
 	onLogout(): void {

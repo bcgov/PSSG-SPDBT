@@ -987,9 +987,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	submitLicence(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	submitPermit(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		if (this.authenticationService.isLoggedIn()) {
-			return this.submitLicenceAuthenticated();
+			return this.submitPermitAuthenticated();
 		} else {
 			return this.submitPermitAnonymous();
 		}
@@ -999,7 +999,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the licence data
 	 * @returns
 	 */
-	private submitLicenceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody();
 		console.debug('submitLicenceAuthenticated body', body);
 
@@ -1024,7 +1024,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const residentialAddressData = { ...formValue.residentialAddressData };
 		const mailingAddressData = { ...formValue.mailingAddressData };
 		const citizenshipData = { ...formValue.citizenshipData };
-		// const additionalGovIdData = { ...formValue.additionalGovIdData };
 		const fingerprintProofData = { ...formValue.fingerprintProofData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
@@ -1182,7 +1181,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
 		// console.debug('submitPermitAnonymous', formValue);
 
-		const googleRecaptcha = { recaptchaCode: formValue.recaptcha };
+		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
