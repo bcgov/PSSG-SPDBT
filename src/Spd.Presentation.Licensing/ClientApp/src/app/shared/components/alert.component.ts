@@ -19,10 +19,6 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				background-color: #eef8fa;
 				border-color: #eef8fa;
 				border-radius: 0;
-
-				.content {
-					color: #333333;
-				}
 			}
 
 			.alert-info-border {

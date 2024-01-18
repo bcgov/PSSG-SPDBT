@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { GoogleRecaptcha } from '../models/google-recaptcha';
 import { LicenceLookupResponse } from '../models/licence-lookup-response';
 
 @Injectable({
@@ -84,6 +85,75 @@ export class LicenceLookupService extends BaseService {
 ): Observable<LicenceLookupResponse> {
 
     return this.apiLicenceLookupLicenceNumberGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<LicenceLookupResponse>) => r.body as LicenceLookupResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiLicenceLookupAnonymousLicenceNumberPost
+   */
+  static readonly ApiLicenceLookupAnonymousLicenceNumberPostPath = '/api/licence-lookup/anonymous/{licenceNumber}';
+
+  /**
+   * Get licence by licence number with google recaptcha for anonymous
+   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicenceLookupAnonymousLicenceNumberPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiLicenceLookupAnonymousLicenceNumberPost$Response(params: {
+    licenceNumber: string;
+    accessCode?: string;
+    body?: GoogleRecaptcha
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<LicenceLookupResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LicenceLookupService.ApiLicenceLookupAnonymousLicenceNumberPostPath, 'post');
+    if (params) {
+      rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
+      rb.query('accessCode', params.accessCode, {"style":"form"});
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<LicenceLookupResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get licence by licence number with google recaptcha for anonymous
+   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicenceLookupAnonymousLicenceNumberPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiLicenceLookupAnonymousLicenceNumberPost(params: {
+    licenceNumber: string;
+    accessCode?: string;
+    body?: GoogleRecaptcha
+  },
+  context?: HttpContext
+
+): Observable<LicenceLookupResponse> {
+
+    return this.apiLicenceLookupAnonymousLicenceNumberPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<LicenceLookupResponse>) => r.body as LicenceLookupResponse)
     );
   }

@@ -173,7 +173,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitLicence().subscribe({
+		this.permitApplicationService.submitPermit().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());

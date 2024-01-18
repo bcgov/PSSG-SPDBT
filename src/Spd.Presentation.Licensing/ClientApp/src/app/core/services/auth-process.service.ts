@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
-import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
 import { AuthUserBceidService } from './auth-user-bceid.service';
@@ -166,7 +165,7 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.router.navigate([AppRoutes.LANDING]);
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
 		}
 	}
 
