@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-registration-routing.module';
 import { PssoRoutes } from './modules/psso-portal/psso-routing.module';
-import { SecurityScreeningRoutes } from './modules/security-screening-portal/security-screening-routing.module';
 
 @Component({
 	selector: 'app-landing',
@@ -20,12 +19,6 @@ import { SecurityScreeningRoutes } from './modules/security-screening-portal/sec
 			<p class="mt-4 mb-0">Need to register an account with the Criminal Records Review Program?</p>
 			<a tabindex="0" (click)="goToOrgRegistration()" (keydown)="onKeyDownOrgRegistration($event)"> Register now </a>
 		</section>
-
-		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto my-4 p-4">
-			<button mat-stroked-button color="primary" class="large my-2" (click)="goToSecurityScreening()">
-				Applicant Portal
-			</button>
-		</section>
 	`,
 	styles: [
 		`
@@ -37,10 +30,6 @@ import { SecurityScreeningRoutes } from './modules/security-screening-portal/sec
 })
 export class LandingComponent {
 	constructor(private router: Router) {}
-
-	goToSecurityScreening(): void {
-		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
-	}
 
 	goToPsso(): void {
 		this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
