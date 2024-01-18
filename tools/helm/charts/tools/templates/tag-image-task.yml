@@ -12,6 +12,9 @@ spec:
       type: string
     - name: destinationTag
       type: string
+    - name: scheduled
+      type: string
+      default: false
   steps:
     - name: tag
       image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
@@ -23,4 +26,4 @@ spec:
           cpu: 5m
           memory: 32Mi
       script: |
-        oc tag $(params.sourceImage):$(params.sourceTag) $(params.destinationImage):$(params.destinationTag)
+        oc tag $(params.sourceImage):$(params.sourceTag) $(params.destinationImage):$(params.destinationTag) --scheduled=$(params.scheduled)

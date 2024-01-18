@@ -18,6 +18,8 @@ spec:
           value: screening-portal
         - name: destinationTag
           value: dev
+        - name: scheduled
+          value: true
       taskRef:
         kind: Task
         name: tag-image-task
@@ -32,6 +34,8 @@ spec:
           value: licensing-portal
         - name: destinationTag
           value: dev
+        - name: scheduled
+          value: true
       taskRef:
         kind: Task
         name: tag-image-task
@@ -46,6 +50,8 @@ spec:
           value: dynamics-helper
         - name: destinationTag
           value: dev
+        - name: scheduled
+          value: true
       taskRef:
         kind: Task
         name: tag-image-task
@@ -60,6 +66,8 @@ spec:
           value: jag-jobscheduler
         - name: destinationTag
           value: dev
+        - name: scheduled
+          value: true
       taskRef:
         kind: Task
         name: tag-image-task
