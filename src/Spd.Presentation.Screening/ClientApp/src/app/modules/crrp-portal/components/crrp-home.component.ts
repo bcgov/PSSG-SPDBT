@@ -32,11 +32,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/new_screening.png" alt="New Screening" />
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
-										<div class="mb-auto p-2 pt-0 bd-highlight"><h4>Request a new criminal record check</h4></div>
-										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">Request a new criminal record check</h4></div>
+										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 50px;">Start a new check for one or more applicants</div>
+												<div class="mb-0">Start a new check for one or more applicants</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -51,11 +51,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/screening_status.png" alt="Screening Status" />
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
-										<div class="mb-auto p-2 pt-0 bd-highlight"><h4>View application status</h4></div>
-										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">View application status</h4></div>
+										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 40px;">See your applicants' criminal record check progress</div>
+												<div class="mb-0">See your applicants' criminal record check progress</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -74,13 +74,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									/>
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
-										<div class="mb-auto p-2 pt-0 bd-highlight">
-											<h4>View expiring criminal record checks</h4>
-										</div>
-										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">View expiring criminal record checks</h4></div>
+										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 50px;">See clearances that are expiring soon</div>
+												<div class="mb-0">See clearances that are expiring soon</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -102,13 +100,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									/>
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
-										<div class="mb-auto p-2 pt-0 bd-highlight">
-											<h4>Payments</h4>
-										</div>
-										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">Payments</h4></div>
+										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 50px;">Manage and view payments</div>
+												<div class="mb-0">Manage and view payments</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -123,15 +119,15 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" alt="Users or Profile" />
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
-										<div class="mb-auto p-2 pt-0 bd-highlight">
-											<h4 *ngIf="userPrimary === true">Manage authorized users</h4>
-											<h4 *ngIf="userPrimary === false">Update profile</h4>
+									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+										<div class="mb-auto p-2 pb-0">
+											<h4 class="mb-0" *ngIf="userPrimary === true">Manage authorized users</h4>
+											<h4 class="mb-0" *ngIf="userPrimary === false">Update profile</h4>
 										</div>
-										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 50px;" *ngIf="userPrimary === true">Add or remove team members</div>
-												<div style="height: 50px;" *ngIf="userPrimary === false">Edit your personal information</div>
+												<div class="mb-0" *ngIf="userPrimary === true">Add or remove team members</div>
+												<div class="mb-0" *ngIf="userPrimary === false">Edit your personal information</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -150,13 +146,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									/>
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
-										<div class="mb-auto p-2 pt-0 bd-highlight">
-											<h4>Confirm applicant identity</h4>
-										</div>
-										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">Confirm applicant identity</h4></div>
+										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div style="height: 50px;">See a list of applicants who required ID checks</div>
+												<div class="mb-0">See a list of applicants who required ID checks</div>
 												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -177,11 +171,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								class="col-xl-3 col-lg-6 col-md-12 col-sm-12"
 								*ngIf="authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false"
 							>
-								<mat-card class="data-card" style="border-color: var(--color-primary);">
-									<mat-card-header
-										class="data-card__header mb-2"
-										style="background-color: var(--color-primary); color: white;"
-									>
+								<mat-card class="data-card data-card__payment-required">
+									<mat-card-header class="data-card__header mb-2">
 										<mat-card-title class="data-card__header__title">Payment Required</mat-card-title>
 									</mat-card-header>
 									<mat-card-content class="data-card__content">
@@ -200,8 +191,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								</mat-card>
 							</div>
 							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-								<mat-card class="data-card" style="border-color: var(--color-yellow);">
-									<mat-card-header class="data-card__header mb-2" style="background-color: var(--color-yellow);">
+								<mat-card class="data-card data-card__verification-required">
+									<mat-card-header class="data-card__header data-card__verification-required__header mb-2">
 										<mat-card-title class="data-card__header__title">Verification Required</mat-card-title>
 									</mat-card-header>
 									<mat-card-content class="data-card__content">
@@ -219,11 +210,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								</mat-card>
 							</div>
 							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-								<mat-card class="data-card" style="border-color: var(--color-green); ">
-									<mat-card-header
-										class="data-card__header mb-2"
-										style="background-color: var(--color-green); color: white;"
-									>
+								<mat-card class="data-card data-card__applications-cleared">
+									<mat-card-header class="data-card__header data-card__applications-cleared__header mb-2">
 										<mat-card-title class="data-card__header__title">Applications Cleared</mat-card-title>
 									</mat-card-header>
 									<mat-card-content class="data-card__content">
@@ -231,9 +219,9 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									</mat-card-content>
 									<mat-card-actions class="mt-4">
 										<button
+											class="data-card__applications-cleared__button"
 											mat-flat-button
 											[routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]"
-											style="background-color: var(--color-green);color: var(--color-white);"
 										>
 											<mat-icon>preview</mat-icon>Review
 										</button>
@@ -241,11 +229,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								</mat-card>
 							</div>
 							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-								<mat-card class="data-card" style="border-color: var(--color-red);">
-									<mat-card-header
-										class="data-card__header mb-2"
-										style="background-color: var(--color-red); color: white;"
-									>
+								<mat-card class="data-card data-card__applications-not-cleared">
+									<mat-card-header class="data-card__header data-card__applications-not-cleared__header mb-2">
 										<mat-card-title class="data-card__header__title">Applications Not Cleared</mat-card-title>
 									</mat-card-header>
 									<mat-card-content class="data-card__content">
@@ -253,9 +238,9 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									</mat-card-content>
 									<mat-card-actions class="mt-4">
 										<button
+											class="data-card__applications-not-cleared__button"
 											mat-flat-button
 											[routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]"
-											style="background-color: var(--color-red);color: var(--color-white);"
 										>
 											<mat-icon>preview</mat-icon>Review
 										</button>
@@ -290,7 +275,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					}
 				}
 				&__text {
-					margin: 1em 1em 0 1em;
+					margin: 0.3em 1em 0 1em;
 					&__icon {
 						color: var(--color-yellow);
 						overflow: inherit;
@@ -306,12 +291,44 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				&__header {
 					padding: 0.5em;
 					font-size: 0.9em;
+					background-color: var(--color-primary);
+					color: white;
 					&__title {
 						font-size: 1em;
 					}
 				}
 				&__content {
 					height: 100%;
+				}
+				&__payment-required {
+					border-color: var(--color-primary);
+				}
+				&__verification-required {
+					border-color: var(--color-yellow);
+					&__header {
+						color: unset;
+						background-color: var(--color-yellow);
+					}
+				}
+				&__applications-cleared {
+					border-color: var(--color-green);
+					&__header {
+						background-color: var(--color-green);
+					}
+					&__button {
+						background-color: var(--color-green) !important;
+						color: var(--color-white) !important;
+					}
+				}
+				&__applications-not-cleared {
+					border-color: var(--color-red);
+					&__header {
+						background-color: var(--color-red);
+					}
+					&__button {
+						background-color: var(--color-red) !important;
+						color: var(--color-white) !important;
+					}
 				}
 			}
 		`,
