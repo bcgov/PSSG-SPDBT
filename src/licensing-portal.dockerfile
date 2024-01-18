@@ -34,6 +34,12 @@ RUN npm run lint
 RUN npm run build -- --configuration production
 
 FROM registry.access.redhat.com/ubi8/dotnet-80-runtime:8.0 AS final
+
+# artifactory self cleanup
+LABEL com.jfrog.artifactory.retention.maxCount="5"
+LABEL com.jfrog.artifactory.retention.maxDays="7"
+LABEL com.jfrog.artifactory.retention.byDownloadDate=true
+
 WORKDIR /app
 EXPOSE 8080
 
