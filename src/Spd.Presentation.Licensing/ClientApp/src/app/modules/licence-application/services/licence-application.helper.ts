@@ -69,6 +69,9 @@ export abstract class LicenceApplicationHelper {
 		accessCode: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		licenceExpiryDate: new FormControl(null),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', FormControlValidators.required),
+		}),
 	});
 
 	personalInformationFormGroup = this.formBuilder.group(
@@ -424,11 +427,37 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	additionalGovIdFormGroup: FormGroup = this.formBuilder.group({
-		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
-		expiryDate: new FormControl(''),
-		attachments: new FormControl([], [Validators.required]),
-	});
+	additionalGovIdFormGroup: FormGroup = this.formBuilder.group(
+		{
+			governmentIssuedPhotoTypeCode: new FormControl(''),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'governmentIssuedPhotoTypeCode',
+					(_form) =>
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.CanadianPassport) ||
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(_form) =>
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.CanadianPassport) ||
+						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
+								LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+			],
+		}
+	);
 
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
 		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
@@ -523,7 +552,20 @@ export abstract class LicenceApplicationHelper {
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
-		recaptcha: new FormControl(),
+		captchaFormGroup: new FormGroup(
+			{
+				displayCaptcha: new FormControl(false),
+				token: new FormControl('', FormControlValidators.required),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'token',
+						(form) => form.get('displayCaptcha')?.value == true
+					),
+				],
+			}
+		),
 	});
 
 	constructor(

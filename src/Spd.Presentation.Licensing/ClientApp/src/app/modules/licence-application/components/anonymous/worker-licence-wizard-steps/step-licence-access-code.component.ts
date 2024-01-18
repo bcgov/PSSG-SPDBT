@@ -79,7 +79,7 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 		}
 
 		const accessCodeData = this.form.value;
-		accessCodeData.linkedLicenceId = '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO hardcoded ID fix
+		accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; // '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO hardcoded ID fix
 
 		this.licenceApplicationService
 			.loadLicence(accessCodeData.linkedLicenceId, this.applicationTypeCode!)

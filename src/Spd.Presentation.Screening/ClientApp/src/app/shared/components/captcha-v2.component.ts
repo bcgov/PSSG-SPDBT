@@ -47,7 +47,7 @@ export class CaptchaV2Component implements OnInit {
 
 	resolved($event: string) {
 		this.captchaResponse.emit({
-			type: CaptchaResponseType.success,
+			type: $event ? CaptchaResponseType.success : CaptchaResponseType.error,
 			resolved: $event,
 		});
 	}
