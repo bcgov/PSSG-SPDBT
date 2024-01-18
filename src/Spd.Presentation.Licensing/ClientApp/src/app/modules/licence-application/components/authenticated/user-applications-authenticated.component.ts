@@ -658,7 +658,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	onUpdate(appl: WorkerLicenceInProgress): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', ApplicationTypeCode.Update) //TODO hardcoded ID
+				.loadLicence('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
