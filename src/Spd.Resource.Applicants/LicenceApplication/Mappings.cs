@@ -12,7 +12,6 @@ internal class Mappings : Profile
     public Mappings()
     {
         _ = CreateMap<LicenceApplication, contact>()
-        .ForMember(d => d.contactid, opt => opt.Ignore())
         .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.GivenName)))
         .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName1)))
         .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))
@@ -29,7 +28,17 @@ internal class Mappings : Profile
         .ForMember(d => d.address1_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).City))
         .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).PostalCode))
         .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Province))
-        .ForMember(d => d.address1_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Country));
+        .ForMember(d => d.address1_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Country))
+        .ForMember(d => d.address2_line1, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine1))
+        .ForMember(d => d.address2_line2, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine2))
+        .ForMember(d => d.address2_city, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.City))
+        .ForMember(d => d.address2_postalcode, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.PostalCode))
+        .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
+        .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country));
+
+        _ = CreateMap<CreateLicenceApplicationCmd, contact>()
+        .IncludeBase<LicenceApplication, contact>()
+        .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()));
 
         _ = CreateMap<LicenceApplication, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -78,7 +87,6 @@ internal class Mappings : Profile
          .ReverseMap()
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
-         .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.BusinessTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBusinessTypeEnum(s.spd_businesstype)))
@@ -111,22 +119,30 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          ;
 
+        _ = CreateMap<CreateLicenceApplicationCmd, spd_application>()
+          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+          .IncludeBase<LicenceApplication, spd_application>();
+
         _ = CreateMap<spd_licencecategory, WorkerLicenceAppCategory>()
           .ForMember(d => d.WorkerCategoryTypeCode,
           opt => opt.MapFrom(s => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(s.spd_licencecategoryid))));
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
+          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId))
           .IncludeBase<LicenceApplication, spd_application>();
 
         _ = CreateMap<SaveLicenceApplicationCmd, contact>()
           .IncludeBase<LicenceApplication, contact>();
+
+
 
         _ = CreateMap<spd_application, LicenceApplicationResp>()
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
           .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_CurrentExpiredLicenceId.spd_expirydate)))
           .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
           .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
+          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
           .IncludeBase<spd_application, LicenceApplication>();
 
         _ = CreateMap<spd_application, LicenceAppListResp>()
