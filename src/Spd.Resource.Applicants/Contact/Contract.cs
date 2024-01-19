@@ -6,6 +6,7 @@ namespace Spd.Resource.Applicants.Contact
     {
         public Task<ContactListResp> QueryAsync(ContactQry qry, CancellationToken cancellationToken);
         public Task<ContactResp> ManageAsync(ContactCmd cmd, CancellationToken cancellationToken);
+        public Task<ContactResp> GetAsync(Guid contactId, CancellationToken cancellationToken);
     }
 
     public record ContactListResp
@@ -26,15 +27,17 @@ namespace Spd.Resource.Applicants.Contact
         public DateOnly BirthDate { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
+        public ResidentialAddr? ResidentialAddress { get; set; } = null;
+        public MailingAddr? MailingAddress { get; set; } = null;
+        public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
     }
 
     public record ContactQry
     {
         public Guid? IdentityId { get; set; }
         public string? UserEmail { get; set; }
-        public bool IncludeInactive { get; set; } = false;
+        public bool IncludeInactive { get; set; }
     };
-
 
     public abstract record ContactCmd
     {
@@ -46,7 +49,9 @@ namespace Spd.Resource.Applicants.Contact
         public string? MiddleName2 { get; set; }
         public DateOnly BirthDate { get; set; }
         public GenderEnum? Gender { get; set; }
-
+        public ResidentialAddr? ResidentialAddress { get; set; } = null;
+        public MailingAddr? MailingAddress { get; set; } = null;
+        public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
     };
     public record UpdateContactCmd : ContactCmd
     {
