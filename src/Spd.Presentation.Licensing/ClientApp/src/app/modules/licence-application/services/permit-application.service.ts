@@ -69,7 +69,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		licenceAppId: new FormControl(null),
 		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
 		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
-		linkedLicenceAppId: new FormControl(null),
+		originalApplicationId: new FormControl(null),
 		// expiryDate: new FormControl(null), // TODO needed?
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
@@ -166,10 +166,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Search for an existing permit using access code
 	 * @param licenceNumber
 	 * @param accessCode
+	 * @param recaptchaCode
 	 * @returns
 	 */
-	getPermitWithAccessCode(licenceNumber: string, accessCode: string): Observable<LicenceLookupResponse> {
-		return this.licenceLookupService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(take(1));
+	getPermitWithAccessCode(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceLookupResponse> {
+		return this.licenceLookupService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(take(1));
 	}
 
 	/**
@@ -273,7 +280,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
+						originalApplicationId: licenceAppId,
 						workerLicenceTypeData,
 						applicationTypeData,
 						permitRequirementData,
@@ -335,7 +342,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
+						originalApplicationId: licenceAppId,
 						workerLicenceTypeData,
 						applicationTypeData,
 						permitRequirementData,
@@ -375,7 +382,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// 			this.permitModelFormGroup.patchValue(
 	// 				{
 	// 					licenceAppId: null,
-	// 					linkedLicenceAppId: licenceAppId,
+	// 					originalApplicationId: licenceAppId,
 	// 					applicationTypeData,
 	// 					residentialAddressData: { ...residentialAddressData },
 	// 				},
