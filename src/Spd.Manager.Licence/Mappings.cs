@@ -4,6 +4,7 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Manager.Licence;
 internal class Mappings : Profile
@@ -12,6 +13,7 @@ internal class Mappings : Profile
     {
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.CategoryData));
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, CreateLicenceApplicationCmd>();
         CreateMap<WorkerLicenceAppCategoryData, WorkerLicenceAppCategory>()
             .ReverseMap();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
@@ -30,7 +32,7 @@ internal class Mappings : Profile
         CreateMap<MailingAddress, MailingAddr>()
             .IncludeBase<Address, Addr>()
             .ReverseMap();
-        CreateMap<Alias, Spd.Resource.Applicants.LicenceApplication.Alias>()
+        CreateMap<Alias, Spd.Utilities.Shared.ResourceContracts.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()

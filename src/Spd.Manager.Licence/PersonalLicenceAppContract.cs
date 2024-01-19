@@ -53,8 +53,8 @@ public abstract record WorkerLicenceAppBase
     public GenderCode? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
-    public Guid? ExpiredLicenceId { get; set; }
-    public bool? HasExpiredLicence { get; set; }
+    public Guid? ExpiredLicenceId { get; set; } = null;//for new, it should be from user answering the question. for renew, replace, update, it should be original licence id.
+    public bool? HasExpiredLicence { get; set; } = null; //for new, it should be from user answering the question. for renew, replace, update, it should always be true.
     public LicenceTermCode? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
@@ -175,7 +175,7 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase 
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
     public Guid[]? FileKeyCodes { get; set; }
-    public Guid? OriginalApplicationId { get; set; } = null;//for new, it should be null. for renew, replace, update, it should be original application id.
+    public Guid? OriginalApplicationId { get; set; } = null;//for new, it should be null. for renew, replace, update, it should be original application id. 
 }
 
 public record WorkerLicenceCreateResponse

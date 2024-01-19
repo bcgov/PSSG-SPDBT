@@ -76,6 +76,7 @@ internal partial class PersonalLicenceAppManager :
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         saveCmd.BcscGuid = cmd.BcscGuid;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
         await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
@@ -166,9 +167,10 @@ internal partial class PersonalLicenceAppManager :
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
 
         //todo: add checking if all necessary files have been uploaded
-        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
-        saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+
+        //save the application
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var appResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
 
         //new application, all file keys are in cache
         if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
@@ -184,15 +186,17 @@ internal partial class PersonalLicenceAppManager :
                     await _documentRepository.ManageAsync(new CreateDocumentCmd
                     {
                         TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                        ApplicationId = response.LicenceAppId,
+                        ApplicationId = appResponse.LicenceAppId,
                         DocumentType = docType1,
                         DocumentType2 = docType2,
-                        SubmittedByApplicantId = response.ContactId
+                        SubmittedByApplicantId = appResponse.ContactId
                     }, ct);
                 }
             }
         }
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+
+        await _licenceAppRepository.CommitLicenceApplicationAsync(appResponse.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = appResponse.LicenceAppId };
     }
 
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
@@ -202,10 +206,14 @@ internal partial class PersonalLicenceAppManager :
             throw new ArgumentException("should be a replacement request");
 
         //validation: check if original licence meet replacement condition.
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.ExpiredLicenceId }, ct);
+        if (licences == null || !licences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be replaced.");
+        if (DateTime.UtcNow.AddDays(Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS) < licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
-        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
-        saveCmd.ApplicationStatusEnum = ApplicationStatusEnum.PaymentPending;
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
 
         //add photo file copying here.
         if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
@@ -224,6 +232,10 @@ internal partial class PersonalLicenceAppManager :
                     ct);
             }
         }
+
+        //todo : add code here: if payment price is 0, directly set to Submitted.
+        await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
