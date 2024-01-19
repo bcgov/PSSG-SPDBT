@@ -78,4 +78,23 @@ namespace Spd.Utilities.Shared.ResourceContracts
         U
     }
 
+    public record MailingAddr() : Addr;
+    public record ResidentialAddr() : Addr;
+    public abstract record Addr
+    {
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
+    }
+    public record Alias
+    {
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+
+    }
 }
