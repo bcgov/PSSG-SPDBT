@@ -1,8 +1,10 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
+using Spd.Resource.Applicants.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
 namespace Spd.Resource.Applicants.LicenceApplication;
@@ -15,6 +17,51 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
+    }
+
+    public async Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct)
+    {
+        spd_application app = _mapper.Map<spd_application>(cmd);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        _context.AddTospd_applications(app);
+        LinkServiceType(cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        contact contact = _mapper.Map<contact>(cmd);
+        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+        {
+            //for new, always create a new contact
+            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+        }
+        else
+        {
+            if (cmd.OriginalApplicationId != null)
+            {
+                spd_application originApp = _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefault();
+                //for replace, renew, update, "contact" is already exists, so, do update.
+                contact = await _context.UpdateContact((Guid)originApp._spd_applicantid_value, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            }
+            else
+            {
+                throw new ArgumentException("for replace, renew or update, original application id cannot be null");
+            }
+        }
+        _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
+        await _context.SaveChangesAsync();
+        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
+        //then update category.
+        ProcessCategories(cmd.CategoryData, app);
+        await _context.SaveChangesAsync();
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
+    }
+
+    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct)
+    {
+        spd_application app = _context.spd_applications
+               .Where(a => a.spd_applicationid == applicationId).FirstOrDefault();
+        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
+        _context.UpdateObject(app);
+        await _context.SaveChangesAsync();
+        return new LicenceApplicationCmdResp(applicationId, (Guid)app._spd_applicantid_value);
     }
 
     public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
@@ -34,38 +81,26 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         else
         {
             app = _mapper.Map<spd_application>(cmd);
+            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
             _context.AddTospd_applications(app);
         }
-        //create contact
-        contact? contact;
-        if (cmd.BcscGuid != null)//authenticated with 
+        LinkServiceType(cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        contact contact = _mapper.Map<contact>(cmd);
+        if (cmd.BcscGuid != null)
         {
             contact = ProcessContactWithBcscApplicant(cmd);
         }
         else
         {
-            //no authentication
-            contact = AddContact(cmd);
+            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
-        // associate contact to application
-        _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-
-        //create alias
-        if (cmd.HasPreviousName != null && cmd.HasPreviousName.Value)
-        {
-            foreach (var item in cmd.Aliases)
-            {
-                AddAlias(item, contact);
-            }
-        }
-        LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         ProcessCategories(cmd.CategoryData, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid ?? Guid.NewGuid());
     }
 
     public async Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid licAppId, CancellationToken cancellationToken)
@@ -120,6 +155,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return _mapper.Map<IList<LicenceAppListResp>>(applist.OrderByDescending(o => o.createdon));
 
     }
+
 
     private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
     {

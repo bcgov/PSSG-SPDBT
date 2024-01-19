@@ -323,4 +323,11 @@ namespace Spd.Utilities.Dynamics
         SpdEntered = 100000001,
         MigratedFromFigaro = 100000002
     }
+
+    public enum AddressTypeOptionSet
+    {
+        Physical = 100000000,
+        Mailing = 100000001,
+        Branch = 100000002
+    }
 }
