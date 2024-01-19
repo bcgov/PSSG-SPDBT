@@ -15,7 +15,7 @@ spec:
       importPolicy:
         scheduled: true
       referencePolicy:
-        type: Source
+        type: Local
     {{ end }}
 ---
 {{ end -}}
