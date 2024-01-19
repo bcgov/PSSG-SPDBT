@@ -20,6 +20,8 @@ spec:
           value: dev
         - name: scheduled
           value: true
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: tag-image-task
@@ -36,6 +38,8 @@ spec:
           value: dev
         - name: scheduled
           value: true
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: tag-image-task
@@ -52,6 +56,8 @@ spec:
           value: dev
         - name: scheduled
           value: true
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: tag-image-task
@@ -68,6 +74,8 @@ spec:
           value: dev
         - name: scheduled
           value: true
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: tag-image-task
