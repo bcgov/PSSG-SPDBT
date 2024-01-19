@@ -25,10 +25,10 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
         contact contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
+            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
             //for new, always create a new contact
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
@@ -36,13 +36,22 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             if (cmd.OriginalApplicationId != null)
             {
-                spd_application originApp = _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefault();
+                spd_application originApp = await _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefaultAsync(ct);
                 //for replace, renew, update, "contact" is already exists, so, do update.
                 contact = await _context.UpdateContact((Guid)originApp._spd_applicantid_value, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             }
             else
             {
                 throw new ArgumentException("for replace, renew or update, original application id cannot be null");
+            }
+
+            if (cmd.OriginalLicenceId != null)
+            {
+                LinkExpiredLicence(cmd.OriginalLicenceId, app);
+            }
+            else
+            {
+                throw new ArgumentException("for replace, renew or update, original licence id cannot be null");
             }
         }
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
