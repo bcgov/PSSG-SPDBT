@@ -45,8 +45,6 @@ spec:
       {{- end -}}
       {{- end }}
     spec:
-      imagePullSecrets:
-        - name: artifactory-pull-secret
       containers:
         - name: {{ .name }}
           image: {{ .Values.image.name }}:{{ .Values.image.tag }}

@@ -16,6 +16,8 @@ spec:
           value: test
         - name: toTag
           value: prod
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: promote-image-task
@@ -28,6 +30,8 @@ spec:
           value: test
         - name: toTag
           value: prod
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: promote-image-task
@@ -40,6 +44,8 @@ spec:
           value: test
         - name: toTag
           value: prod
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: promote-image-task
@@ -52,6 +58,8 @@ spec:
           value: test
         - name: toTag
           value: prod
+        - name: referencePolicy
+          value: local
       taskRef:
         kind: Task
         name: promote-image-task
