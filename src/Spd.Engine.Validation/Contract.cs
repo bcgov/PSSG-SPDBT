@@ -19,7 +19,7 @@ namespace Spd.Engine.Validation
         public Guid OrgId { get; set; }
         public string? FirstName { get; set; }
         public string LastName { get; set; } = null!;
-        public DateTimeOffset DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
     }
     public record BulkUploadAppDuplicateCheckResponse(IEnumerable<AppBulkDuplicateCheckResult> BulkDuplicateChecks) : DuplicateCheckResponse;
     public record AppBulkDuplicateCheckResult : AppDuplicateCheckResult
