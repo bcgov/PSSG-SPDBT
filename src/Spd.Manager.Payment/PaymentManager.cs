@@ -365,49 +365,47 @@ namespace Spd.Manager.Payment
 
         private async Task<SpdPaymentConfig> GetSpdPaymentInfoAsync(ApplicationResult app, CancellationToken ct)
         {
+            ConfigResult? configResult = await _cache.Get<ConfigResult>("spdPayBCConfigs");
+            if (configResult == null)
+            {
+                configResult = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
+                await _cache.Set<ConfigResult>("spdPayBCConfigs", configResult, new TimeSpan(1, 0, 0));
+            }
             if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
             {
                 //screening price and payment setting
-                SpdPaymentConfig? spdPaymentConfig = await _cache.Get<SpdPaymentConfig>("spdPaymentConfig");
-                if (spdPaymentConfig != null) return spdPaymentConfig;
-
-                var configs = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
-                var pbcRefnumberConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
+                var pbcRefnumberConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
                 if (pbcRefnumberConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set pbcRefNumber correctly.");
 
-                var PaybcRevenueAccountConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_KEY);
+                var PaybcRevenueAccountConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_KEY);
                 if (PaybcRevenueAccountConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
 
-                var serviceCostConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBCS_SERVICECOST_KEY);
+                var serviceCostConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBCS_SERVICECOST_KEY);
                 if (serviceCostConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service cost correctly.");
 
-                spdPaymentConfig = new SpdPaymentConfig()
+                SpdPaymentConfig spdPaymentConfig = new SpdPaymentConfig()
                 {
                     PbcRefNumber = pbcRefnumberConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
                     ServiceCost = Decimal.Round(Decimal.Parse(serviceCostConfig.Value), 2)
                 };
-                await _cache.Set<SpdPaymentConfig>("spdPaymentConfig", spdPaymentConfig, new TimeSpan(1, 0, 0));
                 return spdPaymentConfig;
             }
             else
             {
-                var licApp = await _licAppRepository.GetLicenceApplicationAsync(app.Id, ct);
                 //licensing price and payment setting
-                var configs = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
+                var pbcRefnumberLicConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_LICENSING_KEY);
+                if (pbcRefnumberLicConfig == null)
+                    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set pbcRefNumberLicensing correctly.");
 
-                //todo, get to know if there will be a new setting in config entity.
-                var pbcRefnumberConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
-                if (pbcRefnumberConfig == null)
-                    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set pbcRefNumber correctly.");
+                var PaybcRevenueAccountLicConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_LICENSING_KEY);
+                if (PaybcRevenueAccountLicConfig == null)
+                    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account licensing correctly.");
 
-                var PaybcRevenueAccountConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_KEY);
-                if (PaybcRevenueAccountConfig == null)
-                    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
-
+                var licApp = await _licAppRepository.GetLicenceApplicationAsync(app.Id, ct);
                 LicenceFeeListResp feeList = await _licFeeRepository.QueryAsync(
                     new LicenceFeeQry
                     {
@@ -423,8 +421,8 @@ namespace Spd.Manager.Payment
                     throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
                 SpdPaymentConfig spdPaymentConfig = new()
                 {
-                    PbcRefNumber = pbcRefnumberConfig.Value, //"10016" //todo: Waiting for PBC 's response, if it is different ref number, then change it accordingly.
-                    PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
+                    PbcRefNumber = pbcRefnumberLicConfig.Value, 
+                    PaybcRevenueAccount = PaybcRevenueAccountLicConfig.Value,
                     ServiceCost = Decimal.Round((decimal)price, 2)
                 };
                 return spdPaymentConfig;
