@@ -87,20 +87,20 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
         contact contact = _mapper.Map<contact>(cmd);
-        if (cmd.HasBcDriversLicence.Value && cmd.Aliases.Any())
+        if (cmd.BcscGuid != null)
         {
-            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            contact = ProcessContactWithBcscApplicant(cmd);
         }
         else
         {
-            contact = await _context.CreateContact(contact, null, Array.Empty<spd_alias>(), ct);
+            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         ProcessCategories(cmd.CategoryData, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)Guid.NewGuid());
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid ?? Guid.NewGuid());
     }
 
     public async Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid licAppId, CancellationToken cancellationToken)

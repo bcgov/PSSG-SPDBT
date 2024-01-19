@@ -53,7 +53,7 @@ public abstract record WorkerLicenceAppBase
     public GenderCode? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
-    public Guid? ExpiredLicenceId { get; set; } = null;//for new, it should be from user answering the question. for renew, replace, update, it should be original application id.
+    public Guid? ExpiredLicenceId { get; set; } = null;//for new, it should be from user answering the question. for renew, replace, update, it should be original licence id.
     public bool? HasExpiredLicence { get; set; } = null; //for new, it should be from user answering the question. for renew, replace, update, it should always be true.
     public LicenceTermCode? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }

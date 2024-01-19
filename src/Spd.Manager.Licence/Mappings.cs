@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
