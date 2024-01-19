@@ -4,10 +4,14 @@ using Spd.Utilities.Shared.ResourceContracts;
 namespace Spd.Resource.Applicants.LicenceApplication;
 public partial interface ILicenceApplicationRepository
 {
-    public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
-    public Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid LicenceAppId, CancellationToken cancellationToken);
-    public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
-    public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
+    public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
+    public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
+    public Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid LicenceAppId, CancellationToken ct);
+    public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
+    public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken ct);
+
+    //connect spd_appliation with spd_contact and update application to correct status
+    public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct);
 }
 
 public record LicenceAppQuery(Guid ApplicantId, List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
@@ -15,7 +19,6 @@ public record LicenceApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
 
 public record LicenceApplication
 {
-    public Guid? LicenceAppId { get; set; }
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public BusinessTypeEnum? BusinessTypeCode { get; set; }
@@ -58,6 +61,7 @@ public record LicenceApplication
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
     public bool? IsCanadianCitizen { get; set; }
+    public Guid? OriginalApplicationId { get; set; } = null;
 }
 
 public record WorkerLicenceAppCategory
@@ -67,12 +71,20 @@ public record WorkerLicenceAppCategory
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
 {
+    public Guid? LicenceAppId { get; set; }
     public string? BcscGuid { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 };
 
+public record CreateLicenceApplicationCmd() : LicenceApplication
+{
+    public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+    public Guid? OriginalApplicationId { get; set;} = null;
+};
+
 public record LicenceApplicationResp() : LicenceApplication
 {
+    public Guid? LicenceAppId { get; set; }
     public Guid? ContactId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
@@ -91,27 +103,6 @@ public record LicenceAppListResp
 }
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
-
-
-public record MailingAddr() : Addr;
-public record ResidentialAddr() : Addr;
-public abstract record Addr
-{
-    public string? AddressLine1 { get; set; }
-    public string? AddressLine2 { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
-    public string? PostalCode { get; set; }
-    public string? Province { get; set; }
-}
-
-public record Alias
-{
-    public string? GivenName { get; set; }
-    public string? MiddleName1 { get; set; }
-    public string? MiddleName2 { get; set; }
-    public string? Surname { get; set; }
-}
 
 public enum WorkerLicenceTypeEnum
 {

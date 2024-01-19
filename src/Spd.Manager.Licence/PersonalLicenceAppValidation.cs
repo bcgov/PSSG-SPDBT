@@ -316,6 +316,10 @@ public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : WorkerLicence
         })
         .When(c => c.CategoryCodes != null)
         .WithMessage("Some category cannot be in the same licence request.");
+
+        RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
+        RuleFor(r => r.HasExpiredLicence).Must(r => r == true).When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
+        RuleFor(r => r.ExpiredLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
     }
 }
 
