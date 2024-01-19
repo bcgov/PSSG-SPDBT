@@ -21,7 +21,7 @@ public class DuplicateCheckTests : ScenarioContextBase
             List<AppBulkDuplicateCheck> checks = new() {
                 new AppBulkDuplicateCheck()
                 {
-                    DateOfBirth = new DateTime(2000,1,1),
+                    DateOfBirth = new DateOnly(2000,1,1),
                     FirstName = "given",
                     LastName = "sur",
                     LineNumber = 1,
@@ -29,7 +29,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 },
                 new AppBulkDuplicateCheck()
                 {
-                    DateOfBirth = new DateTime(2000,1,1),
+                    DateOfBirth = new DateOnly(2000,1,1),
                     FirstName = "given",
                     LastName = "sur",
                     LineNumber = 2,
@@ -37,7 +37,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 },
                 new AppBulkDuplicateCheck()
                 {
-                    DateOfBirth = new DateTime(2000,1,1),
+                    DateOfBirth = new DateOnly(2000,1,1),
                     FirstName = "given3",
                     LastName = "sur3",
                     LineNumber = 3,
@@ -45,7 +45,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 },
                 new AppBulkDuplicateCheck()
                 {
-                    DateOfBirth = DateTimeOffset.UtcNow,
+                    DateOfBirth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day),
                     FirstName = "fn",
                     LastName = "ln",
                     LineNumber = 4,
