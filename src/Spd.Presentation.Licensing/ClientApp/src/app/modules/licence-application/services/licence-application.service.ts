@@ -25,7 +25,7 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
@@ -38,7 +38,7 @@ import {
 	Subscription,
 	switchMap,
 	take,
-	tap,
+	tap
 } from 'rxjs';
 import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -282,8 +282,30 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadLicence(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
-		console.debug('loadLicence', licenceAppId, applicationTypeCode);
+	getLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		console.debug('getLicenceNew', licenceAppId);
+
+		return this.loadLicenceNew(licenceAppId).pipe(
+			tap((resp: any) => {
+				console.debug('LOAD loadLicenceNew', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceOfType(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode,
+		linkedLicenceNumber: string,
+		linkedLicenceId: string,
+		linkedLicenceExpiryDate: string
+	): Observable<WorkerLicenceResponse> {
+		console.debug('getLicenceOfType', licenceAppId, applicationTypeCode);
 
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
@@ -302,18 +324,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					})
 				);
 			}
-			case ApplicationTypeCode.Replacement: {
-				return this.loadLicenceReplacement(licenceAppId).pipe(
+			default: {
+			//case ApplicationTypeCode.Replacement: {
+				return this.loadLicenceReplacement(licenceAppId, linkedLicenceNumber, linkedLicenceId, linkedLicenceExpiryDate).pipe(
 					tap((resp: any) => {
 						console.debug('LOAD loadLicenceReplacement', resp);
-						this.initialized = true;
-					})
-				);
-			}
-			default: {
-				return this.loadLicenceNew(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadLicenceNew', resp);
 						this.initialized = true;
 					})
 				);
@@ -465,7 +480,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadLicenceReplacement(licenceAppId: string, linkedLicenceNumber: string, linkedLicenceId: string, linkedLicenceExpiryDate: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
@@ -474,11 +489,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
 				};
 
+				
+
+				const expiredLicenceData = {
+					hasExpiredLicence: BooleanTypeCode.Yes,
+					expiredLicenceNumber: linkedLicenceNumber,
+					expiryDate: linkedLicenceExpiryDate,
+					expiredLicenceId: linkedLicenceId,
+				};
+
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						originalApplicationId: licenceAppId,
 						applicationTypeData,
+						expiredLicenceData,
 						residentialAddressData: { ...residentialAddressData },
 					},
 					{

@@ -115,16 +115,13 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 
 		this.form.markAllAsTouched();
 
-		let licenceNumber = this.licenceNumber.value;
-		let accessCode = this.accessCode.value;
+		const licenceNumber = this.licenceNumber.value;
+		const accessCode = this.accessCode.value;
 		const recaptchaCode = this.captchaFormGroup.get('token')?.value;
 
 		if (!licenceNumber || !accessCode || !recaptchaCode) {
 			return;
 		}
-
-		licenceNumber = 'TEST-04'; // TODO remove hardcoded value
-		accessCode = 'XJORTDVEU4'; // TODO remove hardcoded value
 
 		switch (this.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
@@ -212,7 +209,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		} else {
 			this.form.patchValue({
 				linkedLicenceId: resp.licenceAppId,
-				licenceExpiryDate: resp.expiryDate,
+				linkedLicenceExpiryDate: resp.expiryDate,
+				linkedLicenceAppId: resp.licenceAppId,
 			});
 			this.linkPerformed.emit();
 

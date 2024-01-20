@@ -94,13 +94,19 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 		accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; // TODO hardcoded ID fix
 
 		this.permitApplicationService
-			.loadPermit(accessCodeData.linkedLicenceId, this.workerLicenceTypeCode, this.applicationTypeCode!)
+			.getPermitOfType(
+				accessCodeData.linkedLicenceAppId,
+				this.applicationTypeCode!,
+				accessCodeData.licenceNumber,
+				accessCodeData.linkedLicenceId,
+				accessCodeData.linkedLicenceExpiryDate
+			)
 			.pipe(
 				tap((_resp: any) => {
 					this.permitApplicationService.permitModelFormGroup.patchValue(
 						{
 							licenceNumber: accessCodeData.licenceNumber,
-							licenceExpiryDate: accessCodeData.expiryDate,
+							licenceExpiryDate: accessCodeData.linkedLicenceExpiryDate,
 						},
 						{ emitEvent: false }
 					);

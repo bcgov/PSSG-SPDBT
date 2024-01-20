@@ -228,6 +228,73 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		console.debug('getPermitNew', licenceAppId);
+
+		return this.loadPermitNew(licenceAppId).pipe(
+			tap((resp: any) => {
+				console.debug('LOAD loadPermitNew', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitOfType(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode,
+		linkedLicenceNumber: string,
+		linkedLicenceId: string,
+		linkedLicenceExpiryDate: string
+	): Observable<WorkerLicenceResponse> {
+		// TODO add:  switch workerLicenceTypeCode
+
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return this.loadPermitRenewal(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('LOAD loadPermitRenewal', resp);
+						this.initialized = true;
+					})
+				);
+			}
+			default: {
+				// case ApplicationTypeCode.Update: {
+				return this.loadPermitUpdate(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('LOAD loadPermitUpdate', resp);
+						this.initialized = true;
+					})
+				);
+			}
+			// case ApplicationTypeCode.Replacement: {
+			// 	return this.loadPermitReplacement(licenceAppId).pipe(
+			// 		tap((resp: any) => {
+			// 			console.debug('LOAD loadPermitReplacement', resp);
+			// 			this.initialized = true;
+			// 		})
+			// 	);
+			// }
+			// default: {
+			// 	return this.loadPermitNew(licenceAppId).pipe(
+			// 		tap((resp: any) => {
+			// 			console.debug('LOAD loadPermitNew', resp);
+			// 			this.initialized = true;
+			// 		})
+			// 	);
+			// }
+		}
+	}
+
+	/**
 	 * Load an existing draft licence application
 	 * @param licenceAppId
 	 * @returns

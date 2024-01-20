@@ -68,7 +68,8 @@ export abstract class LicenceApplicationHelper {
 		licenceNumber: new FormControl(null, [FormControlValidators.required]),
 		accessCode: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
-		licenceExpiryDate: new FormControl(null),
+		linkedLicenceAppId: new FormControl(null),
+		linkedLicenceExpiryDate: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),
