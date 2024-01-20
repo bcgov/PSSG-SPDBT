@@ -91,22 +91,18 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 
 	onSearchSuccess(): void {
 		const accessCodeData = this.form.value;
-		accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; // TODO hardcoded ID fix
+		// accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; // TODO hardcoded ID fix
 
 		this.permitApplicationService
-			.getPermitOfType(
-				accessCodeData.linkedLicenceAppId,
-				this.applicationTypeCode!,
-				accessCodeData.licenceNumber,
-				accessCodeData.linkedLicenceId,
-				accessCodeData.linkedLicenceExpiryDate
-			)
+			.getPermitOfType(accessCodeData.linkedLicenceAppId, this.applicationTypeCode!)
 			.pipe(
 				tap((_resp: any) => {
 					this.permitApplicationService.permitModelFormGroup.patchValue(
 						{
-							licenceNumber: accessCodeData.licenceNumber,
-							licenceExpiryDate: accessCodeData.linkedLicenceExpiryDate,
+							originalApplicationId: accessCodeData.linkedLicenceAppId,
+							originalLicenceId: accessCodeData.linkedLicenceId,
+							originalLicenceNumber: accessCodeData.licenceNumber,
+							originalExpiryDate: accessCodeData.linkedExpiryDate,
 						},
 						{ emitEvent: false }
 					);

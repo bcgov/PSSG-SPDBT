@@ -67,10 +67,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
-		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
-		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
+
 		originalApplicationId: new FormControl(null),
-		// expiryDate: new FormControl(null), // TODO needed?
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 
@@ -248,13 +250,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getPermitOfType(
-		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode,
-		linkedLicenceNumber: string,
-		linkedLicenceId: string,
-		linkedLicenceExpiryDate: string
-	): Observable<WorkerLicenceResponse> {
+	getPermitOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
 		// TODO add:  switch workerLicenceTypeCode
 
 		switch (applicationTypeCode) {

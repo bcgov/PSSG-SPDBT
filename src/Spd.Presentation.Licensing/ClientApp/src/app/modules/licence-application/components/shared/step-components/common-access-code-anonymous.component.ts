@@ -110,6 +110,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 
 		this.form.patchValue({
 			linkedLicenceId: null,
+			linkedLicenceAppId: null,
 			licenceExpiryDate: null,
 		});
 
@@ -208,9 +209,10 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			// 	this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
 		} else {
 			this.form.patchValue({
-				linkedLicenceId: resp.licenceAppId,
-				linkedLicenceExpiryDate: resp.expiryDate,
+				licenceNumber: resp.licenceNumber,
+				linkedLicenceId: resp.licenceId,
 				linkedLicenceAppId: resp.licenceAppId,
+				linkedExpiryDate: resp.expiryDate,
 			});
 			this.linkPerformed.emit();
 

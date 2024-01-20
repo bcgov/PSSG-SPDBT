@@ -21,11 +21,9 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
-	WorkerLicenceAppSubmitRequest,
-	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
-	WorkerLicenceTypeCode
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
@@ -38,7 +36,7 @@ import {
 	Subscription,
 	switchMap,
 	take,
-	tap
+	tap,
 } from 'rxjs';
 import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -141,10 +139,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
-		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
-		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
+
 		originalApplicationId: new FormControl(null),
-		// expiryDate: new FormControl(null), // TODO needed?
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
@@ -298,13 +298,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceOfType(
-		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode,
-		linkedLicenceNumber: string,
-		linkedLicenceId: string,
-		linkedLicenceExpiryDate: string
-	): Observable<WorkerLicenceResponse> {
+	getLicenceOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
 		console.debug('getLicenceOfType', licenceAppId, applicationTypeCode);
 
 		switch (applicationTypeCode) {
@@ -325,8 +319,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 			}
 			default: {
-			//case ApplicationTypeCode.Replacement: {
-				return this.loadLicenceReplacement(licenceAppId, linkedLicenceNumber, linkedLicenceId, linkedLicenceExpiryDate).pipe(
+				//case ApplicationTypeCode.Replacement: {
+				return this.loadLicenceReplacement(licenceAppId).pipe(
 					tap((resp: any) => {
 						console.debug('LOAD loadLicenceReplacement', resp);
 						this.initialized = true;
@@ -390,7 +384,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						originalApplicationId: licenceAppId,
+						// originalApplicationId: licenceAppId,
 						applicationTypeData,
 						// soleProprietorData,
 						// licenceTermData,
@@ -453,7 +447,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						originalApplicationId: licenceAppId,
 						applicationTypeData,
 						// soleProprietorData,
 						// licenceTermData,
@@ -470,7 +463,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('LOAD LicenceApplicationService loadLicenceUpdate', resp);
 			})
 		);
 	}
@@ -480,7 +473,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceReplacement(licenceAppId: string, linkedLicenceNumber: string, linkedLicenceId: string, linkedLicenceExpiryDate: string): Observable<WorkerLicenceResponse> {
+	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
@@ -489,21 +482,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
 				};
 
-				
-
-				const expiredLicenceData = {
-					hasExpiredLicence: BooleanTypeCode.Yes,
-					expiredLicenceNumber: linkedLicenceNumber,
-					expiryDate: linkedLicenceExpiryDate,
-					expiredLicenceId: linkedLicenceId,
-				};
-
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						originalApplicationId: licenceAppId,
 						applicationTypeData,
-						expiredLicenceData,
 						residentialAddressData: { ...residentialAddressData },
 					},
 					{
@@ -1604,6 +1586,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const licenceAppId = formValue.licenceAppId;
 		const originalApplicationId = formValue.originalApplicationId;
+		const originalLicenceId = formValue.originalLicenceId;
 		const workerLicenceTypeData = { ...formValue.workerLicenceTypeData };
 		const applicationTypeData = { ...formValue.applicationTypeData };
 		const soleProprietorData = { ...formValue.soleProprietorData };
@@ -1844,9 +1827,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 			: null;
 
-		const body: WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest = {
+		// | WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest | WorkerLicenceAppAnonymousSubmitRequestJson
+		const body = {
 			licenceAppId,
 			originalApplicationId,
+			originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
@@ -1981,6 +1966,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
 			originalApplicationId: savebody.originalApplicationId,
+			originalLicenceId: savebody.originalLicenceId,
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
 			applicationTypeCode: savebody.applicationTypeCode,
 			businessTypeCode: savebody.businessTypeCode,
