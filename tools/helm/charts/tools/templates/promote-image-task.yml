@@ -10,6 +10,9 @@ spec:
       type: string
     - name: toTag
       type: string
+    - name: referencePolicy
+      type: string
+      default: source
   steps:
     - name: backup
       image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
@@ -27,7 +30,7 @@ spec:
         echo old image: $old
         if [ ! -z "$old" -a "$new" != "$old" ];          
         then
-          oc tag $(params.imageName):$(params.toTag) $(params.imageName):$(params.toTag)-backup
+          oc tag $(params.imageName):$(params.toTag) $(params.imageName):$(params.toTag)-backup --reference-policy=$(params.referencePolicy)
         fi
     - name: promote
       image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
@@ -39,4 +42,4 @@ spec:
           cpu: 5m
           memory: 32Mi
       script: |
-        oc tag $(params.imageName):$(params.fromTag) $(params.imageName):$(params.toTag)
+        oc tag $(params.imageName):$(params.fromTag) $(params.imageName):$(params.toTag) --reference-policy=$(params.referencePolicy)

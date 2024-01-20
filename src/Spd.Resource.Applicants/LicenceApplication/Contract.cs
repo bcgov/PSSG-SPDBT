@@ -61,7 +61,6 @@ public record LicenceApplication
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
     public bool? IsCanadianCitizen { get; set; }
-    public Guid? OriginalApplicationId { get; set; } = null;
 }
 
 public record WorkerLicenceAppCategory
@@ -79,7 +78,8 @@ public record SaveLicenceApplicationCmd() : LicenceApplication
 public record CreateLicenceApplicationCmd() : LicenceApplication
 {
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
-    public Guid? OriginalApplicationId { get; set;} = null;
+    public Guid? OriginalApplicationId { get; set; }
+    public Guid? OriginalLicenceId { get; set; }
 };
 
 public record LicenceApplicationResp() : LicenceApplication
