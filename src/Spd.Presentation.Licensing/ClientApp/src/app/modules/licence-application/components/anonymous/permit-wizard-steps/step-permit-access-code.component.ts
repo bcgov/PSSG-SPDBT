@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
@@ -6,7 +6,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { take, tap } from 'rxjs/operators';
+import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components/common-access-code-anonymous.component';
 
 @Component({
 	selector: 'app-step-permit-access-code',
@@ -20,7 +20,7 @@ import { take, tap } from 'rxjs/operators';
 						You need both your permit number as it appears on your current permit, 
 						plus the access code number provided following your initial security worker 
 						application and in your renewal letter from the Registrar, Security Services. 
-						Enter the two numbers below then click 'Link' to verify.
+						Enter the two numbers below then click 'Next' to continue.
 					</p>
 					<p>
 						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
@@ -30,6 +30,7 @@ import { take, tap } from 'rxjs/operators';
 				</app-step-title>
 
 				<app-common-access-code-anonymous
+					(linkPerformed)="onSearchSuccess()"
 					[form]="form"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
@@ -56,6 +57,9 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 
+	@ViewChild(CommonAccessCodeAnonymousComponent)
+	commonAccessCodeAnonymousComponent!: CommonAccessCodeAnonymousComponent;
+
 	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
@@ -76,52 +80,39 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 	}
 
 	onStepNext(): void {
-		if (!this.isFormValid()) {
-			return;
-		}
-
-		const accessCodeData = this.form.value;
-		accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; //'468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO hardcoded ID fix
-
-		this.permitApplicationService
-			.loadPermit(accessCodeData.linkedLicenceId, this.workerLicenceTypeCode, this.applicationTypeCode!)
-			.pipe(
-				tap((_resp: any) => {
-					this.permitApplicationService.permitModelFormGroup.patchValue(
-						{
-							licenceNumber: accessCodeData.licenceNumber,
-							licenceExpiryDate: accessCodeData.expiryDate,
-						},
-						{ emitEvent: false }
-					);
-
-					switch (this.workerLicenceTypeCode) {
-						case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-						case WorkerLicenceTypeCode.BodyArmourPermit: {
-							switch (this.applicationTypeCode) {
-								case ApplicationTypeCode.Update: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS)
-									);
-									break;
-								}
-								case ApplicationTypeCode.Renewal: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS)
-									);
-									break;
-								}
-							}
-						}
-					}
-				}),
-				take(1)
-			)
-			.subscribe();
+		this.commonAccessCodeAnonymousComponent.searchByAccessCode();
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onSearchSuccess(): void {
+		const accessCodeData = this.form.value;
+
+		this.permitApplicationService
+			.getPermitWithAccessCodeData(accessCodeData, this.applicationTypeCode!)
+			.subscribe((_resp: any) => {
+				switch (this.workerLicenceTypeCode) {
+					case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+					case WorkerLicenceTypeCode.BodyArmourPermit: {
+						switch (this.applicationTypeCode) {
+							case ApplicationTypeCode.Update: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS)
+								);
+								break;
+							}
+							case ApplicationTypeCode.Renewal: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS)
+								);
+								break;
+							}
+						}
+					}
+				}
+			});
 	}
 }

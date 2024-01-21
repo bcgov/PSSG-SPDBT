@@ -65,10 +65,11 @@ export abstract class LicenceApplicationHelper {
 	});
 
 	accessCodeFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumber: new FormControl(null, [FormControlValidators.required]),
-		accessCode: new FormControl(null, [FormControlValidators.required]),
+		licenceNumber: new FormControl('OPENTEST1', [FormControlValidators.required]),
+		accessCode: new FormControl('6H0GXD0JZK', [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
-		licenceExpiryDate: new FormControl(null),
+		linkedLicenceAppId: new FormControl(null),
+		linkedExpiryDate: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),
