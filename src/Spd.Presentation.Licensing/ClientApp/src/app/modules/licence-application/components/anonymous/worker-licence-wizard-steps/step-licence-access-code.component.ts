@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
@@ -6,7 +6,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { take, tap } from 'rxjs/operators';
+import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components/common-access-code-anonymous.component';
 
 @Component({
 	selector: 'app-step-licence-access-code',
@@ -18,7 +18,7 @@ import { take, tap } from 'rxjs/operators';
 					info="	<p>
 						You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
 						provided following your initial security worker application or in your renewal letter from the Registrar,
-						Security Services. Enter the two numbers below then click 'Link' to verify.
+						Security Services. Enter the two numbers below then click 'Next' to continue.
 					</p>
 					<p>
 						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
@@ -28,6 +28,7 @@ import { take, tap } from 'rxjs/operators';
 				</app-step-title>
 
 				<app-common-access-code-anonymous
+					(linkPerformed)="onSearchSuccess()"
 					[form]="form"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
@@ -54,6 +55,9 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 
+	@ViewChild(CommonAccessCodeAnonymousComponent)
+	commonAccessCodeAnonymousComponent!: CommonAccessCodeAnonymousComponent;
+
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
@@ -74,64 +78,52 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 	}
 
 	onStepNext(): void {
-		if (!this.isFormValid()) {
-			return;
-		}
-
-		const accessCodeData = this.form.value;
-		accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; // '468075a7-550e-4820-a7ca-00ea6dde3025'; // TODO hardcoded ID fix
-
-		this.licenceApplicationService
-			.loadLicence(accessCodeData.linkedLicenceId, this.applicationTypeCode!)
-			.pipe(
-				tap((_resp: any) => {
-					this.licenceApplicationService.licenceModelFormGroup.patchValue(
-						{
-							licenceNumber: accessCodeData.licenceNumber,
-							licenceExpiryDate: accessCodeData.licenceExpiryDate,
-						},
-						{ emitEvent: false }
-					);
-
-					switch (this.workerLicenceTypeCode) {
-						case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-							switch (this.applicationTypeCode) {
-								case ApplicationTypeCode.Renewal: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-											LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
-										)
-									);
-									break;
-								}
-								case ApplicationTypeCode.Replacement: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-											LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
-										)
-									);
-									break;
-								}
-								case ApplicationTypeCode.Update: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-											LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
-										)
-									);
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}),
-				take(1)
-			)
-			.subscribe();
+		this.commonAccessCodeAnonymousComponent.searchByAccessCode();
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onSearchSuccess(): void {
+		const accessCodeData = this.form.value;
+		console.log('*****1 accessCodeData', accessCodeData);
+
+		this.licenceApplicationService
+			.getLicenceWithAccessCodeData(accessCodeData, this.applicationTypeCode!)
+			.subscribe((_resp: any) => {
+				switch (this.workerLicenceTypeCode) {
+					case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+						switch (this.applicationTypeCode) {
+							case ApplicationTypeCode.Renewal: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
+									)
+								);
+								break;
+							}
+							case ApplicationTypeCode.Replacement: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
+									)
+								);
+								break;
+							}
+							case ApplicationTypeCode.Update: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
+									)
+								);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			});
 	}
 }
