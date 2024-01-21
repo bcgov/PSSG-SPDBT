@@ -206,10 +206,10 @@ internal partial class PersonalLicenceAppManager :
             throw new ArgumentException("should be a replacement request");
 
         //validation: check if original licence meet replacement condition.
-        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.ExpiredLicenceId }, ct);
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
         if (licences == null || !licences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-        if (DateTime.UtcNow.AddDays(Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS) < licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        if (DateTime.UtcNow.AddDays(Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);

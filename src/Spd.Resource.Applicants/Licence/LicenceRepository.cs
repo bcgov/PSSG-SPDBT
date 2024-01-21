@@ -15,7 +15,7 @@ internal class LicenceRepository : ILicenceRepository
     }
     public async Task<LicenceListResp> QueryAsync(LicenceQry qry, CancellationToken ct)
     {
-        if (qry.LicenceNumber == null && qry.AccountId == null && qry.ContactId == null)
+        if (qry.LicenceNumber == null && qry.AccountId == null && qry.ContactId == null && qry.LicenceId == null)
         {
             throw new ArgumentException("at least need 1 parameter to do licence query.");
         }
@@ -25,6 +25,11 @@ internal class LicenceRepository : ILicenceRepository
             .Expand(i => i.spd_CaseId);
         if (!qry.IncludeInactive)
             lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
+
+        if (qry.LicenceId != null)
+        {
+            lics = lics.Where(a => a.spd_licenceid == qry.LicenceId);
+        }
 
         if (qry.ContactId != null)
         {
