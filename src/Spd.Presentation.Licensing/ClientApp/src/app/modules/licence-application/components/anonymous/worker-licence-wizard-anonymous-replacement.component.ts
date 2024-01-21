@@ -77,17 +77,18 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	onPay(): void {
 		const isFormValid = this.stepMailingAddressComponent.isFormValid();
 
-		console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
-		console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
+		// console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
+		// console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
 
 		if (isFormValid) {
 			if (this.newLicenceAppId) {
 				this.payNow(this.newLicenceAppId);
 			} else {
-				this.licenceApplicationService.submitLicence().subscribe({
+				this.licenceApplicationService.submitLicenceReplacementAnonymous().subscribe({
 					next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
 						// save this locally just in application payment fails
 						this.newLicenceAppId = resp.body.licenceAppId!;
+
 						this.hotToastService.success('Your licence replacement has been successfully submitted');
 						this.payNow(this.newLicenceAppId);
 					},

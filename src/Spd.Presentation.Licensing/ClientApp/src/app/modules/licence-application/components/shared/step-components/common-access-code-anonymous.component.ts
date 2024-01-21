@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceLookupResponse, WorkerLicenceTypeCode } from '@app/api/models';
@@ -7,6 +7,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { HotToastService } from '@ngneat/hot-toast';
 import { take, tap } from 'rxjs';
 
 @Component({
@@ -56,16 +58,7 @@ import { take, tap } from 'rxjs';
 								>
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-12">
-							<button mat-flat-button color="primary" class="large" (click)="onLink()">
-								<mat-icon>link</mat-icon>Link
-							</button>
-						</div>
 					</div>
-
-					<app-alert type="info" icon="check_circle" *ngIf="linkedLicenceId.value">
-						{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} has been found
-					</app-alert>
 
 					<app-alert type="danger" icon="error" *ngIf="errorMessage">
 						{{ errorMessage }}
@@ -96,8 +89,12 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
+	@Output() linkPerformed = new EventEmitter();
+
 	constructor(
 		private router: Router,
+		private optionsPipe: OptionsPipe,
+		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
@@ -107,27 +104,25 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
 	}
 
-	onLink(): void {
+	searchByAccessCode(): void {
 		this.isExpired = false;
 		this.errorMessage = null;
 
 		this.form.patchValue({
 			linkedLicenceId: null,
+			linkedLicenceAppId: null,
 			licenceExpiryDate: null,
 		});
 
 		this.form.markAllAsTouched();
 
-		let licenceNumber = this.licenceNumber.value;
-		let accessCode = this.accessCode.value;
+		const licenceNumber = this.licenceNumber.value;
+		const accessCode = this.accessCode.value;
 		const recaptchaCode = this.captchaFormGroup.get('token')?.value;
 
 		if (!licenceNumber || !accessCode || !recaptchaCode) {
 			return;
 		}
-
-		licenceNumber = 'TEST-04'; // TODO remove hardcoded value
-		accessCode = 'REMOVED'; // TODO remove hardcoded value
 
 		switch (this.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
@@ -145,7 +140,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
-					.getPermitWithAccessCode(licenceNumber, accessCode)
+					.getPermitWithAccessCode(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceLookupResponse) => {
 							this.handleLookupResponse(resp);
@@ -214,9 +209,15 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			// 	this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
 		} else {
 			this.form.patchValue({
-				linkedLicenceId: resp.licenceAppId,
-				licenceExpiryDate: resp.expiryDate,
+				licenceNumber: resp.licenceNumber,
+				linkedLicenceId: resp.licenceId,
+				linkedLicenceAppId: resp.licenceAppId,
+				linkedExpiryDate: resp.expiryDate,
 			});
+			this.linkPerformed.emit();
+
+			const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			this.hotToastService.success(`The ${workerLicenceTypeDesc} has been found.`);
 		}
 	}
 

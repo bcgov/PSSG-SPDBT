@@ -4,12 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import {
-	ApplicationPortalStatusCode,
-	ApplicationTypeCode,
-	WorkerLicenceAppListResponse,
-	WorkerLicenceTypeCode,
-} from '@app/api/models';
+import { ApplicationPortalStatusCode, WorkerLicenceAppListResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -626,7 +621,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	onResume(appl: WorkerLicenceAppListResponse): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.loadLicence(appl.licenceAppId!, appl.applicationTypeCode!)
+				.getLicenceNew(appl.licenceAppId!)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
@@ -656,35 +651,35 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	}
 
 	onUpdate(appl: WorkerLicenceInProgress): void {
-		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceApplicationService
-				.loadLicence('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-							)
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
-			// } else {
-			// 	this.permitApplicationService
-			// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
-			// 		.pipe(
-			// 			tap((_resp: any) => {
-			// 				this.router.navigateByUrl(
-			// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-			// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
-			// 					)
-			// 				);
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
-		}
+		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
+		// 	this.licenceApplicationService
+		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
+		// 		.pipe(
+		// 			tap((_resp: any) => {
+		// 				this.router.navigateByUrl(
+		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+		// 						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+		// 					)
+		// 				);
+		// 			}),
+		// 			take(1)
+		// 		)
+		// 		.subscribe();
+		// } else {
+		// 	this.permitApplicationService
+		// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
+		// 		.pipe(
+		// 			tap((_resp: any) => {
+		// 				this.router.navigateByUrl(
+		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+		// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
+		// 					)
+		// 				);
+		// 			}),
+		// 			take(1)
+		// 		)
+		// 		.subscribe();
+		// }
 	}
 
 	// onReapply(appl: WorkerLicenceInProgress): void {
