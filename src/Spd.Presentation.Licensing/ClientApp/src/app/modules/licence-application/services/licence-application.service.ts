@@ -21,8 +21,6 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
-	WorkerLicenceAppSubmitRequest,
-	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
@@ -141,10 +139,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
-		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
-		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
-		linkedLicenceAppId: new FormControl(null),
-		// expiryDate: new FormControl(null), // TODO needed?
+
+		originalApplicationId: new FormControl(null),
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 		personalInformationData: this.personalInformationFormGroup,
@@ -264,6 +264,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Search for an existing licence using access code
 	 * @param licenceNumber
 	 * @param accessCode
+	 * @param recaptchaCode
 	 * @returns
 	 */
 	getLicenceWithAccessCode(
@@ -281,14 +282,53 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadLicence(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
-		console.debug('loadLicence', licenceAppId, applicationTypeCode);
+	getLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		console.debug('getLicenceNew', licenceAppId);
 
+		return this.loadLicenceNew(licenceAppId).pipe(
+			tap((resp: any) => {
+				console.debug('LOAD loadLicenceNew', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithAccessCodeData(
+		accessCodeData: any,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
+		return this.getLicenceOfType(accessCodeData.linkedLicenceAppId, applicationTypeCode!).pipe(
+			tap((_resp: any) => {
+				this.licenceModelFormGroup.patchValue(
+					{
+						originalApplicationId: accessCodeData.linkedLicenceAppId,
+						originalLicenceId: accessCodeData.linkedLicenceId,
+						originalLicenceNumber: accessCodeData.licenceNumber,
+						originalExpiryDate: accessCodeData.linkedExpiryDate,
+					},
+					{ emitEvent: false }
+				);
+				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD loadLicenceRenewal', resp);
+						console.debug('[getLicenceOfType] Renewal', licenceAppId, applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
@@ -296,23 +336,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Update: {
 				return this.loadLicenceUpdate(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD loadLicenceUpdate', resp);
-						this.initialized = true;
-					})
-				);
-			}
-			case ApplicationTypeCode.Replacement: {
-				return this.loadLicenceReplacement(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadLicenceReplacement', resp);
+						console.debug('[getLicenceOfType] Update', licenceAppId, applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
 			}
 			default: {
-				return this.loadLicenceNew(licenceAppId).pipe(
+				//case ApplicationTypeCode.Replacement: {
+				return this.loadLicenceReplacement(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('LOAD loadLicenceNew', resp);
+						console.debug('[getLicenceOfType] Replacement', licenceAppId, applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
@@ -340,7 +373,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private loadLicenceRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
-			tap((resp: any) => {
+			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 				// TODO renewal - remove data that should be re-prompted for
 				// const soleProprietorData = {
@@ -374,7 +407,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						// soleProprietorData,
 						// licenceTermData,
@@ -391,7 +423,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('[loadLicenceRenewal] licenceModel', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -403,7 +435,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private loadLicenceUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
-			tap((resp: any) => {
+			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 				// TODO renewal - remove data that should be re-prompted for
 				// const soleProprietorData = {
@@ -437,7 +469,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						// soleProprietorData,
 						// licenceTermData,
@@ -454,7 +485,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('[loadLicenceUpdate] licenceModel', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -466,7 +497,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
-			tap((resp: any) => {
+			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 				const residentialAddressData = {
@@ -476,7 +507,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
 						applicationTypeData,
 						residentialAddressData: { ...residentialAddressData },
 					},
@@ -485,7 +515,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadLicenceRenewal', resp);
+				console.debug('[loadLicenceReplacement] licenceModel', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -1120,8 +1150,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					}
 				);
 
-				// console.debug('loadExistingLicence resp', resp);
-				console.debug('LOAD EXISTING licenceModelFormGroup', this.licenceModelFormGroup.value);
+				console.debug('[loadSpecificLicence] licenceModelFormGroup', this.licenceModelFormGroup.value);
 			}),
 			take(1)
 		);
@@ -1507,6 +1536,55 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
+	 * Submit the licence data for replacement anonymous
+	 * @returns
+	 */
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+		let keyCode = '';
+		const body = this.getSaveBodyAnonymous();
+		console.debug('submitLicenceAnonymous body', body);
+		// const documentInfos = this.getSaveDocsAnonymous();
+		// console.log('documentInfos', documentInfos);
+
+		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
+		console.debug('submitLicenceAnonymous consentAndDeclarationFormGroup', formValue);
+
+		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
+		return this.workerLicensingService
+			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((resp: string) => {
+					keyCode = resp;
+
+					// 	const documentsToSave: Observable<string>[] = [];
+					// 	documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
+					// 		documentsToSave.push(
+					// 			this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
+					// 				keyCode,
+					// 				body: {
+					// 					Documents: docBody.documents,
+					// 					LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+					// 				},
+					// 			})
+					// 		);
+					// 	});
+
+					// 	return forkJoin(documentsToSave);
+					// }),
+					// switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					// body.fileKeyCodes = resps;
+
+					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
+						keyCode,
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
+	}
+
+	/**
 	 * Submit the licence data
 	 * @returns
 	 */
@@ -1521,11 +1599,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBody(): WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest {
+	private getSaveBody(): any {
+		// TODO fix WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest {
 		const formValue = this.licenceModelFormGroup.getRawValue();
 		console.debug('getSaveBody licenceModelFormGroup', formValue);
 
 		const licenceAppId = formValue.licenceAppId;
+		const originalApplicationId = formValue.originalApplicationId;
+		const originalLicenceId = formValue.originalLicenceId;
 		const workerLicenceTypeData = { ...formValue.workerLicenceTypeData };
 		const applicationTypeData = { ...formValue.applicationTypeData };
 		const soleProprietorData = { ...formValue.soleProprietorData };
@@ -1766,8 +1847,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 			: null;
 
-		const body: WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest = {
+		// | WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest | WorkerLicenceAppAnonymousSubmitRequestJson
+		const body = {
 			licenceAppId,
+			originalApplicationId,
+			originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
@@ -1829,6 +1913,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			...dogsAuthorizationData,
 			...restraintsAuthorizationData,
 		};
+		console.debug('getSaveBody body returned', body);
 		return body;
 	}
 
@@ -1889,6 +1974,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getSaveBodyAnonymous(): WorkerLicenceAppAnonymousSubmitRequestJson {
 		const savebody = this.getSaveBody();
 
+		console.log('getSaveBodyAnonymous1', savebody);
 		const documentInfos = this.getSaveDocumentInfosAnonymous();
 		// console.log('documentInfos', documentInfos);
 
@@ -1899,6 +1985,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 
 		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
+			originalApplicationId: savebody.originalApplicationId,
+			originalLicenceId: savebody.originalLicenceId,
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
 			applicationTypeCode: savebody.applicationTypeCode,
 			businessTypeCode: savebody.businessTypeCode,
@@ -1944,6 +2032,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 		// console.log('requestBody', requestBody);
 
+		console.log('getSaveBodyAnonymous requestBody', requestBody);
 		return requestBody;
 	}
 

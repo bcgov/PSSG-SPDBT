@@ -67,10 +67,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
-		licenceExpiryDate: new FormControl(null), // TODO if application is a licence, return this value
-		licenceNumber: new FormControl(null), // TODO if application is a licence, return this value
-		linkedLicenceAppId: new FormControl(null),
-		// expiryDate: new FormControl(null), // TODO needed?
+
+		originalApplicationId: new FormControl(null),
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 
@@ -166,10 +168,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Search for an existing permit using access code
 	 * @param licenceNumber
 	 * @param accessCode
+	 * @param recaptchaCode
 	 * @returns
 	 */
-	getPermitWithAccessCode(licenceNumber: string, accessCode: string): Observable<LicenceLookupResponse> {
-		return this.licenceLookupService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(take(1));
+	getPermitWithAccessCode(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceLookupResponse> {
+		return this.licenceLookupService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(take(1));
 	}
 
 	/**
@@ -221,6 +230,75 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		console.debug('getPermitNew', licenceAppId);
+
+		return this.loadPermitNew(licenceAppId).pipe(
+			tap((resp: any) => {
+				console.debug('LOAD loadPermitNew', resp);
+				this.initialized = true;
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitWithAccessCodeData(
+		accessCodeData: any,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
+		return this.getPermitOfType(accessCodeData.linkedLicenceAppId, applicationTypeCode!).pipe(
+			tap((_resp: any) => {
+				this.permitModelFormGroup.patchValue(
+					{
+						originalApplicationId: accessCodeData.linkedLicenceAppId,
+						originalLicenceId: accessCodeData.linkedLicenceId,
+						originalLicenceNumber: accessCodeData.licenceNumber,
+						originalExpiryDate: accessCodeData.linkedExpiryDate,
+					},
+					{ emitEvent: false }
+				);
+				console.debug('[getPermitWithAccessCodeData] permitModelFormGroup', this.permitModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return this.loadPermitRenewal(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('[getLicenceOfType] Renewal', licenceAppId, applicationTypeCode, resp);
+						this.initialized = true;
+					})
+				);
+			}
+			default: {
+				// case ApplicationTypeCode.Update: {
+				return this.loadPermitUpdate(licenceAppId).pipe(
+					tap((resp: any) => {
+						console.debug('[getLicenceOfType] Update', licenceAppId, applicationTypeCode, resp);
+						this.initialized = true;
+					})
+				);
+			}
+			// Replacement does not exist for Permits
+		}
+	}
+
+	/**
 	 * Load an existing draft licence application
 	 * @param licenceAppId
 	 * @returns
@@ -228,7 +306,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadPermitNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificPermit(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD loadPermitNew', resp);
+				console.debug('[loadPermitNew] resp', resp);
 			})
 		);
 	}
@@ -273,7 +351,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
+						originalApplicationId: licenceAppId,
 						workerLicenceTypeData,
 						applicationTypeData,
 						permitRequirementData,
@@ -291,7 +369,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadPermitRenewal', resp);
+				console.debug('[loadPermitRenewal] resp', resp);
 			})
 		);
 	}
@@ -335,7 +413,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
-						linkedLicenceAppId: licenceAppId,
+						originalApplicationId: licenceAppId,
 						workerLicenceTypeData,
 						applicationTypeData,
 						permitRequirementData,
@@ -353,7 +431,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
-				console.debug('LOAD LicenceApplicationService loadPermitRenewal', resp);
+				console.debug('[loadPermitUpdate] resp', resp);
 			})
 		);
 	}
@@ -375,7 +453,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// 			this.permitModelFormGroup.patchValue(
 	// 				{
 	// 					licenceAppId: null,
-	// 					linkedLicenceAppId: licenceAppId,
+	// 					originalApplicationId: licenceAppId,
 	// 					applicationTypeData,
 	// 					residentialAddressData: { ...residentialAddressData },
 	// 				},
@@ -390,32 +468,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// }
 
 	/**
-	 * Load an existing licence application for update
-	 * @param licenceAppId
-	 * @returns
-	 */
-	// loadUpdateLicence(): Observable<WorkerLicenceResponse> { // TODO remove?
-
-	// 	return this.loadPermit(licenceAppId!, workerLicenceTypeCode, applicationTypeCode).pipe(
-	// 	// return this.createLicenceAuthenticated().pipe(
-	// 		// TODO update
-	// 		tap((_resp: any) => {
-	// 			console.debug('loadUserProfile');
-
-	// 			this.initialized = true;
-	// 			console.debug('this.initialized', this.initialized);
-	// 		})
-	// 	);
-	// }
-
-	/**
 	 * Create an empty licence
 	 * @returns
 	 */
 	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		return this.createPermitAnonymous(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
-				console.debug('NEW createNewPermitAnonymous', resp);
+				console.debug('[createNewPermitAnonymous] resp', resp);
 
 				this.initialized = true;
 			})
@@ -429,7 +488,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	createNewPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		return this.createPermitAuthenticated(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
-				console.debug('NEW createNewPermitAuthenticated', resp);
+				console.debug('[createNewPermitAuthenticated] resp', resp);
 
 				this.initialized = true;
 			})
@@ -492,6 +551,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
+				console.log('[createPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
+
 				return of(this.permitModelFormGroup.value);
 			})
 		);
@@ -553,6 +614,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 			);
 		}
+
+		console.log('[createPermitAuthenticated] permitModelFormGroup', this.permitModelFormGroup.value);
 
 		return of(this.permitModelFormGroup.value);
 	}
@@ -734,7 +797,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
-						// expiryDate: resp.expiryDate, // TODO fix??
 						caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
@@ -760,8 +822,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					}
 				);
 
-				// console.debug('loadExistingLicence resp', resp);
-				console.debug('LOAD EXISTING licenceModelFormGroup', this.permitModelFormGroup.value);
+				console.debug('[loadSpecificPermit] licenceModelFormGroup', this.permitModelFormGroup.value);
 			}),
 			take(1)
 		);
@@ -1365,17 +1426,4 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return documents;
 	}
-
-	// private includeAdditionalGovermentIdStepData(
-	// 	isCanadianCitizen: BooleanTypeCode,
-	// 	canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-	// 	notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
-	// ): boolean {
-	// 	return (
-	// 		(isCanadianCitizen == BooleanTypeCode.Yes &&
-	// 			canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-	// 		(isCanadianCitizen == BooleanTypeCode.No &&
-	// 			notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-	// 	);
-	// }
 }
