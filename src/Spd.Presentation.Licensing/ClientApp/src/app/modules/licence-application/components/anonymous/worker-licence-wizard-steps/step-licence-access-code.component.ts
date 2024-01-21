@@ -6,7 +6,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { take, tap } from 'rxjs/operators';
 import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components/common-access-code-anonymous.component';
 
 @Component({
@@ -92,54 +91,39 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 		console.log('*****1 accessCodeData', accessCodeData);
 
 		this.licenceApplicationService
-			.getLicenceOfType(accessCodeData.linkedLicenceAppId, this.applicationTypeCode!)
-			.pipe(
-				tap((_resp: any) => {
-					this.licenceApplicationService.licenceModelFormGroup.patchValue(
-						{
-							originalApplicationId: accessCodeData.linkedLicenceAppId,
-							originalLicenceId: accessCodeData.linkedLicenceId,
-							originalLicenceNumber: accessCodeData.licenceNumber,
-							originalExpiryDate: accessCodeData.linkedExpiryDate,
-						},
-						{ emitEvent: false }
-					);
-					console.log('*****2 accessCodeData', this.licenceApplicationService.licenceModelFormGroup.value);
-
-					switch (this.workerLicenceTypeCode) {
-						case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-							switch (this.applicationTypeCode) {
-								case ApplicationTypeCode.Renewal: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-											LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
-										)
-									);
-									break;
-								}
-								case ApplicationTypeCode.Replacement: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-											LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
-										)
-									);
-									break;
-								}
-								case ApplicationTypeCode.Update: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-											LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
-										)
-									);
-									break;
-								}
+			.getLicenceWithAccessCodeData(accessCodeData, this.applicationTypeCode!)
+			.subscribe((_resp: any) => {
+				switch (this.workerLicenceTypeCode) {
+					case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+						switch (this.applicationTypeCode) {
+							case ApplicationTypeCode.Renewal: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_ANONYMOUS
+									)
+								);
+								break;
 							}
-							break;
+							case ApplicationTypeCode.Replacement: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_ANONYMOUS
+									)
+								);
+								break;
+							}
+							case ApplicationTypeCode.Update: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
+										LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS
+									)
+								);
+								break;
+							}
 						}
+						break;
 					}
-				}),
-				take(1)
-			)
-			.subscribe();
+				}
+			});
 	}
 }

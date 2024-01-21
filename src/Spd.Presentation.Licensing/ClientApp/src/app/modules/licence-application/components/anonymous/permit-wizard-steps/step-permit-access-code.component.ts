@@ -6,7 +6,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { take, tap } from 'rxjs/operators';
 import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components/common-access-code-anonymous.component';
 
 @Component({
@@ -91,44 +90,29 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 
 	onSearchSuccess(): void {
 		const accessCodeData = this.form.value;
-		// accessCodeData.linkedLicenceId = '172761bb-3fd7-497c-81a9-b953359709a2'; // TODO hardcoded ID fix
 
 		this.permitApplicationService
-			.getPermitOfType(accessCodeData.linkedLicenceAppId, this.applicationTypeCode!)
-			.pipe(
-				tap((_resp: any) => {
-					this.permitApplicationService.permitModelFormGroup.patchValue(
-						{
-							originalApplicationId: accessCodeData.linkedLicenceAppId,
-							originalLicenceId: accessCodeData.linkedLicenceId,
-							originalLicenceNumber: accessCodeData.licenceNumber,
-							originalExpiryDate: accessCodeData.linkedExpiryDate,
-						},
-						{ emitEvent: false }
-					);
-
-					switch (this.workerLicenceTypeCode) {
-						case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-						case WorkerLicenceTypeCode.BodyArmourPermit: {
-							switch (this.applicationTypeCode) {
-								case ApplicationTypeCode.Update: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS)
-									);
-									break;
-								}
-								case ApplicationTypeCode.Renewal: {
-									this.router.navigateByUrl(
-										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS)
-									);
-									break;
-								}
+			.getPermitWithAccessCodeData(accessCodeData, this.applicationTypeCode!)
+			.subscribe((_resp: any) => {
+				switch (this.workerLicenceTypeCode) {
+					case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+					case WorkerLicenceTypeCode.BodyArmourPermit: {
+						switch (this.applicationTypeCode) {
+							case ApplicationTypeCode.Update: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS)
+								);
+								break;
+							}
+							case ApplicationTypeCode.Renewal: {
+								this.router.navigateByUrl(
+									LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_RENEWAL_ANONYMOUS)
+								);
+								break;
 							}
 						}
 					}
-				}),
-				take(1)
-			)
-			.subscribe();
+				}
+			});
 	}
 }
