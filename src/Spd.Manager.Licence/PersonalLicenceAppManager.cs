@@ -6,6 +6,7 @@ using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
+using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Shared.Exceptions;
@@ -31,6 +32,7 @@ internal partial class PersonalLicenceAppManager :
     private readonly IIdentityRepository _identityRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<IPersonalLicenceAppManager> _logger;
+    private readonly ILicenceFeeRepository _feeRepository;
     private readonly IDistributedCache _cache;
 
     public PersonalLicenceAppManager(
@@ -41,6 +43,7 @@ internal partial class PersonalLicenceAppManager :
         IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
         ILogger<IPersonalLicenceAppManager> logger,
+        ILicenceFeeRepository feeRepository,
         IDistributedCache cache)
     {
         _licenceRepository = licenceRepository;
@@ -50,6 +53,7 @@ internal partial class PersonalLicenceAppManager :
         _identityRepository = identityRepository;
         _documentRepository = documentUrlRepository;
         _logger = logger;
+        _feeRepository = feeRepository;
         _cache = cache;
     }
 
@@ -195,7 +199,7 @@ internal partial class PersonalLicenceAppManager :
             }
         }
 
-        await _licenceAppRepository.CommitLicenceApplicationAsync(appResponse.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+        await CommitApplicationAsync(request, appResponse.LicenceAppId, ct);
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = appResponse.LicenceAppId };
     }
 
@@ -233,13 +237,26 @@ internal partial class PersonalLicenceAppManager :
             }
         }
 
-        //todo : add code here: if payment price is 0, directly set to Submitted.
-        await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-
+        await CommitApplicationAsync(request, response.LicenceAppId, ct);
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 
+    private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct)
+    {
+        //if payment price is 0, directly set to Submitted, or PaymentPending
+        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+        {
+            ApplicationTypeEnum = ApplicationTypeEnum.New,
+            BusinessTypeEnum = request.BusinessTypeCode == null ? null : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString())
+        }, ct);
+        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+        else
+            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+    }
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
