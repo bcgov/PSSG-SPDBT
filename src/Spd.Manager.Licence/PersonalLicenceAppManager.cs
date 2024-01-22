@@ -94,7 +94,7 @@ internal partial class PersonalLicenceAppManager :
         //todo
 
         //set status to submitted
-        await _licenceAppRepository.SubmitLicenceApplicationAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, ct);
+        //await _licenceAppRepository.SubmitLicenceApplicationAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, ct);
 
         //move the file from temp file repo to formal file repo.
         //todo
