@@ -463,13 +463,11 @@ export class StepsIdentificationAnonymousComponent extends BaseWizardStepCompone
 	}
 
 	get showAdditionalGovermentIdStep(): boolean {
-		return this.licenceApplicationService.isShowAdditionalGovermentIdStep();
-		// const form = this.licenceApplicationService.citizenshipFormGroup;
-		// return (
-		// 	(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-		// 		form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-		// 	(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-		// 		form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		// );
+		const form = this.licenceApplicationService.citizenshipFormGroup;
+		return this.licenceApplicationService.includeAdditionalGovermentIdStepData(
+			form.value.isCanadianCitizen,
+			form.value.canadianCitizenProofTypeCode,
+			form.value.notCanadianCitizenProofTypeCode
+		);
 	}
 }

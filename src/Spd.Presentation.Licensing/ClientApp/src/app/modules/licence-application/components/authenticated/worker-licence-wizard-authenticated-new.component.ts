@@ -212,7 +212,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextPayStep(): void {
-		this.licenceApplicationService.submitLicence().subscribe({
+		this.licenceApplicationService.submitLicenceNew().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());

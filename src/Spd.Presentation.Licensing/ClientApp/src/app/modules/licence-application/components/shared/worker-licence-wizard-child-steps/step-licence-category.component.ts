@@ -117,7 +117,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
 								<mat-expansion-panel class="my-3" [expanded]="expandClosedCircuitTelevisionInstaller">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
+										<mat-panel-title class="title"
 											>{{ workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'WorkerCategoryTypes' }}
 										</mat-panel-title>
 										<mat-panel-description>

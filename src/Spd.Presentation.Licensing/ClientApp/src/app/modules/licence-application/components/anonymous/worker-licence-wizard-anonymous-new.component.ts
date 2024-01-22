@@ -161,7 +161,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		if (this.licenceAppId) {
 			this.payNow(this.licenceAppId);
 		} else {
-			this.licenceApplicationService.submitLicence().subscribe({
+			this.licenceApplicationService.submitLicenceNew().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
 					// save this locally just in case payment fails
 					this.licenceAppId = resp.body.licenceAppId!;
