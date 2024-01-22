@@ -55,6 +55,9 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             }
         }
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -65,12 +68,23 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
 
     public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct)
     {
-        spd_application app = _context.spd_applications
-               .Where(a => a.spd_applicationid == applicationId).FirstOrDefault();
-        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
+        spd_application? app = await _context.GetApplicationById(applicationId, ct);
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
+
+        if (status == ApplicationStatusEnum.Submitted)
+        {
+            app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
+            app.statecode = DynamicsConstants.StateCode_Inactive;
+            app.spd_submittedon = DateTimeOffset.Now;
+        }
+        else
+        {
+            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
+        }
         _context.UpdateObject(app);
-        await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp(applicationId, (Guid)app._spd_applicantid_value);
+        await _context.SaveChangesAsync(ct);
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
     }
 
     public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
@@ -111,21 +125,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid ?? Guid.NewGuid());
     }
-
-    public async Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid licAppId, CancellationToken cancellationToken)
-    {
-        spd_application? app = await _context.GetApplicationById(licAppId, cancellationToken);
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
-
-        app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
-        app.statecode = DynamicsConstants.StateCode_Inactive;
-        app.spd_submittedon = DateTimeOffset.Now;
-        _context.UpdateObject(app);
-        await _context.SaveChangesAsync(cancellationToken);
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
-    }
-
     public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
         var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
