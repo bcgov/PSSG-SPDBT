@@ -62,7 +62,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-aliases></app-step-aliases>
+				<app-step-aliases [applicationTypeCode]="applicationTypeCode"></app-step-aliases>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -92,7 +92,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-citizenship></app-step-citizenship>
+				<app-step-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-citizenship>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -122,7 +122,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			</mat-step>
 
 			<mat-step *ngIf="showAdditionalGovermentIdStep && applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-additional-gov-id></app-step-additional-gov-id>
+				<app-step-additional-gov-id [applicationTypeCode]="applicationTypeCode"></app-step-additional-gov-id>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -157,7 +157,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-bc-driver-licence></app-step-bc-driver-licence>
+				<app-step-bc-driver-licence [applicationTypeCode]="applicationTypeCode"></app-step-bc-driver-licence>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

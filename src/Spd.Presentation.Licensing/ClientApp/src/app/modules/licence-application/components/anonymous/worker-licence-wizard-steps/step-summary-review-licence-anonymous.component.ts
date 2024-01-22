@@ -416,7 +416,9 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											<div class="text-minor-heading">Aliases</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Do you have any previous names?</div>
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														Do you have any previous names or aliases?
+													</div>
 													<div class="summary-text-data">{{ previousNameFlag }}</div>
 												</div>
 												<div class="col-lg-4 col-md-12 mt-lg-2">

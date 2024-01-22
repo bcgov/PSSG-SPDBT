@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
 	AdditionalGovIdDocument,
+	Alias,
 	ApplicationTypeCode,
 	BooleanTypeCode,
 	BusinessTypeCode,
@@ -16,6 +17,7 @@ import {
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
 	LicenceLookupResponse,
+	LicenceTermCode,
 	MentalHealthDocument,
 	PoliceOfficerDocument,
 	WorkerCategoryTypeCode,
@@ -26,6 +28,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -144,6 +147,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		originalLicenceId: new FormControl(null),
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
+		originalLicenceTermCode: new FormControl(null),
+		originalBusinessTypeCode: new FormControl(null),
 
 		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
@@ -373,48 +378,51 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private loadLicenceRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
-			tap((_resp: any) => {
+			tap((_resp: WorkerLicenceResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// 	BusinessTypeCode: null,
-				// };
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+
+				// Remove data that should be re-prompted for
+				const soleProprietorData = {
+					isSoleProprietor: null,
+					businessTypeCode: null,
+				};
+				const fingerprintProofData = {
+					attachments: [],
+				};
+				const licenceTermData = {
+					licenceTermCode: null,
+				};
+				const aliasesData = { previousNameFlag: null, aliases: [] };
+				const bcDriversLicenceData = {
+					hasBcDriversLicence: null,
+					bcDriversLicenceNumber: null,
+				};
+				const citizenshipData = {
+					isCanadianCitizen: null,
+					canadianCitizenProofTypeCode: null,
+					notCanadianCitizenProofTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
+				const additionalGovIdData = {
+					governmentIssuedPhotoTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
 
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						applicationTypeData,
-						// soleProprietorData,
-						// licenceTermData,
-						// bcDriversLicenceData,
-						// fingerprintProofData,
-						// aliasesData,
-						// citizenshipData,
-						// additionalGovIdData,
+						originalLicenceTermCode: _resp.licenceTermCode,
+
+						soleProprietorData,
+						licenceTermData,
+						fingerprintProofData,
+						bcDriversLicenceData,
+						aliasesData,
+						citizenshipData,
+						additionalGovIdData,
 						// restraintsAuthorizationData,
 						// dogsAuthorizationData,
 					},
@@ -437,48 +445,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-				// TODO renewal - remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// 	businessTypeCode: null,
-				// };
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+
+				// TODO Update: Remove data that should be re-prompted for
 
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						applicationTypeData,
-						// soleProprietorData,
-						// licenceTermData,
-						// bcDriversLicenceData,
-						// fingerprintProofData,
-						// aliasesData,
-						// citizenshipData,
-						// additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
 					},
 					{
 						emitEvent: false,
@@ -1102,7 +1075,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
-						// expiryDate: resp.expiryDate, // TODO fix??
+						originalBusinessTypeCode: soleProprietorData.businessTypeCode,
 						caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
@@ -1150,6 +1123,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					}
 				);
 
+				const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
+				resp.aliases?.forEach((alias: Alias) => {
+					aliasesArray.push(
+						new FormGroup({
+							givenName: new FormControl(alias.givenName),
+							middleName1: new FormControl(alias.middleName1),
+							middleName2: new FormControl(alias.middleName2),
+							surname: new FormControl(alias.surname, [FormControlValidators.required]),
+						})
+					);
+				});
+
+				this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
+
 				console.debug('[loadSpecificLicence] licenceModelFormGroup', this.licenceModelFormGroup.value);
 			}),
 			take(1)
@@ -1164,17 +1151,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
 
-		// this.licenceUserModelFormGroup.reset();
-		// const aliases3 = this.licenceUserModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		// aliases3.clear();
-		// this.licenceModelFormGroupAnonymous.reset();
-		// const aliases2 = this.licenceModelFormGroupAnonymous.controls['aliasesData'].get('aliases') as FormArray;
-		// aliases2.clear();
-
 		this.licenceModelFormGroup.reset();
 
-		const aliases1 = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		aliases1.clear();
+		const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
+		aliases.clear();
 	}
 
 	/**
@@ -1205,8 +1185,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	public getLicenceTermsAndFees(): Array<LicenceFeeResponse> {
 		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
 		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-		const businessTypeCode =
-			this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value ?? BusinessTypeCode.None; // TODO remove default
+
+		let businessTypeCode = '';
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			businessTypeCode = this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value;
+		} else {
+			businessTypeCode = this.licenceModelFormGroup.get('originalBusinessTypeCode')?.value;
+		}
 
 		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode);
 
@@ -1214,19 +1199,31 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			return [];
 		}
 
+		let hasValidSwl90DayLicence = false;
+		if (applicationTypeCode === ApplicationTypeCode.Renewal && businessTypeCode === LicenceTermCode.NintyDays) {
+			hasValidSwl90DayLicence = true;
+		}
+
 		// console.debug(
 		// 	'getLicenceTermsAndFees',
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
 		// 	businessTypeCode,
-		// 	this.licenceFeesSecurityWorkerLicence
+		// 	this.licenceFeesSecurityWorkerLicence?.filter(
+		// 		(item) =>
+		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
+		// 			item.businessTypeCode == businessTypeCode &&
+		// 			item.applicationTypeCode == applicationTypeCode &&
+		// 			item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
+		// 	)
 		// );
 
 		return this.licenceFeesSecurityWorkerLicence?.filter(
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&
 				item.businessTypeCode == businessTypeCode &&
-				item.applicationTypeCode == applicationTypeCode
+				item.applicationTypeCode == applicationTypeCode &&
+				item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
 		);
 	}
 

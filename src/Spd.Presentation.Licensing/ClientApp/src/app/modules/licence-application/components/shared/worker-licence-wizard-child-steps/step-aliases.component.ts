@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -8,7 +9,15 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title title="Do you have any previous names?"></app-step-title>
+				<!-- <ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container> -->
+
+				<app-step-title title="Do you have any previous names or aliases?"></app-step-title>
 
 				<app-common-aliases [form]="form"></app-common-aliases>
 			</div>
@@ -18,6 +27,9 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 })
 export class StepAliasesComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
+
+	applicationTypeCodes = ApplicationTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
