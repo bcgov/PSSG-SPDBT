@@ -290,10 +290,10 @@ internal partial class PersonalLicenceAppManager :
             ct);
         if (docs.Items.Any())
         {
-            foreach (var photo in photos.Items)
+            foreach (var doc in docs.Items)
             {
                 await _documentRepository.ManageAsync(
-                    new CopyDocumentCmd(photo.DocumentUrlId, response.LicenceAppId, response.ContactId),
+                    new CopyDocumentCmd(doc.DocumentUrlId, response.LicenceAppId, response.ContactId),
                     ct);
             }
         }
