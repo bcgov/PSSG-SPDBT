@@ -6,7 +6,6 @@ public partial interface ILicenceApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
-    public Task<LicenceApplicationCmdResp> SubmitLicenceApplicationAsync(Guid LicenceAppId, CancellationToken ct);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken ct);
 
