@@ -181,6 +181,7 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase 
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
     public Guid[]? FileKeyCodes { get; set; }
+    public Guid[]? PreviousFileIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
 }

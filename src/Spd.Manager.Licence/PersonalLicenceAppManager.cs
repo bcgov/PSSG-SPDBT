@@ -282,18 +282,15 @@ internal partial class PersonalLicenceAppManager :
             }
         }
 
-        //copying all old files to new application (except those new uploaded files)
+        //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
             throw new ArgumentException("replacement request must have original application id");
-        var docs = await _documentRepository.QueryAsync(
-            new DocumentQry(ApplicationId: cmd.LicenceAnonymousRequest.OriginalApplicationId),
-            ct);
-        if (docs.Items.Any())
+        if (cmd.LicenceAnonymousRequest.PreviousFileIds.Any())
         {
-            foreach (var doc in docs.Items)
+            foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousFileIds)
             {
                 await _documentRepository.ManageAsync(
-                    new CopyDocumentCmd(doc.DocumentUrlId, response.LicenceAppId, response.ContactId),
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
                     ct);
             }
         }
