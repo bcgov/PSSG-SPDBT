@@ -12,8 +12,9 @@ public interface IPersonalLicenceAppManager
     public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
     //deprecated
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppSubmitCommand command, CancellationToken ct);
+    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppRenewCommand command, CancellationToken ct);
     public Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
 }
 
@@ -26,12 +27,17 @@ public record AnonymousWorkerLicenceSubmitCommand(
     ICollection<UploadFileRequest> UploadFileRequests)
     : IRequest<WorkerLicenceAppUpsertResponse>;
 
-public record AnonymousWorkerLicenceAppSubmitCommand(
+public record AnonymousWorkerLicenceAppNewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
     : IRequest<WorkerLicenceAppUpsertResponse>;
 
 public record AnonymousWorkerLicenceAppReplaceCommand(
+    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    Guid KeyCode)
+    : IRequest<WorkerLicenceAppUpsertResponse>;
+
+public record AnonymousWorkerLicenceAppRenewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
     : IRequest<WorkerLicenceAppUpsertResponse>;
