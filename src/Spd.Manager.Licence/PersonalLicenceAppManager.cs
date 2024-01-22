@@ -283,9 +283,7 @@ internal partial class PersonalLicenceAppManager :
         }
 
         //copying all old files to new application in PreviousFileIds 
-        if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
-            throw new ArgumentException("replacement request must have original application id");
-        if (cmd.LicenceAnonymousRequest.PreviousFileIds.Any())
+        if (cmd.LicenceAnonymousRequest.PreviousFileIds != null && cmd.LicenceAnonymousRequest.PreviousFileIds.Length != 0)
         {
             foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousFileIds)
             {
@@ -305,7 +303,7 @@ internal partial class PersonalLicenceAppManager :
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
         {
-            ApplicationTypeEnum = ApplicationTypeEnum.New,
+            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
             BusinessTypeEnum = request.BusinessTypeCode == null ? null : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
             LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
             WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString())
