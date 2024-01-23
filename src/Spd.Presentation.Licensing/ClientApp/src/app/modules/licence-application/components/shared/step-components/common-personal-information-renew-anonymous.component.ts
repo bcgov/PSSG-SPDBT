@@ -1,177 +1,113 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-common-personal-information-renew-anonymous',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
-				</ng-container>
-
-				<app-step-title title="Your personal information"></app-step-title>
-
-				<form [formGroup]="form" novalidate>
+		<form [formGroup]="form" novalidate>
+			<div class="row">
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
-						<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<div class="row">
-								<!-- <div class="w-100">
-									<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
-								</div> -->
-								<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else IsRenewal">
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="middleName1" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="middleName2" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Surname</mat-label>
-											<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-											<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Date of Birth</mat-label>
-											<input
-												matInput
-												[matDatepicker]="picker"
-												formControlName="dateOfBirth"
-												[max]="maxBirthDate"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-										</mat-form-field>
-									</div>
-								</ng-container>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="middleName1" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="middleName2" maxlength="40" />
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Surname</mat-label>
+								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+								<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Date of Birth</mat-label>
+								<input
+									matInput
+									[matDatepicker]="picker"
+									formControlName="dateOfBirth"
+									[max]="maxBirthDate"
+									[errorStateMatcher]="matcher"
+								/>
+								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
 
-								<ng-template #IsRenewal>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="middleName1" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-											<input matInput formControlName="middleName2" maxlength="40" />
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Surname</mat-label>
-											<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-											<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-										</mat-form-field>
-									</div>
-									<div class="col-xl-6 col-lg-6 col-md-12">
-										<mat-form-field>
-											<mat-label>Date of Birth</mat-label>
-											<input
-												matInput
-												[matDatepicker]="picker"
-												formControlName="dateOfBirth"
-												[max]="maxBirthDate"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-										</mat-form-field>
-									</div>
-								</ng-template>
-
-								<div class="col-xl-6 col-lg-6 col-md-12">
-									<mat-form-field>
-										<mat-label>Sex</mat-label>
-										<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-												{{ gdr.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-							</div>
-
-							<ng-container
-								*ngIf="
-									applicationTypeCode === applicationTypeCodes.Renewal ||
-									applicationTypeCode === applicationTypeCodes.Update
-								"
-							>
-								<mat-checkbox formControlName="isNeedProofOfLegalNameChange" (change)="onUpdateInformation()">
-									<span class="checklist-label">Update information</span>
-								</mat-checkbox>
-							</ng-container>
+						<div class="col-xl-6 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Sex</mat-label>
+								<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
+									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+										{{ gdr.desc }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
 						</div>
 					</div>
-					<div class="row mt-2" *ngIf="isNeedProofOfLegalNameChange.value" @showHideTriggerSlideAnimation>
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-							<div class="text-minor-heading mb-2">Upload your proof of legal name change:</div>
-							<app-file-upload
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</form>
+					<ng-container
+						*ngIf="
+							applicationTypeCode === applicationTypeCodes.Renewal ||
+							applicationTypeCode === applicationTypeCodes.Update
+						"
+					>
+						<mat-checkbox formControlName="isNeedProofOfLegalNameChange" (change)="onUpdateInformation()">
+							<span class="checklist-label">Update information</span>
+						</mat-checkbox>
+					</ng-container>
+				</div>
 			</div>
-		</section>
+			<div class="row mt-2" *ngIf="isNeedProofOfLegalNameChange.value" @showHideTriggerSlideAnimation>
+				<div class="offset-md-2 col-md-8 col-sm-12">
+					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+
+					<div class="text-minor-heading mb-2">Upload your proof of legal name change:</div>
+					<app-file-upload
+						(fileRemoved)="onFileRemoved()"
+						[control]="attachments"
+						[maxNumberOfFiles]="10"
+						[files]="attachments.value"
+					></app-file-upload>
+					<mat-error
+						class="mat-option-error"
+						*ngIf="
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						"
+						>This is required</mat-error
+					>
+				</div>
+			</div>
+		</form>
 	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonPersonalInformationRenewAnonymousComponent implements OnInit, OnDestroy {
+export class CommonPersonalInformationRenewAnonymousComponent implements OnInit {
 	genderTypes = GenderTypes;
 	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -179,37 +115,13 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit,
 	maxBirthDate = this.utilService.getBirthDateMax();
 	isLoggedIn = false;
 
-	authenticationSubscription!: Subscription;
-
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(
-		private utilService: UtilService,
-		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-				if (isLoggedIn) {
-					this.disableData();
-				}
-			}
-		);
-
-		if (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		) {
-			this.disableData(true);
-		}
-	}
-
-	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+		this.disableData(true);
 	}
 
 	onFileRemoved(): void {

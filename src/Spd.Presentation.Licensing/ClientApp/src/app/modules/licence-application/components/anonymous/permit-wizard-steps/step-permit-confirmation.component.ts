@@ -34,7 +34,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</div>
 							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
-								<div class="summary-text-data">{{ feeAmount }}</div>
+								<div class="summary-text-data">{{ feeAmount | default }}</div>
 							</div>
 						</div>
 					</div>

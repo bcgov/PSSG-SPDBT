@@ -132,7 +132,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		this.updateCompleteStatus();
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
 				this.stepsPermitDetailsComponent?.onGoToFirstStep();
@@ -150,6 +150,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 				this.stepsPermitReviewComponent?.onGoToFirstStep();
 				break;
 		}
+
+		super.onStepSelectionChange(event);
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {

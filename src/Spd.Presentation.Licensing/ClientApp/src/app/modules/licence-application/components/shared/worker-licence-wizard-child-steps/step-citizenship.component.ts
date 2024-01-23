@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -18,6 +19,14 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<!-- <ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+				</ng-container> -->
+
 				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -150,6 +159,9 @@ export class StepCitizenshipComponent implements LicenceChildStepperStepComponen
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
+
+	applicationTypeCodes = ApplicationTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
