@@ -21,7 +21,7 @@ namespace Spd.Manager.Payment
 
     #region pre payment link
     //pre payment link - for dynamics internal use
-    public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningAppPaymentUrl) : IRequest<PrePaymentLinkResponse>;
+    public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningAppPaymentUrl, string LicensingAppPaymentUrl) : IRequest<PrePaymentLinkResponse>;
     public record PrePaymentLinkResponse(string PrePaymentLinkUrl);
     #endregion
 
