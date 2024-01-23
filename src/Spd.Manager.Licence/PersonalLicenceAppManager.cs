@@ -178,9 +178,9 @@ internal partial class PersonalLicenceAppManager :
         var appResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
 
         //new application, all file keys are in cache
-        if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
+        if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
         {
-            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
+            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
             {
                 IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
                 foreach (LicAppFileInfo licAppFile in items)
@@ -260,9 +260,9 @@ internal partial class PersonalLicenceAppManager :
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
 
         //add all new files user uploaded
-        if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
+        if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
         {
-            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
+            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
             {
                 IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
                 foreach (LicAppFileInfo licAppFile in items)
@@ -283,9 +283,9 @@ internal partial class PersonalLicenceAppManager :
         }
 
         //copying all old files to new application in PreviousFileIds 
-        if (cmd.LicenceAnonymousRequest.PreviousFileIds != null && cmd.LicenceAnonymousRequest.PreviousFileIds.Length != 0)
+        if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Length != 0)
         {
-            foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousFileIds)
+            foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousDocumentIds)
             {
                 await _documentRepository.ManageAsync(
                     new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
