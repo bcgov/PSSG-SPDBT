@@ -10,6 +10,9 @@ metadata:
     haproxy.router.openshift.io/hsts_header: max-age=31536000;includeSubDomains;preload
     haproxy.router.openshift.io/balance: leastconn
     haproxy.router.openshift.io/timeout: {{ $.Values.routeTimeout | default  "120s" }}
+    {{- if $.Values.allowInternet }}
+    aviinfrasetting.ako.vmware.com/name: dataclass-public
+    {{- end }}
 spec:
   host: {{ $host.host }}
   path: {{ $host.path | default "" | quote }}
