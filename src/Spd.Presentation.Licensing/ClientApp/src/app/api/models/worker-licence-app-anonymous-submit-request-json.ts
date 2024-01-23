@@ -55,6 +55,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   originalLicenceId?: null | string;
   otherOfficerRole?: null | string;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
+  previousFileIds?: null | Array<string>;
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;
   useBcServicesCardPhoto?: null | boolean;

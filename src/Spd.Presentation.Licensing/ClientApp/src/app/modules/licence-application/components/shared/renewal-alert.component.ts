@@ -29,7 +29,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 						<mat-divider class="my-2" *ngIf="title"></mat-divider>
 					</div>
 					<div class="title lh-base">
-						<div class="fs-3" [innerHtml]="title"></div>
+						<div class="fs-4" [innerHtml]="title"></div>
 						<div class="fs-6 mt-1" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					</div>
 				</div>
@@ -56,7 +56,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 						<mat-divider class="my-2" *ngIf="title"></mat-divider>
 					</div>
 					<div class="title lh-base">
-						<div class="fs-3" [innerHtml]="title"></div>
+						<div class="fs-4" [innerHtml]="title"></div>
 						<div class="fs-6 mt-3" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					</div>
 				</div>

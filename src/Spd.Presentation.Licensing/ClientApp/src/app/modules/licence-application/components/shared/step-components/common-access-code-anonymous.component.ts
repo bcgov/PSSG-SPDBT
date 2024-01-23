@@ -9,6 +9,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
+import * as moment from 'moment';
 import { take, tap } from 'rxjs';
 
 @Component({
@@ -166,47 +167,41 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	}
 
 	private handleLookupResponse(resp: LicenceLookupResponse): void {
-		// const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.replacementPeriodPreventionDays;
-		// const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
-		// const renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
+		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.replacementPeriodPreventionDays;
+		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
+		const renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
+
+		const daysBetween = moment(resp.expiryDate).diff(moment(), 'days');
 
 		if (!resp) {
 			// access code / licence are not found
 			this.errorMessage = `This ${this.licenceNumberName} number and access code are not a valid combination.`;
-			// } else if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
-			// 	//  access code matches licence, but the WorkerLicenceType does not match
-			// 	const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-			// 	this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
-			// } else if (moment().isAfter(resp.expiryDate)) {
-			// 	// access code matches licence, but the licence is expired
-			// 	this.isExpired = true;
-			// 	if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
-			// 		this.errorMessage = 'This licence has expired so you can no longer renew it. Please apply for a new licence.';
-			// 	} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			// 		this.errorMessage = 'This licence has expired so you cannot update it. Please apply for a new licence.';
-			// 	} else {
-			// 		this.errorMessage = 'This licence has expired so you cannot replace it. Please apply for a new licence.';
-			// 	}
-			// } else if (
-			// 	this.applicationTypeCode === ApplicationTypeCode.Replacement &&
-			// 	moment().isSameOrBefore(resp.expiryDate) &&
-			// 	moment(resp.expiryDate).diff(moment(), 'days') <= replacementPeriodPreventionDays
-			// ) {
-			// 	// access code matches licence, but the licence is not within the replacement period
-			// 	this.errorMessage = 'This licence is too close to its expiry date to allow replacement.';
-			// } else if (
-			// 	this.applicationTypeCode === ApplicationTypeCode.Update &&
-			// 	moment().isSameOrBefore(resp.expiryDate) &&
-			// 	moment(resp.expiryDate).diff(moment(), 'days') <= updatePeriodPreventionDays
-			// ) {
-			// 	// access code matches licence, but the licence is not within the update period
-			// 	this.errorMessage = 'This licence is too close to its expiry date to allow update.';
-			// } else if (
-			// 	this.applicationTypeCode === ApplicationTypeCode.Renewal &&
-			// 	moment().diff(resp.expiryDate, 'days') <= renewPeriodDays
-			// ) {
-			// 	//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
-			// 	this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
+		} else if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
+			//  access code matches licence, but the WorkerLicenceType does not match
+			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
+		} else if (moment().isAfter(resp.expiryDate)) {
+			// access code matches licence, but the licence is expired
+			this.isExpired = true;
+			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+				this.errorMessage = 'This licence has expired so you can no longer renew it. Please apply for a new licence.';
+			} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+				this.errorMessage = 'This licence has expired so you cannot update it. Please apply for a new licence.';
+			} else {
+				this.errorMessage = 'This licence has expired so you cannot replace it. Please apply for a new licence.';
+			}
+		} else if (
+			this.applicationTypeCode === ApplicationTypeCode.Replacement &&
+			daysBetween <= replacementPeriodPreventionDays
+		) {
+			// access code matches licence, but the licence is not within the replacement period
+			this.errorMessage = 'This licence is too close to its expiry date to allow replacement.';
+		} else if (this.applicationTypeCode === ApplicationTypeCode.Update && daysBetween <= updatePeriodPreventionDays) {
+			// access code matches licence, but the licence is not within the update period
+			this.errorMessage = 'This licence is too close to its expiry date to allow update.';
+		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal && daysBetween > renewPeriodDays) {
+			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
+			this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
 		} else {
 			this.form.patchValue({
 				licenceNumber: resp.licenceNumber,

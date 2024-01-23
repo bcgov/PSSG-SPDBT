@@ -94,7 +94,7 @@ $spd-typography: mat.define-typography-config(
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $spd-primary: mat.define-palette($spd-blue, 500);
-$spd-accent: mat.define-palette($spd-yellow, dark);
+$spd-accent: mat.define-palette($spd-yellow, 900);
 
 // The warn palette is optional (defaults to red).
 $spd-warn: mat.define-palette(mat.$red-palette);
@@ -366,24 +366,18 @@ a {
 @media (max-width: 991px) {
   .step-section {
     border-radius: 0;
-    // background-color: transparent;
     border: none;
     box-shadow: none;
+    margin-bottom: 1.5rem!important;
   }
 }
 
-
 .step-section-modal {
   border-radius: 0;
-  // background-color: transparent;
   border: none;
   box-shadow: none;
 }
 
-
-// ngx-dropzone-remove-badge {
-//   z-index: 9999 !important;
-// }
 ngx-dropzone-remove-badge {
   opacity: 1 !important;
 }

@@ -852,7 +852,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					body.fileKeyCodes = [...resps, ...existingKeyCodes];
+					body.fileKeyCodes = [...resps];
+					body.previousFileIds = [...existingKeyCodes];
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
@@ -943,6 +944,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 				const soleProprietorData = {
@@ -1579,6 +1581,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					{
 						licenceAppId: null,
 						applicationTypeData,
+						originalLicenceTermCode: _resp.licenceTermCode,
 					},
 					{
 						emitEvent: false,
@@ -1608,6 +1611,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					{
 						licenceAppId: null,
 						applicationTypeData,
+						originalLicenceTermCode: _resp.licenceTermCode,
 						residentialAddressData: { ...residentialAddressData },
 					},
 					{
