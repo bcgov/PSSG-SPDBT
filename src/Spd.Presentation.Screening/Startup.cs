@@ -47,7 +47,7 @@ namespace Spd.Presentation.Screening
             services.ConfigureCors(configuration);
             var assemblyName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}";
             services.ConfigureSwagger(assemblyName);
-            services.ConfigureDataProtection(configuration, assemblyName);
+            services.ConfigureDataProtection(configuration, "ProtectionShareKeyApp");
             services
                 .AddEndpointsApiExplorer()
                 .AddControllers()
