@@ -42,11 +42,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</div>
 							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">Licence Term</div>
-								<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
-								<div class="summary-text-data">{{ feeAmount }}</div>
+								<div class="summary-text-data">{{ feeAmount | default }}</div>
 							</div>
 						</div>
 					</div>
@@ -72,7 +72,7 @@ export class StepLicenceConfirmationComponent implements OnInit {
 
 		const fee = this.licenceApplicationService
 			.getLicenceTermsAndFees()
-			.filter((item) => item.licenceTermCode == this.licenceTermCode);
+			.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
 		if (fee?.length > 0) {
 			this.feeAmount = `$${fee[0].amount}`;
 		} else {
@@ -95,8 +95,8 @@ export class StepLicenceConfirmationComponent implements OnInit {
 	get originalExpiryDate(): string {
 		return this.licenceModelData.originalExpiryDate ?? '';
 	}
-	get licenceTermCode(): string {
-		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+	get originalLicenceTermCode(): string {
+		return this.licenceModelData.originalLicenceTermCode ?? '';
 	}
 	get categoryList(): Array<WorkerCategoryTypeCode> {
 		const list: Array<WorkerCategoryTypeCode> = [];

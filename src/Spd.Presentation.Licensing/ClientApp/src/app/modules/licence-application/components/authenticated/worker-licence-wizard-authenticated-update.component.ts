@@ -9,7 +9,6 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 	selector: 'app-worker-licence-wizard-authenticated-update',
 	template: `
 		<ng-container>
-			<!--  *ngIf="isLoaded$ | async" -->
 			<div class="row">
 				<div class="offset-xl-1 col-xl-10 col-lg-12">
 					<mat-stepper class="child-stepper" linear (selectionChange)="onStepSelectionChange($event)" #stepper>
