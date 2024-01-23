@@ -145,6 +145,40 @@ namespace Spd.Presentation.Licensing.Controllers
             return File(content, contentType, response.FileName);
         }
         #endregion
+
+        #region secure-payment-link for dynamics email.
+        /// <summary>
+        /// Redirect to PayBC the direct pay payment page 
+        /// </summary>
+        /// sample:http://localhost:5114/api/licence/payment-secure-link?encodedAppId=CfDJ8MELGoA6ZCBIuDpjih7jnJo3inVYsL3UPdbgBResn9qAoHpjCIIEmMJyuO_oHKEWLi-SA3qmmMJ_yqvl4myfXutYpPB75aOz7Wi49jjp1wHD9J56kmaOvJ3bhJuGl5hjbXybqO1TLXA0KsKO8Qr5IKLF7jK2WDpTn3hYj_U9YQ1g
+        /// <returns></returns>
+        [Route("api/licensing/payment-secure-link")]
+        [HttpGet]
+        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId, [FromQuery] string encodedPaymentId)
+        {
+            string? errorPath = _paymentsConfiguration.UnauthPersonalLicPaymentErrorPath;
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            try
+            {
+                string redirectUrl = $"{hostUrl}api/unauth-licence/payment-result";
+                PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new PaymentLinkFromSecureLinkCreateRequest()
+                {
+                    ApplicationId = null,
+                    EncodedApplicationId = encodedAppId,
+                    EncodedPaymentId = encodedPaymentId,
+                    Description = "Licensing",
+                    PaymentMethod = PaymentMethodCode.CreditCard
+                };
+                var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+                return Redirect(result.PaymentLinkUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CreateLinkRedirectToPaybcPaymentPage has errors +{ex}");
+                return Redirect($"{hostUrl}{errorPath}");
+            }
+        }
+        #endregion
     }
 
     public class PaybcPaymentResultViewModel
