@@ -99,7 +99,11 @@ namespace Spd.Manager.Payment
 
             var paymentId = Guid.NewGuid();
             var encryptedPaymentId = WebUtility.UrlEncode(_dataProtector.Protect(paymentId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
-            return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
+            if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
+                //if it is screening application
+                return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
+            else
+                return new PrePaymentLinkResponse($"{command.LicensingAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
@@ -421,7 +425,7 @@ namespace Spd.Manager.Payment
                     throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
                 SpdPaymentConfig spdPaymentConfig = new()
                 {
-                    PbcRefNumber = pbcRefnumberLicConfig.Value, 
+                    PbcRefNumber = pbcRefnumberLicConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountLicConfig.Value,
                     ServiceCost = Decimal.Round((decimal)price, 2)
                 };
