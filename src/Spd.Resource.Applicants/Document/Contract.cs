@@ -44,6 +44,7 @@ namespace Spd.Resource.Applicants.Document
         public Guid? SubmittedByApplicantId { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } //tag1
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
+        public DateOnly? ExpiryDate { get; set; }
     }
 
     public record CreateStreamDocumentCmd : CreateDocumentCmd
