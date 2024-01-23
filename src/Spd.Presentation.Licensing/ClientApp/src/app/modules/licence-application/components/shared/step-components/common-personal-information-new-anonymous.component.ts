@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
@@ -80,7 +79,6 @@ export class CommonPersonalInformationNewAnonymousComponent {
 	maxBirthDate = this.utilService.getBirthDateMax();
 
 	@Input() form!: FormGroup;
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private utilService: UtilService) {}
 }

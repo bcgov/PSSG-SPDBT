@@ -8,6 +8,7 @@ export interface LicenceFeeResponse {
   amount?: null | number;
   applicationTypeCode?: ApplicationTypeCode;
   businessTypeCode?: BusinessTypeCode;
+  hasValidSwl90DayLicence?: null | boolean;
   licenceTermCode?: LicenceTermCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

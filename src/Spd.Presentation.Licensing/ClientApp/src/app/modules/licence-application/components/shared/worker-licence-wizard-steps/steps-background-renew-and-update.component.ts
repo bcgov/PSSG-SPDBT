@@ -15,9 +15,6 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-police-background [applicationTypeCode]="applicationTypeCode"></app-step-police-background>
-				<!-- <app-step-police-background-renew-and-update // TODO which one to use?
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-police-background-renew-and-update> -->
 
 				<div class="row wizard-button-row" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">

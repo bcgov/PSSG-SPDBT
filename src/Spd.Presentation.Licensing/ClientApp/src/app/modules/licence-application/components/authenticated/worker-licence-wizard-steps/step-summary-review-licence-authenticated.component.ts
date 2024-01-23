@@ -29,7 +29,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header fs-4 my-2">Licence Selection</div>
+													<div class="panel-header">Licence Selection</div>
 													<button
 														mat-mini-fab
 														color="primary"
@@ -279,7 +279,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header fs-4 my-2">Background Information</div>
+													<div class="panel-header">Background Information</div>
 													<button
 														mat-mini-fab
 														color="primary"
@@ -374,7 +374,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header fs-4 my-2">Identification</div>
+													<div class="panel-header">Identification</div>
 													<button
 														mat-mini-fab
 														color="primary"
@@ -502,6 +502,8 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 
 					.panel-header {
 						white-space: normal;
+						margin-top: 0.5rem !important;
+						margin-bottom: 0.5rem !important;
 					}
 				}
 			}

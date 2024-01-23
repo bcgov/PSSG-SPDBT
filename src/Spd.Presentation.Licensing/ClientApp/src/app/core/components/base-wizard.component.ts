@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { StepperOrientation } from '@angular/cdk/stepper';
+import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 
@@ -11,15 +11,16 @@ import { MatStepper } from '@angular/material/stepper';
 export class BaseWizardComponent {
 	@ViewChild('stepper') stepper!: MatStepper;
 
-	// licenceModelLoadedSubscription!: Subscription;
-	// isLoaded$ = new BehaviorSubject<boolean>(false);
-
 	orientation: StepperOrientation = 'vertical';
 
 	constructor(protected breakpointObserver: BreakpointObserver) {}
 
 	onScrollIntoView(): void {
 		this.scrollIntoView();
+	}
+
+	onStepSelectionChange(_event: StepperSelectionEvent) {
+		this.onScrollIntoView();
 	}
 
 	breakpointChanged() {
@@ -34,6 +35,8 @@ export class BaseWizardComponent {
 		const stepIndex = this.stepper.selectedIndex;
 		const stepId = this.stepper._getStepLabelId(stepIndex);
 		const stepElement = document.getElementById(stepId);
+		// console.log('scrollIntoView', 'stepIndex', stepIndex, 'stepId', stepId, 'stepElement', stepElement);
+
 		if (stepElement) {
 			setTimeout(() => {
 				stepElement.scrollIntoView({

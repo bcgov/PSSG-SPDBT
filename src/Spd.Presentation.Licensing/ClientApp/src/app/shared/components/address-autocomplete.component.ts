@@ -47,7 +47,7 @@ export class Address {
 			<div class="row">
 				<div [ngClass]="isWizardStep ? 'col-xl-7 col-lg-12 col-md-12' : 'col-12'">
 					<mat-form-field>
-						<mat-label>Address Completed by Canada Post</mat-label>
+						<mat-label>Address by Canada Post</mat-label>
 						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
 						<mat-autocomplete #auto="matAutocomplete">
 							<mat-option

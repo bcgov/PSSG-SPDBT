@@ -86,6 +86,8 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			} else {
 				this.licenceApplicationService.submitLicenceReplacementAnonymous().subscribe({
 					next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+						// console.debug('submitLicenceReplacementAnonymous', resp.body);
+
 						// save this locally just in application payment fails
 						this.newLicenceAppId = resp.body.licenceAppId!;
 
