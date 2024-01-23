@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
 	selector: 'app-footer',
 	template: `
 		<mat-toolbar color="primary" class="footer">
-			<a href="/">Home</a>
+			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
@@ -41,4 +43,16 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class FooterComponent {}
+export class FooterComponent {
+	constructor(private router: Router) {}
+
+	goHome(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+	}
+
+	onKeydownGoHome(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.goHome();
+	}
+}

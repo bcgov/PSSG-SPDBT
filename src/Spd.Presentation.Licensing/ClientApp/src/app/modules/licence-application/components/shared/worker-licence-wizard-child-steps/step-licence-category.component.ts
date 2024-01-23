@@ -70,7 +70,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
 											>
@@ -102,7 +102,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
 											>
@@ -137,7 +137,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
 											>
@@ -173,7 +173,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
 											>
@@ -206,7 +206,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
 											>
@@ -239,7 +239,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
 											>
@@ -272,7 +272,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
 											>
@@ -307,7 +307,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
 											>
@@ -323,14 +323,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showPrivateInvestigatorUnderSupervision">
 								<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigatorUnderSupervision">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{
-												workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
-											}}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="text-end"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -339,13 +334,29 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+
+											{{
+												workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
+											}}
+										</mat-panel-title>
+										<!-- <mat-panel-description>
+											<mat-icon
+												class="text-end"
+												color="warn"
+												matTooltip="One or more errors exist in this category"
+												*ngIf="
+													categoryPrivateInvestigatorSupFormGroup?.touched &&
+													categoryPrivateInvestigatorSupFormGroup?.invalid
+												"
+												>error</mat-icon
+											>
+										</mat-panel-description> -->
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
 											>
@@ -381,7 +392,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
 											>
@@ -419,7 +430,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
 											>
@@ -455,7 +466,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
 											>
@@ -491,7 +502,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
 											>
@@ -526,7 +537,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
 											>
@@ -561,7 +572,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
 											>
@@ -594,7 +605,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
 											>
@@ -626,7 +637,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 										<div class="col-12 mx-auto">
 											<button
 												mat-stroked-button
-												class="w-auto float-end"
+												class="xlarge w-auto float-end"
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
 											>
@@ -741,6 +752,8 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 		}
 
 		this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
+
+		this.setupInitialExpansionPanel();
 	}
 
 	onAddCategory(): void {
@@ -991,6 +1004,80 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 
 		this.isDirtyAndInvalid = this.categoryList.length == 0;
 		return isValid && !this.isDirtyAndInvalid;
+	}
+
+	private setupInitialExpansionPanel(): void {
+		const categoryCount = this.categoryList.length;
+		if (categoryCount === 1) {
+			if (this.showArmouredCarGuard) {
+				this.expandArmouredCarGuard = true;
+				return;
+			}
+			if (this.showBodyArmourSales) {
+				this.expandBodyArmourSales = true;
+				return;
+			}
+			if (this.showClosedCircuitTelevisionInstaller) {
+				this.expandClosedCircuitTelevisionInstaller = true;
+				return;
+			}
+			if (this.showElectronicLockingDeviceInstaller) {
+				this.expandElectronicLockingDeviceInstaller = true;
+				return;
+			}
+			if (this.showFireInvestigator) {
+				this.expandFireInvestigator = true;
+				return;
+			}
+			if (this.showLocksmith) {
+				this.expandLocksmith = true;
+				return;
+			}
+			if (this.showLocksmithUnderSupervision) {
+				this.expandLocksmithUnderSupervision = true;
+				return;
+			}
+			if (this.showPrivateInvestigatorUnderSupervision) {
+				this.expandPrivateInvestigatorUnderSupervision = true;
+				return;
+			}
+			if (this.showPrivateInvestigator) {
+				this.expandPrivateInvestigator = true;
+				return;
+			}
+			if (this.showSecurityAlarmInstaller) {
+				this.expandSecurityAlarmInstaller = true;
+				return;
+			}
+			if (this.showSecurityAlarmInstallerUnderSupervision) {
+				this.expandSecurityAlarmInstallerUnderSupervision = true;
+				return;
+			}
+			if (this.showSecurityConsultant) {
+				this.expandSecurityConsultant = true;
+				return;
+			}
+			if (this.showSecurityGuard) {
+				this.expandSecurityGuard = true;
+				return;
+			}
+			if (this.showSecurityAlarmMonitor) {
+				this.expandSecurityAlarmMonitor = true;
+				return;
+			}
+			if (this.showSecurityAlarmResponse) {
+				this.expandSecurityAlarmResponse = true;
+				return;
+			}
+			if (this.showSecurityAlarmSales) {
+				this.expandSecurityAlarmSales = true;
+				return;
+			}
+			if (this.showSecurityGuardUnderSupervision) {
+				this.expandSecurityGuardUnderSupervision = true;
+				return;
+			}
+		}
 	}
 
 	get categoryList(): Array<string> {

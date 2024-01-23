@@ -13,6 +13,7 @@ public record LicenceFeeResponse
     public BusinessTypeCode? BusinessTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
+    public bool? HasValidSwl90DayLicence { get; set; }
     public int? Amount { get; set; }
 };
 

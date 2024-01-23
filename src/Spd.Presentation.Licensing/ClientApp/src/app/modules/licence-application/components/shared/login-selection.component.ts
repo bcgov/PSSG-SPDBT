@@ -18,7 +18,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
 						<div class="row">
 							<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
-								<div class="fw-bold my-3">Benefits of logging in with your BC Service Card:</div>
+								<div class="fw-bold mb-3">Benefits of logging in with your BC Service Card:</div>
 								<table>
 									<tr>
 										<td>
@@ -54,7 +54,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 										<div class="my-auto"><strong>Security Worker</strong> licence:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="large mt-2" (click)="onRegisterWithBcServicesCard()">
+									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBcServicesCard()">
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -82,7 +82,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 										<div class="my-auto"><strong>Security Business</strong> licence:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="large mt-2" (click)="onRegisterWithBceid()">
+									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBceid()">
 										Log In with <span class="fw-bold">Business BCeID</span>
 									</button>
 								</div>
@@ -110,7 +110,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 										<div class="my-auto"><strong>Body Armour</strong> permit:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="large mt-2" (click)="onRegisterWithBcServicesCard()">
+									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBcServicesCard()">
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>
@@ -138,7 +138,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 										<div class="my-auto"><strong>Armoured Vehicle</strong> permit:</div>
 									</div>
 
-									<button mat-flat-button color="primary" class="large mt-2" (click)="onRegisterWithBcServicesCard()">
+									<button mat-flat-button color="primary" class="xlarge mt-2" (click)="onRegisterWithBcServicesCard()">
 										Log In with <span class="fw-bold">BC Services Card</span>
 									</button>
 								</div>

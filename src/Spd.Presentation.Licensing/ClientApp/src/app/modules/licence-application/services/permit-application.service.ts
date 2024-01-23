@@ -1266,7 +1266,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					body.fileKeyCodes = resps;
+					body.documentKeyCodes = resps;
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,

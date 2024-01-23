@@ -209,24 +209,11 @@ export class StepsIdentificationAuthenticatedComponent extends BaseWizardStepCom
 	}
 
 	get showAdditionalGovermentIdStep(): boolean {
-		return this.licenceApplicationService.isShowAdditionalGovermentIdStep();
-		// const form = this.licenceApplicationService.citizenshipFormGroup;
-		// console.log('showAdditionalGovermentIdStep form1', form.value);
-		// console.log(
-		// 	'showAdditionalGovermentIdStep valid2',
-		// 	(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-		// 		form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-		// 		(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-		// 			form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		// );
-		// console.log('showAdditionalGovermentIdStep form3', this.licenceApplicationService.additionalGovIdFormGroup);
-		// console.log('showAdditionalGovermentIdStep form4', this.licenceApplicationService.additionalGovIdFormGroup.valid);
-
-		// return (
-		// 	(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-		// 		form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-		// 	(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-		// 		form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		// );
+		const form = this.licenceApplicationService.citizenshipFormGroup;
+		return this.licenceApplicationService.includeAdditionalGovermentIdStepData(
+			form.value.isCanadianCitizen,
+			form.value.canadianCitizenProofTypeCode,
+			form.value.notCanadianCitizenProofTypeCode
+		);
 	}
 }
