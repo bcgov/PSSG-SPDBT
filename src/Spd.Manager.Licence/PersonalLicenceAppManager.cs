@@ -20,8 +20,9 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
         IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,//not used
-        IRequestHandler<AnonymousWorkerLicenceAppSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
@@ -166,7 +167,7 @@ internal partial class PersonalLicenceAppManager :
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppSubmitCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
 
@@ -240,6 +241,61 @@ internal partial class PersonalLicenceAppManager :
         await CommitApplicationAsync(request, response.LicenceAppId, ct);
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
+            throw new ArgumentException("should be a renew request");
+
+        //validation: check if original licence meet replacement condition.
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (licences == null || !licences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+        if (DateTime.UtcNow > licences.Items.First().ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
+            && DateTime.UtcNow < licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException("the licence can only be renewed within 90 days of the expiry date.");
+
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+
+        //add all new files user uploaded
+        if (cmd.LicenceAnonymousRequest.FileKeyCodes != null && cmd.LicenceAnonymousRequest.FileKeyCodes.Any())
+        {
+            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.FileKeyCodes)
+            {
+                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                foreach (LicAppFileInfo licAppFile in items)
+                {
+                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(new CreateDocumentCmd
+                    {
+                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                        ApplicationId = response.LicenceAppId,
+                        DocumentType = docType1,
+                        DocumentType2 = docType2,
+                        SubmittedByApplicantId = response.ContactId
+                    }, ct);
+                }
+            }
+        }
+
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.LicenceAnonymousRequest.PreviousFileIds != null && cmd.LicenceAnonymousRequest.PreviousFileIds.Length != 0)
+        {
+            foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousFileIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
+
+        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+    }
     #endregion
 
     private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct)
@@ -247,7 +303,7 @@ internal partial class PersonalLicenceAppManager :
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
         {
-            ApplicationTypeEnum = ApplicationTypeEnum.New,
+            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
             BusinessTypeEnum = request.BusinessTypeCode == null ? null : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
             LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
             WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString())

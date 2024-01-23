@@ -312,13 +312,19 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousWorkerLicenceAppSubmitCommand command = new (jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppNewCommand command = new (jsonRequest, keyCode);
                 return await _mediator.Send(command);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
                 AnonymousWorkerLicenceAppReplaceCommand command = new (jsonRequest, keyCode);
+                return await _mediator.Send(command);
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command);
             }
             return null;
