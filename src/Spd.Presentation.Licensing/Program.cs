@@ -1,7 +1,5 @@
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 using FluentValidation;
+using Microsoft.Dynamics.CRM;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
@@ -13,7 +11,10 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
-using StackExchange.Redis;
+using System.Configuration;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,7 @@ if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secret
 builder.Services.ConfigureCors(builder.Configuration);
 var assemblyName = $"{typeof(Program).GetTypeInfo().Assembly.GetName().Name}";
 builder.Services.ConfigureSwagger(assemblyName);
+builder.Services.ConfigureDataProtection(builder.Configuration, "ProtectionShareKeyApp");
 builder.Services
     .AddEndpointsApiExplorer()
     .AddControllers()
