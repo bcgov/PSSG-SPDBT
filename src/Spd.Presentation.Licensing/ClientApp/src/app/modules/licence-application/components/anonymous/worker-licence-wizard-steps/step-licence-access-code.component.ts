@@ -88,7 +88,6 @@ export class StepLicenceAccessCodeComponent implements OnInit, LicenceChildStepp
 
 	onSearchSuccess(): void {
 		const accessCodeData = this.form.value;
-		console.log('*****1 accessCodeData', accessCodeData);
 
 		this.licenceApplicationService
 			.getLicenceWithAccessCodeData(accessCodeData, this.applicationTypeCode!)

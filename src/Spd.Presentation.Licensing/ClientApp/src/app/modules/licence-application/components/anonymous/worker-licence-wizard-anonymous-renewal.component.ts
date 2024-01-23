@@ -123,7 +123,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		this.updateCompleteStatus();
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
@@ -138,6 +138,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 				this.stepReviewLicenceComponent?.onGoToFirstStep();
 				break;
 		}
+
+		super.onStepSelectionChange(event);
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
