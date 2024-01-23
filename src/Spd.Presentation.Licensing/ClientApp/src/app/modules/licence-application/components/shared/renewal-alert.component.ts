@@ -12,22 +12,24 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					<div class="row mt-0 mx-3 mb-2" *ngIf="showLicenceData">
 						<div class="col-lg-4 col-md-12 mt-lg-2">
 							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-							<div class="summary-text-data text-center">{{ licenceNumber }}</div>
+							<div class="summary-text-data text-center">{{ originalLicenceNumber }}</div>
 						</div>
 						<div class="col-lg-4 col-md-12 mt-lg-2">
 							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Current Licence Expiry Date</div>
 							<div class="summary-text-data text-center">
-								{{ licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+								{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-12 mt-lg-2">
 							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Term</div>
-							<div class="summary-text-data text-center">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+							<div class="summary-text-data text-center">
+								{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}
+							</div>
 						</div>
 						<mat-divider class="my-2" *ngIf="title"></mat-divider>
 					</div>
 					<div class="title lh-base">
-						<div class="fs-3" [innerHtml]="title"></div>
+						<div class="fs-4" [innerHtml]="title"></div>
 						<div class="fs-6 mt-1" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					</div>
 				</div>
@@ -54,7 +56,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 						<mat-divider class="my-2" *ngIf="title"></mat-divider>
 					</div>
 					<div class="title lh-base">
-						<div class="fs-3" [innerHtml]="title"></div>
+						<div class="fs-4" [innerHtml]="title"></div>
 						<div class="fs-6 mt-3" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					</div>
 				</div>
@@ -112,13 +114,13 @@ export class RenewalAlertComponent implements OnInit {
 		}
 	}
 
-	get licenceNumber(): string {
-		return this.licenceModelData.licenceNumber ?? '';
+	get originalLicenceNumber(): string {
+		return this.licenceModelData.originalLicenceNumber ?? '';
 	}
-	get licenceExpiryDate(): string {
-		return this.licenceModelData.licenceExpiryDate ?? '';
+	get originalExpiryDate(): string {
+		return this.licenceModelData.originalExpiryDate ?? '';
 	}
-	get licenceTermCode(): string {
-		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+	get originalLicenceTermCode(): string {
+		return this.licenceModelData.originalLicenceTermCode ?? '';
 	}
 }

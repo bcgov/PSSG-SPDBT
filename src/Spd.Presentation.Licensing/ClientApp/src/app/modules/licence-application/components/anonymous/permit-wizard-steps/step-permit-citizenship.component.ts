@@ -19,13 +19,13 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
+				<!-- <ng-container
 					*ngIf="
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
 					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
-				</ng-container>
+				</ng-container> -->
 
 				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
 

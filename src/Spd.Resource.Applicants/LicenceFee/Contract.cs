@@ -22,6 +22,7 @@ public record LicenceFeeResp()
     public BusinessTypeEnum? BusinessTypeCode { get; set; }
     public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
+    public bool HasValidSwl90DayLicence { get; set; }
     public decimal? Amount { get; set; }
 }
 
