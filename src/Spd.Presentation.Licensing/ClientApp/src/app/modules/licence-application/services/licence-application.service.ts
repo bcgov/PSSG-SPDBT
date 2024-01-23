@@ -810,11 +810,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 		});
 
-		console.debug('xxxxxxxxxxxxxxxxxxxx existingDocumentKeys', existingKeyCodes);
-
-		console.debug('xxxxxxxxxxxxxxxxxxxx licenceModelFormGroup', this.licenceModelFormGroup.getRawValue());
-		console.log('xxxxxxxxxxxxxxxxxxxx body', body);
-
 		console.debug('[submitLicenceRenewalAnonymous] body', body);
 		console.debug('[submitLicenceRenewalAnonymous] documentInfos', documentInfos);
 
@@ -852,8 +847,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					body.fileKeyCodes = [...resps];
-					body.previousFileIds = [...existingKeyCodes];
+					body.documentKeyCodes = [...resps];
+					body.previousDocumentIds = [...existingKeyCodes];
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
@@ -1511,33 +1506,33 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 				// Remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// 	businessTypeCode: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+				const soleProprietorData = {
+					isSoleProprietor: null,
+					businessTypeCode: null,
+				};
+				const fingerprintProofData = {
+					attachments: [],
+				};
+				const licenceTermData = {
+					licenceTermCode: null,
+				};
+				const aliasesData = { previousNameFlag: null, aliases: [] };
+				const bcDriversLicenceData = {
+					hasBcDriversLicence: null,
+					bcDriversLicenceNumber: null,
+				};
+				const citizenshipData = {
+					isCanadianCitizen: null,
+					canadianCitizenProofTypeCode: null,
+					notCanadianCitizenProofTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
+				const additionalGovIdData = {
+					governmentIssuedPhotoTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
 
 				this.licenceModelFormGroup.patchValue(
 					{
@@ -1545,13 +1540,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						applicationTypeData,
 						originalLicenceTermCode: _resp.licenceTermCode,
 
-						// soleProprietorData,
-						// licenceTermData,
-						// fingerprintProofData,
-						// bcDriversLicenceData,
-						// aliasesData,
-						// citizenshipData,
-						// additionalGovIdData,
+						soleProprietorData,
+						licenceTermData,
+						fingerprintProofData,
+						bcDriversLicenceData,
+						aliasesData,
+						citizenshipData,
+						additionalGovIdData,
 						// restraintsAuthorizationData,
 						// dogsAuthorizationData,
 					},
@@ -1674,7 +1669,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					body.fileKeyCodes = resps;
+					body.documentKeyCodes = resps;
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,

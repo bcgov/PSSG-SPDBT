@@ -752,6 +752,8 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 		}
 
 		this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
+
+		this.setupInitialExpansionPanel();
 	}
 
 	onAddCategory(): void {
@@ -1002,6 +1004,80 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 
 		this.isDirtyAndInvalid = this.categoryList.length == 0;
 		return isValid && !this.isDirtyAndInvalid;
+	}
+
+	private setupInitialExpansionPanel(): void {
+		const categoryCount = this.categoryList.length;
+		if (categoryCount === 1) {
+			if (this.showArmouredCarGuard) {
+				this.expandArmouredCarGuard = true;
+				return;
+			}
+			if (this.showBodyArmourSales) {
+				this.expandBodyArmourSales = true;
+				return;
+			}
+			if (this.showClosedCircuitTelevisionInstaller) {
+				this.expandClosedCircuitTelevisionInstaller = true;
+				return;
+			}
+			if (this.showElectronicLockingDeviceInstaller) {
+				this.expandElectronicLockingDeviceInstaller = true;
+				return;
+			}
+			if (this.showFireInvestigator) {
+				this.expandFireInvestigator = true;
+				return;
+			}
+			if (this.showLocksmith) {
+				this.expandLocksmith = true;
+				return;
+			}
+			if (this.showLocksmithUnderSupervision) {
+				this.expandLocksmithUnderSupervision = true;
+				return;
+			}
+			if (this.showPrivateInvestigatorUnderSupervision) {
+				this.expandPrivateInvestigatorUnderSupervision = true;
+				return;
+			}
+			if (this.showPrivateInvestigator) {
+				this.expandPrivateInvestigator = true;
+				return;
+			}
+			if (this.showSecurityAlarmInstaller) {
+				this.expandSecurityAlarmInstaller = true;
+				return;
+			}
+			if (this.showSecurityAlarmInstallerUnderSupervision) {
+				this.expandSecurityAlarmInstallerUnderSupervision = true;
+				return;
+			}
+			if (this.showSecurityConsultant) {
+				this.expandSecurityConsultant = true;
+				return;
+			}
+			if (this.showSecurityGuard) {
+				this.expandSecurityGuard = true;
+				return;
+			}
+			if (this.showSecurityAlarmMonitor) {
+				this.expandSecurityAlarmMonitor = true;
+				return;
+			}
+			if (this.showSecurityAlarmResponse) {
+				this.expandSecurityAlarmResponse = true;
+				return;
+			}
+			if (this.showSecurityAlarmSales) {
+				this.expandSecurityAlarmSales = true;
+				return;
+			}
+			if (this.showSecurityGuardUnderSupervision) {
+				this.expandSecurityGuardUnderSupervision = true;
+				return;
+			}
+		}
 	}
 
 	get categoryList(): Array<string> {

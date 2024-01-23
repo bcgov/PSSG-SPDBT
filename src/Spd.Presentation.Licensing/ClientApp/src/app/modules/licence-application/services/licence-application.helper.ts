@@ -77,8 +77,8 @@ export abstract class LicenceApplicationHelper {
 	});
 
 	accessCodeFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumber: new FormControl('OPENTEST1', [FormControlValidators.required]),
-		accessCode: new FormControl('6H0GXD0JZK', [FormControlValidators.required]),
+		licenceNumber: new FormControl('OPENTEST1', [FormControlValidators.required]), // TODO removed hard-coded
+		accessCode: new FormControl('6H0GXD0JZK', [FormControlValidators.required]), // TODO removed hard-coded
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceAppId: new FormControl(null),
 		linkedExpiryDate: new FormControl(null),

@@ -19,16 +19,16 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 
 				<app-step-title title="Your personal information"></app-step-title>
 
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else IsRenewal">
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
 				</ng-container>
 
-				<ng-template #IsRenewal>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-common-personal-information-renew-anonymous
 						[applicationTypeCode]="applicationTypeCode"
 						[form]="form"
 					></app-common-personal-information-renew-anonymous>
-				</ng-template>
+				</ng-container>
 			</div>
 		</section>
 	`,

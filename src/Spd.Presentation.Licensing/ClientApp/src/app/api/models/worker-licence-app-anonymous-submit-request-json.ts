@@ -26,10 +26,10 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
   documentInfos?: null | Array<DocumentBase>;
+  documentKeyCodes?: null | Array<string>;
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;
-  fileKeyCodes?: null | Array<string>;
   genderCode?: GenderCode;
   givenName?: null | string;
   hairColourCode?: HairColourCode;
@@ -55,7 +55,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   originalLicenceId?: null | string;
   otherOfficerRole?: null | string;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
-  previousFileIds?: null | Array<string>;
+  previousDocumentIds?: null | Array<string>;
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;
   useBcServicesCardPhoto?: null | boolean;

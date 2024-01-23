@@ -85,7 +85,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/{licenceAppId}")]
         [HttpGet]
         public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
-        {            
+        {
             return await _mediator.Send(new GetWorkerLicenceQuery(licenceAppId));
         }
 
@@ -312,19 +312,19 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousWorkerLicenceAppNewCommand command = new (jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousWorkerLicenceAppReplaceCommand command = new (jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command);
             }
             return null;
