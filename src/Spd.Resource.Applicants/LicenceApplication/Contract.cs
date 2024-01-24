@@ -89,6 +89,7 @@ public record LicenceApplicationResp() : LicenceApplication
     public DateOnly? ExpiryDate { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
     public string? CaseNumber { get; set; }
+    public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
 };
 
 public record LicenceAppListResp
