@@ -87,6 +87,7 @@ internal class DocumentRepository : IDocumentRepository
 
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(cmd.TempFile);
         documenturl.bcgov_url = $"spd_application/{cmd.ApplicationId}";
+        if (cmd.ExpiryDate != null) documenturl.spd_expirydate = SharedMappingFuncs.GetDateFromDateOnly(cmd.ExpiryDate);
         _context.AddTobcgov_documenturls(documenturl);
         _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
         if (cmd.DocumentType != null)

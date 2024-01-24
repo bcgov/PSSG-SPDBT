@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Spd.Resource.Applicants.Document;
 using Spd.Utilities.Shared.Exceptions;
@@ -319,6 +319,7 @@ public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : WorkerLicence
 
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
+        RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true);
     }
 }
 
