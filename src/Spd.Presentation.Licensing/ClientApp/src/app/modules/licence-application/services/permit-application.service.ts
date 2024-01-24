@@ -332,11 +332,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				// 	expiryDate: null,
 				// 	attachments: [],
 				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -350,9 +345,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						// fingerprintProofData,
 						// aliasesData,
 						// citizenshipData,
-						// additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
 					},
 					{
 						emitEvent: false,
@@ -394,11 +386,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				// 	expiryDate: null,
 				// 	attachments: [],
 				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -412,9 +399,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						// fingerprintProofData,
 						// aliasesData,
 						// citizenshipData,
-						// additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
 					},
 					{
 						emitEvent: false,
@@ -627,6 +611,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 
 				const citizenshipData = {
+					// TODO fix permit citizenship data
 					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? resp.citizenshipDocument?.licenceDocumentTypeCode
@@ -636,20 +621,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						: resp.citizenshipDocument?.licenceDocumentTypeCode,
 					expiryDate: resp.citizenshipDocument?.expiryDate,
 					attachments: citizenshipDataAttachments,
-				};
-
-				const additionalGovIdAttachments: Array<File> = [];
-				if (resp.additionalGovIdDocument?.documentResponses) {
-					resp.additionalGovIdDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						additionalGovIdAttachments.push(aFile);
-					});
-				}
-
-				const additionalGovIdData = {
-					governmentIssuedPhotoTypeCode: resp.additionalGovIdDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.additionalGovIdDocument?.expiryDate,
-					attachments: additionalGovIdAttachments,
 				};
 
 				let height = resp.height ? resp.height + '' : null;
@@ -732,7 +703,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						personalInformationData,
 						characteristicsData,
 						citizenshipData,
-						additionalGovIdData,
 						photographOfYourselfData,
 						contactInformationData,
 						profileConfirmationData: { isProfileUpToDate: true },
@@ -820,16 +790,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 	}
 
-	isShowAdditionalGovermentIdStep(): boolean {
-		const form = this.citizenshipFormGroup;
-		return (
-			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-				form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		);
-	}
-
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
 	 * @returns
@@ -864,14 +824,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
-		// const showAdditionalGovermentIdStep = this.citizenshipFormGroup
-		// 	? (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-		// 			this.citizenshipFormGroup.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-		// 	  (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.No &&
-		// 			this.citizenshipFormGroup.value.notCanadianCitizenProofTypeCode !=
-		// 				LicenceDocumentTypeCode.PermanentResidentCard)
-		// 	: true;
-
 		console.debug(
 			'isStepIdentificationComplete',
 			this.personalInformationFormGroup.valid,
@@ -883,12 +835,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.characteristicsFormGroup.valid,
 			this.photographOfYourselfFormGroup.valid
 		);
-		// console.debug('showAdditionalGovermentIdStep', showAdditionalGovermentIdStep, this.additionalGovIdFormGroup.valid);
 
 		// if (this.authenticationService.isLoggedIn()) {
 		// 	return (
 		// 		this.citizenshipFormGroup.valid &&
-		// 		(showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true) &&
 		// 		this.bcDriversLicenceFormGroup.valid &&
 		// 		this.characteristicsFormGroup.valid &&
 		// 		this.photographOfYourselfFormGroup.valid
@@ -1032,6 +982,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		let citizenshipDocument: CitizenshipDocument | null = null;
 		if (citizenshipData.attachments) {
+			// TODO fix permit citizenship data
 			const citizenshipDocuments: Array<LicenceAppDocumentResponse> = [];
 			citizenshipData.attachments.forEach((doc: any) => {
 				citizenshipDocuments.push({
@@ -1049,31 +1000,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						: citizenshipData.notCanadianCitizenProofTypeCode,
 			};
 		}
-
-		// let additionalGovIdDocument: AdditionalGovIdDocument | null = null;
-		// const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-		// 	citizenshipData.isCanadianCitizen,
-		// 	citizenshipData.canadianCitizenProofTypeCode,
-		// 	citizenshipData.notCanadianCitizenProofTypeCode
-		// );
-
-		// if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
-		// 	const additionalGovIdDocuments: Array<LicenceAppDocumentResponse> = [];
-		// 	additionalGovIdData.attachments.forEach((doc: any) => {
-		// 		additionalGovIdDocuments.push({
-		// 			documentUrlId: doc.documentUrlId,
-		// 		});
-		// 	});
-		// 	additionalGovIdDocument = {
-		// 		documentResponses: additionalGovIdDocuments,
-		// 		expiryDate: additionalGovIdData.expiryDate
-		// 			? this.formatDatePipe.transform(additionalGovIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-		// 			: null,
-		// 		licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
-		// 	};
-		// } else {
-		// 	this.additionalGovIdFormGroup.reset();
-		// }
 
 		let idPhotoDocument: IdPhotoDocument | null = null;
 		if (photographOfYourselfData.attachments) {
@@ -1138,7 +1064,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			//-----------------------------------
 			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			citizenshipDocument,
-			// additionalGovIdDocument,
 			//-----------------------------------
 			fingerprintProofDocument,
 			//-----------------------------------
@@ -1282,13 +1207,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			});
 		}
 
-		if (savebody.additionalGovIdDocument?.expiryDate) {
-			documents.push({
-				licenceDocumentTypeCode: savebody.additionalGovIdDocument.licenceDocumentTypeCode,
-				expiryDate: savebody.additionalGovIdDocument.expiryDate,
-			});
-		}
-
 		console.debug('submitPermitAnonymous documentInfos', documents);
 		return documents;
 	}
@@ -1298,10 +1216,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const formValue = this.permitModelFormGroup.getRawValue();
 
 		const citizenshipData = { ...formValue.citizenshipData };
-		// const additionalGovIdData = { ...formValue.additionalGovIdData };
-		// const policeBackgroundData = { ...formValue.policeBackgroundData };
 		const fingerprintProofData = { ...formValue.fingerprintProofData };
-		// const mentalHealthConditionsData = { ...formValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
 		if (fingerprintProofData.attachments) {
@@ -1313,6 +1228,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 
 		if (citizenshipData.attachments) {
+			// TODO fix permit citizenship data
 			const docs: Array<Blob> = [];
 			citizenshipData.attachments.forEach((doc: Blob) => {
 				docs.push(doc);
@@ -1323,20 +1239,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					: citizenshipData.notCanadianCitizenProofTypeCode;
 			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
 		}
-
-		// const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-		// 	citizenshipData.isCanadianCitizen,
-		// 	citizenshipData.canadianCitizenProofTypeCode,
-		// 	citizenshipData.notCanadianCitizenProofTypeCode
-		// );
-
-		// if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
-		// 	const docs: Array<Blob> = [];
-		// 	additionalGovIdData.attachments.forEach((doc: Blob) => {
-		// 		docs.push(doc);
-		// 	});
-		// 	documents.push({ licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode, documents: docs });
-		// }
 
 		if (photographOfYourselfData.attachments) {
 			const docs: Array<Blob> = [];

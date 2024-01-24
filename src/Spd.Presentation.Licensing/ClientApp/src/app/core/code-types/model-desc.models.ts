@@ -156,7 +156,6 @@ export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, 
 // ============================================================
 
 export const WorkerLicenceTypes: SelectOptions[] = [
-	// { desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },

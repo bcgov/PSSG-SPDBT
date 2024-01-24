@@ -57,34 +57,84 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 								<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload</div>
 							</ng-container>
 							<ng-template #notCanadianCitizenHeading>
-								<div class="text-minor-heading mb-2">Select proof of ability to work in Canada</div>
+								<div class="text-minor-heading mb-2">Select proof of residency</div>
 							</ng-template>
 
-							<ng-container>
+							<div class="row my-2" *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
+								<div class="col-lg-7 col-md-12">
+									<mat-form-field>
+										<mat-label>Proof of Canadian citizenship</mat-label>
+										<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+											<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
+												{{ item.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="form.get('canadianCitizenProofTypeCode')?.hasError('required')">
+											This is required
+										</mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-lg-5 col-md-12">
+									<mat-form-field>
+										<mat-label>Document Expiry Date</mat-label>
+										<input
+											matInput
+											[matDatepicker]="picker"
+											formControlName="expiryDate"
+											[errorStateMatcher]="matcher"
+										/>
+										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+										<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
+							</div>
+							<ng-template #notCanadianCitizen>
 								<div class="row my-2">
 									<div class="col-lg-7 col-md-12">
-										<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
+										<mat-radio-group aria-label="Select an option" formControlName="isResidentOfCanada">
+											<mat-radio-button [value]="booleanTypeCodes.Yes">I am a resident of Canada</mat-radio-button>
+											<mat-radio-button [value]="booleanTypeCodes.No">I am not a Canadian resident</mat-radio-button>
+										</mat-radio-group>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('isResidentOfCanada')?.dirty || form.get('isResidentOfCanada')?.touched) &&
+												form.get('isResidentOfCanada')?.invalid &&
+												form.get('isResidentOfCanada')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
+									</div>
+								</div>
+							</ng-template>
+
+							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.No && isResidentOfCanada.value">
+								<div class="row my-2">
+									<div class="col-lg-7 col-md-12">
+										<ng-container *ngIf="isResidentOfCanada.value === booleanTypeCodes.Yes; else notResidentOfCanada">
 											<mat-form-field>
-												<mat-label>Proof of Canadian citizenship</mat-label>
-												<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
-													<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
-														{{ item.desc }}
-													</mat-option>
-												</mat-select>
-												<mat-error *ngIf="form.get('canadianCitizenProofTypeCode')?.hasError('required')">
-													This is required
-												</mat-error>
-											</mat-form-field>
-										</ng-container>
-										<ng-template #notCanadianCitizen>
-											<mat-form-field>
-												<mat-label>Proof of ability to work in Canada</mat-label>
-												<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
+												<mat-label>Proof of resident status</mat-label>
+												<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
 													<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
 														{{ item.desc }}
 													</mat-option>
 												</mat-select>
-												<mat-error *ngIf="form.get('notCanadianCitizenProofTypeCode')?.hasError('required')">
+												<mat-error *ngIf="form.get('proofOfResidentStatusCode')?.hasError('required')">
+													This is required
+												</mat-error>
+											</mat-form-field>
+										</ng-container>
+
+										<ng-template #notResidentOfCanada>
+											<mat-form-field>
+												<mat-label>Proof of citizenship</mat-label>
+												<mat-select formControlName="proofOfCitizenshipCode" [errorStateMatcher]="matcher">
+													<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
+														{{ item.desc }}
+													</mat-option>
+												</mat-select>
+												<mat-error *ngIf="form.get('proofOfCitizenshipCode')?.hasError('required')">
 													This is required
 												</mat-error>
 											</mat-form-field>
@@ -105,43 +155,41 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 										</mat-form-field>
 									</div>
 								</div>
-								<div
-									*ngIf="
-										(isCanadianCitizen.value === booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
-										(isCanadianCitizen.value === booleanTypeCodes.No && notCanadianCitizenProofTypeCode.value)
-									"
-									@showHideTriggerSlideAnimation
-								>
-									<div class="row mb-2">
-										<div class="col-12">
-											<ng-container
-												*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
-											>
-												<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
-											</ng-container>
-											<ng-template #notCanadianCitizenTitle>
-												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
-											</ng-template>
-											<app-file-upload
-												(fileUploaded)="onFileUploaded($event)"
-												(fileRemoved)="onFileRemoved()"
-												[control]="attachments"
-												[maxNumberOfFiles]="10"
-												[files]="attachments.value"
-											></app-file-upload>
-											<mat-error
-												class="mat-option-error"
-												*ngIf="
-													(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-													form.get('attachments')?.invalid &&
-													form.get('attachments')?.hasError('required')
-												"
-												>This is required</mat-error
-											>
-										</div>
+							</ng-container>
+
+							<div
+								*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes || isResidentOfCanada.value"
+								@showHideTriggerSlideAnimation
+							>
+								<div class="row mb-2">
+									<div class="col-12">
+										<ng-container
+											*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
+										>
+											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
+										</ng-container>
+										<ng-template #notCanadianCitizenTitle>
+											<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
+										</ng-template>
+										<app-file-upload
+											(fileUploaded)="onFileUploaded($event)"
+											(fileRemoved)="onFileRemoved()"
+											[control]="attachments"
+											[maxNumberOfFiles]="1"
+											[files]="attachments.value"
+										></app-file-upload>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
 									</div>
 								</div>
-							</ng-container>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -172,23 +220,23 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 	) {}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
-			const proofTypeCode =
-				this.isCanadianCitizen.value == BooleanTypeCode.Yes
-					? this.canadianCitizenProofTypeCode.value
-					: this.notCanadianCitizenProofTypeCode.value;
-			this.permitApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
-		}
+		// if (this.authenticationService.isLoggedIn()) {
+		// 	const proofTypeCode =
+		// 		this.isCanadianCitizen.value == BooleanTypeCode.Yes
+		// 			? this.canadianCitizenProofTypeCode.value
+		// 			: this.isResidentOfCanada.value;
+		// 	this.permitApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
+		// 		next: (resp: any) => {
+		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during file upload', error);
+		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
+		// 			this.fileUploadComponent.removeFailedFile(file);
+		// 		},
+		// 	});
+		// }
 	}
 
 	onFileRemoved(): void {
@@ -208,8 +256,16 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 		return this.form.get('canadianCitizenProofTypeCode') as FormControl;
 	}
 
-	get notCanadianCitizenProofTypeCode(): FormControl {
-		return this.form.get('notCanadianCitizenProofTypeCode') as FormControl;
+	get isResidentOfCanada(): FormControl {
+		return this.form.get('isResidentOfCanada') as FormControl;
+	}
+
+	get proofOfResidentStatusCode(): FormControl {
+		return this.form.get('proofOfResidentStatusCode') as FormControl;
+	}
+
+	get proofOfCitizenship(): FormControl {
+		return this.form.get('proofOfCitizenship') as FormControl;
 	}
 
 	get attachments(): FormControl {

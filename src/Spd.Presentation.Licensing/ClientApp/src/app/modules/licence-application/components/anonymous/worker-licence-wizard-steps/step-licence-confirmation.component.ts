@@ -71,7 +71,7 @@ export class StepLicenceConfirmationComponent implements OnInit {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 
 		const fee = this.licenceApplicationService
-			.getLicenceTermsAndFees()
+			.getLicenceTermsAndFees(true)
 			.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
 		if (fee?.length > 0) {
 			this.feeAmount = `$${fee[0].amount}`;
