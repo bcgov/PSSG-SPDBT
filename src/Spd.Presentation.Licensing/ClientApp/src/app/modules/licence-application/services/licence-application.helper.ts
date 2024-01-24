@@ -563,7 +563,7 @@ export abstract class LicenceApplicationHelper {
 	);
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
-		readTerms: new FormControl(null, [Validators.requiredTrue]),
+		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(
 			{
