@@ -60,6 +60,7 @@ public record LicenceApplication
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
     public bool? IsCanadianCitizen { get; set; }
+    public bool? AgreeToCompleteAndAccurate { get; set; }
 }
 
 public record WorkerLicenceAppCategory

@@ -190,6 +190,7 @@ internal static class SharedContactFuncs
         existingContact.birthdate = newContact.birthdate;
         existingContact.telephone1 = newContact.telephone1;
         existingContact.spd_bcdriverslicense = newContact.spd_bcdriverslicense;
+        existingContact.emailaddress1 = newContact.emailaddress1;
         return existingContact;
     }
 }

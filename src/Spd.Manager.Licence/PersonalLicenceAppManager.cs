@@ -187,6 +187,10 @@ internal partial class PersonalLicenceAppManager :
                 {
                     DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
                     DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                    DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
+                        .DocumentInfos?
+                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                        .ExpiryDate;
                     //create bcgov_documenturl and file
                     await _documentRepository.ManageAsync(new CreateDocumentCmd
                     {
@@ -194,7 +198,8 @@ internal partial class PersonalLicenceAppManager :
                         ApplicationId = appResponse.LicenceAppId,
                         DocumentType = docType1,
                         DocumentType2 = docType2,
-                        SubmittedByApplicantId = appResponse.ContactId
+                        SubmittedByApplicantId = appResponse.ContactId,
+                        ExpiryDate = expiredDate,
                     }, ct);
                 }
             }
@@ -269,6 +274,10 @@ internal partial class PersonalLicenceAppManager :
                 {
                     DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
                     DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                    DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
+                         .DocumentInfos?
+                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                         .ExpiryDate;
                     //create bcgov_documenturl and file
                     await _documentRepository.ManageAsync(new CreateDocumentCmd
                     {
@@ -276,7 +285,8 @@ internal partial class PersonalLicenceAppManager :
                         ApplicationId = response.LicenceAppId,
                         DocumentType = docType1,
                         DocumentType2 = docType2,
-                        SubmittedByApplicantId = response.ContactId
+                        SubmittedByApplicantId = response.ContactId,
+                        ExpiryDate = expiredDate,
                     }, ct);
                 }
             }
@@ -293,6 +303,7 @@ internal partial class PersonalLicenceAppManager :
             }
         }
 
+        //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
         await CommitApplicationAsync(request, response.LicenceAppId, ct);
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
