@@ -40,7 +40,12 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PERMIT_REASON)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_PERMIT_REASON)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -78,9 +83,9 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
-							class="large mb-2"
+							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_EMPLOYER_INFORMATION)"
 						>
 							Next: Review
@@ -112,7 +117,12 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PERMIT_RATIONALE)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_PERMIT_RATIONALE)"
+						>
 							Next: Review
 						</button>
 					</div>

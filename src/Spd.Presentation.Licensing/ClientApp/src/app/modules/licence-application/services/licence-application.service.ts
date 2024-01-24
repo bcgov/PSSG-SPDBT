@@ -48,79 +48,6 @@ export class LicenceDocumentsToSave {
 	'documents': Array<Blob>;
 }
 
-export class WorkerLicenceAppAnonymousSubmitRequest {
-	'workerLicenceTypeCode'?: string | null;
-	'applicationTypeCode'?: string | null;
-	'businessTypeCode'?: boolean | null;
-	'givenName'?: string | null;
-	'middleName1'?: string | null;
-	'middleName2'?: string | null;
-	'surname'?: string | null;
-	'dateOfBirth'?: string | null;
-	'genderCode'?: string | null;
-	'oneLegalName'?: boolean | null;
-	'expiredLicenceNumber'?: string | null;
-	'expiredLicenceId'?: string | null;
-	'hasExpiredLicence'?: boolean | null;
-	'licenceTermCode'?: string | null;
-	'hasCriminalHistory'?: boolean | null;
-	'hasPreviousName'?: boolean | null;
-	'hasBcDriversLicence'?: boolean | null;
-	'bcDriversLicenceNumber'?: string | null;
-	'hairColourCode'?: string | null;
-	'eyeColourCode'?: string | null;
-	'height'?: number | null;
-	'heightUnitCode'?: string | null;
-	'weight'?: number | null;
-	'weightUnitCode'?: string | null;
-	'contactEmailAddress'?: string | null;
-	'contactPhoneNumber'?: string | null;
-	'isMailingTheSameAsResidential'?: boolean | null;
-	'isPoliceOrPeaceOfficer'?: boolean | null;
-	'policeOfficerRoleCode'?: string | null;
-	'otherOfficerRole'?: string | null;
-	'isTreatedForMHC'?: boolean | null;
-	'useBcServicesCardPhoto'?: boolean | null;
-	'carryAndUseRestraints'?: boolean | null;
-	'useDogs'?: boolean | null;
-	'isDogsPurposeProtection'?: boolean | null;
-	'isDogsPurposeDetectionDrugs'?: boolean | null;
-	'isDogsPurposeDetectionExplosives'?: boolean | null;
-	'isCanadianCitizen'?: boolean | null;
-	'aliases'?: Array<{
-		givenName?: string | null;
-		middleName1?: string | null;
-		middleName2?: string | null;
-		surname?: string | null;
-	}>;
-	'residentialAddressData'?: {
-		addressLine1?: string | null;
-		addressLine2?: string | null;
-		city?: string | null;
-		country?: string | null;
-		postalCode?: string | null;
-		province?: string | null;
-	};
-	'mailingAddressData'?: {
-		addressLine1?: string | null;
-		addressLine2?: string | null;
-		city?: string | null;
-		country?: string | null;
-		postalCode?: string | null;
-		province?: string | null;
-	};
-	'categoryCodes'?: Array<string>;
-	'documentInfos'?: Array<{
-		licenceDocumentTypeCode?: string;
-		expiryDate?: string | null;
-	}>;
-}
-
-export class WorkerLicenceApplicationsSubmitAnonymousPost {
-	'docs': Array<Blob>;
-	'WorkerLicenceAppAnonymousSubmitRequest': WorkerLicenceAppAnonymousSubmitRequest;
-}
-
 @Injectable({
 	providedIn: 'root',
 })
@@ -142,8 +69,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		originalLicenceTermCode: new FormControl(null),
 		originalBusinessTypeCode: new FormControl(null),
 
-		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
+
 		personalInformationData: this.personalInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
@@ -357,7 +284,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		return this.createEmptyLicenceAnonymous(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
-				console.debug('NEW LicenceApplicationService createNewLicenceAnonymous', resp);
+				console.debug('[createNewLicenceAnonymous] resp', resp);
 
 				this.initialized = true;
 			})
@@ -769,7 +696,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// console.debug('submitLicenceReplacementAnonymous body', body);
 
@@ -795,10 +724,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceRenewalAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		let keyCode = '';
+
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
 		const documentInfos = this.getDocsToSaveAnonymous(licenceModelFormValue);
+
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Get the keyCode for the existing documents to save.
 		const existingKeyCodes: Array<string> = [];
@@ -1415,7 +1347,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					{
 						licenceAppId: resp.licenceAppId,
 						originalBusinessTypeCode: soleProprietorData.businessTypeCode,
-						caseNumber: resp.caseNumber,
+						// caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
 						applicationTypeData,
@@ -1636,16 +1568,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private submitLicenceNewAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		let keyCode = '';
+
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-		console.debug('submitLicenceNewAnonymous body', body);
-
 		const documentInfos = this.getDocsToSaveAnonymous(licenceModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		console.debug('submitLicenceNewAnonymous body', body);
 		// console.debug('submitLicenceNewAnonymous documentInfos', documentInfos);
 
-		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
-
-		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(

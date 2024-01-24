@@ -30,7 +30,12 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CITIZENSHIP)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -60,7 +65,12 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ADDITIONAL_GOV_ID)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_ADDITIONAL_GOV_ID)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -90,7 +100,12 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -120,7 +135,12 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -143,7 +163,12 @@ import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licenc
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PHOTO)">Next</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PHOTO)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_PHOTO)"
+						>
 							Next: Review
 						</button>
 					</div>

@@ -53,18 +53,16 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showArmouredCarGuard">
 								<mat-expansion-panel class="my-3" [expanded]="expandArmouredCarGuard">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+											{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -74,7 +72,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -85,18 +83,16 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showBodyArmourSales">
 								<mat-expansion-panel class="my-3" [expanded]="expandBodyArmourSales">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categoryBodyArmourSalesFormGroup?.touched && categoryBodyArmourSalesFormGroup?.invalid"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+											{{ workerCategoryTypeCodes.BodyArmourSales | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -106,7 +102,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -117,12 +113,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
 								<mat-expansion-panel class="my-3" [expanded]="expandClosedCircuitTelevisionInstaller">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -131,7 +124,8 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+											{{ workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -141,7 +135,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -153,12 +147,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
 								<mat-expansion-panel class="my-3" [expanded]="expandElectronicLockingDeviceInstaller">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -167,7 +158,8 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+											{{ workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -177,7 +169,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -189,18 +181,16 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showFireInvestigator">
 								<mat-expansion-panel class="my-3" [expanded]="expandFireInvestigator">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categoryFireInvestigatorFormGroup?.touched && categoryFireInvestigatorFormGroup?.invalid"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+											{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -210,7 +200,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -222,18 +212,17 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showLocksmith">
 								<mat-expansion-panel class="my-3" [expanded]="expandLocksmith">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categoryLocksmithFormGroup?.touched && categoryLocksmithFormGroup?.invalid"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+
+											{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -243,7 +232,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -255,18 +244,15 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showLocksmithUnderSupervision">
 								<mat-expansion-panel class="my-3" [expanded]="expandLocksmithUnderSupervision">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categoryLocksmithSupFormGroup?.touched && categoryLocksmithSupFormGroup?.invalid"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -276,7 +262,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -288,20 +274,17 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showPrivateInvestigator">
 								<mat-expansion-panel class="my-3" [expanded]="expandPrivateInvestigator">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
 													categoryPrivateInvestigatorFormGroup?.touched && categoryPrivateInvestigatorFormGroup?.invalid
 												"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -311,7 +294,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -325,7 +308,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 									<mat-expansion-panel-header>
 										<mat-panel-title class="title">
 											<mat-icon
-												class="text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -334,23 +317,10 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-
 											{{
 												workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
 											}}
 										</mat-panel-title>
-										<!-- <mat-panel-description>
-											<mat-icon
-												class="text-end"
-												color="warn"
-												matTooltip="One or more errors exist in this category"
-												*ngIf="
-													categoryPrivateInvestigatorSupFormGroup?.touched &&
-													categoryPrivateInvestigatorSupFormGroup?.invalid
-												"
-												>error</mat-icon
-											>
-										</mat-panel-description> -->
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -360,7 +330,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -372,12 +342,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityAlarmInstaller">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstaller">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -386,7 +353,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+
+											{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -396,7 +365,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -408,14 +377,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityAlarmInstallerUnderSupervision">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmInstallerUnderSupervision">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{
-												workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision | options : 'WorkerCategoryTypes'
-											}}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -423,8 +387,10 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 													categorySecurityAlarmInstallerSupFormGroup?.invalid
 												"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{
+												workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision | options : 'WorkerCategoryTypes'
+											}}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -434,7 +400,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -446,12 +412,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityAlarmMonitor">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmMonitor">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -460,7 +423,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+
+											{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -470,7 +435,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -482,12 +447,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityAlarmResponse">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmResponse">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
@@ -496,7 +458,9 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												"
 												>error</mat-icon
 											>
-										</mat-panel-description>
+
+											{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -506,7 +470,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -518,20 +482,17 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityAlarmSales">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityAlarmSales">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
 													categorySecurityAlarmSalesFormGroup?.touched && categorySecurityAlarmSalesFormGroup?.invalid
 												"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -541,7 +502,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -553,20 +514,17 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityConsultant">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityConsultant">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="
 													categorySecurityConsultantFormGroup?.touched && categorySecurityConsultantFormGroup?.invalid
 												"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -576,7 +534,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -588,18 +546,15 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityGuard">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuard">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -609,7 +564,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -620,18 +575,15 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 							<ng-container *ngIf="showSecurityGuardUnderSupervision">
 								<mat-expansion-panel class="my-3" [expanded]="expandSecurityGuardUnderSupervision">
 									<mat-expansion-panel-header>
-										<mat-panel-title class="title text-nowrap"
-											>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'WorkerCategoryTypes' }}
-										</mat-panel-title>
-										<mat-panel-description>
+										<mat-panel-title class="title">
 											<mat-icon
-												class="w-100 text-end"
+												class="error-icon"
 												color="warn"
 												matTooltip="One or more errors exist in this category"
 												*ngIf="categorySecurityGuardSupFormGroup?.touched && categorySecurityGuardSupFormGroup?.invalid"
 												>error</mat-icon
-											>
-										</mat-panel-description>
+											>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'WorkerCategoryTypes' }}
+										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="row my-3">
 										<div class="col-12 mx-auto">
@@ -641,7 +593,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 												aria-label="Remove category"
 												(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
 											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
+												<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
 											</button>
 										</div>
 									</div>
@@ -659,6 +611,11 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 		`
 			.title {
 				padding-bottom: 2px;
+			}
+
+			.error-icon {
+				margin-right: 0.5rem !important;
+				overflow: visible !important;
 			}
 		`,
 	],

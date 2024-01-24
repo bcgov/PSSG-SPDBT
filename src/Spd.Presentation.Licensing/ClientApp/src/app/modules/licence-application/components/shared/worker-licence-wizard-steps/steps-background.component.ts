@@ -41,7 +41,12 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_POLICE_BACKGROUND)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_POLICE_BACKGROUND)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -79,9 +84,9 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
-							class="large mb-2"
+							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
 						>
 							Next: Review
@@ -118,7 +123,12 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CRIMINAL_HISTORY)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -148,7 +158,12 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_FINGERPRINTS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_FINGERPRINTS)"
+						>
 							Next: Review
 						</button>
 					</div>

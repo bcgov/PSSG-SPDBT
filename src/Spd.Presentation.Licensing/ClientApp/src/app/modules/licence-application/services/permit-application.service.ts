@@ -73,7 +73,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
 
-		caseNumber: new FormControl(null), // TODO needed?
 		applicationPortalStatus: new FormControl(null),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
@@ -108,7 +107,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// });
 
 	permitModelChangedSubscription!: Subscription;
-	// licenceModelAnonymousChangedSubscription!: Subscription;
 
 	constructor(
 		formBuilder: FormBuilder,
@@ -210,14 +208,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					})
 				);
 			}
-			// case ApplicationTypeCode.Replacement: {
-			// 	return this.loadPermitReplacement(licenceAppId).pipe(
-			// 		tap((resp: any) => {
-			// 			console.debug('LOAD loadPermitReplacement', resp);
-			// 			this.initialized = true;
-			// 		})
-			// 	);
-			// }
 			default: {
 				return this.loadPermitNew(licenceAppId).pipe(
 					tap((resp: any) => {
@@ -436,43 +426,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	// /**
-	//  * Load an existing licence application for replacement
-	//  * @param licenceAppId
-	//  * @returns
-	//  */
-	// private loadPermitReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
-	// 	return this.loadSpecificPermit(licenceAppId).pipe(
-	// 		tap((resp: any) => {
-	// 			const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-
-	// 			const residentialAddressData = {
-	// 				isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
-	// 			};
-
-	// 			this.permitModelFormGroup.patchValue(
-	// 				{
-	// 					licenceAppId: null,
-	// 					originalApplicationId: licenceAppId,
-	// 					applicationTypeData,
-	// 					residentialAddressData: { ...residentialAddressData },
-	// 				},
-	// 				{
-	// 					emitEvent: false,
-	// 				}
-	// 			);
-
-	// 			console.debug('LOAD LicenceApplicationService loadPermitRenewal', resp);
-	// 		})
-	// 	);
-	// }
-
 	/**
 	 * Create an empty licence
 	 * @returns
 	 */
 	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.createPermitAnonymous(workerLicenceTypeCode).pipe(
+		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
 				console.debug('[createNewPermitAnonymous] resp', resp);
 
@@ -495,67 +454,31 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	private createPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+	private createEmptyPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
-		return this.loadPermit(
-			'ef0b27ee-db15-409a-8f8f-6a7922a2332b',
-			WorkerLicenceTypeCode.ArmouredVehiclePermit,
-			ApplicationTypeCode.New
-		).pipe(
-			tap((_resp: any) => {
-				const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-				// const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
-				const photographOfYourselfData = {
-					useBcServicesCardPhoto: BooleanTypeCode.No,
-				};
+		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		const photographOfYourselfData = {
+			useBcServicesCardPhoto: BooleanTypeCode.No,
+		};
+		const permitRequirementData = {
+			workerLicenceTypeCode: workerLicenceTypeCode,
+		};
 
-				// temp
-				const permitRequirementData = {
-					workerLicenceTypeCode: workerLicenceTypeCode,
-					armouredVehicleRequirementFormGroup: {
-						isPersonalProtection: true,
-					},
-				};
-				// temp
-				const employerInformationData = {
-					businessName: 'aaa',
-					supervisorName: 'bbb',
-					supervisorEmailAddress: 'test@test.com',
-					supervisorPhoneNumber: '3334445555',
-					addressSelected: true,
-					addressLine1: 'aaa',
-					addressLine2: 'bbb',
-					city: 'ccc',
-					postalCode: 'ddd',
-					province: 'eee',
-					country: 'fff',
-				};
-				// temp
-				const permitRationaleData = {
-					rationale:
-						'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-				};
-
-				this.permitModelFormGroup.patchValue(
-					{
-						workerLicenceTypeData,
-						permitRequirementData,
-						photographOfYourselfData,
-						profileConfirmationData: { isProfileUpToDate: true },
-						employerInformationData, //temp
-						permitRationaleData, //temp
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				console.log('[createPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
-
-				return of(this.permitModelFormGroup.value);
-			})
+		this.permitModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData,
+				permitRequirementData,
+				photographOfYourselfData,
+			},
+			{
+				emitEvent: false,
+			}
 		);
+
+		console.log('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
+
+		return of(this.permitModelFormGroup.value);
 	}
 
 	private createPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
@@ -625,11 +548,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
-				resp.workerLicenceTypeCode = WorkerLicenceTypeCode.BodyArmourPermit; // TODO Remove
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
-				const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit }; // TODO  resp.workerLicenceTypeCode };
+				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
-				const permitRequirementData = { workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit }; // TODO resp.workerLicenceTypeCode };
+				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 
 				const expiredLicenceData = {
 					hasExpiredPermit: this.booleanToBooleanType(resp.hasExpiredLicence),
@@ -797,7 +719,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.permitModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
-						caseNumber: resp.caseNumber,
+						// caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
 						permitRequirementData,
