@@ -50,9 +50,9 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
-							class="large mb-2"
+							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_PERSONAL_INFORMATION)"
 						>
 							Next: Review
@@ -84,7 +84,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ALIASES)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_ALIASES)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -114,7 +119,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CITIZENSHIP)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -149,7 +159,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ADDITIONAL_GOV_ID)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_ADDITIONAL_GOV_ID)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -184,7 +199,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -221,7 +241,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -248,7 +273,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_PHOTO)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_PHOTO)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -283,7 +313,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -318,7 +353,12 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_MAILING_ADDRESS)"
+						>
 							Next: Review
 						</button>
 					</div>

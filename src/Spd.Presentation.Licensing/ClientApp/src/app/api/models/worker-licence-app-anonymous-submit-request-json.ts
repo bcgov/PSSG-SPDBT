@@ -16,6 +16,7 @@ import { WeightUnitCode } from './weight-unit-code';
 import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceAppAnonymousSubmitRequestJson {
+  agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;

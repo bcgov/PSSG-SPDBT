@@ -61,8 +61,8 @@ import { StepLicenceUpdatesComponent } from './components/authenticated/worker-l
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-access-code-authorized.component';
 import { StepApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-application-type-authenticated.component';
+import { StepLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-access-code-authorized.component';
 import { StepLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-licence-type-authenticated.component';
 import { StepSummaryReviewLicenceAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-summary-review-licence-authenticated.component';
 import { StepsIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-identification-authenticated.component';
@@ -127,7 +127,6 @@ import { StepMentalHealthConditionsComponent } from './components/shared/worker-
 import { StepPhotographOfYourselfComponent } from './components/shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component';
 import { StepPhotographOfYourselfAnonymousComponent } from './components/shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component-anonymous';
 import { StepPhysicalCharacteristicsComponent } from './components/shared/worker-licence-wizard-child-steps/step-physical-characteristics.component';
-import { StepPoliceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-child-steps/step-police-background-renew-and-update.component';
 import { StepPoliceBackgroundComponent } from './components/shared/worker-licence-wizard-child-steps/step-police-background.component';
 import { StepResidentialAddressComponent } from './components/shared/worker-licence-wizard-child-steps/step-residential-address.component';
 import { StepRestraintsAuthorizationComponent } from './components/shared/worker-licence-wizard-child-steps/step-restraints-authorization.component';
@@ -214,7 +213,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPhotographOfYourselfComponent,
 		StepPhysicalCharacteristicsComponent,
 		StepPoliceBackgroundComponent,
-		StepPoliceBackgroundRenewAndUpdateComponent,
 		StepResidentialAddressComponent,
 		StepRestraintsAuthorizationComponent,
 		StepSoleProprietorComponent,

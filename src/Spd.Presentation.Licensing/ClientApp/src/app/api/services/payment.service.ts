@@ -442,4 +442,68 @@ export class PaymentService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiLicensingPaymentSecureLinkGet
+   */
+  static readonly ApiLicensingPaymentSecureLinkGetPath = '/api/licensing/payment-secure-link';
+
+  /**
+   * Redirect to PayBC the direct pay payment page.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicensingPaymentSecureLinkGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicensingPaymentSecureLinkGet$Response(params?: {
+    encodedAppId?: string;
+    encodedPaymentId?: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiLicensingPaymentSecureLinkGetPath, 'get');
+    if (params) {
+      rb.query('encodedAppId', params.encodedAppId, {"style":"form"});
+      rb.query('encodedPaymentId', params.encodedPaymentId, {"style":"form"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * Redirect to PayBC the direct pay payment page.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicensingPaymentSecureLinkGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicensingPaymentSecureLinkGet(params?: {
+    encodedAppId?: string;
+    encodedPaymentId?: string;
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiLicensingPaymentSecureLinkGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
 }

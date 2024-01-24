@@ -22,6 +22,7 @@ import { WorkerLicenceAppCategoryData } from './worker-licence-app-category-data
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceAppUpsertRequest {
   additionalGovIdDocument?: AdditionalGovIdDocument;
+  agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
