@@ -16,7 +16,7 @@ internal class Mappings : Profile
         .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName1)))
         .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))
         .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
-        .ForMember(d => d.emailaddress1, opt => opt.Ignore())
+        .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
         .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
         .ForMember(d => d.gendercode, opt => opt.Ignore())
         .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
@@ -86,6 +86,10 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseDogs)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.spd_requestdogsreasons, opt => opt.MapFrom(s => GetDogReasonOptionSets(s)))
+         .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
+         .ForMember(d => d.spd_consent, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
+         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => GetDeclarationDate(s)))
          .ReverseMap()
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
@@ -163,6 +167,11 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered))
           .ReverseMap();
+    }
+
+    private static DateTimeOffset? GetDeclarationDate(LicenceApplication app)
+    {
+        return app.AgreeToCompleteAndAccurate != null && app.AgreeToCompleteAndAccurate == true ? DateTime.Now : null;
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
