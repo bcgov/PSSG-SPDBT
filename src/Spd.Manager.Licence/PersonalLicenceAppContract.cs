@@ -89,7 +89,7 @@ public abstract record WorkerLicenceAppBase
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public bool? IsCanadianCitizen { get; set; }
-
+    public bool? AgreeToCompleteAndAccurate { get; set; }
 }
 public record WorkerLicenceApp : WorkerLicenceAppBase //for authenticated user
 {

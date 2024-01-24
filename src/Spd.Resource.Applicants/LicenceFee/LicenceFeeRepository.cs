@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Utilities.Dynamics;
 using Spd.Utilities.Cache;
+using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.LicenceFee;
 internal class LicenceFeeRepository : ILicenceFeeRepository
@@ -26,7 +26,7 @@ internal class LicenceFeeRepository : ILicenceFeeRepository
             feeResult = _context.spd_licencefees.Expand(a => a.spd_ServiceTypeId).ToList();
             await _cache.Set<IEnumerable<spd_licencefee>>("spd_licencefee", feeResult, new TimeSpan(1, 0, 0));
         }
-        
+
         if (!qry.IncludeInactive)
             feeResult = feeResult.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
@@ -48,10 +48,16 @@ internal class LicenceFeeRepository : ILicenceFeeRepository
             feeResult = feeResult.Where(f => f.spd_type == type);
         }
 
-        if(qry.BusinessTypeEnum != null) 
-        { 
+        if (qry.BusinessTypeEnum != null)
+        {
             int bizType = (int)Enum.Parse<BusinessTypeOptionSet>(qry.BusinessTypeEnum.ToString());
             feeResult = feeResult.Where(f => f.spd_businesstype == bizType);
+        }
+
+        if (qry.HasValidSwl90DayLicence != null)
+        {
+            int hasValidSwl90Day = (int)SharedMappingFuncs.GetYesNo(qry.HasValidSwl90DayLicence);
+            feeResult = feeResult.Where(f => f.spd_hasvalidswl90daylicence == hasValidSwl90Day);
         }
         var list = _mapper.Map<IEnumerable<LicenceFeeResp>>(feeResult);
         var response = new LicenceFeeListResp();

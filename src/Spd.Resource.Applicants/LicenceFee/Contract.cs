@@ -14,6 +14,7 @@ public record LicenceFeeQry
     public ApplicationTypeEnum? ApplicationTypeEnum { get; set; } = null;
     public BusinessTypeEnum? BusinessTypeEnum { get; set; } = null;
     public bool IncludeInactive { get; set; } = false;
+    public bool? HasValidSwl90DayLicence { get; set; } = null;
 };
 
 public record LicenceFeeResp()
