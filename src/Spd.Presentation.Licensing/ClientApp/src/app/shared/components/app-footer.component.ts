@@ -37,7 +37,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 
 				a {
 					display: block;
-					padding: 6px;
+					padding: 3px;
 				}
 			}
 		`,

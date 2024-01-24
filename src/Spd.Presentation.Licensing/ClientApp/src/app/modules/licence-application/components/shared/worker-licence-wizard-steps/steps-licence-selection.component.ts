@@ -120,7 +120,12 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_LICENCE_EXPIRED)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_EXPIRED)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -145,7 +150,12 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_LICENCE_CATEGORY)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -175,7 +185,12 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESTRAINTS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_RESTRAINTS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -200,7 +215,12 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_DOGS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_DOGS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -230,7 +250,12 @@ import { StepSoleProprietorComponent } from '../worker-licence-wizard-child-step
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_LICENCE_TERM)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_TERM)"
+						>
 							Next: Review
 						</button>
 					</div>

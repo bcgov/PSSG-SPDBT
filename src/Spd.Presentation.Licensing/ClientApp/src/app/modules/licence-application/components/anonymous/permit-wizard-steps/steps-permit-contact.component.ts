@@ -42,7 +42,12 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_RESIDENTIAL_ADDRESS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -77,7 +82,12 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_MAILING_ADDRESS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_MAILING_ADDRESS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -109,7 +119,12 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CONTACT_INFORMATION)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CONTACT_INFORMATION)"
+						>
 							Next: Review
 						</button>
 					</div>

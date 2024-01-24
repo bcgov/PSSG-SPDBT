@@ -23,6 +23,7 @@ import { WorkerLicenceAppCategoryData } from './worker-licence-app-category-data
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceResponse {
   additionalGovIdDocument?: AdditionalGovIdDocument;
+  agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
