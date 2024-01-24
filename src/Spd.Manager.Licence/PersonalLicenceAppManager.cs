@@ -254,10 +254,10 @@ internal partial class PersonalLicenceAppManager :
             throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet replacement condition.
-        LicenceListResp originLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
-        if (originLicences == null || !originLicences.Items.Any())
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        LicenceResp originalLic = originLicences.Items.First();
+        LicenceResp originalLic = originalLicences.Items.First();
         if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
             && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException("the licence can only be renewed within 90 days of the expiry date.");
