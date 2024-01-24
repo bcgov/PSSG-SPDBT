@@ -251,14 +251,15 @@ internal partial class PersonalLicenceAppManager :
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
-            throw new ArgumentException("should be a renew request");
+            throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet replacement condition.
-        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
-        if (licences == null || !licences.Items.Any())
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        if (DateTime.UtcNow > licences.Items.First().ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
-            && DateTime.UtcNow < licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        LicenceResp originalLic = originalLicences.Items.First();
+        if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
+            && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException("the licence can only be renewed within 90 days of the expiry date.");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -304,12 +305,16 @@ internal partial class PersonalLicenceAppManager :
         }
 
         //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
-        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        bool hasSwl90DayLicence = originalLic.LicenceTerm == LicenceTermEnum.NintyDays && 
+            originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
+
+        await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
+
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
     #endregion
 
-    private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct)
+    private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -317,7 +322,8 @@ internal partial class PersonalLicenceAppManager :
             ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
             BusinessTypeEnum = request.BusinessTypeCode == null ? null : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
             LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString())
+            WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
+            HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
