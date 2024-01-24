@@ -95,15 +95,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-checkbox formControlName="readTerms" (click)="onCheckboxChange()">
+							<mat-checkbox formControlName="agreeToCompleteAndAccurate" (click)="onCheckboxChange()">
 								Declaration & Sign Off
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('readTerms')?.dirty || form.get('readTerms')?.touched) &&
-									form.get('readTerms')?.invalid &&
-									form.get('readTerms')?.hasError('required')
+									(form.get('agreeToCompleteAndAccurate')?.dirty || form.get('agreeToCompleteAndAccurate')?.touched) &&
+									form.get('agreeToCompleteAndAccurate')?.invalid &&
+									form.get('agreeToCompleteAndAccurate')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
@@ -181,7 +181,7 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 
 	onCheckboxChange(): void {
 		const data = this.form.value;
-		if (data.readTerms) {
+		if (data.agreeToCompleteAndAccurate) {
 			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
 		} else {
 			this.form.controls['dateSigned'].setValue('');
