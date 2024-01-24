@@ -10,14 +10,14 @@ namespace Spd.Resource.Applicants.Licence
 
     public record LicenceQry
     {
-        public Guid? LicenceId { get; set; } = null;
-        public string? LicenceNumber { get; set; } = null;
-        public string? AccessCode { get; set; } = null;
-        public Guid? ContactId { get; set; } = null;
-        public Guid? AccountId { get; set; } = null;
-        public WorkerLicenceTypeEnum? Type { get; set; } = null;
-        public bool IncludeInactive { get; set; } = false;
-        public bool? IsExpired { get; set; } = null;
+        public Guid? LicenceId { get; set; }
+        public string? LicenceNumber { get; set; }
+        public string? AccessCode { get; set; }
+        public Guid? ContactId { get; set; }
+        public Guid? AccountId { get; set; }
+        public WorkerLicenceTypeEnum? Type { get; set; }
+        public bool IncludeInactive { get; set; }
+        public bool? IsExpired { get; set; }
     };
     public record LicenceListResp
     {
@@ -32,5 +32,6 @@ namespace Spd.Resource.Applicants.Licence
         public string? LicenceNumber { get; set; } = null;
         public DateOnly ExpiryDate { get; set; }
         public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
+        public LicenceTermEnum? LicenceTerm { get; set; }
     }
 }
