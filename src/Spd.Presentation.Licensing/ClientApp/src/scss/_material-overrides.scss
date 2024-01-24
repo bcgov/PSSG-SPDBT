@@ -27,6 +27,10 @@ button.mdc-button {
     height: 46px;
     font-size: 1rem;
   }
+
+  &.next-review-step {
+    font-variant: small-caps;
+  }
 }
 
 a {  
@@ -39,6 +43,7 @@ a {
 // EXPANSION HEADER
 .mat-expansion-panel-header {
   background-color: var(--color-primary-lighter) !important;
+  padding: 0 12px !important;
 }
 
 .mat-expansion-panel-header-title {

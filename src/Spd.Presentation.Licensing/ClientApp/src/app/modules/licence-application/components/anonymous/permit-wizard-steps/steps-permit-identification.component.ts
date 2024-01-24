@@ -48,9 +48,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
-							class="large mb-2"
+							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_PERSONAL_INFORMATION)"
 						>
 							Next: Review
@@ -88,7 +88,12 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CRIMINAL_HISTORY)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -118,7 +123,12 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_FINGERPRINTS)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_FINGERPRINTS)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -148,7 +158,12 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_ALIASES)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_ALIASES)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -178,7 +193,12 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_CITIZENSHIP)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CITIZENSHIP)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -215,7 +235,12 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onNextReview(STEP_BC_DRIVERS_LICENCE)">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+						>
 							Next: Review
 						</button>
 					</div>
@@ -253,9 +278,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
-							class="large mb-2"
+							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
 						>
 							Next: Review
@@ -295,9 +320,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
-							class="large mb-2"
+							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
 						>
 							Next: Review
