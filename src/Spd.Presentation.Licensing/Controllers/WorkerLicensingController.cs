@@ -327,6 +327,12 @@ namespace Spd.Presentation.Licensing.Controllers
                 AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command);
             }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+            {
+                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, keyCode);
+                return await _mediator.Send(command);
+            }
             return null;
         }
         #endregion

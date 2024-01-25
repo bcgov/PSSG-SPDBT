@@ -312,6 +312,58 @@ internal partial class PersonalLicenceAppManager :
 
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
+            throw new ArgumentException("should be a update request");
+
+        //validation: check if original licence meet replacement condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+        LicenceResp originalLic = originalLicences.Items.First();
+        if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
+            && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException("the licence can only be renewed within 90 days of the expiry date.");
+
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+
+        //add all new files user uploaded
+        if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
+        {
+            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
+            {
+                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                foreach (LicAppFileInfo licAppFile in items)
+                {
+                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                    DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
+                         .DocumentInfos?
+                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                         .ExpiryDate;
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(new CreateDocumentCmd
+                    {
+                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                        ApplicationId = response.LicenceAppId,
+                        DocumentType = docType1,
+                        DocumentType2 = docType2,
+                        SubmittedByApplicantId = response.ContactId,
+                        ExpiryDate = expiredDate,
+                    }, ct);
+                }
+            }
+        }
+
+        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+    }
+
     #endregion
 
     private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
