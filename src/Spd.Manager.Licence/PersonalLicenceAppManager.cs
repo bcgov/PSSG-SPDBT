@@ -200,7 +200,7 @@ internal partial class PersonalLicenceAppManager :
                         DocumentType2 = docType2,
                         SubmittedByApplicantId = appResponse.ContactId,
                         ExpiryDate = expiredDate,
-                        ToTransientBucket = true
+                        ToTransientBucket = false
                     }, ct);
                 }
             }

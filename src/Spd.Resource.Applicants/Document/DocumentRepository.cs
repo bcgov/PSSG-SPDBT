@@ -109,7 +109,7 @@ internal class DocumentRepository : IDocumentRepository
             _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
         }
 
-        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, null, ct);
+        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = application.spd_applicationid;
         return _mapper.Map<DocumentResp>(documenturl);

@@ -81,8 +81,9 @@ namespace Spd.Utilities.FileStorage
             };
 
             var response = await _amazonS3Client.DeleteObjectAsync(request, cancellationToken);
-            response.EnsureSuccess();
 
+            //If the delete action is successful, the service sends back an HTTP 204 response.
+            response.EnsureNoContent();
             return cmd.Key;
         }
 
@@ -267,6 +268,12 @@ namespace Spd.Utilities.FileStorage
         {
             if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 throw new InvalidOperationException($"Operation failed with status {response.HttpStatusCode}");
+        }
+
+        public static void EnsureNoContent(this AmazonWebServiceResponse response)
+        {
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.NoContent)
+                throw new InvalidOperationException($"Delete Operation failed with status {response.HttpStatusCode}");
         }
     }
 }
