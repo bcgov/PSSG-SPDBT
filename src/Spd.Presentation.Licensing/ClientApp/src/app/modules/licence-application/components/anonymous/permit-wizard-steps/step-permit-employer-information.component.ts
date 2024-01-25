@@ -157,7 +157,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [],
 })
 export class StepPermitEmployerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();

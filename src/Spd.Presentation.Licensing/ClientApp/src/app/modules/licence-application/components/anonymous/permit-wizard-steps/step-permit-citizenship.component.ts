@@ -63,9 +63,13 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 							<div class="row my-2" *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 								<div class="col-lg-7 col-md-12">
 									<mat-form-field>
-										<mat-label>Proof of Canadian citizenship</mat-label>
+										<mat-label>Type of Proof</mat-label>
 										<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
+											<mat-option
+												class="proof-option"
+												*ngFor="let item of proofOfCanadianCitizenshipTypes"
+												[value]="item.code"
+											>
 												{{ item.desc }}
 											</mat-option>
 										</mat-select>
@@ -116,7 +120,11 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 											<mat-form-field>
 												<mat-label>Proof of resident status</mat-label>
 												<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
-													<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
+													<mat-option
+														class="proof-option"
+														*ngFor="let item of proofOfAbilityToWorkInCanadaTypes"
+														[value]="item.code"
+													>
 														{{ item.desc }}
 													</mat-option>
 												</mat-select>
@@ -130,7 +138,11 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 											<mat-form-field>
 												<mat-label>Proof of citizenship</mat-label>
 												<mat-select formControlName="proofOfCitizenshipCode" [errorStateMatcher]="matcher">
-													<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
+													<mat-option
+														class="proof-option"
+														*ngFor="let item of proofOfAbilityToWorkInCanadaTypes"
+														[value]="item.code"
+													>
 														{{ item.desc }}
 													</mat-option>
 												</mat-select>
@@ -196,7 +208,13 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.proof-option {
+				padding-bottom: 12px;
+			}
+		`,
+	],
 	animations: [showHideTriggerSlideAnimation],
 })
 export class StepPermitCitizenshipComponent implements LicenceChildStepperStepComponent {

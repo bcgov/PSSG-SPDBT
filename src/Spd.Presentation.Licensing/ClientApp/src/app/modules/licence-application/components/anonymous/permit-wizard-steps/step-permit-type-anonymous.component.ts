@@ -72,7 +72,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 			</div>
 		</section>
 
-		<div class="row wizard-button-row">
+		<div class="row outside-wizard-button-row">
 			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 			</div>
@@ -94,12 +94,11 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 
 	ngOnInit(): void {
 		const fee = this.permitApplicationService.getLicenceTermsAndFees();
-		console.log('fee', fee);
 		fee.forEach((item: LicenceFeeResponse) => {
 			if (item.applicationTypeCode === ApplicationTypeCode.New) {
-				this.newCost = `$${fee[0].amount}`;
+				this.newCost = `$${item.amount}`;
 			} else if (item.applicationTypeCode === ApplicationTypeCode.Renewal) {
-				this.renewCost = `$${fee[0].amount}`;
+				this.renewCost = `$${item.amount}`;
 			}
 		});
 	}

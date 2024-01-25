@@ -66,7 +66,11 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 										<mat-form-field>
 											<mat-label>Proof of Canadian citizenship</mat-label>
 											<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
-												<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
+												<mat-option
+													class="proof-option"
+													*ngFor="let item of proofOfCanadianCitizenshipTypes"
+													[value]="item.code"
+												>
 													{{ item.desc }}
 												</mat-option>
 											</mat-select>
@@ -79,7 +83,11 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 										<mat-form-field>
 											<mat-label>Proof of ability to work in Canada</mat-label>
 											<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
-												<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
+												<mat-option
+													class="proof-option"
+													*ngFor="let item of proofOfAbilityToWorkInCanadaTypes"
+													[value]="item.code"
+												>
 													{{ item.desc }}
 												</mat-option>
 											</mat-select>
@@ -146,7 +154,13 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.proof-option {
+				padding-bottom: 12px;
+			}
+		`,
+	],
 	animations: [showHideTriggerSlideAnimation],
 })
 export class StepCitizenshipComponent implements LicenceChildStepperStepComponent {

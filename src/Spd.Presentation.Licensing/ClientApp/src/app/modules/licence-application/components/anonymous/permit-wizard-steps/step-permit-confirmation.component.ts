@@ -58,12 +58,11 @@ export class StepPermitConfirmationComponent implements OnInit {
 	ngOnInit() {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
 
-		const fee = this.permitApplicationService.getLicenceTermsAndFees();
-		if (fee?.length > 0) {
-			this.feeAmount = `$${fee[0].amount}`;
-		} else {
-			this.feeAmount = '$0';
-		}
+		const fee = this.permitApplicationService
+			.getLicenceTermsAndFees()
+			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
+
+		this.feeAmount = fee ? `$${fee.amount}` : null;
 	}
 
 	get permitHolderName(): string {

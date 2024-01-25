@@ -23,6 +23,7 @@ import {
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import * as moment from 'moment';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -70,6 +71,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
 		originalBusinessTypeCode: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false),
+		originalDogAuthorizationExists: new FormControl(false),
 
 		applicationPortalStatus: new FormControl(null),
 
@@ -1357,21 +1360,62 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					attachments: [],
 				};
 
+				let originalPhotoOfYourselfLastUpload = null;
+				if (_resp.idPhotoDocument?.documentResponses) {
+					_resp.idPhotoDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+						originalPhotoOfYourselfLastUpload = item.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
+					});
+				}
+
+				// We require a new photo every 5 years. Please provide a new photo for your licence
+				const yearsDiff = moment()
+					.startOf('day')
+					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+				let photographOfYourselfData = {};
+				if (originalPhotoOfYourselfExpired) {
+					// clear out data to force user to upload a new photo
+					photographOfYourselfData = {
+						useBcServicesCardPhoto: BooleanTypeCode.No,
+						attachments: [],
+					};
+				}
+
+				// If applicant is renewing a licence where they already had authorization to use dogs,
+				// clear attachments to force user to upload a new proof of qualification.
+				_resp.useDogs = true;
+				const originalDogAuthorizationExists = _resp.useDogs;
+				let dogsAuthorizationData = {};
+				if (originalDogAuthorizationExists) {
+					dogsAuthorizationData = {
+						useDogs: this.booleanToBooleanType(_resp.useDogs),
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
+							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
+							isDogsPurposeProtection: _resp.isDogsPurposeProtection,
+						},
+						attachments: [],
+					};
+				}
+
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						applicationTypeData,
 						originalLicenceTermCode: _resp.licenceTermCode,
+						originalPhotoOfYourselfExpired,
+						originalDogAuthorizationExists,
 
 						soleProprietorData,
 						licenceTermData,
 						fingerprintProofData,
 						bcDriversLicenceData,
 						aliasesData,
+						photographOfYourselfData,
 						citizenshipData,
 						additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
+						dogsAuthorizationData,
 					},
 					{
 						emitEvent: false,
@@ -1392,8 +1436,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-
-				// TODO Update: Remove data that should be re-prompted for
 
 				this.licenceModelFormGroup.patchValue(
 					{

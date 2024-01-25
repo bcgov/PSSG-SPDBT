@@ -41,10 +41,12 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 					</ng-container>
 
 					<app-alert type="warning" icon="warning" *ngIf="!isCalledFromModal">
-						<div>
-							Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
-							application's processing time.
-						</div>
+						Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
+						application's processing time.
+					</app-alert>
+
+					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
+						We require a new photo every 5 years. Please provide a new photo for your licence
 					</app-alert>
 
 					<app-file-upload
@@ -77,6 +79,7 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 
 	@Input() form!: FormGroup;
 	@Input() isAnonymous = false;
+	@Input() originalPhotoOfYourselfExpired = false;
 	@Input() isCalledFromModal = false;
 
 	@Output() fileUploaded = new EventEmitter<File>();
