@@ -14,6 +14,7 @@ public record LicenceLookupResponse
     public string? LicenceNumber { get; set; } = null;
     public DateOnly ExpiryDate { get; set; }
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public LicenceTermCode? LicenceTermCode { get; set; }
 };
 
 public record LicenceLookupQuery(string LicenceNumber, string AccessCode) : IRequest<LicenceLookupResponse>;

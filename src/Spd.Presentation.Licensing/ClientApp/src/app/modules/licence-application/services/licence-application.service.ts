@@ -370,7 +370,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const originalLicenceTermCode = this.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
 		let hasValidSwl90DayLicence = false;
-		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NintyDays) {
+		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
 			hasValidSwl90DayLicence = true;
 		}
 
