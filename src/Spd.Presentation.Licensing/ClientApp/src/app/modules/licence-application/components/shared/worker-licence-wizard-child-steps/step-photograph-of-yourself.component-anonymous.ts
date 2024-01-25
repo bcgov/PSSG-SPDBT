@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -28,6 +28,7 @@ import { CommonPhotographOfYourselfComponent } from '../step-components/common-p
 				<app-common-photograph-of-yourself
 					[form]="form"
 					[isAnonymous]="true"
+					[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
 					[isCalledFromModal]="isCalledFromModal"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
@@ -37,8 +38,9 @@ import { CommonPhotographOfYourselfComponent } from '../step-components/common-p
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepPhotographOfYourselfAnonymousComponent implements LicenceChildStepperStepComponent {
+export class StepPhotographOfYourselfAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
+	originalPhotoOfYourselfExpired = false;
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
 
@@ -49,6 +51,12 @@ export class StepPhotographOfYourselfAnonymousComponent implements LicenceChildS
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(
+			'originalPhotoOfYourselfExpired'
+		)?.value;
+	}
 
 	onFileRemoved(): void {
 		this.licenceApplicationService.hasValueChanged = true;

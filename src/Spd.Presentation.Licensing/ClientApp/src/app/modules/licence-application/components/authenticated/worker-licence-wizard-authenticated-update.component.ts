@@ -8,68 +8,66 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 @Component({
 	selector: 'app-worker-licence-wizard-authenticated-update',
 	template: `
-		<ng-container>
-			<div class="row">
-				<div class="offset-xl-1 col-xl-10 col-lg-12">
-					<mat-stepper class="child-stepper" linear (selectionChange)="onStepSelectionChange($event)" #stepper>
-						<mat-step completed="true">
-							<!-- <ng-template matStepLabel> Update your Licence or Permit </ng-template> -->
-							<app-step-licence-updates
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(scrollIntoView)="onScrollIntoView()"
-							></app-step-licence-updates>
+		<div class="row">
+			<div class="offset-xl-1 col-xl-10 col-lg-12">
+				<mat-stepper class="child-stepper" linear (selectionChange)="onStepSelectionChange($event)" #stepper>
+					<mat-step completed="true">
+						<!-- <ng-template matStepLabel> Update your Licence or Permit </ng-template> -->
+						<app-step-licence-updates
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-step-licence-updates>
 
-							<div class="row wizard-button-row">
-								<div
-									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-								>
-									<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
-								</div>
-								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-									<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-								</div>
+						<div class="row wizard-button-row">
+							<div
+								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+							>
+								<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
 							</div>
-						</mat-step>
-
-						<mat-step completed="true">
-							<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
-							<app-step-confirm-mailing-address></app-step-confirm-mailing-address>
-
-							<div class="row wizard-button-row">
-								<div
-									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-								>
-									<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-								</div>
-								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-									<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-								</div>
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
-						</mat-step>
+						</div>
+					</mat-step>
 
-						<mat-step completed="true">
-							<!-- <ng-template matStepLabel>Confirm Updates</ng-template> -->
-							<app-step-confirm-updates></app-step-confirm-updates>
+					<mat-step completed="true">
+						<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
+						<app-step-confirm-mailing-address></app-step-confirm-mailing-address>
 
-							<div class="row wizard-button-row">
-								<div
-									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-								>
-									<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-								</div>
-								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-									<button mat-flat-button color="primary" class="large mb-2">Pay</button>
-								</div>
+						<div class="row wizard-button-row">
+							<div
+								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+							>
+								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 							</div>
-						</mat-step>
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+							</div>
+						</div>
+					</mat-step>
 
-						<mat-step completed="true">
-							<!-- <ng-template matStepLabel>Pay</ng-template> -->
-						</mat-step>
-					</mat-stepper>
-				</div>
+					<mat-step completed="true">
+						<!-- <ng-template matStepLabel>Confirm Updates</ng-template> -->
+						<app-step-confirm-updates></app-step-confirm-updates>
+
+						<div class="row wizard-button-row">
+							<div
+								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+							>
+								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+							</div>
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+								<button mat-flat-button color="primary" class="large mb-2">Pay</button>
+							</div>
+						</div>
+					</mat-step>
+
+					<mat-step completed="true">
+						<!-- <ng-template matStepLabel>Pay</ng-template> -->
+					</mat-step>
+				</mat-stepper>
 			</div>
-		</ng-container>
+		</div>
 	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
