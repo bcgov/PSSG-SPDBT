@@ -51,6 +51,7 @@ export class Address {
 						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
 						<mat-autocomplete #auto="matAutocomplete">
 							<mat-option
+								class="address-option"
 								*ngFor="let field of addressAutocompleteFields"
 								[value]="field.text"
 								(click)="onAutocomplete(field)"
@@ -94,6 +95,10 @@ export class Address {
 		`
 			.text-option {
 				color: var(--color-primary-light);
+			}
+
+			.address-option {
+				padding-bottom: 12px;
 			}
 		`,
 	],

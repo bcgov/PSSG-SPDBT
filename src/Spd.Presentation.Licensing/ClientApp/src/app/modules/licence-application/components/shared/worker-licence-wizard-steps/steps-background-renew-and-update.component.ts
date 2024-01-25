@@ -95,7 +95,7 @@ import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-st
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step>
 				<app-step-criminal-history [applicationTypeCode]="applicationTypeCode"></app-step-criminal-history>
 
 				<div class="row wizard-button-row">
