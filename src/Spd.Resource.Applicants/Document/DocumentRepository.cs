@@ -11,17 +11,20 @@ internal class DocumentRepository : IDocumentRepository
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly IFileStorageService _fileStorageService;
+    private readonly ITransientFileStorageService _transientFileStorageService;
     private readonly ITempFileStorageService _tempFileService;
 
     public DocumentRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         IFileStorageService fileStorageService,
-        ITempFileStorageService tempFileService)
+        ITempFileStorageService tempFileService,
+        ITransientFileStorageService transientFileStorageService)
     {
         _context = ctx.Create();
         _mapper = mapper;
         _fileStorageService = fileStorageService;
         _tempFileService = tempFileService;
+        _transientFileStorageService = transientFileStorageService;
     }
     public async Task<DocumentListResp> QueryAsync(DocumentQry qry, CancellationToken ct)
     {
@@ -208,7 +211,7 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct)
+    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false)
     {
         if (applicationId == null) return;
         if (docUrlId == null) return;
@@ -236,12 +239,19 @@ internal class DocumentRepository : IDocumentRepository
                     }
                 };
 
-            await _fileStorageService.HandleCommand(new UploadFileCommand(
+            UploadFileCommand uploadFileCmd = new UploadFileCommand(
                         Key: ((Guid)docUrlId).ToString(),
                         Folder: $"spd_application/{applicationId}",
                         File: file,
-                        FileTag: fileTag
-                        ), ct);
+                        FileTag: fileTag);
+            if (toTransientBucket)
+            {
+                await _transientFileStorageService.HandleCommand(uploadFileCmd, ct);
+            }
+            else
+            {
+                await _fileStorageService.HandleCommand(uploadFileCmd, ct);
+            }
         }
         else
         {
@@ -262,31 +272,27 @@ internal class DocumentRepository : IDocumentRepository
                     }
                 };
 
-            await _fileStorageService.HandleCommand(new UploadFileStreamCommand(
-                        Key: ((Guid)docUrlId).ToString(),
-                        Folder: $"spd_application/{applicationId}",
-                        FileStream: fileStream,
-                        FileTag: fileTag
-                        ), ct);
+            UploadFileStreamCommand uploadFileCmd = new UploadFileStreamCommand(
+                Key: ((Guid)docUrlId).ToString(),
+                Folder: $"spd_application/{applicationId}",
+                FileStream: fileStream,
+                FileTag: fileTag);
+            if (toTransientBucket)
+            {
+                await _transientFileStorageService.HandleCommand(uploadFileCmd, ct);
+            }
+            else
+            {
+                await _fileStorageService.HandleCommand(uploadFileCmd, ct);
+            }
         }
     }
 
     private async Task DeleteFileAsync(Guid docUrlId, Guid applicationId, CancellationToken ct)
     {
-        //set file-classification tag to be deleted
-        FileTag fileTag =
-            new FileTag()
-            {
-                Tags = new List<Utilities.FileStorage.Tag>
-                {
-                    new Utilities.FileStorage.Tag("file-classification", "deleted"),
-                }
-            };
-        await _fileStorageService.HandleCommand(new UpdateTagsCommand(
+        await _transientFileStorageService.HandleDeleteCommand(new StorageDeleteCommand(
             Key: ((Guid)docUrlId).ToString(),
-            Folder: $"spd_application/{applicationId}",
-            FileTag: fileTag
-            ), ct);
+            Folder: $"spd_application/{applicationId}"), ct);
 
     }
 
