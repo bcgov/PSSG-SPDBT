@@ -1,0 +1,21 @@
+﻿using AutoMapper;
+using Microsoft.Dynamics.CRM;
+
+namespace Spd.Resource.Applicants.Task;
+
+internal class Mappings : Profile
+{
+    public Mappings()
+    {
+
+        _ = CreateMap<task, TaskResp>()
+         //.ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetypeid_value)))
+         //.ForMember(d => d.BusinessTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBusinessTypeEnum(s.spd_businesstype)))
+         //.ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_type)))
+         //.ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_term)))
+         //.ForMember(d => d.HasValidSwl90DayLicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_hasvalidswl90daylicence)))
+         //.ForMember(d => d.Amount, opt => opt.MapFrom(s => s.spd_amount))
+         ;
+    }
+}
+

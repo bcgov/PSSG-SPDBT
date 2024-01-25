@@ -1,5 +1,7 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Applicants.Application;
@@ -305,7 +307,7 @@ internal partial class PersonalLicenceAppManager :
         }
 
         //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
-        bool hasSwl90DayLicence = originalLic.LicenceTerm == LicenceTermEnum.NintyDays && 
+        bool hasSwl90DayLicence = originalLic.LicenceTerm == LicenceTermEnum.NintyDays &&
             originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
 
         await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
@@ -322,46 +324,60 @@ internal partial class PersonalLicenceAppManager :
         //validation: check if original licence meet replacement condition.
         LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
         if (originalLicences == null || !originalLicences.Items.Any())
-            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+            throw new ArgumentException("cannot find the licence that needs to be updated.");
         LicenceResp originalLic = originalLicences.Items.First();
-        if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
-            && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
-            throw new ArgumentException("the licence can only be renewed within 90 days of the expiry date.");
+        if (DateTime.UtcNow.AddDays(Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException("can't request an update within 14 days of expiry date.");
 
-        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-
-        //add all new files user uploaded
-        if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
+        if ((request.Reprint != null && request.Reprint.Value) /*|| (CategoriesChanged or DogRestraint changed)*/)
         {
-            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
+            CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+
+            //add all new files user uploaded
+            if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
             {
-                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                foreach (LicAppFileInfo licAppFile in items)
+                foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
                 {
-                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-                    DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
-                         .DocumentInfos?
-                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                         .ExpiryDate;
-                    //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(new CreateDocumentCmd
+                    IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                    foreach (LicAppFileInfo licAppFile in items)
                     {
-                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                        ApplicationId = response.LicenceAppId,
-                        DocumentType = docType1,
-                        DocumentType2 = docType2,
-                        SubmittedByApplicantId = response.ContactId,
-                        ExpiryDate = expiredDate,
-                    }, ct);
+                        DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                        DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                        DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
+                             .DocumentInfos?
+                             .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                             .ExpiryDate;
+                        //create bcgov_documenturl and file
+                        await _documentRepository.ManageAsync(new CreateDocumentCmd
+                        {
+                            TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                            ApplicationId = response.LicenceAppId,
+                            DocumentType = docType1,
+                            DocumentType2 = docType2,
+                            SubmittedByApplicantId = response.ContactId,
+                            ExpiryDate = expiredDate,
+                        }, ct);
+                    }
                 }
             }
+            await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        }
+        else
+        {
+            //update contact directly
         }
 
-        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        //check if criminal charges changes
+        //create task, assign to Licensing RA team
+        //New Offence Conviction
+        //(Licensing RA team - task)
+        //Hold a Position with Peace Officer Status
+        //(Licensing CS team - task high priority)
+        //Treated for Mental Health Condition
+        //(Licensing RA team - task)
 
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+        return new WorkerLicenceAppUpsertResponse();
     }
 
     #endregion
