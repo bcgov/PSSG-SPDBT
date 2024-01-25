@@ -197,7 +197,7 @@ export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },
 	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
 	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },
-	// { desc: '5 Years', code: LicenceTermCode.FiveYears },
+	{ desc: '5 Years', code: LicenceTermCode.FiveYears },
 ];
 
 export const RestraintDocumentTypes: SelectOptions[] = [

@@ -19,7 +19,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								<div class="row">
 									<div class="col-xl-5 col-lg-4">
 										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New"
-											>New ({{ newCost }} for a 5-year term)</mat-radio-button
+											>New ({{ newCost | currency : 'CAD' : 'symbol-narrow' : '1.0' }} for a 5-year
+											term)</mat-radio-button
 										>
 									</div>
 									<div class="col-xl-7 col-lg-8">
@@ -33,7 +34,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								<div class="row">
 									<div class="col-xl-5 col-lg-4">
 										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal"
-											>Renewal ({{ renewCost }} for a 5-year term)</mat-radio-button
+											>Renewal ({{ renewCost | currency : 'CAD' : 'symbol-narrow' : '1.0' }} for a 5-year
+											term)</mat-radio-button
 										>
 									</div>
 									<div class="col-xl-7 col-lg-8">
@@ -85,8 +87,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 })
 export class StepPermitTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
-	newCost = '$0';
-	renewCost = '$0';
+	newCost: number | null = null;
+	renewCost: number | null = null;
 
 	form: FormGroup = this.permitApplicationService.applicationTypeFormGroup;
 
@@ -96,9 +98,9 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 		const fee = this.permitApplicationService.getLicenceTermsAndFees();
 		fee.forEach((item: LicenceFeeResponse) => {
 			if (item.applicationTypeCode === ApplicationTypeCode.New) {
-				this.newCost = `$${item.amount}`;
+				this.newCost = item.amount ? item.amount : null;
 			} else if (item.applicationTypeCode === ApplicationTypeCode.Renewal) {
-				this.renewCost = `$${item.amount}`;
+				this.renewCost = item.amount ? item.amount : null;
 			}
 		});
 	}

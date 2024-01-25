@@ -46,7 +46,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</div>
 							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
-								<div class="summary-text-data">{{ feeAmount | default }}</div>
+								<div class="summary-text-data">
+									{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -58,7 +60,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepLicenceConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	feeAmount: null | string | undefined = '';
+	feeAmount: null | number = null;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	private licenceModelData: any = {};
@@ -74,9 +76,7 @@ export class StepLicenceConfirmationComponent implements OnInit {
 			.getLicenceTermsAndFees(true)
 			.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
 		if (fee?.length > 0) {
-			this.feeAmount = `$${fee[0].amount}`;
-		} else {
-			this.feeAmount = '';
+			this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
 		}
 	}
 

@@ -179,7 +179,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	loadUserProfile(): Observable<WorkerLicenceResponse> {
 		return this.createEmptyLicenceAuthenticated().pipe(
-			// TODO update
+			// TODO loadUserProfile
 			tap((_resp: any) => {
 				console.debug('loadUserProfile');
 

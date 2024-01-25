@@ -187,46 +187,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	loadPermit(
-		licenceAppId: string,
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
-		// TODO add:  switch workerLicenceTypeCode
-
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return this.loadPermitRenewal(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadPermitRenewal', resp);
-						this.initialized = true;
-					})
-				);
-			}
-			case ApplicationTypeCode.Update: {
-				return this.loadPermitUpdate(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadPermitUpdate', resp);
-						this.initialized = true;
-					})
-				);
-			}
-			default: {
-				return this.loadPermitNew(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadPermitNew', resp);
-						this.initialized = true;
-					})
-				);
-			}
-		}
-	}
-
-	/**
-	 * Load an existing licence application
-	 * @param licenceAppId
-	 * @returns
-	 */
 	getPermitNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		console.debug('getPermitNew', licenceAppId);
 
