@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { LicenceTermCode } from './licence-term-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
-export interface LicenceLookupResponse {
+export interface LicenceResponse {
   expiryDate?: string;
   licenceAppId?: null | string;
   licenceId?: null | string;

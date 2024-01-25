@@ -37,9 +37,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<LicenceLookupResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string accessCode = null)
+        public async Task<LicenceResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string accessCode = null)
         {
-            return await _mediator.Send(new LicenceLookupQuery(licenceNumber, accessCode));
+            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/anonymous/{licenceNumber}")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<LicenceLookupResponse> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, CancellationToken ct, [FromBody] GoogleRecaptcha recaptcha, [FromQuery] string accessCode = null)
+        public async Task<LicenceResponse> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, CancellationToken ct, [FromBody] GoogleRecaptcha recaptcha, [FromQuery] string accessCode = null)
         {
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
@@ -61,7 +61,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
             }
 
-            return await _mediator.Send(new LicenceLookupQuery(licenceNumber, accessCode));
+            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
         }
     }
 }

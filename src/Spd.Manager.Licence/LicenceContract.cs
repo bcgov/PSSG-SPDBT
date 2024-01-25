@@ -4,10 +4,10 @@ namespace Spd.Manager.Licence;
 
 public interface ILicenceManager
 {
-    public Task<LicenceLookupResponse> Handle(LicenceLookupQuery query, CancellationToken ct);
+    public Task<LicenceResponse> Handle(LicenceQuery query, CancellationToken ct);
 }
 
-public record LicenceLookupResponse
+public record LicenceResponse
 {
     public Guid? LicenceId { get; set; } = null;
     public Guid? LicenceAppId { get; set; } = null;
@@ -17,4 +17,4 @@ public record LicenceLookupResponse
     public LicenceTermCode? LicenceTermCode { get; set; }
 };
 
-public record LicenceLookupQuery(string LicenceNumber, string AccessCode) : IRequest<LicenceLookupResponse>;
+public record LicenceQuery(string LicenceNumber, string AccessCode) : IRequest<LicenceResponse>;

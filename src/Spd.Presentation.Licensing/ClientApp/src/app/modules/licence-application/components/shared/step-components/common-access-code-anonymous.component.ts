@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceLookupResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -130,7 +130,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 				this.licenceApplicationService
 					.getLicenceWithAccessCode(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
-						tap((resp: LicenceLookupResponse) => {
+						tap((resp: LicenceResponse) => {
 							this.handleLookupResponse(resp);
 						}),
 						take(1)
@@ -143,7 +143,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 				this.permitApplicationService
 					.getPermitWithAccessCode(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
-						tap((resp: LicenceLookupResponse) => {
+						tap((resp: LicenceResponse) => {
 							this.handleLookupResponse(resp);
 						}),
 						take(1)
@@ -166,7 +166,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		this.onCreateNewLicence();
 	}
 
-	private handleLookupResponse(resp: LicenceLookupResponse): void {
+	private handleLookupResponse(resp: LicenceResponse): void {
 		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.replacementPeriodPreventionDays;
 		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
 
