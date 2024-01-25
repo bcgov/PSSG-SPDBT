@@ -171,7 +171,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
 		const renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
 
-		const daysBetween = moment(resp.expiryDate).diff(moment(), 'days');
+		const daysBetween = moment(resp.expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
 
 		if (!resp) {
 			// access code / licence are not found

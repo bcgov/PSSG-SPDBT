@@ -2,12 +2,20 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
+import {
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	WorkerLicenceAppUpsertResponse,
+} from '@app/api/models';
+import { PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-review-licence-authenticated.component';
 import { StepsBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-background-renew-and-update.component';
 import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-licence-selection.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { StepsIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-identification-anonymous.component';
 
@@ -58,7 +66,7 @@ import { StepsIdentificationAnonymousComponent } from './worker-licence-wizard-s
 				<ng-template matStepContent>
 					<app-steps-review-licence-anonymous
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
+						(nextStepperStep)="onPay()"
 						(scrollIntoView)="onScrollIntoView()"
 						(goToStep)="onGoToStep($event)"
 					></app-steps-review-licence-anonymous>
@@ -82,6 +90,8 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	step2Complete = false;
 	step3Complete = false;
 
+	newLicenceAppId: string | null = null;
+
 	@ViewChild(StepsLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
 
@@ -96,7 +106,8 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
+		private hotToastService: HotToastService,
+		private paymentService: PaymentService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -196,5 +207,53 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				break;
 		}
 		this.updateCompleteStatus();
+	}
+
+	onPay(): void {
+		// const isFormValid = this.stepMailingAddressComponent.isFormValid();
+
+		// console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
+		// console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
+
+		// if (isFormValid) {
+		if (this.newLicenceAppId) {
+			this.payNow(this.newLicenceAppId);
+		} else {
+			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
+				next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+					console.debug('[onPay] submitLicenceAnonymous', resp.body);
+
+					// save this locally just in application payment fails
+					this.newLicenceAppId = resp.body.licenceAppId!;
+
+					this.hotToastService.success('Your licence replacement has been successfully submitted');
+					this.payNow(this.newLicenceAppId);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+			// }
+		}
+	}
+
+	private payNow(licenceAppId: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Licence Update`,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 }
