@@ -1,10 +1,11 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-step-permit-rationale',
@@ -19,10 +20,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
 				</ng-container>
 
-				<app-step-title
-					title="Provide your rationale for requiring body armour"
-					subtitle="The information you provide will assist the Registrar in deciding whether to issue your body armour permit"
-				></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -61,7 +59,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: ``,
 })
-export class StepPermitRationaleComponent implements LicenceChildStepperStepComponent {
+export class StepPermitRationaleComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
 	matcher = new FormErrorStateMatcher();
 	form: FormGroup = this.permitApplicationService.permitRationaleFormGroup;
 
@@ -70,11 +70,20 @@ export class StepPermitRationaleComponent implements LicenceChildStepperStepComp
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		// private dialog: MatDialog,
-		// private authenticationService: AuthenticationService,
-		private permitApplicationService: PermitApplicationService // private hotToastService: HotToastService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private permitApplicationService: PermitApplicationService) {}
+
+	ngOnInit(): void {
+		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
+
+		const name =
+			workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
+		this.title = `Provide your rationale for requiring ${name}`;
+
+		const workerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
+		this.subtitle = `The information you provide will assist the Registrar in deciding whether to issue your ${workerLicenceTypeDesc}`;
+	}
 
 	onFileUploaded(_file: File): void {
 		// if (this.authenticationService.isLoggedIn()) {

@@ -156,7 +156,6 @@ export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, 
 // ============================================================
 
 export const WorkerLicenceTypes: SelectOptions[] = [
-	// { desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },
@@ -198,7 +197,7 @@ export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },
 	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
 	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },
-	// { desc: '5 Years', code: LicenceTermCode.FiveYears },
+	{ desc: '5 Years', code: LicenceTermCode.FiveYears },
 ];
 
 export const RestraintDocumentTypes: SelectOptions[] = [
