@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum LicenceTermCode {
-  NintyDays = 'NintyDays',
+  NinetyDays = 'NinetyDays',
   OneYear = 'OneYear',
   TwoYears = 'TwoYears',
   ThreeYears = 'ThreeYears',
