@@ -607,7 +607,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					// TODO
+					// TODO handle response
 				}
 			});
 	}

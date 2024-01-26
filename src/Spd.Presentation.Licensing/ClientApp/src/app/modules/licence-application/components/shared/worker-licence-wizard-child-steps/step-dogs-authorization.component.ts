@@ -43,7 +43,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 						<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
 							<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
 
-							<div class="row mt-2">
+							<div class="row mt-2 mb-4">
 								<div class="col-12">
 									<div class="form-group" formGroupName="dogsPurposeFormGroup">
 										<div class="text-minor-heading my-2">I request authorization to use dogs for the purpose of</div>
@@ -65,9 +65,15 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 								</div>
 							</div>
 
-							<!-- Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification. -->
+							<app-alert type="danger" icon="error" *ngIf="originalDogAuthorizationExists">
+								Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification.
+							</app-alert>
 
-							<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
+							<div class="text-minor-heading my-2">Upload your Security Dog Validation Certificate:</div>
+							<div class="mb-2">
+								<mat-icon style="vertical-align: bottom;">emergency</mat-icon> If you have more than one dog, you must
+								submit a certificate for each dog
+							</div>
 
 							<div class="my-2">
 								<app-file-upload
@@ -97,6 +103,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
 export class StepDogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
+	originalDogAuthorizationExists = false;
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.dogsAuthorizationFormGroup;
@@ -112,6 +119,10 @@ export class StepDogsAuthorizationComponent implements OnInit, LicenceChildStepp
 	) {}
 
 	ngOnInit(): void {
+		this.originalDogAuthorizationExists = this.licenceApplicationService.licenceModelFormGroup.get(
+			'originalDogAuthorizationExists'
+		)?.value;
+
 		if (this.isCalledFromModal) {
 			this.form.patchValue({
 				useDogs: BooleanTypeCode.Yes,

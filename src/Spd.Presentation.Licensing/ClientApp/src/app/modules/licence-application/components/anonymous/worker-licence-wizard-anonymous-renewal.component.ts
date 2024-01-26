@@ -208,10 +208,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		if (this.newLicenceAppId) {
 			this.payNow(this.newLicenceAppId);
 		} else {
-			this.licenceApplicationService.submitLicenceRenewalAnonymous().subscribe({
+			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
-					console.debug('submitLicenceRenewalAnonymous', resp);
-					console.debug('submitLicenceRenewalAnonymous', resp.body);
+					console.debug('[onPay] submitLicenceAnonymous', resp.body);
 
 					// save this locally just in application payment fails
 					this.newLicenceAppId = resp.body.licenceAppId!;

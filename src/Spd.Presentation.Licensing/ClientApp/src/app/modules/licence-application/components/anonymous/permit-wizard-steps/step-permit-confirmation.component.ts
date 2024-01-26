@@ -34,7 +34,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</div>
 							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
-								<div class="summary-text-data">{{ feeAmount | default }}</div>
+								<div class="summary-text-data">
+									{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -46,7 +48,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepPermitConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	feeAmount: null | string | undefined = '';
+	feeAmount: null | number = null;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	private permitModelData: any = {};
@@ -58,12 +60,11 @@ export class StepPermitConfirmationComponent implements OnInit {
 	ngOnInit() {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
 
-		const fee = this.permitApplicationService.getLicenceTermsAndFees();
-		if (fee?.length > 0) {
-			this.feeAmount = `$${fee[0].amount}`;
-		} else {
-			this.feeAmount = '$0';
-		}
+		const fee = this.permitApplicationService
+			.getLicenceTermsAndFees()
+			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
+
+		this.feeAmount = fee?.amount ? fee.amount : null;
 	}
 
 	get permitHolderName(): string {

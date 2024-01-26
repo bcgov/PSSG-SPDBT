@@ -75,7 +75,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<div class="row mt-3" *ngIf="isOther === true">
 						<div class="col-xxl-6 col-xl-8 col-lg-12 mx-auto">
 							<mat-form-field>
-								<mat-label>Describe Other Requirement</mat-label>
+								<mat-label>Describe Requirement</mat-label>
 								<textarea
 									matInput
 									formControlName="otherReason"

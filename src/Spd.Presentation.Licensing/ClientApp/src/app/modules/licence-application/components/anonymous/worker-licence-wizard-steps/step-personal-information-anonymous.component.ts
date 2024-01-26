@@ -23,7 +23,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
 				</ng-container>
 
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
 					<app-common-personal-information-renew-anonymous
 						[applicationTypeCode]="applicationTypeCode"
 						[form]="form"
