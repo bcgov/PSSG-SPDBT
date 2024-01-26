@@ -102,6 +102,7 @@ export abstract class LicenceApplicationHelper {
 			origSurname: new FormControl(''),
 			origGenderCode: new FormControl(''),
 			origDateOfBirth: new FormControl(''),
+			hasGenderChanged: new FormControl(false),
 			attachments: new FormControl([]),
 		},
 		{

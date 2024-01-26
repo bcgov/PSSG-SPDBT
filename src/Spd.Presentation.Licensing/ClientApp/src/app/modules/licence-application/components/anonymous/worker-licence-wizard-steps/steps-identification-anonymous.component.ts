@@ -253,7 +253,7 @@ import { StepPersonalInformationAnonymousComponent } from './step-personal-infor
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update || hasGenderChanged">
 				<app-step-photograph-of-yourself-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-photograph-of-yourself-anonymous>
@@ -509,5 +509,11 @@ export class StepsIdentificationAnonymousComponent extends BaseWizardStepCompone
 			form.value.canadianCitizenProofTypeCode,
 			form.value.notCanadianCitizenProofTypeCode
 		);
+	}
+
+	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	get hasGenderChanged(): boolean {
+		const form = this.licenceApplicationService.personalInformationFormGroup;
+		return !!form.value.hasGenderChanged;
 	}
 }

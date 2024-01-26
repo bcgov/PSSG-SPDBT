@@ -19,7 +19,10 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 
 				<app-step-title title="Your personal information"></app-step-title>
 
-				<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
+				<app-common-personal-information-renew-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+					[form]="form"
+				></app-common-personal-information-renew-anonymous>
 			</div>
 		</section>
 	`,
