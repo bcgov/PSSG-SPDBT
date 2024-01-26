@@ -15,8 +15,11 @@ namespace Spd.Manager.Screening
         {
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
 
-            // If not a volunteer org, then the payee type is required
-            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.ParentOrgId != SpdConstants.BC_GOV_ORG_ID)
+            // If not a volunteer org or PSSO, then the payee type is required
+            if (org != null && 
+                org.OrgResult.VolunteerOrganizationTypeCode == null && 
+                org.OrgResult.ParentOrgId != SpdConstants.BC_GOV_ORG_ID &&
+                org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID)
             {
                 if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
                 {
