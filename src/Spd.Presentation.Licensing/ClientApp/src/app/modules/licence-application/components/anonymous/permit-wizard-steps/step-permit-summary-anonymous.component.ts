@@ -28,8 +28,8 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														mat-mini-fab
 														color="primary"
 														class="go-to-step-button"
-														matTooltip="Go to Step 1"
-														aria-label="Go to Step 1"
+														matTooltip="Go to Step 2"
+														aria-label="Go to Step 2"
 														(click)="$event.stopPropagation(); onEditStep(1)"
 													>
 														<mat-icon>edit</mat-icon>
@@ -363,8 +363,8 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														mat-mini-fab
 														color="primary"
 														class="go-to-step-button"
-														matTooltip="Go to Step 3"
-														aria-label="Go to Step 3"
+														matTooltip="Go to Step 4"
+														aria-label="Go to Step 4"
 														(click)="$event.stopPropagation(); onEditStep(3)"
 													>
 														<mat-icon>edit</mat-icon>
