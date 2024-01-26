@@ -5,7 +5,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     public interface IApplicationInviteRepository
     {
         public Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
-        public Task ManageAsync(ApplicationInviteCmd query, CancellationToken cancellationToken);
+        public System.Threading.Tasks.Task ManageAsync(ApplicationInviteCmd query, CancellationToken cancellationToken);
         public Task<AppInviteVerifyResp> VerifyApplicationInvitesAsync(ApplicationInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
     }
 
@@ -17,9 +17,9 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     }
     public interface ApplicationInviteCmd { };
 
-    public record AppInviteFilterBy(Guid? OrgId, 
-        string? EmailOrNameContains, 
-        ServiceTypeEnum[]? ServiceTypes = null, 
+    public record AppInviteFilterBy(Guid? OrgId,
+        string? EmailOrNameContains,
+        ServiceTypeEnum[]? ServiceTypes = null,
         Guid? AppInviteId = null,
         Guid? CreatedByUserId = null);
     public record AppInviteSortBy(bool? SubmittedDateDesc);
@@ -32,7 +32,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     {
         public Guid Id { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
-        public ApplicationInviteStatusEnum Status { get; set; } 
+        public ApplicationInviteStatusEnum Status { get; set; }
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
         public Guid? CreatedByUserId { get; set; }

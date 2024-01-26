@@ -12,7 +12,7 @@ using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Applicants.PortalUser;
-using Spd.Resource.Applicants.Task;
+using Spd.Resource.Applicants.Tasks;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Applicants

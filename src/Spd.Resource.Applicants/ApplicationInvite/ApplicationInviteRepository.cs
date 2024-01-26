@@ -87,7 +87,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return response;
         }
 
-        public async Task ManageAsync(ApplicationInviteCmd cmd, CancellationToken ct)
+        public async System.Threading.Tasks.Task ManageAsync(ApplicationInviteCmd cmd, CancellationToken ct)
         {
             if (cmd is ApplicationInvitesCreateCmd)
                 await AddApplicationInvitesAsync((ApplicationInvitesCreateCmd)cmd, ct);
@@ -95,7 +95,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                 await UpdateApplicationInvitesAsync((ApplicationInviteUpdateCmd)cmd, ct);
         }
 
-        private async Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken ct)
+        private async System.Threading.Tasks.Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken ct)
         {
             spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
             if (createInviteCmd.OrgId != SpdConstants.BC_GOV_ORG_ID)
@@ -148,7 +148,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             await _dynaContext.SaveChangesAsync(ct);
         }
 
-        private async Task UpdateApplicationInvitesAsync(ApplicationInviteUpdateCmd applicationInviteUpdateCmd, CancellationToken cancellationToken)
+        private async System.Threading.Tasks.Task UpdateApplicationInvitesAsync(ApplicationInviteUpdateCmd applicationInviteUpdateCmd, CancellationToken cancellationToken)
         {
             spd_portalinvitation? invite = await GetPortalInvitationById(applicationInviteUpdateCmd.OrgId, applicationInviteUpdateCmd.ApplicationInviteId);
 

@@ -9,6 +9,7 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
+using Spd.Resource.Applicants.Tasks;
 using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Shared.Exceptions;
@@ -25,6 +26,7 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
@@ -36,6 +38,7 @@ internal partial class PersonalLicenceAppManager :
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<IPersonalLicenceAppManager> _logger;
     private readonly ILicenceFeeRepository _feeRepository;
+    private readonly ITaskRepository _taskRepository;
     private readonly IDistributedCache _cache;
 
     public PersonalLicenceAppManager(
@@ -47,7 +50,8 @@ internal partial class PersonalLicenceAppManager :
         IDocumentRepository documentUrlRepository,
         ILogger<IPersonalLicenceAppManager> logger,
         ILicenceFeeRepository feeRepository,
-        IDistributedCache cache)
+        IDistributedCache cache,
+        ITaskRepository taskRepository)
     {
         _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
@@ -58,6 +62,7 @@ internal partial class PersonalLicenceAppManager :
         _logger = logger;
         _feeRepository = feeRepository;
         _cache = cache;
+        _taskRepository = taskRepository;
     }
 
     #region for portal
@@ -89,7 +94,7 @@ internal partial class PersonalLicenceAppManager :
         return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
     }
 
-    //authenticated submit
+    // authenticated submit
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken ct)
     {
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, ct);
@@ -317,6 +322,14 @@ internal partial class PersonalLicenceAppManager :
 
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
     {
+        await _taskRepository.ManageAsync(new CreateTaskCmd()
+        {
+            Description = "peggy test",
+            DueDate= new DateOnly(2024,2,20),
+            Subject = "subject",
+            TaskPriorityEnum = TaskPriorityEnum.High,            
+        }, ct) ;
+
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be a update request");

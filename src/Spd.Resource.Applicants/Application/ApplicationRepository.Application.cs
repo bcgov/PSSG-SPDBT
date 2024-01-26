@@ -73,7 +73,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task UpdateAsync(UpdateCmd cmd, CancellationToken cancellationToken)
+    public async System.Threading.Tasks.Task UpdateAsync(UpdateCmd cmd, CancellationToken cancellationToken)
     {
         spd_application? app = await _context.GetApplicationById(cmd.ApplicationId, cancellationToken);
         if (app == null)
@@ -130,7 +130,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return _mapper.Map<ApplicationResult>(application);
     }
 
-    public async Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
+    public async System.Threading.Tasks.Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
         if (!createApplicationCmd.SharedClearanceId.HasValue)
             throw new ArgumentException("SharedClearanceId cannot be null");
