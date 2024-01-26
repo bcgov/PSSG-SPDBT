@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicationTypeCode,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -90,6 +91,7 @@ export abstract class PermitApplicationHelper {
 			origSurname: new FormControl(''),
 			origGenderCode: new FormControl(''),
 			origDateOfBirth: new FormControl(''),
+			hasGenderChanged: new FormControl(false),
 			attachments: new FormControl([]),
 		},
 		{
@@ -199,6 +201,20 @@ export abstract class PermitApplicationHelper {
 	criminalHistoryFormGroup: FormGroup = this.formBuilder.group({
 		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
 	});
+
+	printPermitFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isPrintPermit: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'isPrintPermit',
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value === ApplicationTypeCode.Update
+				),
+			],
+		}
+	);
 
 	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),

@@ -14,12 +14,12 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.CategoryData));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, CreateLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes))); 
+            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<WorkerLicenceAppCategoryData, WorkerLicenceAppCategory>()
             .ReverseMap();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
-        CreateMap<LicenceResp, LicenceLookupResponse>();
+        CreateMap<LicenceResp, LicenceResponse>();
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
         CreateMap<DocumentResp, LicenceAppDocumentResponse>()
              .ForMember(d => d.DocumentExtension, opt => opt.MapFrom(s => s.FileExtension))

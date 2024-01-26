@@ -15,7 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
-	LicenceLookupResponse,
+	LicenceResponse,
 	LicenceTermCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
@@ -98,6 +98,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
+		printPermitData: this.printPermitFormGroup,
 		// profileConfirmationData: this.profileConfirmationFormGroup,
 	});
 
@@ -176,7 +177,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceLookupResponse> {
+	): Observable<LicenceResponse> {
 		return this.licenceLookupService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
@@ -326,12 +327,30 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadPermitUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificPermit(licenceAppId).pipe(
 			tap((resp: any) => {
-				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				// const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit }; // TODO remove hardcoded
+
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				// const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const permitRequirementData = { workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit }; // TODO remove hardcoded
 
 				const licenceTermData = {
 					licenceTermCode: LicenceTermCode.FiveYears,
+				};
+
+				// TODO remove hardcoded
+				const employerInformationData = {
+					businessName: 'aaa',
+					supervisorName: 'ccc',
+					supervisorEmailAddress: 'bbb@bbb.com',
+					supervisorPhoneNumber: '5554448787',
+					addressSelected: true,
+					addressLine1: 'bbb1',
+					addressLine2: 'bbb2',
+					city: 'bbb3',
+					postalCode: 'V9A6D4',
+					province: 'bbb4',
+					country: 'bbb5',
 				};
 
 				this.permitModelFormGroup.patchValue(
@@ -342,6 +361,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
+						employerInformationData,
 					},
 					{
 						emitEvent: false,
