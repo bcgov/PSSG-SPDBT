@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicationTypeCode,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -90,6 +91,7 @@ export abstract class PermitApplicationHelper {
 			origSurname: new FormControl(''),
 			origGenderCode: new FormControl(''),
 			origDateOfBirth: new FormControl(''),
+			hasGenderChanged: new FormControl(false),
 			attachments: new FormControl([]),
 		},
 		{
@@ -200,6 +202,20 @@ export abstract class PermitApplicationHelper {
 		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
 	});
 
+	printPermitFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isPrintPermit: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'isPrintPermit',
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value === ApplicationTypeCode.Update
+				),
+			],
+		}
+	);
+
 	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
 	});
@@ -208,7 +224,9 @@ export abstract class PermitApplicationHelper {
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
 			canadianCitizenProofTypeCode: new FormControl(''),
-			notCanadianCitizenProofTypeCode: new FormControl(''),
+			isResidentOfCanada: new FormControl(''),
+			proofOfResidentStatusCode: new FormControl(''),
+			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
 		},
@@ -219,14 +237,23 @@ export abstract class PermitApplicationHelper {
 					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'notCanadianCitizenProofTypeCode',
+					'isResidentOfCanada',
 					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.No
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'proofOfResidentStatusCode',
+					(form) => form.get('isResidentOfCanada')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'proofOfCitizenshipCode',
+					(form) => form.get('isResidentOfCanada')?.value == BooleanTypeCode.No
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
 					(form) =>
-						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
-						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit
+						form.get('isResidentOfCanada')?.value == BooleanTypeCode.Yes &&
+						(form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
+							form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.StudyPermit)
 				),
 			],
 		}

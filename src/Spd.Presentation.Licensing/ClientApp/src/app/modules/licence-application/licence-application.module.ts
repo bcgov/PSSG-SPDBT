@@ -23,13 +23,16 @@ import { StepPermitPersonalInformationComponent } from './components/anonymous/p
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhotographOfYourselfComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
+import { StepPermitPrintComponent } from './components/anonymous/permit-wizard-steps/step-permit-print.component';
 import { StepPermitRationaleComponent } from './components/anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-steps/steps-permit-contact.component';
-import { StepsPermitDetailsComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component';
+import { StepsPermitDetailsNewComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-new.component';
+import { StepsPermitDetailsUpdateComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-update.component';
+import { StepsPermitDetailsRenewalComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component-renewal';
 import { StepsPermitIdentificationComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification.component';
 import { StepsPermitPurposeComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-review-anonymous.component';
@@ -251,6 +254,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitTypeAnonymousComponent,
 		StepPermitExpiredComponent,
 		StepPermitMailingAddressComponent,
+		StepPermitPrintComponent,
 		StepPermitResidentialAddressComponent,
 		StepPermitReasonComponent,
 		StepPermitRationaleComponent,
@@ -258,7 +262,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitEmployerInformationComponent,
 		StepPermitCriminalHistoryComponent,
 		StepPermitFingerprintsComponent,
-		StepsPermitDetailsComponent,
+		StepsPermitDetailsUpdateComponent,
+		StepsPermitDetailsNewComponent,
+		StepsPermitDetailsRenewalComponent,
 		StepsPermitPurposeComponent,
 		StepsPermitContactComponent,
 		StepPermitAccessCodeComponent,

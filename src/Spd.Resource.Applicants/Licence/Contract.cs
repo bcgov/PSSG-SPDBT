@@ -32,6 +32,6 @@ namespace Spd.Resource.Applicants.Licence
         public string? LicenceNumber { get; set; } = null;
         public DateOnly ExpiryDate { get; set; }
         public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
-        public LicenceTermEnum? LicenceTerm { get; set; }
+        public LicenceTermEnum? LicenceTermCode { get; set; }
     }
 }

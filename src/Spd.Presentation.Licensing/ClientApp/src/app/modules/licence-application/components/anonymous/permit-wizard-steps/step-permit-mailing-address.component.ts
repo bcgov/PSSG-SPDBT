@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 
@@ -109,7 +109,7 @@ export class StepPermitMailingAddressComponent implements OnInit, LicenceChildSt
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+	form: FormGroup = this.permitApplicationService.mailingAddressFormGroup;
 	title = '';
 	subtitle = '';
 
@@ -124,7 +124,7 @@ export class StepPermitMailingAddressComponent implements OnInit, LicenceChildSt
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {

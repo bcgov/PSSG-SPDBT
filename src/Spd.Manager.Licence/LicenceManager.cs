@@ -6,7 +6,7 @@ using Spd.Resource.Applicants.Licence;
 namespace Spd.Manager.Licence;
 
 internal class LicenceManager :
-        IRequestHandler<LicenceLookupQuery, LicenceLookupResponse>,
+        IRequestHandler<LicenceQuery, LicenceResponse>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -23,7 +23,7 @@ internal class LicenceManager :
         _logger = logger;
     }
 
-    public async Task<LicenceLookupResponse?> Handle(LicenceLookupQuery query, CancellationToken ct)
+    public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken ct)
     {
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
@@ -38,7 +38,7 @@ internal class LicenceManager :
             return null;
         }
 
-        LicenceLookupResponse result = _mapper.Map<LicenceLookupResponse>(response.Items.First());
+        LicenceResponse result = _mapper.Map<LicenceResponse>(response.Items.First());
         return result;
     }
 }

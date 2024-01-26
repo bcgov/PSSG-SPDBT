@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -58,7 +58,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Sex</mat-label>
-								<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
+								<mat-select
+									formControlName="genderCode"
+									(selectionChange)="onChangeGender($event)"
+									[errorStateMatcher]="matcher"
+								>
 									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
 										{{ gdr.desc }}
 									</mat-option>
@@ -86,6 +90,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 					<div class="text-minor-heading mb-2">Upload your proof of legal name change:</div>
 					<app-file-upload
+						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
@@ -118,14 +123,21 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
+	@Output() fileUploaded = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter();
+
+	constructor(private utilService: UtilService) {}
 
 	ngOnInit(): void {
 		this.disableData(true);
 	}
 
+	onFileUploaded(file: File): void {
+		this.fileUploaded.emit(file);
+	}
+
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.fileRemoved.emit();
 	}
 
 	onUpdateInformation(): void {
@@ -134,6 +146,11 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 		} else {
 			this.disableData(true);
 		}
+	}
+
+	onChangeGender(_event: MatSelectChange): void {
+		const hasGenderChanged = this.genderCode.value !== this.origGenderCode.value;
+		this.form.patchValue({ hasGenderChanged });
 	}
 
 	private enableData(): void {
@@ -153,6 +170,7 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 				middleName2: this.origMiddleName2.value,
 				surname: this.origSurname.value,
 				genderCode: this.origGenderCode.value,
+				hasGenderChanged: false,
 				// dateOfBirth: this.origDateOfBirth.value,
 			},
 			{ emitEvent: false }

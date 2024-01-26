@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
+	Alias,
 	ApplicationTypeCode,
 	BooleanTypeCode,
 	BusinessTypeCode,
@@ -14,7 +15,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
-	LicenceLookupResponse,
+	LicenceResponse,
 	LicenceTermCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
@@ -26,6 +27,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -77,6 +79,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
+		licenceTermData: this.licenceTermFormGroup,
 
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		permitRequirementData: this.permitRequirementFormGroup,
@@ -95,6 +98,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		residentialAddressData: this.residentialAddressFormGroup,
 		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
+		printPermitData: this.printPermitFormGroup,
 		// profileConfirmationData: this.profileConfirmationFormGroup,
 	});
 
@@ -173,50 +177,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceLookupResponse> {
+	): Observable<LicenceResponse> {
 		return this.licenceLookupService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
-	}
-
-	/**
-	 * Load an existing licence application
-	 * @param licenceAppId
-	 * @returns
-	 */
-	loadPermit(
-		licenceAppId: string,
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
-		// TODO add:  switch workerLicenceTypeCode
-
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return this.loadPermitRenewal(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadPermitRenewal', resp);
-						this.initialized = true;
-					})
-				);
-			}
-			case ApplicationTypeCode.Update: {
-				return this.loadPermitUpdate(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadPermitUpdate', resp);
-						this.initialized = true;
-					})
-				);
-			}
-			default: {
-				return this.loadPermitNew(licenceAppId).pipe(
-					tap((resp: any) => {
-						console.debug('LOAD loadPermitNew', resp);
-						this.initialized = true;
-					})
-				);
-			}
-		}
 	}
 
 	/**
@@ -309,34 +273,31 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadPermitRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificPermit(licenceAppId).pipe(
 			tap((resp: any) => {
-				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				// const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit }; // TODO remove hardcoded
 
-				// TODO renewal - remove data that should be re-prompted for
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+				// const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const permitRequirementData = { workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit }; // TODO remove hardcoded
+
+				const licenceTermData = {
+					licenceTermCode: LicenceTermCode.FiveYears,
+				};
+
+				// TODO remove hardcoded
+				const employerInformationData = {
+					businessName: 'aaa',
+					supervisorName: 'ccc',
+					supervisorEmailAddress: 'bbb@bbb.com',
+					supervisorPhoneNumber: '5554448787',
+					addressSelected: true,
+					addressLine1: 'bbb1',
+					addressLine2: 'bbb2',
+					city: 'bbb3',
+					postalCode: 'V9A6D4',
+					province: 'bbb4',
+					country: 'bbb5',
+				};
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -345,14 +306,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						workerLicenceTypeData,
 						applicationTypeData,
 						permitRequirementData,
-						// licenceTermData,
-						// bcDriversLicenceData,
-						// fingerprintProofData,
-						// aliasesData,
-						// citizenshipData,
-						// additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
+						licenceTermData,
+						employerInformationData,
 					},
 					{
 						emitEvent: false,
@@ -372,33 +327,31 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadPermitUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificPermit(licenceAppId).pipe(
 			tap((resp: any) => {
-				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				// const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit }; // TODO remove hardcoded
+
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-				// TODO renewal - remove data that should be re-prompted for
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+				// const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const permitRequirementData = { workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit }; // TODO remove hardcoded
+
+				const licenceTermData = {
+					licenceTermCode: LicenceTermCode.FiveYears,
+				};
+
+				// TODO remove hardcoded
+				const employerInformationData = {
+					businessName: 'aaa',
+					supervisorName: 'ccc',
+					supervisorEmailAddress: 'bbb@bbb.com',
+					supervisorPhoneNumber: '5554448787',
+					addressSelected: true,
+					addressLine1: 'bbb1',
+					addressLine2: 'bbb2',
+					city: 'bbb3',
+					postalCode: 'V9A6D4',
+					province: 'bbb4',
+					country: 'bbb5',
+				};
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -407,14 +360,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						workerLicenceTypeData,
 						applicationTypeData,
 						permitRequirementData,
-						// licenceTermData,
-						// bcDriversLicenceData,
-						// fingerprintProofData,
-						// aliasesData,
-						// citizenshipData,
-						// additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
+						licenceTermData,
+						employerInformationData,
 					},
 					{
 						emitEvent: false,
@@ -464,12 +411,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const permitRequirementData = {
 			workerLicenceTypeCode: workerLicenceTypeCode,
 		};
+		const licenceTermData = {
+			licenceTermCode: LicenceTermCode.FiveYears,
+		};
 
 		this.permitModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
 				permitRequirementData,
 				photographOfYourselfData,
+				licenceTermData,
 			},
 			{
 				emitEvent: false,
@@ -486,6 +437,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
 		const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
+
+		const licenceTermData = {
+			licenceTermCode: LicenceTermCode.FiveYears,
+		};
+
 		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 		if (bcscUserWhoamiProfile) {
 			const personalInformationData = {
@@ -515,6 +471,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					aliasesData: { previousNameFlag: BooleanTypeCode.No },
 					workerLicenceTypeData,
 					permitRequirementData,
+					licenceTermData,
 				},
 				{
 					emitEvent: false,
@@ -531,6 +488,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					aliasesData: { previousNameFlag: BooleanTypeCode.No },
 					workerLicenceTypeData,
 					permitRequirementData,
+					licenceTermData,
 				},
 				{
 					emitEvent: false,
@@ -558,6 +516,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					expiredLicenceNumber: resp.expiredLicenceNumber,
 					expiryDate: resp.expiryDate,
 					expiredLicenceId: resp.expiredLicenceId,
+				};
+
+				const licenceTermData = {
+					licenceTermCode: resp.licenceTermCode,
 				};
 
 				const bcDriversLicenceData = {
@@ -627,6 +589,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 
 				const citizenshipData = {
+					// TODO fix permit citizenship data
 					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
 					canadianCitizenProofTypeCode: resp.isCanadianCitizen
 						? resp.citizenshipDocument?.licenceDocumentTypeCode
@@ -636,20 +599,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						: resp.citizenshipDocument?.licenceDocumentTypeCode,
 					expiryDate: resp.citizenshipDocument?.expiryDate,
 					attachments: citizenshipDataAttachments,
-				};
-
-				const additionalGovIdAttachments: Array<File> = [];
-				if (resp.additionalGovIdDocument?.documentResponses) {
-					resp.additionalGovIdDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						additionalGovIdAttachments.push(aFile);
-					});
-				}
-
-				const additionalGovIdData = {
-					governmentIssuedPhotoTypeCode: resp.additionalGovIdDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.additionalGovIdDocument?.expiryDate,
-					attachments: additionalGovIdAttachments,
 				};
 
 				let height = resp.height ? resp.height + '' : null;
@@ -725,6 +674,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						permitRequirementData,
 						applicationTypeData,
 						expiredLicenceData,
+						licenceTermData,
 						bcDriversLicenceData,
 						fingerprintProofData,
 						criminalHistoryData,
@@ -732,7 +682,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						personalInformationData,
 						characteristicsData,
 						citizenshipData,
-						additionalGovIdData,
 						photographOfYourselfData,
 						contactInformationData,
 						profileConfirmationData: { isProfileUpToDate: true },
@@ -743,6 +692,20 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						emitEvent: false,
 					}
 				);
+
+				const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
+				resp.aliases?.forEach((alias: Alias) => {
+					aliasesArray.push(
+						new FormGroup({
+							givenName: new FormControl(alias.givenName),
+							middleName1: new FormControl(alias.middleName1),
+							middleName2: new FormControl(alias.middleName2),
+							surname: new FormControl(alias.surname, [FormControlValidators.required]),
+						})
+					);
+				});
+
+				this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
 
 				console.debug('[loadSpecificPermit] licenceModelFormGroup', this.permitModelFormGroup.value);
 			}),
@@ -792,7 +755,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	public getLicenceTermsAndFees(): Array<LicenceFeeResponse> {
 		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
-		const businessTypeCode = BusinessTypeCode.None;
+		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO permit, what business type to use?
 		// ** Permits are always 5 years
 
 		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, businessTypeCode);
@@ -815,19 +778,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				(item) =>
 					item.workerLicenceTypeCode == workerLicenceTypeCode &&
 					item.businessTypeCode == businessTypeCode &&
-					item.licenceTermCode == LicenceTermCode.FiveYears
+					item.licenceTermCode == LicenceTermCode.FiveYears &&
+					item.hasValidSwl90DayLicence === false
 			);
 		}
-	}
-
-	isShowAdditionalGovermentIdStep(): boolean {
-		const form = this.citizenshipFormGroup;
-		return (
-			(form.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-				form.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(form.value.isCanadianCitizen == BooleanTypeCode.No &&
-				form.value.notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		);
 	}
 
 	/**
@@ -864,14 +818,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
-		// const showAdditionalGovermentIdStep = this.citizenshipFormGroup
-		// 	? (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-		// 			this.citizenshipFormGroup.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-		// 	  (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.No &&
-		// 			this.citizenshipFormGroup.value.notCanadianCitizenProofTypeCode !=
-		// 				LicenceDocumentTypeCode.PermanentResidentCard)
-		// 	: true;
-
 		console.debug(
 			'isStepIdentificationComplete',
 			this.personalInformationFormGroup.valid,
@@ -883,12 +829,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.characteristicsFormGroup.valid,
 			this.photographOfYourselfFormGroup.valid
 		);
-		// console.debug('showAdditionalGovermentIdStep', showAdditionalGovermentIdStep, this.additionalGovIdFormGroup.valid);
 
 		// if (this.authenticationService.isLoggedIn()) {
 		// 	return (
 		// 		this.citizenshipFormGroup.valid &&
-		// 		(showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true) &&
 		// 		this.bcDriversLicenceFormGroup.valid &&
 		// 		this.characteristicsFormGroup.valid &&
 		// 		this.photographOfYourselfFormGroup.valid
@@ -1032,6 +976,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		let citizenshipDocument: CitizenshipDocument | null = null;
 		if (citizenshipData.attachments) {
+			// TODO fix permit citizenship data
 			const citizenshipDocuments: Array<LicenceAppDocumentResponse> = [];
 			citizenshipData.attachments.forEach((doc: any) => {
 				citizenshipDocuments.push({
@@ -1049,31 +994,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						: citizenshipData.notCanadianCitizenProofTypeCode,
 			};
 		}
-
-		// let additionalGovIdDocument: AdditionalGovIdDocument | null = null;
-		// const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-		// 	citizenshipData.isCanadianCitizen,
-		// 	citizenshipData.canadianCitizenProofTypeCode,
-		// 	citizenshipData.notCanadianCitizenProofTypeCode
-		// );
-
-		// if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
-		// 	const additionalGovIdDocuments: Array<LicenceAppDocumentResponse> = [];
-		// 	additionalGovIdData.attachments.forEach((doc: any) => {
-		// 		additionalGovIdDocuments.push({
-		// 			documentUrlId: doc.documentUrlId,
-		// 		});
-		// 	});
-		// 	additionalGovIdDocument = {
-		// 		documentResponses: additionalGovIdDocuments,
-		// 		expiryDate: additionalGovIdData.expiryDate
-		// 			? this.formatDatePipe.transform(additionalGovIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-		// 			: null,
-		// 		licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
-		// 	};
-		// } else {
-		// 	this.additionalGovIdFormGroup.reset();
-		// }
 
 		let idPhotoDocument: IdPhotoDocument | null = null;
 		if (photographOfYourselfData.attachments) {
@@ -1138,7 +1058,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			//-----------------------------------
 			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			citizenshipDocument,
-			// additionalGovIdDocument,
 			//-----------------------------------
 			fingerprintProofDocument,
 			//-----------------------------------
@@ -1282,13 +1201,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			});
 		}
 
-		if (savebody.additionalGovIdDocument?.expiryDate) {
-			documents.push({
-				licenceDocumentTypeCode: savebody.additionalGovIdDocument.licenceDocumentTypeCode,
-				expiryDate: savebody.additionalGovIdDocument.expiryDate,
-			});
-		}
-
 		console.debug('submitPermitAnonymous documentInfos', documents);
 		return documents;
 	}
@@ -1298,10 +1210,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const formValue = this.permitModelFormGroup.getRawValue();
 
 		const citizenshipData = { ...formValue.citizenshipData };
-		// const additionalGovIdData = { ...formValue.additionalGovIdData };
-		// const policeBackgroundData = { ...formValue.policeBackgroundData };
 		const fingerprintProofData = { ...formValue.fingerprintProofData };
-		// const mentalHealthConditionsData = { ...formValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
 
 		if (fingerprintProofData.attachments) {
@@ -1313,6 +1222,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 
 		if (citizenshipData.attachments) {
+			// TODO fix permit citizenship data
 			const docs: Array<Blob> = [];
 			citizenshipData.attachments.forEach((doc: Blob) => {
 				docs.push(doc);
@@ -1323,20 +1233,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					: citizenshipData.notCanadianCitizenProofTypeCode;
 			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
 		}
-
-		// const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-		// 	citizenshipData.isCanadianCitizen,
-		// 	citizenshipData.canadianCitizenProofTypeCode,
-		// 	citizenshipData.notCanadianCitizenProofTypeCode
-		// );
-
-		// if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
-		// 	const docs: Array<Blob> = [];
-		// 	additionalGovIdData.attachments.forEach((doc: Blob) => {
-		// 		docs.push(doc);
-		// 	});
-		// 	documents.push({ licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode, documents: docs });
-		// }
 
 		if (photographOfYourselfData.attachments) {
 			const docs: Array<Blob> = [];

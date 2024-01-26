@@ -52,7 +52,7 @@ export class UpdateApplyNameChangeModalComponent {
 	) {}
 
 	// ngOnInit(): void {
-	// 	// TODO
+	// 	// TODO name change modal
 	// 	// const infos = this.dialogData.userInfos;
 	// 	// this.userInfos = infos;
 	// }

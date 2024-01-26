@@ -34,7 +34,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
@@ -52,82 +52,6 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_PERSONAL_INFORMATION)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-			<mat-step>
-				<app-step-permit-criminal-history
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-criminal-history>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-fingerprints [applicationTypeCode]="applicationTypeCode"></app-step-permit-fingerprints>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_FINGERPRINTS)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_FINGERPRINTS)"
 						>
 							Next: Review
 						</button>
@@ -247,6 +171,125 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 				</div>
 			</mat-step>
 
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update || hasGenderChanged">
+				<app-step-permit-photograph-of-yourself-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-photograph-of-yourself-anonymous>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
+						>
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-criminal-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-criminal-history>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+						>
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-fingerprints [applicationTypeCode]="applicationTypeCode"></app-step-permit-fingerprints>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
+							*ngIf="isLoggedIn"
+						>
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_FINGERPRINTS)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_FINGERPRINTS)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
 			<mat-step>
 				<app-step-permit-physical-characteristics
 					[applicationTypeCode]="applicationTypeCode"
@@ -271,7 +314,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 							mat-flat-button
 							color="primary"
 							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PHYSICAL_CHARACTERISTICS)"
+							(click)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
 						>
 							Next
 						</button>
@@ -282,48 +325,6 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-photograph-of-yourself-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-photograph-of-yourself-anonymous>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
 						>
 							Next: Review
 						</button>
@@ -426,5 +427,11 @@ export class StepsPermitIdentificationComponent extends BaseWizardStepComponent 
 				return this.stepPhotographComponent.isFormValid();
 		}
 		return false;
+	}
+
+	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	get hasGenderChanged(): boolean {
+		const form = this.permitApplicationService.personalInformationFormGroup;
+		return !!form.value.hasGenderChanged;
 	}
 }

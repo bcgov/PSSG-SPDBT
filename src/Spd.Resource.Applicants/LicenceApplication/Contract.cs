@@ -122,7 +122,7 @@ public enum ApplicationTypeEnum
 
 public enum LicenceTermEnum
 {
-    NintyDays,
+    NinetyDays,
     OneYear,
     TwoYears,
     ThreeYears,

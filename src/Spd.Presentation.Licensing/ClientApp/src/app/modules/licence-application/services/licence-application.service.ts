@@ -6,14 +6,16 @@ import {
 	BooleanTypeCode,
 	BusinessTypeCode,
 	Document,
+	GoogleRecaptcha,
 	HeightUnitCode,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
-	LicenceLookupResponse,
+	LicenceResponse,
 	LicenceTermCode,
 	WorkerCategoryTypeCode,
+	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
@@ -21,6 +23,7 @@ import {
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import * as moment from 'moment';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -68,6 +71,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
 		originalBusinessTypeCode: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false),
+		originalDogAuthorizationExists: new FormControl(false),
 
 		applicationPortalStatus: new FormControl(null),
 
@@ -174,7 +179,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	loadUserProfile(): Observable<WorkerLicenceResponse> {
 		return this.createEmptyLicenceAuthenticated().pipe(
-			// TODO update
+			// TODO loadUserProfile
 			tap((_resp: any) => {
 				console.debug('loadUserProfile');
 
@@ -195,7 +200,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceLookupResponse> {
+	): Observable<LicenceResponse> {
 		return this.licenceLookupService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
@@ -345,15 +350,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Get the licence fees for the licence and application type and business type
 	 * @returns list of fees
 	 */
-	public getLicenceTermsAndFees(): Array<LicenceFeeResponse> {
+	public getLicenceTermsAndFees(useOriginal: boolean | undefined = false): Array<LicenceFeeResponse> {
 		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
 		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
 
 		let businessTypeCode = '';
-		if (applicationTypeCode === ApplicationTypeCode.New) {
-			businessTypeCode = this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value;
-		} else {
+		if (useOriginal) {
+			// use this value in the licence confirmation page
 			businessTypeCode = this.licenceModelFormGroup.get('originalBusinessTypeCode')?.value;
+		} else {
+			businessTypeCode = this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value;
 		}
 
 		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode);
@@ -362,8 +368,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			return [];
 		}
 
+		const originalLicenceTermCode = this.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
 		let hasValidSwl90DayLicence = false;
-		if (applicationTypeCode === ApplicationTypeCode.Renewal && businessTypeCode === LicenceTermCode.NintyDays) {
+		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
 			hasValidSwl90DayLicence = true;
 		}
 
@@ -372,6 +379,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
 		// 	businessTypeCode,
+		// 	hasValidSwl90DayLicence,
 		// 	this.licenceFeesSecurityWorkerLicence?.filter(
 		// 		(item) =>
 		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
@@ -675,120 +683,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 			})
 		);
-	}
-
-	/**
-	 * Submit the new licence data.
-	 * @returns StrictHttpResponse<WorkerLicenceAppUpsertResponse>
-	 */
-	submitLicenceNew(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		if (this.authenticationService.isLoggedIn()) {
-			return this.submitLicenceNewAuthenticated();
-		} else {
-			return this.submitLicenceNewAnonymous();
-		}
-	}
-
-	/**
-	 * Submit the licence data for replacement anonymous
-	 * @returns
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		// console.debug('submitLicenceReplacementAnonymous body', body);
-
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.workerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((resp: string) => {
-					const keyCode = resp;
-
-					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
-						keyCode,
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
-	}
-
-	/**
-	 * Submit the licence data for renewal anonymous
-	 * @returns
-	 */
-	submitLicenceRenewalAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		let keyCode = '';
-
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-		const documentInfos = this.getDocsToSaveAnonymous(licenceModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		// Get the keyCode for the existing documents to save.
-		const existingKeyCodes: Array<string> = [];
-		documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
-			docBody.documents.forEach((doc: any) => {
-				if (doc.documentUrlId) {
-					existingKeyCodes.push(doc.documentUrlId);
-				}
-			});
-		});
-
-		console.debug('[submitLicenceRenewalAnonymous] body', body);
-		console.debug('[submitLicenceRenewalAnonymous] documentInfos', documentInfos);
-
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.workerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((resp: string) => {
-					keyCode = resp;
-
-					const documentsToSave: Observable<string>[] = [];
-					documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
-						// Only pass new documents and get a keyCode for each of those.
-						const newDocumentsOnly: Array<Blob> = [];
-						docBody.documents.forEach((doc: any) => {
-							if (!doc.documentUrlId) {
-								newDocumentsOnly.push(doc);
-							}
-						});
-
-						if (newDocumentsOnly.length > 0) {
-							documentsToSave.push(
-								this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
-									keyCode,
-									body: {
-										Documents: newDocumentsOnly,
-										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-									},
-								})
-							);
-						}
-					});
-
-					return forkJoin(documentsToSave);
-				}),
-				switchMap((resps: string[]) => {
-					// pass in the list of document key codes
-					body.documentKeyCodes = [...resps];
-					body.previousDocumentIds = [...existingKeyCodes];
-
-					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
-						keyCode,
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
 	}
 
 	private createEmptyLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
@@ -1466,21 +1360,62 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					attachments: [],
 				};
 
+				let originalPhotoOfYourselfLastUpload = null;
+				if (_resp.idPhotoDocument?.documentResponses) {
+					_resp.idPhotoDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+						originalPhotoOfYourselfLastUpload = item.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
+					});
+				}
+
+				// We require a new photo every 5 years. Please provide a new photo for your licence
+				const yearsDiff = moment()
+					.startOf('day')
+					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+				let photographOfYourselfData = {};
+				if (originalPhotoOfYourselfExpired) {
+					// clear out data to force user to upload a new photo
+					photographOfYourselfData = {
+						useBcServicesCardPhoto: BooleanTypeCode.No,
+						attachments: [],
+					};
+				}
+
+				// If applicant is renewing a licence where they already had authorization to use dogs,
+				// clear attachments to force user to upload a new proof of qualification.
+				_resp.useDogs = true;
+				const originalDogAuthorizationExists = _resp.useDogs;
+				let dogsAuthorizationData = {};
+				if (originalDogAuthorizationExists) {
+					dogsAuthorizationData = {
+						useDogs: this.booleanToBooleanType(_resp.useDogs),
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
+							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
+							isDogsPurposeProtection: _resp.isDogsPurposeProtection,
+						},
+						attachments: [],
+					};
+				}
+
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						applicationTypeData,
 						originalLicenceTermCode: _resp.licenceTermCode,
+						originalPhotoOfYourselfExpired,
+						originalDogAuthorizationExists,
 
 						soleProprietorData,
 						licenceTermData,
 						fingerprintProofData,
 						bcDriversLicenceData,
 						aliasesData,
+						photographOfYourselfData,
 						citizenshipData,
 						additionalGovIdData,
-						// restraintsAuthorizationData,
-						// dogsAuthorizationData,
+						dogsAuthorizationData,
 					},
 					{
 						emitEvent: false,
@@ -1501,8 +1436,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.loadSpecificLicence(licenceAppId).pipe(
 			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-
-				// TODO Update: Remove data that should be re-prompted for
 
 				this.licenceModelFormGroup.patchValue(
 					{
@@ -1555,20 +1488,22 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Submit the licence data
 	 * @returns
 	 */
-	private submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody(this.licenceModelFormGroup.getRawValue());
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
 		console.debug('submitLicenceAuthenticated body', body);
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
 	/**
-	 * Submit the licence data
+	 * Submit the licence data for renewal anonymous
 	 * @returns
 	 */
-	private submitLicenceNewAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		let keyCode = '';
-
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
 		const documentInfos = this.getDocsToSaveAnonymous(licenceModelFormValue);
@@ -1576,10 +1511,76 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		console.debug('submitLicenceNewAnonymous body', body);
-		// console.debug('submitLicenceNewAnonymous documentInfos', documentInfos);
+		// Get the keyCode for the existing documents to save.
+		const existingKeyCodes: Array<string> = [];
+		let newDocumentsExist = false;
+		documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
+			docBody.documents.forEach((doc: any) => {
+				if (doc.documentUrlId) {
+					existingKeyCodes.push(doc.documentUrlId);
+				} else {
+					newDocumentsExist = true;
+				}
+			});
+		});
+
+		console.debug('[submitLicenceAnonymous] body', body);
+		console.debug('[submitLicenceAnonymous] documentInfos', documentInfos);
+		console.debug('[submitLicenceAnonymous] existingKeyCodes', existingKeyCodes);
+		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		if (newDocumentsExist) {
+			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, documentInfos, body);
+		} else {
+			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, body);
+		}
+	}
+
+	/**
+	 * Post licence anonymous. This licence must not have any new documents (for example: with an update or replacement)
+	 * @returns
+	 */
+	private postLicenceAnonymousNoNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		body: WorkerLicenceAppAnonymousSubmitRequestJson
+	) {
+		return this.workerLicensingService
+			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((resp: string) => {
+					const keyCode = resp;
+
+					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
+						keyCode,
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
+	}
+
+	/**
+	 * Post licence anonymous. This licence has new documents (for example: with new or renew)
+	 * @returns
+	 */
+	private postLicenceAnonymousNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		documentInfos: Array<LicenceDocumentsToSave>,
+		body: WorkerLicenceAppAnonymousSubmitRequestJson
+	) {
+		let keyCode = '';
+
+		// Get the keyCode for the existing documents to save.
+		const existingKeyCodes: Array<string> = [];
+		documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
+			docBody.documents.forEach((doc: any) => {
+				if (doc.documentUrlId) {
+					existingKeyCodes.push(doc.documentUrlId);
+				}
+			});
+		});
+
 		return this.workerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
@@ -1588,22 +1589,34 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 					const documentsToSave: Observable<string>[] = [];
 					documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
-						documentsToSave.push(
-							this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
-								keyCode,
-								body: {
-									Documents: docBody.documents,
-									LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-								},
-							})
-						);
+						// Only pass new documents and get a keyCode for each of those.
+						const newDocumentsOnly: Array<Blob> = [];
+						docBody.documents.forEach((doc: any) => {
+							if (!doc.documentUrlId) {
+								newDocumentsOnly.push(doc);
+							}
+						});
+
+						// should always be at least one new document
+						if (newDocumentsOnly.length > 0) {
+							documentsToSave.push(
+								this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
+									keyCode,
+									body: {
+										Documents: newDocumentsOnly,
+										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+									},
+								})
+							);
+						}
 					});
 
 					return forkJoin(documentsToSave);
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					body.documentKeyCodes = resps;
+					body.documentKeyCodes = [...resps];
+					body.previousDocumentIds = [...existingKeyCodes];
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
