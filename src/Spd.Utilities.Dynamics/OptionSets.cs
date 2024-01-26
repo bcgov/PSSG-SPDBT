@@ -256,7 +256,7 @@ namespace Spd.Utilities.Dynamics
 
     public enum LicenceTermOptionSet
     {
-        NintyDays = 100000000,
+        NinetyDays = 100000000,
         OneYear = 100000001,
         TwoYears = 100000002,
         ThreeYears = 100000003,

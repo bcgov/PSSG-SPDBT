@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceLookupResponse } from '@app/api/models';
+import { LicenceResponse } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -122,7 +122,7 @@ export class StepPermitExpiredComponent implements PermitChildStepperStepCompone
 		private permitApplicationService: PermitApplicationService
 	) {}
 
-	public find(licenceNumber: string): Observable<LicenceLookupResponse> {
+	public find(licenceNumber: string): Observable<LicenceResponse> {
 		if (!licenceNumber || licenceNumber.trim().length == 0) return EMPTY;
 
 		return this.licenceLookupService
@@ -155,7 +155,7 @@ export class StepPermitExpiredComponent implements PermitChildStepperStepCompone
 				licenceNumber,
 			})
 			.pipe()
-			.subscribe((resp: LicenceLookupResponse) => {
+			.subscribe((resp: LicenceResponse) => {
 				this.isFound = !!resp?.expiryDate;
 				if (resp?.expiryDate) {
 					this.isExpired = !this.utilService.getIsFutureDate(resp.expiryDate);

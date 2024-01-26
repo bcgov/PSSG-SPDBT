@@ -193,7 +193,7 @@ export const GenderTypes: SelectOptions[] = [
 ];
 
 export const LicenceTermTypes: SelectOptions[] = [
-	{ desc: '90 Days', code: LicenceTermCode.NintyDays },
+	{ desc: '90 Days', code: LicenceTermCode.NinetyDays },
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },
 	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
 	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },

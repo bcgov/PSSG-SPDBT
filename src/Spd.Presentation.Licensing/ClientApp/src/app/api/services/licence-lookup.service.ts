@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { GoogleRecaptcha } from '../models/google-recaptcha';
-import { LicenceLookupResponse } from '../models/licence-lookup-response';
+import { LicenceResponse } from '../models/licence-response';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +45,7 @@ export class LicenceLookupService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<LicenceLookupResponse>> {
+): Observable<StrictHttpResponse<LicenceResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceLookupService.ApiLicenceLookupLicenceNumberGetPath, 'get');
     if (params) {
@@ -60,7 +60,7 @@ export class LicenceLookupService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<LicenceLookupResponse>;
+        return r as StrictHttpResponse<LicenceResponse>;
       })
     );
   }
@@ -82,10 +82,10 @@ export class LicenceLookupService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<LicenceLookupResponse> {
+): Observable<LicenceResponse> {
 
     return this.apiLicenceLookupLicenceNumberGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<LicenceLookupResponse>) => r.body as LicenceLookupResponse)
+      map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
     );
   }
 
@@ -112,7 +112,7 @@ export class LicenceLookupService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<LicenceLookupResponse>> {
+): Observable<StrictHttpResponse<LicenceResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceLookupService.ApiLicenceLookupAnonymousLicenceNumberPostPath, 'post');
     if (params) {
@@ -128,7 +128,7 @@ export class LicenceLookupService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<LicenceLookupResponse>;
+        return r as StrictHttpResponse<LicenceResponse>;
       })
     );
   }
@@ -151,10 +151,10 @@ export class LicenceLookupService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<LicenceLookupResponse> {
+): Observable<LicenceResponse> {
 
     return this.apiLicenceLookupAnonymousLicenceNumberPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<LicenceLookupResponse>) => r.body as LicenceLookupResponse)
+      map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
     );
   }
 

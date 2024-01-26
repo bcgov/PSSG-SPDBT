@@ -9,7 +9,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
-import { StepsPermitDetailsComponent } from './permit-wizard-steps/steps-permit-details.component';
+import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
 import { StepsPermitIdentificationComponent } from './permit-wizard-steps/steps-permit-identification.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
@@ -26,12 +26,12 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 		>
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel> Permit Details </ng-template>
-				<app-steps-permit-details
+				<app-steps-permit-details-renewal
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-details>
+				></app-steps-permit-details-renewal>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
@@ -99,8 +99,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	step3Complete = false;
 	step4Complete = false;
 
-	@ViewChild(StepsPermitDetailsComponent)
-	stepsPermitDetailsComponent!: StepsPermitDetailsComponent;
+	@ViewChild(StepsPermitDetailsUpdateComponent)
+	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
 
 	@ViewChild(StepsPermitPurposeComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeComponent;

@@ -12,7 +12,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
-	LicenceLookupResponse,
+	LicenceResponse,
 	LicenceTermCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
@@ -200,7 +200,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		licenceNumber: string,
 		accessCode: string,
 		recaptchaCode: string
-	): Observable<LicenceLookupResponse> {
+	): Observable<LicenceResponse> {
 		return this.licenceLookupService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
@@ -370,7 +370,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const originalLicenceTermCode = this.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
 		let hasValidSwl90DayLicence = false;
-		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NintyDays) {
+		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
 			hasValidSwl90DayLicence = true;
 		}
 
