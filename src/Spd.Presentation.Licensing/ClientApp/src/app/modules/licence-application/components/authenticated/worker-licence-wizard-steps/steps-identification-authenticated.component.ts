@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { StepAdditionalGovIdComponent } from '../../shared/worker-licence-wizard-child-steps/step-additional-gov-id.component';
-import { StepBcDriverLicenceComponent } from '../../shared/worker-licence-wizard-child-steps/step-bc-driver-licence.component';
-import { StepCitizenshipComponent } from '../../shared/worker-licence-wizard-child-steps/step-citizenship.component';
-import { StepPhotographOfYourselfComponent } from '../../shared/worker-licence-wizard-child-steps/step-photograph-of-yourself.component';
-import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licence-wizard-child-steps/step-physical-characteristics.component';
+import { StepAdditionalGovIdComponent } from '../../shared/worker-licence-wizard-steps/step-additional-gov-id.component';
+import { StepBcDriverLicenceComponent } from '../../shared/worker-licence-wizard-steps/step-bc-driver-licence.component';
+import { StepCitizenshipComponent } from '../../shared/worker-licence-wizard-steps/step-citizenship.component';
+import { StepPhotographOfYourselfComponent } from '../../shared/worker-licence-wizard-steps/step-photograph-of-yourself.component';
+import { StepPhysicalCharacteristicsComponent } from '../../shared/worker-licence-wizard-steps/step-physical-characteristics.component';
 
 @Component({
 	selector: 'app-steps-identification-authenticated',

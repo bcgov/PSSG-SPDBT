@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
-	selector: 'app-renewal-alert',
+	selector: 'app-common-update-renewal-alert',
 	template: `
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
@@ -82,21 +83,29 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		`,
 	],
 })
-export class RenewalAlertComponent implements OnInit {
+export class CommonUpdateRenewalAlertComponent implements OnInit {
 	title = '';
 	subtitle = '';
 
 	licenceModelData: any = {};
 	constants = SPD_CONSTANTS;
 
+	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() showLicenceData = false;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private licenceApplicationService: LicenceApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {}
 
 	ngOnInit() {
 		if (this.showLicenceData) {
-			this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+			if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
+				this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+			} else {
+				this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+			}
 		}
 
 		switch (this.applicationTypeCode) {

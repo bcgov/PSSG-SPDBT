@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceFeeResponse } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -10,7 +10,12 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
-					<app-renewal-alert title="" subtitle="" [showLicenceData]="true"></app-renewal-alert>
+					<app-common-update-renewal-alert
+						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
+						title=""
+						subtitle=""
+						[showLicenceData]="true"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title
@@ -49,7 +54,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	styles: [],
 })
 export class StepLicenceTermComponent implements LicenceChildStepperStepComponent {
-	// termCodes: Array<LicenceFeeResponse> = [];
+	workerLicenceTypes = WorkerLicenceTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;

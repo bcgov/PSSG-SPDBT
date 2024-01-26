@@ -4,10 +4,10 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { StepCriminalHistoryComponent } from '../worker-licence-wizard-child-steps/step-criminal-history.component';
-import { StepFingerprintsComponent } from '../worker-licence-wizard-child-steps/step-fingerprints.component';
-import { StepMentalHealthConditionsComponent } from '../worker-licence-wizard-child-steps/step-mental-health-conditions.component';
-import { StepPoliceBackgroundComponent } from '../worker-licence-wizard-child-steps/step-police-background.component';
+import { StepCriminalHistoryComponent } from './step-criminal-history.component';
+import { StepFingerprintsComponent } from './step-fingerprints.component';
+import { StepMentalHealthConditionsComponent } from './step-mental-health-conditions.component';
+import { StepPoliceBackgroundComponent } from './step-police-background.component';
 
 @Component({
 	selector: 'app-steps-background',

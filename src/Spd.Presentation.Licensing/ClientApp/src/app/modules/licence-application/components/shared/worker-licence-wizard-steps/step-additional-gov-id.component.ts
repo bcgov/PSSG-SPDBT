@@ -20,7 +20,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
 				</ng-container> -->
 
 				<app-step-title title="Provide an additional piece of government-issued photo ID"></app-step-title>

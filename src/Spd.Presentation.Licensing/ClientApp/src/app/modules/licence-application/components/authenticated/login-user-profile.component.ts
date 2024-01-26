@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
-import { UserProfileComponent } from '../shared/step-components/user-profile.component';
+import { CommonUserProfileComponent } from '@app/modules/licence-application/components/shared/step-components/common-user-profile.component';
 
 @Component({
 	selector: 'app-login-user-profile',
@@ -15,7 +15,7 @@ import { UserProfileComponent } from '../shared/step-components/user-profile.com
 
 					<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
 
-					<app-user-profile></app-user-profile>
+					<app-common-user-profile></app-common-user-profile>
 				</div>
 			</div>
 		</section>
@@ -34,7 +34,7 @@ import { UserProfileComponent } from '../shared/step-components/user-profile.com
 	styles: [],
 })
 export class LoginUserProfileComponent implements LicenceChildStepperStepComponent {
-	@ViewChild(UserProfileComponent) userProfileComponent!: UserProfileComponent;
+	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
 	constructor(private router: Router) {}
 

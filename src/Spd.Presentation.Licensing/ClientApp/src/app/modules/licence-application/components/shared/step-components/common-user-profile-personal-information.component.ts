@@ -5,12 +5,12 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { Subscription } from 'rxjs';
-import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { UtilService } from 'src/app/core/services/util.service';
+import { GenderTypes } from '@app/core/code-types/model-desc.models';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-personal-information',
+	selector: 'app-common-user-profile-personal-information',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<app-alert type="info" icon="" [showBorder]="false">
@@ -58,7 +58,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
+export class CommonUserProfilePersonalInformationComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();

@@ -3,10 +3,10 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonContactInformationComponent } from '@app/modules/licence-application/components/shared/step-components/common-contact-information.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
-	selector: 'app-step-permit-contact-information',
+	selector: 'app-step-contact-information',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -29,16 +29,16 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [],
 })
-export class StepPermitContactInformationComponent implements LicenceChildStepperStepComponent {
+export class StepContactInformationComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.permitApplicationService.contactInformationFormGroup;
+	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

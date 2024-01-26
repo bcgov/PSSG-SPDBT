@@ -4,14 +4,14 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 import { LicenceUpdateTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { UpdateAddDogsModalComponent } from '../update-add-dogs-modal.component';
-import { UpdateAddRestraintsModalComponent } from '../update-add-restraints-modal.component';
-import { UpdateApplyNameChangeModalComponent } from '../update-apply-name-change-modal.component';
+import { UpdateAddDogsModalComponent } from './update-add-dogs-modal.component';
+import { UpdateAddRestraintsModalComponent } from './update-add-restraints-modal.component';
+import { UpdateApplyNameChangeModalComponent } from './update-apply-name-change-modal.component';
 import {
 	LicenceCategoryDialogData,
 	UpdateLicenceCategoryModalComponent,
-} from '../update-licence-category-modal.component';
-import { UpdatePhotoModalComponent } from '../update-photo-modal.component';
+} from './update-licence-category-modal.component';
+import { UpdatePhotoModalComponent } from './update-photo-modal.component';
 
 export interface UpdateOptionListData {
 	updateTypeCode: LicenceUpdateTypeCode;

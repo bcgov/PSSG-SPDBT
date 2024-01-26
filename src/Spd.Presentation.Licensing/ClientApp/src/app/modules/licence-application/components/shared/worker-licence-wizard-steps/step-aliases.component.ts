@@ -5,31 +5,30 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
-	selector: 'app-step-physical-characteristics',
+	selector: 'app-step-aliases',
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
+				<!-- <ng-container
 					*ngIf="
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
-				</ng-container>
+					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+				</ng-container> -->
 
-				<app-step-title title="Provide identifying information"></app-step-title>
+				<app-step-title title="Do you have any previous names or aliases?"></app-step-title>
 
-				<app-common-physical-characteristics [form]="form"></app-common-physical-characteristics>
+				<app-common-aliases [form]="form"></app-common-aliases>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class StepPhysicalCharacteristicsComponent implements LicenceChildStepperStepComponent {
+export class StepAliasesComponent implements LicenceChildStepperStepComponent {
+	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
+
 	applicationTypeCodes = ApplicationTypeCode;
-
-	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
-
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}

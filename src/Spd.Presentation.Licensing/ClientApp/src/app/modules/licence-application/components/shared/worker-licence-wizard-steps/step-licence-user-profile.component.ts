@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { UserProfileComponent } from '../step-components/user-profile.component';
+import { CommonUserProfileComponent } from '@app/modules/licence-application/components/shared/step-components/common-user-profile.component';
 
 @Component({
 	selector: 'app-step-licence-user-profile',
@@ -20,7 +20,7 @@ import { UserProfileComponent } from '../step-components/user-profile.component'
 							starting a new application
 						</app-alert>
 
-						<app-user-profile></app-user-profile>
+						<app-common-user-profile></app-common-user-profile>
 
 						<form [formGroup]="form" novalidate>
 							<div>
@@ -58,7 +58,7 @@ import { UserProfileComponent } from '../step-components/user-profile.component'
 	styles: [],
 })
 export class StepLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
-	@ViewChild(UserProfileComponent) userProfileComponent!: UserProfileComponent;
+	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 

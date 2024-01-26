@@ -13,7 +13,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.New">
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>

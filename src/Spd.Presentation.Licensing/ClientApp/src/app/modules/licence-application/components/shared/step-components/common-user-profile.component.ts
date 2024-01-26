@@ -8,11 +8,11 @@ import { CommonContactInformationComponent } from './common-contact-information.
 import { CommonMailingAddressComponent } from './common-mailing-address.component';
 
 @Component({
-	selector: 'app-user-profile',
+	selector: 'app-common-user-profile',
 	template: `
 		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
-		<app-personal-information [isReadOnly]="isReadOnly"></app-personal-information>
+		<app-common-user-profile-personal-information [isReadOnly]="isReadOnly"></app-common-user-profile-personal-information>
 
 		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
@@ -69,7 +69,7 @@ import { CommonMailingAddressComponent } from './common-mailing-address.componen
 	`,
 	styles: [],
 })
-export class UserProfileComponent implements LicenceChildStepperStepComponent {
+export class CommonUserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 
 	contactInformationFormGroup: FormGroup = this.licenceApplicationService.contactInformationFormGroup;

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -17,7 +17,11 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode" [showLicenceData]="true"></app-renewal-alert>
+					<app-common-update-renewal-alert
+						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
+						[applicationTypeCode]="applicationTypeCode"
+						[showLicenceData]="true"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
@@ -626,6 +630,7 @@ export class StepLicenceCategoryComponent implements OnInit, LicenceChildStepper
 
 	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
+	workerLicenceTypes = WorkerLicenceTypeCode;
 	workerCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
