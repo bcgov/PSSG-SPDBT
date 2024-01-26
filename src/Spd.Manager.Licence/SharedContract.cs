@@ -74,7 +74,7 @@ public enum LicenceDocumentTypeCode
 }
 public enum LicenceTermCode
 {
-    NintyDays,
+    NinetyDays,
     OneYear,
     TwoYears,
     ThreeYears,

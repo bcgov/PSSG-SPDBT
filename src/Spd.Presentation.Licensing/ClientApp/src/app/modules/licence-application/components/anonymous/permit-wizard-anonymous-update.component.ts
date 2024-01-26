@@ -9,9 +9,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
-import { StepsPermitDetailsComponent } from './permit-wizard-steps/steps-permit-details.component';
+import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
 import { StepsPermitIdentificationComponent } from './permit-wizard-steps/steps-permit-identification.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
+import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
 
 @Component({
 	selector: 'app-permit-wizard-anonymous-update',
@@ -25,12 +26,12 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 		>
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel> Permit Details </ng-template>
-				<app-steps-permit-details
+				<app-steps-permit-details-update
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-details>
+				></app-steps-permit-details-update>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
@@ -66,20 +67,18 @@ import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-
 				></app-steps-permit-contact>
 			</mat-step>
 
-			<!-- 
-
-					<mat-step completed="false">
-						<ng-template matStepLabel>Review & Confirm</ng-template>
-						<ng-template matStepContent>
-							<app-steps-review-licence-anonymous
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(nextPayStep)="onNextPayStep()"
-								(scrollIntoView)="onScrollIntoView()"
-								(goToStep)="onGoToStep($event)"
-							></app-steps-review-licence-anonymous>
-						</ng-template>
-					</mat-step> -->
+			<mat-step completed="false">
+				<ng-template matStepLabel>Review & Confirm</ng-template>
+				<ng-template matStepContent>
+					<app-steps-permit-review-anonymous
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(nextPayStep)="onNextPayStep()"
+						(scrollIntoView)="onScrollIntoView()"
+						(goToStep)="onGoToStep($event)"
+					></app-steps-permit-review-anonymous>
+				</ng-template>
+			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Pay</ng-template>
@@ -100,8 +99,8 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	step3Complete = false;
 	step4Complete = false;
 
-	@ViewChild(StepsPermitDetailsComponent)
-	stepsPermitDetailsComponent!: StepsPermitDetailsComponent;
+	@ViewChild(StepsPermitDetailsUpdateComponent)
+	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
 
 	@ViewChild(StepsPermitPurposeComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeComponent;
@@ -112,8 +111,8 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	@ViewChild(StepsPermitContactComponent)
 	stepsPermitContactComponent!: StepsPermitContactComponent;
 
-	// @ViewChild(StepsReviewLicenceAuthenticatedComponent)
-	// stepReviewLicenceComponent!: StepsReviewLicenceAuthenticatedComponent;
+	@ViewChild(StepsPermitReviewAnonymousComponent)
+	stepReviewLicenceComponent!: StepsPermitReviewAnonymousComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -147,9 +146,9 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 			case this.STEP_CONTACT_INFORMATION:
 				this.stepsPermitContactComponent?.onGoToFirstStep();
 				break;
-			// case this.STEP_REVIEW_AND_CONFIRM:
-			// 	this.stepReviewLicenceComponent?.onGoToFirstStep();
-			// 	break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepReviewLicenceComponent?.onGoToFirstStep();
+				break;
 		}
 
 		super.onStepSelectionChange(event);
@@ -216,12 +215,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	onGoToStep(step: number) {
-		// if (step == 99) {
-		// 	this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		// 	this.stepIdentificationComponent.onGoToContactStep();
-		// 	return;
-		// }
-
 		this.stepsPermitDetailsComponent?.onGoToFirstStep();
 		this.stepsPermitPurposeComponent?.onGoToFirstStep();
 		this.stepsPermitIdentificationComponent?.onGoToFirstStep();

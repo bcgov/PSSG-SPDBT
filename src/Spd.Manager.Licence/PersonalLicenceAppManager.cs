@@ -306,7 +306,7 @@ internal partial class PersonalLicenceAppManager :
         }
 
         //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
-        bool hasSwl90DayLicence = originalLic.LicenceTerm == LicenceTermEnum.NintyDays && 
+        bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
             originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
 
         await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
