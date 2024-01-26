@@ -91,6 +91,7 @@ export abstract class PermitApplicationHelper {
 			origSurname: new FormControl(''),
 			origGenderCode: new FormControl(''),
 			origDateOfBirth: new FormControl(''),
+			hasGenderChanged: new FormControl(false),
 			attachments: new FormControl([]),
 		},
 		{
