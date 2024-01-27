@@ -12,7 +12,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-renewal-alert>
+					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title> -->
