@@ -10,7 +10,7 @@ import {
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-child-steps/step-mailing-address.component';
+import { StepWorkerLicenceMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
@@ -21,7 +21,7 @@ import { distinctUntilChanged } from 'rxjs';
 		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 			<mat-step>
 				<ng-template matStepLabel> Licence Confirmation </ng-template>
-				<app-step-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-licence-confirmation>
+				<app-step-worker-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-confirmation>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
@@ -32,7 +32,7 @@ import { distinctUntilChanged } from 'rxjs';
 
 			<mat-step>
 				<ng-template matStepLabel> Address Update </ng-template>
-				<app-step-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-mailing-address>
+				<app-step-worker-licence-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-mailing-address>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -55,8 +55,8 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	applicationTypeCode = ApplicationTypeCode.Replacement;
 	newLicenceAppId: string | null = null;
 
-	@ViewChild(StepMailingAddressComponent)
-	stepMailingAddressComponent!: StepMailingAddressComponent;
+	@ViewChild(StepWorkerLicenceMailingAddressComponent)
+	stepMailingAddressComponent!: StepWorkerLicenceMailingAddressComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,

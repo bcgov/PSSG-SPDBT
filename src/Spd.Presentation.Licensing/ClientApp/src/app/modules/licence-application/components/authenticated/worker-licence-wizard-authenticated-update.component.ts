@@ -13,10 +13,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 				<mat-stepper class="child-stepper" linear (selectionChange)="onStepSelectionChange($event)" #stepper>
 					<mat-step completed="true">
 						<!-- <ng-template matStepLabel> Update your Licence or Permit </ng-template> -->
-						<app-step-licence-updates
+						<app-step-worker-licence-all-updates-authenticated
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-step-licence-updates>
+						></app-step-worker-licence-all-updates-authenticated>
 
 						<div class="row wizard-button-row">
 							<div
@@ -32,7 +32,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 
 					<mat-step completed="true">
 						<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
-						<app-step-confirm-mailing-address></app-step-confirm-mailing-address>
+						<app-step-worker-licence-mailing-address-update-authenticated></app-step-worker-licence-mailing-address-update-authenticated>
 
 						<div class="row wizard-button-row">
 							<div
@@ -48,7 +48,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 
 					<mat-step completed="true">
 						<!-- <ng-template matStepLabel>Confirm Updates</ng-template> -->
-						<app-step-confirm-updates></app-step-confirm-updates>
+						<app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated>
 
 						<div class="row wizard-button-row">
 							<div
