@@ -1,7 +1,8 @@
 ﻿namespace Spd.Manager.Licence;
-internal class Constants
+internal static class Constants
 {
-    public static readonly int LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS = 14;
-    public static readonly int LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS = 90;
-    public static readonly int LICENCE_UPDATE_VALID_BEFORE_EXPIRATION_IN_DAYS = 14;//Licence holder can't request an update within 14 days of expiry date
+    internal const int LicenceReplaceValidBeforeExpirationInDays = 14;
+    internal const int LicenceWith123YearsRenewValidBeforeExpirationInDays = 90;
+    internal const int LicenceWith90DaysRenewValidBeforeExpirationInDays = 60;
+    internal const int LicenceUpdateValidBeforeExpirationInDays = 14;//Licence holder can't request an update within 14 days of expiry date
 }
