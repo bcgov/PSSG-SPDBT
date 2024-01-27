@@ -73,9 +73,9 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async System.Threading.Tasks.Task UpdateAsync(UpdateCmd cmd, CancellationToken cancellationToken)
+    public async Task UpdateAsync(UpdateCmd cmd, CancellationToken ct)
     {
-        spd_application? app = await _context.GetApplicationById(cmd.ApplicationId, cancellationToken);
+        spd_application? app = await _context.GetApplicationById(cmd.ApplicationId, ct);
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
@@ -88,18 +88,18 @@ internal partial class ApplicationRepository : IApplicationRepository
                 app.statecode = DynamicsConstants.StateCode_Active;
         }
         _context.UpdateObject(app);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(ct);
     }
 
-    public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)
+    public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken ct)
     {
-        var application = _context.spd_applications.Where(o =>
+        var application = await _context.spd_applications.Where(o =>
             o.spd_OrganizationId.accountid == searchApplicationQry.OrgId &&
             o.spd_firstname == searchApplicationQry.GivenName &&
             o.spd_lastname == searchApplicationQry.Surname &&
             o.spd_dateofbirth == new Microsoft.OData.Edm.Date(searchApplicationQry.DateOfBirth.Value.Year, searchApplicationQry.DateOfBirth.Value.Month, searchApplicationQry.DateOfBirth.Value.Day) &&
             o.statecode != DynamicsConstants.StateCode_Inactive
-        ).FirstOrDefault();
+        ).FirstOrDefaultAsync(ct);
         return application != null;
     }
 
@@ -120,17 +120,17 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task<ApplicationResult> QueryApplicationAsync(ApplicationQry query, CancellationToken cancellationToken)
+    public async Task<ApplicationResult> QueryApplicationAsync(ApplicationQry query, CancellationToken ct)
     {
-        var application = _context.spd_applications
+        var application = await _context.spd_applications
             .Expand(i => i.spd_OrganizationId)
             .Expand(i => i.spd_ApplicantId_contact)
             .Where(r => r.spd_applicationid == query.ApplicationId)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync(ct);
         return _mapper.Map<ApplicationResult>(application);
     }
 
-    public async System.Threading.Tasks.Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
+    public async Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
         if (!createApplicationCmd.SharedClearanceId.HasValue)
             throw new ArgumentException("SharedClearanceId cannot be null");
@@ -187,7 +187,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
     }
 
-    private string GetAppFilterString(AppFilterBy appFilterBy)
+    private static string GetAppFilterString(AppFilterBy appFilterBy)
     {
         //orgfilter
         string? orgFilter = null;
@@ -314,7 +314,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return result;
     }
 
-    private string GetAppSortString(AppSortBy? appSortBy)
+    private static string GetAppSortString(AppSortBy? appSortBy)
     {
         if (appSortBy == null
             || (appSortBy.SubmittedDateDesc != null && (bool)appSortBy.SubmittedDateDesc))

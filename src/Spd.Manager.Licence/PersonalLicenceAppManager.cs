@@ -1,7 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Applicants.Application;
@@ -370,12 +368,12 @@ internal partial class PersonalLicenceAppManager :
                     }
                 }
             }
-            //need to pay $20
+            //todo : need to pay $20
             await CommitApplicationAsync(request, response.LicenceAppId, ct);
         }
         else
         {
-            //update contact directly
+            //todo: update contact directly
         }
 
         //check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
@@ -484,9 +482,13 @@ internal partial class PersonalLicenceAppManager :
         }
         return false;
     }
-    private ChangeSpec GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp )
+    private ChangeSpec GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp)
     {
-        return new ChangeSpec();
+        ChangeSpec changes = new ChangeSpec();
+        //todo
+        //if(newApp.CategoryCodes != originalApp.CategoryData)
+        changes.CategoriesChanged = true;
+        return changes;
     }
 
     private record ChangeSpec

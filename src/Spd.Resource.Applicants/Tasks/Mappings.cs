@@ -12,7 +12,7 @@ internal class Mappings : Profile
          .ForMember(d => d.activityid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.subject, opt => opt.MapFrom(s => s.Subject))
          .ForMember(d => d.description, opt => opt.MapFrom(s => s.Description))
-         .ForMember(d => d.prioritycode, opt => opt.MapFrom(s => s.TaskPriorityEnum))
+         .ForMember(d => d.prioritycode, opt => opt.MapFrom(s => GetPriority(s.TaskPriorityEnum)))
          .ForMember(d => d.scheduledend, opt => opt.MapFrom(s => s.DueDateTime));
     }
 

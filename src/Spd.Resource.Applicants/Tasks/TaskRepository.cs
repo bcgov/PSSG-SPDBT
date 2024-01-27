@@ -48,12 +48,12 @@ internal class TaskRepository : ITaskRepository
             _context.SetLink(t, nameof(t.regardingobjectid_incident), incident);
         }
 
-        if(cmd.AssignedTeamId != null)
+        if (cmd.AssignedTeamId != null)
         {
             team? serviceTeam = await _context.teams.Where(t => t.teamid == cmd.AssignedTeamId).FirstOrDefaultAsync(ct);
             _context.SetLink(t, nameof(t.ownerid), serviceTeam);
         }
         await _context.SaveChangesAsync(ct);
-        return new TaskResp { TaskId = (Guid)t.activityid };
+        return new TaskResp { TaskId = t.activityid ?? Guid.Empty };
     }
 }

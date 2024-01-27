@@ -5,7 +5,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     public interface IApplicationInviteRepository
     {
         public Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
-        public System.Threading.Tasks.Task ManageAsync(ApplicationInviteCmd query, CancellationToken cancellationToken);
+        public Task ManageAsync(ApplicationInviteCmd query, CancellationToken cancellationToken);
         public Task<AppInviteVerifyResp> VerifyApplicationInvitesAsync(ApplicationInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
     }
 

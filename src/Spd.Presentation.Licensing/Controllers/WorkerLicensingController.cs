@@ -171,7 +171,6 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Submit Security Worker Licence Application Anonymously
         /// deprecated as the request body is too big. the proxy won't let it through.
         /// </summary>
-        /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/submit/anonymous")]
         [HttpPost]
@@ -283,7 +282,7 @@ namespace Spd.Presentation.Licensing.Controllers
             }
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command);
+            var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
             await _cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
             return fileKeyCode;
@@ -293,18 +292,17 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Submit Security Worker Licence Application Json part Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
-        /// <param name="WorkerLicenceAppAnonymousSubmitRequest"></param>
+        /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
         [HttpPost]
         public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
         {
-            //temp remove, get it back when do pr.
             //validate keyCode
-            //if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
-            //{
-            //    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-            //}
+            if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
 
             _logger.LogInformation("validate payload");
             var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
@@ -314,25 +312,25 @@ namespace Spd.Presentation.Licensing.Controllers
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, keyCode);
-                return await _mediator.Send(command);
+                return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
                 AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, keyCode);
-                return await _mediator.Send(command);
+                return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
                 AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, keyCode);
-                return await _mediator.Send(command);
+                return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
                 AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, keyCode);
-                return await _mediator.Send(command);
+                return await _mediator.Send(command, ct);
             }
             return null;
         }
@@ -341,6 +339,6 @@ namespace Spd.Presentation.Licensing.Controllers
 
     public class GoogleRecaptcha
     {
-        public string RecaptchaCode { get; set; }
+        public string RecaptchaCode { get; set; } = null!;
     }
 }
