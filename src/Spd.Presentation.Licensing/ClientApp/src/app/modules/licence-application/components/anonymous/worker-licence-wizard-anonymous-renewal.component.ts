@@ -11,13 +11,13 @@ import {
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepsReviewLicenceAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-review-licence-authenticated.component';
-import { StepsBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-background-renew-and-update.component';
-import { StepsLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-licence-selection.component';
+import { StepsWorkerLicenceReviewAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
+import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background-renew-and-update.component';
+import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { StepsIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-identification-anonymous.component';
+import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-renewal',
@@ -31,46 +31,46 @@ import { StepsIdentificationAnonymousComponent } from './worker-licence-wizard-s
 		>
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel> Licence Selection </ng-template>
-				<app-steps-licence-selection
+				<app-steps-worker-licence-selection
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-licence-selection>
+				></app-steps-worker-licence-selection>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Background</ng-template>
-				<app-steps-background-renew-and-update
+				<app-steps-worker-licence-background-renew-and-update
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-background-renew-and-update>
+				></app-steps-worker-licence-background-renew-and-update>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Identification</ng-template>
-				<app-steps-identification-anonymous
+				<app-steps-worker-licence-identification-anonymous
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-identification-anonymous>
+				></app-steps-worker-licence-identification-anonymous>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review and Confirm</ng-template>
 				<ng-template matStepContent>
-					<app-steps-review-licence-anonymous
+					<app-steps-worker-licence-review-anonymous
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(goToStep)="onGoToStep($event)"
 						(nextPayStep)="onPay()"
-					></app-steps-review-licence-anonymous>
+					></app-steps-worker-licence-review-anonymous>
 				</ng-template>
 			</mat-step>
 
@@ -93,17 +93,17 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 	newLicenceAppId: string | null = null;
 
-	@ViewChild(StepsLicenceSelectionComponent)
-	stepLicenceSelectionComponent!: StepsLicenceSelectionComponent;
+	@ViewChild(StepsWorkerLicenceSelectionComponent)
+	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
 
-	@ViewChild(StepsBackgroundRenewAndUpdateComponent)
-	stepBackgroundComponent!: StepsBackgroundRenewAndUpdateComponent;
+	@ViewChild(StepsWorkerLicenceBackgroundRenewAndUpdateComponent)
+	stepBackgroundComponent!: StepsWorkerLicenceBackgroundRenewAndUpdateComponent;
 
-	@ViewChild(StepsIdentificationAnonymousComponent)
-	stepIdentificationComponent!: StepsIdentificationAnonymousComponent;
+	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
+	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 
-	@ViewChild(StepsReviewLicenceAuthenticatedComponent)
-	stepReviewLicenceComponent!: StepsReviewLicenceAuthenticatedComponent;
+	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
+	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,

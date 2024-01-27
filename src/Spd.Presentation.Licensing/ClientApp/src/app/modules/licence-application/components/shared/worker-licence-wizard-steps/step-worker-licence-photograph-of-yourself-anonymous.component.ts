@@ -1,0 +1,75 @@
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
+
+@Component({
+	selector: 'app-step-worker-licence-photograph-of-yourself-anonymous',
+	template: `
+		<section class="step-section">
+			<div class="step">
+				<ng-container
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
+				</ng-container>
+
+				<app-step-title
+					class="fs-7"
+					title="Upload a photograph of yourself"
+					subtitle="This will appear on your licence. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
+				></app-step-title>
+
+				<app-common-photograph-of-yourself
+					[form]="form"
+					[isAnonymous]="true"
+					[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
+					[isCalledFromModal]="isCalledFromModal"
+					(fileRemoved)="onFileRemoved()"
+				></app-common-photograph-of-yourself>
+			</div>
+		</section>
+	`,
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+})
+export class StepWorkerLicencePhotographOfYourselfAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
+	applicationTypeCodes = ApplicationTypeCode;
+	originalPhotoOfYourselfExpired = false;
+
+	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
+
+	@Input() isCalledFromModal = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	@ViewChild(CommonPhotographOfYourselfComponent)
+	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
+
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(
+			'originalPhotoOfYourselfExpired'
+		)?.value;
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
+	}
+
+	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		return this.form.valid;
+	}
+
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+}
