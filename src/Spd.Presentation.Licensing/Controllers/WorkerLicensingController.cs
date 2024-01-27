@@ -299,6 +299,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
         {
+            //temp remove, get it back when do pr.
             //validate keyCode
             //if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
             //{

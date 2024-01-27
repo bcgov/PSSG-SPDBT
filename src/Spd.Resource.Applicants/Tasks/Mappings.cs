@@ -9,11 +9,11 @@ internal class Mappings : Profile
     public Mappings()
     {
         _ = CreateMap<CreateTaskCmd, task>()
-         //.ForMember(d => d., opt => opt.MapFrom(s => s.Subject))
+         .ForMember(d => d.activityid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.subject, opt => opt.MapFrom(s => s.Subject))
          .ForMember(d => d.description, opt => opt.MapFrom(s => s.Description))
          .ForMember(d => d.prioritycode, opt => opt.MapFrom(s => s.TaskPriorityEnum))
-         .ForMember(d => d.scheduledend, opt => opt.MapFrom(s => new DateTimeOffset(s.DueDate, new TimeOnly(0, 0), TimeSpan.FromSeconds(0))));
+         .ForMember(d => d.scheduledend, opt => opt.MapFrom(s => s.DueDateTime));
     }
 
     internal static int? GetPriority(TaskPriorityEnum? code)

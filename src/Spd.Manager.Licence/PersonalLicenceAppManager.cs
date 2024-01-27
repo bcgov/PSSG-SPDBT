@@ -12,6 +12,7 @@ using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Applicants.Tasks;
 using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.Cache;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
 
@@ -322,27 +323,22 @@ internal partial class PersonalLicenceAppManager :
 
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
     {
-        await _taskRepository.ManageAsync(new CreateTaskCmd()
-        {
-            Description = "peggy test",
-            DueDate= new DateOnly(2024,2,20),
-            Subject = "subject",
-            TaskPriorityEnum = TaskPriorityEnum.High,            
-        }, ct) ;
-
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be a update request");
 
-        //validation: check if original licence meet replacement condition.
+        //validation: check if original licence meet update condition.
         LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
         LicenceResp originalLic = originalLicences.Items.First();
         if (DateTime.UtcNow.AddDays(Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
-            throw new ArgumentException("can't request an update within 14 days of expiry date.");
+            throw new ArgumentException($"can't request an update within {Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS} days of expiry date.");
 
-        if ((request.Reprint != null && request.Reprint.Value) /*|| (CategoriesChanged or DogRestraint changed)*/)
+        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
+        ChangeSpec changes = GetChanges(originalApp, request);
+
+        if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
@@ -374,6 +370,7 @@ internal partial class PersonalLicenceAppManager :
                     }
                 }
             }
+            //need to pay $20
             await CommitApplicationAsync(request, response.LicenceAppId, ct);
         }
         else
@@ -381,14 +378,41 @@ internal partial class PersonalLicenceAppManager :
             //update contact directly
         }
 
-        //check if criminal charges changes
-        //create task, assign to Licensing RA team
-        //New Offence Conviction
-        //(Licensing RA team - task)
-        //Hold a Position with Peace Officer Status
-        //(Licensing CS team - task high priority)
-        //Treated for Mental Health Condition
-        //(Licensing RA team - task)
+        //check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
+        if (changes.CriminalHistoryChanged)
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Criminal History has Changed",
+                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
+                Subject = "Criminal History Changed",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+            }, ct);
+
+        // check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
+        if (changes.PeaceOfficerStatusChanged)
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Peace Officer Status has Changed",
+                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
+                Subject = "Peace Officer Status Changed",
+                TaskPriorityEnum = TaskPriorityEnum.High,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
+            }, ct);
+
+        ////Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
+        if (changes.MentalHealthStatusChanged)
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Mental Health Status has Changed",
+                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
+                Subject = "Mental Health Status Changed",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+            }, ct);
 
         return new WorkerLicenceAppUpsertResponse();
     }
@@ -459,5 +483,20 @@ internal partial class PersonalLicenceAppManager :
             return true;
         }
         return false;
+    }
+    private ChangeSpec GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp )
+    {
+        return new ChangeSpec();
+    }
+
+    private record ChangeSpec
+    {
+        public bool NameChanged { get; set; }
+        public bool CategoriesChanged { get; set; }
+        public bool DogRestraintsChanged { get; set; }
+        public bool ContactInfoChanged { get; set; }
+        public bool PeaceOfficerStatusChanged { get; set; }
+        public bool MentalHealthStatusChanged { get; set; }
+        public bool CriminalHistoryChanged { get; set; }
     }
 }
