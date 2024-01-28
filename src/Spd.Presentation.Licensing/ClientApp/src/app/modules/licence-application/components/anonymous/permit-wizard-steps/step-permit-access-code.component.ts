@@ -73,9 +73,7 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
-				LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS
-			)
+			LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS)
 		);
 	}
 

@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
@@ -92,7 +93,11 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 
 	form: FormGroup = this.permitApplicationService.applicationTypeFormGroup;
 
-	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private router: Router,
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		const fee = this.permitApplicationService.getLicenceTermsAndFees();
@@ -103,6 +108,12 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 				this.renewCost = item.amount ? item.amount : null;
 			}
 		});
+
+		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
+
+		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
 	}
 
 	onStepPrevious(): void {
@@ -125,6 +136,8 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 
 		// console.log('workerLicenceTypeCode', workerLicenceTypeCode);
 		// console.log('applicationTypeCode', applicationTypeCode);
+
+		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode, applicationTypeCode);
 
 		switch (workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:

@@ -5,28 +5,17 @@ import {
 	ApplicationTypeCode,
 	BooleanTypeCode,
 	BusinessTypeCode,
-	CitizenshipDocument,
-	Document,
-	DocumentBase,
-	FingerprintProofDocument,
 	HeightUnitCode,
-	IdPhotoDocument,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
 	LicenceResponse,
 	LicenceTermCode,
-	WorkerCategoryTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequestJson,
-	WorkerLicenceAppCategoryData,
-	WorkerLicenceAppSubmitRequest,
-	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import {
 	BehaviorSubject,
@@ -902,7 +891,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		const body = this.getSaveBody();
+		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
 		return this.workerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
@@ -927,145 +916,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		const body = this.getSaveBody();
+		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
 		console.debug('submitLicenceAuthenticated body', body);
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
-	}
-
-	/**
-	 * Get the form group data into the correct structure
-	 * @returns
-	 */
-	private getSaveBody(): WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest {
-		const formValue = this.permitModelFormGroup.getRawValue();
-		console.debug('getSaveBody licenceModelFormGroup', formValue);
-
-		const licenceAppId = formValue.licenceAppId;
-		const workerLicenceTypeData = { ...formValue.workerLicenceTypeData };
-		const applicationTypeData = { ...formValue.applicationTypeData };
-		const bcDriversLicenceData = { ...formValue.bcDriversLicenceData };
-		const contactInformationData = { ...formValue.contactInformationData };
-		const expiredLicenceData = { ...formValue.expiredLicenceData };
-		const characteristicsData = { ...formValue.characteristicsData };
-		const residentialAddressData = { ...formValue.residentialAddressData };
-		const mailingAddressData = { ...formValue.mailingAddressData };
-		const citizenshipData = { ...formValue.citizenshipData };
-		const fingerprintProofData = { ...formValue.fingerprintProofData };
-		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
-
-		const personalInformationData = { ...formValue.personalInformationData };
-		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalInformationData.dateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
-
-		let fingerprintProofDocument: FingerprintProofDocument | null = null;
-		if (fingerprintProofData.attachments) {
-			const fingerprintProofDocuments: Array<LicenceAppDocumentResponse> = [];
-			fingerprintProofData.attachments.forEach((doc: any) => {
-				fingerprintProofDocuments.push({
-					documentUrlId: doc.documentUrlId,
-				});
-			});
-			fingerprintProofDocument = {
-				documentResponses: fingerprintProofDocuments,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint,
-			};
-		}
-
-		let citizenshipDocument: CitizenshipDocument | null = null;
-		if (citizenshipData.attachments) {
-			// TODO fix permit citizenship data
-			const citizenshipDocuments: Array<LicenceAppDocumentResponse> = [];
-			citizenshipData.attachments.forEach((doc: any) => {
-				citizenshipDocuments.push({
-					documentUrlId: doc.documentUrlId,
-				});
-			});
-			citizenshipDocument = {
-				documentResponses: citizenshipDocuments,
-				expiryDate: citizenshipData.expiryDate
-					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
-				licenceDocumentTypeCode:
-					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-						? citizenshipData.canadianCitizenProofTypeCode
-						: citizenshipData.notCanadianCitizenProofTypeCode,
-			};
-		}
-
-		let idPhotoDocument: IdPhotoDocument | null = null;
-		if (photographOfYourselfData.attachments) {
-			const photographOfYourselfDocuments: Array<LicenceAppDocumentResponse> = [];
-			photographOfYourselfData.attachments.forEach((doc: any) => {
-				photographOfYourselfDocuments.push({
-					documentUrlId: doc.documentUrlId,
-				});
-			});
-			idPhotoDocument = {
-				documentResponses: photographOfYourselfDocuments,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-			};
-		}
-
-		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
-			const ft: number = +characteristicsData.height;
-			const inch: number = +characteristicsData.heightInches;
-			characteristicsData.height = String(ft * 12 + inch);
-		}
-
-		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
-			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
-		const body: WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest = {
-			licenceAppId,
-			applicationTypeCode: applicationTypeData.applicationTypeCode,
-			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
-			//-----------------------------------
-			hasPreviousName: this.booleanTypeToBoolean(formValue.aliasesData.previousNameFlag),
-			aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
-			//-----------------------------------
-			hasBcDriversLicence: this.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
-			bcDriversLicenceNumber:
-				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
-					? bcDriversLicenceData.bcDriversLicenceNumber
-					: null,
-			//-----------------------------------
-			...contactInformationData,
-			//-----------------------------------
-			hasExpiredPermit: false, // TODO remove?
-			expiredLicenceNumber:
-				expiredLicenceData.hasExpiredPermit == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
-			expiredLicenceId:
-				expiredLicenceData.hasExpiredPermit == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate: expiredLicenceData.hasExpiredPermit == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
-			//-----------------------------------
-			...characteristicsData,
-			//-----------------------------------
-			...personalInformationData,
-			//-----------------------------------
-			hasCriminalHistory: this.booleanTypeToBoolean(formValue.criminalHistoryData.hasCriminalHistory),
-			//-----------------------------------
-			licenceTermCode: formValue.licenceTermData.licenceTermCode,
-			//-----------------------------------
-			isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
-			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
-				? residentialAddressData
-				: mailingAddressData,
-			residentialAddressData,
-			//-----------------------------------
-			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
-			citizenshipDocument,
-			//-----------------------------------
-			fingerprintProofDocument,
-			//-----------------------------------
-			// useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
-			idPhotoDocument,
-			//-----------------------------------
-		};
-		return body;
 	}
 
 	/**
@@ -1074,10 +928,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	private submitPermitAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		let keyCode = '';
-		const body = this.getSaveBodyAnonymous();
+		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue());
 		console.debug('submitPermitAnonymous body', body);
 
-		const documentInfos = this.getSaveDocsAnonymous();
+		const documentInfos = this.getSaveDocsAnonymous(this.permitModelFormGroup.getRawValue());
 		// console.log('documentInfos', documentInfos);
 
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
@@ -1116,132 +970,5 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				})
 			)
 			.pipe(take(1));
-	}
-
-	/**
-	 * Get the form group data into the correct structure
-	 * @returns
-	 */
-	private getSaveBodyAnonymous(): WorkerLicenceAppAnonymousSubmitRequestJson {
-		const savebody = this.getSaveBody();
-
-		const documentInfos = this.getSaveDocumentInfosAnonymous();
-		// console.log('documentInfos', documentInfos);
-
-		const categoryData = savebody.categoryData ?? [];
-
-		const categoryCodes: Array<WorkerCategoryTypeCode> = categoryData.map(
-			(item: WorkerLicenceAppCategoryData) => item.workerCategoryTypeCode!
-		);
-
-		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
-			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
-			applicationTypeCode: savebody.applicationTypeCode,
-			givenName: savebody.givenName,
-			middleName1: savebody.middleName1,
-			middleName2: savebody.middleName2,
-			surname: savebody.surname,
-			dateOfBirth: savebody.dateOfBirth,
-			genderCode: savebody.genderCode,
-			expiredLicenceNumber: savebody.expiredLicenceNumber,
-			expiredLicenceId: savebody.expiredLicenceId,
-			hasExpiredLicence: savebody.hasExpiredLicence,
-			licenceTermCode: savebody.licenceTermCode,
-			hasCriminalHistory: savebody.hasCriminalHistory,
-			hasPreviousName: savebody.hasPreviousName,
-			hasBcDriversLicence: savebody.hasBcDriversLicence,
-			bcDriversLicenceNumber: savebody.bcDriversLicenceNumber,
-			hairColourCode: savebody.hairColourCode,
-			eyeColourCode: savebody.eyeColourCode,
-			height: savebody.height,
-			heightUnitCode: savebody.heightUnitCode,
-			weight: savebody.weight,
-			weightUnitCode: savebody.weightUnitCode,
-			contactEmailAddress: savebody.contactEmailAddress,
-			contactPhoneNumber: savebody.contactPhoneNumber,
-			isMailingTheSameAsResidential: savebody.isMailingTheSameAsResidential ?? false,
-			isPoliceOrPeaceOfficer: savebody.isPoliceOrPeaceOfficer,
-			policeOfficerRoleCode: savebody.policeOfficerRoleCode,
-			otherOfficerRole: savebody.otherOfficerRole,
-			isTreatedForMHC: savebody.isTreatedForMHC,
-			useBcServicesCardPhoto: savebody.useBcServicesCardPhoto,
-			carryAndUseRestraints: savebody.carryAndUseRestraints ?? null,
-			useDogs: savebody.useDogs ?? null,
-			isDogsPurposeProtection: savebody.isDogsPurposeProtection ?? null,
-			isDogsPurposeDetectionDrugs: savebody.isDogsPurposeDetectionDrugs ?? null,
-			isDogsPurposeDetectionExplosives: savebody.isDogsPurposeDetectionExplosives ?? null,
-			isCanadianCitizen: savebody.isCanadianCitizen,
-			aliases: savebody.aliases ? [...savebody.aliases] : [],
-			residentialAddressData: { ...savebody.residentialAddressData },
-			mailingAddressData: { ...savebody.mailingAddressData },
-			categoryCodes: categoryCodes,
-			documentInfos,
-		};
-		// console.log('requestBody', requestBody);
-
-		return requestBody;
-	}
-
-	getSaveDocumentInfosAnonymous(): Array<DocumentBase> {
-		const documents: Array<DocumentBase> = [];
-		const savebody = this.getSaveBody();
-
-		savebody.categoryData?.forEach((item: WorkerLicenceAppCategoryData) => {
-			item.documents?.forEach((doc: Document) => {
-				if (doc.expiryDate) {
-					documents.push({ licenceDocumentTypeCode: doc.licenceDocumentTypeCode!, expiryDate: doc.expiryDate });
-				}
-			});
-		});
-
-		if (savebody.citizenshipDocument?.expiryDate) {
-			documents.push({
-				licenceDocumentTypeCode: savebody.citizenshipDocument.licenceDocumentTypeCode,
-				expiryDate: savebody.citizenshipDocument.expiryDate,
-			});
-		}
-
-		console.debug('submitPermitAnonymous documentInfos', documents);
-		return documents;
-	}
-
-	getSaveDocsAnonymous(): Array<PermitDocumentsToSave> {
-		const documents: Array<PermitDocumentsToSave> = [];
-		const formValue = this.permitModelFormGroup.getRawValue();
-
-		const citizenshipData = { ...formValue.citizenshipData };
-		const fingerprintProofData = { ...formValue.fingerprintProofData };
-		const photographOfYourselfData = { ...formValue.photographOfYourselfData };
-
-		if (fingerprintProofData.attachments) {
-			const docs: Array<Blob> = [];
-			fingerprintProofData.attachments.forEach((doc: Blob) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
-		}
-
-		if (citizenshipData.attachments) {
-			// TODO fix permit citizenship data
-			const docs: Array<Blob> = [];
-			citizenshipData.attachments.forEach((doc: Blob) => {
-				docs.push(doc);
-			});
-			const citizenshipLicenceDocumentTypeCode =
-				citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-					? citizenshipData.canadianCitizenProofTypeCode
-					: citizenshipData.notCanadianCitizenProofTypeCode;
-			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
-		}
-
-		if (photographOfYourselfData.attachments) {
-			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: Blob) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
-		}
-
-		return documents;
 	}
 }

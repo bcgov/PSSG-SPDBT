@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
@@ -94,12 +95,20 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceApplicationTypeAnonymousComponent {
+export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
+
+	ngOnInit() {
+		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityWorkerLicence);
+	}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
@@ -109,14 +118,14 @@ export class StepWorkerLicenceApplicationTypeAnonymousComponent {
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			// const workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-			// 	'workerLicenceTypeData.workerLicenceTypeCode'
-			// )?.value;
 			const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 				'applicationTypeData.applicationTypeCode'
 			)?.value;
-			// console.log('workerLicenceTypeCode', workerLicenceTypeCode);
-			// console.log('applicationTypeCode', applicationTypeCode);
+
+			this.commonApplicationService.setApplicationTitle(
+				WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode
+			);
 
 			switch (applicationTypeCode) {
 				case ApplicationTypeCode.New: {

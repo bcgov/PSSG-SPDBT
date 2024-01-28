@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { BusinessApplicationBaseAnonymousComponent } from './components/anonymous/business-application-base-anonymous.component';
+import { BusinessWizardAnonymousNewComponent } from './components/anonymous/business-wizard-anonymous-new.component';
+import { StepBusinessChecklistNewComponent } from './components/anonymous/business-wizard-steps/step-business-checklist-new.component';
 import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
 import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
 import { PermitWizardAnonymousRenewalComponent } from './components/anonymous/permit-wizard-anonymous-renewal.component';
@@ -53,14 +56,14 @@ import { UserApplicationsAuthenticatedComponent } from './components/authenticat
 import { UserFirstTimeLoginModalComponent } from './components/authenticated/user-first-time-login-modal.component';
 import { UserLoginProfileComponent } from './components/authenticated/user-login-profile.component';
 import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
-import { StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-mailing-address-update-authenticated.component';
-import { StepWorkerLicenceConfirmUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-confirm-updates-authenticated.component';
 import { StepWorkerLicenceAllUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-all-updates-authenticated.component';
-import { WorkerLicenceDogsUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-dogs-update-authenticated-modal.component';
-import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-restraints-update-authenticated-modal.component';
-import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-name-change-update-authenticated-modal.component';
+import { StepWorkerLicenceConfirmUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-confirm-updates-authenticated.component';
+import { StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-mailing-address-update-authenticated.component';
 import { WorkerLicenceCategoryUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-category-update-authenticated-modal.component';
+import { WorkerLicenceDogsUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-dogs-update-authenticated-modal.component';
+import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-name-change-update-authenticated-modal.component';
 import { WorkerLicencePhotoUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-photo-update-authenticated-modal.component';
+import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-restraints-update-authenticated-modal.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
@@ -279,6 +282,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicencePhotographOfYourselfAnonymousComponent,
 		StepPermitSummaryAnonymousComponent,
 		StepPermitConsentAndDeclarationComponent,
+		StepBusinessChecklistNewComponent,
+		BusinessApplicationBaseAnonymousComponent,
+		BusinessWizardAnonymousNewComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

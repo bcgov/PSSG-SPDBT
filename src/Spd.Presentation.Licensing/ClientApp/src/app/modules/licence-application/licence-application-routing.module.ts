@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BusinessApplicationBaseAnonymousComponent } from './components/anonymous/business-application-base-anonymous.component';
+import { BusinessWizardAnonymousNewComponent } from './components/anonymous/business-wizard-anonymous-new.component';
 import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
 import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
 import { PermitWizardAnonymousRenewalComponent } from './components/anonymous/permit-wizard-anonymous-renewal.component';
@@ -11,17 +13,17 @@ import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous
 import { WorkerLicenceWizardAnonymousRenewalComponent } from './components/anonymous/worker-licence-wizard-anonymous-renewal.component';
 import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/anonymous/worker-licence-wizard-anonymous-replacement.component';
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
-import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-application-type-anonymous.component';
 import { StepWorkerLicenceAccessCodeComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-access-code.component';
+import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-application-type-anonymous.component';
 import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-type-anonymous.component';
-import { UserLoginProfileComponent } from './components/authenticated/user-login-profile.component';
 import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
+import { UserLoginProfileComponent } from './components/authenticated/user-login-profile.component';
 import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-access-code-authorized.component';
+import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
@@ -70,6 +72,9 @@ export class LicenceApplicationRoutes {
 	public static PERMIT_RENEWAL_ANONYMOUS = 'permit-renewal';
 	public static PERMIT_UPDATE_ANONYMOUS = 'permit-update';
 
+	public static BUSINESS_ANONYMOUS = 'business-anonymous';
+	public static BUSINESS_NEW_ANONYMOUS = 'business-new';
+
 	// PAYMENT
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
@@ -102,6 +107,12 @@ export class LicenceApplicationRoutes {
 		return route
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}/${route}`
 			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}`;
+	}
+
+	public static pathBusinessAnonymous(route: string | null = null): string {
+		return route
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_ANONYMOUS}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_ANONYMOUS}`;
 	}
 }
 
@@ -185,6 +196,21 @@ const routes: Routes = [
 					{
 						path: '',
 						component: StepWorkerLicenceTypeAnonymousComponent,
+					},
+				],
+			},
+			{
+				// BUSINESS - ANONYMOUS
+				path: LicenceApplicationRoutes.BUSINESS_ANONYMOUS,
+				component: BusinessApplicationBaseAnonymousComponent,
+				children: [
+					{
+						path: LicenceApplicationRoutes.BUSINESS_NEW_ANONYMOUS,
+						component: BusinessWizardAnonymousNewComponent,
+					},
+					{
+						path: '',
+						component: BusinessWizardAnonymousNewComponent,
 					},
 				],
 			},
