@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class CommonApplicationService {
-	applicationTitle$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+	applicationTitle$: BehaviorSubject<string> = new BehaviorSubject<string>('Licensing Application');
 
 	updateTitle(title: string) {
 		this.applicationTitle$.next(title);

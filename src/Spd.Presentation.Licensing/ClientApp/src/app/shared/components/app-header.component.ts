@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { Subscription } from 'rxjs';
@@ -72,7 +72,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-	@Input() title = '';
+	title = '';
 	loggedInUserDisplay: string | null = null;
 
 	private applicationTitleSubscription!: Subscription;
