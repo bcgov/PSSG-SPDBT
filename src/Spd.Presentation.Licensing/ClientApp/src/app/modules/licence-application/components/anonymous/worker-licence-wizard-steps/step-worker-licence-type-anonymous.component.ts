@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { take, tap } from 'rxjs';
@@ -127,10 +128,13 @@ export class StepWorkerLicenceTypeAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
+		this.commonApplicationService.setApplicationTitle();
+
 		this.imagePaths.forEach((path) => {
 			// Preload the 'icon' images
 			const tmp = new Image();
@@ -143,7 +147,6 @@ export class StepWorkerLicenceTypeAnonymousComponent implements OnInit {
 
 	onStepNext(): void {
 		const isValid = this.isFormValid();
-
 		if (isValid) {
 			switch (this.workerLicenceTypeCode) {
 				case WorkerLicenceTypeCode.SecurityWorkerLicence: {

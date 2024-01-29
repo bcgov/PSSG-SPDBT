@@ -14,6 +14,7 @@ export class PermitApplicationBaseAnonymousComponent implements OnInit {
 	ngOnInit(): void {
 		if (!this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
+			return;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -61,7 +62,10 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -69,6 +73,52 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 	}
 
 	get termCodes(): Array<LicenceFeeResponse> {
-		return this.licenceApplicationService.getLicenceTermsAndFees();
+		const workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
+
+		const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			'applicationTypeData.applicationTypeCode'
+		)?.value;
+
+		const businessTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			'soleProprietorData.businessTypeCode'
+		)?.value;
+
+		const originalLicenceTermCode =
+			this.licenceApplicationService.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
+
+		// console.debug(
+		// 	'get termCodes',
+		// 	workerLicenceTypeCode,
+		// 	applicationTypeCode,
+		// 	businessTypeCode,
+		// 	originalLicenceTermCode
+		// );
+
+		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
+			return [];
+		}
+
+		let hasValidSwl90DayLicence = false;
+		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
+			hasValidSwl90DayLicence = true;
+		}
+
+		// console.debug(
+		// 	'get termCodes',
+		// 	workerLicenceTypeCode,
+		// 	applicationTypeCode,
+		// 	businessTypeCode,
+		// 	originalLicenceTermCode,
+		// 	hasValidSwl90DayLicence
+		// );
+
+		return this.commonApplicationService.getLicenceTermsAndFees(
+			workerLicenceTypeCode,
+			applicationTypeCode,
+			businessTypeCode,
+			originalLicenceTermCode
+		);
 	}
 }

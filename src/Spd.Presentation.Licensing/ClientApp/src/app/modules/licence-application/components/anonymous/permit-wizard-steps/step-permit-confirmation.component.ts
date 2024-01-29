@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BusinessTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
@@ -55,13 +56,21 @@ export class StepPermitConfirmationComponent implements OnInit {
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private utilService: UtilService, private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private utilService: UtilService,
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit() {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
 
-		const fee = this.permitApplicationService
-			.getLicenceTermsAndFees()
+		const workerLicenceTypeCode = this.permitModelData.workerLicenceTypeData.workerLicenceTypeCode;
+		const applicationTypeCode = this.permitModelData.applicationTypeData.applicationTypeCode;
+		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
+
+		const fee = this.commonApplicationService
+			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, businessTypeCode)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		this.feeAmount = fee?.amount ? fee.amount : null;
