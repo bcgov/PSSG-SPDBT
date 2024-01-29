@@ -11,6 +11,7 @@ import {
 	CaseSubStatusCode,
 	FileTemplateTypeCode,
 	FileTypeCode,
+	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -42,7 +43,7 @@ import {
 						class="large w-auto m-2"
 						aria-label="Download Receipt"
 						(click)="onDownloadReceipt()"
-						*ngIf="isNotAwaitingPayment"
+						*ngIf="showDownloadReceipt"
 					>
 						<mat-icon>file_download</mat-icon>Download Receipt
 					</button>
@@ -218,7 +219,7 @@ import {
 	],
 })
 export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
-	isNotAwaitingPayment = false;
+	showDownloadReceipt = false;
 	applicantName = '';
 	applicationPortalStatusClass = '';
 	documentHistoryExists = false;
@@ -248,10 +249,12 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	) {}
 
 	ngOnInit() {
-		const applicationData = (this.location.getState() as any)?.applicationData;
+		const applicationData: ApplicantApplicationResponse = (this.location.getState() as any)?.applicationData;
 		if (applicationData) {
 			this.loadList(applicationData);
-			this.isNotAwaitingPayment = applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
+			this.showDownloadReceipt =
+				applicationData.serviceType === ServiceTypeCode.CrrpEmployee &&
+				applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
 		} else {
 			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
 		}
