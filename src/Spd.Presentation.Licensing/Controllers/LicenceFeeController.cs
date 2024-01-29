@@ -29,12 +29,13 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Get licence fee
+        /// Sample: api/licence-fee?workerLicenceTypeCode=SecurityWorkerLicence
         /// </summary>
         /// <param name="workerLicenceTypeCode"></param>
         /// <returns></returns>
-        [Route("api/licence-fee/{workerLicenceTypeCode}")]
+        [Route("api/licence-fee")]
         [HttpGet]
-        public async Task<LicenceFeeListResponse> GetLicenceFee([FromRoute][Required] WorkerLicenceTypeCode workerLicenceTypeCode)
+        public async Task<LicenceFeeListResponse> GetLicenceFee([FromQuery]WorkerLicenceTypeCode? workerLicenceTypeCode = null)
         {
             return await _mediator.Send(new GetLicenceFeeListQuery(workerLicenceTypeCode));
         }
