@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BusinessTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
@@ -92,17 +93,34 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 
 	form: FormGroup = this.permitApplicationService.applicationTypeFormGroup;
 
-	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private router: Router,
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
-		const fee = this.permitApplicationService.getLicenceTermsAndFees();
-		fee.forEach((item: LicenceFeeResponse) => {
+		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
+		const applicationTypeCode = this.applicationTypeCode.value;
+		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
+
+		const fee = this.commonApplicationService.getLicenceTermsAndFees(
+			workerLicenceTypeCode,
+			applicationTypeCode,
+			businessTypeCode
+		);
+
+		fee?.forEach((item: LicenceFeeResponse) => {
 			if (item.applicationTypeCode === ApplicationTypeCode.New) {
 				this.newCost = item.amount ? item.amount : null;
 			} else if (item.applicationTypeCode === ApplicationTypeCode.Renewal) {
 				this.renewCost = item.amount ? item.amount : null;
 			}
 		});
+
+		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
 	}
 
 	onStepPrevious(): void {
@@ -119,12 +137,12 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
-		const applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'applicationTypeData.applicationTypeCode'
-		)?.value;
+		const applicationTypeCode = this.applicationTypeCode.value;
 
 		// console.log('workerLicenceTypeCode', workerLicenceTypeCode);
 		// console.log('applicationTypeCode', applicationTypeCode);
+
+		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode, applicationTypeCode);
 
 		switch (workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
@@ -152,5 +170,9 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get applicationTypeCode(): FormControl {
+		return this.form.get('applicationTypeCode') as FormControl;
 	}
 }

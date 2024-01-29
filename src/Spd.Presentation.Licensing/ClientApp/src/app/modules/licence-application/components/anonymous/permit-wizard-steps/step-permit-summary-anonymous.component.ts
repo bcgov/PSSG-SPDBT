@@ -1,6 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { PoliceOfficerRoleCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import {
+	ApplicationTypeCode,
+	BusinessTypeCode,
+	PoliceOfficerRoleCode,
+	WorkerCategoryTypeCode,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 
@@ -522,7 +529,10 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
@@ -539,17 +549,19 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		};
 	}
 
-	get workerLicenceTypeCode(): string {
-		return this.permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
+	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
+		return this.permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
 	}
 
-	get applicationTypeCode(): string {
-		return this.permitModelData.applicationTypeData?.applicationTypeCode ?? '';
+	get applicationTypeCode(): ApplicationTypeCode | null {
+		return this.permitModelData.applicationTypeData?.applicationTypeCode ?? null;
 	}
 
 	get licenceFee(): number | null {
-		const fee = this.permitApplicationService
-			.getLicenceTermsAndFees()
+		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
+
+		const fee = this.commonApplicationService
+			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, businessTypeCode)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		return fee?.amount ? fee.amount : null;

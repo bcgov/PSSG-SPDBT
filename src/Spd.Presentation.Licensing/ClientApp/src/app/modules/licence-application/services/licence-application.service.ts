@@ -10,10 +10,7 @@ import {
 	HeightUnitCode,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	LicenceFeeListResponse,
-	LicenceFeeResponse,
 	LicenceResponse,
-	LicenceTermCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
@@ -44,6 +41,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { CommonApplicationService } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
 export class LicenceDocumentsToSave {
@@ -59,8 +57,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	hasValueChanged = false;
 
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	licenceFeesSecurityWorkerLicence: Array<LicenceFeeResponse> = [];
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
@@ -138,16 +134,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
+		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
-
-		this.licenceFeeService
-			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
-			.pipe()
-			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFeesSecurityWorkerLicence = resp.licenceFees ?? [];
-			});
 
 		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -185,6 +175,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				this.initialized = true;
 				console.debug('this.initialized', this.initialized);
+
+				this.commonApplicationService.setApplicationTitle();
 			})
 		);
 	}
@@ -242,6 +234,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					},
 					{ emitEvent: false }
 				);
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeCode,
+					applicationTypeCode,
+					accessCodeData.licenceNumber
+				);
+
 				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
 			})
 		);
@@ -252,7 +251,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+	private getLicenceOfType(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
@@ -292,6 +294,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('[createNewLicenceAnonymous] resp', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
 			})
 		);
 	}
@@ -306,6 +310,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('NEW LicenceApplicationService createNewLicenceAuthenticated', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle();
 			})
 		);
 	}
@@ -344,58 +350,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			licenceAppId: this.licenceModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
-	}
-
-	/**
-	 * Get the licence fees for the licence and application type and business type
-	 * @returns list of fees
-	 */
-	public getLicenceTermsAndFees(useOriginal: boolean | undefined = false): Array<LicenceFeeResponse> {
-		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
-		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-
-		let businessTypeCode = '';
-		if (useOriginal) {
-			// use this value in the licence confirmation page
-			businessTypeCode = this.licenceModelFormGroup.get('originalBusinessTypeCode')?.value;
-		} else {
-			businessTypeCode = this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value;
-		}
-
-		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode);
-
-		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
-			return [];
-		}
-
-		const originalLicenceTermCode = this.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
-		let hasValidSwl90DayLicence = false;
-		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
-			hasValidSwl90DayLicence = true;
-		}
-
-		// console.debug(
-		// 	'getLicenceTermsAndFees',
-		// 	workerLicenceTypeCode,
-		// 	applicationTypeCode,
-		// 	businessTypeCode,
-		// 	hasValidSwl90DayLicence,
-		// 	this.licenceFeesSecurityWorkerLicence?.filter(
-		// 		(item) =>
-		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
-		// 			item.businessTypeCode == businessTypeCode &&
-		// 			item.applicationTypeCode == applicationTypeCode &&
-		// 			item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		// 	)
-		// );
-
-		return this.licenceFeesSecurityWorkerLicence?.filter(
-			(item) =>
-				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == businessTypeCode &&
-				item.applicationTypeCode == applicationTypeCode &&
-				item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		);
 	}
 
 	/**
