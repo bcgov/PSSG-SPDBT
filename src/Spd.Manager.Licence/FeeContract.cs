@@ -22,4 +22,4 @@ public record LicenceFeeListResponse
     public IEnumerable<LicenceFeeResponse> LicenceFees { get; set; } = Array.Empty<LicenceFeeResponse>();
 }
 
-public record GetLicenceFeeListQuery(WorkerLicenceTypeCode WorkerLicenceTypeCode) : IRequest<LicenceFeeListResponse>;
+public record GetLicenceFeeListQuery(WorkerLicenceTypeCode? WorkerLicenceTypeCode) : IRequest<LicenceFeeListResponse>;
