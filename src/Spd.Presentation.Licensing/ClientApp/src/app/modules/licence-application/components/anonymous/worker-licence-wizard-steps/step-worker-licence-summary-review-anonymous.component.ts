@@ -6,9 +6,10 @@ import {
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-anonymous',
@@ -709,7 +710,10 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
@@ -785,8 +789,13 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationService
-			.getLicenceTermsAndFees()
+		const workerLicenceTypeCode = this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
+		const applicationTypeCode = this.licenceModelData.applicationTypeData?.applicationTypeCode;
+		const businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
+
+		const feeItem = this.commonApplicationService
+			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, businessTypeCode, originalLicenceTermCode)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return feeItem?.amount ?? null;
 	}

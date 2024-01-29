@@ -701,6 +701,10 @@ export class WorkerLicensingService extends BaseService {
    */
   apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response(params: {
     keyCode: string;
+
+    /**
+     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     */
     body?: WorkerLicenceAppAnonymousSubmitRequestJson
   },
   context?: HttpContext
@@ -738,6 +742,10 @@ export class WorkerLicensingService extends BaseService {
    */
   apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost(params: {
     keyCode: string;
+
+    /**
+     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     */
     body?: WorkerLicenceAppAnonymousSubmitRequestJson
   },
   context?: HttpContext

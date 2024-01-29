@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -57,11 +58,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 				border-right-color: gray;
 			}
 
-			.logout-button {
-				vertical-align: middle;
-				cursor: pointer;
-			}
-
 			.login-user-menu-button:hover {
 				background-color: var(--color-primary-dark);
 			}
@@ -75,14 +71,16 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class HeaderComponent implements OnInit {
-	@Input() title = '';
+export class HeaderComponent implements OnInit, OnDestroy {
+	title = '';
 	loggedInUserDisplay: string | null = null;
 
+	private applicationTitleSubscription!: Subscription;
+
 	constructor(
-		private router: Router,
 		private authUserBcscService: AuthUserBcscService,
 		private authProcessService: AuthProcessService,
+		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
 	) {}
 
@@ -96,6 +94,14 @@ export class HeaderComponent implements OnInit {
 
 			this.getUserInfo();
 		});
+
+		this.applicationTitleSubscription = this.commonApplicationService.applicationTitle$.subscribe((_resp: string) => {
+			this.title = _resp;
+		});
+	}
+
+	ngOnDestroy() {
+		if (this.applicationTitleSubscription) this.applicationTitleSubscription.unsubscribe();
 	}
 
 	// onHome(): void {

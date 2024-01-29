@@ -4,6 +4,7 @@ import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { take, tap } from 'rxjs';
+import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 
@@ -187,10 +188,23 @@ export class LoginSelectionComponent {
 	constructor(
 		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	async onRegisterWithBceid(): Promise<void> {
+		this.businessApplicationService
+			.createNewBusinessLicence()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.USER_BUSINESS_APPLICATIONS)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+
 		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
 	}
 
