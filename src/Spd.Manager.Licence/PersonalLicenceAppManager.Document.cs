@@ -156,7 +156,7 @@ internal partial class PersonalLicenceAppManager
     private async Task GetDocumentsAsync(Guid LicenceAppId, WorkerLicenceResponse result, CancellationToken ct)
     {
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(LicenceAppId), ct);
-        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
 
         //List<WorkerCategoryTypeCode> categoryContainFiles = new List<WorkerCategoryTypeCode>() {
         //    WorkerCategoryTypeCode.ArmouredCarGuard,

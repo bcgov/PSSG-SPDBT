@@ -15,7 +15,7 @@ internal class Mappings : Profile
         //CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
         //    .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.CategoryData));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, CreateLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
         CreateMap<LicenceResp, LicenceResponse>();
@@ -46,20 +46,20 @@ internal class Mappings : Profile
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, SaveLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
         CreateMap<LicAppFileInfo, SpdTempFile>();
     }
 
-    private WorkerLicenceAppCategory[] GetCategories(WorkerCategoryTypeCode[] codes)
+    private static WorkerCategoryTypeEnum[] GetCategories(WorkerCategoryTypeCode[] codes)
     {
-        List<WorkerLicenceAppCategory> categories = new List<WorkerLicenceAppCategory> { };
+        List<WorkerCategoryTypeEnum> categories = new List<WorkerCategoryTypeEnum> { };
         foreach (WorkerCategoryTypeCode code in codes)
         {
-            categories.Add(new WorkerLicenceAppCategory() { WorkerCategoryTypeCode = Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()) });
+            categories.Add( Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()) );
         }
         return categories.ToArray();
     }

@@ -58,14 +58,9 @@ public record LicenceApplication
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
-    public WorkerLicenceAppCategory[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategory>();
+    public WorkerCategoryTypeEnum[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-}
-
-public record WorkerLicenceAppCategory
-{
-    public WorkerCategoryTypeEnum WorkerCategoryTypeCode { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
