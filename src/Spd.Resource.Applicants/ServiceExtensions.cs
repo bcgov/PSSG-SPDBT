@@ -12,6 +12,7 @@ using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Applicants.PortalUser;
+using Spd.Resource.Applicants.Tasks;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Applicants
@@ -33,6 +34,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
             configurationServices.Services.AddTransient<ILicenceFeeRepository, LicenceFeeRepository>();
             configurationServices.Services.AddTransient<IContactRepository, ContactRepository>();
+            configurationServices.Services.AddTransient<ITaskRepository, TaskRepository>();
         }
     }
 }
