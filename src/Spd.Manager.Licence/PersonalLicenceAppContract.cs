@@ -15,6 +15,7 @@ public interface IPersonalLicenceAppManager
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppRenewCommand command, CancellationToken ct);
+    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand command, CancellationToken ct);
     public Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
 }
 
@@ -38,6 +39,11 @@ public record AnonymousWorkerLicenceAppReplaceCommand(
     : IRequest<WorkerLicenceAppUpsertResponse>;
 
 public record AnonymousWorkerLicenceAppRenewCommand(
+    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    Guid KeyCode)
+    : IRequest<WorkerLicenceAppUpsertResponse>;
+
+public record AnonymousWorkerLicenceAppUpdateCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
     : IRequest<WorkerLicenceAppUpsertResponse>;
@@ -184,6 +190,7 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase 
     public Guid[]? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
+    public bool? Reprint { get; set; }
 }
 
 public record WorkerLicenceCreateResponse
