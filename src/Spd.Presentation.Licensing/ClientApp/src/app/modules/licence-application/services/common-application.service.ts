@@ -45,13 +45,13 @@ export class CommonApplicationService {
 		businessTypeCode: BusinessTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
-		console.debug(
-			'getLicenceTermsAndFees',
-			workerLicenceTypeCode,
-			applicationTypeCode,
-			businessTypeCode,
-			originalLicenceTermCode
-		);
+		// console.debug(
+		// 	'getLicenceTermsAndFees',
+		// 	workerLicenceTypeCode,
+		// 	applicationTypeCode,
+		// 	businessTypeCode,
+		// 	originalLicenceTermCode
+		// );
 
 		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
 			return [];
@@ -62,17 +62,17 @@ export class CommonApplicationService {
 			hasValidSwl90DayLicence = true;
 		}
 
-		console.debug(
-			'getLicenceTermsAndFees',
-			hasValidSwl90DayLicence,
-			this.licenceFees?.filter(
-				(item) =>
-					item.workerLicenceTypeCode == workerLicenceTypeCode &&
-					item.applicationTypeCode == applicationTypeCode &&
-					item.businessTypeCode == businessTypeCode &&
-					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-			)
-		);
+		// console.debug(
+		// 	'getLicenceTermsAndFees',
+		// 	hasValidSwl90DayLicence,
+		// 	this.licenceFees?.filter(
+		// 		(item) =>
+		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
+		// 			item.applicationTypeCode == applicationTypeCode &&
+		// 			item.businessTypeCode == businessTypeCode &&
+		// 			item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
+		// 	)
+		// );
 
 		return this.licenceFees?.filter(
 			(item) =>
@@ -121,7 +121,7 @@ export class CommonApplicationService {
 			}
 
 			if (originalLicenceNumber) {
-				title += ` of ${originalLicenceNumber}`;
+				title += ` - ${originalLicenceNumber}`;
 			}
 		} else {
 			title = 'Licensing Application';
