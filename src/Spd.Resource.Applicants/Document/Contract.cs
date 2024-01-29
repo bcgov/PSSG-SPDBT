@@ -45,6 +45,7 @@ namespace Spd.Resource.Applicants.Document
         public DocumentTypeEnum? DocumentType { get; set; } //tag1
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
         public DateOnly? ExpiryDate { get; set; }
+        public bool ToTransientBucket { get; set; } = false;
     }
 
     public record CreateStreamDocumentCmd : CreateDocumentCmd

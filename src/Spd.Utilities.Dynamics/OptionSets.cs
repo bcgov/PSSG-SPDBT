@@ -330,4 +330,11 @@ namespace Spd.Utilities.Dynamics
         Mailing = 100000001,
         Branch = 100000002
     }
+
+    public enum TaskPriorityOptionSet
+    {
+        Low = 0,
+        Normal = 1,
+        High = 2
+    }
 }

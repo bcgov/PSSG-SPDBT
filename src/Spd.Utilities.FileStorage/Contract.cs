@@ -10,6 +10,7 @@
     {
         Task<string> HandleCommand(StorageCommand cmd, CancellationToken cancellationToken);
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
+        Task<string> HandleDeleteCommand(StorageDeleteCommand cmd, CancellationToken cancellationToken);
     }
 
     public abstract record StorageCommand(string Key, string? Folder);
@@ -21,6 +22,7 @@
     //copy the file from source to dest for the same bucket.
     public record CopyFileCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder) : StorageCommand(SourceKey, SourceFolder);
 
+    public record StorageDeleteCommand(string Key, string? Folder);
     public record FileTag
     {
         public IEnumerable<Tag> Tags { get; set; } = Array.Empty<Tag>();

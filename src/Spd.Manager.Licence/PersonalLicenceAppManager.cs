@@ -7,8 +7,10 @@ using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Resource.Applicants.LicenceFee;
+using Spd.Resource.Applicants.Tasks;
 using Spd.Resource.Organizations.Identity;
 using Spd.Utilities.Cache;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
 
@@ -23,6 +25,7 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IPersonalLicenceAppManager
 {
@@ -34,6 +37,7 @@ internal partial class PersonalLicenceAppManager :
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<IPersonalLicenceAppManager> _logger;
     private readonly ILicenceFeeRepository _feeRepository;
+    private readonly ITaskRepository _taskRepository;
     private readonly IDistributedCache _cache;
 
     public PersonalLicenceAppManager(
@@ -45,7 +49,8 @@ internal partial class PersonalLicenceAppManager :
         IDocumentRepository documentUrlRepository,
         ILogger<IPersonalLicenceAppManager> logger,
         ILicenceFeeRepository feeRepository,
-        IDistributedCache cache)
+        IDistributedCache cache,
+        ITaskRepository taskRepository)
     {
         _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
@@ -56,6 +61,7 @@ internal partial class PersonalLicenceAppManager :
         _logger = logger;
         _feeRepository = feeRepository;
         _cache = cache;
+        _taskRepository = taskRepository;
     }
 
     #region for portal
@@ -87,7 +93,7 @@ internal partial class PersonalLicenceAppManager :
         return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
     }
 
-    //authenticated submit
+    // authenticated submit
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken ct)
     {
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, ct);
@@ -200,6 +206,7 @@ internal partial class PersonalLicenceAppManager :
                         DocumentType2 = docType2,
                         SubmittedByApplicantId = appResponse.ContactId,
                         ExpiryDate = expiredDate,
+                        ToTransientBucket = false
                     }, ct);
                 }
             }
@@ -219,7 +226,7 @@ internal partial class PersonalLicenceAppManager :
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
         if (licences == null || !licences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-        if (DateTime.UtcNow.AddDays(Constants.LICENCE_REPLACE_VALID_BEFORE_EXPIRATION_IN_DAYS) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        if (DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -258,9 +265,18 @@ internal partial class PersonalLicenceAppManager :
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         LicenceResp originalLic = originalLicences.Items.First();
-        if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(Constants.LICENCE_RENEW_VALID_BEFORE_EXPIRATION_IN_DAYS).ToDateTime(new TimeOnly(0, 0))
-            && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
-            throw new ArgumentException("the licence can only be renewed within 90 days of the expiry date.");
+        if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
+        {
+            if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+                && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+                throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays} days of the expiry date.");
+        }
+        else
+        {
+            if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+                && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+                throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
+        }
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
@@ -312,6 +328,103 @@ internal partial class PersonalLicenceAppManager :
 
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
+
+    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
+    {
+        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
+            throw new ArgumentException("should be a update request");
+
+        //validation: check if original licence meet update condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be updated.");
+        LicenceResp originalLic = originalLicences.Items.First();
+        if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
+
+        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
+        ChangeSpec changes = GetChanges(originalApp, request);
+
+        if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
+        {
+            CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+
+            //add all new files user uploaded
+            if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
+            {
+                foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
+                {
+                    IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
+                    foreach (LicAppFileInfo licAppFile in items)
+                    {
+                        DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
+                        DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
+                        DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
+                             .DocumentInfos?
+                             .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                             .ExpiryDate;
+                        //create bcgov_documenturl and file
+                        await _documentRepository.ManageAsync(new CreateDocumentCmd
+                        {
+                            TempFile = _mapper.Map<SpdTempFile>(licAppFile),
+                            ApplicationId = response.LicenceAppId,
+                            DocumentType = docType1,
+                            DocumentType2 = docType2,
+                            SubmittedByApplicantId = response.ContactId,
+                            ExpiryDate = expiredDate,
+                        }, ct);
+                    }
+                }
+            }
+            //todo : need to pay $20
+            await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        }
+        else
+        {
+            //todo: update contact directly
+        }
+
+        //check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
+        if (changes.CriminalHistoryChanged)
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Criminal History has Changed",
+                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
+                Subject = "Criminal History Changed",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+            }, ct);
+
+        // check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
+        if (changes.PeaceOfficerStatusChanged)
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Peace Officer Status has Changed",
+                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
+                Subject = "Peace Officer Status Changed",
+                TaskPriorityEnum = TaskPriorityEnum.High,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
+            }, ct);
+
+        ////Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
+        if (changes.MentalHealthStatusChanged)
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Mental Health Status has Changed",
+                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
+                Subject = "Mental Health Status Changed",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+            }, ct);
+
+        return new WorkerLicenceAppUpsertResponse();
+    }
+
     #endregion
 
     private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
@@ -378,5 +491,24 @@ internal partial class PersonalLicenceAppManager :
             return true;
         }
         return false;
+    }
+    private ChangeSpec GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp)
+    {
+        ChangeSpec changes = new ChangeSpec();
+        //todo
+        //if(newApp.CategoryCodes != originalApp.CategoryData)
+        changes.CategoriesChanged = true;
+        return changes;
+    }
+
+    private record ChangeSpec
+    {
+        public bool NameChanged { get; set; }
+        public bool CategoriesChanged { get; set; }
+        public bool DogRestraintsChanged { get; set; }
+        public bool ContactInfoChanged { get; set; }
+        public bool PeaceOfficerStatusChanged { get; set; }
+        public bool MentalHealthStatusChanged { get; set; }
+        public bool CriminalHistoryChanged { get; set; }
     }
 }
