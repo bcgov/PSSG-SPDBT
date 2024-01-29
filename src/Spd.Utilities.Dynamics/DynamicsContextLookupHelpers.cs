@@ -187,7 +187,7 @@ namespace Spd.Utilities.Dynamics
             {"PE_CRC_VS", Guid.Parse("61a2ecee-58ae-ed11-b83e-00505683fbf4")},
             {"SecurityWorkerLicence", Guid.Parse("451101f8-58ae-ed11-b83e-00505683fbf4")},
             {"PSSO_VS", Guid.Parse("8c653cc7-64b9-ed11-b83e-00505683fbf4")},
-            {"SECURITY_BUSINESS_LICENCE", Guid.Parse("86aa9004-4c32-ee11-b845-00505683fbf4")},
+            {"SecurityBusinessLicence", Guid.Parse("86aa9004-4c32-ee11-b845-00505683fbf4")},
             {"ArmouredVehiclePermit", Guid.Parse("b0572417-4c32-ee11-b845-00505683fbf4")}, //AVAMCCA
             {"BodyArmourPermit", Guid.Parse("f504b223-4c32-ee11-b845-00505683fbf4")}, //BAP
             {"MDRA", Guid.Parse("b212c347-4c32-ee11-b845-00505683fbf4")},
