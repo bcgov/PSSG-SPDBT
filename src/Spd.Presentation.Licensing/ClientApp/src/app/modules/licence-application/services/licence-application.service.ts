@@ -10,10 +10,7 @@ import {
 	HeightUnitCode,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	LicenceFeeListResponse,
-	LicenceFeeResponse,
 	LicenceResponse,
-	LicenceTermCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
 	WorkerLicenceAppCategoryData,
@@ -60,8 +57,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	hasValueChanged = false;
 
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	licenceFeesSecurityWorkerLicence: Array<LicenceFeeResponse> = [];
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
@@ -143,13 +138,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
-
-		this.licenceFeeService
-			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence })
-			.pipe()
-			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFeesSecurityWorkerLicence = resp.licenceFees ?? [];
-			});
 
 		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -362,58 +350,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			licenceAppId: this.licenceModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
-	}
-
-	/**
-	 * Get the licence fees for the licence and application type and business type
-	 * @returns list of fees
-	 */
-	public getLicenceTermsAndFees(useOriginal: boolean | undefined = false): Array<LicenceFeeResponse> {
-		const workerLicenceTypeCode = this.licenceModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
-		const applicationTypeCode = this.licenceModelFormGroup.get('applicationTypeData.applicationTypeCode')?.value;
-
-		let businessTypeCode = '';
-		if (useOriginal) {
-			// use this value in the licence confirmation page
-			businessTypeCode = this.licenceModelFormGroup.get('originalBusinessTypeCode')?.value;
-		} else {
-			businessTypeCode = this.licenceModelFormGroup.get('soleProprietorData.businessTypeCode')?.value;
-		}
-
-		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, applicationTypeCode, businessTypeCode);
-
-		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
-			return [];
-		}
-
-		const originalLicenceTermCode = this.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
-		let hasValidSwl90DayLicence = false;
-		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
-			hasValidSwl90DayLicence = true;
-		}
-
-		// console.debug(
-		// 	'getLicenceTermsAndFees',
-		// 	workerLicenceTypeCode,
-		// 	applicationTypeCode,
-		// 	businessTypeCode,
-		// 	hasValidSwl90DayLicence,
-		// 	this.licenceFeesSecurityWorkerLicence?.filter(
-		// 		(item) =>
-		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
-		// 			item.businessTypeCode == businessTypeCode &&
-		// 			item.applicationTypeCode == applicationTypeCode &&
-		// 			item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		// 	)
-		// );
-
-		return this.licenceFeesSecurityWorkerLicence?.filter(
-			(item) =>
-				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == businessTypeCode &&
-				item.applicationTypeCode == applicationTypeCode &&
-				item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		);
 	}
 
 	/**

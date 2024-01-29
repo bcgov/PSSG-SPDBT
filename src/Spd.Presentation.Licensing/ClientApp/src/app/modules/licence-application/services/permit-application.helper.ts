@@ -91,7 +91,7 @@ export abstract class PermitApplicationHelper {
 
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
-			hasExpiredPermit: new FormControl('', [FormControlValidators.required]),
+			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
@@ -100,15 +100,15 @@ export abstract class PermitApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredPermit')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiredLicenceId',
-					(form) => form.get('hasExpiredPermit')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
-					(form) => form.get('hasExpiredPermit')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 			],
 		}
@@ -463,12 +463,12 @@ export abstract class PermitApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			hasExpiredPermit: false, // TODO remove?
+			hasExpiredLicence: false, // TODO remove?
 			expiredLicenceNumber:
-				expiredLicenceData.hasExpiredPermit == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
+				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
 			expiredLicenceId:
-				expiredLicenceData.hasExpiredPermit == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate: expiredLicenceData.hasExpiredPermit == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
+				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
+			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------

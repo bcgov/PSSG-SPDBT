@@ -4,12 +4,9 @@ import {
 	Alias,
 	ApplicationTypeCode,
 	BooleanTypeCode,
-	BusinessTypeCode,
 	HeightUnitCode,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	LicenceFeeListResponse,
-	LicenceFeeResponse,
 	LicenceResponse,
 	LicenceTermCode,
 	WorkerLicenceAppUpsertResponse,
@@ -53,9 +50,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	hasValueChanged = false;
 
 	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	licenceFeesArmouredVehiclePermit: Array<LicenceFeeResponse> = [];
-	licenceFeesBodyArmourPermit: Array<LicenceFeeResponse> = [];
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
@@ -115,20 +109,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
-
-		this.licenceFeeService
-			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit })
-			.pipe()
-			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFeesArmouredVehiclePermit = resp.licenceFees ?? [];
-			});
-
-		this.licenceFeeService
-			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit })
-			.pipe()
-			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFeesBodyArmourPermit = resp.licenceFees ?? [];
-			});
 
 		this.permitModelChangedSubscription = this.permitModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -519,7 +499,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 
 				const expiredLicenceData = {
-					hasExpiredPermit: this.booleanToBooleanType(resp.hasExpiredLicence),
+					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
 					expiredLicenceNumber: resp.expiredLicenceNumber,
 					expiryDate: resp.expiryDate,
 					expiredLicenceId: resp.expiredLicenceId,
@@ -754,41 +734,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
-	}
-
-	/**
-	 * Get the licence fees for the licence and application type and business type
-	 * @returns list of fees
-	 */
-	public getLicenceTermsAndFees(): Array<LicenceFeeResponse> {
-		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
-		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO permit, what business type to use?
-		// ** Permits are always 5 years
-
-		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, businessTypeCode);
-
-		if (!workerLicenceTypeCode || !businessTypeCode) {
-			return [];
-		}
-
-		// console.debug('getLicenceTermsAndFees', workerLicenceTypeCode, businessTypeCode);
-
-		if (workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			return this.licenceFeesArmouredVehiclePermit?.filter(
-				(item) =>
-					item.workerLicenceTypeCode == workerLicenceTypeCode &&
-					item.businessTypeCode == businessTypeCode &&
-					item.licenceTermCode == LicenceTermCode.FiveYears
-			);
-		} else {
-			return this.licenceFeesBodyArmourPermit?.filter(
-				(item) =>
-					item.workerLicenceTypeCode == workerLicenceTypeCode &&
-					item.businessTypeCode == businessTypeCode &&
-					item.licenceTermCode == LicenceTermCode.FiveYears &&
-					item.hasValidSwl90DayLicence === false
-			);
-		}
 	}
 
 	/**

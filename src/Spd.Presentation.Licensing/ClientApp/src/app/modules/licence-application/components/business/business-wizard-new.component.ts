@@ -1,10 +1,13 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnInit } from '@angular/core';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { StepsBusinessInformationNewComponent } from './steps-business-information-new.component';
 
 @Component({
 	selector: 'app-business-wizard-new',
@@ -18,12 +21,12 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 		>
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Business Information</ng-template>
-				<!-- <app-steps-permit-details-new
+				<app-steps-business-information-new
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-details-new> -->
+				></app-steps-business-information-new>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
@@ -91,8 +94,8 @@ export class BusinessWizardNewComponent extends BaseWizardComponent implements O
 	step3Complete = false;
 	step4Complete = false;
 
-	// @ViewChild(StepsPermitDetailsUpdateComponent)
-	// stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
+	@ViewChild(StepsBusinessInformationNewComponent)
+	stepsBusinessInformationComponent!: StepsBusinessInformationNewComponent;
 
 	// @ViewChild(StepsPermitPurposeComponent)
 	// stepsPermitPurposeComponent!: StepsPermitPurposeComponent;
@@ -124,46 +127,46 @@ export class BusinessWizardNewComponent extends BaseWizardComponent implements O
 		// this.updateCompleteStatus();
 	}
 
-	// override onStepSelectionChange(event: StepperSelectionEvent) {
-	// 	switch (event.selectedIndex) {
-	// 		case this.STEP_BUSINESS_INFORMATION:
-	// 			this.stepsPermitDetailsComponent?.onGoToFirstStep();
-	// 			break;
-	// 		case this.STEP_LICENCE_SELECTION:
-	// 			this.stepsPermitPurposeComponent?.onGoToFirstStep();
-	// 			break;
-	// 		case this.STEP_CONTACT_INFORMATION:
-	// 			this.stepsPermitIdentificationComponent?.onGoToFirstStep();
-	// 			break;
-	// 		case this.STEP_CONTROLLING_MEMBERS:
-	// 			this.stepsPermitContactComponent?.onGoToFirstStep();
-	// 			break;
-	// 		case this.STEP_REVIEW_AND_CONFIRM:
-	// 			this.stepsPermitReviewComponent?.onGoToFirstStep();
-	// 			break;
-	// 	}
+	override onStepSelectionChange(event: StepperSelectionEvent) {
+		switch (event.selectedIndex) {
+			case this.STEP_BUSINESS_INFORMATION:
+				this.stepsBusinessInformationComponent?.onGoToFirstStep();
+				break;
+			// 		case this.STEP_LICENCE_SELECTION:
+			// 			this.stepsPermitPurposeComponent?.onGoToFirstStep();
+			// 			break;
+			// 		case this.STEP_CONTACT_INFORMATION:
+			// 			this.stepsPermitIdentificationComponent?.onGoToFirstStep();
+			// 			break;
+			// 		case this.STEP_CONTROLLING_MEMBERS:
+			// 			this.stepsPermitContactComponent?.onGoToFirstStep();
+			// 			break;
+			// 		case this.STEP_REVIEW_AND_CONFIRM:
+			// 			this.stepsPermitReviewComponent?.onGoToFirstStep();
+			// 			break;
+		}
 
-	// 	super.onStepSelectionChange(event);
-	// }
+		super.onStepSelectionChange(event);
+	}
 
-	// onPreviousStepperStep(stepper: MatStepper): void {
-	// 	stepper.previous();
+	onPreviousStepperStep(stepper: MatStepper): void {
+		stepper.previous();
 
-	// 	switch (stepper.selectedIndex) {
-	// 		case this.STEP_BUSINESS_INFORMATION:
-	// 			this.stepsPermitDetailsComponent?.onGoToLastStep();
-	// 			break;
-	// 		case this.STEP_LICENCE_SELECTION:
-	// 			this.stepsPermitPurposeComponent?.onGoToLastStep();
-	// 			break;
-	// 		case this.STEP_CONTACT_INFORMATION:
-	// 			this.stepsPermitIdentificationComponent?.onGoToLastStep();
-	// 			break;
-	// 		case this.STEP_CONTROLLING_MEMBERS:
-	// 			this.stepsPermitContactComponent?.onGoToLastStep();
-	// 			break;
-	// 	}
-	// }
+		switch (stepper.selectedIndex) {
+			case this.STEP_BUSINESS_INFORMATION:
+				this.stepsBusinessInformationComponent?.onGoToLastStep();
+				break;
+			// 		case this.STEP_LICENCE_SELECTION:
+			// 			this.stepsPermitPurposeComponent?.onGoToLastStep();
+			// 			break;
+			// 		case this.STEP_CONTACT_INFORMATION:
+			// 			this.stepsPermitIdentificationComponent?.onGoToLastStep();
+			// 			break;
+			// 		case this.STEP_CONTROLLING_MEMBERS:
+			// 			this.stepsPermitContactComponent?.onGoToLastStep();
+			// 			break;
+		}
+	}
 
 	// onNextPayStep(): void {
 	// 	this.permitApplicationService.submitPermit().subscribe({
@@ -199,60 +202,54 @@ export class BusinessWizardNewComponent extends BaseWizardComponent implements O
 	// 		});
 	// }
 
-	// onNextStepperStep(stepper: MatStepper): void {
-	// 	this.updateCompleteStatus();
+	onNextStepperStep(stepper: MatStepper): void {
+		this.updateCompleteStatus();
 
-	// 	if (stepper?.selected) stepper.selected.completed = true;
-	// 	stepper.next();
-	// }
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
+	}
 
-	// onGoToStep(step: number) {
-	// 	// if (step == 99) {
-	// 	// 	this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-	// 	// 	this.stepIdentificationComponent.onGoToContactStep();
-	// 	// 	return;
-	// 	// }
+	onGoToStep(step: number) {
+		this.stepsBusinessInformationComponent?.onGoToFirstStep();
+		// 	this.stepsPermitPurposeComponent?.onGoToFirstStep();
+		// 	this.stepsPermitIdentificationComponent?.onGoToFirstStep();
+		// 	this.stepsPermitContactComponent?.onGoToFirstStep();
+		// 	this.stepper.selectedIndex = step;
+	}
 
-	// 	this.stepsPermitDetailsComponent?.onGoToFirstStep();
-	// 	this.stepsPermitPurposeComponent?.onGoToFirstStep();
-	// 	this.stepsPermitIdentificationComponent?.onGoToFirstStep();
-	// 	this.stepsPermitContactComponent?.onGoToFirstStep();
-	// 	this.stepper.selectedIndex = step;
-	// }
+	onGoToReview() {
+		this.updateCompleteStatus();
 
-	// onGoToReview() {
-	// 	this.updateCompleteStatus();
+		setTimeout(() => {
+			// hack... does not navigate without the timeout
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		}, 250);
+	}
 
-	// 	setTimeout(() => {
-	// 		// hack... does not navigate without the timeout
-	// 		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-	// 	}, 250);
-	// }
+	private updateCompleteStatus(): void {
+		// 	this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
+		// 	this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
+		// 	this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
+		// 	this.step4Complete = this.permitApplicationService.isStepContactComplete();
+		// 	console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete); //, this.step4Complete);
+	}
 
-	// private updateCompleteStatus(): void {
-	// 	this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
-	// 	this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
-	// 	this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
-	// 	this.step4Complete = this.permitApplicationService.isStepContactComplete();
-	// 	console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete); //, this.step4Complete);
-	// }
-
-	// onChildNextStep() {
-	// 	console.log('onChildNextStep', this.stepper.selectedIndex);
-	// 	switch (this.stepper.selectedIndex) {
-	// 		case this.STEP_BUSINESS_INFORMATION:
-	// 			this.stepsPermitDetailsComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_LICENCE_SELECTION:
-	// 			this.stepsPermitPurposeComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_CONTACT_INFORMATION:
-	// 			this.stepsPermitIdentificationComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_CONTROLLING_MEMBERS:
-	// 			this.stepsPermitContactComponent?.onGoToNextStep();
-	// 			break;
-	// 	}
-	// 	this.updateCompleteStatus();
-	// }
+	onChildNextStep() {
+		console.log('onChildNextStep', this.stepper.selectedIndex);
+		switch (this.stepper.selectedIndex) {
+			case this.STEP_BUSINESS_INFORMATION:
+				this.stepsBusinessInformationComponent?.onGoToNextStep();
+				break;
+			// 		case this.STEP_LICENCE_SELECTION:
+			// 			this.stepsPermitPurposeComponent?.onGoToNextStep();
+			// 			break;
+			// 		case this.STEP_CONTACT_INFORMATION:
+			// 			this.stepsPermitIdentificationComponent?.onGoToNextStep();
+			// 			break;
+			// 		case this.STEP_CONTROLLING_MEMBERS:
+			// 			this.stepsPermitContactComponent?.onGoToNextStep();
+			// 			break;
+		}
+		this.updateCompleteStatus();
+	}
 }

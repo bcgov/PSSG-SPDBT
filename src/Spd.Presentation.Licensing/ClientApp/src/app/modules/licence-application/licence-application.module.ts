@@ -73,6 +73,10 @@ import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './compon
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { BusinessApplicationBaseComponent } from './components/business/business-application-base.component';
 import { BusinessWizardNewComponent } from './components/business/business-wizard-new.component';
+import { StepBusinessLicenceChecklistNewComponent } from './components/business/step-business-licence-checklist-new.component';
+import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
+import { StepsBusinessInformationNewComponent } from './components/business/steps-business-information-new.component';
+import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
@@ -84,6 +88,7 @@ import { CommonAliasesComponent } from './components/shared/step-components/comm
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
+import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
 import { CommonMailingAddressComponent } from './components/shared/step-components/common-mailing-address.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
@@ -149,6 +154,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
 		CommonCriminalHistoryComponent,
+		CommonExpiredLicenceComponent,
 		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,
 		CommonPersonalInformationRenewAnonymousComponent,
@@ -284,7 +290,11 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitConsentAndDeclarationComponent,
 		StepBusinessChecklistNewComponent,
 		BusinessApplicationBaseComponent,
+		UserBusinessApplicationsComponent,
 		BusinessWizardNewComponent,
+		StepsBusinessInformationNewComponent,
+		StepBusinessLicenceChecklistNewComponent,
+		StepBusinessLicenceExpiredComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

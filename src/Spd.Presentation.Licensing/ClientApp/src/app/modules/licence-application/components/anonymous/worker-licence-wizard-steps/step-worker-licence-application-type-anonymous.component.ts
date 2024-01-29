@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -118,9 +118,7 @@ export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnIni
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-				'applicationTypeData.applicationTypeCode'
-			)?.value;
+			const applicationTypeCode = this.applicationTypeCode.value;
 
 			this.commonApplicationService.setApplicationTitle(
 				WorkerLicenceTypeCode.SecurityWorkerLicence,
@@ -153,5 +151,9 @@ export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnIni
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get applicationTypeCode(): FormControl {
+		return this.form.get('applicationTypeCode') as FormControl;
 	}
 }

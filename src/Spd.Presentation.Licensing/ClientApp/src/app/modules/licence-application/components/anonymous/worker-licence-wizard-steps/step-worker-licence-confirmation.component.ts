@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-confirmation',
@@ -72,12 +72,12 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	ngOnInit() {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 
-		const fee = this.licenceApplicationService
-			.getLicenceTermsAndFees(true)
-			.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
-		if (fee?.length > 0) {
-			this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
-		}
+		// const fee = this.licenceApplicationService // TODO fix fees
+		// 	.getLicenceTermsAndFees(true)
+		// 	.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
+		// if (fee?.length > 0) {
+		// 	this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
+		// }
 	}
 
 	get licenceHolderName(): string {

@@ -25,6 +25,7 @@ import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './compon
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { BusinessApplicationBaseComponent } from './components/business/business-application-base.component';
 import { BusinessWizardNewComponent } from './components/business/business-wizard-new.component';
+import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
@@ -53,6 +54,7 @@ export class LicenceApplicationRoutes {
 
 	public static BUSINESS_BASE = 'business-licence';
 	public static BUSINESS_NEW = 'business-new';
+	public static USER_BUSINESS_APPLICATIONS = 'applications';
 	public static BUSINESS_RENEW = 'business-renew';
 
 	public static LICENCE_LINK = 'licence-link';
@@ -110,7 +112,7 @@ export class LicenceApplicationRoutes {
 			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}`;
 	}
 
-	public static pathBusinessAnonymous(route: string | null = null): string {
+	public static pathBusinessLicence(route: string | null = null): string {
 		return route
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}/${route}`
 			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}`;
@@ -206,6 +208,10 @@ const routes: Routes = [
 				component: BusinessApplicationBaseComponent,
 				children: [
 					{
+						path: LicenceApplicationRoutes.USER_BUSINESS_APPLICATIONS,
+						component: UserBusinessApplicationsComponent,
+					},
+					{
 						path: LicenceApplicationRoutes.BUSINESS_NEW,
 						component: BusinessWizardNewComponent,
 					},
@@ -215,7 +221,7 @@ const routes: Routes = [
 					},
 					{
 						path: '',
-						component: BusinessWizardNewComponent,
+						component: UserBusinessApplicationsComponent,
 					},
 				],
 			},

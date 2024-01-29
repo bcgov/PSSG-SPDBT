@@ -194,11 +194,11 @@ export class LoginSelectionComponent {
 
 	async onRegisterWithBceid(): Promise<void> {
 		this.businessApplicationService
-			.createNewBusinessAnonymous()
+			.createNewBusinessLicence()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessAnonymous(LicenceApplicationRoutes.BUSINESS_NEW)
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.USER_BUSINESS_APPLICATIONS)
 					);
 				}),
 				take(1)

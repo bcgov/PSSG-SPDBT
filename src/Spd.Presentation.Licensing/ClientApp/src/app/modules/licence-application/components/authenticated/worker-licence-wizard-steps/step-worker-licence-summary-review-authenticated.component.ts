@@ -1,14 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {
-	LicenceDocumentTypeCode,
-	LicenceFeeResponse,
-	PoliceOfficerRoleCode,
-	WorkerCategoryTypeCode,
-} from '@app/api/models';
+import { LicenceDocumentTypeCode, PoliceOfficerRoleCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-authenticated',
@@ -624,10 +619,11 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 			return null;
 		}
 
-		const feeItem = this.licenceApplicationService
-			.getLicenceTermsAndFees()
-			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
-		return feeItem?.amount ?? null;
+		// const feeItem = this.licenceApplicationService // TODO fix fees
+		// 	.getLicenceTermsAndFees()
+		// 	.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
+		// return feeItem?.amount ?? null;
+		return null;
 	}
 
 	// get hasExpiredLicence(): string {

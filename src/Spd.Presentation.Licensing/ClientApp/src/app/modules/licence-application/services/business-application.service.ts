@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { BusinessApplicationHelper } from './business-application.helper';
+import { CommonApplicationService } from './common-application.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -16,19 +18,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+
+		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
+		applicationTypeData: this.applicationTypeFormGroup,
 	});
 
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
-		formatDatePipe: FormatDatePipe
-		// private licenceFeeService: LicenceFeeService,
-		// private workerLicensingService: WorkerLicensingService,
-		// private licenceLookupService: LicenceLookupService,
-		// private authUserBcscService: AuthUserBcscService,
-		// private authenticationService: AuthenticationService,
-		// private utilService: UtilService
-	) {
+		formatDatePipe: FormatDatePipe,
+		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private workerLicensingService: WorkerLicensingService,
+	) // private licenceLookupService: LicenceLookupService,
+	// private authUserBcscService: AuthUserBcscService,
+	// private authenticationService: AuthenticationService,
+	// private utilService: UtilService
+	{
 		super(formBuilder, configService, formatDatePipe);
 	}
 
@@ -36,8 +40,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
-	createNewBusinessAnonymous(): Observable<any> {
-		return this.createEmptyBusinessAnonymous().pipe(
+	createNewBusinessLicence(): Observable<any> {
+		return this.createEmptyBusinessLicence().pipe(
 			tap((resp: any) => {
 				console.debug('[createNewBusinessAnonymous] resp', resp);
 
@@ -56,27 +60,25 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.hasValueChanged = false;
 
 		this.businessModelFormGroup.reset();
-
-		// const aliases = this.businessModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		// aliases.clear();
 	}
 
-	private createEmptyBusinessAnonymous(): Observable<any> {
+	private createEmptyBusinessLicence(): Observable<any> {
 		this.reset();
 
-		// const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		// const photographOfYourselfData = { useBcServicesCardPhoto: BooleanTypeCode.No };
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.BusinessLicence };
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
 
-		// this.businessModelFormGroup.patchValue(
-		// 	{
-		// 		workerLicenceTypeData,
-		// 		photographOfYourselfData,
-		// 		profileConfirmationData: { isProfileUpToDate: true },
-		// 	},
-		// 	{
-		// 		emitEvent: false,
-		// 	}
-		// );
+		this.businessModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData,
+				applicationTypeData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.BusinessLicence, ApplicationTypeCode.New);
 
 		return of(this.businessModelFormGroup.value);
 	}
