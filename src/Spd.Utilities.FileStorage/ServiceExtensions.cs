@@ -30,7 +30,7 @@ namespace Spd.Utilities.FileStorage
                 Options.Create(options.MainBucketSettings)));
 
             //create transient bucket
-            if (options.TransientBucketSettings?.Url != null && string.IsNullOrWhiteSpace(options.TransientBucketSettings?.Url.ToString()))
+            if (options.TransientBucketSettings?.Url != null && !string.IsNullOrWhiteSpace(options.TransientBucketSettings?.Url.ToString()))
             {
                 var transientBucketConfig = new AmazonS3Config
                 {
