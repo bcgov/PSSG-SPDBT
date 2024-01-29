@@ -134,9 +134,9 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Where(a => a.spd_applicationid == licenceApplicationId).SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");
-        if (app.spd_ApplicantId_contact == null)
+        if (app.spd_ApplicantId_contact == null || app.spd_ApplicantId_contact.contactid == null)
             throw new ArgumentException("cannot find the applicant for this application");
-        var temp = app.spd_ApplicantId_contact;
+
         var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
         appResp.Aliases = _mapper.Map<Alias[]>(aliases);
