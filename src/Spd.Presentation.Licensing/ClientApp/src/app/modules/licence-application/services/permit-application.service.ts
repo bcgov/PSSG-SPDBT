@@ -36,6 +36,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { CommonApplicationService } from './common-application.service';
 import { LicenceDocument } from './licence-application.helper';
 import { PermitApplicationHelper } from './permit-application.helper';
 
@@ -110,6 +111,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
+		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
@@ -208,7 +210,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					},
 					{ emitEvent: false }
 				);
+
 				console.debug('[getPermitWithAccessCodeData] permitModelFormGroup', this.permitModelFormGroup.value);
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeCode,
+					applicationTypeCode,
+					accessCodeData.licenceNumber
+				);
 			})
 		);
 	}
@@ -218,12 +227,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getPermitOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+	private getPermitOfType(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadPermitRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Renewal', licenceAppId, applicationTypeCode, resp);
+						console.debug('[getPermitOfType] Renewal', licenceAppId, applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
@@ -232,7 +244,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				// case ApplicationTypeCode.Update: {
 				return this.loadPermitUpdate(licenceAppId).pipe(
 					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Update', licenceAppId, applicationTypeCode, resp);
+						console.debug('[getPermitOfType] Update', licenceAppId, applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
@@ -250,6 +262,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.loadSpecificPermit(licenceAppId).pipe(
 			tap((resp: any) => {
 				console.debug('[loadPermitNew] resp', resp);
+
+				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
 			})
 		);
 	}
@@ -372,6 +386,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				console.debug('[createNewPermitAnonymous] resp', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
 			})
 		);
 	}
@@ -386,6 +402,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				console.debug('[createNewPermitAuthenticated] resp', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
 			})
 		);
 	}

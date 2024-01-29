@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BusinessApplicationBaseAnonymousComponent } from './components/anonymous/business-application-base-anonymous.component';
-import { BusinessWizardAnonymousNewComponent } from './components/anonymous/business-wizard-anonymous-new.component';
 import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
 import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
 import { PermitWizardAnonymousRenewalComponent } from './components/anonymous/permit-wizard-anonymous-renewal.component';
@@ -25,6 +23,8 @@ import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/au
 import { StepWorkerLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-access-code-authorized.component';
 import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
+import { BusinessApplicationBaseComponent } from './components/business/business-application-base.component';
+import { BusinessWizardNewComponent } from './components/business/business-wizard-new.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
@@ -51,6 +51,10 @@ export class LicenceApplicationRoutes {
 	public static LICENCE_SELECTION_AUTHENTICATED = 'licence-selection';
 	public static LICENCE_APPLICATION_TYPE_AUTHENTICATED = 'licence-application-type';
 
+	public static BUSINESS_BASE = 'business-licence';
+	public static BUSINESS_NEW = 'business-new';
+	public static BUSINESS_RENEW = 'business-renew';
+
 	public static LICENCE_LINK = 'licence-link';
 	public static LOGIN_USER_PROFILE = 'user-profile';
 
@@ -71,9 +75,6 @@ export class LicenceApplicationRoutes {
 	public static PERMIT_NEW_ANONYMOUS = 'permit-new';
 	public static PERMIT_RENEWAL_ANONYMOUS = 'permit-renewal';
 	public static PERMIT_UPDATE_ANONYMOUS = 'permit-update';
-
-	public static BUSINESS_ANONYMOUS = 'business-anonymous';
-	public static BUSINESS_NEW_ANONYMOUS = 'business-new';
 
 	// PAYMENT
 	public static PAYMENT_SUCCESS = 'payment-success';
@@ -111,8 +112,8 @@ export class LicenceApplicationRoutes {
 
 	public static pathBusinessAnonymous(route: string | null = null): string {
 		return route
-			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_ANONYMOUS}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_ANONYMOUS}`;
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}`;
 	}
 }
 
@@ -200,17 +201,21 @@ const routes: Routes = [
 				],
 			},
 			{
-				// BUSINESS - ANONYMOUS
-				path: LicenceApplicationRoutes.BUSINESS_ANONYMOUS,
-				component: BusinessApplicationBaseAnonymousComponent,
+				// BUSINESS - AUTHENTICATED
+				path: LicenceApplicationRoutes.BUSINESS_BASE,
+				component: BusinessApplicationBaseComponent,
 				children: [
 					{
-						path: LicenceApplicationRoutes.BUSINESS_NEW_ANONYMOUS,
-						component: BusinessWizardAnonymousNewComponent,
+						path: LicenceApplicationRoutes.BUSINESS_NEW,
+						component: BusinessWizardNewComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_RENEW,
+						component: BusinessWizardNewComponent,
 					},
 					{
 						path: '',
-						component: BusinessWizardAnonymousNewComponent,
+						component: BusinessWizardNewComponent,
 					},
 				],
 			},

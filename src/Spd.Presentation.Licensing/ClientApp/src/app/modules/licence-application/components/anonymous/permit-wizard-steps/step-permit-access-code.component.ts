@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components/common-access-code-anonymous.component';
@@ -60,7 +61,11 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 	@ViewChild(CommonAccessCodeAnonymousComponent)
 	commonAccessCodeAnonymousComponent!: CommonAccessCodeAnonymousComponent;
 
-	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private router: Router,
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
@@ -69,6 +74,8 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
+
+		this.commonApplicationService.setApplicationTitle(this.workerLicenceTypeCode, this.applicationTypeCode);
 	}
 
 	onStepPrevious(): void {

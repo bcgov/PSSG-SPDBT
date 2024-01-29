@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { PermitApplicationService } from '../../services/permit-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
-	selector: 'app-business-wizard-anonymous-new',
+	selector: 'app-business-wizard-new',
 	template: `
 		<mat-stepper
 			linear
@@ -79,7 +79,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 	`,
 	styles: [],
 })
-export class BusinessWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit {
+export class BusinessWizardNewComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
 	readonly STEP_CONTACT_INFORMATION = 2;

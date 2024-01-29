@@ -147,10 +147,7 @@ export class StepWorkerLicenceTypeAnonymousComponent implements OnInit {
 
 	onStepNext(): void {
 		const isValid = this.isFormValid();
-
 		if (isValid) {
-			this.commonApplicationService.setApplicationTitle(this.workerLicenceTypeCode!);
-
 			switch (this.workerLicenceTypeCode) {
 				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 					this.licenceApplicationService

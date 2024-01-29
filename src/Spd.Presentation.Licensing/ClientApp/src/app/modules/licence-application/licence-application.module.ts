@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { BusinessApplicationBaseAnonymousComponent } from './components/anonymous/business-application-base-anonymous.component';
-import { BusinessWizardAnonymousNewComponent } from './components/anonymous/business-wizard-anonymous-new.component';
 import { StepBusinessChecklistNewComponent } from './components/anonymous/business-wizard-steps/step-business-checklist-new.component';
 import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
 import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
@@ -73,6 +71,8 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './componen
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
+import { BusinessApplicationBaseComponent } from './components/business/business-application-base.component';
+import { BusinessWizardNewComponent } from './components/business/business-wizard-new.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
@@ -283,8 +283,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitSummaryAnonymousComponent,
 		StepPermitConsentAndDeclarationComponent,
 		StepBusinessChecklistNewComponent,
-		BusinessApplicationBaseAnonymousComponent,
-		BusinessWizardAnonymousNewComponent,
+		BusinessApplicationBaseComponent,
+		BusinessWizardNewComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

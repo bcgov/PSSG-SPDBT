@@ -198,7 +198,7 @@ export class LoginSelectionComponent {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessAnonymous(LicenceApplicationRoutes.BUSINESS_NEW_ANONYMOUS)
+						LicenceApplicationRoutes.pathBusinessAnonymous(LicenceApplicationRoutes.BUSINESS_NEW)
 					);
 				}),
 				take(1)

@@ -44,6 +44,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { CommonApplicationService } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
 export class LicenceDocumentsToSave {
@@ -138,6 +139,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
+		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
@@ -185,6 +187,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				this.initialized = true;
 				console.debug('this.initialized', this.initialized);
+
+				this.commonApplicationService.setApplicationTitle();
 			})
 		);
 	}
@@ -242,6 +246,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					},
 					{ emitEvent: false }
 				);
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeCode,
+					applicationTypeCode,
+					accessCodeData.licenceNumber
+				);
+
 				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
 			})
 		);
@@ -252,7 +263,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceOfType(licenceAppId: string, applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+	private getLicenceOfType(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
@@ -292,6 +306,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('[createNewLicenceAnonymous] resp', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
 			})
 		);
 	}
@@ -306,6 +322,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				console.debug('NEW LicenceApplicationService createNewLicenceAuthenticated', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle();
 			})
 		);
 	}

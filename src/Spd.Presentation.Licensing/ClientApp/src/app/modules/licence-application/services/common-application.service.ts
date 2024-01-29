@@ -14,8 +14,11 @@ export class CommonApplicationService {
 
 	setApplicationTitle(
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined = undefined,
-		applicationTypeCode: ApplicationTypeCode | undefined = undefined
+		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
+		originalLicenceNumber: string | undefined = undefined
 	) {
+		console.log('setApplicationTitle', workerLicenceTypeCode, applicationTypeCode, originalLicenceNumber);
+
 		let title = '';
 
 		if (workerLicenceTypeCode) {
@@ -36,6 +39,10 @@ export class CommonApplicationService {
 
 			if (applicationTypeCode) {
 				title += ` - ${applicationTypeCode}`;
+			}
+
+			if (originalLicenceNumber) {
+				title += ` of ${originalLicenceNumber}`;
 			}
 		} else {
 			title = 'Licensing Application';
