@@ -27,9 +27,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
-		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private workerLicensingService: WorkerLicensingService,
-	) // private licenceLookupService: LicenceLookupService,
-	// private authUserBcscService: AuthUserBcscService,
+		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private workerLicensingService: WorkerLicensingService, // private licenceLookupService: LicenceLookupService,
+	) // private authUserBcscService: AuthUserBcscService,
 	// private authenticationService: AuthenticationService,
 	// private utilService: UtilService
 	{
@@ -65,7 +64,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private createEmptyBusinessLicence(): Observable<any> {
 		this.reset();
 
-		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.BusinessLicence };
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
 
 		this.businessModelFormGroup.patchValue(
@@ -78,7 +77,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		);
 
-		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.BusinessLicence, ApplicationTypeCode.New);
+		this.commonApplicationService.setApplicationTitle(
+			WorkerLicenceTypeCode.SecurityBusinessLicence,
+			ApplicationTypeCode.New
+		);
 
 		return of(this.businessModelFormGroup.value);
 	}

@@ -555,7 +555,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// 	width: '800px',
 		// });
 
-		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.BusinessLicence);
+		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
 	}
 
 	ngOnDestroy() {

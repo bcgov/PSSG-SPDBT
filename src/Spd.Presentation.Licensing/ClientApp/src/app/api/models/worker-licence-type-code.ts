@@ -4,5 +4,6 @@ export enum WorkerLicenceTypeCode {
   SecurityWorkerLicence = 'SecurityWorkerLicence',
   ArmouredVehiclePermit = 'ArmouredVehiclePermit',
   BodyArmourPermit = 'BodyArmourPermit',
-  BusinessLicence = 'BusinessLicence'
+  SecurityBusinessLicence = 'SecurityBusinessLicence',
+  SecurityBusinessLicenceControllingMemberCrc = 'SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC'
 }

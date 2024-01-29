@@ -19,10 +19,6 @@ import { BehaviorSubject } from 'rxjs';
 export class CommonApplicationService {
 	applicationTitle$: BehaviorSubject<string> = new BehaviorSubject<string>('Licensing Application');
 
-	// licenceFeesSecurityWorkerLicence: Array<LicenceFeeResponse> = [];
-	// licenceFeesArmouredVehiclePermit: Array<LicenceFeeResponse> = [];
-	// licenceFeesBodyArmourPermit: Array<LicenceFeeResponse> = [];
-
 	licenceFees: Array<LicenceFeeResponse> = [];
 
 	constructor(
@@ -32,7 +28,7 @@ export class CommonApplicationService {
 		private licenceFeeService: LicenceFeeService
 	) {
 		this.licenceFeeService
-			.apiLicenceFeeWorkerLicenceTypeCodeGet({ workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence }) // TODO remove workerLicenceTypeCode
+			.apiLicenceFeeGet()
 			.pipe()
 			.subscribe((resp: LicenceFeeListResponse) => {
 				this.licenceFees = resp.licenceFees ?? [];
@@ -49,6 +45,14 @@ export class CommonApplicationService {
 		businessTypeCode: BusinessTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
+		console.debug(
+			'getLicenceTermsAndFees',
+			workerLicenceTypeCode,
+			applicationTypeCode,
+			businessTypeCode,
+			originalLicenceTermCode
+		);
+
 		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
 			return [];
 		}
@@ -58,21 +62,17 @@ export class CommonApplicationService {
 			hasValidSwl90DayLicence = true;
 		}
 
-		// console.debug(
-		// 	'getLicenceTermsAndFees',
-		// 	workerLicenceTypeCode,
-		// 	applicationTypeCode,
-		// 	businessTypeCode,
-		// 	originalLicenceTermCode,
-		// 	hasValidSwl90DayLicence,
-		// 	this.licenceFees?.filter(
-		// 		(item) =>
-		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
-		// 			item.applicationTypeCode == applicationTypeCode &&
-		// 			item.businessTypeCode == businessTypeCode &&
-		// 			item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		// 	)
-		// );
+		console.debug(
+			'getLicenceTermsAndFees',
+			hasValidSwl90DayLicence,
+			this.licenceFees?.filter(
+				(item) =>
+					item.workerLicenceTypeCode == workerLicenceTypeCode &&
+					item.applicationTypeCode == applicationTypeCode &&
+					item.businessTypeCode == businessTypeCode &&
+					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
+			)
+		);
 
 		return this.licenceFees?.filter(
 			(item) =>
@@ -98,8 +98,8 @@ export class CommonApplicationService {
 
 		if (workerLicenceTypeCode) {
 			switch (workerLicenceTypeCode) {
-				case WorkerLicenceTypeCode.BusinessLicence: {
-					title = 'Business Licence';
+				case WorkerLicenceTypeCode.SecurityBusinessLicence: {
+					title = 'Security Business Licence';
 					break;
 				}
 				case WorkerLicenceTypeCode.SecurityWorkerLicence: {

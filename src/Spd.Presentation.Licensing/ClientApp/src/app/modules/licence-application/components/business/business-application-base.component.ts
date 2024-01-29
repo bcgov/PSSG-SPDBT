@@ -23,6 +23,6 @@ export class BusinessApplicationBaseComponent implements OnInit {
 			return;
 		}
 
-		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.BusinessLicence);
+		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
 	}
 }

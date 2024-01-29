@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
@@ -67,17 +68,27 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private utilService: UtilService,
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit() {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 
-		// const fee = this.licenceApplicationService // TODO fix fees
-		// 	.getLicenceTermsAndFees(true)
-		// 	.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
-		// if (fee?.length > 0) {
-		// 	this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
-		// }
+		const workerLicenceTypeCode = this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
+		const applicationTypeCode = this.licenceModelData.applicationTypeData?.applicationTypeCode;
+		const businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
+
+		const fee = this.commonApplicationService
+			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, businessTypeCode, originalLicenceTermCode)
+			.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
+
+		if (fee?.length > 0) {
+			this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
+		}
 	}
 
 	get licenceHolderName(): string {
