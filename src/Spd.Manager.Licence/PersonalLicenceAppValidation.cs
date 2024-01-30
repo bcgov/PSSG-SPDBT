@@ -191,7 +191,7 @@ public class WorkerLicenceAppAnonymousSubmitRequestValidator : WorkerLicenceAppB
     public WorkerLicenceAppAnonymousSubmitRequestValidator(IConfiguration configuration)
     {
         //category
-        RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Length > 0 && d.Length < 7);
+        RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7);
         var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
         if (invalidCategoryMatrix == null)
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");

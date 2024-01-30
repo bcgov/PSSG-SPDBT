@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
@@ -38,6 +39,7 @@ internal partial class PersonalLicenceAppManager :
     private readonly ILogger<IPersonalLicenceAppManager> _logger;
     private readonly ILicenceFeeRepository _feeRepository;
     private readonly ITaskRepository _taskRepository;
+    private readonly IContactRepository _contactRepository;
     private readonly IDistributedCache _cache;
 
     public PersonalLicenceAppManager(
@@ -50,7 +52,8 @@ internal partial class PersonalLicenceAppManager :
         ILogger<IPersonalLicenceAppManager> logger,
         ILicenceFeeRepository feeRepository,
         IDistributedCache cache,
-        ITaskRepository taskRepository)
+        ITaskRepository taskRepository,
+        IContactRepository contactRepository)
     {
         _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
@@ -62,6 +65,7 @@ internal partial class PersonalLicenceAppManager :
         _feeRepository = feeRepository;
         _cache = cache;
         _taskRepository = taskRepository;
+        _contactRepository = contactRepository;
     }
 
     #region for portal
@@ -176,33 +180,10 @@ internal partial class PersonalLicenceAppManager :
 
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var appResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-
-        //new application, all file keys are in cache
-        if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
-        {
-            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
-            {
-                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                foreach (LicAppFileInfo licAppFile in items)
-                {
-                    SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                    CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                    fileCmd.ExpiryDate = cmd.LicenceAnonymousRequest?
-                         .DocumentInfos?
-                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                         .ExpiryDate;
-                    fileCmd.TempFile = tempFile;
-                    fileCmd.ApplicationId = appResponse.LicenceAppId;
-                    fileCmd.SubmittedByApplicantId = appResponse.ContactId;
-                    //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(fileCmd, ct);
-                }
-            }
-        }
-
-        await CommitApplicationAsync(request, appResponse.LicenceAppId, ct);
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = appResponse.LicenceAppId };
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+        await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
+        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
 
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
@@ -269,32 +250,7 @@ internal partial class PersonalLicenceAppManager :
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-
-        //add all new files user uploaded
-        if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
-        {
-            foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
-            {
-                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                if (items != null && items.Any())
-                {
-                    foreach (LicAppFileInfo licAppFile in items)
-                    {
-                        SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                        CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                        fileCmd.ExpiryDate = cmd.LicenceAnonymousRequest?
-                             .DocumentInfos?
-                             .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                             .ExpiryDate;
-                        fileCmd.TempFile = tempFile;
-                        fileCmd.ApplicationId = response.LicenceAppId;
-                        fileCmd.SubmittedByApplicantId = response.ContactId;
-                        //create bcgov_documenturl and file
-                        await _documentRepository.ManageAsync(fileCmd, ct);
-                    }
-                }
-            }
-        }
+        await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
 
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Length != 0)
@@ -331,41 +287,20 @@ internal partial class PersonalLicenceAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
-        ChangeSpec changes = GetChanges(originalApp, request);
+        ChangeSpec changes = await GetChanges(originalApp, request, ct);
 
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-
             //add all new files user uploaded
-            if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Length > 0)
-            {
-                foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
-                {
-                    IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                    foreach (LicAppFileInfo licAppFile in items)
-                    {
-                        SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                        CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                        fileCmd.ExpiryDate = cmd.LicenceAnonymousRequest?
-                             .DocumentInfos?
-                             .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                             .ExpiryDate;
-                        fileCmd.TempFile = tempFile;
-                        fileCmd.ApplicationId = response.LicenceAppId;
-                        fileCmd.SubmittedByApplicantId = response.ContactId;
-                        //create bcgov_documenturl and file
-                        await _documentRepository.ManageAsync(fileCmd, ct);
-                    }
-                }
-            }
-            //todo : need to pay $20
+            await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
             await CommitApplicationAsync(request, response.LicenceAppId, ct);
         }
         else
         {
-            //todo: update contact directly
+            //update contact directly
+            await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), ct);
         }
 
         //check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
@@ -415,7 +350,7 @@ internal partial class PersonalLicenceAppManager :
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
         {
             ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
-            BusinessTypeEnum = request.BusinessTypeCode == null ? null : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
             LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
             WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
@@ -474,23 +409,102 @@ internal partial class PersonalLicenceAppManager :
         }
         return false;
     }
-    private ChangeSpec GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp)
+    private async Task<ChangeSpec> GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
-        //todo
-        //if(newApp.CategoryCodes != originalApp.CategoryData)
-        changes.CategoriesChanged = true;
+        //categories changed
+        if (newApp.CategoryCodes.Length != originalApp.CategoryCodes.Length)
+            changes.CategoriesChanged = true;
+        else
+        {
+            List<WorkerCategoryTypeCode> newList = newApp.CategoryCodes.ToList();
+            newList.Sort();
+            List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
+            originalList.Sort();
+            if (newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
+        }
+
+        //DogRestraintsChanged
+        if (newApp.UseDogs != originalApp.UseDogs ||
+            newApp.CarryAndUseRestraints != originalApp.CarryAndUseRestraints ||
+            newApp.IsDogsPurposeProtection != originalApp.IsDogsPurposeProtection ||
+            newApp.IsDogsPurposeDetectionDrugs != originalApp.IsDogsPurposeDetectionDrugs ||
+            newApp.IsDogsPurposeDetectionExplosives != originalApp.IsDogsPurposeDetectionExplosives)
+        {
+            changes.DogRestraintsChanged = true;
+        }
+
+        IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
+
+        //PeaceOfficerStatusChanged
+
+        PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
+            : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
+
+        if (newApp.IsPoliceOrPeaceOfficer != originalApp.IsPoliceOrPeaceOfficer ||
+            newApp.PoliceOfficerRoleCode != originalRoleCode ||
+            newApp.OtherOfficerRole != originalApp.OtherOfficerRole ||
+            items.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+        {
+            changes.PeaceOfficerStatusChanged = true;
+        }
+
+        //MentalHealthStatusChanged
+        if (newApp.IsTreatedForMHC != originalApp.IsTreatedForMHC ||
+            items.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+        {
+            changes.MentalHealthStatusChanged = true;
+        }
+
+        //CriminalHistoryChanged
+        if (newApp.HasCriminalHistory != originalApp.HasCriminalHistory)
+        {
+            changes.CriminalHistoryChanged = true;
+        }
         return changes;
+    }
+    private async Task UploadNewDocs(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, Guid contactId, CancellationToken ct)
+    {
+        if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Length > 0)
+        {
+            IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
+
+            foreach (LicAppFileInfo licAppFile in items)
+            {
+                SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                fileCmd.ExpiryDate = request?
+                        .DocumentExpiredInfos?
+                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                        .ExpiryDate;
+                fileCmd.TempFile = tempFile;
+                fileCmd.ApplicationId = licenceAppId;
+                fileCmd.SubmittedByApplicantId = contactId;
+                //create bcgov_documenturl and file
+                await _documentRepository.ManageAsync(fileCmd, ct);
+            }
+        }
+    }
+
+    private async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfo(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
+    {
+        if(docKeyCodes==null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
+        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+        foreach (Guid docKeyCode in docKeyCodes)
+        {
+            IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKeyCode.ToString());
+            if (items != null)
+                results.AddRange(items);
+        }
+        return results;
     }
 
     private record ChangeSpec
     {
-        public bool NameChanged { get; set; }
-        public bool CategoriesChanged { get; set; }
-        public bool DogRestraintsChanged { get; set; }
-        public bool ContactInfoChanged { get; set; }
-        public bool PeaceOfficerStatusChanged { get; set; }
-        public bool MentalHealthStatusChanged { get; set; }
-        public bool CriminalHistoryChanged { get; set; }
+        public bool CategoriesChanged { get; set; } //full update
+        public bool DogRestraintsChanged { get; set; } //full update
+        public bool PeaceOfficerStatusChanged { get; set; } //task
+        public bool MentalHealthStatusChanged { get; set; } //task
+        public bool CriminalHistoryChanged { get; set; } //task
     }
 }

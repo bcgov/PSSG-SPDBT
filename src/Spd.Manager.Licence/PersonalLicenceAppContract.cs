@@ -97,13 +97,8 @@ public abstract record WorkerLicenceAppBase
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
 }
-public record WorkerLicenceApp : WorkerLicenceAppBase //for authenticated user
-{
-    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public Document[]? DocumentInfos { get; set; }
-}
 
-public record DocumentBase
+public record DocumentExpiredInfo
 {
     public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
     public DateOnly? ExpiryDate { get; set; }
@@ -117,12 +112,14 @@ public record Document : LicenceAppDocumentResponse
 public record ResidentialAddress : Address;
 public record MailingAddress : Address;
 
-public record WorkerLicenceResponse : WorkerLicenceApp
+public record WorkerLicenceResponse : WorkerLicenceAppBase
 {
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public Document[]? DocumentInfos { get; set; }
 }
 
 public record WorkerLicenceAppListResponse
@@ -138,8 +135,10 @@ public record WorkerLicenceAppListResponse
 #endregion
 
 #region authenticated user
-public record WorkerLicenceAppUpsertRequest : WorkerLicenceApp
+public record WorkerLicenceAppUpsertRequest : WorkerLicenceAppBase
 {
+    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public Document[]? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
 };
 
@@ -156,15 +155,15 @@ public record WorkerLicenceAppUpsertResponse
 //for anonymous user, deprecated
 public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase 
 {
-    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public DocumentBase[]? DocumentInfos { get; set; }
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Array.Empty<DocumentExpiredInfo>();
     public string Recaptcha { get; set; } = null!;
 }
 
 public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase //for anonymous user
 {
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public DocumentBase[]? DocumentInfos { get; set; }
+    public DocumentExpiredInfo[]? DocumentExpiredInfos { get; set; }
     public Guid[]? DocumentKeyCodes { get; set; }
     public Guid[]? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
