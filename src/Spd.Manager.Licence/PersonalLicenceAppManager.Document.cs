@@ -157,42 +157,6 @@ internal partial class PersonalLicenceAppManager
     {
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(LicenceAppId), ct);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
-
-        //List<WorkerCategoryTypeCode> categoryContainFiles = new List<WorkerCategoryTypeCode>() {
-        //    WorkerCategoryTypeCode.ArmouredCarGuard,
-        //    WorkerCategoryTypeCode.FireInvestigator,
-        //    WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-        //    WorkerCategoryTypeCode.Locksmith,
-        //    WorkerCategoryTypeCode.PrivateInvestigator,
-        //    WorkerCategoryTypeCode.SecurityAlarmInstaller,
-        //    WorkerCategoryTypeCode.SecurityConsultant,
-        //    WorkerCategoryTypeCode.SecurityGuard
-        //};
-        //if (result.CategoryData != null)
-        //{
-        //    foreach (var categoryData in result.CategoryData)
-        //    {
-        //        if (categoryContainFiles.Contains(categoryData.WorkerCategoryTypeCode))
-        //        {
-        //            var docType = Enum.Parse<DocumentTypeEnum>(categoryData.WorkerCategoryTypeCode.ToString());
-        //            var catFiles = existingDocs.Items.Where(d => d.DocumentType == docType).ToList();
-        //            List<DocumentTypeEnum?> docType2s = catFiles.Select(f => f.DocumentType2).Distinct().ToList();
-        //            List<Document> docs = new List<Document>();
-        //            foreach (var type in docType2s)
-        //            {
-        //                Document d = new Document();
-        //                LicenceDocumentTypeCode code = Enum.Parse<LicenceDocumentTypeCode>("Category" + docType.ToString() + "_" + type.ToString());
-        //                d.LicenceDocumentTypeCode = code;
-        //                d.DocumentResponses = _mapper.Map<LicenceAppDocumentResponse[]>(catFiles.Where(c => c.DocumentType2 == type).AsEnumerable());
-        //                DateOnly? expiryDate = catFiles.Where(c => c.DocumentType2 == type).First().ExpiryDate;
-        //                d.ExpiryDate = expiryDate;
-        //                docs.Add(d);
-        //            }
-        //            categoryData.Documents = docs.ToArray();
-        //        }
-        //    }
-        //}
-
     }
 
 
