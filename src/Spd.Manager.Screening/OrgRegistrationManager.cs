@@ -1,8 +1,8 @@
 using AutoMapper;
 using MediatR;
-using Spd.Resource.Applicants.Application;
-using Spd.Resource.Organizations.Org;
-using Spd.Resource.Organizations.Registration;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.Registration;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -44,7 +44,7 @@ namespace Spd.Manager.Screening
             if (response == null)
                 response = new OrgRegistrationCreateResponse();
 
-            var orgRegistration = _mapper.Map<Spd.Resource.Organizations.Registration.OrgRegistration>(request.CreateOrgRegistrationRequest);
+            var orgRegistration = _mapper.Map<Spd.Resource.Repository.Registration.OrgRegistration>(request.CreateOrgRegistrationRequest);
             if (_currentUser.IsAuthenticated())
             {
                 var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();

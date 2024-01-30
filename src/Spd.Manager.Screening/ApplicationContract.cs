@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Spd.Manager.Shared;
-using Spd.Resource.Applicants.Delegates;
+using Spd.Resource.Repository.Delegates;
 using Spd.Utilities.Shared;
 using System.ComponentModel;
 using GenderCode = Spd.Manager.Shared.GenderCode;

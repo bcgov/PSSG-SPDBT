@@ -2,14 +2,14 @@ using AutoMapper;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Manager.Shared;
-using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Applicants.Delegates;
-using Spd.Resource.Applicants.Document;
-using Spd.Resource.Applicants.Incident;
-using Spd.Resource.Applicants.PortalUser;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.ApplicationInvite;
+using Spd.Resource.Repository.Delegates;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Incident;
+using Spd.Resource.Repository.PortalUser;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Manager.Screening
 {
@@ -19,7 +19,7 @@ namespace Spd.Manager.Screening
         {
             _ = CreateMap<ApplicationInvitesCreateRequest, ApplicationInvitesCreateCmd>()
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
-            CreateMap<ApplicationInviteCreateRequest, Resource.Applicants.ApplicationInvite.ApplicationInvite>();
+            CreateMap<ApplicationInviteCreateRequest, Resource.Repository.ApplicationInvite.ApplicationInvite>();
             CreateMap<ApplicationInviteCreateRequest, AppInviteDuplicateCheck>();
             CreateMap<AppInviteDuplicateCheckResult, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();

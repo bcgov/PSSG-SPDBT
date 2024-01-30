@@ -1,6 +1,6 @@
 using MediatR;
-using Spd.Resource.Applicants.Delegates;
-using Spd.Resource.Applicants.PortalUser;
+using Spd.Resource.Repository.Delegates;
+using Spd.Resource.Repository.PortalUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 

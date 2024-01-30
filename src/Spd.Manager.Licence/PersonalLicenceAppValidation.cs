@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
-using Spd.Resource.Applicants.Document;
+using Spd.Resource.Repository.Document;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;

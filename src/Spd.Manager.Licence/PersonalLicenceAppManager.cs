@@ -2,14 +2,14 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.Contact;
-using Spd.Resource.Applicants.Document;
-using Spd.Resource.Applicants.Licence;
-using Spd.Resource.Applicants.LicenceApplication;
-using Spd.Resource.Applicants.LicenceFee;
-using Spd.Resource.Applicants.Tasks;
-using Spd.Resource.Organizations.Identity;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Tasks;
+using Spd.Resource.Repository.Identity;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -73,7 +73,7 @@ internal partial class PersonalLicenceAppManager :
     public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
         _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
-        var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Organizations.Registration.IdentityProviderTypeEnum.BcServicesCard), ct);
+        var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Repository.Registration.IdentityProviderTypeEnum.BcServicesCard), ct);
         if (identityResult.Items.Any())
         {
             Guid contactId = (Guid)identityResult.Items.First().ContactId;

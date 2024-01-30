@@ -1,11 +1,11 @@
 using AutoMapper;
-using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.Contact;
-using Spd.Resource.Applicants.Document;
-using Spd.Resource.Applicants.Licence;
-using Spd.Resource.Applicants.LicenceApplication;
-using Spd.Resource.Applicants.LicenceFee;
-using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
 using System.Collections.Immutable;
 
 namespace Spd.Manager.Licence;
@@ -52,7 +52,7 @@ internal class Mappings : Profile
         CreateMap<LicAppFileInfo, CreateDocumentCmd>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType1Enum(s.LicenceDocumentTypeCode)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2Enum(s.LicenceDocumentTypeCode)));
-        CreateMap<Alias, Spd.Utilities.Shared.ResourceContracts.Alias>()
+        CreateMap<Alias, Spd.Resource.Repository.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
