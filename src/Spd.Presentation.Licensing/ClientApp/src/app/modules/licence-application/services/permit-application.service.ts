@@ -515,12 +515,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				const fingerprintProofDataAttachments: Array<File> = [];
-				if (resp.fingerprintProofDocument?.documentResponses) {
-					resp.fingerprintProofDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						fingerprintProofDataAttachments.push(aFile);
-					});
-				}
+				// if (resp.fingerprintProofDocument?.documentResponses) {
+				// 	resp.fingerprintProofDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+				// 		const aFile = this.utilService.dummyFile(item);
+				// 		fingerprintProofDataAttachments.push(aFile);
+				// 	});
+				// }
 
 				const fingerprintProofData = {
 					attachments: fingerprintProofDataAttachments,
@@ -568,25 +568,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 
 				const citizenshipDataAttachments: Array<File> = [];
-				if (resp.citizenshipDocument?.documentResponses) {
-					resp.citizenshipDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						citizenshipDataAttachments.push(aFile);
-					});
-				}
+				// if (resp.citizenshipDocument?.documentResponses) {
+				// 	resp.citizenshipDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+				// 		const aFile = this.utilService.dummyFile(item);
+				// 		citizenshipDataAttachments.push(aFile);
+				// 	});
+				// }
 
-				const citizenshipData = {
-					// TODO fix permit citizenship data
-					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
-					canadianCitizenProofTypeCode: resp.isCanadianCitizen
-						? resp.citizenshipDocument?.licenceDocumentTypeCode
-						: null,
-					notCanadianCitizenProofTypeCode: resp.isCanadianCitizen
-						? null
-						: resp.citizenshipDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.citizenshipDocument?.expiryDate,
-					attachments: citizenshipDataAttachments,
-				};
+				const citizenshipData = {};
+				// 	const citizenshipData = {
+				// 	// TODO fix permit citizenship data
+				// 	isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
+				// 	canadianCitizenProofTypeCode: resp.isCanadianCitizen
+				// 		? resp.citizenshipDocument?.licenceDocumentTypeCode
+				// 		: null,
+				// 	notCanadianCitizenProofTypeCode: resp.isCanadianCitizen
+				// 		? null
+				// 		: resp.citizenshipDocument?.licenceDocumentTypeCode,
+				// 	expiryDate: resp.citizenshipDocument?.expiryDate,
+				// 	attachments: citizenshipDataAttachments,
+				// };
 
 				let height = resp.height ? resp.height + '' : null;
 				let heightInches = '';
@@ -606,12 +607,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				const photographOfYourselfAttachments: Array<File> = [];
-				if (resp.idPhotoDocument?.documentResponses) {
-					resp.idPhotoDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						photographOfYourselfAttachments.push(aFile);
-					});
-				}
+				// if (resp.idPhotoDocument?.documentResponses) {
+				// 	resp.idPhotoDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
+				// 		const aFile = this.utilService.dummyFile(item);
+				// 		photographOfYourselfAttachments.push(aFile);
+				// 	});
+				// }
 
 				const photographOfYourselfData = {
 					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
@@ -894,7 +895,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue());
 		console.debug('submitPermitAnonymous body', body);
 
-		const documentInfos = this.getSaveDocsAnonymous(this.permitModelFormGroup.getRawValue());
+		const documentInfos: Array<PermitDocumentsToSave> = []; //this.getSaveDocsAnonymous(this.permitModelFormGroup.getRawValue());
 		// console.log('documentInfos', documentInfos);
 
 		const formValue = this.consentAndDeclarationFormGroup.getRawValue();

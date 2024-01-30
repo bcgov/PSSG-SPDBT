@@ -2,17 +2,9 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
 	ApplicationTypeCode,
-	CitizenshipDocument,
-	Document,
-	DocumentBase,
-	FingerprintProofDocument,
 	HeightUnitCode,
-	IdPhotoDocument,
-	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
-	WorkerLicenceAppCategoryData,
 	WorkerLicenceAppSubmitRequest,
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceTypeCode,
@@ -23,7 +15,6 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { PermitDocumentsToSave } from './permit-application.service';
 
 export interface PermitStepperStepComponent {
 	onStepNext(formNumber: number): void;
@@ -385,54 +376,54 @@ export abstract class PermitApplicationHelper {
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
-		let fingerprintProofDocument: FingerprintProofDocument | null = null;
-		if (fingerprintProofData.attachments) {
-			const fingerprintProofDocuments: Array<LicenceAppDocumentResponse> = [];
-			fingerprintProofData.attachments.forEach((doc: any) => {
-				fingerprintProofDocuments.push({
-					documentUrlId: doc.documentUrlId,
-				});
-			});
-			fingerprintProofDocument = {
-				documentResponses: fingerprintProofDocuments,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint,
-			};
-		}
+		// let fingerprintProofDocument: FingerprintProofDocument | null = null;
+		// if (fingerprintProofData.attachments) {
+		// 	const fingerprintProofDocuments: Array<LicenceAppDocumentResponse> = [];
+		// 	fingerprintProofData.attachments.forEach((doc: any) => {
+		// 		fingerprintProofDocuments.push({
+		// 			documentUrlId: doc.documentUrlId,
+		// 		});
+		// 	});
+		// 	fingerprintProofDocument = {
+		// 		documentResponses: fingerprintProofDocuments,
+		// 		licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint,
+		// 	};
+		// }
 
-		let citizenshipDocument: CitizenshipDocument | null = null;
-		if (citizenshipData.attachments) {
-			// TODO fix permit citizenship data
-			const citizenshipDocuments: Array<LicenceAppDocumentResponse> = [];
-			citizenshipData.attachments.forEach((doc: any) => {
-				citizenshipDocuments.push({
-					documentUrlId: doc.documentUrlId,
-				});
-			});
-			citizenshipDocument = {
-				documentResponses: citizenshipDocuments,
-				expiryDate: citizenshipData.expiryDate
-					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-					: null,
-				licenceDocumentTypeCode:
-					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-						? citizenshipData.canadianCitizenProofTypeCode
-						: citizenshipData.notCanadianCitizenProofTypeCode,
-			};
-		}
+		// let citizenshipDocument: CitizenshipDocument | null = null;
+		// if (citizenshipData.attachments) {
+		// 	// TODO fix permit citizenship data
+		// 	const citizenshipDocuments: Array<LicenceAppDocumentResponse> = [];
+		// 	citizenshipData.attachments.forEach((doc: any) => {
+		// 		citizenshipDocuments.push({
+		// 			documentUrlId: doc.documentUrlId,
+		// 		});
+		// 	});
+		// 	citizenshipDocument = {
+		// 		documentResponses: citizenshipDocuments,
+		// 		expiryDate: citizenshipData.expiryDate
+		// 			? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+		// 			: null,
+		// 		licenceDocumentTypeCode:
+		// 			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
+		// 				? citizenshipData.canadianCitizenProofTypeCode
+		// 				: citizenshipData.notCanadianCitizenProofTypeCode,
+		// 	};
+		// }
 
-		let idPhotoDocument: IdPhotoDocument | null = null;
-		if (photographOfYourselfData.attachments) {
-			const photographOfYourselfDocuments: Array<LicenceAppDocumentResponse> = [];
-			photographOfYourselfData.attachments.forEach((doc: any) => {
-				photographOfYourselfDocuments.push({
-					documentUrlId: doc.documentUrlId,
-				});
-			});
-			idPhotoDocument = {
-				documentResponses: photographOfYourselfDocuments,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-			};
-		}
+		// let idPhotoDocument: IdPhotoDocument | null = null;
+		// if (photographOfYourselfData.attachments) {
+		// 	const photographOfYourselfDocuments: Array<LicenceAppDocumentResponse> = [];
+		// 	photographOfYourselfData.attachments.forEach((doc: any) => {
+		// 		photographOfYourselfDocuments.push({
+		// 			documentUrlId: doc.documentUrlId,
+		// 		});
+		// 	});
+		// 	idPhotoDocument = {
+		// 		documentResponses: photographOfYourselfDocuments,
+		// 		licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+		// 	};
+		// }
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -485,12 +476,12 @@ export abstract class PermitApplicationHelper {
 			residentialAddressData,
 			//-----------------------------------
 			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
-			citizenshipDocument,
+			// citizenshipDocument,
 			//-----------------------------------
-			fingerprintProofDocument,
+			// fingerprintProofDocument,
 			//-----------------------------------
 			// useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
-			idPhotoDocument,
+			// idPhotoDocument,
 			//-----------------------------------
 		};
 		return body;
@@ -503,14 +494,14 @@ export abstract class PermitApplicationHelper {
 	public getSaveBodyAnonymous(permitModelFormValue: any): WorkerLicenceAppAnonymousSubmitRequestJson {
 		const savebody = this.getSaveBody(permitModelFormValue);
 
-		const documentInfos = this.getSaveDocumentInfosAnonymous(permitModelFormValue);
+		// const documentInfos = this.getSaveDocumentInfosAnonymous(permitModelFormValue);
 		// console.log('documentInfos', documentInfos);
 
-		const categoryData = savebody.categoryData ?? [];
+		// const categoryData: any[] = []; // savebody.categoryData ?? [];
 
-		const categoryCodes: Array<WorkerCategoryTypeCode> = categoryData.map(
-			(item: WorkerLicenceAppCategoryData) => item.workerCategoryTypeCode!
-		);
+		// const categoryCodes: Array<WorkerCategoryTypeCode> = categoryData.map(
+		// 	(item: WorkerLicenceAppCategoryData) => item.workerCategoryTypeCode!
+		// );
 
 		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
@@ -552,75 +543,75 @@ export abstract class PermitApplicationHelper {
 			aliases: savebody.aliases ? [...savebody.aliases] : [],
 			residentialAddressData: { ...savebody.residentialAddressData },
 			mailingAddressData: { ...savebody.mailingAddressData },
-			categoryCodes: categoryCodes,
-			documentInfos,
+			// categoryCodes: categoryCodes,
+			// documentInfos,
 		};
 		// console.log('requestBody', requestBody);
 
 		return requestBody;
 	}
 
-	getSaveDocumentInfosAnonymous(permitModelFormValue: any): Array<DocumentBase> {
-		const documents: Array<DocumentBase> = [];
-		const savebody = this.getSaveBody(permitModelFormValue);
+	// getSaveDocumentInfosAnonymous(permitModelFormValue: any): Array<DocumentBase> {
+	// 	const documents: Array<DocumentBase> = [];
+	// 	const savebody = this.getSaveBody(permitModelFormValue);
 
-		savebody.categoryData?.forEach((item: WorkerLicenceAppCategoryData) => {
-			item.documents?.forEach((doc: Document) => {
-				if (doc.expiryDate) {
-					documents.push({ licenceDocumentTypeCode: doc.licenceDocumentTypeCode!, expiryDate: doc.expiryDate });
-				}
-			});
-		});
+	// 	savebody.categoryData?.forEach((item: WorkerLicenceAppCategoryData) => {
+	// 		item.documents?.forEach((doc: Document) => {
+	// 			if (doc.expiryDate) {
+	// 				documents.push({ licenceDocumentTypeCode: doc.licenceDocumentTypeCode!, expiryDate: doc.expiryDate });
+	// 			}
+	// 		});
+	// 	});
 
-		if (savebody.citizenshipDocument?.expiryDate) {
-			documents.push({
-				licenceDocumentTypeCode: savebody.citizenshipDocument.licenceDocumentTypeCode,
-				expiryDate: savebody.citizenshipDocument.expiryDate,
-			});
-		}
+	// 	if (savebody.citizenshipDocument?.expiryDate) {
+	// 		documents.push({
+	// 			licenceDocumentTypeCode: savebody.citizenshipDocument.licenceDocumentTypeCode,
+	// 			expiryDate: savebody.citizenshipDocument.expiryDate,
+	// 		});
+	// 	}
 
-		console.debug('submitPermitAnonymous documentInfos', documents);
-		return documents;
-	}
+	// 	console.debug('submitPermitAnonymous documentInfos', documents);
+	// 	return documents;
+	// }
 
-	getSaveDocsAnonymous(permitModelFormValue: any): Array<PermitDocumentsToSave> {
-		const documents: Array<PermitDocumentsToSave> = [];
+	// getSaveDocsAnonymous(permitModelFormValue: any): Array<PermitDocumentsToSave> {
+	// 	const documents: Array<PermitDocumentsToSave> = [];
 
-		const citizenshipData = { ...permitModelFormValue.citizenshipData };
-		const fingerprintProofData = { ...permitModelFormValue.fingerprintProofData };
-		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
+	// 	const citizenshipData = { ...permitModelFormValue.citizenshipData };
+	// 	const fingerprintProofData = { ...permitModelFormValue.fingerprintProofData };
+	// 	const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
 
-		if (fingerprintProofData.attachments) {
-			const docs: Array<Blob> = [];
-			fingerprintProofData.attachments.forEach((doc: Blob) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
-		}
+	// 	if (fingerprintProofData.attachments) {
+	// 		const docs: Array<Blob> = [];
+	// 		fingerprintProofData.attachments.forEach((doc: Blob) => {
+	// 			docs.push(doc);
+	// 		});
+	// 		documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
+	// 	}
 
-		if (citizenshipData.attachments) {
-			// TODO fix permit citizenship data
-			const docs: Array<Blob> = [];
-			citizenshipData.attachments.forEach((doc: Blob) => {
-				docs.push(doc);
-			});
-			const citizenshipLicenceDocumentTypeCode =
-				citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-					? citizenshipData.canadianCitizenProofTypeCode
-					: citizenshipData.notCanadianCitizenProofTypeCode;
-			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
-		}
+	// 	if (citizenshipData.attachments) {
+	// 		// TODO fix permit citizenship data
+	// 		const docs: Array<Blob> = [];
+	// 		citizenshipData.attachments.forEach((doc: Blob) => {
+	// 			docs.push(doc);
+	// 		});
+	// 		const citizenshipLicenceDocumentTypeCode =
+	// 			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
+	// 				? citizenshipData.canadianCitizenProofTypeCode
+	// 				: citizenshipData.notCanadianCitizenProofTypeCode;
+	// 		documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
+	// 	}
 
-		if (photographOfYourselfData.attachments) {
-			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: Blob) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
-		}
+	// 	if (photographOfYourselfData.attachments) {
+	// 		const docs: Array<Blob> = [];
+	// 		photographOfYourselfData.attachments.forEach((doc: Blob) => {
+	// 			docs.push(doc);
+	// 		});
+	// 		documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+	// 	}
 
-		return documents;
-	}
+	// 	return documents;
+	// }
 
 	/**
 	 * Convert BooleanTypeCode to boolean

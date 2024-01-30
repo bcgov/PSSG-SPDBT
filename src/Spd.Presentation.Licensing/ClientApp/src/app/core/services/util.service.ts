@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LicenceAppDocumentResponse } from '@app/api/models';
+import { Document } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
@@ -128,12 +128,19 @@ export class UtilService {
 		}
 	}
 
-	dummyFile(item: LicenceAppDocumentResponse): SpdFile {
-		const b: SpdFile = new Blob(undefined, { type: item.documentExtension ?? '' }) as SpdFile;
-		b.documentUrlId = item.documentUrlId;
-		b.name = item.documentName ?? '';
+	dummyFile(doc: Document): SpdFile {
+		const b: SpdFile = new Blob(undefined, { type: doc.documentExtension ?? '' }) as SpdFile;
+		b.documentUrlId = doc.documentUrlId;
+		b.name = doc.documentName ?? '';
 		return b;
 	}
+
+	// dummyFile(item: LicenceAppDocumentResponse): SpdFile {
+	// 	const b: SpdFile = new Blob(undefined, { type: item.documentExtension ?? '' }) as SpdFile;
+	// 	b.documentUrlId = item.documentUrlId;
+	// 	b.name = item.documentName ?? '';
+	// 	return b;
+	// }
 
 	//------------------------------------
 	// Misc
