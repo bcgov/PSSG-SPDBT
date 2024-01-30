@@ -99,45 +99,23 @@ public abstract record WorkerLicenceAppBase
 }
 public record WorkerLicenceApp : WorkerLicenceAppBase //for authenticated user
 {
-    public WorkerLicenceAppCategoryData[] CategoryData { get; set; } = Array.Empty<WorkerLicenceAppCategoryData>();
-    public PoliceOfficerDocument? PoliceOfficerDocument { get; set; }
-    public MentalHealthDocument? MentalHealthDocument { get; set; }
-    public FingerprintProofDocument? FingerprintProofDocument { get; set; }
-    public CitizenshipDocument? CitizenshipDocument { get; set; }
-    public AdditionalGovIdDocument? AdditionalGovIdDocument { get; set; }
-    public IdPhotoDocument? IdPhotoDocument { get; set; }
+    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public Document[]? DocumentInfos { get; set; }
 }
 
-public record WorkerLicenceAppCategoryData
-{
-    public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
-    public Document[]? Documents { get; set; } = null;
-}
 public record DocumentBase
 {
     public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
     public DateOnly? ExpiryDate { get; set; }
 }
-public record Document : DocumentBase
+public record Document : LicenceAppDocumentResponse
 {
-    public LicenceAppDocumentResponse[]? DocumentResponses { get; set; } //for authenticated user
-}
-public record PoliceOfficerDocument : Document;
-public record MentalHealthDocument : Document;
-public record FingerprintProofDocument : Document;
-public record CitizenshipDocument : Document;
-public record AdditionalGovIdDocument : Document;
-public record IdPhotoDocument : Document;
+    public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
+};
+
 public record ResidentialAddress : Address;
 public record MailingAddress : Address;
-
-public record Alias
-{
-    public string? GivenName { get; set; }
-    public string? MiddleName1 { get; set; }
-    public string? MiddleName2 { get; set; }
-    public string? Surname { get; set; }
-}
 
 public record WorkerLicenceResponse : WorkerLicenceApp
 {
@@ -175,7 +153,8 @@ public record WorkerLicenceAppUpsertResponse
 #endregion
 
 #region anonymous user
-public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //for anonymous user, deprecated
+//for anonymous user, deprecated
+public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase 
 {
     public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public DocumentBase[]? DocumentInfos { get; set; }
@@ -224,7 +203,7 @@ public record LicenceAppDocumentResponse
 {
     public Guid DocumentUrlId { get; set; }
     public DateTimeOffset UploadedDateTime { get; set; }
-    public Guid? LicenceAppId { get; set; } = null;
+    public Guid? LicenceAppId { get; set; }
     public string? DocumentName { get; set; }
     public string? DocumentExtension { get; set; }
 };

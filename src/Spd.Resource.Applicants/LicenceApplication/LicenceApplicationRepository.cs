@@ -58,11 +58,11 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
         team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        ProcessCategories(cmd.CategoryData, app);
-        await _context.SaveChangesAsync();
+        ProcessCategories(cmd.CategoryCodes, app);
+        await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
     }
 
@@ -121,7 +121,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        ProcessCategories(cmd.CategoryData, app);
+        ProcessCategories(cmd.CategoryCodes, app);
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid ?? Guid.NewGuid());
     }
@@ -134,9 +134,9 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Where(a => a.spd_applicationid == licenceApplicationId).SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");
-        if (app.spd_ApplicantId_contact == null)
+        if (app.spd_ApplicantId_contact == null || app.spd_ApplicantId_contact.contactid == null)
             throw new ArgumentException("cannot find the applicant for this application");
-        var temp = app.spd_ApplicantId_contact;
+
         var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
         appResp.Aliases = _mapper.Map<Alias[]>(aliases);
@@ -165,11 +165,11 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     }
 
 
-    private void ProcessCategories(WorkerLicenceAppCategory[] categories, spd_application app)
+    private void ProcessCategories(WorkerCategoryTypeEnum[] categories, spd_application app)
     {
         foreach (var c in categories)
         {
-            var cat = _context.LookupLicenceCategory(c.WorkerCategoryTypeCode.ToString());
+            var cat = _context.LookupLicenceCategory(c.ToString());
             if (cat != null && !app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
             {
                 _context.AddLink(app, nameof(spd_application.spd_application_spd_licencecategory), cat);
@@ -179,7 +179,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             var code = DynamicsContextLookupHelpers.LookupLicenceCategoryKey(appCategory.spd_licencecategoryid);
             //if categories do not contain cat
-            if (!categories.Any(c => c.WorkerCategoryTypeCode.ToString() == code))
+            if (!categories.Any(c => c.ToString() == code))
             {
                 _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
             }
