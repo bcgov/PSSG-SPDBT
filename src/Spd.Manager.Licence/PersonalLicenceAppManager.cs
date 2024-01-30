@@ -253,7 +253,7 @@ internal partial class PersonalLicenceAppManager :
         await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
 
         //copying all old files to new application in PreviousFileIds 
-        if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Length != 0)
+        if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
         {
             foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousDocumentIds)
             {
@@ -413,7 +413,7 @@ internal partial class PersonalLicenceAppManager :
     {
         ChangeSpec changes = new ChangeSpec();
         //categories changed
-        if (newApp.CategoryCodes.Length != originalApp.CategoryCodes.Length)
+        if (newApp.CategoryCodes.Count() != originalApp.CategoryCodes.Length)
             changes.CategoriesChanged = true;
         else
         {
@@ -437,7 +437,6 @@ internal partial class PersonalLicenceAppManager :
         IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
 
         //PeaceOfficerStatusChanged
-
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
             : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
 
@@ -465,7 +464,7 @@ internal partial class PersonalLicenceAppManager :
     }
     private async Task UploadNewDocs(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, Guid contactId, CancellationToken ct)
     {
-        if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Length > 0)
+        if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
         {
             IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
 
