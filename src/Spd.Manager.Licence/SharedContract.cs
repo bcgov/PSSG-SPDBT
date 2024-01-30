@@ -14,7 +14,9 @@ public enum WorkerLicenceTypeCode
 {
     SecurityWorkerLicence,
     ArmouredVehiclePermit,
-    BodyArmourPermit
+    BodyArmourPermit,
+    SecurityBusinessLicence,
+    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
 }
 
 public enum ApplicationTypeCode

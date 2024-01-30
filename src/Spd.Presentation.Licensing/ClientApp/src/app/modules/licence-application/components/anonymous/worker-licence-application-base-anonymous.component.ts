@@ -14,6 +14,7 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+			return;
 		}
 	}
 }
