@@ -474,7 +474,7 @@ internal partial class PersonalLicenceAppManager :
                 SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
                 CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
                 fileCmd.ExpiryDate = request?
-                        .DocumentInfos?
+                        .DocumentExpiredInfos?
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
                 fileCmd.TempFile = tempFile;
