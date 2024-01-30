@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Licence;
 using Spd.Resource.Applicants.LicenceApplication;
@@ -12,10 +13,19 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        //CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
-        //    .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.CategoryData));
+        CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, CreateLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
+            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData))
+            .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.Aliases));
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceAppUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
         CreateMap<LicenceResp, LicenceResponse>();
@@ -59,7 +69,7 @@ internal class Mappings : Profile
         List<WorkerCategoryTypeEnum> categories = new List<WorkerCategoryTypeEnum> { };
         foreach (WorkerCategoryTypeCode code in codes)
         {
-            categories.Add( Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()) );
+            categories.Add(Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()));
         }
         return categories.ToArray();
     }
