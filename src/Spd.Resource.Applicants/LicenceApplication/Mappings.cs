@@ -120,7 +120,7 @@ internal class Mappings : Profile
          .ForMember(d => d.HasPreviousName, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_haspreviousnames)))
          .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
-         .ForMember(d => d.CategoryData, opt => opt.MapFrom(s => s.spd_application_spd_licencecategory))
+         .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          ;
@@ -128,10 +128,6 @@ internal class Mappings : Profile
         _ = CreateMap<CreateLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
           .IncludeBase<LicenceApplication, spd_application>();
-
-        _ = CreateMap<spd_licencecategory, WorkerLicenceAppCategory>()
-          .ForMember(d => d.WorkerCategoryTypeCode,
-          opt => opt.MapFrom(s => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(s.spd_licencecategoryid))));
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
@@ -393,6 +389,16 @@ internal class Mappings : Profile
         if (reasons.Any(s => s == str)) return true;
 
         return false;
+    }
+
+    private static WorkerCategoryTypeEnum[] GetWorkerCategoryTypeEnums(ICollection<spd_licencecategory> categories)
+    {
+        List<WorkerCategoryTypeEnum> codes = new List<WorkerCategoryTypeEnum> { };
+        foreach (spd_licencecategory cat in categories)
+        {
+            codes.Add(Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(cat.spd_licencecategoryid)));
+        }
+        return codes.ToArray();
     }
 }
 

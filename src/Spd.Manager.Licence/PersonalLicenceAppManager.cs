@@ -158,17 +158,12 @@ internal partial class PersonalLicenceAppManager :
         foreach (UploadFileRequest uploadRequest in fileRequests)
         {
             SpdTempFile spdTempFile = _mapper.Map<SpdTempFile>(uploadRequest);
-            DocumentTypeEnum? docType1 = GetDocumentType1Enum(uploadRequest.FileTypeCode);
-            DocumentTypeEnum? docType2 = GetDocumentType2Enum(uploadRequest.FileTypeCode);
+            CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(uploadRequest);
+            fileCmd.TempFile = spdTempFile;
+            fileCmd.ApplicationId = response.LicenceAppId;
+            fileCmd.SubmittedByApplicantId = response.ContactId;
             //create bcgov_documenturl and file
-            await _documentRepository.ManageAsync(new CreateDocumentCmd
-            {
-                TempFile = spdTempFile,
-                ApplicationId = response.LicenceAppId,
-                DocumentType = docType1,
-                DocumentType2 = docType2,
-                SubmittedByApplicantId = response.ContactId
-            }, ct);
+            await _documentRepository.ManageAsync(fileCmd, ct);
         }
         return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
     }
@@ -191,23 +186,17 @@ internal partial class PersonalLicenceAppManager :
                 IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
                 foreach (LicAppFileInfo licAppFile in items)
                 {
-                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-                    DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
-                        .DocumentInfos?
-                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                        .ExpiryDate;
+                    SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                    CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                    fileCmd.ExpiryDate = cmd.LicenceAnonymousRequest?
+                         .DocumentInfos?
+                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                         .ExpiryDate;
+                    fileCmd.TempFile = tempFile;
+                    fileCmd.ApplicationId = appResponse.LicenceAppId;
+                    fileCmd.SubmittedByApplicantId = appResponse.ContactId;
                     //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(new CreateDocumentCmd
-                    {
-                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                        ApplicationId = appResponse.LicenceAppId,
-                        DocumentType = docType1,
-                        DocumentType2 = docType2,
-                        SubmittedByApplicantId = appResponse.ContactId,
-                        ExpiryDate = expiredDate,
-                        ToTransientBucket = false
-                    }, ct);
+                    await _documentRepository.ManageAsync(fileCmd, ct);
                 }
             }
         }
@@ -287,24 +276,22 @@ internal partial class PersonalLicenceAppManager :
             foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
             {
                 IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
-                foreach (LicAppFileInfo licAppFile in items)
+                if (items != null && items.Any())
                 {
-                    DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-                    DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-                    DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
-                         .DocumentInfos?
-                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                         .ExpiryDate;
-                    //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(new CreateDocumentCmd
+                    foreach (LicAppFileInfo licAppFile in items)
                     {
-                        TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                        ApplicationId = response.LicenceAppId,
-                        DocumentType = docType1,
-                        DocumentType2 = docType2,
-                        SubmittedByApplicantId = response.ContactId,
-                        ExpiryDate = expiredDate,
-                    }, ct);
+                        SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                        CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                        fileCmd.ExpiryDate = cmd.LicenceAnonymousRequest?
+                             .DocumentInfos?
+                             .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                             .ExpiryDate;
+                        fileCmd.TempFile = tempFile;
+                        fileCmd.ApplicationId = response.LicenceAppId;
+                        fileCmd.SubmittedByApplicantId = response.ContactId;
+                        //create bcgov_documenturl and file
+                        await _documentRepository.ManageAsync(fileCmd, ct);
+                    }
                 }
             }
         }
@@ -352,29 +339,24 @@ internal partial class PersonalLicenceAppManager :
             var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
 
             //add all new files user uploaded
-            if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Any())
+            if (cmd.LicenceAnonymousRequest.DocumentKeyCodes != null && cmd.LicenceAnonymousRequest.DocumentKeyCodes.Length > 0)
             {
                 foreach (Guid fileKeyCode in cmd.LicenceAnonymousRequest.DocumentKeyCodes)
                 {
                     IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString());
                     foreach (LicAppFileInfo licAppFile in items)
                     {
-                        DocumentTypeEnum? docType1 = GetDocumentType1Enum(licAppFile.LicenceDocumentTypeCode);
-                        DocumentTypeEnum? docType2 = GetDocumentType2Enum(licAppFile.LicenceDocumentTypeCode);
-                        DateOnly? expiredDate = cmd.LicenceAnonymousRequest?
+                        SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                        CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                        fileCmd.ExpiryDate = cmd.LicenceAnonymousRequest?
                              .DocumentInfos?
                              .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                              .ExpiryDate;
+                        fileCmd.TempFile = tempFile;
+                        fileCmd.ApplicationId = response.LicenceAppId;
+                        fileCmd.SubmittedByApplicantId = response.ContactId;
                         //create bcgov_documenturl and file
-                        await _documentRepository.ManageAsync(new CreateDocumentCmd
-                        {
-                            TempFile = _mapper.Map<SpdTempFile>(licAppFile),
-                            ApplicationId = response.LicenceAppId,
-                            DocumentType = docType1,
-                            DocumentType2 = docType2,
-                            SubmittedByApplicantId = response.ContactId,
-                            ExpiryDate = expiredDate,
-                        }, ct);
+                        await _documentRepository.ManageAsync(fileCmd, ct);
                     }
                 }
             }
