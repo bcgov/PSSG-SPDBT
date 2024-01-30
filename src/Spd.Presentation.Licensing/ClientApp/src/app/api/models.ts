@@ -11,7 +11,7 @@ export { BooleanTypeCode } from './models/boolean-type-code';
 export { BusinessTypeCode } from './models/business-type-code';
 export { ConfigurationResponse } from './models/configuration-response';
 export { Document } from './models/document';
-export { DocumentBase } from './models/document-base';
+export { DocumentExpiredInfo } from './models/document-expired-info';
 export { EyeColourCode } from './models/eye-colour-code';
 export { GenderCode } from './models/gender-code';
 export { GoogleRecaptcha } from './models/google-recaptcha';

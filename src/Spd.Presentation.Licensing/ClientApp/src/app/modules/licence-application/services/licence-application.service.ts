@@ -258,6 +258,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
 						console.debug('[getLicenceOfType] Renewal', licenceAppId, applicationTypeCode, resp);
+
+						// console.debug('xxxxxxxxxxxxxx[Renewal] submitLicenceAnonymous');
+						// this.submitLicenceAnonymous();
+						// const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+						// console.debug('xxxxxxxxxxxxxx[Renewal] licenceModelFormValue', licenceModelFormValue);
+						// const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+						// console.debug('xxxxxxxxxxxxxx[Renewal] saveBodyAnonymous', body);
+
 						this.initialized = true;
 					})
 				);
@@ -1444,6 +1452,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
+		// delete body.documentExpiredInfos;
+
 		console.debug('submitLicenceAuthenticated body', body);
 
 		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
@@ -1460,7 +1470,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
 		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
 
-		const unsavedDocumentBlobs = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
+		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -1476,20 +1486,19 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
+		delete body.documentInfos;
+
 		console.debug('[submitLicenceAnonymous] body', body);
+		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingKeyCodes', existingKeyCodes);
 		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		if (newDocumentsExist) {
-			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, unsavedDocumentBlobs, body);
+			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, documentsToSave, body);
 		} else {
 			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, body);
 		}
-
-		// const xxx: StrictHttpResponse<WorkerLicenceAppUpsertResponse> =
-		// 	{} as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
-		// return of(xxx);
 	}
 
 	/**
@@ -1521,14 +1530,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private postLicenceAnonymousNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
-		unsavedDocumentBlobs: Array<LicenceDocumentsToSave>,
+		documentsToSave: Array<LicenceDocumentsToSave>,
 		body: WorkerLicenceAppAnonymousSubmitRequestJson
 	) {
 		let keyCode = '';
 
 		// Get the keyCode for the existing documents to save.
 		const existingKeyCodes: Array<string> = [];
-		unsavedDocumentBlobs.forEach((docBody: LicenceDocumentsToSave) => {
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			docBody.documents.forEach((doc: any) => {
 				if (doc.documentUrlId) {
 					existingKeyCodes.push(doc.documentUrlId);
@@ -1542,8 +1551,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				switchMap((resp: string) => {
 					keyCode = resp;
 
-					const documentsToSave: Observable<string>[] = [];
-					unsavedDocumentBlobs.forEach((docBody: LicenceDocumentsToSave) => {
+					const documentsToSaveApis: Observable<string>[] = [];
+					documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 						// Only pass new documents and get a keyCode for each of those.
 						const newDocumentsOnly: Array<Blob> = [];
 						docBody.documents.forEach((doc: any) => {
@@ -1554,7 +1563,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 						// should always be at least one new document
 						if (newDocumentsOnly.length > 0) {
-							documentsToSave.push(
+							documentsToSaveApis.push(
 								this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
 									keyCode,
 									body: {
@@ -1566,7 +1575,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						}
 					});
 
-					return forkJoin(documentsToSave);
+					return forkJoin(documentsToSaveApis);
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
