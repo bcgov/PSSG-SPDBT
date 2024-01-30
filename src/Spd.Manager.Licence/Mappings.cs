@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Contact;
 using Spd.Resource.Applicants.Document;
