@@ -1,6 +1,6 @@
 using AutoMapper;
-using Spd.Resource.Applicants.Invoice;
-using Spd.Resource.Applicants.Payment;
+using Spd.Resource.Repository.Invoice;
+using Spd.Resource.Repository.Payment;
 using Spd.Utilities.Payment;
 
 namespace Spd.Manager.Payment

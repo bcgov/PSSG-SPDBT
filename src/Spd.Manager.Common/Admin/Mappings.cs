@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Resource.Organizations.Org;
+using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
 
 namespace Spd.Manager.Common.Admin

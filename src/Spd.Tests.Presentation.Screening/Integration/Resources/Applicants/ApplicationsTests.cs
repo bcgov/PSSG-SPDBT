@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Resource.Applicants.Application;
+using Spd.Resource.Repository.Application;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Resources.Applicants;

@@ -1,8 +1,8 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Applicants.Document;
-using Spd.Resource.Organizations.Report;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Report;
 using Spd.Utilities.FileStorage;
 
 namespace Spd.Manager.Screening

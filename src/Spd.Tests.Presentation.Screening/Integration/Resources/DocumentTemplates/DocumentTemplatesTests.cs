@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Resource.Applicants.DocumentTemplate;
+using Spd.Resource.Repository.DocumentTemplate;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Resources.DocumentTemplates;
@@ -25,6 +25,6 @@ public class DocumentTemplatesTests : ScenarioContextBase
         var response = await docTemplateRepo.ManageAsync(cmd, CancellationToken.None);
         response.ContentType.ShouldBe("application/pdf");
         response.FileName.ShouldBe("Manual Payment Form.pdf");
-        response.DocumentType.ShouldBe(Resource.Applicants.Document.DocumentTypeEnum.ManualPaymentForm);
+        response.DocumentType.ShouldBe(Resource.Repository.Document.DocumentTypeEnum.ManualPaymentForm);
     }
 }

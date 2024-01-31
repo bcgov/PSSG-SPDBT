@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Spd.Manager.Shared;   
-using Spd.Resource.Applicants.Contact;
-using Spd.Resource.Applicants.PortalUser;
-using Spd.Resource.Organizations.Identity;
-using Spd.Resource.Organizations.Org;
-using Spd.Resource.Organizations.User;
-using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Manager.Shared;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.User;
 
 namespace Spd.Manager.Screening
 {
