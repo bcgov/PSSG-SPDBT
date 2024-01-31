@@ -258,14 +258,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				return this.loadLicenceRenewal(licenceAppId).pipe(
 					tap((resp: any) => {
 						console.debug('[getLicenceOfType] Renewal', licenceAppId, applicationTypeCode, resp);
-
-						// console.debug('xxxxxxxxxxxxxx[Renewal] submitLicenceAnonymous');
-						// this.submitLicenceAnonymous();
-						// const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-						// console.debug('xxxxxxxxxxxxxx[Renewal] licenceModelFormValue', licenceModelFormValue);
-						// const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-						// console.debug('xxxxxxxxxxxxxx[Renewal] saveBodyAnonymous', body);
-
 						this.initialized = true;
 					})
 				);
@@ -1536,11 +1528,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		let keyCode = '';
 
 		// Get the keyCode for the existing documents to save.
-		const existingKeyCodes: Array<string> = [];
+		const existingDocumentIds: Array<string> = [];
 		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			docBody.documents.forEach((doc: any) => {
 				if (doc.documentUrlId) {
-					existingKeyCodes.push(doc.documentUrlId);
+					existingDocumentIds.push(doc.documentUrlId);
 				}
 			});
 		});
@@ -1580,7 +1572,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
 					body.documentKeyCodes = [...resps];
-					body.previousDocumentIds = [...existingKeyCodes];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,

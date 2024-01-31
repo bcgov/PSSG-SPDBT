@@ -64,15 +64,13 @@ import { StepsBusinessInformationNewComponent } from './steps-business-informati
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
-				<ng-template matStepContent>
-					<!-- <app-steps-permit-review-anonymous
+				<!-- <app-steps-permit-review-anonymous
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(scrollIntoView)="onScrollIntoView()"
 						(goToStep)="onGoToStep($event)"
 					></app-steps-permit-review-anonymous> -->
-				</ng-template>
 			</mat-step>
 
 			<mat-step completed="false">

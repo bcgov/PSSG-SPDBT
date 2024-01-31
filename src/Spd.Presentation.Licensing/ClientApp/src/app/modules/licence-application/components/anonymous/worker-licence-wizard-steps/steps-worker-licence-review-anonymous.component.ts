@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceConsentComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
@@ -23,7 +24,7 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-consent></app-step-worker-licence-consent>
+				<app-step-worker-licence-consent [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-consent>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -40,6 +41,8 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepComponent {
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepWorkerLicenceSummaryReviewAnonymousComponent)
