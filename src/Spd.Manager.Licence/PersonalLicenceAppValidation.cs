@@ -319,7 +319,7 @@ public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : WorkerLicence
 
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
-        RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true);
+        RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true).When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
     }
 }
 
