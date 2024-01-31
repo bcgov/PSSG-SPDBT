@@ -2,14 +2,15 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
-using Spd.Resource.Repository.Identity;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -487,7 +488,7 @@ internal partial class PersonalLicenceAppManager :
 
     private async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfo(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
     {
-        if(docKeyCodes==null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
+        if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
         List<LicAppFileInfo> results = new List<LicAppFileInfo>();
         foreach (Guid docKeyCode in docKeyCodes)
         {
