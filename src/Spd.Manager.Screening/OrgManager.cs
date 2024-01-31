@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Resource.Organizations.Org;
+using Spd.Resource.Repository.Org;
 using Spd.Utilities.Cache;
 
 namespace Spd.Manager.Screening
@@ -24,7 +24,7 @@ namespace Spd.Manager.Screening
 
         public async Task<OrgResponse> Handle(OrgUpdateCommand request, CancellationToken cancellationToken)
         {
-            var updateOrg = _mapper.Map<Resource.Organizations.Org.Org>(request.OrgUpdateRequest);
+            var updateOrg = _mapper.Map<Resource.Repository.Org.Org>(request.OrgUpdateRequest);
             var result = await _orgRepository.ManageOrgAsync(new OrgUpdateCmd(updateOrg), cancellationToken);
             return _mapper.Map<OrgResponse>(result.Org);
         }

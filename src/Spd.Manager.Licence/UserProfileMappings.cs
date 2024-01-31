@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Spd.Resource.Applicants.Contact;
-using Spd.Resource.Organizations.Identity;
-using Spd.Resource.Organizations.Org;
-using Spd.Resource.Organizations.User;
-using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.User;
 
 namespace Spd.Manager.Licence
 {

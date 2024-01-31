@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Applicants.LicenceApplication;
-using Spd.Resource.Applicants.LicenceFee;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
 
 namespace Spd.Manager.Licence;
 internal class FeeManager :

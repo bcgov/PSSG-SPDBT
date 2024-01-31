@@ -11,8 +11,7 @@
     <ProjectReference Include="..\Spd.Engine.Search\Spd.Engine.Search.csproj" />
     <ProjectReference Include="..\Spd.Engine.Validation\Spd.Engine.Validation.csproj" />
     <ProjectReference Include="..\Spd.Manager.Shared\Spd.Manager.Shared.csproj" />
-    <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
-    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
     <ProjectReference Include="..\Spd.Utilities.BCeIDWS\Spd.Utilities.BCeIDWS.csproj" />
     <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />

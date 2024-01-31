@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Resource.Applicants.Application;
+using Spd.Resource.Repository.Application;
 
 namespace Spd.Engine.Search;
 internal class Mappings : Profile

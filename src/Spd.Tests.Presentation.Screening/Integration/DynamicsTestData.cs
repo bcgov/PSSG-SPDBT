@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Organizations.User;
+using Spd.Resource.Repository.User;
 using Spd.Utilities.Dynamics;
 using System.Net;
 
