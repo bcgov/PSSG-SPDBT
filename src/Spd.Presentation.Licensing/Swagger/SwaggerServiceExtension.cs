@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Spd.Presentation.Licensing.Swagger.ApiFilters;
+using Spd.Presentation.Screening.Swagger.ApiFilters;
 
 namespace Spd.Presentation.Licensing.Swagger
 {
@@ -38,6 +39,7 @@ namespace Spd.Presentation.Licensing.Swagger
                 });
                 c.OperationFilter<ProducesResponseTypeFilter>();
                 c.OperationFilter<SwlPostPostParamTypesFilter>();
+                c.OperationFilter<SwlAnonymUploadFilePostparamTypesFilter>();
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFileName = $"{assemblyName}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
