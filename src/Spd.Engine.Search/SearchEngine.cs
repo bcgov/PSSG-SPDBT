@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Spd.Resource.Applicants.Application;
-using Spd.Resource.Organizations.Identity;
-using Spd.Resource.Organizations.Org;
-using Spd.Resource.Organizations.Registration;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Shared;
-using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Engine.Search
 {

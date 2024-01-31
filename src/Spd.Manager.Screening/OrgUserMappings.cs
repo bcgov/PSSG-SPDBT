@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spd.Resource.Organizations.User;
+using Spd.Resource.Repository.User;
 
 namespace Spd.Manager.Screening
 {

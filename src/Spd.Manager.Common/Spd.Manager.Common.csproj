@@ -6,8 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
-    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Address\Spd.Utilities.Address.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />

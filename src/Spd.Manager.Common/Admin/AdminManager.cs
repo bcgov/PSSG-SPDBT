@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Organizations.Config;
-using Spd.Resource.Organizations.Org;
+using Spd.Resource.Repository.Config;
+using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
 using Spd.Utilities.Shared;
 

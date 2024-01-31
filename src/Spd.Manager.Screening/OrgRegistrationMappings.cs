@@ -1,6 +1,6 @@
 using AutoMapper;
-using Spd.Resource.Organizations.Org;
-using Spd.Resource.Organizations.Registration;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.Registration;
 
 namespace Spd.Manager.Screening
 {
@@ -8,7 +8,7 @@ namespace Spd.Manager.Screening
     {
         public OrgRegistrationMappings()
         {
-            CreateMap<OrgRegistrationCreateRequest, Spd.Resource.Organizations.Registration.OrgRegistration>();
+            CreateMap<OrgRegistrationCreateRequest, Spd.Resource.Repository.Registration.OrgRegistration>();
             CreateMap<OrgRegistrationCreateRequest, SearchRegistrationQry>();
             CreateMap<OrgRegistrationCreateRequest, SearchOrgQry>();
         }
