@@ -1,6 +1,6 @@
-﻿using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.Document;
-using Spd.Resource.Applicants.LicenceApplication;
+﻿using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;

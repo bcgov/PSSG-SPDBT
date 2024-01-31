@@ -65,12 +65,12 @@ public abstract record WorkerLicenceAppBase
     public GenderCode? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
-    public Guid? ExpiredLicenceId { get; set; } = null;//for new application type, for renew, replace, update, it should be null.
-    public bool? HasExpiredLicence { get; set; } = null; //for new application type
+    public Guid? ExpiredLicenceId { get; set; } //for new application type, for renew, replace, update, it should be null.
+    public bool? HasExpiredLicence { get; set; }  //for new application type
     public LicenceTermCode? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
-    public Alias[]? Aliases { get; set; }
+    public IEnumerable<Alias>? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public HairColourCode? HairColourCode { get; set; }
@@ -96,6 +96,7 @@ public abstract record WorkerLicenceAppBase
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
 }
 
 public record DocumentExpiredInfo
@@ -118,8 +119,7 @@ public record WorkerLicenceResponse : WorkerLicenceAppBase
     public DateOnly? ExpiryDate { get; set; }
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
-    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public Document[]? DocumentInfos { get; set; }
+    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
 }
 
 public record WorkerLicenceAppListResponse
@@ -129,7 +129,7 @@ public record WorkerLicenceAppListResponse
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? SubmittedOn { get; set; }
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
-    public string CaseNumber { get; set; }
+    public string CaseNumber { get; set; } = null!;
     public ApplicationPortalStatusCode ApplicationPortalStatusCode { get; set; }
 }
 #endregion
@@ -137,7 +137,6 @@ public record WorkerLicenceAppListResponse
 #region authenticated user
 public record WorkerLicenceAppUpsertRequest : WorkerLicenceAppBase
 {
-    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public Document[]? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
 };
@@ -155,17 +154,15 @@ public record WorkerLicenceAppUpsertResponse
 //for anonymous user, deprecated
 public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase 
 {
-    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Array.Empty<DocumentExpiredInfo>();
     public string Recaptcha { get; set; } = null!;
 }
 
 public record WorkerLicenceAppAnonymousSubmitRequestJson : WorkerLicenceAppBase //for anonymous user
 {
-    public WorkerCategoryTypeCode[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public DocumentExpiredInfo[]? DocumentExpiredInfos { get; set; }
-    public Guid[]? DocumentKeyCodes { get; set; }
-    public Guid[]? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
+    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
@@ -178,7 +175,7 @@ public record WorkerLicenceCreateResponse
 
 public record LicenceAppDocumentsCache
 {
-    public List<LicAppFileInfo> Items { get; set; } = new List<LicAppFileInfo>();
+    public IEnumerable<LicAppFileInfo> Items { get; set; } = Enumerable.Empty<LicAppFileInfo>();
 }
 public record LicAppFileInfo
 {
