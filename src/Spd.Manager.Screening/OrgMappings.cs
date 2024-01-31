@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Spd.Manager.Shared;
-using Spd.Resource.Organizations.Org;
+using Spd.Resource.Repository.Org;
 
 namespace Spd.Manager.Screening
 {
@@ -8,12 +8,12 @@ namespace Spd.Manager.Screening
     {
         public OrgMappings()
         {
-            CreateMap<OrgUpdateRequest, Spd.Resource.Organizations.Org.Org>();
-            CreateMap<Spd.Resource.Organizations.Org.Org, OrgResponse>();
+            CreateMap<OrgUpdateRequest, Spd.Resource.Repository.Org.Org>();
+            CreateMap<Spd.Resource.Repository.Org.Org, OrgResponse>();
             CreateMap<OrgResult, OrgResponse>()
                 .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => GetNullableEnum<EmployeeOrganizationTypeCode>(s.EmployeeOrganizationTypeCode)))
                 .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => GetNullableEnum<VolunteerOrganizationTypeCode>(s.VolunteerOrganizationTypeCode)))
-                .IncludeBase<Spd.Resource.Organizations.Org.Org, OrgResponse>();
+                .IncludeBase<Spd.Resource.Repository.Org.Org, OrgResponse>();
         }
 
         private T? GetNullableEnum<T>(string? enumName) where T : struct, Enum

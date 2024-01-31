@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Applicants.Licence;
+using Spd.Resource.Repository.Licence;
 
 namespace Spd.Manager.Licence;
 

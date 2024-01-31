@@ -1,10 +1,10 @@
 using MediatR;
 using Spd.Engine.Validation;
-using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Organizations.Org;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.ApplicationInvite;
+using Spd.Resource.Repository.Org;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
 namespace Spd.Manager.Screening
@@ -16,8 +16,8 @@ namespace Spd.Manager.Screening
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
 
             // If not a volunteer org or PSSO, then the payee type is required
-            if (org != null && 
-                org.OrgResult.VolunteerOrganizationTypeCode == null && 
+            if (org != null &&
+                org.OrgResult.VolunteerOrganizationTypeCode == null &&
                 org.OrgResult.ParentOrgId != SpdConstants.BC_GOV_ORG_ID &&
                 org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID)
             {

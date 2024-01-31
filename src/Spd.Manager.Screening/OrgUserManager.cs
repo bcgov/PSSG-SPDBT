@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
-using Spd.Resource.Organizations.Org;
-using Spd.Resource.Organizations.User;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.User;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
