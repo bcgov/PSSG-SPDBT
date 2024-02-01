@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceLookupService } from '@app/api/services';
@@ -91,7 +91,7 @@ import { EMPTY, Observable } from 'rxjs';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonExpiredLicenceComponent {
+export class CommonExpiredLicenceComponent implements OnInit {
 	booleanTypeCodes = BooleanTypeCode;
 	constants = SPD_CONSTANTS;
 

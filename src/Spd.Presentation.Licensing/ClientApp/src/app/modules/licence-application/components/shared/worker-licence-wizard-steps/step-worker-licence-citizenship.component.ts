@@ -1,10 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
 	BooleanTypeCode,
@@ -12,7 +8,11 @@ import {
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-step-worker-licence-citizenship',
@@ -50,7 +50,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					</div>
 
 					<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">

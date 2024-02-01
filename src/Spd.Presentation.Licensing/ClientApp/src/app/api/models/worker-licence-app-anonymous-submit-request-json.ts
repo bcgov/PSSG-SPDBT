@@ -3,7 +3,7 @@
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
 import { BusinessTypeCode } from './business-type-code';
-import { DocumentBase } from './document-base';
+import { DocumentExpiredInfo } from './document-expired-info';
 import { EyeColourCode } from './eye-colour-code';
 import { GenderCode } from './gender-code';
 import { HairColourCode } from './hair-colour-code';
@@ -26,7 +26,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
-  documentInfos?: null | Array<DocumentBase>;
+  documentExpiredInfos?: null | Array<DocumentExpiredInfo>;
   documentKeyCodes?: null | Array<string>;
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;

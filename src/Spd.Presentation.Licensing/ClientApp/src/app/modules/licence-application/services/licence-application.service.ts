@@ -13,7 +13,6 @@ import {
 	LicenceResponse,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
-	WorkerLicenceAppCategoryData,
 	WorkerLicenceAppUpsertResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
@@ -35,7 +34,6 @@ import {
 } from 'rxjs';
 import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { PrivateInvestigatorTrainingCode, RestraintDocumentTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -73,6 +71,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationPortalStatus: new FormControl(null),
 
 		personalInformationData: this.personalInformationFormGroup,
+		reprintLicenceData: this.reprintLicenceFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
@@ -627,7 +626,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns StrictHttpResponse<WorkerLicenceAppUpsertResponse>
 	 */
 	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		const body = this.getSaveBody(this.licenceModelFormGroup.getRawValue());
+		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
+
 		return this.workerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
@@ -738,49 +738,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					licenceTermCode: resp.licenceTermCode,
 				};
 
-				const policeBackgroundDataAttachments: Array<File> = [];
-				if (resp.policeOfficerDocument?.documentResponses) {
-					resp.policeOfficerDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						policeBackgroundDataAttachments.push(aFile);
-					});
-				}
-
-				const policeBackgroundData = {
-					isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
-					policeOfficerRoleCode: resp.policeOfficerRoleCode,
-					otherOfficerRole: resp.otherOfficerRole,
-					attachments: policeBackgroundDataAttachments,
-				};
-
 				const bcDriversLicenceData = {
 					hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
 					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
-				};
-
-				const fingerprintProofDataAttachments: Array<File> = [];
-				if (resp.fingerprintProofDocument?.documentResponses) {
-					resp.fingerprintProofDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						fingerprintProofDataAttachments.push(aFile);
-					});
-				}
-
-				const fingerprintProofData = {
-					attachments: fingerprintProofDataAttachments,
-				};
-
-				const mentalHealthConditionsDataAttachments: Array<File> = [];
-				if (resp.mentalHealthDocument?.documentResponses) {
-					resp.mentalHealthDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						mentalHealthConditionsDataAttachments.push(aFile);
-					});
-				}
-
-				const mentalHealthConditionsData = {
-					isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
-					attachments: mentalHealthConditionsDataAttachments,
 				};
 
 				const criminalHistoryData = {
@@ -824,40 +784,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					};
 				}
 
-				const citizenshipDataAttachments: Array<File> = [];
-				if (resp.citizenshipDocument?.documentResponses) {
-					resp.citizenshipDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						citizenshipDataAttachments.push(aFile);
-					});
-				}
-
-				const citizenshipData = {
-					isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
-					canadianCitizenProofTypeCode: resp.isCanadianCitizen
-						? resp.citizenshipDocument?.licenceDocumentTypeCode
-						: null,
-					notCanadianCitizenProofTypeCode: resp.isCanadianCitizen
-						? null
-						: resp.citizenshipDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.citizenshipDocument?.expiryDate,
-					attachments: citizenshipDataAttachments,
-				};
-
-				const additionalGovIdAttachments: Array<File> = [];
-				if (resp.additionalGovIdDocument?.documentResponses) {
-					resp.additionalGovIdDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						additionalGovIdAttachments.push(aFile);
-					});
-				}
-
-				const additionalGovIdData = {
-					governmentIssuedPhotoTypeCode: resp.additionalGovIdDocument?.licenceDocumentTypeCode,
-					expiryDate: resp.additionalGovIdDocument?.expiryDate,
-					attachments: additionalGovIdAttachments,
-				};
-
 				let height = resp.height ? resp.height + '' : null;
 				let heightInches = '';
 				if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
@@ -873,19 +799,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					heightInches,
 					weight: resp.weight ? resp.weight + '' : null,
 					weightUnitCode: resp.weightUnitCode,
-				};
-
-				const photographOfYourselfAttachments: Array<File> = [];
-				if (resp.idPhotoDocument?.documentResponses) {
-					resp.idPhotoDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						const aFile = this.utilService.dummyFile(item);
-						photographOfYourselfAttachments.push(aFile);
-					});
-				}
-
-				const photographOfYourselfData = {
-					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
-					attachments: photographOfYourselfAttachments,
 				};
 
 				const contactInformationData = {
@@ -922,47 +835,39 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				};
 				// }
 
-				let restraintsAuthorizationData: any = {};
-				let dogsAuthorizationData: any = {};
-				let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
 				let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
 				let categoryClosedCircuitTelevisionInstallerFormGroup: any = { isInclude: false };
 				let categoryElectronicLockingDeviceInstallerFormGroup: any = { isInclude: false };
-				let categoryFireInvestigatorFormGroup: any = { isInclude: false };
-				let categoryLocksmithFormGroup: any = { isInclude: false };
 				let categoryLocksmithSupFormGroup: any = { isInclude: false };
-				let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
-				let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
-				let categorySecurityGuardFormGroup: any = { isInclude: false };
 				let categorySecurityGuardSupFormGroup: any = { isInclude: false };
-				let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
 				let categorySecurityAlarmInstallerSupFormGroup: any = { isInclude: false };
 				let categorySecurityAlarmMonitorFormGroup: any = { isInclude: false };
 				let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
 				let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
-				let categorySecurityConsultantFormGroup: any = { isInclude: false };
-				resp.categoryData?.forEach((category: WorkerLicenceAppCategoryData) => {
-					switch (category.workerCategoryTypeCode) {
-						case WorkerCategoryTypeCode.ArmouredCarGuard: {
-							const attachmentsArmouredCarGuard: Array<File> = [];
-							let armouredCarGuardExpiryDate = '';
-							category.documents?.forEach((doc: Document) => {
-								armouredCarGuardExpiryDate = this.formatDatePipe.transform(
-									doc.expiryDate,
-									SPD_CONSTANTS.date.backendDateFormat
-								);
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									attachmentsArmouredCarGuard.push(aFile);
-								});
-							});
-							categoryArmouredCarGuardFormGroup = {
-								isInclude: true,
-								expiryDate: armouredCarGuardExpiryDate,
-								attachments: attachmentsArmouredCarGuard,
-							};
-							break;
-						}
+
+				let restraintsAuthorizationData: any = {};
+				let dogsAuthorizationData: any = {};
+
+				let categoryArmouredCarGuardFormGroup: {
+					isInclude: boolean;
+					expiryDate: string | null;
+					attachments: File[];
+				} = {
+					isInclude: false,
+					expiryDate: null,
+					attachments: [],
+				};
+
+				const categoryFireInvestigatorFormGroup: any = { isInclude: false };
+				let categoryLocksmithFormGroup: any = { isInclude: false };
+				const categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
+				let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
+				let categorySecurityGuardFormGroup: any = { isInclude: false };
+				let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
+				const categorySecurityConsultantFormGroup: any = { isInclude: false };
+
+				resp.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
+					switch (category) {
 						case WorkerCategoryTypeCode.BodyArmourSales:
 							categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
 							break;
@@ -972,179 +877,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
 							categoryElectronicLockingDeviceInstallerFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.FireInvestigator: {
-							const attachments1FireInvestigator: Array<File> = [];
-							const attachments2FireInvestigator: Array<File> = [];
-							category.documents?.forEach((doc: Document) => {
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									if (
-										doc.licenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate
-									) {
-										attachments1FireInvestigator.push(aFile);
-									} else if (
-										doc.licenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter
-									) {
-										attachments2FireInvestigator.push(aFile);
-									}
-								});
-							});
-							categoryFireInvestigatorFormGroup = {
-								isInclude: true,
-								fireCourseCertificateAttachments: attachments1FireInvestigator,
-								fireVerificationLetterAttachments: attachments2FireInvestigator,
-							};
-							break;
-						}
-						case WorkerCategoryTypeCode.Locksmith: {
-							const attachmentsLocksmith: Array<File> = [];
-							let requirementCodeLocksmith = '';
-							category.documents?.forEach((doc: Document) => {
-								requirementCodeLocksmith = doc.licenceDocumentTypeCode ?? '';
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									attachmentsLocksmith.push(aFile);
-								});
-							});
-							categoryLocksmithFormGroup = {
-								isInclude: true,
-								requirementCode: requirementCodeLocksmith,
-								attachments: attachmentsLocksmith,
-							};
-							break;
-						}
 						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
 							categoryLocksmithSupFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.PrivateInvestigator: {
-							const attachments1PrivateInvestigator: Array<File> = [];
-							const attachments2PrivateInvestigator: Array<File> = [];
-							let requirementCodePrivateInvestigator = '';
-							let trainingCodePrivateInvestigator = '';
-							category.documents?.forEach((doc: Document) => {
-								const licenceDocumentTypeCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
-								if (
-									licenceDocumentTypeCodePrivateInvestigator ==
-										PrivateInvestigatorTrainingCode.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge ||
-									licenceDocumentTypeCodePrivateInvestigator ==
-										PrivateInvestigatorTrainingCode.CategoryPrivateInvestigator_TrainingRecognizedCourse
-								) {
-									trainingCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
-								} else {
-									requirementCodePrivateInvestigator = doc.licenceDocumentTypeCode ?? '';
-								}
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									if (
-										licenceDocumentTypeCodePrivateInvestigator ==
-											PrivateInvestigatorTrainingCode.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge ||
-										licenceDocumentTypeCodePrivateInvestigator ==
-											PrivateInvestigatorTrainingCode.CategoryPrivateInvestigator_TrainingRecognizedCourse
-									) {
-										attachments2PrivateInvestigator.push(aFile);
-									} else {
-										attachments1PrivateInvestigator.push(aFile);
-									}
-								});
-							});
-							categoryPrivateInvestigatorFormGroup = {
-								isInclude: true,
-								requirementCode: requirementCodePrivateInvestigator,
-								attachments: attachments1PrivateInvestigator,
-								trainingCode: trainingCodePrivateInvestigator,
-								trainingAttachments: attachments2PrivateInvestigator,
-							};
-							break;
-						}
-						case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision: {
-							const attachments1PrivateInvestigatorUnderSupervision: Array<File> = [];
-							let requirementCodePrivateInvestigatorUnderSupervision = '';
-							category.documents?.forEach((doc: Document) => {
-								requirementCodePrivateInvestigatorUnderSupervision = doc.licenceDocumentTypeCode ?? '';
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									attachments1PrivateInvestigatorUnderSupervision.push(aFile);
-								});
-							});
-							categoryPrivateInvestigatorSupFormGroup = {
-								isInclude: true,
-								requirementCode: requirementCodePrivateInvestigatorUnderSupervision,
-								attachments: attachments1PrivateInvestigatorUnderSupervision,
-							};
-							break;
-						}
-						case WorkerCategoryTypeCode.SecurityGuard: {
-							const attachmentsSecurityGuard: Array<File> = [];
-							const attachmentsDogs: Array<File> = [];
-							const attachmentsRestraints: Array<File> = [];
-							let requirementCodeSecurityGuard = '';
-							let carryAndUseRestraintsDocument = '';
-							category.documents?.forEach((doc: Document) => {
-								const isDogRelated =
-									doc.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate;
-								const isRestraintRelated = (Object.keys(RestraintDocumentTypeCode) as Array<any>).includes(
-									doc.licenceDocumentTypeCode
-								);
-								if (isDogRelated) {
-									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-										const aFile = this.utilService.dummyFile(item);
-										attachmentsDogs.push(aFile);
-									});
-								} else if (isRestraintRelated) {
-									carryAndUseRestraintsDocument = doc.licenceDocumentTypeCode ?? '';
-									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-										const aFile = this.utilService.dummyFile(item);
-										attachmentsRestraints.push(aFile);
-									});
-								} else {
-									requirementCodeSecurityGuard = doc.licenceDocumentTypeCode ?? '';
-									doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-										const aFile = this.utilService.dummyFile(item);
-										attachmentsSecurityGuard.push(aFile);
-									});
-								}
-							});
-							restraintsAuthorizationData = {
-								carryAndUseRestraints: this.booleanToBooleanType(resp.carryAndUseRestraints),
-								carryAndUseRestraintsDocument,
-								attachments: attachmentsRestraints,
-							};
-							dogsAuthorizationData = {
-								useDogs: this.booleanToBooleanType(resp.useDogs),
-								dogsPurposeFormGroup: {
-									isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
-									isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
-									isDogsPurposeProtection: resp.isDogsPurposeProtection,
-								},
-								attachments: attachmentsDogs,
-							};
-							categorySecurityGuardFormGroup = {
-								isInclude: true,
-								requirementCode: requirementCodeSecurityGuard,
-								attachments: attachmentsSecurityGuard,
-							};
-							break;
-						}
 						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 							categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.SecurityAlarmInstaller: {
-							const attachmentsSecurityAlarmInstaller: Array<File> = [];
-							let requirementCodeSecurityAlarmInstaller = '';
-							category.documents?.forEach((doc: Document) => {
-								requirementCodeSecurityAlarmInstaller = doc.licenceDocumentTypeCode ?? '';
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									attachmentsSecurityAlarmInstaller.push(aFile);
-								});
-							});
-							categorySecurityAlarmInstallerFormGroup = {
-								isInclude: true,
-								requirementCode: requirementCodeSecurityAlarmInstaller,
-								attachments: attachmentsSecurityAlarmInstaller,
-							};
-							break;
-						}
 						case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
 							categorySecurityAlarmInstallerSupFormGroup = { isInclude: true, checkbox: true };
 							break;
@@ -1157,45 +895,303 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						case WorkerCategoryTypeCode.SecurityAlarmSales:
 							categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
 							break;
-						case WorkerCategoryTypeCode.SecurityConsultant: {
-							const attachments1SecurityConsultant: Array<File> = [];
-							const attachments2SecurityConsultant: Array<File> = [];
-							let requirementCodeSecurityConsultant = '';
-							category.documents?.forEach((doc: Document) => {
-								const licenceDocumentTypeCodeSecurityConsultant = doc.licenceDocumentTypeCode ?? '';
-								if (
-									licenceDocumentTypeCodeSecurityConsultant != LicenceDocumentTypeCode.CategorySecurityConsultantResume
-								) {
-									requirementCodeSecurityConsultant = doc.licenceDocumentTypeCode ?? '';
-								}
-								doc.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-									const aFile = this.utilService.dummyFile(item);
-									if (
-										licenceDocumentTypeCodeSecurityConsultant ===
-										LicenceDocumentTypeCode.CategorySecurityConsultantResume
-									) {
-										attachments1SecurityConsultant.push(aFile);
-									} else {
-										attachments2SecurityConsultant.push(aFile);
-									}
-								});
-							});
-							categorySecurityConsultantFormGroup = {
-								isInclude: true,
-								requirementCode: requirementCodeSecurityConsultant,
-								attachments: attachments2SecurityConsultant,
-								resumeAttachments: attachments1SecurityConsultant,
+					}
+				});
+
+				const policeBackgroundDataAttachments: Array<File> = [];
+				const fingerprintProofDataAttachments: Array<File> = [];
+				const mentalHealthConditionsDataAttachments: Array<File> = [];
+				const citizenshipDataAttachments: Array<File> = [];
+				let citizenshipData: {
+					isCanadianCitizen: BooleanTypeCode | null;
+					canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+					notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+					expiryDate: string | null;
+					attachments: File[];
+				} = {
+					isCanadianCitizen: null,
+					canadianCitizenProofTypeCode: null,
+					notCanadianCitizenProofTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
+				const additionalGovIdAttachments: Array<File> = [];
+				let additionalGovIdData: {
+					governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
+					expiryDate: string | null;
+					attachments: File[];
+				} = {
+					governmentIssuedPhotoTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
+				const photographOfYourselfAttachments: Array<File> = [];
+
+				const attachments1FireInvestigator: Array<File> = [];
+				const attachments2FireInvestigator: Array<File> = [];
+				const attachmentsLocksmith: Array<File> = [];
+				const attachments1PrivateInvestigator: Array<File> = [];
+				const attachments2PrivateInvestigator: Array<File> = [];
+				const attachments1PrivateInvestigatorUnderSupervision: Array<File> = [];
+				const attachmentsSecurityGuard: Array<File> = [];
+				const attachmentsDogs: Array<File> = [];
+				const attachmentsRestraints: Array<File> = [];
+				const attachmentsSecurityAlarmInstaller: Array<File> = [];
+				const attachments1SecurityConsultant: Array<File> = [];
+				const attachments2SecurityConsultant: Array<File> = [];
+				const attachmentsArmouredCarGuard: Array<File> = [];
+
+				resp.documentInfos?.forEach((doc: Document) => {
+					switch (doc.licenceDocumentTypeCode) {
+						case LicenceDocumentTypeCode.BcServicesCard:
+						case LicenceDocumentTypeCode.CanadianFirearmsLicence:
+						case LicenceDocumentTypeCode.CertificateOfIndianStatus:
+						case LicenceDocumentTypeCode.DriversLicence:
+						case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
+							// Additional Government ID: GovernmentIssuedPhotoIdTypes
+
+							const aFile = this.utilService.dummyFile(doc);
+							additionalGovIdAttachments.push(aFile);
+
+							additionalGovIdData = {
+								governmentIssuedPhotoTypeCode: doc.licenceDocumentTypeCode,
+								expiryDate: doc.expiryDate ?? null,
+								attachments: additionalGovIdAttachments,
 							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.BirthCertificate:
+						case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
+						case LicenceDocumentTypeCode.CanadianPassport:
+						case LicenceDocumentTypeCode.CanadianCitizenship:
+						case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument:
+						case LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus:
+						case LicenceDocumentTypeCode.PermanentResidentCard:
+						case LicenceDocumentTypeCode.RecordOfLandingDocument:
+						case LicenceDocumentTypeCode.StudyPermit:
+						case LicenceDocumentTypeCode.WorkPermit: {
+							// Is Canadian:  ProofOfCanadianCitizenshipTypes
+							// Is Not Canadian: ProofOfAbilityToWorkInCanadaTypes
+
+							const aFile = this.utilService.dummyFile(doc);
+							citizenshipDataAttachments.push(aFile);
+
+							citizenshipData = {
+								isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
+								canadianCitizenProofTypeCode: resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null,
+								notCanadianCitizenProofTypeCode: resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode,
+								expiryDate: doc.expiryDate ?? null,
+								attachments: citizenshipDataAttachments,
+							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
+							const armouredCarGuardExpiryDate = this.formatDatePipe.transform(
+								doc.expiryDate,
+								SPD_CONSTANTS.date.backendDateFormat
+							);
+
+							const aFile = this.utilService.dummyFile(doc);
+							attachmentsArmouredCarGuard.push(aFile);
+
+							categoryArmouredCarGuardFormGroup = {
+								isInclude: true,
+								expiryDate: armouredCarGuardExpiryDate,
+								attachments: attachmentsArmouredCarGuard,
+							};
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments1FireInvestigator.push(aFile);
+
+							categoryFireInvestigatorFormGroup.isInclude = true;
+							categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments = attachments1FireInvestigator;
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments2FireInvestigator.push(aFile);
+
+							categoryFireInvestigatorFormGroup.isInclude = true;
+							categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments = attachments2FireInvestigator;
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification:
+						case LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship:
+						case LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachmentsLocksmith.push(aFile);
+
+							categoryLocksmithFormGroup = {
+								isInclude: true,
+								requirementCode: doc.licenceDocumentTypeCode,
+								attachments: attachmentsLocksmith,
+							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses:
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining:
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments1PrivateInvestigator.push(aFile);
+
+							categoryPrivateInvestigatorFormGroup.isInclude = true;
+							categoryPrivateInvestigatorFormGroup.requirementCode = doc.licenceDocumentTypeCode;
+							categoryPrivateInvestigatorFormGroup.attachments = attachments1PrivateInvestigator;
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse:
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments2PrivateInvestigator.push(aFile);
+
+							categoryPrivateInvestigatorFormGroup.isInclude = true;
+							categoryPrivateInvestigatorFormGroup.trainingCode = doc.licenceDocumentTypeCode;
+							categoryPrivateInvestigatorFormGroup.trainingAttachments = attachments2PrivateInvestigator;
+							break;
+						}
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion:
+						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments1PrivateInvestigatorUnderSupervision.push(aFile);
+
+							categoryPrivateInvestigatorSupFormGroup = {
+								isInclude: true,
+								requirementCode: doc.licenceDocumentTypeCode,
+								attachments: attachments1PrivateInvestigatorUnderSupervision,
+							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate:
+						case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachmentsSecurityAlarmInstaller.push(aFile);
+
+							categorySecurityAlarmInstallerFormGroup = {
+								isInclude: true,
+								requirementCode: doc.licenceDocumentTypeCode,
+								attachments: attachmentsSecurityAlarmInstaller,
+							};
+							break;
+						}
+						case LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters:
+						case LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments2SecurityConsultant.push(aFile);
+
+							categorySecurityConsultantFormGroup.isInclude = true;
+							categorySecurityConsultantFormGroup.requirementCode = doc.licenceDocumentTypeCode;
+							categorySecurityConsultantFormGroup.attachments = attachments2SecurityConsultant;
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategorySecurityConsultantResume: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachments1SecurityConsultant.push(aFile);
+
+							categorySecurityConsultantFormGroup.isInclude = true;
+							categorySecurityConsultantFormGroup.resumeAttachments = attachments1SecurityConsultant;
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate:
+						case LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining:
+						case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachmentsSecurityGuard.push(aFile);
+
+							categorySecurityGuardFormGroup = {
+								isInclude: true,
+								requirementCode: doc.licenceDocumentTypeCode,
+								attachments: attachmentsSecurityGuard,
+							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachmentsDogs.push(aFile);
+
+							dogsAuthorizationData = {
+								useDogs: BooleanTypeCode.Yes,
+								dogsPurposeFormGroup: {
+									isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
+									isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
+									isDogsPurposeProtection: resp.isDogsPurposeProtection,
+								},
+								attachments: attachmentsDogs,
+							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate:
+						case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter:
+						case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent: {
+							const aFile = this.utilService.dummyFile(doc);
+							attachmentsRestraints.push(aFile);
+
+							restraintsAuthorizationData = {
+								carryAndUseRestraints: BooleanTypeCode.Yes,
+								carryAndUseRestraintsDocument: doc.licenceDocumentTypeCode,
+								attachments: attachmentsRestraints,
+							};
+
+							break;
+						}
+						case LicenceDocumentTypeCode.MentalHealthCondition: {
+							const aFile = this.utilService.dummyFile(doc);
+							mentalHealthConditionsDataAttachments.push(aFile);
+							break;
+						}
+						case LicenceDocumentTypeCode.PhotoOfYourself: {
+							const aFile = this.utilService.dummyFile(doc);
+							photographOfYourselfAttachments.push(aFile);
+							break;
+						}
+						case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+							const aFile = this.utilService.dummyFile(doc);
+							policeBackgroundDataAttachments.push(aFile);
+							break;
+						}
+						case LicenceDocumentTypeCode.ProofOfFingerprint: {
+							const aFile = this.utilService.dummyFile(doc);
+							fingerprintProofDataAttachments.push(aFile);
 							break;
 						}
 					}
 				});
 
+				const policeBackgroundData = {
+					isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
+					policeOfficerRoleCode: resp.policeOfficerRoleCode,
+					otherOfficerRole: resp.otherOfficerRole,
+					attachments: policeBackgroundDataAttachments,
+				};
+
+				const fingerprintProofData = {
+					attachments: fingerprintProofDataAttachments,
+				};
+
+				const mentalHealthConditionsData = {
+					isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
+					attachments: mentalHealthConditionsDataAttachments,
+				};
+
+				const photographOfYourselfData = {
+					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
+					attachments: photographOfYourselfAttachments,
+				};
+
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
 						originalBusinessTypeCode: soleProprietorData.businessTypeCode,
-						// caseNumber: resp.caseNumber,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
 						applicationTypeData,
@@ -1315,10 +1311,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				};
 
 				let originalPhotoOfYourselfLastUpload = null;
-				if (_resp.idPhotoDocument?.documentResponses) {
-					_resp.idPhotoDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-						originalPhotoOfYourselfLastUpload = item.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
-					});
+				const photoOfYourselfDocs = _resp.documentInfos?.find(
+					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
+				);
+				if (photoOfYourselfDocs) {
+					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
 				}
 
 				// We require a new photo every 5 years. Please provide a new photo for your licence
@@ -1443,10 +1440,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-		const body = this.getSaveBody(this.licenceModelFormGroup.getRawValue());
+		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// delete body.documentExpiredInfos;
 
 		console.debug('submitLicenceAuthenticated body', body);
 
@@ -1459,8 +1458,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
+
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-		const documentInfos = this.getDocsToSaveAnonymous(licenceModelFormValue);
+		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
+
+		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -1468,24 +1471,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// Get the keyCode for the existing documents to save.
 		const existingKeyCodes: Array<string> = [];
 		let newDocumentsExist = false;
-		documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
-			docBody.documents.forEach((doc: any) => {
-				if (doc.documentUrlId) {
-					existingKeyCodes.push(doc.documentUrlId);
-				} else {
-					newDocumentsExist = true;
-				}
-			});
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingKeyCodes.push(doc.documentUrlId);
+			} else {
+				newDocumentsExist = true;
+			}
 		});
 
+		delete body.documentInfos;
+
 		console.debug('[submitLicenceAnonymous] body', body);
-		console.debug('[submitLicenceAnonymous] documentInfos', documentInfos);
+		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingKeyCodes', existingKeyCodes);
 		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		if (newDocumentsExist) {
-			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, documentInfos, body);
+			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, documentsToSave, body);
 		} else {
 			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, body);
 		}
@@ -1520,17 +1523,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private postLicenceAnonymousNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
-		documentInfos: Array<LicenceDocumentsToSave>,
+		documentsToSave: Array<LicenceDocumentsToSave>,
 		body: WorkerLicenceAppAnonymousSubmitRequestJson
 	) {
 		let keyCode = '';
 
 		// Get the keyCode for the existing documents to save.
-		const existingKeyCodes: Array<string> = [];
-		documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
+		const existingDocumentIds: Array<string> = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 			docBody.documents.forEach((doc: any) => {
 				if (doc.documentUrlId) {
-					existingKeyCodes.push(doc.documentUrlId);
+					existingDocumentIds.push(doc.documentUrlId);
 				}
 			});
 		});
@@ -1541,8 +1544,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				switchMap((resp: string) => {
 					keyCode = resp;
 
-					const documentsToSave: Observable<string>[] = [];
-					documentInfos.forEach((docBody: LicenceDocumentsToSave) => {
+					const documentsToSaveApis: Observable<string>[] = [];
+					documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 						// Only pass new documents and get a keyCode for each of those.
 						const newDocumentsOnly: Array<Blob> = [];
 						docBody.documents.forEach((doc: any) => {
@@ -1553,7 +1556,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 						// should always be at least one new document
 						if (newDocumentsOnly.length > 0) {
-							documentsToSave.push(
+							documentsToSaveApis.push(
 								this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
 									keyCode,
 									body: {
@@ -1565,12 +1568,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						}
 					});
 
-					return forkJoin(documentsToSave);
+					return forkJoin(documentsToSaveApis);
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
 					body.documentKeyCodes = [...resps];
-					body.previousDocumentIds = [...existingKeyCodes];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
 					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,

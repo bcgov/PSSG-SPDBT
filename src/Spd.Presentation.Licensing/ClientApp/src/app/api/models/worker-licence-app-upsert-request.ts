@@ -1,42 +1,35 @@
 /* tslint:disable */
 /* eslint-disable */
-import { AdditionalGovIdDocument } from './additional-gov-id-document';
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
 import { BusinessTypeCode } from './business-type-code';
-import { CitizenshipDocument } from './citizenship-document';
+import { Document } from './document';
 import { EyeColourCode } from './eye-colour-code';
-import { FingerprintProofDocument } from './fingerprint-proof-document';
 import { GenderCode } from './gender-code';
 import { HairColourCode } from './hair-colour-code';
 import { HeightUnitCode } from './height-unit-code';
-import { IdPhotoDocument } from './id-photo-document';
 import { LicenceTermCode } from './licence-term-code';
 import { MailingAddress } from './mailing-address';
-import { MentalHealthDocument } from './mental-health-document';
-import { PoliceOfficerDocument } from './police-officer-document';
 import { PoliceOfficerRoleCode } from './police-officer-role-code';
 import { ResidentialAddress } from './residential-address';
 import { WeightUnitCode } from './weight-unit-code';
-import { WorkerLicenceAppCategoryData } from './worker-licence-app-category-data';
+import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceAppUpsertRequest {
-  additionalGovIdDocument?: AdditionalGovIdDocument;
   agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
   businessTypeCode?: BusinessTypeCode;
   carryAndUseRestraints?: null | boolean;
-  categoryData?: null | Array<WorkerLicenceAppCategoryData>;
-  citizenshipDocument?: CitizenshipDocument;
+  categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
+  documentInfos?: null | Array<Document>;
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;
-  fingerprintProofDocument?: FingerprintProofDocument;
   genderCode?: GenderCode;
   givenName?: null | string;
   hairColourCode?: HairColourCode;
@@ -46,7 +39,6 @@ export interface WorkerLicenceAppUpsertRequest {
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
-  idPhotoDocument?: IdPhotoDocument;
   isCanadianCitizen?: null | boolean;
   isDogsPurposeDetectionDrugs?: null | boolean;
   isDogsPurposeDetectionExplosives?: null | boolean;
@@ -57,12 +49,10 @@ export interface WorkerLicenceAppUpsertRequest {
   licenceAppId?: null | string;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;
-  mentalHealthDocument?: MentalHealthDocument;
   middleName1?: null | string;
   middleName2?: null | string;
   oneLegalName?: null | boolean;
   otherOfficerRole?: null | string;
-  policeOfficerDocument?: PoliceOfficerDocument;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;

@@ -67,14 +67,12 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review and Confirm</ng-template>
-						<ng-template matStepContent>
-							<app-steps-worker-licence-review-authenticated
-								(previousStepperStep)="onPreviousStepperStep(stepper)"
-								(nextStepperStep)="onNextStepperStep(stepper)"
-								(scrollIntoView)="onScrollIntoView()"
-								(goToStep)="onGoToStep($event)"
-							></app-steps-worker-licence-review-authenticated>
-						</ng-template>
+						<app-steps-worker-licence-review-authenticated
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextStepperStep)="onNextStepperStep(stepper)"
+							(scrollIntoView)="onScrollIntoView()"
+							(goToStep)="onGoToStep($event)"
+						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
 					<mat-step completed="false">
