@@ -8,6 +8,7 @@ export interface UserInfo {
   contactAuthorizationTypeCode?: ContactAuthorizationTypeCode;
   email?: null | string;
   firstName?: null | string;
+  isFirstTimeLogin?: boolean;
   lastName?: null | string;
   orgId?: null | string;
   orgName?: null | string;
