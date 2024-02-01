@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-	selector: 'app-crrp-org-first-time-terms-and-conds',
+	selector: 'app-crrp-first-time-terms-and-conds-modal',
 	template: `
 		<div mat-dialog-title>Terms and Conditions</div>
 		<mat-divider></mat-divider>
@@ -14,8 +14,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 	`,
 	styles: [],
 })
-export class CrrpOrgFirstTimeTermsAndCondsComponent {
-	constructor(private dialogRef: MatDialogRef<CrrpOrgFirstTimeTermsAndCondsComponent>) {}
+export class CrrpFirstTimeTermsAndCondsModalComponent {
+	constructor(private dialogRef: MatDialogRef<CrrpFirstTimeTermsAndCondsModalComponent>) {}
 
 	onIsSuccess(): void {
 		this.dialogRef.close();
