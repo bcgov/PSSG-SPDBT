@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceFeeResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -100,10 +100,10 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 			return [];
 		}
 
-		let hasValidSwl90DayLicence = false;
-		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
-			hasValidSwl90DayLicence = true;
-		}
+		// let hasValidSwl90DayLicence = false;
+		// if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
+		// 	hasValidSwl90DayLicence = true;
+		// }
 
 		// console.debug(
 		// 	'get termCodes',

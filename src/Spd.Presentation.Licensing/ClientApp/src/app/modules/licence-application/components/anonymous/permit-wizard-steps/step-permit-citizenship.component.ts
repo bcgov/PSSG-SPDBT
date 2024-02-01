@@ -237,7 +237,7 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 		private hotToastService: HotToastService
 	) {}
 
-	onFileUploaded(file: File): void {
+	onFileUploaded(_file: File): void {
 		// if (this.authenticationService.isLoggedIn()) {
 		// 	const proofTypeCode =
 		// 		this.isCanadianCitizen.value == BooleanTypeCode.Yes

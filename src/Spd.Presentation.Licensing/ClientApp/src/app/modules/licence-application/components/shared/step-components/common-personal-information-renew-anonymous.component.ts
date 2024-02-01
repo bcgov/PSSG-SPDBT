@@ -85,7 +85,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				</div>
 			</div>
 			<div class="row mt-2" *ngIf="isNeedProofOfLegalNameChange.value" @showHideTriggerSlideAnimation>
-				<div class="offset-md-2 col-md-8 col-sm-12">
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 					<div class="text-minor-heading mb-2">Upload your proof of legal name change:</div>
@@ -149,6 +149,8 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 	}
 
 	onChangeGender(_event: MatSelectChange): void {
+		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return;
+
 		const hasGenderChanged = this.genderCode.value !== this.origGenderCode.value;
 		this.form.patchValue({ hasGenderChanged });
 	}
@@ -158,7 +160,6 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 		this.givenName.enable({ emitEvent: false });
 		this.middleName1.enable({ emitEvent: false });
 		this.middleName2.enable({ emitEvent: false });
-		// this.dateOfBirth.enable({ emitEvent: false });
 		this.genderCode.enable({ emitEvent: false });
 	}
 
@@ -171,7 +172,6 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 				surname: this.origSurname.value,
 				genderCode: this.origGenderCode.value,
 				hasGenderChanged: false,
-				// dateOfBirth: this.origDateOfBirth.value,
 			},
 			{ emitEvent: false }
 		);
