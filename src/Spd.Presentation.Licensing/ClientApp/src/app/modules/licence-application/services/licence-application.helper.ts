@@ -39,25 +39,6 @@ export interface LicenceDocument {
 	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
 }
 
-export enum LicenceDocumentChanged {
-	categoryArmouredCarGuard = 'categoryArmouredCarGuard',
-	categoryFireInvestigator = 'categoryFireInvestigator',
-	categoryLocksmith = 'categoryLocksmith',
-	categoryPrivateInvestigator = 'categoryPrivateInvestigator',
-	categoryPrivateInvestigatorSup = 'categoryPrivateInvestigatorSup',
-	categorySecurityGuard = 'categorySecurityGuard',
-	categorySecurityAlarmInstaller = 'categorySecurityAlarmInstaller',
-	categorySecurityConsultant = 'categorySecurityConsultant',
-	citizenship = 'citizenship',
-	dogsAuthorization = 'dogsAuthorization',
-	restraintsAuthorization = 'restraintsAuthorization',
-	additionalGovermentId = 'additionalGovermentId',
-	mentalHealthConditions = 'mentalHealthConditions',
-	photographOfYourself = 'photographOfYourself',
-	policeBackground = 'policeBackground',
-	proofOfFingerprint = 'proofOfFingerprint',
-}
-
 interface IWorkerLicenceSubmit extends WorkerLicenceAppSubmitRequest, WorkerLicenceAppAnonymousSubmitRequestJson {}
 
 export abstract class LicenceApplicationHelper {
@@ -493,6 +474,20 @@ export abstract class LicenceApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
+				),
+			],
+		}
+	);
+
+	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
+		{
+			reprintLicence: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'reprintLicence',
+					(_form) => this.personalInformationFormGroup?.get('hasGenderChanged')?.value ?? false
 				),
 			],
 		}
@@ -1135,6 +1130,8 @@ export abstract class LicenceApplicationHelper {
 			...personalInformationData,
 			//-----------------------------------
 			hasCriminalHistory: this.booleanTypeToBoolean(licenceModelFormValue.criminalHistoryData.hasCriminalHistory),
+			//-----------------------------------
+			reprint: this.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------

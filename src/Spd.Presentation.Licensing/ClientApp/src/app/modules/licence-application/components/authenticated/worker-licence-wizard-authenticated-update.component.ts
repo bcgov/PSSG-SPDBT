@@ -20,12 +20,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						></app-step-worker-licence-all-updates-authenticated>
 
 						<div class="row wizard-button-row">
-							<div
-								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-							>
+							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 								<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
 							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
@@ -36,12 +34,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						<app-step-worker-licence-mailing-address-update-authenticated></app-step-worker-licence-mailing-address-update-authenticated>
 
 						<div class="row wizard-button-row">
-							<div
-								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-							>
+							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
@@ -52,12 +48,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						<app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated>
 
 						<div class="row wizard-button-row">
-							<div
-								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-							>
+							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2">Pay</button>
 							</div>
 						</div>

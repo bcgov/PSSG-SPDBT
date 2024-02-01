@@ -10,7 +10,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Error</h2>
 					</div>
 
-					<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
+					<div class="col-xl-6 col-lg-4 col-md-12">
 						<div class="d-flex justify-content-end">
 							<button
 								mat-stroked-button
