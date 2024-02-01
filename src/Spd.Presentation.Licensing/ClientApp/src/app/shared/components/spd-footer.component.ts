@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
-	selector: 'spd-footer',
+	selector: 'app-spd-footer',
 	template: `
 		<mat-toolbar color="primary" class="footer">
 			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>

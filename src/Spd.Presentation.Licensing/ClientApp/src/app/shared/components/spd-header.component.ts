@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { Subscription } from 'rxjs';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { Subscription } from 'rxjs';
 
 @Component({
-	selector: 'spd-header',
+	selector: 'app-spd-header',
 	template: `
 		<mat-toolbar color="primary" class="spd-header">
 			<span>
