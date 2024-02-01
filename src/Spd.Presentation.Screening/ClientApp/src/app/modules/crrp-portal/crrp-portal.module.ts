@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { CommonTermsAndCondsComponent } from './common-terms-and-conds.component';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHeaderComponent } from './components/crrp-header.component';
@@ -20,6 +21,7 @@ import { TermsAndConditionsComponent } from './components/terms-and-conditions.c
 import { TermsTextComponent } from './components/terms-text.component';
 import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
+import { CrrpFirstTimeTermsAndCondsModalComponent } from './crrp-first-time-terms-and-conds-modal.component';
 import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
 import { CrrpRoutingModule } from './crrp-routing.module';
 import { CrrpComponent } from './crrp.component';
@@ -48,6 +50,8 @@ import { InvitationUserComponent } from './invitation-user.component';
 		CrrpPaymentManualComponent,
 		CrrpPaymentErrorComponent,
 		CrrpOrgTermsAndCondsComponent,
+		CrrpFirstTimeTermsAndCondsModalComponent,
+		CommonTermsAndCondsComponent,
 		TermsAndConditionsComponent,
 		TermsTextComponent,
 	],
