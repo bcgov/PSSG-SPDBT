@@ -5,9 +5,9 @@ import { BooleanTypeCode } from '@app/api/models';
 @Component({
 	selector: 'app-common-reprint',
 	template: `
-		<div class="row">
-			<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-				<form [formGroup]="form" novalidate>
+		<form [formGroup]="form" novalidate>
+			<div class="row">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 					<mat-radio-group aria-label="Select an option" formControlName="reprintLicence">
 						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
@@ -22,9 +22,9 @@ import { BooleanTypeCode } from '@app/api/models';
 						"
 						>This is required</mat-error
 					>
-				</form>
+				</div>
 			</div>
-		</div>
+		</form>
 	`,
 	styles: [],
 })
