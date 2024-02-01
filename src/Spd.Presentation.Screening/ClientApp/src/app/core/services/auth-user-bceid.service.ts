@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { OrgService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { CrrpFirstTimeTermsAndCondsModalComponent } from 'src/app/modules/crrp-portal/crrp-first-time-terms-and-conds-modal.component';
 import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import {
 	OrgSelectionDialogData,
@@ -88,10 +89,19 @@ export class AuthUserBceidService {
 				}
 
 				if (uniqueUserInfoList.length > 1) {
-					const result = await this.orgSelectionAsync(uniqueUserInfoList);
-					isSuccess = await this.setUserInfoProfile(result);
+					const userInfo = await this.orgSelectionAsync(uniqueUserInfoList);
+					if (userInfo.isFirstTimeLogin) {
+						await this.orgFirstTimeUserAsync();
+					}
+
+					isSuccess = await this.setUserInfoProfile(userInfo);
 				} else {
-					isSuccess = await this.setUserInfoProfile(uniqueUserInfoList[0]);
+					const userInfo = uniqueUserInfoList[0];
+					if (userInfo.isFirstTimeLogin) {
+						await this.orgFirstTimeUserAsync();
+					}
+
+					isSuccess = await this.setUserInfoProfile(userInfo);
 				}
 				return Promise.resolve(isSuccess);
 			}
@@ -165,6 +175,19 @@ export class AuthUserBceidService {
 				.open(OrgSelectionModalComponent, {
 					width: '500px',
 					data: dialogOptions,
+				})
+				.afterClosed()
+		);
+	}
+
+	//----------------------------------------------------------
+	// *
+	// *
+	private async orgFirstTimeUserAsync(): Promise<any> {
+		return lastValueFrom(
+			this.dialog
+				.open(CrrpFirstTimeTermsAndCondsModalComponent, {
+					width: '1000px',
 				})
 				.afterClosed()
 		);
