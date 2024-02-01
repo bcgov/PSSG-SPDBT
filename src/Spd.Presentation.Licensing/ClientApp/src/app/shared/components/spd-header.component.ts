@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { Subscription } from 'rxjs';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
-import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-header',
+	selector: 'app-spd-header',
 	template: `
-		<mat-toolbar color="primary" class="app-header">
+		<mat-toolbar color="primary" class="spd-header">
 			<span>
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
 			</span>
@@ -42,7 +42,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 				padding-bottom: 12px;
 			}
 
-			.app-header {
+			.spd-header {
 				border-bottom: 2px solid var(--color-yellow);
 				box-shadow: 0px 5px 10px 0px rgb(169 169 169);
 			}
@@ -71,7 +71,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class SpdHeaderComponent implements OnInit, OnDestroy {
 	title = '';
 	loggedInUserDisplay: string | null = null;
 

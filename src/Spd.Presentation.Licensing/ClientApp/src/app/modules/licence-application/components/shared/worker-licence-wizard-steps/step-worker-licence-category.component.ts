@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicationTypeCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { SelectOptions, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { SelectOptions, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 
 @Component({
@@ -39,7 +39,7 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 									</mat-select>
 								</mat-form-field>
 								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-									At least one category must be added
+									At least one category must be added. Click 'Add Category' after selection.
 								</mat-error>
 							</div>
 							<div class="col-md-4 col-sm-12" *ngIf="categoryList.length < 6">
