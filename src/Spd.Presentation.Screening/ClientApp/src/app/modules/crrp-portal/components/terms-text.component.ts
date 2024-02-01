@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 @Component({
 	selector: 'app-terms-text',
 	template: `
-		<div class="row mt-4">
+		<div class="row">
 			<div class="col-12">
 				<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
 					<p style="margin-top: .6rem;">

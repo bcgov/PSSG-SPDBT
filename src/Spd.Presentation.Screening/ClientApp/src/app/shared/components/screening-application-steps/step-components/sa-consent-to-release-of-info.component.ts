@@ -305,7 +305,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 					</ng-template>
 					<div class="row">
 						<div class="offset-md-2 col-md-8 col-sm-12 mt-4">
-							<mat-form-field class="w-auto" style="background-color: var(--color-grey-lightest);">
+							<mat-form-field class="w-auto" style="background-color: unset;">
 								<mat-label>Date Signed</mat-label>
 								<input matInput formControlName="dateSigned" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('dateSigned')?.hasError('required')">This is required</mat-error>
