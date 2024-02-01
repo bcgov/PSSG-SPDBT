@@ -2,17 +2,17 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
+import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
-import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepWorkerLicenceDogsAuthorizationComponent } from './step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceCategoryComponent } from './step-worker-licence-category.component';
+import { StepWorkerLicenceDogsAuthorizationComponent } from './step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceExpiredComponent } from './step-worker-licence-expired.component';
-import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.component';
 import { StepWorkerLicenceRestraintsComponent } from './step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-sole-proprietor.component';
+import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-selection',
@@ -23,15 +23,15 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 					<app-step-worker-licence-checklist-new></app-step-worker-licence-checklist-new>
 
 					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
 					<!-- <div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div> -->
@@ -41,7 +41,7 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 					<app-step-worker-licence-checklist-renewal></app-step-worker-licence-checklist-renewal>
 
 					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
@@ -51,7 +51,7 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 					<app-step-worker-licence-checklist-update></app-step-worker-licence-checklist-update>
 
 					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
@@ -63,13 +63,15 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 					applicationTypeCode === applicationTypeCodes.Update || applicationTypeCode === applicationTypeCodes.Renewal
 				"
 			>
-				<app-step-worker-licence-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-confirmation>
+				<app-step-worker-licence-confirmation
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-confirmation>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -83,13 +85,15 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-worker-licence-sole-proprietor [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-sole-proprietor>
+				<app-step-worker-licence-sole-proprietor
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-sole-proprietor>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -106,10 +110,10 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 				<app-step-worker-licence-expired></app-step-worker-licence-expired>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -119,7 +123,7 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -133,13 +137,15 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-category [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-category>
+				<app-step-worker-licence-category
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-category>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -149,7 +155,7 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -166,7 +172,7 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 				<app-step-worker-licence-restraints></app-step-worker-licence-restraints>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -176,15 +182,15 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_RESTRAINTS)">
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -201,20 +207,20 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 				<app-step-worker-licence-dogs-authorization></app-step-worker-licence-dogs-authorization>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_DOGS)" *ngIf="isLoggedIn">
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_DOGS)">
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -231,7 +237,7 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 				<app-step-worker-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-term>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -241,15 +247,15 @@ import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"

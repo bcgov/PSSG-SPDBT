@@ -3,6 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import {
+	ApplicationTypeCode,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
@@ -63,14 +64,13 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review and Confirm</ng-template>
-				<ng-template matStepContent>
-					<app-steps-worker-licence-review-anonymous
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onPay()"
-						(scrollIntoView)="onScrollIntoView()"
-						(goToStep)="onGoToStep($event)"
-					></app-steps-worker-licence-review-anonymous>
-				</ng-template>
+				<app-steps-worker-licence-review-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextPayStep)="onPay()"
+					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
+				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -81,6 +81,8 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 	styles: [],
 })
 export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCode = ApplicationTypeCode.Update;
+
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -210,12 +212,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	onPay(): void {
-		// const isFormValid = this.stepMailingAddressComponent.isFormValid();
-
-		// console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
-		// console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
-
-		// if (isFormValid) {
 		if (this.newLicenceAppId) {
 			this.payNow(this.newLicenceAppId);
 		} else {
@@ -226,7 +222,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					// save this locally just in application payment fails
 					this.newLicenceAppId = resp.body.licenceAppId!;
 
-					this.hotToastService.success('Your licence replacement has been successfully submitted');
+					this.hotToastService.success('Your licence update has been successfully submitted');
 					this.payNow(this.newLicenceAppId);
 				},
 				error: (error: any) => {
@@ -234,7 +230,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
 			});
-			// }
 		}
 	}
 

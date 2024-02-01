@@ -4,8 +4,8 @@ import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { Address } from '@app/shared/components/address-autocomplete.component';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-worker-licence-mailing-address',
@@ -13,7 +13,9 @@ import { Address } from '@app/shared/components/address-autocomplete.component';
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.New">
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
@@ -93,6 +95,16 @@ import { Address } from '@app/shared/components/address-autocomplete.component';
 									</div>
 								</div>
 							</section>
+
+							<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Replacement">
+								<app-alert type="info" icon="">
+									All information regarding this application is collected under the Security Services Act and its
+									Regulation and will be used for that purpose. The use of this information will comply with the Freedom
+									of Information and Privacy Act and the federal Privacy Act. If you have any questions regarding the
+									collection or use of this information, please contact
+									<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
+								</app-alert>
+							</ng-container>
 						</div>
 					</div>
 				</form>

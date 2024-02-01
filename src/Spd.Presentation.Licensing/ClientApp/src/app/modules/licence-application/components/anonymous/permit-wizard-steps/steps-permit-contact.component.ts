@@ -18,7 +18,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 				></app-step-permit-residential-address>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -28,10 +28,10 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -41,7 +41,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -58,7 +58,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 				<app-step-permit-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-permit-mailing-address>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -68,10 +68,10 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -81,7 +81,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -100,7 +100,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 				></app-step-permit-contact-information>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -110,15 +110,15 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_CONTACT_INFORMATION)">
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"

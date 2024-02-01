@@ -37,7 +37,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 							<h2 class="fs-3 mb-3">Security Licences & Permits</h2>
 						</div>
 
-						<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
+						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto mb-3" (click)="onUserProfile()">
 									<mat-icon>person</mat-icon>
@@ -650,7 +650,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		}
 	}
 
-	onUpdate(appl: WorkerLicenceInProgress): void {
+	onUpdate(_appl: WorkerLicenceInProgress): void {
 		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID

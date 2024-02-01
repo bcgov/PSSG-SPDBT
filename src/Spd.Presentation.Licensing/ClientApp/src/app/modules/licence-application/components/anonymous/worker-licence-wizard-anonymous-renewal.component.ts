@@ -3,6 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import {
+	ApplicationTypeCode,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
@@ -63,15 +64,14 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review and Confirm</ng-template>
-				<ng-template matStepContent>
-					<app-steps-worker-licence-review-anonymous
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
-						(scrollIntoView)="onScrollIntoView()"
-						(goToStep)="onGoToStep($event)"
-						(nextPayStep)="onPay()"
-					></app-steps-worker-licence-review-anonymous>
-				</ng-template>
+				<app-steps-worker-licence-review-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
+					(nextPayStep)="onPay()"
+				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -82,6 +82,8 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 	styles: [],
 })
 export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCode = ApplicationTypeCode.Renewal;
+
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;

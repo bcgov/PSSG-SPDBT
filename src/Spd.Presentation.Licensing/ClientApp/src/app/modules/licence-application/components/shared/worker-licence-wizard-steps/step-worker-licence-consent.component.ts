@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { UtilService } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-consent',
@@ -13,33 +14,144 @@ import { UtilService } from '@app/core/services/util.service';
 				<div class="step">
 					<app-step-title title="Consent and Declaration"></app-step-title>
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 conditions px-3 mb-3">
-							<br />
-							<ul>
-								<li>
-									I hereby consent to the Registrar carrying out a criminal record check, police information check and
-									correctional services information check on me and to use the copy of my fingerprints for that purpose.
-									This consent will remain in effect for the duration of the period for which the licence is valid.
-								</li>
-								<li>
-									I hereby authorize the release to the Registrar any documents in the custody of the police,
-									corrections, the court, and crown counsel relating to these checks.
-								</li>
-								<li>
-									I hereby consent to my licence information (i.e., licence number and licence status) being available
-									for viewing
-								</li>
-							</ul>
+						<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 conditions mx-auto px-3 mb-3">
+							<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else newOrRenewal">
+								<div class="my-3">
+									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
+										I hereby consent to my licence information (i.e. full name, licence number and licence status) being
+										available for viewing online.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check1')?.dirty || form.get('check1')?.touched) &&
+											form.get('check1')?.invalid &&
+											form.get('check1')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+										If my fingerprints results are already on file with the Registrar, I will not need to re-submit them
+										to verify my identity. However, I understand that fingerprinting may be required as an
+										authentication method if I choose not to use my BC Services Card or other approved government-issued
+										ID to access the Electronic Security Services Portal.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+											form.get('check2')?.invalid &&
+											form.get('check2')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+							</ng-container>
+
+							<ng-template #newOrRenewal>
+								<div class="my-3">
+									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
+										I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
+										check, police information check and correctional service information check (Prescribed Checks) on me
+										pursuant to the Security Services Review Act (SSA).
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check1')?.dirty || form.get('check1')?.touched) &&
+											form.get('check1')?.invalid &&
+											form.get('check1')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+										I hereby consent to a check of available law enforcement systems for these purposes, including any
+										local police records, and I hereby consent to the disclosure to the Registrar of any documents in
+										the custody of the police, corrections, the courts, and crown counsel relating to these Prescribed
+										Checks.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+											form.get('check2')?.invalid &&
+											form.get('check2')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
+										As a first-time applicant, I understand that the SSA requires that I submit my fingerprints to the
+										Registrar. My fingerprints will be used to verify my identity for the purposes of Prescribed Checks
+										and, as an alternative to my BC Services Card or other approved government-issued ID, may also be
+										used as an authentication method to apply for a security licence via the Electronic Security
+										Services Portal.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check3')?.dirty || form.get('check3')?.touched) &&
+											form.get('check3')?.invalid &&
+											form.get('check3')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check4" (click)="onCheckboxChange()">
+										For greater certainty, if I am not a first-time licence applicant, I will not need to re-submit my
+										fingerprints to the Registrar to verify my identity. However, upon renewal of my security licence
+										application on the Electronic Security Services Portal, if I choose not to use my BC Services Card
+										or other approved government-issued ID as an authentication method, I understand that I may still be
+										required to submit my fingerprints for the specific purpose of authenticating my access to the
+										Portal.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check4')?.dirty || form.get('check4')?.touched) &&
+											form.get('check4')?.invalid &&
+											form.get('check4')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check5" (click)="onCheckboxChange()">
+										I hereby consent to my licence information (i.e. full name, licence number and licence status) being
+										available for viewing online.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check4')?.dirty || form.get('check4')?.touched) &&
+											form.get('check4')?.invalid &&
+											form.get('check4')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+							</ng-template>
+
+							<div class="my-3">
+								This consent is valid from the date signed and will remain in effect for the duration of the period for
+								which the licence issued is valid.
+							</div>
 						</div>
 					</div>
 
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-checkbox formControlName="agreeToCompleteAndAccurate" (click)="onCheckboxChange()">
 								I HEREBY CERTIFY THAT I have read and understand all portions of this application form and the
 								information set out by me in this application is true and correct to the best of my knowledge and
-								belief. I have read and understand the Security Services Act and Regulations; and I am aware of and
-								understand the conditions that will be placed on me as a licensee
+								belief. I have read and understand the Security Services Act and Regulations; and I am aware of, and
+								understand, the conditions that will be placed on me as a licensee.
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
@@ -54,7 +166,7 @@ import { UtilService } from '@app/core/services/util.service';
 					</div>
 
 					<div class="row mt-4">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-form-field class="w-auto">
 								<mat-label>Date Signed</mat-label>
 								<input matInput formControlName="dateSigned" />
@@ -64,7 +176,7 @@ import { UtilService } from '@app/core/services/util.service';
 					</div>
 
 					<div class="row my-4" *ngIf="displayCaptcha.value">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<div formGroupName="captchaFormGroup">
 								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
 								<mat-error
@@ -91,16 +203,17 @@ import { UtilService } from '@app/core/services/util.service';
 
 			.conditions {
 				border: 1px solid var(--color-grey-light);
-				max-height: 300px;
-				overflow-y: auto;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-				font-size: smaller;
 			}
 		`,
 	],
 })
 export class StepWorkerLicenceConsentComponent implements OnInit, LicenceChildStepperStepComponent {
+	applicationTypeCodes = ApplicationTypeCode;
+
 	form: FormGroup = this.licenceApplicationService.consentAndDeclarationFormGroup;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
 		private utilService: UtilService,
@@ -109,6 +222,15 @@ export class StepWorkerLicenceConsentComponent implements OnInit, LicenceChildSt
 	) {}
 
 	ngOnInit(): void {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			// these checkboxes are not displayed in the update process
+			this.form.patchValue({
+				check3: true,
+				check4: true,
+				check5: true,
+			});
+		}
+
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
 		});
@@ -121,7 +243,7 @@ export class StepWorkerLicenceConsentComponent implements OnInit, LicenceChildSt
 
 	onCheckboxChange(): void {
 		const data = this.form.value;
-		if (data.agreeToCompleteAndAccurate) {
+		if (data.agreeToCompleteAndAccurate && data.check1 && data.check2 && data.check3 && data.check4 && data.check5) {
 			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
 		} else {
 			this.form.controls['dateSigned'].setValue('');
