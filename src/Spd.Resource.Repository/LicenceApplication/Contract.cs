@@ -108,23 +108,6 @@ public enum WorkerLicenceTypeEnum
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
 }
 
-public enum ApplicationTypeEnum
-{
-    New,
-    Renewal,
-    Replacement,
-    Update,
-}
-
-public enum LicenceTermEnum
-{
-    NinetyDays,
-    OneYear,
-    TwoYears,
-    ThreeYears,
-    FiveYears
-}
-
 public enum BusinessTypeEnum
 {
     NonRegisteredSoleProprietor,
