@@ -26,6 +26,7 @@ namespace Spd.Resource.Repository.User
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
             .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s._spd_orgregistrationid_value))
             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value.HasValue))
+            .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => !s.spd_lastloggedin.HasValue))
             .ForMember(d => d.UserGuid, opt => opt.MapFrom(s => s.spd_IdentityId == null ? null : s.spd_IdentityId.spd_userguid));
 
             _ = CreateMap<User, spd_portalinvitation>()

@@ -146,7 +146,7 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
 
 public record WorkerLicenceAppUpsertResponse
 {
-    public Guid LicenceAppId { get; set; }
+    public Guid? LicenceAppId { get; set; }
 }
 
 #endregion
