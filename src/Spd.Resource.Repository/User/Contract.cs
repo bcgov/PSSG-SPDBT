@@ -34,6 +34,7 @@ namespace Spd.Resource.Repository.User
         public string Email { get; set; } = null!;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
+        public bool IsFirstTimeLogin { get; set; } = false;
     }
     public record UserResult() : User()
     {
