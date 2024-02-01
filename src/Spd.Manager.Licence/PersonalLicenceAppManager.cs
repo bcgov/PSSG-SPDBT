@@ -291,13 +291,14 @@ internal partial class PersonalLicenceAppManager :
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
         ChangeSpec changes = await GetChanges(originalApp, request, ct);
 
+        LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-            var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+            createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
             //add all new files user uploaded
-            await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
-            await CommitApplicationAsync(request, response.LicenceAppId, ct);
+            await UploadNewDocs(request, createLicResponse.LicenceAppId, createLicResponse.ContactId, ct);
+            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct);
         }
         else
         {
@@ -341,7 +342,7 @@ internal partial class PersonalLicenceAppManager :
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
             }, ct);
 
-        return new WorkerLicenceAppUpsertResponse();
+        return new WorkerLicenceAppUpsertResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
 
     #endregion
