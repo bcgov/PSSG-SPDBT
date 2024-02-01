@@ -39,6 +39,7 @@ namespace Spd.Manager.Screening
         public string? OrgName { get; set; }
         public Guid? UserGuid { get; set; }
         public UserInfoMsgTypeCode? UserInfoMsgType { get; set; }
+        public bool IsFirstTimeLogin { get; set; } = false;
     }
 
     public enum UserInfoMsgTypeCode
