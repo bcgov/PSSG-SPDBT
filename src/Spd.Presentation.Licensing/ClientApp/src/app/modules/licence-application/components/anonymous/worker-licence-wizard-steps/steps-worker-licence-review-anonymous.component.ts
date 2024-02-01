@@ -71,9 +71,4 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	override onFormValidNextStep(_formNumber: number): void {
 		// unused
 	}
-
-	override onGoToFirstStep() {
-		this.childstepper.selectedIndex = 0;
-		this.summaryReviewComponent.onUpdateData();
-	}
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { take, tap } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -187,6 +188,7 @@ export class LoginSelectionComponent {
 
 	constructor(
 		private router: Router,
+		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -213,6 +215,10 @@ export class LoginSelectionComponent {
 	}
 
 	onContinue(workerLicenceTypeCode: WorkerLicenceTypeCode): void {
+		// make sure the user is not logged in.
+		this.authProcessService.logoutBceid();
+		this.authProcessService.logoutBcsc();
+
 		switch (workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService

@@ -216,7 +216,7 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: any) => {
+			(_resp: boolean) => {
 				// console.debug('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 
