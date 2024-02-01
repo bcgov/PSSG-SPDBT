@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Presentation.Licensing.Services;
 using Spd.Utilities.Cache;

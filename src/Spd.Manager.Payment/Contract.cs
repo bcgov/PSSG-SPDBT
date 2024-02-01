@@ -90,6 +90,8 @@ namespace Spd.Manager.Payment
     public record PaymentResponse
     {
         public Guid ApplicationId { get; set; }
+        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+        public LicenceTermCode? LicenceTermCode { get; set; }
         public Guid PaymentId { get; set; }
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
