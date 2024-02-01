@@ -8,7 +8,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-lg-8">
-					<h2 class="fw-normal">Terms and Conditions</h2>
+					<h2 class="fw-normal mb-4">Terms and Conditions</h2>
 					<form [formGroup]="form" novalidate>
 						<app-terms-text></app-terms-text>
 						<div class="row">
