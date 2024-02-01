@@ -32,6 +32,7 @@ export { ApplicationPaymentResponse } from './models/application-payment-respons
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
+export { ApplicationTypeCode } from './models/application-type-code';
 export { BcscConfiguration } from './models/bcsc-configuration';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { BulkAppsCreateResponse } from './models/bulk-apps-create-response';
@@ -59,6 +60,7 @@ export { IdentityStatusCode } from './models/identity-status-code';
 export { IdirUserProfileResponse } from './models/idir-user-profile-response';
 export { InvitationRequest } from './models/invitation-request';
 export { InvitationResponse } from './models/invitation-response';
+export { LicenceTermCode } from './models/licence-term-code';
 export { MinistryResponse } from './models/ministry-response';
 export { OidcConfiguration } from './models/oidc-configuration';
 export { OrgProcess } from './models/org-process';
