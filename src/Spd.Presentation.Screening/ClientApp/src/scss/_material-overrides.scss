@@ -164,10 +164,6 @@ mat-label {
   color: rgba(0, 0, 0, 0.8);
 }
 
-.mat-mdc-chip-action-label, .mat-mdc-chip-action {
-  cursor: pointer;
-}
-
 .mat-mdc-form-field-required-marker {
   display: none;
 }
@@ -272,10 +268,20 @@ mat-label {
   cursor: default;
 }
 
+
+.filter-chip {
+  cursor: pointer !important;
+  &__icon {
+    cursor: pointer !important;
+  }
+  .mat-mdc-chip-action-label, .mat-mdc-chip-action {
+    cursor: pointer;
+  }
+}
+
 .mat-chip-green {
   background-color: rgba(215, 228, 213, 1) !important;
   .mdc-evolution-chip__text-label {
-    font-size: 14px;
     color: #23471F !important;
   }
 }
@@ -283,7 +289,6 @@ mat-label {
 .mat-chip-yellow {
   background-color: rgba(251, 227, 163, 1) !important;
   .mdc-evolution-chip__text-label {
-    font-size: 14px;
     color: #56451B !important;
   }
 }
@@ -291,7 +296,6 @@ mat-label {
 .mat-chip-blue {
   background-color: rgba(211, 220, 229, 1) !important;
   .mdc-evolution-chip__text-label {
-    font-size: 14px;
     color: #013365 !important;
   }
 }
@@ -299,7 +303,6 @@ mat-label {
 .mat-chip-grey {
   background-color: rgba(215, 215, 215, 1) !important;
   .mdc-evolution-chip__text-label {
-    font-size: 14px;
     color: #333333 !important;
   }
 }
@@ -307,7 +310,6 @@ mat-label {
 .mat-chip-red {
   background-color: rgba(242, 222, 223, 1) !important;
   .mdc-evolution-chip__text-label {
-    font-size: 14px;
     color: #910012 !important;
   }
 }

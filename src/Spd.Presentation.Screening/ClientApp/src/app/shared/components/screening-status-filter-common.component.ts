@@ -43,6 +43,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 								<mat-select-trigger>
 									<mat-chip-listbox>
 										<mat-chip
+											class="filter-chip"
 											*ngFor="let status of statuses.value"
 											[removable]="true"
 											(removed)="onItemRemoved(status)"

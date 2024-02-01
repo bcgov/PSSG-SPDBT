@@ -8,29 +8,8 @@ import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
 	selector: 'app-crrp-org-terms-and-conds',
-	template: `
-		<div class="container" *ngIf="isAuthenticated | async">
-			<section class="step-section my-4">
-				<div class="row m-4">
-					<div class="col-lg-8 mx-auto">
-						<h2>{{ authUserService.bceidUserInfoProfile?.orgName }}</h2>
-
-						<h3 class="subheading fw-normal my-3">Terms and Conditions</h3>
-						<p class="mb-4">Read, download, and accept the Terms of Use to continue.</p>
-
-						<app-common-terms-and-conds (isSuccess)="onIsSuccess()"></app-common-terms-and-conds>
-					</div>
-				</div>
-			</section>
-		</div>
-	`,
-	styles: [
-		`
-			.subheading {
-				color: grey;
-			}
-		`,
-	],
+	template: ``,
+	styles: [],
 })
 export class CrrpOrgTermsAndCondsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
@@ -52,10 +31,12 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 		}
 
 		await this.authProcessService.initializeCrrpUserInvitation(location.pathname);
-	}
 
-	onIsSuccess(): void {
-		const url = `${CrrpRoutes.path(CrrpRoutes.INVITATION_ACCEPT)}/${this.invitationId}`;
-		this.router.navigate([url]);
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			if (isLoggedIn) {
+				const url = `${CrrpRoutes.path(CrrpRoutes.INVITATION_ACCEPT)}/${this.invitationId}`;
+				this.router.navigate([url]);
+			}
+		});
 	}
 }
