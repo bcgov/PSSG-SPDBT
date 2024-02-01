@@ -96,3 +96,19 @@ public record Alias
     public string? Surname { get; set; }
 
 }
+public enum ApplicationTypeEnum
+{
+    New,
+    Renewal,
+    Replacement,
+    Update,
+}
+
+public enum LicenceTermEnum
+{
+    NinetyDays,
+    OneYear,
+    TwoYears,
+    ThreeYears,
+    FiveYears
+}
