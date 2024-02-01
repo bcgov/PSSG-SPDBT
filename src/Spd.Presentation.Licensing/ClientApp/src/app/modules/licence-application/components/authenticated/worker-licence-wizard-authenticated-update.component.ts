@@ -1,7 +1,8 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper, StepperOrientation } from '@angular/material/stepper';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 
@@ -19,12 +20,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						></app-step-worker-licence-all-updates-authenticated>
 
 						<div class="row wizard-button-row">
-							<div
-								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-							>
+							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 								<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
 							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
@@ -35,12 +34,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						<app-step-worker-licence-mailing-address-update-authenticated></app-step-worker-licence-mailing-address-update-authenticated>
 
 						<div class="row wizard-button-row">
-							<div
-								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-							>
+							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
@@ -51,12 +48,10 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						<app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated>
 
 						<div class="row wizard-button-row">
-							<div
-								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
-							>
+							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2">Pay</button>
 							</div>
 						</div>
@@ -72,12 +67,14 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class WorkerLicenceWizardAuthenticatedUpdateComponent implements OnInit {
-	orientation: StepperOrientation = 'vertical';
-
-	@ViewChild('stepper') stepper!: MatStepper;
-
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit {
+	constructor(
+		override breakpointObserver: BreakpointObserver,
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super(breakpointObserver);
+	}
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
@@ -87,13 +84,13 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent implements OnInit {
 		// this.updateCompleteStatus(); // TODO what to set?
 	}
 
-	onStepSelectionChange(_event: StepperSelectionEvent) {
-		//empty
-	}
+	// onStepSelectionChange(_event: StepperSelectionEvent) {
+	// 	//empty
+	// }
 
-	onScrollIntoView(): void {
-		this.scrollIntoView();
-	}
+	// onScrollIntoView(): void {
+	// 	this.scrollIntoView();
+	// }
 
 	onPreviousStepperStep(stepper: MatStepper): void {
 		// console.log('previous', stepper);
@@ -115,20 +112,5 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent implements OnInit {
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-	}
-
-	private scrollIntoView(): void {
-		const stepIndex = this.stepper.selectedIndex;
-		const stepId = this.stepper._getStepLabelId(stepIndex);
-		const stepElement = document.getElementById(stepId);
-		if (stepElement) {
-			setTimeout(() => {
-				stepElement.scrollIntoView({
-					block: 'start',
-					inline: 'nearest',
-					behavior: 'smooth',
-				});
-			}, 250);
-		}
 	}
 }

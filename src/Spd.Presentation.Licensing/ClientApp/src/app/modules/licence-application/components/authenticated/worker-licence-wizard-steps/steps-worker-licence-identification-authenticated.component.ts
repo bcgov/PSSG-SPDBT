@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceAdditionalGovIdComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-additional-gov-id.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-steps-worker-licence-identification-authenticated',
@@ -16,20 +16,20 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 				<app-step-worker-licence-citizenship></app-step-worker-licence-citizenship>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_CITIZENSHIP)">
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -46,15 +46,15 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 				<app-step-worker-licence-additional-gov-id></app-step-worker-licence-additional-gov-id>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_ADDITIONAL_GOV_ID)">
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -64,7 +64,7 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -81,15 +81,15 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 				<app-step-worker-licence-bc-driver-licence></app-step-worker-licence-bc-driver-licence>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)">
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -99,7 +99,7 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -116,15 +116,15 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 				<app-step-worker-licence-physical-characteristics></app-step-worker-licence-physical-characteristics>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)">
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -134,7 +134,7 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -151,18 +151,18 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 				<app-step-worker-licence-photograph-of-yourself></app-step-worker-licence-photograph-of-yourself>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_PHOTO)">
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PHOTO)">Next</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -179,7 +179,10 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsWorkerLicenceIdentificationAuthenticatedComponent
+	extends BaseWizardStepComponent
+	implements OnInit, OnDestroy
+{
 	readonly STEP_CITIZENSHIP = 2;
 	readonly STEP_ADDITIONAL_GOV_ID = 3;
 	readonly STEP_BC_DRIVERS_LICENCE = 4;
@@ -192,10 +195,14 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	isFormValid = false;
 
 	@ViewChild(StepWorkerLicenceCitizenshipComponent) citizenshipComponent!: StepWorkerLicenceCitizenshipComponent;
-	@ViewChild(StepWorkerLicenceAdditionalGovIdComponent) additionalGovIdComponent!: StepWorkerLicenceAdditionalGovIdComponent;
-	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent) bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
-	@ViewChild(StepWorkerLicencePhysicalCharacteristicsComponent) heightAndWeightComponent!: StepWorkerLicencePhysicalCharacteristicsComponent;
-	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent) photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
+	@ViewChild(StepWorkerLicenceAdditionalGovIdComponent)
+	additionalGovIdComponent!: StepWorkerLicenceAdditionalGovIdComponent;
+	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent)
+	bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
+	@ViewChild(StepWorkerLicencePhysicalCharacteristicsComponent)
+	heightAndWeightComponent!: StepWorkerLicencePhysicalCharacteristicsComponent;
+	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
+	photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {
 		super();

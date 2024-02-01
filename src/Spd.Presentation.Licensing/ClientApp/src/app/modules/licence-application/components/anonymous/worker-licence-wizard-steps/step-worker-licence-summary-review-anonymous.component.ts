@@ -1,10 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
+	ApplicationTypeCode,
+	BusinessTypeCode,
 	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -729,12 +732,12 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		};
 	}
 
-	get workerLicenceTypeCode(): string {
-		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
+	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
+		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
 	}
 
-	get applicationTypeCode(): string {
-		return this.licenceModelData.applicationTypeData?.applicationTypeCode ?? '';
+	get applicationTypeCode(): ApplicationTypeCode | null {
+		return this.licenceModelData.applicationTypeData?.applicationTypeCode ?? null;
 	}
 
 	get isSoleProprietor(): string {
@@ -789,13 +792,22 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 			return null;
 		}
 
-		const workerLicenceTypeCode = this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
-		const applicationTypeCode = this.licenceModelData.applicationTypeData?.applicationTypeCode;
-		const businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+		const applicationTypeCode = this.applicationTypeCode;
+		let businessTypeCode: BusinessTypeCode | null = null;
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			businessTypeCode = this.licenceModelData.soleProprietorData.businessTypeCode;
+		} else {
+			businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+		}
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
 		const feeItem = this.commonApplicationService
-			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, businessTypeCode, originalLicenceTermCode)
+			.getLicenceTermsAndFees(
+				this.workerLicenceTypeCode,
+				this.applicationTypeCode,
+				businessTypeCode,
+				originalLicenceTermCode
+			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return feeItem?.amount ?? null;
 	}

@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
 import { StepWorkerLicenceFingerprintsComponent } from './step-worker-licence-fingerprints.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './step-worker-licence-mental-health-conditions.component';
@@ -17,7 +17,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				<app-step-worker-licence-police-background></app-step-worker-licence-police-background>
 
 				<div class="row wizard-button-row" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -27,10 +27,10 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -40,7 +40,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -59,7 +59,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-step-worker-licence-mental-health-conditions>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -69,10 +69,10 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -82,7 +82,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -96,10 +96,12 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-worker-licence-criminal-history [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-criminal-history>
+				<app-step-worker-licence-criminal-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-criminal-history>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -109,10 +111,10 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -122,7 +124,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -139,7 +141,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							class="large bordered mb-2"
@@ -149,15 +151,15 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							Save and Exit
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_FINGERPRINTS)">
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6" *ngIf="isFormValid">
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -192,9 +194,12 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(StepWorkerLicencePoliceBackgroundComponent) policeBackgroundComponent!: StepWorkerLicencePoliceBackgroundComponent;
-	@ViewChild(StepWorkerLicenceMentalHealthConditionsComponent) mentalHealthConditionsComponent!: StepWorkerLicenceMentalHealthConditionsComponent;
-	@ViewChild(StepWorkerLicenceCriminalHistoryComponent) criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
+	@ViewChild(StepWorkerLicencePoliceBackgroundComponent)
+	policeBackgroundComponent!: StepWorkerLicencePoliceBackgroundComponent;
+	@ViewChild(StepWorkerLicenceMentalHealthConditionsComponent)
+	mentalHealthConditionsComponent!: StepWorkerLicenceMentalHealthConditionsComponent;
+	@ViewChild(StepWorkerLicenceCriminalHistoryComponent)
+	criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 
 	constructor(

@@ -19,7 +19,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 							<h2 class="fs-3 mb-3">Link a Licence or Permit</h2>
 						</div>
 
-						<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6">
+						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
 								<button
 									mat-stroked-button

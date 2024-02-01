@@ -95,6 +95,7 @@ import { CommonPersonalInformationNewAnonymousComponent } from './components/sha
 import { CommonPersonalInformationRenewAnonymousComponent } from './components/shared/step-components/common-personal-information-renew-anonymous.component';
 import { CommonPhotographOfYourselfComponent } from './components/shared/step-components/common-photograph-of-yourself.component';
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/step-components/common-physical-characteristics.component';
+import { CommonReprintComponent } from './components/shared/step-components/common-reprint.component';
 import { CommonResidentialAddressComponent } from './components/shared/step-components/common-residential-address.component';
 import { CommonUpdateRenewalAlertComponent } from './components/shared/step-components/common-update-renewal-alert.component';
 import { CommonUserProfilePersonalInformationComponent } from './components/shared/step-components/common-user-profile-personal-information.component';
@@ -136,6 +137,7 @@ import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from './compo
 import { StepWorkerLicencePhotographOfYourselfComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicencePoliceBackgroundComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-police-background.component';
+import { StepWorkerLicenceReprintComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-reprint.component';
 import { StepWorkerLicenceResidentialAddressComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-residential-address.component';
 import { StepWorkerLicenceRestraintsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-sole-proprietor.component';
@@ -295,6 +297,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsBusinessInformationNewComponent,
 		StepBusinessLicenceChecklistNewComponent,
 		StepBusinessLicenceExpiredComponent,
+		CommonReprintComponent,
+		StepWorkerLicenceReprintComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

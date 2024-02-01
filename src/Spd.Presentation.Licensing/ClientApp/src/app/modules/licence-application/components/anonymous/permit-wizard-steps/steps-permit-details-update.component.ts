@@ -15,7 +15,7 @@ import { StepPermitPrintComponent } from './step-permit-print.component';
 				<app-step-permit-checklist-update></app-step-permit-checklist-update>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
@@ -25,10 +25,10 @@ import { StepPermitPrintComponent } from './step-permit-print.component';
 				<app-step-permit-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-permit-confirmation>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
 							mat-flat-button
 							color="primary"
@@ -45,10 +45,10 @@ import { StepPermitPrintComponent } from './step-permit-print.component';
 				<app-step-permit-print></app-step-permit-print>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PRINT)">Next</button>
 					</div>
 				</div>
