@@ -1,3 +1,5 @@
+using Spd.Resource.Repository.LicenceApplication;
+
 namespace Spd.Resource.Repository.Payment
 {
     public interface IPaymentRepository
@@ -15,6 +17,8 @@ namespace Spd.Resource.Repository.Payment
     public record PaymentResp
     {
         public Guid ApplicationId { get; set; }
+        public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
+        public LicenceTermEnum? LicenceTermCode { get; set; }
         public Guid PaymentId { get; set; }
         public string? TransactionNumber { get; set; }
         public string CaseNumber { get; set; }

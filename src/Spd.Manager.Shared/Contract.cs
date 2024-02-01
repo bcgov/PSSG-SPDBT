@@ -137,4 +137,21 @@ namespace Spd.Manager.Shared
         BcServicesCard,
         Idir,
     }
+
+    public enum ApplicationTypeCode
+    {
+        New,
+        Renewal,
+        Replacement,
+        Update,
+    }
+
+    public enum LicenceTermCode
+    {
+        NinetyDays,
+        OneYear,
+        TwoYears,
+        ThreeYears,
+        FiveYears
+    }
 }

@@ -19,14 +19,6 @@ public enum WorkerLicenceTypeCode
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
 }
 
-public enum ApplicationTypeCode
-{
-    New,
-    Renewal,
-    Replacement,
-    Update,
-}
-
 public enum LicenceDocumentTypeCode
 {
     BcServicesCard,
@@ -73,14 +65,6 @@ public enum LicenceDocumentTypeCode
     RecordOfLandingDocument,
     StudyPermit,
     WorkPermit
-}
-public enum LicenceTermCode
-{
-    NinetyDays,
-    OneYear,
-    TwoYears,
-    ThreeYears,
-    FiveYears
 }
 
 public enum BusinessTypeCode
