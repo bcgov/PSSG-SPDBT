@@ -11,10 +11,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 	template: `
 		<div class="container mt-4">
 			<section class="step-section">
-				<app-payment-cancel
+				<app-common-payment-cancel
 					(payNow)="onPayNow()"
 					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-				></app-payment-cancel>
+				></app-common-payment-cancel>
 			</section>
 		</div>
 	`,

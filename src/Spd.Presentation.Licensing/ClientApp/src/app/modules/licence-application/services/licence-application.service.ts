@@ -32,7 +32,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
+import { LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -128,7 +128,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
-		private licenceFeeService: LicenceFeeService,
 		private workerLicensingService: WorkerLicensingService,
 		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,

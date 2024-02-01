@@ -13,11 +13,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 	template: `
 		<div class="container mt-4">
 			<section class="step-section">
-				<app-payment-fail
+				<app-common-payment-fail
 					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
 					(payNow)="onPayNow()"
 					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-				></app-payment-fail>
+				></app-common-payment-fail>
 			</section>
 		</div>
 	`,

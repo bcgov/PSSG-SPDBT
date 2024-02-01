@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-payment-error',
+	selector: 'app-common-payment-error',
 	template: `
 		<div class="row">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -47,7 +47,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 	`,
 	styles: [],
 })
-export class PaymentErrorComponent implements OnInit {
+export class CommonPaymentErrorComponent implements OnInit {
 	isBackRoute = false;
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();

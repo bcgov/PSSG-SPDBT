@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-	selector: 'app-payment-fail',
+	selector: 'app-common-payment-fail',
 	template: `
 		<div class="row">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -92,7 +92,7 @@ import { Router } from '@angular/router';
 		`,
 	],
 })
-export class PaymentFailComponent implements OnInit {
+export class CommonPaymentFailComponent implements OnInit {
 	isBackRoute = false;
 	payBySecureLink = true;
 

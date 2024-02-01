@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
@@ -7,12 +7,13 @@ import {
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
+	WorkerLicenceTypeCode
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-anonymous',
@@ -677,7 +678,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		`,
 	],
 })
-export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit {
+export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit, OnDestroy {
 	licenceModelData: any = {};
 
 	constants = SPD_CONSTANTS;
@@ -713,23 +714,34 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
+	private licenceModelChangedSubscription!: Subscription;
+
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(isFormValid: boolean) => {
+				if (isFormValid) {
+					console.debug('licenceModelChangedSubscription isFormValid update review data', isFormValid);
+					this.licenceModelData = {
+						...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
+					};
+				}
+			}
+		);
+
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+	}
+
+	ngOnDestroy() {
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onEditStep(stepNumber: number) {
 		this.editStep.emit(stepNumber);
-	}
-
-	onUpdateData(): void {
-		this.licenceModelData = {
-			...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
-		};
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
