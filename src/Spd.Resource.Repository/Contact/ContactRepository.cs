@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -56,8 +57,26 @@ internal class ContactRepository : IContactRepository
 
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
+<<<<<<< Updated upstream:src/Spd.Resource.Repository/Contact/ContactRepository.cs
         contact newContact = _mapper.Map<contact>(c);
         contact existingContact = await _context.UpdateContact(c.Id, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+=======
+        contact existingContact = await _context.GetContactById(c.Id, ct);
+
+        //when we found name is different than current one, need to put current one to alias.
+        if (!NameIsSame(existingContact, c))
+        {
+            //put old name to alias
+            Alias alias = _mapper.Map<Alias>(existingContact);
+            AddAlias(alias, existingContact);
+            //update current contact
+            _mapper.Map(c, existingContact);
+        }
+        //todo: when we found address is different, need to put current address to previous address.
+        existingContact.spd_middlename2 = null;
+        _context.UpdateObject(existingContact);
+        await _context.SaveChangesAsync();
+>>>>>>> Stashed changes:src/Spd.Resource.Applicants/Contact/ContactRepository.cs
         return _mapper.Map<ContactResp>(existingContact);
     }
 
@@ -78,6 +97,45 @@ internal class ContactRepository : IContactRepository
         contact = await _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
         return _mapper.Map<ContactResp>(contact);
     }
+<<<<<<< Updated upstream:src/Spd.Resource.Repository/Contact/ContactRepository.cs
+=======
+
+    private void AddAlias(Alias createAliasCmd, contact contact)
+    {
+        spd_alias? matchingAlias = AliasExists(createAliasCmd, contact);
+        // if not found, create new alias
+        if (matchingAlias == null)
+        {
+            spd_alias alias = _mapper.Map<spd_alias>(createAliasCmd);
+            _context.AddTospd_aliases(alias);
+            // associate alias to contact
+            _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
+        }
+    }
+
+    private bool NameIsSame(contact original, ContactCmd newContact)
+    {
+        return (original.firstname == newContact.firstname
+            && original.lastname == newContact.lastname
+            && original.spd_middlename1 == newContact.spd_middlename1
+            && original.spd_middlename2 == newContact.spd_middlename2);
+
+    }
+
+    private spd_alias? AliasExists(Alias aliasCreateCmd, contact contact)
+    {
+        var matchingAlias = _context.spd_aliases.Where(o =>
+           o.spd_firstname == aliasCreateCmd.GivenName &&
+           o.spd_middlename1 == aliasCreateCmd.MiddleName1 &&
+           o.spd_middlename2 == aliasCreateCmd.MiddleName2 &&
+           o.spd_surname == aliasCreateCmd.Surname &&
+           o.statecode != DynamicsConstants.StateCode_Inactive &&
+           o._spd_contactid_value == contact.contactid &&
+           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+       ).FirstOrDefault();
+        return matchingAlias;
+    }
+>>>>>>> Stashed changes:src/Spd.Resource.Applicants/Contact/ContactRepository.cs
 }
 
 
