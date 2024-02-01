@@ -10,14 +10,14 @@ on:
       - .github/workflows/dynamics-helper-build.yml
       - .github/workflows/docker-build-template.yml
 
-  pull_request:
-    branches: ["main"]
-    paths:
-      - src/**
-      - "!src/Spd.Presentation.Licensing/**"
-      - "!src/Spd.Presentation.Screening/**"
-      - .github/workflows/dynamics-helper-build.yml
-      - .github/workflows/docker-build-template.yml
+  # pull_request:
+  #   branches: ["main"]
+  #   paths:
+  #     - src/**
+  #     - "!src/Spd.Presentation.Licensing/**"
+  #     - "!src/Spd.Presentation.Screening/**"
+  #     - .github/workflows/dynamics-helper-build.yml
+  #     - .github/workflows/docker-build-template.yml
 
 jobs:
   build:
