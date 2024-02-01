@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-	selector: 'app-payment-cancel',
+	selector: 'app-common-payment-cancel',
 	template: `
 		<div class="row">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -61,7 +61,7 @@ import { Router } from '@angular/router';
 		`,
 	],
 })
-export class PaymentCancelComponent implements OnInit {
+export class CommonPaymentCancelComponent implements OnInit {
 	isBackRoute = false;
 	payBySecureLink = true;
 

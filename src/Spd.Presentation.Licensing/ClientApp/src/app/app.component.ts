@@ -5,12 +5,12 @@ import { Component } from '@angular/core';
 	template: `
 		<body class="mat-typography d-flex flex-column h-100">
 			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
-			<app-header></app-header>
+			<app-spd-header></app-spd-header>
 
 			<router-outlet></router-outlet>
 
 			<footer class="mt-auto">
-				<app-footer></app-footer>
+				<app-spd-footer></app-spd-footer>
 			</footer>
 		</body>
 	`,
