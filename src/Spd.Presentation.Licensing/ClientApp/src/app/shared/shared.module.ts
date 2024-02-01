@@ -9,8 +9,8 @@ import { AccessDeniedComponent } from './components/access-denied.component';
 import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
 import { AddressModalComponent } from './components/address-modal.component';
 import { AlertComponent } from './components/alert.component';
-import { FooterComponent } from './components/app-footer.component';
-import { HeaderComponent } from './components/app-header.component';
+import { SpdFooterComponent } from './components/spd-footer.component';
+import { SpdHeaderComponent } from './components/spd-header.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
@@ -18,10 +18,10 @@ import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { FingerprintTearOffModalComponent } from './components/fingerprint-tear-off-modal.component';
-import { PaymentCancelComponent } from './components/payment-cancel.component';
-import { PaymentErrorComponent } from './components/payment-error.component';
-import { PaymentFailComponent } from './components/payment-fail.component';
-import { PaymentSuccessComponent } from './components/payment-success.component';
+import { CommonPaymentCancelComponent } from './components/common-payment-cancel.component';
+import { CommonPaymentErrorComponent } from './components/common-payment-error.component';
+import { CommonPaymentFailComponent } from './components/common-payment-fail.component';
+import { CommonPaymentSuccessComponent } from './components/common-payment-success.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
@@ -30,8 +30,8 @@ import { OptionsPipe } from './pipes/options.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
 
 const SHARED_COMPONENTS = [
-	HeaderComponent,
-	FooterComponent,
+	SpdHeaderComponent,
+	SpdFooterComponent,
 	DialogComponent,
 	DialogOopsComponent,
 	AddressAutocompleteComponent,
@@ -49,10 +49,10 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	PaymentCancelComponent,
-	PaymentSuccessComponent,
-	PaymentErrorComponent,
-	PaymentFailComponent,
+	CommonPaymentCancelComponent,
+	CommonPaymentSuccessComponent,
+	CommonPaymentErrorComponent,
+	CommonPaymentFailComponent,
 	BaseFilterComponent,
 	FingerprintTearOffModalComponent,
 ];

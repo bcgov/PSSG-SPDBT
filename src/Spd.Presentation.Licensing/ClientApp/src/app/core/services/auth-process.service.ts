@@ -170,6 +170,8 @@ export class AuthProcessService {
 	}
 
 	public logoutBcsc(): void {
+		console.debug('logoutBcsc');
+
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] === bcscIssuer) {
@@ -178,6 +180,8 @@ export class AuthProcessService {
 	}
 
 	public logoutBceid(): void {
+		console.debug('logoutBceid');
+
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] !== bcscIssuer) {

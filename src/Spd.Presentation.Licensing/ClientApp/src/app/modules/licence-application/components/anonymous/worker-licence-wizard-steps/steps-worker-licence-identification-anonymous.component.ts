@@ -402,7 +402,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: any) => {
+			(_resp: boolean) => {
 				// console.debig('StepIdentificationAnonymousComponent licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 
