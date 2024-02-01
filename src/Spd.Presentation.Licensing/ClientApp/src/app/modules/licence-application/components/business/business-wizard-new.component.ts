@@ -207,7 +207,7 @@ export class BusinessWizardNewComponent extends BaseWizardComponent implements O
 		stepper.next();
 	}
 
-	onGoToStep(step: number) {
+	onGoToStep(_step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		// 	this.stepsPermitPurposeComponent?.onGoToFirstStep();
 		// 	this.stepsPermitIdentificationComponent?.onGoToFirstStep();

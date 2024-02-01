@@ -182,32 +182,32 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		if (!resp) {
 			// access code / licence are not found
 			this.errorMessage = `This ${this.licenceNumberName} number and access code are not a valid combination.`;
-			// } else if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
-			// 	//  access code matches licence, but the WorkerLicenceType does not match
-			// 	const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-			// 	this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
-			// } else if (moment().isAfter(resp.expiryDate)) {
-			// 	// access code matches licence, but the licence is expired
-			// 	this.isExpired = true;
-			// 	if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
-			// 		this.errorMessage = 'This licence has expired so you can no longer renew it. Please apply for a new licence.';
-			// 	} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			// 		this.errorMessage = 'This licence has expired so you cannot update it. Please apply for a new licence.';
-			// 	} else {
-			// 		this.errorMessage = 'This licence has expired so you cannot replace it. Please apply for a new licence.';
-			// 	}
-			// } else if (
-			// 	this.applicationTypeCode === ApplicationTypeCode.Replacement &&
-			// 	daysBetween <= replacementPeriodPreventionDays
-			// ) {
-			// 	// access code matches licence, but the licence is not within the replacement period
-			// 	this.errorMessage = 'This licence is too close to its expiry date to allow replacement.';
-			// } else if (this.applicationTypeCode === ApplicationTypeCode.Update && daysBetween <= updatePeriodPreventionDays) {
-			// 	// access code matches licence, but the licence is not within the update period
-			// 	this.errorMessage = 'This licence is too close to its expiry date to allow update.';
-			// } else if (this.applicationTypeCode === ApplicationTypeCode.Renewal && daysBetween > renewPeriodDays) {
-			// 	//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
-			// 	this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
+		} else if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
+			//  access code matches licence, but the WorkerLicenceType does not match
+			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
+		} else if (moment().isAfter(resp.expiryDate)) {
+			// access code matches licence, but the licence is expired
+			this.isExpired = true;
+			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+				this.errorMessage = 'This licence has expired so you can no longer renew it. Please apply for a new licence.';
+			} else if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+				this.errorMessage = 'This licence has expired so you cannot update it. Please apply for a new licence.';
+			} else {
+				this.errorMessage = 'This licence has expired so you cannot replace it. Please apply for a new licence.';
+			}
+		} else if (
+			this.applicationTypeCode === ApplicationTypeCode.Replacement &&
+			daysBetween <= replacementPeriodPreventionDays
+		) {
+			// access code matches licence, but the licence is not within the replacement period
+			this.errorMessage = 'This licence is too close to its expiry date to allow replacement.';
+		} else if (this.applicationTypeCode === ApplicationTypeCode.Update && daysBetween <= updatePeriodPreventionDays) {
+			// access code matches licence, but the licence is not within the update period
+			this.errorMessage = 'This licence is too close to its expiry date to allow update.';
+		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal && daysBetween > renewPeriodDays) {
+			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
+			this.errorMessage = `This licence is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
 		} else {
 			this.form.patchValue({
 				licenceNumber: resp.licenceNumber,

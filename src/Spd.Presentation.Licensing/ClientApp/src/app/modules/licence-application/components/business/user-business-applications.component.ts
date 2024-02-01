@@ -601,7 +601,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		this.onUpdateAuthorization();
 	}
 
-	onResume(appl: WorkerLicenceAppListResponse): void {
+	onResume(_appl: WorkerLicenceAppListResponse): void {
 		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceNew(appl.licenceAppId!)
@@ -633,7 +633,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// }
 	}
 
-	onUpdate(appl: WorkerLicenceInProgress): void {
+	onUpdate(_appl: WorkerLicenceInProgress): void {
 		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID

@@ -19,6 +19,7 @@ import {
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import * as moment from 'moment';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -857,13 +858,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					attachments: [],
 				};
 
-				let categoryFireInvestigatorFormGroup: any = { isInclude: false };
+				const categoryFireInvestigatorFormGroup: any = { isInclude: false };
 				let categoryLocksmithFormGroup: any = { isInclude: false };
-				let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
+				const categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
 				let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
 				let categorySecurityGuardFormGroup: any = { isInclude: false };
 				let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
-				let categorySecurityConsultantFormGroup: any = { isInclude: false };
+				const categorySecurityConsultantFormGroup: any = { isInclude: false };
 
 				resp.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
 					switch (category) {
@@ -987,7 +988,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 							break;
 						}
 						case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
-							let armouredCarGuardExpiryDate = this.formatDatePipe.transform(
+							const armouredCarGuardExpiryDate = this.formatDatePipe.transform(
 								doc.expiryDate,
 								SPD_CONSTANTS.date.backendDateFormat
 							);
@@ -1280,76 +1281,74 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((_resp: WorkerLicenceResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
-				// // Remove data that should be re-prompted for
-				// const soleProprietorData = {
-				// 	isSoleProprietor: null,
-				// 	businessTypeCode: null,
-				// };
-				// const fingerprintProofData = {
-				// 	attachments: [],
-				// };
-				// const licenceTermData = {
-				// 	licenceTermCode: null,
-				// };
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				// const bcDriversLicenceData = {
-				// 	hasBcDriversLicence: null,
-				// 	bcDriversLicenceNumber: null,
-				// };
-				// const citizenshipData = {
-				// 	isCanadianCitizen: null,
-				// 	canadianCitizenProofTypeCode: null,
-				// 	notCanadianCitizenProofTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
-				// const additionalGovIdData = {
-				// 	governmentIssuedPhotoTypeCode: null,
-				// 	expiryDate: null,
-				// 	attachments: [],
-				// };
+				// Remove data that should be re-prompted for
+				const soleProprietorData = {
+					isSoleProprietor: null,
+					businessTypeCode: null,
+				};
+				const fingerprintProofData = {
+					attachments: [],
+				};
+				const licenceTermData = {
+					licenceTermCode: null,
+				};
+				const aliasesData = { previousNameFlag: null, aliases: [] };
+				const bcDriversLicenceData = {
+					hasBcDriversLicence: null,
+					bcDriversLicenceNumber: null,
+				};
+				const citizenshipData = {
+					isCanadianCitizen: null,
+					canadianCitizenProofTypeCode: null,
+					notCanadianCitizenProofTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
+				const additionalGovIdData = {
+					governmentIssuedPhotoTypeCode: null,
+					expiryDate: null,
+					attachments: [],
+				};
 
-				// let originalPhotoOfYourselfLastUpload = null;
-				// const photoOfYourselfDocs = _resp.documentInfos?.find(
-				// 	(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
-				// );
-				// if (photoOfYourselfDocs) {
-				// 	originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
-				// }
+				let originalPhotoOfYourselfLastUpload = null;
+				const photoOfYourselfDocs = _resp.documentInfos?.find(
+					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
+				);
+				if (photoOfYourselfDocs) {
+					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
+				}
 
-				// // We require a new photo every 5 years. Please provide a new photo for your licence
-				// const yearsDiff = moment()
-				// 	.startOf('day')
-				// 	.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-				// const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
-				const originalPhotoOfYourselfExpired = false;
+				// We require a new photo every 5 years. Please provide a new photo for your licence
+				const yearsDiff = moment()
+					.startOf('day')
+					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
-				// let photographOfYourselfData = {};
-				// if (originalPhotoOfYourselfExpired) {
-				// 	// clear out data to force user to upload a new photo
-				// 	photographOfYourselfData = {
-				// 		useBcServicesCardPhoto: BooleanTypeCode.No,
-				// 		attachments: [],
-				// 	};
-				// }
+				let photographOfYourselfData = {};
+				if (originalPhotoOfYourselfExpired) {
+					// clear out data to force user to upload a new photo
+					photographOfYourselfData = {
+						useBcServicesCardPhoto: BooleanTypeCode.No,
+						attachments: [],
+					};
+				}
 
-				// // If applicant is renewing a licence where they already had authorization to use dogs,
-				// // clear attachments to force user to upload a new proof of qualification.
-				// _resp.useDogs = true;
-				// const originalDogAuthorizationExists = _resp.useDogs;
-				// let dogsAuthorizationData = {};
-				// if (originalDogAuthorizationExists) {
-				// 	dogsAuthorizationData = {
-				// 		useDogs: this.booleanToBooleanType(_resp.useDogs),
-				// 		dogsPurposeFormGroup: {
-				// 			isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
-				// 			isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
-				// 			isDogsPurposeProtection: _resp.isDogsPurposeProtection,
-				// 		},
-				// 		attachments: [],
-				// 	};
-				// }
-				const originalDogAuthorizationExists = false;
+				// If applicant is renewing a licence where they already had authorization to use dogs,
+				// clear attachments to force user to upload a new proof of qualification.
+				_resp.useDogs = true;
+				const originalDogAuthorizationExists = _resp.useDogs;
+				let dogsAuthorizationData = {};
+				if (originalDogAuthorizationExists) {
+					dogsAuthorizationData = {
+						useDogs: this.booleanToBooleanType(_resp.useDogs),
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
+							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
+							isDogsPurposeProtection: _resp.isDogsPurposeProtection,
+						},
+						attachments: [],
+					};
+				}
 
 				this.licenceModelFormGroup.patchValue(
 					{
@@ -1359,15 +1358,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						originalPhotoOfYourselfExpired,
 						originalDogAuthorizationExists,
 
-						// soleProprietorData,
-						// licenceTermData,
-						// fingerprintProofData,
-						// bcDriversLicenceData,
-						// aliasesData,
-						// photographOfYourselfData,
-						// citizenshipData,
-						// additionalGovIdData,
-						// dogsAuthorizationData,
+						soleProprietorData,
+						licenceTermData,
+						fingerprintProofData,
+						bcDriversLicenceData,
+						aliasesData,
+						photographOfYourselfData,
+						citizenshipData,
+						additionalGovIdData,
+						dogsAuthorizationData,
 					},
 					{
 						emitEvent: false,

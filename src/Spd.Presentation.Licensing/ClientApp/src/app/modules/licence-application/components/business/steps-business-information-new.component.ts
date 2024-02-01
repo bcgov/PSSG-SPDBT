@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -50,7 +50,7 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessInformationNewComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsBusinessInformationNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_EXPIRED = 1;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -66,21 +66,21 @@ export class StepsBusinessInformationNewComponent extends BaseWizardStepComponen
 		super();
 	}
 
-	ngOnInit(): void {
-		// this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-		// 	(_resp: any) => {
-		// 		// console.debug('permitModelValueChanges$', _resp);
-		// 		this.isFormValid = _resp;
-		// 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-		// 			'applicationTypeData.applicationTypeCode'
-		// 		)?.value;
-		// 	}
-		// );
-	}
+	// ngOnInit(): void {
+	// this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
+	// 	(_resp: any) => {
+	// 		// console.debug('permitModelValueChanges$', _resp);
+	// 		this.isFormValid = _resp;
+	// 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+	// 			'applicationTypeData.applicationTypeCode'
+	// 		)?.value;
+	// 	}
+	// );
+	// }
 
-	ngOnDestroy() {
-		// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-	}
+	// ngOnDestroy() {
+	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+	// }
 
 	onCancel(): void {
 		this.router.navigate([LicenceApplicationRoutes.pathBusinessLicence()]);

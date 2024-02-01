@@ -367,8 +367,8 @@ export abstract class PermitApplicationHelper {
 		const residentialAddressData = { ...permitModelFormValue.residentialAddressData };
 		const mailingAddressData = { ...permitModelFormValue.mailingAddressData };
 		const citizenshipData = { ...permitModelFormValue.citizenshipData };
-		const fingerprintProofData = { ...permitModelFormValue.fingerprintProofData };
-		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
+		// const fingerprintProofData = { ...permitModelFormValue.fingerprintProofData };
+		// const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
 
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(

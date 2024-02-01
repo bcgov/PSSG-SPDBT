@@ -567,7 +567,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					};
 				}
 
-				const citizenshipDataAttachments: Array<File> = [];
+				// const citizenshipDataAttachments: Array<File> = [];
 				// if (resp.citizenshipDocument?.documentResponses) {
 				// 	resp.citizenshipDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
 				// 		const aFile = this.utilService.dummyFile(item);
