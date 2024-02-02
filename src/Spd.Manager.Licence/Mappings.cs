@@ -146,6 +146,7 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.CitizenshipDocument},
         {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.CitizenshipDocument},
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.CitizenshipDocument},
+        {LicenceDocumentTypeCode.LegalNameChange, DocumentTypeEnum.LegalNameChange},
     }.ToImmutableDictionary();
 
 
@@ -195,5 +196,6 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.RecordOfLandingDocument, DocumentTypeEnum.RecordOfLandingDocument},
         {LicenceDocumentTypeCode.WorkPermit, DocumentTypeEnum.WorkPermit},
         {LicenceDocumentTypeCode.StudyPermit, DocumentTypeEnum.StudyPermit},
+        {LicenceDocumentTypeCode.LegalNameChange, DocumentTypeEnum.LegalNameChange},
     }.ToImmutableDictionary();
 }
