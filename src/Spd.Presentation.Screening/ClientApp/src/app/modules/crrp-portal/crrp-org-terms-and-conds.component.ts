@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeWhile } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { CrrpRoutes } from './crrp-routing.module';
@@ -11,6 +12,8 @@ import { CrrpRoutes } from './crrp-routing.module';
 })
 export class CrrpOrgTermsAndCondsComponent implements OnInit {
 	invitationId: string | null = null;
+
+	private subscribeAlive = true;
 
 	constructor(private route: ActivatedRoute, private authProcessService: AuthProcessService, private router: Router) {}
 
@@ -24,11 +27,15 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 
 		await this.authProcessService.initializeCrrpUserInvitation(location.pathname);
 
-		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			if (isLoggedIn) {
-				const url = `${CrrpRoutes.path(CrrpRoutes.INVITATION_ACCEPT)}/${this.invitationId}`;
-				this.router.navigate([url]);
-			}
-		});
+		this.authProcessService.waitUntilAuthentication$
+			.pipe(takeWhile(() => this.subscribeAlive))
+			.subscribe((isLoggedIn: boolean) => {
+				if (isLoggedIn) {
+					this.subscribeAlive = false;
+
+					const url = `${CrrpRoutes.path(CrrpRoutes.INVITATION_ACCEPT)}/${this.invitationId}`;
+					this.router.navigate([url]);
+				}
+			});
 	}
 }

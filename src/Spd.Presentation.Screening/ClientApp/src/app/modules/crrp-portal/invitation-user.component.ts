@@ -3,8 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
@@ -34,13 +32,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 export class InvitationUserComponent implements OnInit {
 	message = '';
 
-	constructor(
-		private route: ActivatedRoute,
-		private router: Router,
-		private authUserService: AuthUserBceidService,
-		private authProcessService: AuthProcessService,
-		private orgUserService: OrgUserService
-	) {}
+	constructor(private route: ActivatedRoute, private router: Router, private orgUserService: OrgUserService) {}
 
 	async ngOnInit(): Promise<void> {
 		const id = this.route.snapshot.paramMap.get('id');
@@ -55,12 +47,12 @@ export class InvitationUserComponent implements OnInit {
 				.apiUserInvitationPost({ body: invitationRequest })
 				.pipe()
 				.subscribe(async (resp: any) => {
+					console.debug('InvitationUserComponent resp', resp);
+
 					if (resp?.isError) {
 						this.message = resp.message;
 					} else {
-						await this.authProcessService.initializeCrrp(location.pathname);
-
-						const defaultOrgId = this.authUserService.bceidUserInfoProfile?.orgId;
+						const defaultOrgId = resp.orgId;
 						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
 					}
 				});

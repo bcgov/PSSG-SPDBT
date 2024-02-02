@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, takeWhile, tap } from 'rxjs';
 import { ApplicationStatisticsResponse, ContactAuthorizationTypeCode, OrgUserResponse } from 'src/app/api/models';
 import { ApplicationService, OrgUserService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -385,46 +384,58 @@ export class CrrpHomeComponent implements OnInit {
 
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 
+	private subscribeAlive = true;
+
 	constructor(
-		private router: Router,
 		protected authUserService: AuthUserBceidService,
 		private applicationService: ApplicationService,
-		private orgUserService: OrgUserService
+		private orgUserService: OrgUserService,
+		private authProcessService: AuthProcessService
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		const userId = this.authUserService.bceidUserInfoProfile?.userId;
+		this.authProcessService.waitUntilAuthentication$
+			.pipe(takeWhile(() => this.subscribeAlive))
+			.subscribe((isLoggedIn: boolean) => {
+				if (isLoggedIn) {
+					const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
+					const userId = this.authUserService.bceidUserInfoProfile?.userId;
+					console.debug('CrrpHomeComponent - orgId', orgId, 'userId', userId);
 
-		if (!orgId || !userId) {
-			console.debug('CrrpHomeComponent - missing orgId', orgId, 'userId', userId);
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-			return;
-		}
+					if (!orgId || !userId) {
+						console.debug('CrrpHomeComponent - missing orgId', orgId, 'userId', userId);
+						return;
+					}
+					this.subscribeAlive = false;
 
-		this.orgUserService
-			.apiOrgsOrgIdUsersUserIdGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
-				userId: this.authUserService.bceidUserInfoProfile?.userId!,
-			})
-			.pipe()
-			.subscribe((res: OrgUserResponse) => {
-				this.userPrimary = res ? res.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
+					this.orgUserService
+						.apiOrgsOrgIdUsersUserIdGet({
+							orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+							userId: this.authUserService.bceidUserInfoProfile?.userId!,
+						})
+						.pipe()
+						.subscribe((res: OrgUserResponse) => {
+							this.userPrimary = res ? res.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
+						});
+
+					this.applicationStatistics$ = this.applicationService
+						.apiOrgsOrgIdApplicationStatisticsGet({
+							orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+						})
+						.pipe(
+							tap((res: ApplicationStatisticsResponse) => {
+								const applicationStatistics = res.statistics ?? {};
+								this.awaitingPaymentCount =
+									applicationStatistics[ApplicationPortalStatisticsTypeCode.AwaitingPayment] ?? 0;
+								this.verifyIdentityCount =
+									applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity] ?? 0;
+								this.completedClearedCount =
+									applicationStatistics[ApplicationPortalStatisticsTypeCode.ClearedLastSevenDays] ?? 0;
+								this.riskFoundCount =
+									applicationStatistics[ApplicationPortalStatisticsTypeCode.NotClearedLastSevenDays] ?? 0;
+							})
+						);
+				}
 			});
-
-		this.applicationStatistics$ = this.applicationService
-			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
-			})
-			.pipe(
-				tap((res: ApplicationStatisticsResponse) => {
-					const applicationStatistics = res.statistics ?? {};
-					this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.AwaitingPayment] ?? 0;
-					this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity] ?? 0;
-					this.completedClearedCount =
-						applicationStatistics[ApplicationPortalStatisticsTypeCode.ClearedLastSevenDays] ?? 0;
-					this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.NotClearedLastSevenDays] ?? 0;
-				})
-			);
 	}
 }

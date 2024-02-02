@@ -83,6 +83,10 @@ export class AuthUserBceidService {
 				if (defaultOrgId) {
 					const orgIdItem = uniqueUserInfoList.find((user) => user.orgId == defaultOrgId);
 					if (orgIdItem) {
+						if (orgIdItem.isFirstTimeLogin) {
+							await this.orgFirstTimeUserAsync();
+						}
+
 						isSuccess = await this.setUserInfoProfile(orgIdItem);
 						return Promise.resolve(isSuccess);
 					}
