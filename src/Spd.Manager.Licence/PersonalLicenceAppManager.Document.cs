@@ -36,7 +36,8 @@ internal partial class PersonalLicenceAppManager
                 ApplicationId = command.AppId,
                 DocumentType = docType1,
                 DocumentType2 = docType2,
-                SubmittedByApplicantId = contactId
+                SubmittedByApplicantId = contactId,
+                ApplicantId = contactId,
             }, ct);
             docResps.Add(docResp);
         }

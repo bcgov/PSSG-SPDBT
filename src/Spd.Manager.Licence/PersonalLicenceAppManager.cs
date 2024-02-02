@@ -468,7 +468,7 @@ internal partial class PersonalLicenceAppManager :
         }
         return changes;
     }
-    private async Task UploadNewDocs(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, Guid contactId, CancellationToken ct)
+    private async Task UploadNewDocs(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid? licenceAppId, Guid? contactId, CancellationToken ct)
     {
         if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
         {
@@ -478,12 +478,13 @@ internal partial class PersonalLicenceAppManager :
             {
                 SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
                 CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                fileCmd.ApplicantId = contactId;
+                fileCmd.ApplicationId = licenceAppId;
                 fileCmd.ExpiryDate = request?
                         .DocumentExpiredInfos?
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
                 fileCmd.TempFile = tempFile;
-                fileCmd.ApplicationId = licenceAppId;
                 fileCmd.SubmittedByApplicantId = contactId;
                 //create bcgov_documenturl and file
                 await _documentRepository.ManageAsync(fileCmd, ct);
