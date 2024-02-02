@@ -60,6 +60,7 @@ public record LicenceApplication
     public WorkerCategoryTypeEnum[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public bool? LegalNameChanged { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
