@@ -14,6 +14,7 @@ public record CreateTaskCmd : TaskCmd
     public Guid? RegardingContactId { get; set; }
     public Guid? RegardingCaseId { get; set; }
     public Guid? AssignedTeamId { get; set; }
+    public Guid? LicenceId { get; set; }
 }
 public record TaskResp()
 {

@@ -310,36 +310,39 @@ internal partial class PersonalLicenceAppManager :
         if (changes.CriminalHistoryChanged)
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = "Criminal History has Changed",
-                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
-                Subject = "Criminal History Changed",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                Description = "Please see the criminal charges submitted by the licensee in the documents attached",
+                DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
+                Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.High,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
             }, ct);
 
         // check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
         if (changes.PeaceOfficerStatusChanged)
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = "Peace Officer Status has Changed",
-                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
-                Subject = "Peace Officer Status Changed",
-                TaskPriorityEnum = TaskPriorityEnum.High,
+                Description = "Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents ",
+                DueDateTime = DateTimeOffset.Now.AddDays(1),
+                Subject = $"Peace Officer Update on  {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
+                LicenceId = originalLic.LicenceId
             }, ct);
 
         ////Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
         if (changes.MentalHealthStatusChanged)
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = "Mental Health Status has Changed",
-                DueDateTime = new DateTimeOffset(2024, 2, 20, 0, 0, 0, new TimeSpan(0, 0, 0)),
-                Subject = "Mental Health Status Changed",
+                Description = "Please see the attached mental health condition form submitted by the Licensee. ",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Mental Health Condition Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
             }, ct);
 
         return new WorkerLicenceAppUpsertResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
