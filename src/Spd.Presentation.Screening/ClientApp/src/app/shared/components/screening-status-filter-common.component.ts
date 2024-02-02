@@ -50,7 +50,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 											selected
 										>
 											{{ getFilterStatusDesc(status) }}
-											<mat-icon matChipRemove>cancel</mat-icon>
+											<mat-icon matChipRemove class="filter-chip__icon">cancel</mat-icon>
 										</mat-chip>
 									</mat-chip-listbox>
 								</mat-select-trigger>

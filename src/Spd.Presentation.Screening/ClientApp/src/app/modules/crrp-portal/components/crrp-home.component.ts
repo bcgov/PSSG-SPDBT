@@ -257,37 +257,31 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			.box-text-height {
 				height: 110px;
 			}
-
 			@media (min-width: 576px) {
 				.box-text-height {
 					height: 120px;
 				}
 			}
-
 			@media (min-width: 768px) {
 				.box-text-height {
 					height: 100px;
 				}
 			}
-
 			// @media (min-width: 992px) {
 			// 	.box-text-height {
 			// 		height: 100px;
 			// 	}
 			// }
-
 			@media (min-width: 1200px) {
 				.box-text-height {
 					height: 140px;
 				}
 			}
-
 			@media (min-width: 1400px) {
 				.box-text-height {
 					height: 170px;
 				}
 			}
-
 			@media (min-width: 1700px) {
 				.box-text-height {
 					height: 130px;

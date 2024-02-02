@@ -268,15 +268,13 @@ mat-label {
   cursor: default;
 }
 
-
 .filter-chip {
-  cursor: pointer !important;
   &__icon {
     cursor: pointer !important;
   }
-  .mat-mdc-chip-action-label, .mat-mdc-chip-action {
-    cursor: pointer;
-  }
+  // .mat-mdc-chip-action-label, .mat-mdc-chip-action {
+  //   cursor: pointer;
+  // }
 }
 
 .mat-chip-green {
