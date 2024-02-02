@@ -62,7 +62,7 @@ jobs:
         with:
           images: ${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') || github.ref == format('refs/heads/{0}', 'temp-test') }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -73,7 +73,7 @@ jobs:
           context: ${{ inputs.IMAGE_CONTEXT }}
           file: ${{ inputs.IMAGE_FILE }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: 'latest' #${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           # labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
