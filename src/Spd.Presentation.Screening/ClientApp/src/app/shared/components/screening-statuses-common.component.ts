@@ -111,16 +111,17 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 				<div class="row">
 					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-						<mat-chip-row
-							tabIndex="0"
-							class="filter-chip me-2 mb-2"
-							*ngFor="let status of currentStatuses"
-							(click)="onStatusRemoved(status)"
-							(keydown)="onKeydownStatusRemoved($event, status)"
-							aria-label="remove status"
-						>
+						<mat-chip-row class="filter-chip me-2 mb-2" *ngFor="let status of currentStatuses">
 							{{ getStatusDesc(status) }}
-							<mat-icon matChipRemove>cancel</mat-icon>
+							<mat-icon
+								matChipRemove
+								tabIndex="0"
+								(click)="onStatusRemoved(status)"
+								(keydown)="onKeydownStatusRemoved($event, status)"
+								class="filter-chip__icon"
+								aria-label="remove status"
+								>cancel</mat-icon
+							>
 						</mat-chip-row>
 					</div>
 				</div>
@@ -199,6 +200,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									<mat-chip-row
 										aria-label="Status"
 										[ngClass]="application.applicationPortalStatusClass"
+										class="w-100"
 										*ngIf="application.status"
 									>
 										{{ application.status | options : 'ApplicationPortalStatusTypes' }}
@@ -270,7 +272,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 210px;
+				min-width: 250px;
 			}
 
 			.mat-column-action1 {
