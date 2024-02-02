@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - temp-test
     paths:
       - src/**
       - "!src/Spd.Presentation.Dynamics/**"
