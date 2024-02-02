@@ -64,7 +64,8 @@ public enum LicenceDocumentTypeCode
     ProofOfFingerprint,
     RecordOfLandingDocument,
     StudyPermit,
-    WorkPermit
+    WorkPermit,
+    LegalNameChange
 }
 
 public enum BusinessTypeCode
