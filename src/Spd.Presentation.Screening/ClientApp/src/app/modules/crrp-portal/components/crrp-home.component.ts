@@ -32,12 +32,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/new_screening.png" alt="New Screening" />
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">Request a new criminal record check</h4></div>
 										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
 												<div class="mb-0">Start a new check for one or more applicants</div>
-												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
 									</div>
@@ -51,12 +51,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/screening_status.png" alt="Screening Status" />
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">View application status</h4></div>
 										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
 												<div class="mb-0">See your applicants' criminal record check progress</div>
-												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
 									</div>
@@ -74,12 +74,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									/>
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">View expiring criminal record checks</h4></div>
 										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
 												<div class="mb-0">See clearances that are expiring soon</div>
-												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
 									</div>
@@ -100,12 +100,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									/>
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">Payments</h4></div>
 										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
 												<div class="mb-0">Manage and view payments</div>
-												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
 									</div>
@@ -119,7 +119,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" alt="Users or Profile" />
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0">
 											<h4 class="mb-0" *ngIf="userPrimary === true">Manage authorized users</h4>
 											<h4 class="mb-0" *ngIf="userPrimary === false">Update profile</h4>
@@ -128,7 +128,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
 												<div class="mb-0" *ngIf="userPrimary === true">Add or remove team members</div>
 												<div class="mb-0" *ngIf="userPrimary === false">Edit your personal information</div>
-												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
 									</div>
@@ -146,12 +146,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									/>
 								</div>
 								<div class="box__text">
-									<div class="d-flex align-items-start flex-column" style="height: 180px;">
+									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0"><h4 class="mb-0">Confirm applicant identity</h4></div>
 										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
 												<div class="mb-0">See a list of applicants who required ID checks</div>
-												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
 									</div>
@@ -255,6 +255,40 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	`,
 	styles: [
 		`
+			.box-text-height {
+				height: 110px;
+			}
+			@media (min-width: 576px) {
+				.box-text-height {
+					height: 120px;
+				}
+			}
+			@media (min-width: 768px) {
+				.box-text-height {
+					height: 100px;
+				}
+			}
+			// @media (min-width: 992px) {
+			// 	.box-text-height {
+			// 		height: 100px;
+			// 	}
+			// }
+			@media (min-width: 1200px) {
+				.box-text-height {
+					height: 140px;
+				}
+			}
+			@media (min-width: 1400px) {
+				.box-text-height {
+					height: 170px;
+				}
+			}
+			@media (min-width: 1700px) {
+				.box-text-height {
+					height: 130px;
+				}
+			}
+
 			.box {
 				cursor: pointer;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
