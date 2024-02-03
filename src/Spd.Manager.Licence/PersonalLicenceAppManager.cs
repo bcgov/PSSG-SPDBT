@@ -168,6 +168,7 @@ internal partial class PersonalLicenceAppManager :
             fileCmd.TempFile = spdTempFile;
             fileCmd.ApplicationId = response.LicenceAppId;
             fileCmd.SubmittedByApplicantId = response.ContactId;
+            fileCmd.ApplicantId = response.ContactId;
             //create bcgov_documenturl and file
             await _documentRepository.ManageAsync(fileCmd, ct);
         }
@@ -289,7 +290,7 @@ internal partial class PersonalLicenceAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
-        ChangeSpec changes = await GetChanges(originalApp, request, ct);
+        ChangeSpec changes = await MakeChanges(originalApp, request, originalLic, ct);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
@@ -297,7 +298,37 @@ internal partial class PersonalLicenceAppManager :
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
             //add all new files user uploaded
-            await UploadNewDocs(request, createLicResponse.LicenceAppId, createLicResponse.ContactId, ct);
+            if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
+            {
+                IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
+
+                foreach (LicAppFileInfo licAppFile in items)
+                {
+                    SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                    CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                    fileCmd.ApplicantId = createLicResponse.ContactId;
+                    if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
+                    {
+                        fileCmd.TaskId = changes.PeaseOfficerStatusChangeTaskId;
+                    }
+                    else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
+                    {
+                        fileCmd.TaskId = changes.MentalHealthStatusChangeTaskId;
+                    }
+                    else
+                    {
+                        fileCmd.ApplicationId = createLicResponse.LicenceAppId;
+                    }
+                    fileCmd.ExpiryDate = request?
+                            .DocumentExpiredInfos?
+                            .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                            .ExpiryDate;
+                    fileCmd.TempFile = tempFile;
+                    fileCmd.SubmittedByApplicantId = createLicResponse.ContactId;
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(fileCmd, ct);
+                }
+            }
             await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct);
         }
         else
@@ -305,45 +336,6 @@ internal partial class PersonalLicenceAppManager :
             //update contact directly
             await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), ct);
         }
-
-        //check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
-        if (changes.CriminalHistoryChanged)
-            await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = "Please see the criminal charges submitted by the licensee in the documents attached",
-                DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
-                Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.High,
-                RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
-                LicenceId = originalLic.LicenceId
-            }, ct);
-
-        // check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
-        if (changes.PeaceOfficerStatusChanged)
-            await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = "Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents ",
-                DueDateTime = DateTimeOffset.Now.AddDays(1),
-                Subject = $"Peace Officer Update on  {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
-                LicenceId = originalLic.LicenceId
-            }, ct);
-
-        ////Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
-        if (changes.MentalHealthStatusChanged)
-            await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = "Please see the attached mental health condition form submitted by the Licensee. ",
-                DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Mental Health Condition Update on {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
-                LicenceId = originalLic.LicenceId
-            }, ct);
 
         return new WorkerLicenceAppUpsertResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
@@ -415,7 +407,7 @@ internal partial class PersonalLicenceAppManager :
         }
         return false;
     }
-    private async Task<ChangeSpec> GetChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp, CancellationToken ct)
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp, LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
         //categories changed
@@ -442,7 +434,7 @@ internal partial class PersonalLicenceAppManager :
 
         IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
 
-        //PeaceOfficerStatusChanged
+        //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
             : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
 
@@ -451,20 +443,52 @@ internal partial class PersonalLicenceAppManager :
             newApp.OtherOfficerRole != originalApp.OtherOfficerRole ||
             items.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
         {
+            IEnumerable<string> fileNames = items.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
             changes.PeaceOfficerStatusChanged = true;
+            changes.PeaseOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents : {string.Join(";", fileNames)} ",
+                DueDateTime = DateTimeOffset.Now.AddDays(1),
+                Subject = $"Peace Officer Update on  {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
         }
 
-        //MentalHealthStatusChanged
+        //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
         if (newApp.IsTreatedForMHC != originalApp.IsTreatedForMHC ||
             items.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
             changes.MentalHealthStatusChanged = true;
+            IEnumerable<string> fileNames = items.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
+            changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Please see the attached mental health condition form submitted by the Licensee : {string.Join(";", fileNames)}  ",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Mental Health Condition Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
         }
 
-        //CriminalHistoryChanged
+        //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
         if (newApp.HasCriminalHistory != originalApp.HasCriminalHistory)
         {
             changes.CriminalHistoryChanged = true;
+            changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = "Please see the criminal charges submitted by the licensee in the documents attached.",
+                DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
+                Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.High,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
         }
         return changes;
     }
@@ -510,7 +534,10 @@ internal partial class PersonalLicenceAppManager :
         public bool CategoriesChanged { get; set; } //full update
         public bool DogRestraintsChanged { get; set; } //full update
         public bool PeaceOfficerStatusChanged { get; set; } //task
+        public Guid? PeaseOfficerStatusChangeTaskId { get; set; }
         public bool MentalHealthStatusChanged { get; set; } //task
+        public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
+        public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
     }
 }

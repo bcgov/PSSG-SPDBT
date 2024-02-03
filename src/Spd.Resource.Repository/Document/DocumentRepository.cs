@@ -170,6 +170,7 @@ internal class DocumentRepository : IDocumentRepository
         {
             contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
             _context.SetLink(destDoc, nameof(destDoc.spd_SubmittedById), contact);
+            _context.SetLink(destDoc, nameof(destDoc.bcgov_Customer_contact), contact);
         }
 
         await _fileStorageService.HandleCommand(new CopyFileCommand(
