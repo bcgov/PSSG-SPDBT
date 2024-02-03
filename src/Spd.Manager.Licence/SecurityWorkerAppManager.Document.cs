@@ -4,7 +4,7 @@ using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
-internal partial class PersonalLicenceAppManager
+internal partial class SecurityWorkerAppManager
 {
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {

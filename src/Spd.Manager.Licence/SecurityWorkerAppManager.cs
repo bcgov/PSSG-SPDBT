@@ -18,7 +18,7 @@ using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
-internal partial class PersonalLicenceAppManager :
+internal partial class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
@@ -30,7 +30,7 @@ internal partial class PersonalLicenceAppManager :
         IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
-        IPersonalLicenceAppManager
+        ISecurityWorkerAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -38,20 +38,20 @@ internal partial class PersonalLicenceAppManager :
     private readonly ITempFileStorageService _tempFile;
     private readonly IIdentityRepository _identityRepository;
     private readonly IDocumentRepository _documentRepository;
-    private readonly ILogger<IPersonalLicenceAppManager> _logger;
+    private readonly ILogger<ISecurityWorkerAppManager> _logger;
     private readonly ILicenceFeeRepository _feeRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IContactRepository _contactRepository;
     private readonly IDistributedCache _cache;
 
-    public PersonalLicenceAppManager(
+    public SecurityWorkerAppManager(
         ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
         IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
-        ILogger<IPersonalLicenceAppManager> logger,
+        ILogger<ISecurityWorkerAppManager> logger,
         ILicenceFeeRepository feeRepository,
         IDistributedCache cache,
         ITaskRepository taskRepository,
