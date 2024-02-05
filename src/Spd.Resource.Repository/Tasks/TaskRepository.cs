@@ -53,6 +53,12 @@ internal class TaskRepository : ITaskRepository
             team? serviceTeam = await _context.teams.Where(t => t.teamid == cmd.AssignedTeamId).FirstOrDefaultAsync(ct);
             _context.SetLink(t, nameof(t.ownerid), serviceTeam);
         }
+
+        if (cmd.LicenceId != null)
+        {
+            spd_licence? lic = await _context.spd_licences.Where(t => t.spd_licenceid == cmd.LicenceId).FirstOrDefaultAsync(ct);
+            _context.SetLink(t, nameof(t.spd_LicenceId_Task), lic);
+        }
         await _context.SaveChangesAsync(ct);
         return new TaskResp { TaskId = t.activityid ?? Guid.Empty };
     }

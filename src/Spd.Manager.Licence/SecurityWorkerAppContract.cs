@@ -4,7 +4,7 @@ using Spd.Manager.Shared;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
 namespace Spd.Manager.Licence;
-public interface IPersonalLicenceAppManager
+public interface ISecurityWorkerAppManager
 {
     public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);

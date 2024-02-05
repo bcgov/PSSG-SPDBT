@@ -302,6 +302,10 @@ namespace Spd.Utilities.Dynamics
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
 
+        public static async Task<task?> GetTaskById(this DynamicsContext context, Guid taskId, CancellationToken ct)
+           => await context.tasks.Where(a => a.activityid == taskId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .SingleOrDefaultAsync(ct);
         public static async Task<spd_identity?> GetIdentityById(this DynamicsContext context, Guid identityId, CancellationToken ct)
         {
             try
