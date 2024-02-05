@@ -32,7 +32,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
+import { LicenceLookupService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -128,7 +128,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
-		private workerLicensingService: WorkerLicensingService,
+		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
@@ -344,7 +344,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.licenceModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -627,7 +627,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
 				const formValue = this.licenceModelFormGroup.getRawValue();
@@ -715,7 +715,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadSpecificLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 
@@ -1448,7 +1448,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		console.debug('submitLicenceAuthenticated body', body);
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
 	/**
@@ -1501,13 +1501,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		body: WorkerLicenceAppAnonymousSubmitRequestJson
 	) {
-		return this.workerLicensingService
+		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((resp: string) => {
 					const keyCode = resp;
 
-					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
 						body,
 					});
@@ -1537,7 +1537,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			});
 		});
 
-		return this.workerLicensingService
+		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((resp: string) => {
@@ -1556,7 +1556,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						// should always be at least one new document
 						if (newDocumentsOnly.length > 0) {
 							documentsToSaveApis.push(
-								this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
+								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
 									keyCode,
 									body: {
 										Documents: newDocumentsOnly,
@@ -1576,7 +1576,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
 						body,
 					});

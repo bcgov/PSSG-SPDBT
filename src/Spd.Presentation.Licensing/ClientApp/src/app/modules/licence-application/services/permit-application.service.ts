@@ -26,7 +26,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, LicenceLookupService, WorkerLicensingService } from 'src/app/api/services';
+import { LicenceFeeService, LicenceLookupService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -101,7 +101,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
 		private licenceFeeService: LicenceFeeService,
-		private workerLicensingService: WorkerLicensingService,
+		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private licenceLookupService: LicenceLookupService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
@@ -491,7 +491,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadSpecificPermit(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
@@ -731,7 +731,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -856,7 +856,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
 		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
-		return this.workerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
 				const formValue = this.permitModelFormGroup.getRawValue();
@@ -883,7 +883,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
 		console.debug('submitLicenceAuthenticated body', body);
 
-		return this.workerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
 	/**
@@ -902,7 +902,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		// console.debug('submitPermitAnonymous', formValue);
 
 		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
-		return this.workerLicensingService
+		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((resp: string) => {
@@ -911,7 +911,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					const documentsToSave: Observable<string>[] = [];
 					documentInfos.forEach((docBody: PermitDocumentsToSave) => {
 						documentsToSave.push(
-							this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
+							this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
 								keyCode,
 								body: {
 									Documents: docBody.documents,
@@ -927,7 +927,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// pass in the list of document key codes
 					body.documentKeyCodes = resps;
 
-					return this.workerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
 						body,
 					});

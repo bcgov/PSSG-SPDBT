@@ -50,6 +50,7 @@ export interface WorkerLicenceResponse {
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
+  legalNameChanged?: null | boolean;
   licenceAppId?: string;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;

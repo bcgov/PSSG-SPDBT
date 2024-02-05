@@ -46,6 +46,7 @@ export interface WorkerLicenceAppUpsertRequest {
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
+  legalNameChanged?: null | boolean;
   licenceAppId?: null | string;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;

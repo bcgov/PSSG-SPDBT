@@ -47,6 +47,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
+  legalNameChanged?: null | boolean;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;
   middleName1?: null | string;

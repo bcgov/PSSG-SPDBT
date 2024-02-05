@@ -467,7 +467,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 		// 	(isLoggedIn: boolean) => {
 		// 		if (isLoggedIn) {
-		// 			this.workerLicensingService
+		// 			this.securityWorkerLicensingService
 		// 				.apiWorkerLicenceApplicationsGet()
 		// 				.pipe()
 		// 				.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {

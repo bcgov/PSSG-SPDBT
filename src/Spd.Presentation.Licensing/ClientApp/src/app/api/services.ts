@@ -3,5 +3,5 @@ export { ConfigurationService } from './services/configuration.service';
 export { LicenceFeeService } from './services/licence-fee.service';
 export { LicenceLookupService } from './services/licence-lookup.service';
 export { PaymentService } from './services/payment.service';
+export { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
 export { UserProfileService } from './services/user-profile.service';
-export { WorkerLicensingService } from './services/worker-licensing.service';
