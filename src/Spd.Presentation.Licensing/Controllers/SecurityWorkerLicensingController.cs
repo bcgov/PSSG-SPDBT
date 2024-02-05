@@ -337,9 +337,4 @@ namespace Spd.Presentation.Licensing.Controllers
         }
         #endregion
     }
-
-    public class GoogleRecaptcha
-    {
-        public string RecaptchaCode { get; set; } = null!;
-    }
 }
