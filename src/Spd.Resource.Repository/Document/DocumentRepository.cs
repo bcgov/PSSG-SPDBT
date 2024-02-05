@@ -84,15 +84,31 @@ internal class DocumentRepository : IDocumentRepository
 
     private async Task<DocumentResp> DocumentCreateAsync(CreateDocumentCmd cmd, CancellationToken ct)
     {
-        spd_application? application = await _context.GetApplicationById(cmd.ApplicationId, ct);
-        if (application == null)
-            throw new ArgumentException("invalid application id");
-
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(cmd.TempFile);
-        documenturl.bcgov_url = $"spd_application/{cmd.ApplicationId}";
+        documenturl.bcgov_url = cmd.ApplicationId == null ? $"contact/{cmd.ApplicantId}" : $"spd_application/{cmd.ApplicationId}";
         if (cmd.ExpiryDate != null) documenturl.spd_expirydate = SharedMappingFuncs.GetDateFromDateOnly(cmd.ExpiryDate);
         _context.AddTobcgov_documenturls(documenturl);
-        _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
+        if (cmd.ApplicationId != null)
+        {
+            spd_application? application = await _context.GetApplicationById((Guid)cmd.ApplicationId, ct);
+            if (application == null)
+                throw new ArgumentException("invalid application id");
+            _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
+        }
+        if (cmd.ApplicantId != null)
+        {
+            contact? contact = await _context.GetContactById((Guid)cmd.ApplicantId, ct);
+            if (contact == null)
+                throw new ArgumentException("invalid contact id");
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Customer_contact), contact);
+        }
+        if (cmd.TaskId != null)
+        {
+            task? task = await _context.GetTaskById((Guid)cmd.TaskId, ct);
+            if (task == null)
+                throw new ArgumentException("invalid task id");
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_TaskId), task);
+        }
         if (cmd.DocumentType != null)
         {
             var tag = _context.LookupTag(cmd.DocumentType.ToString());
@@ -109,9 +125,9 @@ internal class DocumentRepository : IDocumentRepository
             _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
         }
 
-        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
+        await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
         await _context.SaveChangesAsync(ct);
-        documenturl._spd_applicationid_value = application.spd_applicationid;
+        documenturl._spd_applicationid_value = cmd.ApplicationId;
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
@@ -154,6 +170,7 @@ internal class DocumentRepository : IDocumentRepository
         {
             contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
             _context.SetLink(destDoc, nameof(destDoc.spd_SubmittedById), contact);
+            _context.SetLink(destDoc, nameof(destDoc.bcgov_Customer_contact), contact);
         }
 
         await _fileStorageService.HandleCommand(new CopyFileCommand(
@@ -211,9 +228,9 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false)
+    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? contactId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct, bool toTransientBucket = false)
     {
-        if (applicationId == null) return;
+        if (applicationId == null && contactId == null) return;
         if (docUrlId == null) return;
 
         if (tempFile.TempFileKey != null)
@@ -239,9 +256,10 @@ internal class DocumentRepository : IDocumentRepository
                     }
                 };
 
+            string folder = applicationId == null ? $"contact/{contactId}" : $"spd_application/{applicationId}";
             UploadFileCommand uploadFileCmd = new UploadFileCommand(
                         Key: ((Guid)docUrlId).ToString(),
-                        Folder: $"spd_application/{applicationId}",
+                        Folder: folder,
                         File: file,
                         FileTag: fileTag);
             if (toTransientBucket)
