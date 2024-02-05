@@ -309,7 +309,7 @@ internal partial class SecurityWorkerAppManager :
                     fileCmd.ApplicantId = createLicResponse.ContactId;
                     if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
                     {
-                        fileCmd.TaskId = changes.PeaseOfficerStatusChangeTaskId;
+                        fileCmd.TaskId = changes.PeaceOfficerStatusChangeTaskId;
                     }
                     else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
                     {
@@ -445,7 +445,7 @@ internal partial class SecurityWorkerAppManager :
         {
             IEnumerable<string> fileNames = items.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
             changes.PeaceOfficerStatusChanged = true;
-            changes.PeaseOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            changes.PeaceOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents : {string.Join(";", fileNames)} ",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
@@ -470,7 +470,7 @@ internal partial class SecurityWorkerAppManager :
                 Subject = $"Mental Health Condition Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
         }
@@ -486,7 +486,7 @@ internal partial class SecurityWorkerAppManager :
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.High,
                 RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licencing_Risk_Assessment_Coordinator_Team_Guid),
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
         }
@@ -534,7 +534,7 @@ internal partial class SecurityWorkerAppManager :
         public bool CategoriesChanged { get; set; } //full update
         public bool DogRestraintsChanged { get; set; } //full update
         public bool PeaceOfficerStatusChanged { get; set; } //task
-        public Guid? PeaseOfficerStatusChangeTaskId { get; set; }
+        public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
         public bool MentalHealthStatusChanged { get; set; } //task
         public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
