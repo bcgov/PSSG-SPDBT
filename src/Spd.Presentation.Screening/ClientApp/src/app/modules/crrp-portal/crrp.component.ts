@@ -192,7 +192,20 @@ export class CrrpComponent implements OnInit {
 		const defaultOrgId: string | undefined = queryParams['orgId'];
 
 		const nextRoute = await this.authProcessService.initializeCrrp(defaultOrgId);
-		console.debug('initialize nextRoute', nextRoute);
+
+		console.debug(
+			'CrrpComponent initialize defaultOrgId',
+			defaultOrgId,
+			'nextRoute',
+			nextRoute,
+			'bceidUserInfoProfile',
+			this.authUserService.bceidUserInfoProfile
+		);
+
+		if (this.authUserService.bceidUserInfoProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.FIRST_TIME_USER));
+			return;
+		}
 
 		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
 

@@ -16,7 +16,7 @@ import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
 import { TermsAndConditionsComponent } from './components/terms-and-conditions.component';
 import { UsersComponent } from './components/users.component';
-import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
+import { CrrpFirstTimeTermsAndCondsComponent } from './crrp-first-time-terms-and-conds.component';
 import { CrrpComponent } from './crrp.component';
 import { InvitationUserComponent } from './invitation-user.component';
 
@@ -39,6 +39,7 @@ export class CrrpRoutes {
 	public static INVITATION_ACCEPT = 'invitation-accept';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
+	public static FIRST_TIME_USER = 'first-time-user';
 
 	public static MODULE_PATH = 'crrp';
 
@@ -72,11 +73,11 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: `${CrrpRoutes.INVITATION}/:id`,
-		component: CrrpOrgTermsAndCondsComponent,
+		path: CrrpRoutes.FIRST_TIME_USER,
+		component: CrrpFirstTimeTermsAndCondsComponent,
 	},
 	{
-		path: `${CrrpRoutes.INVITATION_ACCEPT}/:id`, // NOT called directly by user... this is called after terms are accepted in INVITATION route
+		path: `${CrrpRoutes.INVITATION}/:id`,
 		component: InvitationUserComponent,
 	},
 ];
