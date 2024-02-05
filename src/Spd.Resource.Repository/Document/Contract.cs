@@ -24,15 +24,16 @@ namespace Spd.Resource.Repository.Document
     {
         public string? FileName { get; set; }
         public string? FileExtension { get; set; }
-        public DocumentTypeEnum? DocumentType { get; set; } = null;
-        public DocumentTypeEnum? DocumentType2 { get; set; } = null;
+        public DocumentTypeEnum? DocumentType { get; set; }
+        public DocumentTypeEnum? DocumentType2 { get; set; }
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid DocumentUrlId { get; set; }
-        public Guid? ClearanceId { get; set; } = null;
-        public Guid? ApplicationId { get; set; } = null;
-        public Guid? CaseId { get; set; } = null;
-        public Guid? ReportId { get; set; } = null;
-        public DateOnly? ExpiryDate { get; set; } = null;
+        public Guid? ClearanceId { get; set; }
+        public Guid? ApplicationId { get; set; }
+        public Guid? CaseId { get; set; }
+        public Guid? ReportId { get; set; }
+        public DateOnly? ExpiryDate { get; set; }
+        public Guid? ContactId { get; set; }
     }
 
     public abstract record DocumentCmd;
@@ -40,7 +41,9 @@ namespace Spd.Resource.Repository.Document
     public record CreateDocumentCmd : DocumentCmd
     {
         public SpdTempFile TempFile { get; set; }
-        public Guid ApplicationId { get; set; }
+        public Guid? ApplicationId { get; set; }
+        public Guid? ApplicantId { get; set; }
+        public Guid? TaskId { get; set; }
         public Guid? SubmittedByApplicantId { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } //tag1
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
