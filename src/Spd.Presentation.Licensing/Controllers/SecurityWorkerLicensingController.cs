@@ -23,9 +23,9 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class WorkerLicensingController : SpdControllerBase
+    public class SecurityWorkerLicensingController : SpdControllerBase
     {
-        private readonly ILogger<WorkerLicensingController> _logger;
+        private readonly ILogger<SecurityWorkerLicensingController> _logger;
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
@@ -37,7 +37,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
 
-        public WorkerLicensingController(ILogger<WorkerLicensingController> logger,
+        public SecurityWorkerLicensingController(ILogger<SecurityWorkerLicensingController> logger,
             IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
