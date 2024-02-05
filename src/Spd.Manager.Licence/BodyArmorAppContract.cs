@@ -34,7 +34,6 @@ public record AnonymousBodyArmorAppUpdateCommand(
 
 public record BodyArmorAppAnonymousSubmitRequestJson : PersonalLicenceAppBase //for anonymous user
 {
-    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 

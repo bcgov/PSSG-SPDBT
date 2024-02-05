@@ -55,8 +55,6 @@ internal class Mappings : Profile
         CreateMap<Alias, Spd.Resource.Repository.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<UploadFileRequest, SpdTempFile>()

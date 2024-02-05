@@ -22,14 +22,11 @@ internal partial class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
-        IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
-        IRequestHandler<AnonymousWorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,//not used
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceAppUpsertResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceAppUpsertResponse>,
-        IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         ISecurityWorkerAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -94,8 +91,8 @@ internal partial class SecurityWorkerAppManager :
         saveCmd.BcscGuid = cmd.BcscGuid;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
 
-        await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
-        await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
+        //await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
+        //await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
     }
 
@@ -118,7 +115,8 @@ internal partial class SecurityWorkerAppManager :
     {
         var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
         WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
-        await GetDocumentsAsync(query.LicenceApplicationId, result, ct);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
         return result;
     }
 
@@ -152,28 +150,6 @@ internal partial class SecurityWorkerAppManager :
     #endregion
 
     #region anonymous
-    //deprecated
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand cmd, CancellationToken ct)
-    {
-        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
-        ICollection<UploadFileRequest> fileRequests = cmd.UploadFileRequests;
-
-        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
-
-        foreach (UploadFileRequest uploadRequest in fileRequests)
-        {
-            SpdTempFile spdTempFile = _mapper.Map<SpdTempFile>(uploadRequest);
-            CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(uploadRequest);
-            fileCmd.TempFile = spdTempFile;
-            fileCmd.ApplicationId = response.LicenceAppId;
-            fileCmd.SubmittedByApplicantId = response.ContactId;
-            fileCmd.ApplicantId = response.ContactId;
-            //create bcgov_documenturl and file
-            await _documentRepository.ManageAsync(fileCmd, ct);
-        }
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
-    }
 
     public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
     {

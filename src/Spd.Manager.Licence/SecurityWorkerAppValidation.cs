@@ -147,102 +147,68 @@ public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseVali
 //        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityConsultant);
 //    }
 //}
-public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseValidator<WorkerLicenceAppAnonymousSubmitRequest>
-{
-    public WorkerLicenceAppAnonymousSubmitRequestValidator(IConfiguration configuration)
-    {
-        //category
-        RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7);
-        var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
-        if (invalidCategoryMatrix == null)
-            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
-        RuleFor(r => r.CategoryCodes).Must(c =>
-        {
-            foreach (var code in c)
-            {
-                var invalidCodes = invalidCategoryMatrix.GetValueOrDefault(code);
-                if (invalidCodes != null)
-                {
-                    foreach (var cat in c)
-                    {
-                        if (cat != code)
-                        {
-                            if (invalidCodes.Contains(cat))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            return true;
-        })
-        .When(c => c.CategoryCodes != null)
-        .WithMessage("Some category cannot be in the same licence request.");
-    }
-}
-public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<AnonymousWorkerLicenceSubmitCommand>
-{
-    public AnonymousWorkerLicenceSubmitCommandValidator(IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousWslSubmitValidator)
-    {
-        RuleFor(r => r.LicenceAnonymousRequest)
-            .Custom((request, context) =>
-            {
-                var result = anonymousWslSubmitValidator.Validate(request);
-                if (!(result.IsValid))
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        context.AddFailure(error);
-                    }
-                }
-            });
+//public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<AnonymousWorkerLicenceSubmitCommand>
+//{
+//    public AnonymousWorkerLicenceSubmitCommandValidator(IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousWslSubmitValidator)
+//    {
+//        RuleFor(r => r.LicenceAnonymousRequest)
+//            .Custom((request, context) =>
+//            {
+//                var result = anonymousWslSubmitValidator.Validate(request);
+//                if (!(result.IsValid))
+//                {
+//                    foreach (var error in result.Errors)
+//                    {
+//                        context.AddFailure(error);
+//                    }
+//                }
+//            });
 
-        RuleFor(r => r.UploadFileRequests)
-            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
-            .When(r => r.LicenceAnonymousRequest.IsPoliceOrPeaceOfficer != null && r.LicenceAnonymousRequest.IsPoliceOrPeaceOfficer.Value)
-            .WithMessage("Missing PoliceBackgroundLetterOfNoConflict file.");
+//        RuleFor(r => r.UploadFileRequests)
+//            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+//            .When(r => r.LicenceAnonymousRequest.IsPoliceOrPeaceOfficer != null && r.LicenceAnonymousRequest.IsPoliceOrPeaceOfficer.Value)
+//            .WithMessage("Missing PoliceBackgroundLetterOfNoConflict file.");
 
-        RuleFor(r => r.UploadFileRequests)
-            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
-            .When(r => r.LicenceAnonymousRequest.IsTreatedForMHC != null && r.LicenceAnonymousRequest.IsTreatedForMHC.Value)
-            .WithMessage("Missing MentalHealthCondition file.");
+//        RuleFor(r => r.UploadFileRequests)
+//            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+//            .When(r => r.LicenceAnonymousRequest.IsTreatedForMHC != null && r.LicenceAnonymousRequest.IsTreatedForMHC.Value)
+//            .WithMessage("Missing MentalHealthCondition file.");
 
-        RuleFor(r => r.UploadFileRequests)
-            .Must(r => r.Any(f => SecurityWorkerAppManager.WorkProofCodes.Contains(f.FileTypeCode)))
-            .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && !r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
-            .WithMessage("Missing proven file because you are not canadian.");
+//        RuleFor(r => r.UploadFileRequests)
+//            .Must(r => r.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.FileTypeCode)))
+//            .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && !r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
+//            .WithMessage("Missing proven file because you are not canadian.");
 
-        RuleFor(r => r.UploadFileRequests)
-           .Must(r => r.Any(f => SecurityWorkerAppManager.CitizenshipProofCodes.Contains(f.FileTypeCode)))
-           .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
-           .WithMessage("Missing citizen proof file because you are canadian.");
+//        RuleFor(r => r.UploadFileRequests)
+//           .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.FileTypeCode)))
+//           .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
+//           .WithMessage("Missing citizen proof file because you are canadian.");
 
-        RuleFor(r => r.UploadFileRequests)
-            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
-            .WithMessage("Missing ProofOfFingerprint file.");
+//        RuleFor(r => r.UploadFileRequests)
+//            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+//            .WithMessage("Missing ProofOfFingerprint file.");
 
-        RuleFor(r => r.UploadFileRequests)
-          .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
-          .When(r => r.LicenceAnonymousRequest.UseBcServicesCardPhoto != null && !r.LicenceAnonymousRequest.UseBcServicesCardPhoto.Value)
-          .WithMessage("Missing PhotoOfYourself file.");
+//        RuleFor(r => r.UploadFileRequests)
+//          .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+//          .When(r => r.LicenceAnonymousRequest.UseBcServicesCardPhoto != null && !r.LicenceAnonymousRequest.UseBcServicesCardPhoto.Value)
+//          .WithMessage("Missing PhotoOfYourself file.");
 
-        RuleFor(r => r).Custom((request, context) =>
-        {
-            foreach (WorkerCategoryTypeCode code in request.LicenceAnonymousRequest.CategoryCodes)
-            {
-                if (!SecurityWorkerAppManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
-                {
-                    if (!request.UploadFileRequests.Any(f => Mappings.GetDocumentType1Enum(f.FileTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
-                    {
-                        context.AddFailure($"Missing file for {code}");
-                    }
-                }
-            }
-        });
-    }
-}
+//        RuleFor(r => r).Custom((request, context) =>
+//        {
+//            foreach (WorkerCategoryTypeCode code in request.LicenceAnonymousRequest.CategoryCodes)
+//            {
+//                if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+//                {
+//                    if (!request.UploadFileRequests.Any(f => Mappings.GetDocumentType1Enum(f.FileTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+//                    {
+//                        context.AddFailure($"Missing file for {code}");
+//                    }
+//                }
+//            }
+//        });
+//    }
+//}
 
 public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : PersonalLicenceAppBaseValidator<WorkerLicenceAppAnonymousSubmitRequestJson>
 {

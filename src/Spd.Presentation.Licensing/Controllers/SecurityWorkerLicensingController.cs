@@ -30,7 +30,6 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
-        private readonly IValidator<AnonymousWorkerLicenceSubmitCommand> _anonymousWslCommandValidator;
         private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> _anonymousLicenceAppSubmitRequestValidator;
         private readonly IMultipartRequestService _multipartRequestService;
         private readonly IMapper _mapper;
@@ -42,7 +41,6 @@ namespace Spd.Presentation.Licensing.Controllers
             IMediator mediator,
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
-            IValidator<AnonymousWorkerLicenceSubmitCommand> anonymousWslCommandValidator,
             IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> anonymousLicenceAppSubmitRequestValidator,
             IMultipartRequestService multipartRequestService,
             IMapper mapper,
@@ -58,7 +56,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _mapper = mapper;
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
-            _anonymousWslCommandValidator = anonymousWslCommandValidator;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
 
@@ -168,61 +165,6 @@ namespace Spd.Presentation.Licensing.Controllers
         #endregion
 
         #region anonymous 
-        /// <summary>
-        /// Submit Security Worker Licence Application Anonymously
-        /// deprecated as the request body is too big. the proxy won't let it through.
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/worker-licence-applications/submit/anonymous")]
-        [HttpPost]
-        [DisableFormValueModelBinding]
-        [Consumes("multipart/form-data")]
-        [RequestSizeLimit(long.MaxValue)]
-        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationAnonymous(CancellationToken ct)
-        {
-            ICollection<UploadFileInfo> uploadedFileInfoList = null;
-
-            try
-            {
-                _logger.LogInformation("downloading all the files");
-                var request = HttpContext.Request;
-                var (model, uploadFileInfoList) = await _multipartRequestService.UploadMultipleFilesAsync<WorkerLicenceAppAnonymousSubmitRequest>(request, ModelState);
-                uploadedFileInfoList = uploadFileInfoList;
-
-                _logger.LogInformation("do Google recaptcha verification");
-                var isValid = await _recaptchaVerificationService.VerifyAsync(model.Recaptcha, ct);
-                if (!isValid)
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
-                }
-
-                _logger.LogInformation("validate payload");
-                AnonymousWorkerLicenceSubmitCommand command = new AnonymousWorkerLicenceSubmitCommand(
-                    model,
-                    _mapper.Map<ICollection<UploadFileRequest>>(uploadFileInfoList));
-                var validateResult = await _anonymousWslCommandValidator.ValidateAsync(command, ct);
-                if (!validateResult.IsValid)
-                    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-
-                return await _mediator.Send(command);
-            }
-            catch (ApiException ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //cleanup the temp file
-                if (uploadedFileInfoList != null)
-                {
-                    var existingFiles = uploadedFileInfoList.Where(f => System.IO.File.Exists(f.FilePath));
-
-                    foreach (UploadFileInfo uploadedFileInfo in existingFiles)
-                        System.IO.File.Delete(uploadedFileInfo.FilePath);
-                }
-            }
-        }
-
         /// <summary>
         /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>

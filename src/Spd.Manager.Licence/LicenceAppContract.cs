@@ -47,7 +47,7 @@ public abstract record PersonalLicenceAppBase
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? LegalNameChanged { get; set; }
-    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
 }
 
 public record ResidentialAddress : Address;
