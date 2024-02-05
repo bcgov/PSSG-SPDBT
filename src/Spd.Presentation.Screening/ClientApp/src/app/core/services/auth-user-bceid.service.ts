@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
-import { OrgService, UserProfileService } from 'src/app/api/services';
+import { OrgService, OrgUserService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import {
@@ -19,6 +19,9 @@ import {
 export interface BceidOrgResponse extends OrgResponse {
 	isNotVolunteerOrg: boolean;
 }
+// export interface BceidUserInfo extends UserInfo {
+// 	isUserPrimary: boolean;
+// }
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBceidService {
@@ -32,6 +35,7 @@ export class AuthUserBceidService {
 		private router: Router,
 		private userProfileService: UserProfileService,
 		private orgService: OrgService,
+		private orgUserService: OrgUserService,
 		private dialog: MatDialog
 	) {}
 
@@ -44,13 +48,31 @@ export class AuthUserBceidService {
 			return Promise.resolve(false);
 		}
 
+		console.log('************** setUserOrgProfile', this.bceidUserInfoProfile);
+
 		const bceidUserOrgProfile = await lastValueFrom(
 			this.orgService.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
 		);
+		// const bceidUserOrgUserProfile = await lastValueFrom(
+		// 	this.orgUserService.apiOrgsOrgIdUsersUserIdGet({
+		// 		orgId: this.bceidUserInfoProfile.orgId!,
+		// 		userId: this.bceidUserInfoProfile.userId!,
+		// 	})
+		// );
+
+		// const isUserPrimary = bceidUserOrgUserProfile
+		// 	? bceidUserOrgUserProfile.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary
+		// 	: false;
+
 		this.bceidUserOrgProfile = {
 			...bceidUserOrgProfile,
 			isNotVolunteerOrg: !bceidUserOrgProfile.volunteerOrganizationTypeCode,
 		};
+
+		// this.bceidUserInfoProfile.isUserPrimary = isUserPrimary;
+
+		// console.log('************** bceidUserOrgProfile', bceidUserOrgProfile);
+		// console.log('************** bceidUserOrgUserProfile', bceidUserOrgUserProfile);
 
 		console.debug('[AuthUserBceidService] setUserOrgProfile bceidUserOrgProfile', this.bceidUserOrgProfile);
 		return Promise.resolve(true);
@@ -89,7 +111,6 @@ export class AuthUserBceidService {
 
 				if (uniqueUserInfoList.length > 1) {
 					const userInfo = await this.orgSelectionAsync(uniqueUserInfoList);
-
 					isSuccess = await this.setUserInfoProfile(userInfo);
 				} else {
 					const userInfo = uniqueUserInfoList[0];

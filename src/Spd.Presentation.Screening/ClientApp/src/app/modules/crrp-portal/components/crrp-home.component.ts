@@ -387,8 +387,10 @@ export class CrrpHomeComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		const userId = this.authUserService.bceidUserInfoProfile?.userId;
+		const bceidUserInfoProfile = this.authUserService.bceidUserInfoProfile;
+
+		const orgId = bceidUserInfoProfile?.orgId;
+		const userId = bceidUserInfoProfile?.userId;
 
 		if (!orgId || !userId) {
 			console.debug('CrrpHomeComponent - missing orgId', orgId, 'userId', userId);
@@ -405,6 +407,8 @@ export class CrrpHomeComponent implements OnInit {
 			.subscribe((res: OrgUserResponse) => {
 				this.userPrimary = res ? res.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 			});
+
+		// this.userPrimary = bceidUserInfoProfile?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;
 
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({

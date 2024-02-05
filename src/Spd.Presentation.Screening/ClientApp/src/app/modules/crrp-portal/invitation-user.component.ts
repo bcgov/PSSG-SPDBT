@@ -5,7 +5,6 @@ import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
@@ -40,7 +39,6 @@ export class InvitationUserComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private authUserService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private orgUserService: OrgUserService
 	) {}

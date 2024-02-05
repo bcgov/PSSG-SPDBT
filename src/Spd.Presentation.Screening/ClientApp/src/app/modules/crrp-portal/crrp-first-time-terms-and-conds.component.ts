@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
@@ -27,12 +27,13 @@ import { CrrpRoutes } from './crrp-routing.module';
 export class CrrpFirstTimeTermsAndCondsComponent implements OnInit {
 	constructor(
 		private router: Router,
-		private authenticationService: AuthenticationService,
+		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserBceidService
 	) {}
 
 	ngOnInit(): void {
-		if (!this.authenticationService.isLoggedIn()) {
+		const isLoggedIn = this.authProcessService.getCurrentWaitUntilAuthenticatedValue();
+		if (!isLoggedIn) {
 			this.router.navigate([AppRoutes.LANDING]);
 		}
 	}
