@@ -4,7 +4,7 @@ using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
-internal partial class PersonalLicenceAppManager
+internal partial class SecurityWorkerAppManager
 {
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
@@ -36,7 +36,8 @@ internal partial class PersonalLicenceAppManager
                 ApplicationId = command.AppId,
                 DocumentType = docType1,
                 DocumentType2 = docType2,
-                SubmittedByApplicantId = contactId
+                SubmittedByApplicantId = contactId,
+                ApplicantId = contactId,
             }, ct);
             docResps.Add(docResp);
         }

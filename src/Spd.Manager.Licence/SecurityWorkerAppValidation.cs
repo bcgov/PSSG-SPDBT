@@ -250,12 +250,12 @@ public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<An
             .WithMessage("Missing MentalHealthCondition file.");
 
         RuleFor(r => r.UploadFileRequests)
-            .Must(r => r.Any(f => PersonalLicenceAppManager.WorkProofCodes.Contains(f.FileTypeCode)))
+            .Must(r => r.Any(f => SecurityWorkerAppManager.WorkProofCodes.Contains(f.FileTypeCode)))
             .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && !r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
             .WithMessage("Missing proven file because you are not canadian.");
 
         RuleFor(r => r.UploadFileRequests)
-           .Must(r => r.Any(f => PersonalLicenceAppManager.CitizenshipProofCodes.Contains(f.FileTypeCode)))
+           .Must(r => r.Any(f => SecurityWorkerAppManager.CitizenshipProofCodes.Contains(f.FileTypeCode)))
            .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
            .WithMessage("Missing citizen proof file because you are canadian.");
 
@@ -272,7 +272,7 @@ public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<An
         {
             foreach (WorkerCategoryTypeCode code in request.LicenceAnonymousRequest.CategoryCodes)
             {
-                if (!PersonalLicenceAppManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+                if (!SecurityWorkerAppManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
                 {
                     if (!request.UploadFileRequests.Any(f => Mappings.GetDocumentType1Enum(f.FileTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
                     {
