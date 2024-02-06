@@ -33,8 +33,19 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	selector: 'app-crrp',
 	template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
-			<div class="row flex-nowrap m-0">
-				<div class="col-auto mat-sidenav px-0" style="background-color: var(--color-sidebar);">
+			<!-- Hide the lhs menu when displaying the 'first time user' terms and conditions -->
+			<div
+				#firstTimeUserLink="routerLinkActive"
+				[routerLink]="[crrpRoutes.path(crrpRoutes.FIRST_TIME_USER)]"
+				routerLinkActive="d-none"
+			></div>
+
+			<div class="row flex-nowrap m-0" *ngIf="isReadyToDisplay">
+				<div
+					class="col-auto mat-sidenav px-0"
+					[ngClass]="firstTimeUserLink.isActive ? 'd-none' : 'd-block'"
+					style="background-color: var(--color-sidebar);"
+				>
 					<div
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
@@ -177,6 +188,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 export class CrrpComponent implements OnInit {
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 	isNotVolunteerOrg = false;
+	isReadyToDisplay = false; // Prevent 'flashing' of home page before displaying first-time-user terms
 	crrpRoutes = CrrpRoutes;
 
 	constructor(
@@ -192,8 +204,23 @@ export class CrrpComponent implements OnInit {
 		const defaultOrgId: string | undefined = queryParams['orgId'];
 
 		const nextRoute = await this.authProcessService.initializeCrrp(defaultOrgId);
-		console.debug('initialize nextRoute', nextRoute);
 
+		// console.debug(
+		// 	'CrrpComponent initialize defaultOrgId',
+		// 	defaultOrgId,
+		// 	'nextRoute',
+		// 	nextRoute,
+		// 	'bceidUserInfoProfile',
+		// 	this.authUserService.bceidUserInfoProfile
+		// );
+
+		if (this.authUserService.bceidUserInfoProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.FIRST_TIME_USER));
+			this.isReadyToDisplay = true;
+			return;
+		}
+
+		this.isReadyToDisplay = true;
 		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
 
 		if (nextRoute) {
