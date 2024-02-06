@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Spd.Manager.Shared;
 using GenderCode = Spd.Manager.Shared.GenderCode;
@@ -97,7 +97,7 @@ public abstract record WorkerLicenceAppBase
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-    public bool? LegalNameChanged { get; set; }
+    public bool? HasLegalNameChanged { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
 }
 

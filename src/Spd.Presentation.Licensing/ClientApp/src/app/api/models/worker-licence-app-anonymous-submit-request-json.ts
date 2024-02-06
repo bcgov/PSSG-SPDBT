@@ -37,6 +37,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   hasBcDriversLicence?: null | boolean;
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
+  hasLegalNameChanged?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
@@ -47,7 +48,6 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
-  legalNameChanged?: null | boolean;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;
   middleName1?: null | string;

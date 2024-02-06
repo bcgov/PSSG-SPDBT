@@ -743,7 +743,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				};
 
 				const criminalHistoryData = {
-					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
+					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory) ?? BooleanTypeCode.No, // TODO bad data handling
 				};
 
 				const aliasesData = {

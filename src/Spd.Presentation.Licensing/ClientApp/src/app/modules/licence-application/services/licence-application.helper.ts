@@ -71,7 +71,7 @@ export abstract class LicenceApplicationHelper {
 			surname: new FormControl('', [FormControlValidators.required]),
 			genderCode: new FormControl('', [FormControlValidators.required]),
 			dateOfBirth: new FormControl('', [Validators.required]),
-			legalNameChanged: new FormControl(false),
+			hasLegalNameChanged: new FormControl(false),
 			origGivenName: new FormControl(''),
 			origMiddleName1: new FormControl(''),
 			origMiddleName2: new FormControl(''),
@@ -85,7 +85,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('legalNameChanged')?.value
+					(form) => form.get('hasLegalNameChanged')?.value
 				),
 			],
 		}
@@ -619,6 +619,7 @@ export abstract class LicenceApplicationHelper {
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
 		if (licenceModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			const docs: Array<Blob> = [];
@@ -781,6 +782,17 @@ export abstract class LicenceApplicationHelper {
 					documents: docs,
 				});
 			}
+		}
+
+		if (personalInformationData.hasLegalNameChanged && personalInformationData.attachments) {
+			const docs: Array<Blob> = [];
+			personalInformationData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.LegalNameChange,
+				documents: docs,
+			});
 		}
 
 		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
@@ -1011,7 +1023,7 @@ export abstract class LicenceApplicationHelper {
 			);
 		}
 
-		if (personalInformationData.legalNameChanged) {
+		if (personalInformationData.hasLegalNameChanged) {
 			personalInformationData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,

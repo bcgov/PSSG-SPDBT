@@ -36,6 +36,7 @@ export interface WorkerLicenceAppUpsertRequest {
   hasBcDriversLicence?: null | boolean;
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
+  hasLegalNameChanged?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
@@ -46,7 +47,6 @@ export interface WorkerLicenceAppUpsertRequest {
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
-  legalNameChanged?: null | boolean;
   licenceAppId?: null | string;
   licenceTermCode?: LicenceTermCode;
   mailingAddressData?: MailingAddress;

@@ -7,7 +7,7 @@ import {
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -722,6 +722,8 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 	) {}
 
 	ngOnInit(): void {
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(isFormValid: boolean) => {
 				if (isFormValid) {
@@ -732,8 +734,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 				}
 			}
 		);
-
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	ngOnDestroy() {
