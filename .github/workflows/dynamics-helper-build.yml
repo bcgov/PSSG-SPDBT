@@ -2,7 +2,9 @@ name: Dynamics Helper Build
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - "main"
+      - release/**
     paths:
       - src/**
       - "!src/Spd.Presentation.Licensing/**"
@@ -10,14 +12,13 @@ on:
       - .github/workflows/dynamics-helper-build.yml
       - .github/workflows/docker-build-template.yml
 
-  # pull_request:
-  #   branches: ["main"]
-  #   paths:
-  #     - src/**
-  #     - "!src/Spd.Presentation.Licensing/**"
-  #     - "!src/Spd.Presentation.Screening/**"
-  #     - .github/workflows/dynamics-helper-build.yml
-  #     - .github/workflows/docker-build-template.yml
+  pull_request:    
+    paths:
+      - src/**
+      - "!src/Spd.Presentation.Licensing/**"
+      - "!src/Spd.Presentation.Screening/**"
+      - .github/workflows/dynamics-helper-build.yml
+      - .github/workflows/docker-build-template.yml
 
 jobs:
   build:
