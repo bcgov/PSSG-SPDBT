@@ -93,10 +93,10 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
-            //if (_currentUser.GetUserId() == userId.ToString())
-            //{
-            await _mediator.Send(new OrgUserUpdateLoginCommand(userId));
-            //}
+            if (_currentUser.GetUserId() == userId.ToString())
+            {
+                await _mediator.Send(new OrgUserUpdateLoginCommand(userId));
+            }
             return await _mediator.Send(new OrgUserGetQuery(userId));
         }
 
