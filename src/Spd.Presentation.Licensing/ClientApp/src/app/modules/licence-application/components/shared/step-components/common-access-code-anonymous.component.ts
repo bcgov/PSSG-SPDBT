@@ -10,7 +10,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
-import { take, tap } from 'rxjs';
+import { Subject, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-common-access-code-anonymous',
@@ -47,7 +47,7 @@ import { take, tap } from 'rxjs';
 						</div>
 						<div class="col-12">
 							<div class="mt-2 mb-3" formGroupName="captchaFormGroup">
-								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
+								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
@@ -81,6 +81,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
+	resetRecaptcha: Subject<void> = new Subject<void>();
 	errorMessage: string | null = null;
 	isExpired = false;
 
@@ -170,6 +171,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		if (!resp) {
 			// access code / licence are not found
 			this.errorMessage = `This ${this.licenceNumberName} number and access code are not a valid combination.`;
+			this.resetRecaptcha.next(); // reset the recaptcha
 			return;
 		}
 
@@ -222,6 +224,10 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 
 			const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.hotToastService.success(`The ${workerLicenceTypeDesc} has been found.`);
+		}
+
+		if (this.errorMessage) {
+			this.resetRecaptcha.next(); // reset the recaptcha
 		}
 	}
 
