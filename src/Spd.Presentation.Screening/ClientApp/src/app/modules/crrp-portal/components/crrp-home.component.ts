@@ -121,13 +121,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column box-text-height">
 										<div class="mb-auto p-2 pb-0">
-											<h4 class="mb-0" *ngIf="userPrimary === true">Manage authorized users</h4>
-											<h4 class="mb-0" *ngIf="userPrimary === false">Update profile</h4>
+											<h4 class="mb-0" *ngIf="isUserPrimary === true">Manage authorized users</h4>
+											<h4 class="mb-0" *ngIf="isUserPrimary === false">Update profile</h4>
 										</div>
 										<div class="w-100 p-2 pt-0">
 											<div class="d-grid gap-2 d-md-flex justify-content-between">
-												<div class="mb-0" *ngIf="userPrimary === true">Add or remove team members</div>
-												<div class="mb-0" *ngIf="userPrimary === false">Edit your personal information</div>
+												<div class="mb-0" *ngIf="isUserPrimary === true">Add or remove team members</div>
+												<div class="mb-0" *ngIf="isUserPrimary === false">Edit your personal information</div>
 												<mat-icon class="ms-auto box__text__icon d-none d-md-block">arrow_forward_ios</mat-icon>
 											</div>
 										</div>
@@ -371,7 +371,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 export class CrrpHomeComponent implements OnInit {
 	crrpRoutes = CrrpRoutes;
 
-	userPrimary: boolean | null = null;
+	isUserPrimary: boolean | null = null;
 	awaitingPaymentCount = 0;
 	verifyIdentityCount = 0;
 	completedClearedCount = 0;
@@ -387,8 +387,10 @@ export class CrrpHomeComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		const userId = this.authUserService.bceidUserInfoProfile?.userId;
+		const bceidUserInfoProfile = this.authUserService.bceidUserInfoProfile;
+
+		const orgId = bceidUserInfoProfile?.orgId;
+		const userId = bceidUserInfoProfile?.userId;
 
 		if (!orgId || !userId) {
 			console.debug('CrrpHomeComponent - missing orgId', orgId, 'userId', userId);
@@ -403,7 +405,7 @@ export class CrrpHomeComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: OrgUserResponse) => {
-				this.userPrimary = res ? res.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
+				this.isUserPrimary = res ? res.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 			});
 
 		this.applicationStatistics$ = this.applicationService

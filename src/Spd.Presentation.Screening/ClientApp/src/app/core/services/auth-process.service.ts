@@ -36,6 +36,10 @@ export class AuthProcessService {
 		private router: Router
 	) {}
 
+	public getCurrentWaitUntilAuthenticatedValue(): boolean {
+		return this._waitUntilAuthentication$.getValue();
+	}
+
 	//----------------------------------------------------------
 	// * CRRP Portal
 	// *

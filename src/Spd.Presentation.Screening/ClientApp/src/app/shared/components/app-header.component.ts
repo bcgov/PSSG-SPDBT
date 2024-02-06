@@ -99,7 +99,7 @@ export class HeaderComponent implements OnInit {
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
 			console.debug(
-				'BcServicesCard bcscUserInfoProfile',
+				'HeaderComponent BcServicesCard bcscUserInfoProfile',
 				this.authUserBcscService.bcscUserInfoProfile,
 				'bcscUserWhoamiProfile',
 				this.authUserBcscService.bcscUserWhoamiProfile
@@ -122,7 +122,7 @@ export class HeaderComponent implements OnInit {
 		}
 
 		console.debug(
-			'BCeID bceidUserInfoProfile',
+			'HeaderComponent BCeID bceidUserInfoProfile',
 			this.authUserBceidService.bceidUserInfoProfile,
 			'loggedInUserTokenData',
 			this.authProcessService.loggedInUserTokenData
