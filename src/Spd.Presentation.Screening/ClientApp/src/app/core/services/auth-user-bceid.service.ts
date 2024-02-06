@@ -19,9 +19,6 @@ import {
 export interface BceidOrgResponse extends OrgResponse {
 	isNotVolunteerOrg: boolean;
 }
-// export interface BceidUserInfo extends UserInfo {
-// 	isUserPrimary: boolean;
-// }
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBceidService {
@@ -53,26 +50,11 @@ export class AuthUserBceidService {
 		const bceidUserOrgProfile = await lastValueFrom(
 			this.orgService.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
 		);
-		// const bceidUserOrgUserProfile = await lastValueFrom(
-		// 	this.orgUserService.apiOrgsOrgIdUsersUserIdGet({
-		// 		orgId: this.bceidUserInfoProfile.orgId!,
-		// 		userId: this.bceidUserInfoProfile.userId!,
-		// 	})
-		// );
-
-		// const isUserPrimary = bceidUserOrgUserProfile
-		// 	? bceidUserOrgUserProfile.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary
-		// 	: false;
 
 		this.bceidUserOrgProfile = {
 			...bceidUserOrgProfile,
 			isNotVolunteerOrg: !bceidUserOrgProfile.volunteerOrganizationTypeCode,
 		};
-
-		// this.bceidUserInfoProfile.isUserPrimary = isUserPrimary;
-
-		// console.log('************** bceidUserOrgProfile', bceidUserOrgProfile);
-		// console.log('************** bceidUserOrgUserProfile', bceidUserOrgUserProfile);
 
 		console.debug('[AuthUserBceidService] setUserOrgProfile bceidUserOrgProfile', this.bceidUserOrgProfile);
 		return Promise.resolve(true);
