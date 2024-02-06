@@ -9,6 +9,6 @@ spec:
   minAvailable: {{ .Values.scaling.minAvailableReplicas }}
   selector:
     matchLabels:
-      deploymentconfig: {{ .name }}-dc
+      name: {{ .name }}
 {{- end -}}
 {{- end -}}
