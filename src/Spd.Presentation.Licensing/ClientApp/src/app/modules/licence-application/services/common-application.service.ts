@@ -62,18 +62,6 @@ export class CommonApplicationService {
 			hasValidSwl90DayLicence = true;
 		}
 
-		// console.debug(
-		// 	'getLicenceTermsAndFees',
-		// 	hasValidSwl90DayLicence,
-		// 	this.licenceFees?.filter(
-		// 		(item) =>
-		// 			item.workerLicenceTypeCode == workerLicenceTypeCode &&
-		// 			item.applicationTypeCode == applicationTypeCode &&
-		// 			item.businessTypeCode == businessTypeCode &&
-		// 			item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		// 	)
-		// );
-
 		return this.licenceFees?.filter(
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&

@@ -60,7 +60,7 @@ export abstract class PermitApplicationHelper {
 			surname: new FormControl('', [FormControlValidators.required]),
 			genderCode: new FormControl('', [FormControlValidators.required]),
 			dateOfBirth: new FormControl('', [Validators.required]),
-			isNeedProofOfLegalNameChange: new FormControl(false),
+			legalNameChanged: new FormControl(false),
 			origGivenName: new FormControl(''),
 			origMiddleName1: new FormControl(''),
 			origMiddleName2: new FormControl(''),
@@ -74,7 +74,7 @@ export abstract class PermitApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+					(form) => form.get('legalNameChanged')?.value
 				),
 			],
 		}
