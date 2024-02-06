@@ -42,12 +42,6 @@ public record AnonymousWorkerLicenceAppUpdateCommand(
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
-
-
-
-
-
-
 public record WorkerLicenceResponse : PersonalLicenceAppBase
 {
     public Guid LicenceAppId { get; set; }
@@ -96,19 +90,9 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : PersonalLicenceAppBas
     public bool? Reprint { get; set; }
 }
 
-public record WorkerLicenceCreateResponse
-{
-    public Guid LicenceAppId { get; set; }
-}
-
-
 #endregion
 
-public record DocumentExpiredInfo
-{
-    public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
-    public DateOnly? ExpiryDate { get; set; }
-}
+
 public record Document : LicenceAppDocumentResponse
 {
     public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }

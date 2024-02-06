@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Configurations;
-using Spd.Presentation.Licensing.Services;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -21,46 +20,43 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class BodyArmorPermitController : SpdControllerBase
+    public class PermitController : SpdControllerBase
     {
-        private readonly ILogger<BodyArmorPermitController> _logger;
-        private readonly IPrincipal _currentUser;
+        private readonly ILogger<PermitController> _logger;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<BodyArmorAppAnonymousSubmitRequestJson> _anonymousLicenceAppSubmitRequestValidator;
+        private readonly IValidator<PermitAppAnonymousSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
 
-        public BodyArmorPermitController(ILogger<BodyArmorPermitController> logger,
+        public PermitController(ILogger<PermitController> logger,
             IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
-            IValidator<BodyArmorAppAnonymousSubmitRequestJson> anonymousLicenceAppSubmitRequestValidator,
-            IMultipartRequestService multipartRequestService,
+            IValidator<PermitAppAnonymousSubmitRequest> permitAppAnonymousSubmitRequestValidator,
             IMapper mapper,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache)
         {
             _logger = logger;
-            _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
-             _mapper = mapper;
+            _mapper = mapper;
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
-            _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
+            _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
         }
 
         #region anonymous 
         /// <summary>
-        /// Upload body armor application first step: frontend needs to make this first request to get a Guid code.
+        /// Upload  Body Armor or Armor Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>
         /// <param name="ct"></param>
         /// <returns>Guid: keyCode</returns>
-        [Route("api/body-armor-applications/anonymous/keyCode")]
+        [Route("api/permit-applications/anonymous/keyCode")]
         [HttpPost]
-        public async Task<Guid> GetBodyArmorAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
+        public async Task<Guid> GetPermitAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
@@ -74,17 +70,17 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload Body Armor application files: frontend use the keyCode to upload following files.
+        /// Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode to upload following files.
         /// Uploading file only save files in cache, the files are not connected to the appliation yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/body-armor-applications/anonymous/{keyCode}/files")]
+        [Route("api/permit-applications/anonymous/{keyCode}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadBodyArmorAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        public async Task<Guid> UploadPermitAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
         {
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
             if (fileUploadConfig == null)
@@ -120,14 +116,16 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Submit Body Armor Permit Application Json part Anonymously
+        /// Submit Body Armor or Armor Vehicle permit application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
-        /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
+        /// <param name="keyCode"></param>
+        /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/body-armor-applications/anonymous/{keyCode}/submit")]
+        [Route("api/permit-applications/anonymous/{keyCode}/submit")]
         [HttpPost]
-        public async Task<BodyArmorAppCommandResponse> SubmitBodyArmorPermitApplicationJsonAnonymous(BodyArmorAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
+        public async Task<PermitAppCommandResponse> SubmitPermitApplicationAnonymous(PermitAppAnonymousSubmitRequest jsonRequest, Guid keyCode, CancellationToken ct)
         {
             //validate keyCode
             if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
@@ -135,32 +133,31 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
             }
 
-            _logger.LogInformation("validate payload");
-            var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+            var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousBodyArmorAppNewCommand command = new(jsonRequest, keyCode);
+                AnonymousPermitAppNewCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousBodyArmorAppReplaceCommand command = new(jsonRequest, keyCode);
+                AnonymousPermitAppReplaceCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousBodyArmorAppRenewCommand command = new(jsonRequest, keyCode);
+                AnonymousPermitAppRenewCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousBodyArmorAppUpdateCommand command = new(jsonRequest, keyCode);
+                AnonymousPermitAppUpdateCommand command = new(jsonRequest, keyCode);
                 return await _mediator.Send(command, ct);
             }
             return null;

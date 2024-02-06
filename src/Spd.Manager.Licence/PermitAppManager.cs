@@ -13,16 +13,15 @@ using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Cache;
-using Spd.Utilities.Dynamics;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
-internal partial class BodyArmorAppManager :
-        IRequestHandler<AnonymousBodyArmorAppNewCommand, BodyArmorAppCommandResponse>,
-        IRequestHandler<AnonymousBodyArmorAppReplaceCommand, BodyArmorAppCommandResponse>,
-        IRequestHandler<AnonymousBodyArmorAppRenewCommand, BodyArmorAppCommandResponse>,
-        IRequestHandler<AnonymousBodyArmorAppUpdateCommand, BodyArmorAppCommandResponse>,
-        IBodyArmorAppManager
+internal class PermitAppManager :
+        IRequestHandler<AnonymousPermitAppNewCommand, PermitAppCommandResponse>,
+        IRequestHandler<AnonymousPermitAppReplaceCommand, PermitAppCommandResponse>,
+        IRequestHandler<AnonymousPermitAppRenewCommand, PermitAppCommandResponse>,
+        IRequestHandler<AnonymousPermitAppUpdateCommand, PermitAppCommandResponse>,
+        IPermitAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -36,7 +35,7 @@ internal partial class BodyArmorAppManager :
     private readonly IContactRepository _contactRepository;
     private readonly IDistributedCache _cache;
 
-    public BodyArmorAppManager(
+    public PermitAppManager(
         ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
         IMapper mapper,
@@ -63,9 +62,9 @@ internal partial class BodyArmorAppManager :
     }
 
     #region anonymous
-    public async Task<BodyArmorAppCommandResponse> Handle(AnonymousBodyArmorAppNewCommand cmd, CancellationToken ct)
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand cmd, CancellationToken ct)
     {
-        BodyArmorAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
 
         //todo: add checking if all necessary files have been uploaded
 
@@ -74,12 +73,12 @@ internal partial class BodyArmorAppManager :
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
         await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
         await CommitApplicationAsync(request, response.LicenceAppId, ct);
-        return new BodyArmorAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
 
-    public async Task<BodyArmorAppCommandResponse> Handle(AnonymousBodyArmorAppReplaceCommand cmd, CancellationToken ct)
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppReplaceCommand cmd, CancellationToken ct)
     {
-        BodyArmorAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
             throw new ArgumentException("should be a replacement request");
 
@@ -112,12 +111,12 @@ internal partial class BodyArmorAppManager :
         }
 
         await CommitApplicationAsync(request, response.LicenceAppId, ct);
-        return new BodyArmorAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
 
-    public async Task<BodyArmorAppCommandResponse> Handle(AnonymousBodyArmorAppRenewCommand cmd, CancellationToken ct)
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppRenewCommand cmd, CancellationToken ct)
     {
-        BodyArmorAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
 
@@ -160,12 +159,12 @@ internal partial class BodyArmorAppManager :
 
         await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
 
-        return new BodyArmorAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
     }
 
-    public async Task<BodyArmorAppCommandResponse> Handle(AnonymousBodyArmorAppUpdateCommand cmd, CancellationToken ct)
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppUpdateCommand cmd, CancellationToken ct)
     {
-        BodyArmorAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be a update request");
 
@@ -225,12 +224,12 @@ internal partial class BodyArmorAppManager :
             await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), ct);
         }
 
-        return new BodyArmorAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
+        return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
 
     #endregion
 
-    private async Task CommitApplicationAsync(BodyArmorAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    private async Task CommitApplicationAsync(PermitAppAnonymousSubmitRequest request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -247,13 +246,13 @@ internal partial class BodyArmorAppManager :
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
     }
 
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, BodyArmorAppAnonymousSubmitRequestJson newApp, LicenceResp originalLic, CancellationToken ct)
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newApp, LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
 
         return changes;
     }
-    private async Task UploadNewDocs(BodyArmorAppAnonymousSubmitRequestJson request, Guid? licenceAppId, Guid? contactId, CancellationToken ct)
+    private async Task UploadNewDocs(PermitAppAnonymousSubmitRequest request, Guid? licenceAppId, Guid? contactId, CancellationToken ct)
     {
         if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
         {
