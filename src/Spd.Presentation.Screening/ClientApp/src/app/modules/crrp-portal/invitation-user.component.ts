@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeWhile } from 'rxjs';
 import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
@@ -34,10 +34,11 @@ import { CrrpRoutes } from './crrp-routing.module';
 export class InvitationUserComponent implements OnInit {
 	message = '';
 
+	private subscribeAlive = true;
+
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private authUserService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private orgUserService: OrgUserService
 	) {}
@@ -49,21 +50,31 @@ export class InvitationUserComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
-		if (id) {
-			const invitationRequest: InvitationRequest = { inviteEncryptedCode: id };
-			this.orgUserService
-				.apiUserInvitationPost({ body: invitationRequest })
-				.pipe()
-				.subscribe(async (resp: any) => {
-					if (resp?.isError) {
-						this.message = resp.message;
-					} else {
-						await this.authProcessService.initializeCrrp(location.pathname);
+		await this.authProcessService.initializeCrrpUserInvitation(location.pathname);
 
-						const defaultOrgId = this.authUserService.bceidUserInfoProfile?.orgId;
-						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
-					}
-				});
-		}
+		this.authProcessService.waitUntilAuthentication$
+			.pipe(takeWhile(() => this.subscribeAlive))
+			.subscribe((isLoggedIn: boolean) => {
+				if (isLoggedIn) {
+					this.subscribeAlive = false;
+
+					const invitationRequest: InvitationRequest = { inviteEncryptedCode: id };
+					this.orgUserService
+						.apiUserInvitationPost({ body: invitationRequest })
+						.pipe()
+						.subscribe(async (resp: any) => {
+							console.debug('InvitationUserComponent apiUserInvitationPost', resp);
+
+							if (resp?.isError) {
+								this.message = resp.message;
+							} else {
+								const defaultOrgId = resp.orgId;
+
+								await this.authProcessService.initializeCrrp(defaultOrgId, location.pathname);
+								this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
+							}
+						});
+				}
+			});
 	}
 }
