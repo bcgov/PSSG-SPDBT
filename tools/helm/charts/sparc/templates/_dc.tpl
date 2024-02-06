@@ -6,7 +6,7 @@ metadata:
   name: {{ .name }}
   labels: {{ .labels | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.scaling.minReplicas }}
   revisionHistoryLimit: 10
   strategy:
     type: Rolling
