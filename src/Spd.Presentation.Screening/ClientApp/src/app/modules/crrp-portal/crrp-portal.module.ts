@@ -21,8 +21,7 @@ import { TermsAndConditionsComponent } from './components/terms-and-conditions.c
 import { TermsTextComponent } from './components/terms-text.component';
 import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
-import { CrrpFirstTimeTermsAndCondsModalComponent } from './crrp-first-time-terms-and-conds-modal.component';
-import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
+import { CrrpFirstTimeTermsAndCondsComponent } from './crrp-first-time-terms-and-conds.component';
 import { CrrpRoutingModule } from './crrp-routing.module';
 import { CrrpComponent } from './crrp.component';
 import { InvitationUserComponent } from './invitation-user.component';
@@ -49,8 +48,7 @@ import { InvitationUserComponent } from './invitation-user.component';
 		CrrpPaymentSuccessComponent,
 		CrrpPaymentManualComponent,
 		CrrpPaymentErrorComponent,
-		CrrpOrgTermsAndCondsComponent,
-		CrrpFirstTimeTermsAndCondsModalComponent,
+		CrrpFirstTimeTermsAndCondsComponent,
 		CommonTermsAndCondsComponent,
 		TermsAndConditionsComponent,
 		TermsTextComponent,
