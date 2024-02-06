@@ -69,12 +69,9 @@ const routes: Routes = [
 			{ path: CrrpRoutes.TERMS_AND_CONDITIONS, component: TermsAndConditionsComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
 			{ path: CrrpRoutes.USERS, component: UsersComponent },
+			{ path: CrrpRoutes.FIRST_TIME_USER, component: CrrpFirstTimeTermsAndCondsComponent },
 			{ path: '', redirectTo: CrrpRoutes.path(CrrpRoutes.HOME), pathMatch: 'full' },
 		],
-	},
-	{
-		path: CrrpRoutes.FIRST_TIME_USER,
-		component: CrrpFirstTimeTermsAndCondsComponent,
 	},
 	{
 		path: `${CrrpRoutes.INVITATION}/:id`,
