@@ -167,6 +167,12 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	}
 
 	private handleLookupResponse(resp: LicenceResponse): void {
+		if (!resp) {
+			// access code / licence are not found
+			this.errorMessage = `This ${this.licenceNumberName} number and access code are not a valid combination.`;
+			return;
+		}
+
 		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.replacementPeriodPreventionDays;
 		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
 
@@ -179,10 +185,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDaysNinetyDayTerm;
 		}
 
-		if (!resp) {
-			// access code / licence are not found
-			this.errorMessage = `This ${this.licenceNumberName} number and access code are not a valid combination.`;
-		} else if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
+		if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
 			//  access code matches licence, but the WorkerLicenceType does not match
 			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
