@@ -13,7 +13,6 @@
 			
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
