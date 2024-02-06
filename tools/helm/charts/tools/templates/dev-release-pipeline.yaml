@@ -4,16 +4,37 @@ metadata:
   name: dev-release-pipeline
   labels:
     DataClass: Low
-spec:
-  tasks:
 
+spec:
+  params:
+    - name: imageTag
+      description: ''
+      default: 'main'
+    - name: promoteScreening
+      description: ''
+      default: 'true'
+    - name: promoteLicensing
+      description: ''
+      default: 'true'
+    - name: promoteDynamicsHelper
+      description: ''
+      default: 'true'
+    - name: promoteJobScheduler
+      description: ''
+      default: 'true'
+
+  tasks:
     ## Promote dev ##
     - name: dev-screening-portal
+      when:
+        - input: "$(params.promoteScreening)"
+          operator: in
+          values: ["true"]
       params:
         - name: sourceImage
           value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/screening-portal
         - name: sourceTag
-          value: latest
+          value: $(params.imageTag)
         - name: destinationImage
           value: screening-portal
         - name: destinationTag
@@ -27,11 +48,15 @@ spec:
         name: tag-image-task
 
     - name: dev-licensing-portal
+      when:
+        - input: "$(params.promoteLicensing)"
+          operator: in
+          values: ["true"]
       params:
         - name: sourceImage
           value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/licensing-portal
         - name: sourceTag
-          value: latest
+          value: $(params.imageTag)
         - name: destinationImage
           value: licensing-portal
         - name: destinationTag
@@ -45,11 +70,15 @@ spec:
         name: tag-image-task
 
     - name: dev-dynamics-helper
+      when:
+        - input: "$(params.promoteDynamicsHelper)"
+          operator: in
+          values: ["true"]
       params:
         - name: sourceImage
           value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov-c/pssg-spdbt/dynamics-helper
         - name: sourceTag
-          value: latest
+          value: $(params.imageTag)
         - name: destinationImage
           value: dynamics-helper
         - name: destinationTag
@@ -63,11 +92,15 @@ spec:
         name: tag-image-task
 
     - name: dev-job-scheduler
+      when:
+        - input: "$(params.promoteJobScheduler)"
+          operator: in
+          values: ["true"]
       params:
         - name: sourceImage
           value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/jag-jobscheduler
         - name: sourceTag
-          value: main
+          value: $(params.imageTag)
         - name: destinationImage
           value: jag-jobscheduler
         - name: destinationTag
