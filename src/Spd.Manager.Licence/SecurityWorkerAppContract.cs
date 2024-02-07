@@ -6,48 +6,48 @@ using GenderCode = Spd.Manager.Shared.GenderCode;
 namespace Spd.Manager.Licence;
 public interface ISecurityWorkerAppManager
 {
-    public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct);
     //deprecated
-    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceSubmitCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppRenewCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceSubmitCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand command, CancellationToken ct);
     public Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct);
 }
 
-public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
+public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceCommandResponse>;
 public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null)
-    : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceAppUpsertResponse>;
+    : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceCommandResponse>;
 //deprecated
 public record AnonymousWorkerLicenceSubmitCommand(
     WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     ICollection<UploadFileRequest> UploadFileRequests)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppNewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppReplaceCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppRenewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppUpdateCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
@@ -145,9 +145,10 @@ public record WorkerLicenceAppUpsertRequest : WorkerLicenceAppBase
 
 public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
 
-public record WorkerLicenceAppUpsertResponse
+public record WorkerLicenceCommandResponse
 {
     public Guid? LicenceAppId { get; set; }
+    public decimal? Cost { get; set; }
 }
 
 #endregion
