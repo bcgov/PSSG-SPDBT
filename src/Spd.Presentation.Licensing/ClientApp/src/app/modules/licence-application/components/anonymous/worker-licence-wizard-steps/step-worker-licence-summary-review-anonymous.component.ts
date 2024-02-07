@@ -745,10 +745,10 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(isFormValid: boolean) => {
 				if (isFormValid) {
-					console.debug('licenceModelChangedSubscription isFormValid update review data', isFormValid);
 					this.licenceModelData = {
 						...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
 					};
+					console.debug('licenceModelChangedSubscription isFormValid update review data', this.licenceModelData);
 				}
 			}
 		);

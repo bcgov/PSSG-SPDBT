@@ -387,6 +387,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// console.debug(
 		// 	'personalInformationData',
 		// 	this.personalInformationFormGroup.valid,
+		// 	'reprintLicenceData',
+		// 	this.reprintLicenceFormGroup.valid,
 		// 	'aliasesData',
 		// 	this.aliasesFormGroup.valid,
 		// 	'expiredLicenceData',
@@ -1335,7 +1337,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				// If applicant is renewing a licence where they already had authorization to use dogs,
 				// clear attachments to force user to upload a new proof of qualification.
-				_resp.useDogs = true;
 				const originalDogAuthorizationExists = _resp.useDogs;
 				let dogsAuthorizationData = {};
 				if (originalDogAuthorizationExists) {
