@@ -342,66 +342,6 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiWorkerLicenceApplicationsSubmitAnonymousPost
-   */
-  static readonly ApiWorkerLicenceApplicationsSubmitAnonymousPostPath = '/api/worker-licence-applications/submit/anonymous';
-
-  /**
-   * Submit Security Worker Licence Application Anonymously
-   * deprecated as the request body is too big. the proxy won't let it through.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicenceApplicationsSubmitAnonymousPost()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsSubmitAnonymousPostPath, 'post');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
-      })
-    );
-  }
-
-  /**
-   * Submit Security Worker Licence Application Anonymously
-   * deprecated as the request body is too big. the proxy won't let it through.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsSubmitAnonymousPost$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiWorkerLicenceApplicationsSubmitAnonymousPost(params?: {
-  },
-  context?: HttpContext
-
-): Observable<WorkerLicenceCommandResponse> {
-
-    return this.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
-    );
-  }
-
-  /**
    * Path part for operation apiWorkerLicenceApplicationsAnonymousKeyCodePost
    */
   static readonly ApiWorkerLicenceApplicationsAnonymousKeyCodePostPath = '/api/worker-licence-applications/anonymous/keyCode';
