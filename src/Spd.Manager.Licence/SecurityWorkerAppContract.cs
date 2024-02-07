@@ -1,12 +1,12 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public interface ISecurityWorkerAppManager
 {
-    public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
-    public Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
@@ -15,29 +15,29 @@ public interface ISecurityWorkerAppManager
     public Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand command, CancellationToken ct);
 }
 
-public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceAppUpsertResponse>;
+public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceCommandResponse>;
 public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null)
     : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceAppUpsertResponse>;
 
 public record AnonymousWorkerLicenceAppNewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppReplaceCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppRenewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppUpdateCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
     Guid KeyCode)
-    : IRequest<WorkerLicenceAppUpsertResponse>;
+    : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;

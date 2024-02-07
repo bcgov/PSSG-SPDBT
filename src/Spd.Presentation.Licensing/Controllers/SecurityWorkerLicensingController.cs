@@ -68,7 +68,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceAppUpsertResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
+        public async Task<WorkerLicenceCommandResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get WorkerLicenceAppUpsertRequest");
             var info = _currentUser.GetBcscUserIdentityInfo();
@@ -132,7 +132,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppSubmitRequest licenceSubmitRequest, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppSubmitRequest licenceSubmitRequest, CancellationToken ct)
         {
             var validateResult = await _wslSubmitValidator.ValidateAsync(licenceSubmitRequest, ct);
             if (!validateResult.IsValid)
@@ -239,7 +239,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
         [HttpPost]
-        public async Task<WorkerLicenceAppUpsertResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
         {
             //validate keyCode
             if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)

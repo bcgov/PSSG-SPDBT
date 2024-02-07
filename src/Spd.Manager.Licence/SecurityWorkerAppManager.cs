@@ -19,8 +19,8 @@ using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
 internal partial class SecurityWorkerAppManager :
-        IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceAppUpsertResponse>,
-        IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceAppUpsertResponse>,
@@ -69,7 +69,7 @@ internal partial class SecurityWorkerAppManager :
 
     #region for portal
     //authenticated save
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
         _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
         var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Repository.Registration.IdentityProviderTypeEnum.BcServicesCard), ct);
@@ -97,7 +97,7 @@ internal partial class SecurityWorkerAppManager :
     }
 
     // authenticated submit
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken ct)
     {
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, ct);
         //check if payment is done
@@ -109,7 +109,7 @@ internal partial class SecurityWorkerAppManager :
         //move the file from temp file repo to formal file repo.
         //todo
 
-        return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
+        return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
     public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct)
     {
@@ -161,11 +161,25 @@ internal partial class SecurityWorkerAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
         await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
-        await CommitApplicationAsync(request, response.LicenceAppId, ct);
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+
+        //if payment price is 0, directly set to Submitted, or PaymentPending
+        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+        {
+            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
+            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
+            HasValidSwl90DayLicence = false
+        }, ct);
+        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
+        else
+            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
@@ -199,11 +213,24 @@ internal partial class SecurityWorkerAppManager :
             }
         }
 
-        await CommitApplicationAsync(request, response.LicenceAppId, ct);
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+        //if payment price is 0, directly set to Submitted, or PaymentPending
+        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+        {
+            ApplicationTypeEnum = ApplicationTypeEnum.Replacement,
+            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
+            HasValidSwl90DayLicence = false
+        }, ct);
+        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
+        else
+            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
@@ -246,12 +273,23 @@ internal partial class SecurityWorkerAppManager :
         bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
             originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
 
-        await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
+        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+        {
+            ApplicationTypeEnum = ApplicationTypeEnum.Renewal,
+            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
+            HasValidSwl90DayLicence = hasSwl90DayLicence
+        }, ct);
+        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
+        else
+            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
 
-        return new WorkerLicenceAppUpsertResponse { LicenceAppId = response.LicenceAppId };
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
@@ -305,35 +343,36 @@ internal partial class SecurityWorkerAppManager :
                     await _documentRepository.ManageAsync(fileCmd, ct);
                 }
             }
-            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct);
+            var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+            {
+                ApplicationTypeEnum = ApplicationTypeEnum.Update,
+                BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+                LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+                WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                HasValidSwl90DayLicence = false
+            }, ct);
+            if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+                await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
+            else
+                await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+
+            return new WorkerLicenceCommandResponse()
+            {
+                LicenceAppId = createLicResponse.LicenceAppId,
+                Cost = price.LicenceFees.FirstOrDefault()?.Amount
+            };
         }
         else
         {
             //update contact directly
-            await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), ct);
+            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+            updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
+            await _contactRepository.ManageAsync(updateCmd, ct);
+            return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
         }
-
-        return new WorkerLicenceAppUpsertResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
 
     #endregion
-
-    private async Task CommitApplicationAsync(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
-    {
-        //if payment price is 0, directly set to Submitted, or PaymentPending
-        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
-        {
-            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
-            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
-            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
-            HasValidSwl90DayLicence = HasSwl90DayLicence
-        }, ct);
-        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
-        else
-            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-    }
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
@@ -395,8 +434,16 @@ internal partial class SecurityWorkerAppManager :
             newList.Sort();
             List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
             originalList.Sort();
-            if (newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
+            if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
+
+        IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
+        //if any new doc contains category document, we think categorieschanged.
+        if (!changes.CategoriesChanged)
+        {
+            changes.CategoriesChanged = items.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
+        }
+
 
         //DogRestraintsChanged
         if (newApp.UseDogs != originalApp.UseDogs ||
@@ -407,8 +454,6 @@ internal partial class SecurityWorkerAppManager :
         {
             changes.DogRestraintsChanged = true;
         }
-
-        IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
 
         //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
