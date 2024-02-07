@@ -1,5 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface WorkerLicenceAppUpsertResponse {
+export interface PermitAppCommandResponse {
   licenceAppId?: null | string;
 }

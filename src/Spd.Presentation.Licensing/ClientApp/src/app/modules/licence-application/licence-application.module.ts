@@ -81,6 +81,7 @@ import { LicencePaymentCancelComponent } from './components/shared/licence-payme
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
+import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
@@ -142,6 +143,7 @@ import { StepWorkerLicenceResidentialAddressComponent } from './components/share
 import { StepWorkerLicenceRestraintsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-sole-proprietor.component';
 import { StepWorkerLicenceTermComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-term.component';
+import { StepWorkerLicenceUpdateFeeComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-update-fee.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-user-profile.component';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-steps/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceBackgroundComponent } from './components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
@@ -299,6 +301,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceExpiredComponent,
 		CommonReprintComponent,
 		StepWorkerLicenceReprintComponent,
+		LicenceUpdateReceivedSuccessComponent,
+		StepWorkerLicenceUpdateFeeComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

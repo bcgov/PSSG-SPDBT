@@ -71,7 +71,7 @@ export abstract class LicenceApplicationHelper {
 			surname: new FormControl('', [FormControlValidators.required]),
 			genderCode: new FormControl('', [FormControlValidators.required]),
 			dateOfBirth: new FormControl('', [Validators.required]),
-			isNeedProofOfLegalNameChange: new FormControl(false),
+			hasLegalNameChanged: new FormControl(false),
 			origGivenName: new FormControl(''),
 			origMiddleName1: new FormControl(''),
 			origMiddleName2: new FormControl(''),
@@ -85,7 +85,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('isNeedProofOfLegalNameChange')?.value
+					(form) => !!form.get('hasLegalNameChanged')?.value
 				),
 			],
 		}
@@ -487,7 +487,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'reprintLicence',
-					(_form) => this.personalInformationFormGroup?.get('hasGenderChanged')?.value ?? false
+					(_form) => !!this.personalInformationFormGroup?.get('hasGenderChanged')?.value
 				),
 			],
 		}
@@ -619,6 +619,7 @@ export abstract class LicenceApplicationHelper {
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
 		if (licenceModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			const docs: Array<Blob> = [];
@@ -783,6 +784,17 @@ export abstract class LicenceApplicationHelper {
 			}
 		}
 
+		if (personalInformationData.hasLegalNameChanged && personalInformationData.attachments) {
+			const docs: Array<Blob> = [];
+			personalInformationData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.LegalNameChange,
+				documents: docs,
+			});
+		}
+
 		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
 			const docs: Array<Blob> = [];
 			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
@@ -888,11 +900,15 @@ export abstract class LicenceApplicationHelper {
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+
+		// default the flag
+		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
+		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		let dogsAuthorizationData = {};
 		let restraintsAuthorizationData = {};
 
-		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
 			personalInformationData.dateOfBirth,
 			SPD_CONSTANTS.date.backendDateFormat
@@ -1009,6 +1025,15 @@ export abstract class LicenceApplicationHelper {
 			documentInfos.push(
 				...this.getCategorySecurityConsultantInstaller(licenceModelFormValue.categorySecurityConsultantFormGroup)
 			);
+		}
+
+		if (personalInformationData.hasLegalNameChanged) {
+			personalInformationData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.LegalNameChange,
+				});
+			});
 		}
 
 		policeBackgroundData.attachments?.forEach((doc: any) => {

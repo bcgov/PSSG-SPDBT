@@ -7,7 +7,7 @@ import {
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -63,14 +63,16 @@ import { Subscription } from 'rxjs';
 														{{ applicationTypeCode | options : 'ApplicationTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
+												<div
+													class="col-lg-4 col-md-12 mt-lg-2"
+													*ngIf="applicationTypeCode !== applicationTypeCodes.Update"
+												>
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">
 														Sole Proprietorship Security Business Licence
 													</div>
 													<div class="summary-text-data">{{ isSoleProprietor }}</div>
 												</div>
-											</div>
-											<div class="row mt-0">
+
 												<ng-container
 													*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
 												>
@@ -359,19 +361,23 @@ import { Subscription } from 'rxjs';
 													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<mat-divider class="mt-4 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Fingerprints</div>
-											<div class="row mt-0">
-												<div class="col-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Request for Fingerprinting Form</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-															{{ doc.name }}
+												<div class="text-minor-heading">Fingerprints</div>
+												<div class="row mt-0">
+													<div class="col-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															Request for Fingerprinting Form
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+																{{ doc.name }}
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
+											</ng-container>
 										</div>
 									</mat-expansion-panel>
 
@@ -416,103 +422,112 @@ import { Subscription } from 'rxjs';
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Aliases</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">
-														Do you have any previous names or aliases?
-													</div>
-													<div class="summary-text-data">{{ previousNameFlag }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
-														<div class="summary-text-data">
-															<div
-																*ngFor="let alias of aliases; let i = index; let first = first"
-																[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-															>
-																{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																{{ alias.surname }}
-															</div>
+											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<mat-divider class="mt-4 mb-2"></mat-divider>
+
+												<div class="text-minor-heading">Aliases</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															Do you have any previous names or aliases?
 														</div>
-													</ng-container>
+														<div class="summary-text-data">{{ previousNameFlag }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
+															<div class="summary-text-data">
+																<div
+																	*ngFor="let alias of aliases; let i = index; let first = first"
+																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
+																>
+																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
+																	{{ alias.surname }}
+																</div>
+															</div>
+														</ng-container>
+													</div>
 												</div>
-											</div>
+											</ng-container>
 											<mat-divider class="mt-4 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Identification</div>
-											<div class="row mt-0">
-												<div class="col-lg-8 col-md-12">
-													<div class="row mt-0">
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-															<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<div class="row mt-0">
+													<div class="col-lg-6 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
+														<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+													</div>
+													<div class="col-lg-6 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															<span *ngIf="canadianCitizenProofTypeCode">
+																{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+															</span>
+															<span *ngIf="notCanadianCitizenProofTypeCode">
+																{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+															</span>
 														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																<span *ngIf="canadianCitizenProofTypeCode">
-																	{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-																</span>
-																<span *ngIf="notCanadianCitizenProofTypeCode">
-																	{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
-																</span>
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of attachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
-															<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
-															<div class="summary-text-data">
-																{{ height }}
-																{{ heightUnitCode | options : 'HeightUnitTypes' }}
-																{{ heightInches }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
-															<div class="summary-text-data">
-																{{ weight }}
-																{{ weightUnitCode | options : 'WeightUnitTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
-															<div class="summary-text-data">
-																{{ hairColourCode | options : 'HairColourTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
-															<div class="summary-text-data">
-																{{ eyeColourCode | options : 'EyeColourTypes' }}
+														<div class="summary-text-data">
+															<div *ngFor="let doc of citizenshipAttachments; let i = index">
+																{{ doc.name }}
 															</div>
 														</div>
 													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="governmentIssuedPhotoTypeCode">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph of Yourself</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
+														<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+													</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
+											</ng-container>
+
+											<div class="row mt-0">
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
 													<div class="summary-text-data">
-														<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
+														{{ height }}
+														{{ heightUnitCode | options : 'HeightUnitTypes' }}
+														{{ heightInches }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
+													<div class="summary-text-data">
+														{{ weight }}
+														{{ weightUnitCode | options : 'WeightUnitTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
+													<div class="summary-text-data">
+														{{ hairColourCode | options : 'HairColourTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
+													<div class="summary-text-data">
+														{{ eyeColourCode | options : 'EyeColourTypes' }}
 													</div>
 												</div>
 											</div>
@@ -686,6 +701,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
 	swlCategoryTypes = WorkerCategoryTypes;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -722,18 +738,18 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 	) {}
 
 	ngOnInit(): void {
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(isFormValid: boolean) => {
 				if (isFormValid) {
-					console.debug('licenceModelChangedSubscription isFormValid update review data', isFormValid);
 					this.licenceModelData = {
 						...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
 					};
+					console.debug('licenceModelChangedSubscription isFormValid update review data', this.licenceModelData);
 				}
 			}
 		);
-
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 	}
 
 	ngOnDestroy() {
@@ -935,7 +951,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 	get citizenshipExpiryDate(): string {
 		return this.licenceModelData.citizenshipData.expiryDate ?? '';
 	}
-	get attachments(): File[] {
+	get citizenshipAttachments(): File[] {
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
 
