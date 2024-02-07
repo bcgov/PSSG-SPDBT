@@ -242,7 +242,7 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 		const isValid = this.dirtyForm(_formNumber);
 		if (!isValid) return;
 
-		if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
+		if (_formNumber === this.STEP_CRIMINAL_HISTORY && this.applicationTypeCode === ApplicationTypeCode.Update) {
 			this.nextStepperStep.emit(true);
 			return;
 		}

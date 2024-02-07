@@ -78,13 +78,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							applicationTypeCode === applicationTypeCodes.Update
 						"
 					>
-						<mat-checkbox formControlName="isNeedProofOfLegalNameChange" (change)="onUpdateInformation()">
+						<mat-checkbox formControlName="hasLegalNameChanged" (change)="onUpdateInformation()">
 							<span class="checklist-label">Update information</span>
 						</mat-checkbox>
 					</ng-container>
 				</div>
 			</div>
-			<div class="row mt-2" *ngIf="isNeedProofOfLegalNameChange.value" @showHideTriggerSlideAnimation>
+			<div class="row mt-2" *ngIf="hasLegalNameChanged.value" @showHideTriggerSlideAnimation>
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
@@ -141,7 +141,7 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 	}
 
 	onUpdateInformation(): void {
-		if (this.isNeedProofOfLegalNameChange.value) {
+		if (this.hasLegalNameChanged.value) {
 			this.enableData();
 		} else {
 			this.disableData(true);
@@ -225,8 +225,8 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 		return this.form.get('origDateOfBirth') as FormControl;
 	}
 
-	get isNeedProofOfLegalNameChange(): FormControl {
-		return this.form.get('isNeedProofOfLegalNameChange') as FormControl;
+	get hasLegalNameChanged(): FormControl {
+		return this.form.get('hasLegalNameChanged') as FormControl;
 	}
 
 	get attachments(): FormControl {

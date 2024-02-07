@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceConsentComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent.component';
@@ -31,6 +31,21 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmitNow()">
+							{{ submitButtonName }}
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
 					</div>
 				</div>
@@ -40,8 +55,12 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepComponent {
+export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
+	applicationTypeCodes = ApplicationTypeCode;
+	submitButtonName = 'Pay Now';
+
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() licenceCost = 0;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -53,10 +72,26 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 		super();
 	}
 
-	onPayNow(): void {
+	ngOnInit(): void {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.submitButtonName = 'Submit';
+		}
+	}
+
+	onSubmitNow(): void {
 		const isValid = this.consentAndDeclarationComponent.isFormValid();
 		if (!isValid) return;
 
+		// Update is a special case. The change might not require a payment
+		// so just submit at this point
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.nextSubmitStep.emit();
+		} else {
+			this.nextPayStep.emit();
+		}
+	}
+
+	onPayNow(): void {
 		this.nextPayStep.emit();
 	}
 

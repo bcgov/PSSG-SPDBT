@@ -479,9 +479,18 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	}
 
 	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	get hasLegalNameChanged(): boolean {
+		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
+
+		const form = this.licenceApplicationService.personalInformationFormGroup;
+		return !!form.value.hasLegalNameChanged;
+	}
+
+	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	// and name change
 	get showReprint(): boolean {
 		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
 
-		return this.hasGenderChanged;
+		return this.hasGenderChanged || this.hasLegalNameChanged;
 	}
 }

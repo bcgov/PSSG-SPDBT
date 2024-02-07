@@ -17,6 +17,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {

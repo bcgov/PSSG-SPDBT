@@ -10,7 +10,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import * as moment from 'moment';
 import { Subscription, take, tap } from 'rxjs';
-import { WorkerLicensingService } from 'src/app/api/services';
+import { SecurityWorkerLicensingService } from 'src/app/api/services';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { PermitApplicationService } from '../../services/permit-application.service';
@@ -249,6 +249,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 									<div class="row mb-2">
 										<div class="col-lg-9">
 											The following updates have a $20 licence reprint fee:
+											<!-- TODO hardcoded payment cost -->
 											<ul class="m-0">
 												<li>changes to licence category</li>
 												<li>requests for authorization for dogs or restraints</li>
@@ -463,7 +464,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		private router: Router,
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
-		private workerLicensingService: WorkerLicensingService,
+		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
@@ -472,7 +473,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				if (isLoggedIn) {
-					this.workerLicensingService
+					this.securityWorkerLicensingService
 						.apiWorkerLicenceApplicationsGet()
 						.pipe()
 						.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {

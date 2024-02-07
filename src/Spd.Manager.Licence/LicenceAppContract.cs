@@ -46,7 +46,7 @@ public abstract record PersonalLicenceAppBase
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-    public bool? LegalNameChanged { get; set; }
+    public bool? HasLegalNameChanged { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
 }
 

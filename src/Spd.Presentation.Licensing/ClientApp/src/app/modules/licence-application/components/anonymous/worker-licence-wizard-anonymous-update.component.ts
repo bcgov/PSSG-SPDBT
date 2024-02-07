@@ -2,23 +2,25 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
-	WorkerLicenceAppUpsertResponse,
+	WorkerLicenceCommandResponse,
 } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepsWorkerLicenceReviewAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
+import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-update',
@@ -66,8 +68,10 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-lic
 				<ng-template matStepLabel>Review and Confirm</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
+					[licenceCost]="newLicenceCost"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onPay()"
+					(nextSubmitStep)="onSubmitStep()"
+					(nextPayStep)="onPayStep()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-worker-licence-review-anonymous>
@@ -93,6 +97,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	step3Complete = false;
 
 	newLicenceAppId: string | null = null;
+	newLicenceCost = 0;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
@@ -103,11 +108,12 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 
-	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
-	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
+	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
+	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private hotToastService: HotToastService,
 		private paymentService: PaymentService,
 		private licenceApplicationService: LicenceApplicationService
@@ -211,19 +217,31 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		this.updateCompleteStatus();
 	}
 
-	onPay(): void {
+	onSubmitStep(): void {
 		if (this.newLicenceAppId) {
-			this.payNow(this.newLicenceAppId);
+			if (this.newLicenceCost > 0) {
+				this.stepReviewLicenceComponent?.onGoToLastStep();
+			} else {
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+			}
 		} else {
 			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
-				next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 					console.debug('[onPay] submitLicenceAnonymous', resp.body);
 
+					const workerLicenceCommandResponse = resp.body;
+
 					// save this locally just in application payment fails
-					this.newLicenceAppId = resp.body.licenceAppId!;
+					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
+					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
 					this.hotToastService.success('Your licence update has been successfully submitted');
-					this.payNow(this.newLicenceAppId);
+
+					if (this.newLicenceCost > 0) {
+						this.stepReviewLicenceComponent?.onGoToLastStep();
+					} else {
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+					}
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);
@@ -231,6 +249,10 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				},
 			});
 		}
+	}
+
+	onPayStep(): void {
+		this.payNow(this.newLicenceAppId!);
 	}
 
 	private payNow(licenceAppId: string): void {
