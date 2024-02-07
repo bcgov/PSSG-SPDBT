@@ -247,6 +247,10 @@ public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : PersonalLicen
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true).When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
+        RuleFor(r => r.DocumentKeyCodes)
+            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+            .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer.Value && r.ApplicationTypeCode == ApplicationTypeCode.New )
+            .WithMessage("Missing PoliceBackgroundLetterOfNoConflict file.");
     }
 }
 

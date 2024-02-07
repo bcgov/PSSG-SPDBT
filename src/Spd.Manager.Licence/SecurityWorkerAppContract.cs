@@ -21,21 +21,25 @@ public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUp
 
 public record AnonymousWorkerLicenceAppNewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppReplaceCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppRenewCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppUpdateCommand(
     WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
