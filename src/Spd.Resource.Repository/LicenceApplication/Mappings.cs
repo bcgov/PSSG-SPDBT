@@ -35,6 +35,24 @@ internal class Mappings : Profile
         .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
         .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country));
 
+        _ = CreateMap<contact, LicenceApplication>()
+         .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
+         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
+         .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
+         .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.firstname))
+         .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.lastname))
+         .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
+         .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
+         .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.telephone1))
+         .ForMember(d => d.BcDriversLicenceNumber, opt => opt.MapFrom(s => s.spd_bcdriverslicense))
+         .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => GetMailingAddressData(s)))
+         .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => GetResidentialAddressData(s)))
+         .ForMember(d => d.IsMailingTheSameAsResidential, opt => opt.MapFrom(s => IsMailingResidentialSame(s)))
+         ;
+
+        _ = CreateMap<contact, LicenceApplicationResp>()
+        .IncludeBase<contact, LicenceApplication>();
+
         _ = CreateMap<CreateLicenceApplicationCmd, contact>()
         .IncludeBase<LicenceApplication, contact>()
         .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()));
@@ -91,7 +109,14 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => GetDeclarationDate(s)))
          .ForMember(d => d.spd_legalnamechange, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.LegalNameChanged)))
          .ReverseMap()
-         .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
+         .ForMember(d => d.ContactEmailAddress, opt => opt.Ignore())
+         .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
+         .ForMember(d => d.GenderCode, opt => opt.Ignore())
+         .ForMember(d => d.GivenName, opt => opt.Ignore())
+         .ForMember(d => d.Surname, opt => opt.Ignore())
+         .ForMember(d => d.MiddleName1, opt => opt.Ignore())
+         .ForMember(d => d.MiddleName2, opt => opt.Ignore())
+         .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
@@ -100,9 +125,9 @@ internal class Mappings : Profile
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalchargesconvictionsorlawsuits)))
          .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => GetHairColorEnum(s.spd_applicanthaircolour)))
          .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => GetEyeColorEnum(s.spd_applicanteyecolour)))
-         .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => GetMailingAddressData(s)))
-         .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => GetResidentialAddressData(s)))
-         .ForMember(d => d.IsMailingTheSameAsResidential, opt => opt.MapFrom(s => IsMailingResidentialSame(s)))
+         .ForMember(d => d.MailingAddressData, opt => opt.Ignore())
+         .ForMember(d => d.ResidentialAddressData, opt => opt.Ignore())
+         .ForMember(d => d.IsMailingTheSameAsResidential, opt => opt.Ignore())
          .ForMember(d => d.Height, opt => opt.MapFrom(s => GetHeightNumber(s.spd_height)))
          .ForMember(d => d.LegalNameChanged, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_legalnamechange)))
          .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => GetHeightUnitCode(s.spd_height)))
@@ -307,51 +332,50 @@ internal class Mappings : Profile
             return null;
         }
     }
-    private static MailingAddr? GetMailingAddressData(spd_application app)
+
+    private static MailingAddr? GetMailingAddressData(contact c)
     {
         MailingAddr mailingAddress = new MailingAddr();
-        mailingAddress.AddressLine1 = app.spd_addressline1;
-        mailingAddress.AddressLine2 = app.spd_addressline2;
-        mailingAddress.City = app.spd_city;
-        mailingAddress.Province = app.spd_province;
-        mailingAddress.Country = app.spd_country;
-        mailingAddress.PostalCode = app.spd_postalcode;
+        mailingAddress.AddressLine1 = c.address1_line1;
+        mailingAddress.AddressLine2 = c.address1_line2;
+        mailingAddress.City = c.address1_city;
+        mailingAddress.Province = c.address1_stateorprovince;
+        mailingAddress.Country = c.address1_country;
+        mailingAddress.PostalCode = c.address1_postalcode;
         return mailingAddress;
     }
-
-    private static ResidentialAddr? GetResidentialAddressData(spd_application app)
+    private static ResidentialAddr? GetResidentialAddressData(contact c)
     {
-        ResidentialAddr residentialAddress = new ResidentialAddr();
-        residentialAddress.AddressLine1 = app.spd_residentialaddress1;
-        residentialAddress.AddressLine2 = app.spd_residentialaddress2;
-        residentialAddress.City = app.spd_residentialcity;
-        residentialAddress.Province = app.spd_residentialprovince;
-        residentialAddress.Country = app.spd_residentialcountry;
-        residentialAddress.PostalCode = app.spd_residentialpostalcode;
-        return residentialAddress;
+        ResidentialAddr mailingAddress = new ResidentialAddr();
+        mailingAddress.AddressLine1 = c.address2_line1;
+        mailingAddress.AddressLine2 = c.address2_line2;
+        mailingAddress.City = c.address2_city;
+        mailingAddress.Province = c.address2_stateorprovince;
+        mailingAddress.Country = c.address2_country;
+        mailingAddress.PostalCode = c.address2_postalcode;
+        return mailingAddress;
     }
-
-    private static bool? IsMailingResidentialSame(spd_application app)
+    private static bool? IsMailingResidentialSame(contact c)
     {
-        if (app.spd_residentialaddress1 == null
-            && app.spd_residentialaddress2 == null
-            && app.spd_residentialcity == null
-            && app.spd_residentialprovince == null
-            && app.spd_residentialcountry == null
-            && app.spd_residentialpostalcode == null
-            && app.spd_addressline1 == null
-            && app.spd_addressline2 == null
-            && app.spd_city == null
-            && app.spd_country == null
-            && app.spd_province == null
-            && app.spd_postalcode == null)
+        if (c.address1_line1 == null
+            && c.address1_line2 == null
+            && c.address1_city == null
+            && c.address1_stateorprovince == null
+            && c.address1_country == null
+            && c.address1_postalcode == null
+            && c.address2_line1 == null
+            && c.address2_line2 == null
+            && c.address2_city == null
+            && c.address2_stateorprovince == null
+            && c.address2_country == null
+            && c.address2_postalcode == null)
             return null;
-        return app.spd_residentialaddress1 == app.spd_addressline1 &&
-            app.spd_residentialaddress2 == app.spd_addressline2 &&
-            app.spd_residentialcity == app.spd_city &&
-            app.spd_residentialprovince == app.spd_province &&
-            app.spd_residentialcountry == app.spd_country &&
-            app.spd_residentialpostalcode == app.spd_postalcode;
+        return c.address1_line1 == c.address2_line1 &&
+            c.address1_line2 == c.address2_line2 &&
+            c.address1_city == c.address2_city &&
+            c.address1_stateorprovince == c.address2_stateorprovince &&
+            c.address1_country == c.address2_country &&
+            c.address1_postalcode == c.address2_postalcode;
     }
 
     private static int? GetPoliceRoleOptionSet(PoliceOfficerRoleEnum? policeRole)
