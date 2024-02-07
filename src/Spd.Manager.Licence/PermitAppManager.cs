@@ -1,0 +1,303 @@
+using AutoMapper;
+using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Spd.Manager.Shared;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Tasks;
+using Spd.Utilities.Cache;
+using Spd.Utilities.TempFileStorage;
+
+namespace Spd.Manager.Licence;
+internal class PermitAppManager :
+        IRequestHandler<AnonymousPermitAppNewCommand, PermitAppCommandResponse>,
+        IRequestHandler<AnonymousPermitAppReplaceCommand, PermitAppCommandResponse>,
+        IRequestHandler<AnonymousPermitAppRenewCommand, PermitAppCommandResponse>,
+        IRequestHandler<AnonymousPermitAppUpdateCommand, PermitAppCommandResponse>,
+        IPermitAppManager
+{
+    private readonly ILicenceRepository _licenceRepository;
+    private readonly ILicenceApplicationRepository _licenceAppRepository;
+    private readonly IMapper _mapper;
+    private readonly ITempFileStorageService _tempFile;
+    private readonly IIdentityRepository _identityRepository;
+    private readonly IDocumentRepository _documentRepository;
+    private readonly ILogger<ISecurityWorkerAppManager> _logger;
+    private readonly ILicenceFeeRepository _feeRepository;
+    private readonly ITaskRepository _taskRepository;
+    private readonly IContactRepository _contactRepository;
+    private readonly IDistributedCache _cache;
+
+    public PermitAppManager(
+        ILicenceRepository licenceRepository,
+        ILicenceApplicationRepository licenceAppRepository,
+        IMapper mapper,
+        ITempFileStorageService tempFile,
+        IIdentityRepository identityRepository,
+        IDocumentRepository documentUrlRepository,
+        ILogger<ISecurityWorkerAppManager> logger,
+        ILicenceFeeRepository feeRepository,
+        IDistributedCache cache,
+        ITaskRepository taskRepository,
+        IContactRepository contactRepository)
+    {
+        _licenceRepository = licenceRepository;
+        _licenceAppRepository = licenceAppRepository;
+        _tempFile = tempFile;
+        _mapper = mapper;
+        _identityRepository = identityRepository;
+        _documentRepository = documentUrlRepository;
+        _logger = logger;
+        _feeRepository = feeRepository;
+        _cache = cache;
+        _taskRepository = taskRepository;
+        _contactRepository = contactRepository;
+    }
+
+    #region anonymous
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand cmd, CancellationToken ct)
+    {
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+
+        //todo: add checking if all necessary files have been uploaded
+
+        //save the application
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+        await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
+        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
+    }
+
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppReplaceCommand cmd, CancellationToken ct)
+    {
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
+            throw new ArgumentException("should be a replacement request");
+
+        //validation: check if original licence meet replacement condition.
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (licences == null || !licences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be replaced.");
+        if (DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
+
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+
+        //add photo file copying here.
+        if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
+            throw new ArgumentException("replacement request must have original application id");
+        var photos = await _documentRepository.QueryAsync(
+            new DocumentQry(
+                ApplicationId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
+                FileType: DocumentTypeEnum.Photograph),
+            ct);
+        if (photos.Items.Any())
+        {
+            foreach (var photo in photos.Items)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(photo.DocumentUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
+
+        await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
+    }
+
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppRenewCommand cmd, CancellationToken ct)
+    {
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
+            throw new ArgumentException("should be a renewal request");
+
+        //validation: check if original licence meet replacement condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+        LicenceResp originalLic = originalLicences.Items.First();
+        if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
+        {
+            if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+                && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+                throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays} days of the expiry date.");
+        }
+        else
+        {
+            if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+                || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+                throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
+        }
+
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+        await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
+
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    ct);
+            }
+        }
+
+        //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
+        bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
+            originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
+
+        await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
+
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
+    }
+
+    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppUpdateCommand cmd, CancellationToken ct)
+    {
+        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
+            throw new ArgumentException("should be a update request");
+
+        //validation: check if original licence meet update condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be updated.");
+        LicenceResp originalLic = originalLicences.Items.First();
+        if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
+
+        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
+        ChangeSpec changes = await MakeChanges(originalApp, request, originalLic, ct);
+
+        LicenceApplicationCmdResp? createLicResponse = null;
+        if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
+        {
+            CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+            //add all new files user uploaded
+            if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
+            {
+                IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
+
+                foreach (LicAppFileInfo licAppFile in items)
+                {
+                    SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                    CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                    fileCmd.ApplicantId = createLicResponse.ContactId;
+                    if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
+                    {
+                        fileCmd.TaskId = changes.PeaceOfficerStatusChangeTaskId;
+                    }
+                    else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
+                    {
+                        fileCmd.TaskId = changes.MentalHealthStatusChangeTaskId;
+                    }
+                    else
+                    {
+                        fileCmd.ApplicationId = createLicResponse.LicenceAppId;
+                    }
+                    fileCmd.ExpiryDate = request?
+                            .DocumentExpiredInfos?
+                            .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                            .ExpiryDate;
+                    fileCmd.TempFile = tempFile;
+                    fileCmd.SubmittedByApplicantId = createLicResponse.ContactId;
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(fileCmd, ct);
+                }
+            }
+            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct);
+        }
+        else
+        {
+            //update contact directly
+            await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), ct);
+        }
+
+        return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
+    }
+
+    #endregion
+
+    private async Task CommitApplicationAsync(PermitAppAnonymousSubmitRequest request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    {
+        //if payment price is 0, directly set to Submitted, or PaymentPending
+        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+        {
+            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
+            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
+            HasValidSwl90DayLicence = HasSwl90DayLicence
+        }, ct);
+        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+        else
+            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+    }
+
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newApp, LicenceResp originalLic, CancellationToken ct)
+    {
+        ChangeSpec changes = new ChangeSpec();
+
+        return changes;
+    }
+    private async Task UploadNewDocs(PermitAppAnonymousSubmitRequest request, Guid? licenceAppId, Guid? contactId, CancellationToken ct)
+    {
+        if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
+        {
+            IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
+
+            foreach (LicAppFileInfo licAppFile in items)
+            {
+                SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                fileCmd.ApplicantId = contactId;
+                fileCmd.ApplicationId = licenceAppId;
+                fileCmd.ExpiryDate = request?
+                        .DocumentExpiredInfos?
+                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                        .ExpiryDate;
+                fileCmd.TempFile = tempFile;
+                fileCmd.SubmittedByApplicantId = contactId;
+                //create bcgov_documenturl and file
+                await _documentRepository.ManageAsync(fileCmd, ct);
+            }
+        }
+    }
+
+    private async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfo(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
+    {
+        if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
+        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+        foreach (Guid docKeyCode in docKeyCodes)
+        {
+            IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKeyCode.ToString());
+            if (items != null)
+                results.AddRange(items);
+        }
+        return results;
+    }
+
+    private record ChangeSpec
+    {
+        public bool CategoriesChanged { get; set; } //full update
+        public bool DogRestraintsChanged { get; set; } //full update
+        public bool PeaceOfficerStatusChanged { get; set; } //task
+        public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
+        public bool MentalHealthStatusChanged { get; set; } //task
+        public Guid? MentalHealthStatusChangeTaskId { get; set; }
+        public bool CriminalHistoryChanged { get; set; } //task
+        public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+    }
+}

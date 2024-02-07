@@ -1,11 +1,61 @@
-﻿using Spd.Resource.Repository.Application;
+using AutoMapper;
+using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
-internal partial class SecurityWorkerAppManager
+internal partial class LicenceAppDocumentManager :
+        IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
+        IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
+        ILicenceAppDocumentManager
 {
+    private readonly ILicenceRepository _licenceRepository;
+    private readonly ILicenceApplicationRepository _licenceAppRepository;
+    private readonly IMapper _mapper;
+    private readonly ITempFileStorageService _tempFile;
+    private readonly IIdentityRepository _identityRepository;
+    private readonly IDocumentRepository _documentRepository;
+    private readonly ILogger<ISecurityWorkerAppManager> _logger;
+    private readonly ILicenceFeeRepository _feeRepository;
+    private readonly ITaskRepository _taskRepository;
+    private readonly IContactRepository _contactRepository;
+    private readonly IDistributedCache _cache;
+
+    public LicenceAppDocumentManager(
+        ILicenceRepository licenceRepository,
+        ILicenceApplicationRepository licenceAppRepository,
+        IMapper mapper,
+        ITempFileStorageService tempFile,
+        IIdentityRepository identityRepository,
+        IDocumentRepository documentUrlRepository,
+        ILogger<ISecurityWorkerAppManager> logger,
+        ILicenceFeeRepository feeRepository,
+        IDistributedCache cache,
+        ITaskRepository taskRepository,
+        IContactRepository contactRepository)
+    {
+        _licenceRepository = licenceRepository;
+        _licenceAppRepository = licenceAppRepository;
+        _tempFile = tempFile;
+        _mapper = mapper;
+        _identityRepository = identityRepository;
+        _documentRepository = documentUrlRepository;
+        _logger = logger;
+        _feeRepository = feeRepository;
+        _cache = cache;
+        _taskRepository = taskRepository;
+        _contactRepository = contactRepository;
+    }
+
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
     {
         DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
@@ -65,7 +115,32 @@ internal partial class SecurityWorkerAppManager
 
         return cacheFileInfos;
     }
+    public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.PermanentResidentCard,
+            LicenceDocumentTypeCode.RecordOfLandingDocument,
+            LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
+            LicenceDocumentTypeCode.WorkPermit,
+            LicenceDocumentTypeCode.StudyPermit,
+            LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus,
+        };
 
+    public static readonly List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.CanadianPassport,
+            LicenceDocumentTypeCode.BirthCertificate,
+            LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
+        };
+
+    public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new List<WorkerCategoryTypeCode> {
+            WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
+            WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
+            WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+            WorkerCategoryTypeCode.SecurityAlarmMonitor,
+            WorkerCategoryTypeCode.SecurityAlarmResponse,
+            WorkerCategoryTypeCode.SecurityAlarmSales,
+            WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
+            WorkerCategoryTypeCode.LocksmithUnderSupervision,
+            WorkerCategoryTypeCode.BodyArmourSales
+        };
     private async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
         ////citizenship
@@ -153,40 +228,4 @@ internal partial class SecurityWorkerAppManager
         //    await _documentRepository.ManageAsync(new RemoveDocumentCmd(doc.DocumentUrlId), ct);
         //}
     }
-
-    private async Task GetDocumentsAsync(Guid LicenceAppId, WorkerLicenceResponse result, CancellationToken ct)
-    {
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(LicenceAppId), ct);
-        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
-    }
-
-
-
-
-    public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
-            LicenceDocumentTypeCode.PermanentResidentCard,
-            LicenceDocumentTypeCode.RecordOfLandingDocument,
-            LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
-            LicenceDocumentTypeCode.WorkPermit,
-            LicenceDocumentTypeCode.StudyPermit,
-            LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus,
-        };
-
-    public static readonly List<LicenceDocumentTypeCode> CitizenshipProofCodes = new List<LicenceDocumentTypeCode> {
-            LicenceDocumentTypeCode.CanadianPassport,
-            LicenceDocumentTypeCode.BirthCertificate,
-            LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
-        };
-
-    public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new List<WorkerCategoryTypeCode> {
-            WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            WorkerCategoryTypeCode.SecurityAlarmResponse,
-            WorkerCategoryTypeCode.SecurityAlarmSales,
-            WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-            WorkerCategoryTypeCode.LocksmithUnderSupervision,
-            WorkerCategoryTypeCode.BodyArmourSales
-        };
 }
