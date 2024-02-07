@@ -4,14 +4,14 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 import { LicenceUpdateTypeCode } from '@app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { WorkerLicenceDogsUpdateAuthenticatedModalComponent } from './worker-licence-dogs-update-authenticated-modal.component';
-import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './worker-licence-restraints-update-authenticated-modal.component';
-import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './worker-licence-name-change-update-authenticated-modal.component';
 import {
 	LicenceCategoryDialogData,
 	WorkerLicenceCategoryUpdateAuthenticatedModalComponent,
 } from './worker-licence-category-update-authenticated-modal.component';
+import { WorkerLicenceDogsUpdateAuthenticatedModalComponent } from './worker-licence-dogs-update-authenticated-modal.component';
+import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './worker-licence-name-change-update-authenticated-modal.component';
 import { WorkerLicencePhotoUpdateAuthenticatedModalComponent } from './worker-licence-photo-update-authenticated-modal.component';
+import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './worker-licence-restraints-update-authenticated-modal.component';
 
 export interface UpdateOptionListData {
 	updateTypeCode: LicenceUpdateTypeCode;
@@ -32,6 +32,7 @@ export interface UpdateOptionListData {
 					subtitle="Making one or many of the following edits will incur a TOTAL $20 licence reprint fee"
 					[showDivider]="true"
 				></app-step-title>
+				<!-- TODO hardcoded payment cost -->
 
 				<div class="row">
 					<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">

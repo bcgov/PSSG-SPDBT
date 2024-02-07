@@ -536,7 +536,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
-		console.log('this.permitModelData', this.permitModelData);
+		console.debug('this.permitModelData', this.permitModelData);
 	}
 
 	onEditStep(stepNumber: number) {

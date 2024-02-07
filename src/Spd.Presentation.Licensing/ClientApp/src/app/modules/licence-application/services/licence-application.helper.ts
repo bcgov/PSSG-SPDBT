@@ -85,7 +85,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('hasLegalNameChanged')?.value
+					(form) => !!form.get('hasLegalNameChanged')?.value
 				),
 			],
 		}
@@ -487,7 +487,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'reprintLicence',
-					(_form) => this.personalInformationFormGroup?.get('hasGenderChanged')?.value ?? false
+					(_form) => !!this.personalInformationFormGroup?.get('hasGenderChanged')?.value
 				),
 			],
 		}
@@ -900,11 +900,15 @@ export abstract class LicenceApplicationHelper {
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+
+		// default the flag
+		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
+		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		let dogsAuthorizationData = {};
 		let restraintsAuthorizationData = {};
 
-		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
 			personalInformationData.dateOfBirth,
 			SPD_CONSTANTS.date.backendDateFormat

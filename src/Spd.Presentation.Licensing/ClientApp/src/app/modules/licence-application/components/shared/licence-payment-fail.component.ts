@@ -11,7 +11,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-licence-payment-fail',
 	template: `
-		<div class="container mt-4">
+		<div class="container my-3">
 			<section class="step-section">
 				<app-common-payment-fail
 					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"

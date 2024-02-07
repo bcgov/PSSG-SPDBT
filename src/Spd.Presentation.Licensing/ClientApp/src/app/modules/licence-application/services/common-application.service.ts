@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
@@ -9,8 +8,6 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { LicenceFeeService } from '@app/api/services';
-import { ConfigService } from '@app/core/services/config.service';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -21,12 +18,7 @@ export class CommonApplicationService {
 
 	licenceFees: Array<LicenceFeeResponse> = [];
 
-	constructor(
-		formBuilder: FormBuilder,
-		configService: ConfigService,
-		formatDatePipe: FormatDatePipe,
-		private licenceFeeService: LicenceFeeService
-	) {
+	constructor(private licenceFeeService: LicenceFeeService) {
 		this.licenceFeeService
 			.apiLicenceFeeGet()
 			.pipe()

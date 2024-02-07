@@ -249,6 +249,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 									<div class="row mb-2">
 										<div class="col-lg-9">
 											The following updates have a $20 licence reprint fee:
+											<!-- TODO hardcoded payment cost -->
 											<ul class="m-0">
 												<li>changes to licence category</li>
 												<li>requests for authorization for dogs or restraints</li>

@@ -84,7 +84,7 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, businessTypeCode, originalLicenceTermCode)
-			.filter((item) => item.licenceTermCode == this.originalLicenceTermCode);
+			.filter((item) => item.licenceTermCode == originalLicenceTermCode);
 
 		if (fee?.length > 0) {
 			this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;

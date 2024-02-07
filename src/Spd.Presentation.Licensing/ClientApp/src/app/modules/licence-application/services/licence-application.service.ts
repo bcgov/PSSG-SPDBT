@@ -122,7 +122,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	// });
 
 	licenceModelChangedSubscription!: Subscription;
-	// licenceModelAnonymousChangedSubscription!: Subscription;
 
 	constructor(
 		formBuilder: FormBuilder,
