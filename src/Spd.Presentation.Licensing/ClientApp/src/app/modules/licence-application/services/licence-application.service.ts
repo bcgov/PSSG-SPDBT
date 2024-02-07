@@ -13,7 +13,7 @@ import {
 	LicenceResponse,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequestJson,
-	WorkerLicenceAppUpsertResponse,
+	WorkerLicenceCommandResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -58,6 +58,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		caseNumber: new FormControl(null), // placeholder to save info for display purposes
 
 		originalApplicationId: new FormControl(null),
 		originalLicenceId: new FormControl(null),
@@ -621,14 +622,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	/**
 	 * Save the licence data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceAppUpsertResponse>
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
-			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				const formValue = this.licenceModelFormGroup.getRawValue();
 				if (!formValue.licenceAppId) {
 					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -1189,6 +1190,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: resp.licenceAppId,
+						caseNumber: resp.caseNumber,
 						originalBusinessTypeCode: soleProprietorData.businessTypeCode,
 						applicationPortalStatus: resp.applicationPortalStatus,
 						workerLicenceTypeData,
@@ -1437,7 +1439,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Submit the licence data
 	 * @returns
 	 */
-	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -1454,7 +1456,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Submit the licence data for renewal anonymous
 	 * @returns
 	 */
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
 

@@ -9,7 +9,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	LicenceTermCode,
-	WorkerLicenceAppUpsertResponse,
+	WorkerLicenceCommandResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -854,11 +854,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the licence data
 	 * @returns
 	 */
-	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
-			tap((res: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				const formValue = this.permitModelFormGroup.getRawValue();
 				if (!formValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -867,7 +867,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	submitPermit(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	submitPermit(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		if (this.authenticationService.isLoggedIn()) {
 			return this.submitPermitAuthenticated();
 		} else {
@@ -879,7 +879,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the licence data
 	 * @returns
 	 */
-	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
 		console.debug('submitLicenceAuthenticated body', body);
 
@@ -890,7 +890,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the permit data
 	 * @returns
 	 */
-	private submitPermitAnonymous(): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+	private submitPermitAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		let keyCode = '';
 		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue());
 		console.debug('submitPermitAnonymous body', body);

@@ -1,6 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { ApplicationTypeCode, PaymentResponse } from '@app/api/models';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-common-update-received-success',
@@ -22,25 +25,19 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 				</div>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-				<div class="row mt-4">
-					<div class="text-center fs-5">Your update to your Security Worker Licence has been received.</div>
+				<div class="mt-4 text-center fs-5">Your update to your Security Worker Licence has been received.</div>
 
-					<div class="mt-4">
-						<app-alert type="info" [showBorder]="false" icon="">
-							We will contact you if we need more information.
-						</app-alert>
-					</div>
-				</div>
+				<div class="my-4 text-center">We will contact you if we need more information.</div>
 
 				<div class="row mb-3">
 					<div class="col-md-6 col-sm-12 mt-2">
 						<div class="d-block text-label text-md-end">Licence Term</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
-						<div class="payment__text">{{ application?.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+						<div class="payment__text">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Update fee</div>
+						<div class="d-block text-label text-md-end">Update Fee</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ 0 | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
@@ -49,7 +46,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<div class="d-block text-label text-md-end">Case ID</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
-						<div class="payment__text">{{ application?.caseNumber }}</div>
+						<div class="payment__text">{{ caseNumber }}</div>
 					</div>
 				</div>
 			</div>
@@ -70,14 +67,32 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 		`,
 	],
 })
-export class CommonUpdateReceivedSuccessComponent {
+export class CommonUpdateReceivedSuccessComponent implements OnInit {
+	licenceModelData: any = {};
+
 	isBackRoute = false;
 	appConstants = SPD_CONSTANTS;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@Input() application: PaymentResponse | null = null;
+	constructor(private licenceApplicationService: LicenceApplicationService, private router: Router) {}
+
+	ngOnInit(): void {
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+		}
+	}
 
 	onPrint(): void {
 		window.print();
+	}
+
+	get licenceTermCode(): string {
+		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+	}
+
+	get caseNumber(): string {
+		return this.licenceModelData.caseNumber ?? '';
 	}
 }

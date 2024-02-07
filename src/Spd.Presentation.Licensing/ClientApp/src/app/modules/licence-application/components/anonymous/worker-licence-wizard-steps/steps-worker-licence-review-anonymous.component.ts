@@ -31,6 +31,19 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmitNow()">Submit</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
 					</div>
 				</div>
@@ -41,7 +54,9 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepComponent {
+	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() licenceCost = 0;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -53,10 +68,14 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 		super();
 	}
 
-	onPayNow(): void {
+	onSubmitNow(): void {
 		const isValid = this.consentAndDeclarationComponent.isFormValid();
 		if (!isValid) return;
 
+		this.nextSubmitStep.emit();
+	}
+
+	onPayNow(): void {
 		this.nextPayStep.emit();
 	}
 

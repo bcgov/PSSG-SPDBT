@@ -197,10 +197,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [
 		`
-			li:not(:last-child) {
-				margin-bottom: 1em;
-			}
-
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);

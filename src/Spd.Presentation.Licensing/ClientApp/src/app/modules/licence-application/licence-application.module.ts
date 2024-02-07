@@ -143,6 +143,7 @@ import { StepWorkerLicenceResidentialAddressComponent } from './components/share
 import { StepWorkerLicenceRestraintsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-sole-proprietor.component';
 import { StepWorkerLicenceTermComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-term.component';
+import { StepWorkerLicenceUpdateFeeComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-update-fee.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-user-profile.component';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-steps/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceBackgroundComponent } from './components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
@@ -301,6 +302,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonReprintComponent,
 		StepWorkerLicenceReprintComponent,
 		LicenceUpdateReceivedSuccessComponent,
+		StepWorkerLicenceUpdateFeeComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

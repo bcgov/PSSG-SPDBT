@@ -411,7 +411,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 																</span>
 															</div>
 															<div class="summary-text-data">
-																<div *ngFor="let doc of attachments; let i = index">
+																<div *ngFor="let doc of citizenshipAttachments; let i = index">
 																	{{ doc.name }}
 																</div>
 															</div>
@@ -460,9 +460,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 													</div>
 												</div>
 												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph of Yourself</div>
 													<div class="summary-text-data">
-														<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
+														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+															{{ doc.name }}
+														</div>
 													</div>
 												</div>
 											</div>
@@ -736,7 +738,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	get citizenshipExpiryDate(): string {
 		return this.licenceModelData.citizenshipData.expiryDate ?? '';
 	}
-	get attachments(): File[] {
+	get citizenshipAttachments(): File[] {
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
 

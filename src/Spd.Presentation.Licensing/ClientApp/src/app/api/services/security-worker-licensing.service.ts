@@ -16,7 +16,7 @@ import { WorkerLicenceAppAnonymousSubmitRequestJson } from '../models/worker-lic
 import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
-import { WorkerLicenceAppUpsertResponse } from '../models/worker-licence-app-upsert-response';
+import { WorkerLicenceCommandResponse } from '../models/worker-licence-command-response';
 import { WorkerLicenceResponse } from '../models/worker-licence-response';
 
 @Injectable({
@@ -108,7 +108,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsPostPath, 'post');
     if (params) {
@@ -122,7 +122,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -142,10 +142,10 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 
@@ -300,7 +300,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsSubmitPostPath, 'post');
     if (params) {
@@ -314,7 +314,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -334,10 +334,10 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsSubmitPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 
@@ -361,7 +361,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsSubmitAnonymousPostPath, 'post');
     if (params) {
@@ -374,7 +374,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -394,10 +394,10 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 
@@ -560,7 +560,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPostPath, 'post');
     if (params) {
@@ -575,7 +575,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -601,10 +601,10 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 

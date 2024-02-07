@@ -46,6 +46,6 @@ export { WorkerLicenceAppAnonymousSubmitRequestJson } from './models/worker-lice
 export { WorkerLicenceAppListResponse } from './models/worker-licence-app-list-response';
 export { WorkerLicenceAppSubmitRequest } from './models/worker-licence-app-submit-request';
 export { WorkerLicenceAppUpsertRequest } from './models/worker-licence-app-upsert-request';
-export { WorkerLicenceAppUpsertResponse } from './models/worker-licence-app-upsert-response';
+export { WorkerLicenceCommandResponse } from './models/worker-licence-command-response';
 export { WorkerLicenceResponse } from './models/worker-licence-response';
 export { WorkerLicenceTypeCode } from './models/worker-licence-type-code';

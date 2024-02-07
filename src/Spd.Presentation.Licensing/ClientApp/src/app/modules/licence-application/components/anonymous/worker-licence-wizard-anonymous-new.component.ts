@@ -7,18 +7,18 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
-	WorkerLicenceAppUpsertResponse,
+	WorkerLicenceCommandResponse,
 } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepsWorkerLicenceReviewAuthenticatedComponent } from '@app/modules/licence-application/components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
+import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-new',
@@ -104,8 +104,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	@ViewChild(StepsWorkerLicenceIdentificationAnonymousComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAnonymousComponent;
 
-	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
-	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
+	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
+	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -166,7 +166,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 			this.payNow(this.licenceAppId);
 		} else {
 			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
-				next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 					// save this locally just in case payment fails
 					this.licenceAppId = resp.body.licenceAppId!;
 
