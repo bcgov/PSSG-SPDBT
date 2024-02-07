@@ -5,7 +5,7 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
-	WorkerLicenceAppUpsertResponse,
+	WorkerLicenceCommandResponse,
 } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -89,7 +89,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 				this.payNow(this.newLicenceAppId);
 			} else {
 				this.licenceApplicationService.submitLicenceAnonymous().subscribe({
-					next: (resp: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => {
+					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 						console.debug('[onPay] submitLicenceAnonymous', resp.body);
 
 						// save this locally just in application payment fails

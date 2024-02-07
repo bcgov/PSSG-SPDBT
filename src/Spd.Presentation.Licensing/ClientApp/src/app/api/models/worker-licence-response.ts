@@ -5,6 +5,7 @@ import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
 import { BusinessTypeCode } from './business-type-code';
 import { Document } from './document';
+import { DocumentExpiredInfo } from './document-expired-info';
 import { EyeColourCode } from './eye-colour-code';
 import { GenderCode } from './gender-code';
 import { HairColourCode } from './hair-colour-code';
@@ -29,6 +30,7 @@ export interface WorkerLicenceResponse {
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;
+  documentExpiredInfos?: null | Array<DocumentExpiredInfo>;
   documentInfos?: null | Array<Document>;
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
@@ -40,6 +42,7 @@ export interface WorkerLicenceResponse {
   hasBcDriversLicence?: null | boolean;
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
+  hasLegalNameChanged?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;

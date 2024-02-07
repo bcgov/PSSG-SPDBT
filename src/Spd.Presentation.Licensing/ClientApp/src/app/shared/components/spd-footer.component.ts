@@ -5,7 +5,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 @Component({
 	selector: 'app-spd-footer',
 	template: `
-		<mat-toolbar color="primary" class="footer">
+		<mat-toolbar color="primary" class="no-print footer">
 			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
@@ -38,6 +38,17 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 				a {
 					display: block;
 					padding: 3px;
+				}
+			}
+
+			@media print {
+				.no-print,
+				.no-print * {
+					display: none !important;
+				}
+
+				.print-only {
+					display: block;
 				}
 			}
 		`,

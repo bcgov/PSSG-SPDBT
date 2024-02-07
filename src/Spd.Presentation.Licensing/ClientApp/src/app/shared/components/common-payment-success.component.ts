@@ -8,7 +8,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 	selector: 'app-common-payment-success',
 	template: `
 		<div class="row">
-			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
 					<div class="col-6">
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Received</h2>
@@ -47,62 +47,80 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 				</div>
 
 				<div class="row mt-4">
-					<div class="col-12">
-						<div class="text-center">
-							<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.New">
-								<div class="fs-5">Your application for a new Security Worker Licence has been received.</div>
-							</ng-container>
+					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.New">
+						<div class="text-center fs-5">Your application for a new Security Worker Licence has been received.</div>
+					</ng-container>
 
-							<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Renewal">
-								<div class="fs-5">Your application for renewing your Security Worker Licence has been received.</div>
-							</ng-container>
+					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Renewal">
+						<div class="text-center fs-5">
+							Your application for renewing your Security Worker Licence has been received.
+						</div>
+					</ng-container>
 
+					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Update">
+						<div class="text-center fs-5">Your update to your Security Worker Licence has been received.</div>
+					</ng-container>
+
+					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Replacement">
+						<div class="text-center fs-5">
+							Your application for a replacement Security Worker Licence has been received.
+						</div>
+					</ng-container>
+
+					<div class="mt-3">
+						<app-alert type="info" [showBorder]="false" icon="">
 							<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Update">
-								<div class="fs-5">Your update to your Security Worker Licence has been received.</div>
-								<div class="my-4">
+								<div class="mb-3">
 									We will contact you if we need more information, and we will send you a temporary copy of your updated
 									licence as an email attachment, which you can start using right away.
 								</div>
-								<div class="my-4">The permanent licence card will be mailed to the address you provided.</div>
+								<div class="mb-3">The permanent licence card will be mailed to the address you provided.</div>
 							</ng-container>
 
 							<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Replacement">
-								<div class="fs-5">Your application for a replacement Security Worker Licence has been received.</div>
-								<div class="my-4">
+								<div class="mb-3">
 									We will send you a temporary copy of your licence as an email attachment, which you can work with for
-									90 days. The permanent licence card will be mailed to the address you provided.
+									90 days.
 								</div>
+								<div class="mb-3">The permanent licence card will be mailed to the address you provided.</div>
 							</ng-container>
 
-							<div class="my-4">You can print or save a copy of this payment confirmation for your records.</div>
-						</div>
+							<div>You can save a copy of this payment confirmation for your records.</div>
+						</app-alert>
 					</div>
 				</div>
 
-				<div class="row text-center">
-					<div class="col-lg-4 col-md-12 mt-3">
-						<div class="d-block text-label">Licence Term</div>
+				<div class="row mb-3">
+					<div class="col-md-6 col-sm-12 mt-2">
+						<div class="d-block text-label text-md-end">Licence Term</div>
+					</div>
+					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 					</div>
-					<div class="col-lg-4 col-md-12 mt-3">
-						<div class="d-block text-label">Amount Paid</div>
+					<div class="col-md-6 col-sm-12 mt-2">
+						<div class="d-block text-label text-md-end">Amount Paid</div>
+					</div>
+					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.transAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 					</div>
-					<div class="col-lg-4 col-md-12 mt-3">
-						<div class="d-block text-label">Case ID</div>
+					<div class="col-md-6 col-sm-12 mt-2">
+						<div class="d-block text-label text-md-end">Case ID</div>
+					</div>
+					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.caseNumber }}</div>
 					</div>
-				</div>
-
-				<div class="row mb-3 text-center">
-					<div class="col-lg-4 col-md-12 mt-3">
-						<div class="d-block text-label">Date and Time of Transaction</div>
+					<div class="col-md-6 col-sm-12 mt-2">
+						<div class="d-block text-label text-md-end">Date and Time of Transaction</div>
+					</div>
+					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">
 							{{ payment?.transDateTime | formatDate : appConstants.date.formalDateTimeFormat }}
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-12 mt-3">
-						<div class="d-block text-label">Invoice/Order Number</div>
+					<div class="col-md-6 col-sm-12 mt-2">
+						<div class="d-block text-label text-md-end">Invoice/Order Number</div>
+					</div>
+					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.transOrderId }}</div>
 					</div>
 				</div>

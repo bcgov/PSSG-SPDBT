@@ -395,75 +395,76 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 										<div class="panel-body">
 											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
-												<div class="col-lg-8 col-md-12">
-													<div class="row mt-0">
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-															<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																<span *ngIf="canadianCitizenProofTypeCode">
-																	{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-																</span>
-																<span *ngIf="notCanadianCitizenProofTypeCode">
-																	{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
-																</span>
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of attachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
-															<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
-															<div class="summary-text-data">
-																{{ height }}
-																{{ heightUnitCode | options : 'HeightUnitTypes' }}
-																{{ heightInches }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
-															<div class="summary-text-data">
-																{{ weight }}
-																{{ weightUnitCode | options : 'WeightUnitTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
-															<div class="summary-text-data">
-																{{ hairColourCode | options : 'HairColourTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
-															<div class="summary-text-data">
-																{{ eyeColourCode | options : 'EyeColourTypes' }}
-															</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
+													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														<span *ngIf="canadianCitizenProofTypeCode">
+															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+														</span>
+														<span *ngIf="notCanadianCitizenProofTypeCode">
+															{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+														</span>
+													</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of citizenshipAttachments; let i = index">
+															{{ doc.name }}
 														</div>
 													</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph</div>
-													<div class="summary-text-data">
-														<img src="/assets/sample-photo.svg" alt="Photo of yourself" />
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="governmentIssuedPhotoTypeCode">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 													</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
+													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+												</div>
+											</div>
+
+											<div class="row mt-0">
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
+													<div class="summary-text-data">
+														{{ height }}
+														{{ heightUnitCode | options : 'HeightUnitTypes' }}
+														{{ heightInches }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
+													<div class="summary-text-data">
+														{{ weight }}
+														{{ weightUnitCode | options : 'WeightUnitTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
+													<div class="summary-text-data">
+														{{ hairColourCode | options : 'HairColourTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
+													<div class="summary-text-data">
+														{{ eyeColourCode | options : 'EyeColourTypes' }}
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-12 mt-lg-2">
+											<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph of Yourself</div>
+											<div class="summary-text-data">
+												<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+													{{ doc.name }}
 												</div>
 											</div>
 										</div>
@@ -736,7 +737,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	get citizenshipExpiryDate(): string {
 		return this.licenceModelData.citizenshipData.expiryDate ?? '';
 	}
-	get attachments(): File[] {
+	get citizenshipAttachments(): File[] {
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
 

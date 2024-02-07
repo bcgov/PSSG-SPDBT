@@ -16,13 +16,13 @@ import { WorkerLicenceAppAnonymousSubmitRequestJson } from '../models/worker-lic
 import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
-import { WorkerLicenceAppUpsertResponse } from '../models/worker-licence-app-upsert-response';
+import { WorkerLicenceCommandResponse } from '../models/worker-licence-command-response';
 import { WorkerLicenceResponse } from '../models/worker-licence-response';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WorkerLicensingService extends BaseService {
+export class SecurityWorkerLicensingService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -51,7 +51,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<Array<WorkerLicenceAppListResponse>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsGetPath, 'get');
     if (params) {
     }
 
@@ -108,9 +108,9 @@ export class WorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -122,7 +122,7 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -142,10 +142,10 @@ export class WorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 
@@ -171,7 +171,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<WorkerLicenceResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdGetPath, 'get');
     if (params) {
       rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
     }
@@ -236,7 +236,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath, 'post');
     if (params) {
       rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
       rb.body(params.body, 'multipart/form-data');
@@ -300,9 +300,9 @@ export class WorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsSubmitPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsSubmitPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -314,7 +314,7 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -334,219 +334,10 @@ export class WorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsSubmitPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiWorkerLicenceApplicationsSubmitAnonymousPost
-   */
-  static readonly ApiWorkerLicenceApplicationsSubmitAnonymousPostPath = '/api/worker-licence-applications/submit/anonymous';
-
-  /**
-   * Submit Security Worker Licence Application Anonymously
-   * deprecated as the request body is too big. the proxy won't let it through.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicenceApplicationsSubmitAnonymousPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params: {
-    body: {
-'docs'?: Array<Blob>;
-
-/**
- * See WorkerLicenceAppAnonymousSubmitRequest schema
- */
-'WorkerLicenceAppAnonymousSubmitRequest'?: {
-'workerLicenceTypeCode'?: string | null;
-'applicationTypeCode'?: string | null;
-'businessTypeCode'?: string | null;
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-'dateOfBirth'?: string | null;
-'genderCode'?: string | null;
-'oneLegalName'?: boolean | null;
-'expiredLicenceNumber'?: string | null;
-'expiredLicenceId'?: string | null;
-'hasExpiredLicence'?: boolean | null;
-'licenceTermCode'?: string | null;
-'hasCriminalHistory'?: boolean | null;
-'hasPreviousName'?: boolean | null;
-'hasBcDriversLicence'?: boolean | null;
-'bcDriversLicenceNumber'?: string | null;
-'hairColourCode'?: string | null;
-'eyeColourCode'?: string | null;
-'height'?: number | null;
-'heightUnitCode'?: string | null;
-'weight'?: number | null;
-'weightUnitCode'?: string | null;
-'contactEmailAddress'?: string | null;
-'contactPhoneNumber'?: string | null;
-'isMailingTheSameAsResidential'?: boolean | null;
-'isPoliceOrPeaceOfficer'?: boolean | null;
-'policeOfficerRoleCode'?: string | null;
-'otherOfficerRole'?: string | null;
-'isTreatedForMHC'?: boolean | null;
-'useBcServicesCardPhoto'?: boolean | null;
-'carryAndUseRestraints'?: boolean | null;
-'useDogs'?: boolean | null;
-'isDogsPurposeProtection'?: boolean | null;
-'isDogsPurposeDetectionDrugs'?: boolean | null;
-'isDogsPurposeDetectionExplosives'?: boolean | null;
-'isCanadianCitizen'?: boolean | null;
-'aliases'?: Array<{
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-}>;
-'residentialAddressData'?: {
-'addressLine1'?: string | null;
-'addressLine2'?: string | null;
-'city'?: string | null;
-'country'?: string | null;
-'postalCode'?: string | null;
-'province'?: string | null;
-};
-'mailingAddressData'?: {
-'addressLine1'?: string | null;
-'addressLine2'?: string | null;
-'city'?: string | null;
-'country'?: string | null;
-'postalCode'?: string | null;
-'province'?: string | null;
-};
-'categoryCodes'?: Array<string>;
-'documentInfos'?: Array<{
-'licenceDocumentTypeCode'?: string;
-'expiryDate'?: string | null;
-}>;
-};
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsSubmitAnonymousPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
-      })
-    );
-  }
-
-  /**
-   * Submit Security Worker Licence Application Anonymously
-   * deprecated as the request body is too big. the proxy won't let it through.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsSubmitAnonymousPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiWorkerLicenceApplicationsSubmitAnonymousPost(params: {
-    body: {
-'docs'?: Array<Blob>;
-
-/**
- * See WorkerLicenceAppAnonymousSubmitRequest schema
- */
-'WorkerLicenceAppAnonymousSubmitRequest'?: {
-'workerLicenceTypeCode'?: string | null;
-'applicationTypeCode'?: string | null;
-'businessTypeCode'?: string | null;
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-'dateOfBirth'?: string | null;
-'genderCode'?: string | null;
-'oneLegalName'?: boolean | null;
-'expiredLicenceNumber'?: string | null;
-'expiredLicenceId'?: string | null;
-'hasExpiredLicence'?: boolean | null;
-'licenceTermCode'?: string | null;
-'hasCriminalHistory'?: boolean | null;
-'hasPreviousName'?: boolean | null;
-'hasBcDriversLicence'?: boolean | null;
-'bcDriversLicenceNumber'?: string | null;
-'hairColourCode'?: string | null;
-'eyeColourCode'?: string | null;
-'height'?: number | null;
-'heightUnitCode'?: string | null;
-'weight'?: number | null;
-'weightUnitCode'?: string | null;
-'contactEmailAddress'?: string | null;
-'contactPhoneNumber'?: string | null;
-'isMailingTheSameAsResidential'?: boolean | null;
-'isPoliceOrPeaceOfficer'?: boolean | null;
-'policeOfficerRoleCode'?: string | null;
-'otherOfficerRole'?: string | null;
-'isTreatedForMHC'?: boolean | null;
-'useBcServicesCardPhoto'?: boolean | null;
-'carryAndUseRestraints'?: boolean | null;
-'useDogs'?: boolean | null;
-'isDogsPurposeProtection'?: boolean | null;
-'isDogsPurposeDetectionDrugs'?: boolean | null;
-'isDogsPurposeDetectionExplosives'?: boolean | null;
-'isCanadianCitizen'?: boolean | null;
-'aliases'?: Array<{
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-}>;
-'residentialAddressData'?: {
-'addressLine1'?: string | null;
-'addressLine2'?: string | null;
-'city'?: string | null;
-'country'?: string | null;
-'postalCode'?: string | null;
-'province'?: string | null;
-};
-'mailingAddressData'?: {
-'addressLine1'?: string | null;
-'addressLine2'?: string | null;
-'city'?: string | null;
-'country'?: string | null;
-'postalCode'?: string | null;
-'province'?: string | null;
-};
-'categoryCodes'?: Array<string>;
-'documentInfos'?: Array<{
-'licenceDocumentTypeCode'?: string;
-'expiryDate'?: string | null;
-}>;
-};
-}
-  },
-  context?: HttpContext
-
-): Observable<WorkerLicenceAppUpsertResponse> {
-
-    return this.apiWorkerLicenceApplicationsSubmitAnonymousPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 
@@ -572,7 +363,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<string>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodePostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodePostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -638,7 +429,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<string>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeFilesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeFilesPostPath, 'post');
     if (params) {
       rb.path('keyCode', params.keyCode, {"style":"simple"});
       rb.body(params.body, 'multipart/form-data');
@@ -709,9 +500,9 @@ export class WorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceAppUpsertResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPostPath, 'post');
     if (params) {
       rb.path('keyCode', params.keyCode, {"style":"simple"});
       rb.body(params.body, 'application/*+json');
@@ -724,7 +515,7 @@ export class WorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceAppUpsertResponse>;
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
       })
     );
   }
@@ -750,10 +541,10 @@ export class WorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceAppUpsertResponse> {
+): Observable<WorkerLicenceCommandResponse> {
 
     return this.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceAppUpsertResponse>) => r.body as WorkerLicenceAppUpsertResponse)
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
     );
   }
 

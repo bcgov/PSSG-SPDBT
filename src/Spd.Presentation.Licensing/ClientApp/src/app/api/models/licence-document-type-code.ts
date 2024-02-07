@@ -44,5 +44,6 @@ export enum LicenceDocumentTypeCode {
   ProofOfFingerprint = 'ProofOfFingerprint',
   RecordOfLandingDocument = 'RecordOfLandingDocument',
   StudyPermit = 'StudyPermit',
-  WorkPermit = 'WorkPermit'
+  WorkPermit = 'WorkPermit',
+  LegalNameChange = 'LegalNameChange'
 }
