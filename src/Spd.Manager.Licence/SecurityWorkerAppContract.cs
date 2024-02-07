@@ -49,6 +49,7 @@ public record WorkerLicenceResponse : PersonalLicenceAppBase
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
 }
 
 public record WorkerLicenceAppListResponse
