@@ -97,7 +97,7 @@ public abstract record WorkerLicenceAppBase
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-    public bool? HasLegalNameChanged { get; set; }
+    public bool? LegalNameChanged { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
 }
 
@@ -155,7 +155,7 @@ public record WorkerLicenceCommandResponse
 
 #region anonymous user
 //for anonymous user, deprecated
-public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase 
+public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase
 {
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Array.Empty<DocumentExpiredInfo>();
     public string Recaptcha { get; set; } = null!;
