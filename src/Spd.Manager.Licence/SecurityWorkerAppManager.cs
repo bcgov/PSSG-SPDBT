@@ -380,16 +380,18 @@ internal partial class SecurityWorkerAppManager :
             else
                 await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
 
-            return new WorkerLicenceCommandResponse() 
-            { 
-                LicenceAppId = createLicResponse.LicenceAppId, 
-                Cost = price.LicenceFees.FirstOrDefault()?.Amount 
+            return new WorkerLicenceCommandResponse()
+            {
+                LicenceAppId = createLicResponse.LicenceAppId,
+                Cost = price.LicenceFees.FirstOrDefault()?.Amount
             };
         }
         else
         {
             //update contact directly
-            await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), ct);
+            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+            updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
+            await _contactRepository.ManageAsync(updateCmd, ct);
             return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
         }
     }
@@ -459,6 +461,14 @@ internal partial class SecurityWorkerAppManager :
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
+        IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
+        //if any new doc contains category document, we think categorieschanged.
+        if (!changes.CategoriesChanged)
+        {
+            changes.CategoriesChanged = items.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
+        }
+
+
         //DogRestraintsChanged
         if (newApp.UseDogs != originalApp.UseDogs ||
             newApp.CarryAndUseRestraints != originalApp.CarryAndUseRestraints ||
@@ -468,8 +478,6 @@ internal partial class SecurityWorkerAppManager :
         {
             changes.DogRestraintsChanged = true;
         }
-
-        IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
 
         //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
