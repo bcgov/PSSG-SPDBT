@@ -30,6 +30,7 @@ import { LicencePaymentCancelComponent } from './components/shared/licence-payme
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
+import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
@@ -83,6 +84,7 @@ export class LicenceApplicationRoutes {
 	public static PAYMENT_FAIL = 'payment-fail';
 	public static PAYMENT_CANCEL = 'payment-cancel';
 	public static PAYMENT_ERROR = 'payment-error';
+	public static UPDATE_SUCCESS = 'update-success';
 
 	public static MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
 
@@ -276,6 +278,7 @@ const routes: Routes = [
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_CANCEL}/:id`, component: LicencePaymentCancelComponent },
 			{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: LicencePaymentErrorComponent },
+			{ path: LicenceApplicationRoutes.UPDATE_SUCCESS, component: LicenceUpdateReceivedSuccessComponent },
 			{
 				path: '',
 				redirectTo: LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION),

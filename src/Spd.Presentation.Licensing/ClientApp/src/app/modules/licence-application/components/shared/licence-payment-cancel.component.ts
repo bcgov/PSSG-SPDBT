@@ -9,7 +9,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-licence-payment-cancel',
 	template: `
-		<div class="container mt-4">
+		<div class="container my-3">
 			<section class="step-section">
 				<app-common-payment-cancel
 					(payNow)="onPayNow()"

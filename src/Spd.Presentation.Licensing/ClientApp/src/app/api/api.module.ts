@@ -9,8 +9,9 @@ import { ConfigurationService } from './services/configuration.service';
 import { LicenceFeeService } from './services/licence-fee.service';
 import { LicenceLookupService } from './services/licence-lookup.service';
 import { PaymentService } from './services/payment.service';
+import { PermitService } from './services/permit.service';
+import { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
 import { UserProfileService } from './services/user-profile.service';
-import { WorkerLicensingService } from './services/worker-licensing.service';
 
 /**
  * Module that provides all services and configuration.
@@ -25,8 +26,9 @@ import { WorkerLicensingService } from './services/worker-licensing.service';
     LicenceFeeService,
     LicenceLookupService,
     PaymentService,
+    PermitService,
+    SecurityWorkerLicensingService,
     UserProfileService,
-    WorkerLicensingService,
     ApiConfiguration
   ],
 })

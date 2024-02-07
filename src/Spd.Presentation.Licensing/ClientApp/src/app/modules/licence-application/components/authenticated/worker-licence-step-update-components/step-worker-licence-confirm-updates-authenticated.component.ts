@@ -29,6 +29,7 @@ import { Component } from '@angular/core';
 							<div class="col-lg-4 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2 mt-lg-0">Reprint Fee</div>
 								<div class="summary-text-data">$20</div>
+								<!-- TODO hardcoded payment cost -->
 							</div>
 						</div>
 					</div>
