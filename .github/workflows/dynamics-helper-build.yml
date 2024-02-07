@@ -3,8 +3,8 @@ name: Dynamics Helper Build
 on:
   push:
     branches:
-      - "main"
-      - release/**
+      - main
+      - 'release/**'
     paths:
       - src/**
       - "!src/Spd.Presentation.Licensing/**"
