@@ -23,10 +23,10 @@ internal partial class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
-        IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceAppUpsertResponse>,
-        IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceAppUpsertResponse>,
-        IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceAppUpsertResponse>,
-        IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceAppUpsertResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceCommandResponse>,
         ISecurityWorkerAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -93,7 +93,7 @@ internal partial class SecurityWorkerAppManager :
 
         //await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         //await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
-        return _mapper.Map<WorkerLicenceAppUpsertResponse>(response);
+        return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
 
     // authenticated submit
@@ -151,7 +151,7 @@ internal partial class SecurityWorkerAppManager :
 
     #region anonymous
 
-    public async Task<WorkerLicenceAppUpsertResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
 
@@ -309,7 +309,7 @@ internal partial class SecurityWorkerAppManager :
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
-            CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
             //add all new files user uploaded
             if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
@@ -318,8 +318,8 @@ internal partial class SecurityWorkerAppManager :
 
                 foreach (LicAppFileInfo licAppFile in items)
                 {
-                    SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                    CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                    SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                    CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
                     fileCmd.ApplicantId = createLicResponse.ContactId;
                     if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
                     {
