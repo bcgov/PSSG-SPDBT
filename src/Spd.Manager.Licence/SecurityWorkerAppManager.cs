@@ -456,7 +456,7 @@ internal partial class SecurityWorkerAppManager :
             newList.Sort();
             List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
             originalList.Sort();
-            if (newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
+            if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
         //DogRestraintsChanged
