@@ -80,6 +80,7 @@ export class FileUploadHelper {
 			[disableClick]="disableClick"
 			[expandable]="expandable"
 			[accept]="accept"
+			[disabled]="disabled"
 		>
 			<ngx-dropzone-label>
 				<div>
@@ -182,6 +183,7 @@ export class FileUploadComponent implements OnInit {
 	@Input() expandable = true;
 	@Input() disableClick = false;
 	@Input() isReadOnly = false;
+	@Input() disabled = false;
 	@Input() files: Array<File> = [];
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept

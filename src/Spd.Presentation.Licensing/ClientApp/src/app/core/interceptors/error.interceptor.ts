@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { UserProfileService, WorkerLicensingService } from 'src/app/api/services';
+import { SecurityWorkerLicensingService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 
@@ -31,7 +31,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 				// Certain 404s will be handled in the component
 				if (
 					errorResponse.status == 403 &&
-					errorResponse.url?.includes(WorkerLicensingService.ApiWorkerLicenceApplicationsPostPath)
+					errorResponse.url?.includes(SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsPostPath)
 				) {
 					return throwError(() => errorResponse);
 				}
