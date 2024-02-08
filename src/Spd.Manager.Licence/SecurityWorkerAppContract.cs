@@ -20,25 +20,25 @@ public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUp
     : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppNewCommand(
-    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppReplaceCommand(
-    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppRenewCommand(
-    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppUpdateCommand(
-    WorkerLicenceAppAnonymousSubmitRequestJson LicenceAnonymousRequest,
+    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos,
     Guid KeyCode)
     : IRequest<WorkerLicenceCommandResponse>;
@@ -88,7 +88,7 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 
 #region anonymous user
 
-public record WorkerLicenceAppAnonymousSubmitRequestJson : PersonalLicenceAppBase //for anonymous user
+public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppBase //for anonymous user
 {
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
@@ -98,6 +98,10 @@ public record WorkerLicenceAppAnonymousSubmitRequestJson : PersonalLicenceAppBas
     public bool? Reprint { get; set; }
 }
 
+public record WorkerLicenceAppAnonymousSubmitRequestValidation : WorkerLicenceAppAnonymousSubmitRequest
+{
+    public IEnumerable<LicAppFileInfo> NewLicAppFileInfos { get; set; } = Array.Empty<LicAppFileInfo>();
+}
 #endregion
 
 
