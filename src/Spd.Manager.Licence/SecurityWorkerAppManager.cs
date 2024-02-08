@@ -502,7 +502,7 @@ internal partial class SecurityWorkerAppManager :
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the criminal charges submitted by the licensee with details as following.{newRequest.CriminalChargeDescription}",
+                Description = $"Please see the criminal charges submitted by the licensee with details as following : {newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.High,

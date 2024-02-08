@@ -53,7 +53,6 @@ public record WorkerLicenceResponse : PersonalLicenceAppBase
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public string? CriminalChargeDescription { get; set; }
 }
 
 public record WorkerLicenceAppListResponse
