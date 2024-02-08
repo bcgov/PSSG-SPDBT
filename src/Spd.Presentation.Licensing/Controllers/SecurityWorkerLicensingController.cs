@@ -30,8 +30,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
-        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> _anonymousLicenceAppSubmitRequestValidator;
-        private readonly IMultipartRequestService _multipartRequestService;
+        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequest> _anonymousLicenceAppSubmitRequestValidator;
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
@@ -41,7 +40,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IMediator mediator,
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
-            IValidator<WorkerLicenceAppAnonymousSubmitRequestJson> anonymousLicenceAppSubmitRequestValidator,
+            IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
             IMultipartRequestService multipartRequestService,
             IMapper mapper,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -52,7 +51,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _configuration = configuration;
             _wslSubmitValidator = wslSubmitValidator;
-            _multipartRequestService = multipartRequestService;
             _mapper = mapper;
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
@@ -236,10 +234,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="keyCode"></param>
+        /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequestJson jsonRequest, Guid keyCode, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, Guid keyCode, CancellationToken ct)
         {
             //validate keyCode
             if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
@@ -248,35 +248,51 @@ namespace Spd.Presentation.Licensing.Controllers
             }
 
             _logger.LogInformation("validate payload");
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos, keyCode);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos, keyCode);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos, keyCode);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, keyCode);
+                AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos, keyCode);
                 return await _mediator.Send(command, ct);
             }
             return null;
         }
         #endregion
+
+        private async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfoAsync(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
+        {
+            if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
+            List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+            foreach (Guid docKey in docKeyCodes)
+            {
+                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
+                if (items.Any())
+                {
+                    results.AddRange(items);
+                }
+            }
+            return results;
+        }
     }
 }

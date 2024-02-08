@@ -12,7 +12,6 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
@@ -153,14 +152,14 @@ internal partial class SecurityWorkerAppManager :
 
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
     {
-        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
 
         //todo: add checking if all necessary files have been uploaded
 
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-        await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, ct);
 
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -181,7 +180,7 @@ internal partial class SecurityWorkerAppManager :
 
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
     {
-        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
             throw new ArgumentException("should be a replacement request");
 
@@ -230,9 +229,14 @@ internal partial class SecurityWorkerAppManager :
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
+    /********************************************************************************
+     create spd_application with the same content as renewed app with type=renew, put original licence id to spd_currentexpiredlicenseid.
+    if mailing address changed, set the new mailing address to the new created application address1, update the contact mailing address, put old mailing address to spd_address.
+    copy all the old files(except the file types of new uploaded files) to the new application.
+     *****************************************************************************/
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
     {
-        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
 
@@ -256,7 +260,13 @@ internal partial class SecurityWorkerAppManager :
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-        await UploadNewDocs(request, response.LicenceAppId, response.ContactId, ct);
+        await UploadNewDocsAsync(request,
+                cmd.LicAppFileInfos,
+                response?.LicenceAppId,
+                response.ContactId,
+                null,
+                null,
+                ct);
 
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
@@ -289,9 +299,22 @@ internal partial class SecurityWorkerAppManager :
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
+    //update biz logic
+    /**********************************************************************************************
+     Only Name Changed, reprint = yes, => openshift create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
+     Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
+     Only Photo Changed, reprint = yes, => openshift create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
+     Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
+     If license categories or Dog constraints changed, (no matter if reprint is true or false), openshift needs to create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
+     if only contact info, address changed, openshift directly update contact.
+     if Criminal Charges, or New Offsence Conviction, or treated for mental Health changed, created task, assign to Licesing RA team
+     if only hold a position with peace officer changed, create a task for license cs team., link peace officer document to this task and contact.
+     if mental health changed, create a task for license to licensing team, link mental document to this task and contact
+     If any changes that needs creating tasks and also need creating application, then do both.
+     *******************************************************************************************/
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
     {
-        WorkerLicenceAppAnonymousSubmitRequestJson request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be a update request");
 
@@ -304,45 +327,14 @@ internal partial class SecurityWorkerAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
-        ChangeSpec changes = await MakeChanges(originalApp, request, originalLic, ct);
+        ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, ct);
 
         LicenceApplicationCmdResp? createLicResponse = null;
+        decimal? cost = 0;
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-            //add all new files user uploaded
-            if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
-            {
-                IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
-
-                foreach (LicAppFileInfo licAppFile in items)
-                {
-                    SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                    CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                    fileCmd.ApplicantId = createLicResponse.ContactId;
-                    if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
-                    {
-                        fileCmd.TaskId = changes.PeaceOfficerStatusChangeTaskId;
-                    }
-                    else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
-                    {
-                        fileCmd.TaskId = changes.MentalHealthStatusChangeTaskId;
-                    }
-                    else
-                    {
-                        fileCmd.ApplicationId = createLicResponse.LicenceAppId;
-                    }
-                    fileCmd.ExpiryDate = request?
-                            .DocumentExpiredInfos?
-                            .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                            .ExpiryDate;
-                    fileCmd.TempFile = tempFile;
-                    fileCmd.SubmittedByApplicantId = createLicResponse.ContactId;
-                    //create bcgov_documenturl and file
-                    await _documentRepository.ManageAsync(fileCmd, ct);
-                }
-            }
             var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
             {
                 ApplicationTypeEnum = ApplicationTypeEnum.Update,
@@ -351,16 +343,11 @@ internal partial class SecurityWorkerAppManager :
                 WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
                 HasValidSwl90DayLicence = false
             }, ct);
-            if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            cost = price.LicenceFees.FirstOrDefault()?.Amount;
+            if (cost == 0)
                 await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
             else
                 await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-
-            return new WorkerLicenceCommandResponse()
-            {
-                LicenceAppId = createLicResponse.LicenceAppId,
-                Cost = price.LicenceFees.FirstOrDefault()?.Amount
-            };
         }
         else
         {
@@ -368,8 +355,17 @@ internal partial class SecurityWorkerAppManager :
             UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
             updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
             await _contactRepository.ManageAsync(updateCmd, ct);
-            return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
         }
+
+        await UploadNewDocsAsync(request,
+            cmd.LicAppFileInfos,
+            createLicResponse?.LicenceAppId,
+            originalApp.ContactId,
+            changes.PeaceOfficerStatusChangeTaskId,
+            changes.MentalHealthStatusChangeTaskId,
+            ct);
+        return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
+
     }
 
     #endregion
@@ -422,7 +418,11 @@ internal partial class SecurityWorkerAppManager :
         }
         return false;
     }
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, WorkerLicenceAppAnonymousSubmitRequestJson newApp, LicenceResp originalLic, CancellationToken ct)
+
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
+        WorkerLicenceAppAnonymousSubmitRequest newApp,
+        IEnumerable<LicAppFileInfo> newFileInfos,
+        LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
         //categories changed
@@ -437,11 +437,10 @@ internal partial class SecurityWorkerAppManager :
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
-        IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(newApp.DocumentKeyCodes, ct);
         //if any new doc contains category document, we think categorieschanged.
-        if (!changes.CategoriesChanged)
+        if (!changes.CategoriesChanged && newFileInfos != null)
         {
-            changes.CategoriesChanged = items.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
+            changes.CategoriesChanged = newFileInfos.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
         }
 
 
@@ -462,9 +461,9 @@ internal partial class SecurityWorkerAppManager :
         if (newApp.IsPoliceOrPeaceOfficer != originalApp.IsPoliceOrPeaceOfficer ||
             newApp.PoliceOfficerRoleCode != originalRoleCode ||
             newApp.OtherOfficerRole != originalApp.OtherOfficerRole ||
-            items.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
         {
-            IEnumerable<string> fileNames = items.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
+            IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
             changes.PeaceOfficerStatusChanged = true;
             changes.PeaceOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
@@ -480,10 +479,10 @@ internal partial class SecurityWorkerAppManager :
 
         //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
         if (newApp.IsTreatedForMHC != originalApp.IsTreatedForMHC ||
-            items.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
             changes.MentalHealthStatusChanged = true;
-            IEnumerable<string> fileNames = items.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
+            IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
             changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Please see the attached mental health condition form submitted by the Licensee : {string.Join(";", fileNames)}  ",
@@ -513,16 +512,29 @@ internal partial class SecurityWorkerAppManager :
         }
         return changes;
     }
-    private async Task UploadNewDocs(WorkerLicenceAppAnonymousSubmitRequestJson request, Guid? licenceAppId, Guid? contactId, CancellationToken ct)
-    {
-        if (request.DocumentKeyCodes != null && request.DocumentKeyCodes.Any())
-        {
-            IEnumerable<LicAppFileInfo> items = await GetAllNewDocsInfo(request.DocumentKeyCodes, ct);
 
-            foreach (LicAppFileInfo licAppFile in items)
+    private async Task UploadNewDocsAsync(WorkerLicenceAppAnonymousSubmitRequest request,
+        IEnumerable<LicAppFileInfo> newFileInfos,
+        Guid? licenceAppId,
+        Guid? contactId,
+        Guid? peaceOfficerStatusChangeTaskId,
+        Guid? mentalHealthStatusChangeTaskId,
+        CancellationToken ct)
+    {
+        if (newFileInfos != null && newFileInfos.Any())
+        {
+            foreach (LicAppFileInfo licAppFile in newFileInfos)
             {
-                SpdTempFile tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                CreateDocumentCmd fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
+                {
+                    fileCmd.TaskId = peaceOfficerStatusChangeTaskId;
+                }
+                else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
+                {
+                    fileCmd.TaskId = mentalHealthStatusChangeTaskId;
+                }
                 fileCmd.ApplicantId = contactId;
                 fileCmd.ApplicationId = licenceAppId;
                 fileCmd.ExpiryDate = request?
@@ -535,30 +547,5 @@ internal partial class SecurityWorkerAppManager :
                 await _documentRepository.ManageAsync(fileCmd, ct);
             }
         }
-    }
-
-    private async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfo(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
-    {
-        if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
-        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
-        foreach (Guid docKeyCode in docKeyCodes)
-        {
-            IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKeyCode.ToString());
-            if (items != null)
-                results.AddRange(items);
-        }
-        return results;
-    }
-
-    private record ChangeSpec
-    {
-        public bool CategoriesChanged { get; set; } //full update
-        public bool DogRestraintsChanged { get; set; } //full update
-        public bool PeaceOfficerStatusChanged { get; set; } //task
-        public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
-        public bool MentalHealthStatusChanged { get; set; } //task
-        public Guid? MentalHealthStatusChangeTaskId { get; set; }
-        public bool CriminalHistoryChanged { get; set; } //task
-        public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
     }
 }

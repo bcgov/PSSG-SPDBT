@@ -15,9 +15,9 @@ internal class Mappings : Profile
     {
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, CreateLicenceApplicationCmd>()
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, UpdateContactCmd>()
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
@@ -55,7 +55,7 @@ internal class Mappings : Profile
         CreateMap<Alias, Spd.Resource.Repository.Alias>()
             .ReverseMap();
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequestJson, SaveLicenceApplicationCmd>()
+        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
