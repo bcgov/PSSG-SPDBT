@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.Document;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
@@ -246,6 +245,14 @@ public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAp
 
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
+        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
+        RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
+        RuleFor(r => r.CriminalChargeDescription)
+            .NotEmpty()
+            .MaximumLength(1000)
+            .When(r => r.HasNewCriminalRecordCharge == true && r.ApplicationTypeCode == ApplicationTypeCode.Update);
         RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true).When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
     }
 }
