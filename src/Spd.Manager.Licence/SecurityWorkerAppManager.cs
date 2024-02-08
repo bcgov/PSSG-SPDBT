@@ -230,8 +230,10 @@ internal partial class SecurityWorkerAppManager :
     }
 
     /********************************************************************************
-     create spd_application with the same content as renewed app with type=renew, put original licence id to spd_currentexpiredlicenseid.
-    if mailing address changed, set the new mailing address to the new created application address1, update the contact mailing address, put old mailing address to spd_address.
+     create spd_application with the same content as renewed app with type=renew, 
+    put original licence id to spd_currentexpiredlicenseid.
+    if mailing address changed, set the new mailing address to the new created application address1, 
+    update the contact mailing address, put old mailing address to spd_address.
     copy all the old files(except the file types of new uploaded files) to the new application.
      *****************************************************************************/
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
@@ -258,7 +260,7 @@ internal partial class SecurityWorkerAppManager :
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
 
-        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
@@ -420,17 +422,17 @@ internal partial class SecurityWorkerAppManager :
     }
 
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
-        WorkerLicenceAppAnonymousSubmitRequest newApp,
+        WorkerLicenceAppAnonymousSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
         //categories changed
-        if (newApp.CategoryCodes.Count() != originalApp.CategoryCodes.Length)
+        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Length)
             changes.CategoriesChanged = true;
         else
         {
-            List<WorkerCategoryTypeCode> newList = newApp.CategoryCodes.ToList();
+            List<WorkerCategoryTypeCode> newList = newRequest.CategoryCodes.ToList();
             newList.Sort();
             List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
             originalList.Sort();
@@ -445,11 +447,11 @@ internal partial class SecurityWorkerAppManager :
 
 
         //DogRestraintsChanged
-        if (newApp.UseDogs != originalApp.UseDogs ||
-            newApp.CarryAndUseRestraints != originalApp.CarryAndUseRestraints ||
-            newApp.IsDogsPurposeProtection != originalApp.IsDogsPurposeProtection ||
-            newApp.IsDogsPurposeDetectionDrugs != originalApp.IsDogsPurposeDetectionDrugs ||
-            newApp.IsDogsPurposeDetectionExplosives != originalApp.IsDogsPurposeDetectionExplosives)
+        if (newRequest.UseDogs != originalApp.UseDogs ||
+            newRequest.CarryAndUseRestraints != originalApp.CarryAndUseRestraints ||
+            newRequest.IsDogsPurposeProtection != originalApp.IsDogsPurposeProtection ||
+            newRequest.IsDogsPurposeDetectionDrugs != originalApp.IsDogsPurposeDetectionDrugs ||
+            newRequest.IsDogsPurposeDetectionExplosives != originalApp.IsDogsPurposeDetectionExplosives)
         {
             changes.DogRestraintsChanged = true;
         }
@@ -458,9 +460,9 @@ internal partial class SecurityWorkerAppManager :
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
             : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
 
-        if (newApp.IsPoliceOrPeaceOfficer != originalApp.IsPoliceOrPeaceOfficer ||
-            newApp.PoliceOfficerRoleCode != originalRoleCode ||
-            newApp.OtherOfficerRole != originalApp.OtherOfficerRole ||
+        if (newRequest.IsPoliceOrPeaceOfficer != originalApp.IsPoliceOrPeaceOfficer ||
+            newRequest.PoliceOfficerRoleCode != originalRoleCode ||
+            newRequest.OtherOfficerRole != originalApp.OtherOfficerRole ||
             newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
         {
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
@@ -478,8 +480,7 @@ internal partial class SecurityWorkerAppManager :
         }
 
         //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
-        if (newApp.IsTreatedForMHC != originalApp.IsTreatedForMHC ||
-            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+        if (newRequest.HasNewMentalHealthCondition == true)
         {
             changes.MentalHealthStatusChanged = true;
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
@@ -496,12 +497,12 @@ internal partial class SecurityWorkerAppManager :
         }
 
         //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
-        if (newApp.HasCriminalHistory != originalApp.HasCriminalHistory)
+        if (newRequest.HasNewCriminalRecordCharge == true)
         {
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = "Please see the criminal charges submitted by the licensee in the documents attached.",
+                Description = $"Please see the criminal charges submitted by the licensee with details as following.{newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.High,

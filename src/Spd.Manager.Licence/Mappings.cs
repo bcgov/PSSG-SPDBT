@@ -16,6 +16,8 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
+            .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetIsTreatedForMHC(s)))
+            .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
@@ -96,6 +98,24 @@ internal class Mappings : Profile
     {
         if (documentType == null) return null;
         return LicenceDocumentType2Dictionary.FirstOrDefault(d => d.Value == documentType).Key;
+    }
+
+    private static bool? GetIsTreatedForMHC(WorkerLicenceAppAnonymousSubmitRequest request)
+    {
+        if(request.ApplicationTypeCode==Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
+        {
+            return request.HasNewMentalHealthCondition;
+        }
+        return request.IsTreatedForMHC;
+    }
+
+    private static bool? GetHasCriminalHistory(WorkerLicenceAppAnonymousSubmitRequest request)
+    {
+        if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
+        {
+            return request.HasNewCriminalRecordCharge;
+        }
+        return request.IsTreatedForMHC;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()

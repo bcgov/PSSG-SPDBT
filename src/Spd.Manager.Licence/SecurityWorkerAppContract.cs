@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
@@ -54,6 +53,7 @@ public record WorkerLicenceResponse : PersonalLicenceAppBase
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public string? CriminalChargeDescription { get; set; }
 }
 
 public record WorkerLicenceAppListResponse
@@ -80,7 +80,7 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
 
 public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 {
-    public decimal? Cost { get; set;}
+    public decimal? Cost { get; set; }
 };
 
 
@@ -96,6 +96,9 @@ public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppBase //
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
+    public bool? HasNewMentalHealthCondition { get; set; }
+    public bool? HasNewCriminalRecordCharge { get; set; }
+    public string? CriminalChargeDescription { get; set; }
 }
 
 #endregion
