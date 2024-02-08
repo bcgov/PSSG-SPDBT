@@ -210,9 +210,9 @@ public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseVali
 //    }
 //}
 
-public class WorkerLicenceAppAnonymousSubmitRequestJsonValidator : PersonalLicenceAppBaseValidator<WorkerLicenceAppAnonymousSubmitRequestJson>
+public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseValidator<WorkerLicenceAppAnonymousSubmitRequest>
 {
-    public WorkerLicenceAppAnonymousSubmitRequestJsonValidator(IConfiguration configuration)
+    public WorkerLicenceAppAnonymousSubmitRequestValidator(IConfiguration configuration)
     {
         //category
         RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7);
