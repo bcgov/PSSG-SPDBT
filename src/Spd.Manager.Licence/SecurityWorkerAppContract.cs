@@ -98,10 +98,6 @@ public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppBase //
     public bool? Reprint { get; set; }
 }
 
-public record WorkerLicenceAppAnonymousSubmitRequestValidation : WorkerLicenceAppAnonymousSubmitRequest
-{
-    public IEnumerable<LicAppFileInfo> NewLicAppFileInfos { get; set; } = Array.Empty<LicAppFileInfo>();
-}
 #endregion
 
 
