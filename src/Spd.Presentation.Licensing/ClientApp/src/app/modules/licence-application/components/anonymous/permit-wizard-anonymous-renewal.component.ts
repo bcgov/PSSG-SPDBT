@@ -238,7 +238,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	}
 
 	onChildNextStep() {
-		console.log('onChildNextStep', this.stepper.selectedIndex);
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
 				this.stepsPermitDetailsComponent?.onGoToNextStep();

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BooleanTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceAdditionalGovIdComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-additional-gov-id.component';
 import { StepWorkerLicenceAliasesComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-aliases.component';
@@ -52,7 +52,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-worker-licence-aliases [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-aliases>
+				<app-step-worker-licence-aliases></app-step-worker-licence-aliases>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
@@ -77,7 +77,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step *ngIf="showCitizenshipStep">
 				<app-step-worker-licence-citizenship
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-citizenship>
@@ -105,7 +105,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showAdditionalGovermentIdStep && applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step *ngIf="showAdditionalGovermentIdStep && showCitizenshipStep">
 				<app-step-worker-licence-additional-gov-id
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-additional-gov-id>
@@ -463,6 +463,17 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 			form.value.canadianCitizenProofTypeCode,
 			form.value.notCanadianCitizenProofTypeCode
 		);
+	}
+
+	get showCitizenshipStep(): boolean {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			return false;
+		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+			const form = this.licenceApplicationService.citizenshipFormGroup;
+			return form.value.isCanadianCitizen === BooleanTypeCode.No;
+		}
+
+		return true;
 	}
 
 	get showPhotographOfYourself(): boolean {

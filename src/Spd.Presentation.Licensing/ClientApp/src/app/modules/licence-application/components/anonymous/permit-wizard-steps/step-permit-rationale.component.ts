@@ -17,7 +17,9 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
@@ -39,7 +41,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					</div>
 					<div class="row mt-2">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<div class="text-minor-heading">Provide any documents that support your rationale (optional):</div>
+							<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
 							<div class="my-2">
 								These could be a police report which refers to the safety concern, a protection order, a news article
 								about your concern, etc.

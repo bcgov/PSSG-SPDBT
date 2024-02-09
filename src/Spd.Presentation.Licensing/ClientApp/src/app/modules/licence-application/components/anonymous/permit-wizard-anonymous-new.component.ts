@@ -244,7 +244,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	onChildNextStep() {
-		console.log('onChildNextStep', this.stepper.selectedIndex);
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
 				this.stepsPermitDetailsComponent?.onGoToNextStep();

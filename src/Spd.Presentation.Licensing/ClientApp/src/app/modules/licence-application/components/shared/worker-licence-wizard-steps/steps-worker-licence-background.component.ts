@@ -234,8 +234,6 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
-		console.log('onFormValidNextStep', this.childstepper.selectedIndex);
-
 		const isValid = this.dirtyForm(_formNumber);
 		if (!isValid) return;
 
