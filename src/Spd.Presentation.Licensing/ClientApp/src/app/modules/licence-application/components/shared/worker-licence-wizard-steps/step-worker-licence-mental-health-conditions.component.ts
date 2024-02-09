@@ -141,10 +141,6 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 		return this.form.valid;
 	}
 
-	get hasNewMentalHealthCondition(): FormControl {
-		return this.form.get('hasNewMentalHealthCondition') as FormControl;
-	}
-
 	get isTreatedForMHC(): FormControl {
 		return this.form.get('isTreatedForMHC') as FormControl;
 	}

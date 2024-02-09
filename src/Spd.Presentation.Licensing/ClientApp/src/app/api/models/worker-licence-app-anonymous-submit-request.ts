@@ -25,6 +25,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequest {
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
+  criminalChargeDescription?: null | string;
   dateOfBirth?: null | string;
   documentExpiredInfos?: null | Array<DocumentExpiredInfo>;
   documentKeyCodes?: null | Array<string>;
@@ -38,6 +39,8 @@ export interface WorkerLicenceAppAnonymousSubmitRequest {
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
   hasLegalNameChanged?: null | boolean;
+  hasNewCriminalRecordCharge?: null | boolean;
+  hasNewMentalHealthCondition?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;

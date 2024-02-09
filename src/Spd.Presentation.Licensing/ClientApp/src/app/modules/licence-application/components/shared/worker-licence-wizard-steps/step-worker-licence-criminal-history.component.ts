@@ -95,10 +95,6 @@ export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, Licenc
 		return this.form.valid;
 	}
 
-	get hasNewCriminalRecordCharge(): FormControl {
-		return this.form.get('hasNewCriminalRecordCharge') as FormControl;
-	}
-
 	get hasCriminalHistory(): FormControl {
 		return this.form.get('hasCriminalHistory') as FormControl;
 	}

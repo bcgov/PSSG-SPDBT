@@ -1171,7 +1171,7 @@ export abstract class LicenceApplicationHelper {
 			hasNewCriminalRecordCharge: this.booleanTypeToBoolean(
 				licenceModelFormValue.criminalHistoryData.hasCriminalHistory
 			), // used by the backend for an Update or Renewal
-			// TODO criminalChargeDescription
+			criminalChargeDescription: licenceModelFormValue.criminalHistoryData.criminalChargeDescription,
 			//-----------------------------------
 			reprint: this.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
