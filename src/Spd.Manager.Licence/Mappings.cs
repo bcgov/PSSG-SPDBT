@@ -39,7 +39,7 @@ internal class Mappings : Profile
         CreateMap<DocumentResp, Document>()
              .IncludeBase<DocumentResp, LicenceAppDocumentResponse>()
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate))
-             .ForMember(d => d.LicenceDocumentTypeCode, opt => opt.MapFrom(s => GetlicenceDocumentTypeCode(s.DocumentType2)));
+             .ForMember(d => d.LicenceDocumentTypeCode, opt => opt.MapFrom(s => GetLicenceDocumentTypeCode(s.DocumentType2)));
         CreateMap<Address, Addr>()
             .ReverseMap();
         CreateMap<ResidentialAddress, ResidentialAddr>()
@@ -94,7 +94,7 @@ internal class Mappings : Profile
         return docTypeEnum;
     }
 
-    private static LicenceDocumentTypeCode? GetlicenceDocumentTypeCode(DocumentTypeEnum? documentType)
+    internal static LicenceDocumentTypeCode? GetLicenceDocumentTypeCode(DocumentTypeEnum? documentType)
     {
         if (documentType == null) return null;
         return LicenceDocumentType2Dictionary.FirstOrDefault(d => d.Value == documentType).Key;
