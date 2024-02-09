@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -19,18 +19,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<!-- <ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
-				</ng-container> -->
-
-				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
+				<app-step-title [title]="title"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
-					<div class="row">
+					<div class="row" *ngIf="isNotRenewal">
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="isCanadianCitizen">
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -51,7 +43,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 
 					<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
 						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+							<mat-divider class="mb-3 mat-divider-primary" *ngIf="isNotRenewal"></mat-divider>
 
 							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
 								<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload</div>
@@ -127,7 +119,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
 										</ng-container>
 										<ng-template #notCanadianCitizenTitle>
-											<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
+											<div class="text-minor-heading mb-2">Upload a photo of your selected document type</div>
 										</ng-template>
 										<app-file-upload
 											(fileUploaded)="onFileUploaded($event)"
@@ -163,7 +155,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 	],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepWorkerLicenceCitizenshipComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = 'Are you a Canadian citizen?';
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;
 
@@ -182,6 +175,12 @@ export class StepWorkerLicenceCitizenshipComponent implements LicenceChildSteppe
 		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
 	) {}
+
+	ngOnInit(): void {
+		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
+			this.title = 'Provide proof of ability to work in Canada';
+		}
+	}
 
 	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
@@ -226,5 +225,9 @@ export class StepWorkerLicenceCitizenshipComponent implements LicenceChildSteppe
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+
+	get isNotRenewal(): boolean {
+		return this.applicationTypeCode != ApplicationTypeCode.Renewal;
 	}
 }

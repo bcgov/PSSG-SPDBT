@@ -401,7 +401,6 @@ export class StepsPermitIdentificationComponent extends BaseWizardStepComponent 
 
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
-		console.log('onFormValidNextStep isValid', this.childstepper.selectedIndex, isValid);
 		if (!isValid) return;
 
 		this.childNextStep.next(true);

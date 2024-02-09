@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
@@ -273,6 +272,7 @@ import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.compo
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+	// If step ordering changes, crutial to update this <- look for this comment below
 	readonly STEP_SOLE_PROPRIETOR = 1;
 	readonly STEP_LICENCE_CONFIRMATION = 2;
 	readonly STEP_LICENCE_EXPIRED = 5;
@@ -307,7 +307,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@ViewChild(StepWorkerLicenceTermComponent)
 	licenceTermComponent!: StepWorkerLicenceTermComponent;
 
-	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
+	showStepDogsAndRestraints = false;
 
 	constructor(
 		private router: Router,
@@ -326,12 +326,15 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				// console.debug('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 
 				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
+
+				this.showStepDogsAndRestraints =
+					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+				console.log('showStepDogsAndRestraints', this.showStepDogsAndRestraints);
 			}
 		);
 	}
@@ -348,9 +351,15 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	override onGoToNextStep() {
 		console.debug('onGoToNextStep', this.childstepper.selectedIndex);
 
-		if (this.childstepper.selectedIndex === 2 && this.applicationTypeCode === ApplicationTypeCode.Update) {
-			this.nextStepperStep.emit(true);
-			return;
+		// If step ordering changes, crutial to update this
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			if (
+				(this.childstepper.selectedIndex === 2 && !this.showStepDogsAndRestraints) ||
+				(this.childstepper.selectedIndex === 4 && this.showStepDogsAndRestraints)
+			) {
+				this.nextStepperStep.emit(true);
+				return;
+			}
 		}
 		this.childstepper.next();
 	}
@@ -375,9 +384,5 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	get showStepDogsAndRestraints(): boolean {
-		return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
 	}
 }

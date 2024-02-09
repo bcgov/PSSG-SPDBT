@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 
 @Component({
 	selector: 'app-step-worker-licence-bc-driver-licence',
@@ -28,7 +27,6 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepWorkerLicenceBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;

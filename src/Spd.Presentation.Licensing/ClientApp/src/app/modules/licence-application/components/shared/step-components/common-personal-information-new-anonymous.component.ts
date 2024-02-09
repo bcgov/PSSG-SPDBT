@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -70,7 +69,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		</form>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonPersonalInformationNewAnonymousComponent {
 	genderTypes = GenderTypes;

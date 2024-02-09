@@ -4,7 +4,7 @@ import {
 	ApplicationTypeCode,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequestJson,
+	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceAppSubmitRequest,
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceTypeCode,
@@ -491,7 +491,7 @@ export abstract class PermitApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	public getSaveBodyAnonymous(permitModelFormValue: any): WorkerLicenceAppAnonymousSubmitRequestJson {
+	public getSaveBodyAnonymous(permitModelFormValue: any): WorkerLicenceAppAnonymousSubmitRequest {
 		const savebody = this.getSaveBody(permitModelFormValue);
 
 		// const documentInfos = this.getSaveDocumentInfosAnonymous(permitModelFormValue);
@@ -503,7 +503,7 @@ export abstract class PermitApplicationHelper {
 		// 	(item: WorkerLicenceAppCategoryData) => item.workerCategoryTypeCode!
 		// );
 
-		const requestBody: WorkerLicenceAppAnonymousSubmitRequestJson = {
+		const requestBody: WorkerLicenceAppAnonymousSubmitRequest = {
 			workerLicenceTypeCode: savebody.workerLicenceTypeCode,
 			applicationTypeCode: savebody.applicationTypeCode,
 			givenName: savebody.givenName,

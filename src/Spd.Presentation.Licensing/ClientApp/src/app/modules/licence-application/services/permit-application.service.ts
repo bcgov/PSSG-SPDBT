@@ -414,7 +414,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		);
 
-		console.log('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
+		console.debug('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
 
 		return of(this.permitModelFormGroup.value);
 	}
@@ -483,7 +483,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			);
 		}
 
-		console.log('[createPermitAuthenticated] permitModelFormGroup', this.permitModelFormGroup.value);
+		console.debug('[createPermitAuthenticated] permitModelFormGroup', this.permitModelFormGroup.value);
 
 		return of(this.permitModelFormGroup.value);
 	}

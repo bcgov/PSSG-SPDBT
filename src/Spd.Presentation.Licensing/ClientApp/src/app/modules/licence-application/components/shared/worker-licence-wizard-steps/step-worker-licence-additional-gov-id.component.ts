@@ -61,7 +61,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 							<div *ngIf="governmentIssuedPhotoTypeCode.value" @showHideTriggerSlideAnimation>
 								<div class="row mb-2">
 									<div class="col-12">
-										<div class="text-minor-heading mb-2">Upload a photo of your ID:</div>
+										<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
 										<app-file-upload
 											(fileUploaded)="onFileUploaded($event)"
 											(fileRemoved)="onFileRemoved()"

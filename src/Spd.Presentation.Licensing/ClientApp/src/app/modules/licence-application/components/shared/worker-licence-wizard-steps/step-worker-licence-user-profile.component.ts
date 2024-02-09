@@ -73,7 +73,7 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 		const isValid = this.form.valid;
 		const isProfileValid = this.userProfileComponent.isFormValid();
 
-		console.log('StepLicenceUserProfileComponent', isValid, isProfileValid);
+		// console.log('StepLicenceUserProfileComponent', isValid, isProfileValid);
 		return isValid && isProfileValid;
 	}
 
