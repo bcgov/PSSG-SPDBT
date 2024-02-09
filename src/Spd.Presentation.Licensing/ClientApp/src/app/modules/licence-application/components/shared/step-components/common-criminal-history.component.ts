@@ -1,25 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-common-criminal-history',
 	template: `
-		<!-- <section class="step-section">
-			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title> -->
-
-		<div class="row">
-			<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-				<form [formGroup]="form" novalidate>
+		<form [formGroup]="form" novalidate>
+			<div class="row">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 					<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
 						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
@@ -34,22 +22,14 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 						"
 						>This is required</mat-error
 					>
-				</form>
+				</div>
 			</div>
-		</div>
-		<!-- </div>
-		</section> -->
+		</form>
 	`,
 	styles: [],
 })
 export class CommonCriminalHistoryComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	// applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() form!: FormGroup;
-
-	@Output() fileUploaded = new EventEmitter<File>();
-	@Output() fileRemoved = new EventEmitter();
-
-	// @Input() applicationTypeCode: ApplicationTypeCode | null = null;
 }
