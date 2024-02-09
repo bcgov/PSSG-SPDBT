@@ -384,6 +384,7 @@ internal partial class SecurityWorkerAppManager :
     }
 
     #endregion
+
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
@@ -593,7 +594,7 @@ internal partial class SecurityWorkerAppManager :
 
         if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing citizen proof file because you are canadian.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
 
         if (request.UseBcServicesCardPhoto == false && !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
@@ -671,7 +672,7 @@ internal partial class SecurityWorkerAppManager :
         if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing citizen proof file because you are canadian.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
 
         if ((request.UseBcServicesCardPhoto == false || request.UseBcServicesCardPhoto == null)
