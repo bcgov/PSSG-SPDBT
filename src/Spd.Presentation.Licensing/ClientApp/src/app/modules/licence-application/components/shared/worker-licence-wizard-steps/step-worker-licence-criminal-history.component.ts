@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, BooleanTypeCode } from '@app/api/models';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -35,23 +36,19 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<div class="row mt-4" *ngIf="showCriminalHistory" @showHideTriggerSlideAnimation>
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-							<div class="row mt-2">
-								<div class="offset-md-1 col-md-10 col-sm-12">
-									<div class="text-minor-heading mb-2">Brief description of new charges or convictions</div>
-									<mat-form-field>
-										<textarea
-											matInput
-											formControlName="criminalChargeDescription"
-											style="min-height: 100px"
-											maxlength="100"
-											[errorStateMatcher]="matcher"
-										></textarea>
-										<mat-error *ngIf="form.get('criminalChargeDescription')?.hasError('required')">
-											This is required
-										</mat-error>
-									</mat-form-field>
-								</div>
-							</div>
+							<div class="text-minor-heading mb-2">Brief description of new charges or convictions</div>
+							<mat-form-field>
+								<textarea
+									matInput
+									formControlName="criminalChargeDescription"
+									style="min-height: 100px"
+									maxlength="1000"
+									[errorStateMatcher]="matcher"
+								></textarea>
+								<mat-error *ngIf="form.get('criminalChargeDescription')?.hasError('required')">
+									This is required
+								</mat-error>
+							</mat-form-field>
 						</div>
 					</div>
 				</form>
@@ -59,6 +56,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

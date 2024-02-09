@@ -325,8 +325,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		this.licenceModelFormGroup.reset();
 
-		const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		aliases.clear();
+		// const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
+		// aliases.clear();
+
+		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
+		while (aliasesArray.length) {
+			aliasesArray.removeAt(0);
+		}
+		this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
 	}
 
 	/**
@@ -492,6 +498,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	this.categorySecurityGuardFormGroup.valid,
 		// 	this.categorySecurityGuardSupFormGroup.valid
 		// );
+
+		// const isSecurityGuard = this.categorySecurityGuardFormGroup.value.isInclude;
+		// (!isSecurityGuard || this.restraintsAuthorizationFormGroup.valid) &&
+		// (!isSecurityGuard || this.dogsAuthorizationFormGroup.valid) &&
 
 		return (
 			this.soleProprietorFormGroup.valid &&
@@ -908,6 +918,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const fingerprintProofDataAttachments: Array<File> = [];
 				const mentalHealthConditionsDataAttachments: Array<File> = [];
 				const citizenshipDataAttachments: Array<File> = [];
+
 				let citizenshipData: {
 					isCanadianCitizen: BooleanTypeCode | null;
 					canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
@@ -1310,7 +1321,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				let additionalGovIdData = {};
 				if (!_resp.isCanadianCitizen) {
 					citizenshipData = {
-						isCanadianCitizen: null,
+						isCanadianCitizen: BooleanTypeCode.No,
 						canadianCitizenProofTypeCode: null,
 						notCanadianCitizenProofTypeCode: null,
 						expiryDate: null,
@@ -1337,7 +1348,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
 				);
 				if (photoOfYourselfDocs) {
-					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime; // for testing: '2019-01-20T22:24:28+00:00';
+					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
 				}
 
 				// We require a new photo every 5 years. Please provide a new photo for your licence

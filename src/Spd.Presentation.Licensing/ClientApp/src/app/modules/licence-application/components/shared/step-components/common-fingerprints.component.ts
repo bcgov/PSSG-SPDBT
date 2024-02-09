@@ -37,7 +37,7 @@ import { FingerprintTearOffModalComponent } from '../../../../../shared/componen
 		<div class="row mt-2">
 			<div class="offset-md-2 col-md-8 col-sm-12">
 				<form [formGroup]="form" novalidate>
-					<div class="text-minor-heading mb-2">Upload your document:</div>
+					<div class="text-minor-heading mb-2">Upload your document</div>
 					<app-file-upload
 						(fileUploaded)="onFileUploaded($event)"
 						(fileRemoved)="onFileRemoved()"

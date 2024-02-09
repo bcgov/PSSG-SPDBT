@@ -318,14 +318,11 @@ export abstract class LicenceApplicationHelper {
 	dogsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
 		{
 			useDogs: new FormControl(''),
-			dogsPurposeFormGroup: new FormGroup(
-				{
-					isDogsPurposeProtection: new FormControl(false),
-					isDogsPurposeDetectionDrugs: new FormControl(false),
-					isDogsPurposeDetectionExplosives: new FormControl(false),
-				},
-				FormGroupValidators.atLeastOneCheckboxValidator('useDogs', BooleanTypeCode.Yes)
-			),
+			dogsPurposeFormGroup: new FormGroup({
+				isDogsPurposeProtection: new FormControl(false),
+				isDogsPurposeDetectionDrugs: new FormControl(false),
+				isDogsPurposeDetectionExplosives: new FormControl(false),
+			}),
 			attachments: new FormControl([]),
 		},
 		{
@@ -338,6 +335,7 @@ export abstract class LicenceApplicationHelper {
 					'attachments',
 					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
 				),
+				FormGroupValidators.atLeastOneCheckboxWhenReqdValidator('dogsPurposeFormGroup', 'useDogs', BooleanTypeCode.Yes),
 			],
 		}
 	);

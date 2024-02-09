@@ -49,7 +49,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 							</p>
 							<div class="row mt-2">
 								<div class="col-12">
-									<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
+									<div class="text-minor-heading mb-2">Upload your mental health condition form</div>
 									<app-file-upload
 										(fileUploaded)="onFileUploaded($event)"
 										(fileRemoved)="onFileRemoved()"
