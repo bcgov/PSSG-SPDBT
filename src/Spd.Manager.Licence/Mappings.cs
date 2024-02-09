@@ -115,7 +115,7 @@ internal class Mappings : Profile
         {
             return request.HasNewCriminalRecordCharge;
         }
-        return request.IsTreatedForMHC;
+        return request.HasCriminalHistory;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
