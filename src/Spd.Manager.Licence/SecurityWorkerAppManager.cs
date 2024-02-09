@@ -15,6 +15,7 @@ using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
+using System.Net;
 
 namespace Spd.Manager.Licence;
 internal partial class SecurityWorkerAppManager :
@@ -153,8 +154,7 @@ internal partial class SecurityWorkerAppManager :
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
-
-        //todo: add checking if all necessary files have been uploaded
+        ValidateFilesForNewApp(cmd);
 
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -229,13 +229,17 @@ internal partial class SecurityWorkerAppManager :
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
-    /********************************************************************************
-     create spd_application with the same content as renewed app with type=renew, 
-    put original licence id to spd_currentexpiredlicenseid.
-    if mailing address changed, set the new mailing address to the new created application address1, 
-    update the contact mailing address, put old mailing address to spd_address.
-    copy all the old files(except the file types of new uploaded files) to the new application.
-     *****************************************************************************/
+    /// <summary>
+    /// create spd_application with the same content as renewed app with type=renew, 
+    ///  put original licence id to spd_currentexpiredlicenseid.
+    ///  if mailing address changed, set the new mailing address to the new created application address1, 
+    ///  update the contact mailing address, put old mailing address to spd_address.
+    /// copy all the old files(except the file types of new uploaded files) to the new application.
+    /// </summary>
+    /// <param name="cmd"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
@@ -259,6 +263,9 @@ internal partial class SecurityWorkerAppManager :
                 || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
+        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
+            cmd.LicAppFileInfos.ToList(),
+            ct);
 
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
@@ -301,19 +308,22 @@ internal partial class SecurityWorkerAppManager :
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
     }
 
-    //update biz logic
-    /**********************************************************************************************
-     Only Name Changed, reprint = yes, => openshift create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
-     Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
-     Only Photo Changed, reprint = yes, => openshift create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
-     Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
-     If license categories or Dog constraints changed, (no matter if reprint is true or false), openshift needs to create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
-     if only contact info, address changed, openshift directly update contact.
-     if Criminal Charges, or New Offsence Conviction, or treated for mental Health changed, created task, assign to Licesing RA team
-     if only hold a position with peace officer changed, create a task for license cs team., link peace officer document to this task and contact.
-     if mental health changed, create a task for license to licensing team, link mental document to this task and contact
-     If any changes that needs creating tasks and also need creating application, then do both.
-     *******************************************************************************************/
+    /// <summary>
+    /// Only Name Changed, reprint = yes, => openshift create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced. Do not need to copy old files to the new application.
+    /// Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
+    /// Only Photo Changed, reprint = yes, => openshift create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced.Do not need to copy old files to the new application.
+    /// Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
+    /// If license categories or Dog constraints changed, (no matter if reprint is true or false), openshift needs to create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced.Do not need to copy old files to the new application.
+    /// If only contact info, address changed, openshift directly update contact.
+    /// If Criminal Charges, or New Offsence Conviction, or treated for mental Health changed, created task, assign to Licesing RA team
+    /// If only hold a position with peace officer changed, create a task for license cs team., link peace officer document to this task and contact.
+    /// If mental health changed, create a task for license to licensing team, link mental document to this task and contact
+    /// If any changes that needs creating tasks and also need creating application, then do both.
+    /// </summary>
+    /// <param name="cmd"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
@@ -327,6 +337,9 @@ internal partial class SecurityWorkerAppManager :
         LicenceResp originalLic = originalLicences.Items.First();
         if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
+        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
+            cmd.LicAppFileInfos.ToList(),
+            ct);
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
         ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, ct);
@@ -371,6 +384,7 @@ internal partial class SecurityWorkerAppManager :
     }
 
     #endregion
+
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new LicenceAppQuery
@@ -548,5 +562,137 @@ internal partial class SecurityWorkerAppManager :
                 await _documentRepository.ManageAsync(fileCmd, ct);
             }
         }
+    }
+
+    private static void ValidateFilesForNewApp(AnonymousWorkerLicenceAppNewCommand cmd)
+    {
+        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
+        if (request.IsPoliceOrPeaceOfficer == true &&
+            !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
+        }
+
+        if (request.IsTreatedForMHC == true &&
+            !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
+        }
+
+        if (request.IsCanadianCitizen == false &&
+            !fileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+        }
+
+        if (request.IsCanadianCitizen == true &&
+            !fileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing citizen proof file because you are canadian.");
+        }
+
+        if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
+        }
+
+        if (request.UseBcServicesCardPhoto == false && !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
+        }
+
+        foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
+        {
+            if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+            {
+                if (!fileInfos.Any(f => Mappings.GetDocumentType1Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"Missing file for {code}");
+                }
+            }
+        }
+
+    }
+
+    private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppAnonymousSubmitRequest request,
+        IList<LicAppFileInfo> newFileInfos,
+        CancellationToken ct)
+    {
+        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
+        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+        if (request.PreviousDocumentIds != null)
+        {
+            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId))
+            .Select(f => new LicAppFileInfo()
+            {
+                FileName = f.FileName ?? String.Empty,
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType2),
+            }).ToList();
+        }
+
+        if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
+        }
+
+        if (request.IsPoliceOrPeaceOfficer == true)
+        {
+            if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) &&
+                !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
+            }
+        }
+
+        if (request.HasNewMentalHealthCondition == true &&
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
+        }
+
+        if (request.IsCanadianCitizen == false)
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+            }
+        }
+        else
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian.");
+            }
+        }
+
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
+        }
+
+        if ((request.UseBcServicesCardPhoto == false || request.UseBcServicesCardPhoto == null)
+            && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself)
+            && !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
+        }
+
+        foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
+        {
+            if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+            {
+                if (!newFileInfos.Any(f => Mappings.GetDocumentType1Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString()))
+                    && !existingFileInfos.Any(f => Mappings.GetDocumentType1Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"Missing file for {code}");
+                }
+            }
+        }
+
     }
 }
