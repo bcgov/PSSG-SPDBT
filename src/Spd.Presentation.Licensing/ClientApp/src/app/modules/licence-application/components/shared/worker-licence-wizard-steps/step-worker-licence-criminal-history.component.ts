@@ -1,29 +1,20 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode, BooleanTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-worker-licence-criminal-history',
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
-				</ng-container>
+				<app-step-title [title]="title"></app-step-title>
 
-				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title>
-
-				<app-common-criminal-history [form]="form"></app-common-criminal-history>
-
-				<!-- <div class="row">
-					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<form [formGroup]="form" novalidate>
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-divider class="my-2"></mat-divider>
@@ -38,17 +29,44 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 								"
 								>This is required</mat-error
 							>
-						</form>
+						</div>
 					</div>
-				</div> -->
+
+					<div class="row mt-4" *ngIf="showCriminalHistory" @showHideTriggerSlideAnimation>
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+							<div class="row mt-2">
+								<div class="offset-md-1 col-md-10 col-sm-12">
+									<div class="text-minor-heading mb-2">Brief description of new charges or convictions</div>
+									<mat-form-field>
+										<textarea
+											matInput
+											formControlName="criminalChargeDescription"
+											style="min-height: 100px"
+											maxlength="100"
+											[errorStateMatcher]="matcher"
+										></textarea>
+										<mat-error *ngIf="form.get('criminalChargeDescription')?.hasError('required')">
+											This is required
+										</mat-error>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceCriminalHistoryComponent implements LicenceChildStepperStepComponent {
-	// booleanTypeCodes = BooleanTypeCode;
+export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	showCriminalHistory = false;
+	booleanTypeCodes = BooleanTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
+
+	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
 
@@ -56,8 +74,38 @@ export class StepWorkerLicenceCriminalHistoryComponent implements LicenceChildSt
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
+	ngOnInit(): void {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			this.title = 'Do you have any new criminal charges or convictions?';
+		} else {
+			this.title = 'Have you previously been charged or convicted of a crime?';
+		}
+
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			// During an Update, if the value changes to Yes, show a textarea
+			this.hasCriminalHistory.valueChanges.subscribe((code: BooleanTypeCode): void => {
+				this.showCriminalHistory = code === BooleanTypeCode.Yes;
+			});
+		}
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get hasNewCriminalRecordCharge(): FormControl {
+		return this.form.get('hasNewCriminalRecordCharge') as FormControl;
+	}
+
+	get hasCriminalHistory(): FormControl {
+		return this.form.get('hasCriminalHistory') as FormControl;
+	}
+
+	get criminalChargeDescription(): FormControl {
+		return this.form.get('criminalChargeDescription') as FormControl;
 	}
 }

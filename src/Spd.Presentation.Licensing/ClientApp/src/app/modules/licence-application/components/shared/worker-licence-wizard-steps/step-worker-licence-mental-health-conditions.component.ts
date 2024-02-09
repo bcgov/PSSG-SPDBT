@@ -1,30 +1,20 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-step-worker-licence-mental-health-conditions',
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title
-					title="Have you been treated for any of the following Mental Health Conditions?"
-					subtitle="An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment"
-				></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -46,7 +36,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						</div>
 					</div>
 
-					<div class="row my-4" *ngIf="isTreatedForMHC.value === booleanTypeCodes.Yes">
+					<div class="row my-4" *ngIf="isTreatedForMHC.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 							<p>
@@ -85,8 +75,12 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
-export class StepWorkerLicenceMentalHealthConditionsComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
+	label = '';
 	booleanTypeCodes = BooleanTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
 
@@ -101,6 +95,26 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements Licence
 		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
 	) {}
+
+	ngOnInit(): void {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			if (this.hasPreviousMhcFormUpload.value) {
+				// If they uploaded a MHC form during the previous application
+				this.title =
+					'Has your mental health condition changed since you last submitted a mental health condition form?';
+			} else {
+				// If they have never uploaded a MHC form before, show this
+				this.title = 'Have you been treated for a mental health condition in the last 3 years?';
+			}
+		} else {
+			this.title = 'Have you been treated for any mental health conditions?';
+			this.subtitle =
+				'An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment';
+		}
+	}
 
 	onFileUploaded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
@@ -127,8 +141,16 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements Licence
 		return this.form.valid;
 	}
 
+	get hasNewMentalHealthCondition(): FormControl {
+		return this.form.get('hasNewMentalHealthCondition') as FormControl;
+	}
+
 	get isTreatedForMHC(): FormControl {
 		return this.form.get('isTreatedForMHC') as FormControl;
+	}
+
+	get hasPreviousMhcFormUpload(): FormControl {
+		return this.form.get('hasPreviousMhcFormUpload') as FormControl;
 	}
 
 	get attachments(): FormControl {

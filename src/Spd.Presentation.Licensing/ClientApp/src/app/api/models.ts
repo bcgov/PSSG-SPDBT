@@ -46,7 +46,7 @@ export { UserInfo } from './models/user-info';
 export { UserInfoMsgTypeCode } from './models/user-info-msg-type-code';
 export { WeightUnitCode } from './models/weight-unit-code';
 export { WorkerCategoryTypeCode } from './models/worker-category-type-code';
-export { WorkerLicenceAppAnonymousSubmitRequestJson } from './models/worker-licence-app-anonymous-submit-request-json';
+export { WorkerLicenceAppAnonymousSubmitRequest } from './models/worker-licence-app-anonymous-submit-request';
 export { WorkerLicenceAppListResponse } from './models/worker-licence-app-list-response';
 export { WorkerLicenceAppSubmitRequest } from './models/worker-licence-app-submit-request';
 export { WorkerLicenceAppUpsertRequest } from './models/worker-licence-app-upsert-request';

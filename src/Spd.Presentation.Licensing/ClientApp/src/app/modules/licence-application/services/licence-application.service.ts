@@ -12,7 +12,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequestJson,
+	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceCommandResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
@@ -466,6 +466,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	'photographOfYourselfData',
 		// 	this.photographOfYourselfFormGroup.valid
 		// );
+
 		// console.debug(
 		// 	'isStepLicenceSelectionComplete',
 		// 	this.soleProprietorFormGroup.valid,
@@ -552,20 +553,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						LicenceDocumentTypeCode.PermanentResidentCard)
 			: true;
 
-		// console.debug(
-		// 	'isStep4Complete',
-		// 	this.personalInformationFormGroup.valid,
-		// 	this.aliasesFormGroup.valid,
-		// 	this.citizenshipFormGroup.valid,
-		// 	showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true,
-		// 	this.bcDriversLicenceFormGroup.valid,
-		// 	this.characteristicsFormGroup.valid,
-		// 	this.photographOfYourselfFormGroup.valid,
-		// 	this.residentialAddressFormGroup.valid,
-		// 	this.mailingAddressFormGroup.valid,
-		// 	this.contactInformationFormGroup.valid
-		// );
-		// console.debug('showAdditionalGovermentIdStep', showAdditionalGovermentIdStep, this.additionalGovIdFormGroup.valid);
+		const updateNameOrGenderChange = this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ?? false;
 
 		if (this.authenticationService.isLoggedIn()) {
 			return (
@@ -576,6 +564,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.photographOfYourselfFormGroup.valid
 			);
 		} else {
+			// console.debug(
+			// 	'isStepIdentificationComplete',
+			// 	this.personalInformationFormGroup.valid,
+			// 	this.aliasesFormGroup.valid,
+			// 	this.citizenshipFormGroup.valid,
+			// 	showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true,
+			// 	this.bcDriversLicenceFormGroup.valid,
+			// 	this.characteristicsFormGroup.valid,
+			// 	this.photographOfYourselfFormGroup.valid,
+			// 	this.residentialAddressFormGroup.valid,
+			// 	this.mailingAddressFormGroup.valid,
+			// 	this.contactInformationFormGroup.valid,
+			// 	updateNameOrGenderChange ? this.reprintLicenceFormGroup.valid : true
+			// );
+
 			return (
 				this.personalInformationFormGroup.valid &&
 				this.aliasesFormGroup.valid &&
@@ -586,7 +589,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.photographOfYourselfFormGroup.valid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
-				this.contactInformationFormGroup.valid
+				this.contactInformationFormGroup.valid &&
+				(updateNameOrGenderChange ? this.reprintLicenceFormGroup.valid : true)
 			);
 		}
 	}
@@ -651,6 +655,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				workerLicenceTypeData,
 				photographOfYourselfData,
 				profileConfirmationData: { isProfileUpToDate: true },
+				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
 			{
 				emitEvent: false,
@@ -1299,17 +1304,32 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					hasBcDriversLicence: null,
 					bcDriversLicenceNumber: null,
 				};
-				const citizenshipData = {
-					isCanadianCitizen: null,
-					canadianCitizenProofTypeCode: null,
-					notCanadianCitizenProofTypeCode: null,
-					expiryDate: null,
+
+				// If they were not born in Canada, they have to show proof for renewal
+				let citizenshipData = {};
+				let additionalGovIdData = {};
+				if (!_resp.isCanadianCitizen) {
+					citizenshipData = {
+						isCanadianCitizen: null,
+						canadianCitizenProofTypeCode: null,
+						notCanadianCitizenProofTypeCode: null,
+						expiryDate: null,
+						attachments: [],
+					};
+					additionalGovIdData = {
+						governmentIssuedPhotoTypeCode: null,
+						expiryDate: null,
+						attachments: [],
+					};
+				}
+				const mentalHealthConditionsData = {
+					isTreatedForMHC: null,
 					attachments: [],
+					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
 				};
-				const additionalGovIdData = {
-					governmentIssuedPhotoTypeCode: null,
-					expiryDate: null,
-					attachments: [],
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
 				};
 
 				let originalPhotoOfYourselfLastUpload = null;
@@ -1368,6 +1388,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						citizenshipData,
 						additionalGovIdData,
 						dogsAuthorizationData,
+						mentalHealthConditionsData,
+						criminalHistoryData,
 					},
 					{
 						emitEvent: false,
@@ -1386,14 +1408,26 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private loadLicenceUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		return this.loadSpecificLicence(licenceAppId).pipe(
-			tap((_resp: any) => {
+			tap((_resp: WorkerLicenceResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+
+				const mentalHealthConditionsData = {
+					isTreatedForMHC: null,
+					attachments: [],
+					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
+				};
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
 
 				this.licenceModelFormGroup.patchValue(
 					{
 						licenceAppId: null,
 						applicationTypeData,
 						originalLicenceTermCode: _resp.licenceTermCode,
+						mentalHealthConditionsData,
+						criminalHistoryData,
 					},
 					{
 						emitEvent: false,
@@ -1501,7 +1535,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private postLicenceAnonymousNoNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
-		body: WorkerLicenceAppAnonymousSubmitRequestJson
+		body: WorkerLicenceAppAnonymousSubmitRequest
 	) {
 		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -1525,7 +1559,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private postLicenceAnonymousNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		documentsToSave: Array<LicenceDocumentsToSave>,
-		body: WorkerLicenceAppAnonymousSubmitRequestJson
+		body: WorkerLicenceAppAnonymousSubmitRequest
 	) {
 		let keyCode = '';
 

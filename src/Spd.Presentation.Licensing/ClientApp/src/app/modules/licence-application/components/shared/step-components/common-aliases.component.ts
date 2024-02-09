@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
@@ -33,7 +34,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					>
 				</div>
 			</div>
-			<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes">
+			<div *ngIf="previousNameFlag.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
 						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
@@ -118,6 +119,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			}
 		`,
 	],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonAliasesComponent {
 	booleanTypeCodes = BooleanTypeCode;
