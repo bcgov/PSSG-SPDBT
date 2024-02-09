@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
@@ -83,13 +83,15 @@ export class FormGroupValidators {
 			}
 
 			let checked = 0;
-			Object.keys(form.value).forEach((key) => {
-				const control = form.value[key];
+			Object.keys(
+				form.value.forEach((key: any) => {
+					const control = form.value[key];
 
-				if (control === true) {
-					checked++;
-				}
-			});
+					if (control === true) {
+						checked++;
+					}
+				})
+			);
 
 			if (checked < minRequired) {
 				return {
@@ -98,5 +100,28 @@ export class FormGroupValidators {
 			}
 
 			return null;
+		};
+
+	public static atLeastOneCheckboxWhenReqdValidator =
+		(childFormGroup: string, requiredKey: string, requiredValue: string, minRequired = 1): ValidatorFn =>
+		(form: AbstractControl): ValidationErrors | null => {
+			// Check if this validation is required:
+			if (requiredKey && requiredValue && form.get(requiredKey)?.value != requiredValue) {
+				return null;
+			}
+
+			const checkboxFormGroup = form.get(childFormGroup!) as FormGroup;
+			if (!checkboxFormGroup) return null;
+
+			let checked = 0;
+			Object.keys(checkboxFormGroup.value).forEach((key: any) => {
+				const control = checkboxFormGroup.value[key];
+
+				if (control === true) {
+					checked++;
+				}
+			});
+
+			return checked < minRequired ? { atLeastOneCheckboxWhenReqdValidator: true } : null;
 		};
 }

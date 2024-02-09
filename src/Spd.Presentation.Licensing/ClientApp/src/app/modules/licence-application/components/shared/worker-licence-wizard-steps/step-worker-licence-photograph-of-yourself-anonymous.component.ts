@@ -1,10 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-anonymous',
@@ -27,6 +26,18 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-applic
 					subtitle="This will appear on your licence. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
 				></app-step-title>
 
+				<div
+					class="row mb-3"
+					*ngIf="
+						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
+					"
+				>
+					<div class="col-12 text-center">
+						<div class="fs-5 mb-2">Current licence photo:</div>
+						<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
+					</div>
+				</div>
+
 				<app-common-photograph-of-yourself
 					[form]="form"
 					[isAnonymous]="true"
@@ -38,9 +49,10 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-applic
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
-export class StepWorkerLicencePhotographOfYourselfAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
+	implements OnInit, LicenceChildStepperStepComponent
+{
 	applicationTypeCodes = ApplicationTypeCode;
 	originalPhotoOfYourselfExpired = false;
 

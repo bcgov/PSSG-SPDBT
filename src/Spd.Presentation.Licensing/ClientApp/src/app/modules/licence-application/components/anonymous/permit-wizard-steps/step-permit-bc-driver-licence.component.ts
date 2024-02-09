@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 
 @Component({
 	selector: 'app-step-permit-bc-driver-licence',
@@ -15,7 +14,9 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title
@@ -28,7 +29,6 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepPermitBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.bcDriversLicenceFormGroup;

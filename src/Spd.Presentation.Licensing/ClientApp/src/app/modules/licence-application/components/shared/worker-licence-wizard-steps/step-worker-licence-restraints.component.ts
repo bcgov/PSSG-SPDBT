@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-step-worker-licence-restraints',
@@ -65,7 +65,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								>This is required</mat-error
 							>
 
-							<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
+							<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
 
 							<div class="my-2">
 								<app-file-upload

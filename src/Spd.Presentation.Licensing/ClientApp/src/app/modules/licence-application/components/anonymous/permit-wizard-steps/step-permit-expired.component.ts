@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 
 @Component({
 	selector: 'app-step-permit-expired',
@@ -19,7 +18,6 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepPermitExpiredComponent implements PermitChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.expiredLicenceFormGroup;

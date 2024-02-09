@@ -86,7 +86,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			console.log('HeaderComponent isLoggedIn', isLoggedIn);
+			console.debug('HeaderComponent isLoggedIn', isLoggedIn);
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;
