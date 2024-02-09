@@ -1,15 +1,8 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
-using Spd.Resource.Repository.Identity;
-using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
-using Spd.Resource.Repository.LicenceFee;
-using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
@@ -18,42 +11,21 @@ internal partial class LicenceAppDocumentManager :
         IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
         ILicenceAppDocumentManager
 {
-    private readonly ILicenceRepository _licenceRepository;
     private readonly ILicenceApplicationRepository _licenceAppRepository;
     private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
-    private readonly IIdentityRepository _identityRepository;
     private readonly IDocumentRepository _documentRepository;
-    private readonly ILogger<ISecurityWorkerAppManager> _logger;
-    private readonly ILicenceFeeRepository _feeRepository;
-    private readonly ITaskRepository _taskRepository;
-    private readonly IContactRepository _contactRepository;
-    private readonly IDistributedCache _cache;
 
     public LicenceAppDocumentManager(
-        ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
-        IIdentityRepository identityRepository,
-        IDocumentRepository documentUrlRepository,
-        ILogger<ISecurityWorkerAppManager> logger,
-        ILicenceFeeRepository feeRepository,
-        IDistributedCache cache,
-        ITaskRepository taskRepository,
-        IContactRepository contactRepository)
+        IDocumentRepository documentUrlRepository)
     {
-        _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
         _tempFile = tempFile;
         _mapper = mapper;
-        _identityRepository = identityRepository;
         _documentRepository = documentUrlRepository;
-        _logger = logger;
-        _feeRepository = feeRepository;
-        _cache = cache;
-        _taskRepository = taskRepository;
-        _contactRepository = contactRepository;
     }
 
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
