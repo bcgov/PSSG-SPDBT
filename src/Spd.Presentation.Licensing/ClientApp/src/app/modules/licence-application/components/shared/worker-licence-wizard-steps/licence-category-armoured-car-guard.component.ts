@@ -93,8 +93,6 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 					},
 				});
 		}
-
-		console.log('this.form', this.form.value);
 	}
 
 	onFileRemoved(): void {

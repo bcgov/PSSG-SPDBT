@@ -57,15 +57,14 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	],
 })
 export class CommonUpdateRenewalAlertComponent implements OnInit {
-	title = '';
-	subtitle = '';
-
 	licenceModelData: any = {};
 	constants = SPD_CONSTANTS;
 
 	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() showLicenceData = false;
+	@Input() title = 'Confirm this information';
+	@Input() subtitle = 'Update any information that has changed since your last application';
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
@@ -78,20 +77,6 @@ export class CommonUpdateRenewalAlertComponent implements OnInit {
 				this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 			} else {
 				this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
-			}
-		}
-
-		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Replacement:
-			case ApplicationTypeCode.Update: {
-				this.title = 'Confirm this information';
-				this.subtitle = 'Update any information that has changed';
-				break;
-			}
-			case ApplicationTypeCode.Renewal: {
-				this.title = 'Confirm this information';
-				this.subtitle = 'Update any information that has changed since your last application';
-				break;
 			}
 		}
 	}

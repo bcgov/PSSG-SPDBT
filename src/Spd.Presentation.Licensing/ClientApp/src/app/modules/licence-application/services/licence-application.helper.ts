@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
 	DocumentExpiredInfo,
@@ -8,7 +9,7 @@ import {
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequestJson,
+	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -39,7 +40,7 @@ export interface LicenceDocument {
 	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
 }
 
-interface IWorkerLicenceSubmit extends WorkerLicenceAppSubmitRequest, WorkerLicenceAppAnonymousSubmitRequestJson {}
+interface IWorkerLicenceSubmit extends WorkerLicenceAppSubmitRequest, WorkerLicenceAppAnonymousSubmitRequest {}
 
 export abstract class LicenceApplicationHelper {
 	booleanTypeCodes = BooleanTypeCode;
@@ -317,14 +318,11 @@ export abstract class LicenceApplicationHelper {
 	dogsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
 		{
 			useDogs: new FormControl(''),
-			dogsPurposeFormGroup: new FormGroup(
-				{
-					isDogsPurposeProtection: new FormControl(false),
-					isDogsPurposeDetectionDrugs: new FormControl(false),
-					isDogsPurposeDetectionExplosives: new FormControl(false),
-				},
-				FormGroupValidators.atLeastOneCheckboxValidator('useDogs', BooleanTypeCode.Yes)
-			),
+			dogsPurposeFormGroup: new FormGroup({
+				isDogsPurposeProtection: new FormControl(false),
+				isDogsPurposeDetectionDrugs: new FormControl(false),
+				isDogsPurposeDetectionExplosives: new FormControl(false),
+			}),
 			attachments: new FormControl([]),
 		},
 		{
@@ -337,6 +335,7 @@ export abstract class LicenceApplicationHelper {
 					'attachments',
 					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
 				),
+				FormGroupValidators.atLeastOneCheckboxWhenReqdValidator('dogsPurposeFormGroup', 'useDogs', BooleanTypeCode.Yes),
 			],
 		}
 	);
@@ -370,6 +369,7 @@ export abstract class LicenceApplicationHelper {
 		{
 			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
 			attachments: new FormControl(''),
+			hasPreviousMhcFormUpload: new FormControl(''), // used to detarmine label to display
 		},
 		{
 			validators: [
@@ -381,9 +381,22 @@ export abstract class LicenceApplicationHelper {
 		}
 	);
 
-	criminalHistoryFormGroup: FormGroup = this.formBuilder.group({
-		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
-	});
+	criminalHistoryFormGroup: FormGroup = this.formBuilder.group(
+		{
+			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
+			criminalChargeDescription: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'criminalChargeDescription',
+					(_form) =>
+						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
+				),
+			],
+		}
+	);
 
 	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
@@ -487,7 +500,7 @@ export abstract class LicenceApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'reprintLicence',
-					(_form) => !!this.personalInformationFormGroup?.get('hasGenderChanged')?.value
+					(_form) => !!this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value
 				),
 			],
 		}
@@ -1155,6 +1168,10 @@ export abstract class LicenceApplicationHelper {
 			...personalInformationData,
 			//-----------------------------------
 			hasCriminalHistory: this.booleanTypeToBoolean(licenceModelFormValue.criminalHistoryData.hasCriminalHistory),
+			hasNewCriminalRecordCharge: this.booleanTypeToBoolean(
+				licenceModelFormValue.criminalHistoryData.hasCriminalHistory
+			), // used by the backend for an Update or Renewal
+			criminalChargeDescription: licenceModelFormValue.criminalHistoryData.criminalChargeDescription,
 			//-----------------------------------
 			reprint: this.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
@@ -1171,6 +1188,7 @@ export abstract class LicenceApplicationHelper {
 			useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
 			//-----------------------------------
 			isTreatedForMHC: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			hasNewMentalHealthCondition: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
 			//-----------------------------------
 			isPoliceOrPeaceOfficer: this.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, BusinessTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-step-worker-licence-sole-proprietor',
@@ -135,9 +135,6 @@ export class StepWorkerLicenceSoleProprietorComponent implements OnInit, Licence
 		// 			? BusinessTypeCode.None
 		// 			: this.form.value.businessTypeCode,
 		// });
-
-		console.log('onSoleProprietorChange', this.form.value);
-		console.log('onSoleProprietorChange2', this.licenceApplicationService.licenceModelFormGroup.value);
 	}
 
 	isFormValid(): boolean {

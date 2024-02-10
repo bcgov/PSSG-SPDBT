@@ -4,7 +4,6 @@ import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { CommonPhotographOfYourselfComponent } from '../../shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
@@ -17,7 +16,9 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title
@@ -49,7 +50,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepPermitPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

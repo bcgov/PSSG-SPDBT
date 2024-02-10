@@ -15,7 +15,7 @@ import { ResidentialAddress } from './residential-address';
 import { WeightUnitCode } from './weight-unit-code';
 import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
-export interface WorkerLicenceAppAnonymousSubmitRequestJson {
+export interface WorkerLicenceAppAnonymousSubmitRequest {
   agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
@@ -25,6 +25,7 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
+  criminalChargeDescription?: null | string;
   dateOfBirth?: null | string;
   documentExpiredInfos?: null | Array<DocumentExpiredInfo>;
   documentKeyCodes?: null | Array<string>;
@@ -38,6 +39,8 @@ export interface WorkerLicenceAppAnonymousSubmitRequestJson {
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
   hasLegalNameChanged?: null | boolean;
+  hasNewCriminalRecordCharge?: null | boolean;
+  hasNewMentalHealthCondition?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;

@@ -12,7 +12,7 @@ import { map, filter } from 'rxjs/operators';
 import { GoogleRecaptcha } from '../models/google-recaptcha';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
-import { WorkerLicenceAppAnonymousSubmitRequestJson } from '../models/worker-licence-app-anonymous-submit-request-json';
+import { WorkerLicenceAppAnonymousSubmitRequest } from '../models/worker-licence-app-anonymous-submit-request';
 import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
@@ -496,7 +496,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
      */
-    body?: WorkerLicenceAppAnonymousSubmitRequestJson
+    body?: WorkerLicenceAppAnonymousSubmitRequest
   },
   context?: HttpContext
 
@@ -537,7 +537,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
      */
-    body?: WorkerLicenceAppAnonymousSubmitRequestJson
+    body?: WorkerLicenceAppAnonymousSubmitRequest
   },
   context?: HttpContext
 
