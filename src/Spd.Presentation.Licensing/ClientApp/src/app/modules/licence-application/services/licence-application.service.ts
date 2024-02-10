@@ -1515,11 +1515,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Get the keyCode for the existing documents to save.
-		const existingKeyCodes: Array<string> = [];
+		const existingDocumentIds: Array<string> = [];
 		let newDocumentsExist = false;
 		body.documentInfos?.forEach((doc: Document) => {
 			if (doc.documentUrlId) {
-				existingKeyCodes.push(doc.documentUrlId);
+				existingDocumentIds.push(doc.documentUrlId);
 			} else {
 				newDocumentsExist = true;
 			}
@@ -1529,14 +1529,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		console.debug('[submitLicenceAnonymous] body', body);
 		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingKeyCodes', existingKeyCodes);
+		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
 		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		if (newDocumentsExist) {
-			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, documentsToSave, body);
+			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
 		} else {
-			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, body);
+			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 		}
 	}
 
@@ -1546,6 +1546,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private postLicenceAnonymousNoNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
 		body: WorkerLicenceAppAnonymousSubmitRequest
 	) {
 		return this.securityWorkerLicensingService
@@ -1553,6 +1554,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.pipe(
 				switchMap((resp: string) => {
 					const keyCode = resp;
+
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
 					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
 						keyCode,
@@ -1569,20 +1574,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private postLicenceAnonymousNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
 		documentsToSave: Array<LicenceDocumentsToSave>,
 		body: WorkerLicenceAppAnonymousSubmitRequest
 	) {
 		let keyCode = '';
-
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-			docBody.documents.forEach((doc: any) => {
-				if (doc.documentUrlId) {
-					existingDocumentIds.push(doc.documentUrlId);
-				}
-			});
-		});
 
 		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
