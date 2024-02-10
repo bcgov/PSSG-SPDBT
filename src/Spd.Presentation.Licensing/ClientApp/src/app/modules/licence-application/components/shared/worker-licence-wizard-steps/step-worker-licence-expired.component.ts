@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -19,7 +18,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;

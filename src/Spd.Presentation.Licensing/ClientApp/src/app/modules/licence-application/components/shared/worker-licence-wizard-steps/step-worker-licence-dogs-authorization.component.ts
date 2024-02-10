@@ -1,13 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
+import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-step-worker-licence-dogs-authorization',
@@ -52,16 +52,15 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 										<mat-checkbox formControlName="isDogsPurposeDetectionExplosives">
 											Detection - Explosives
 										</mat-checkbox>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('dogsPurposeFormGroup')?.dirty || form.get('dogsPurposeFormGroup')?.touched) &&
-												form.get('dogsPurposeFormGroup')?.invalid &&
-												form.get('dogsPurposeFormGroup')?.hasError('atLeastOneCheckboxValidator')
-											"
-											>At least one option must be selected</mat-error
-										>
 									</div>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('dogsPurposeFormGroup')?.dirty || form.get('dogsPurposeFormGroup')?.touched) &&
+											form.hasError('atLeastOneCheckboxWhenReqdValidator')
+										"
+										>At least one option must be selected</mat-error
+									>
 								</div>
 							</div>
 
@@ -69,7 +68,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification.
 							</app-alert>
 
-							<div class="text-minor-heading my-2">Upload your Security Dog Validation Certificate:</div>
+							<div class="text-minor-heading my-2">Upload your Security Dog Validation Certificate</div>
 							<div class="mb-2">
 								<mat-icon style="vertical-align: bottom;">emergency</mat-icon> If you have more than one dog, you must
 								submit a certificate for each dog
@@ -165,12 +164,12 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 		return this.form.get('attachments') as FormControl;
 	}
 
-	get isDogPurposesGroup(): boolean {
-		const dogsPurposeFormGroup = this.form.get('dogsPurposeFormGroup') as FormGroup;
-		return (
-			(dogsPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-			(dogsPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-			(dogsPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value
-		);
-	}
+	// get isDogPurposesGroup(): boolean {
+	// 	const dogsPurposeFormGroup = this.form.get('dogsPurposeFormGroup') as FormGroup;
+	// 	return (
+	// 		(dogsPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+	// 		(dogsPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+	// 		(dogsPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value
+	// 	);
+	// }
 }

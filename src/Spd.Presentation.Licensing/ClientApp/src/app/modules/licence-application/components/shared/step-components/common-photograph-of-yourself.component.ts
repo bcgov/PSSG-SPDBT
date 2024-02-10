@@ -32,7 +32,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 				<div [ngClass]="isCalledFromModal ? 'col-12' : 'col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto'">
 					<ng-container *ngIf="!isAnonymous">
 						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-						<div class="text-minor-heading mb-2">Upload a photo of yourself:</div>
+						<div class="text-minor-heading mb-2">Upload a photo of yourself</div>
 
 						<p>
 							This will appear on your licence. It must be a passport-quality photo of your face looking straight at the

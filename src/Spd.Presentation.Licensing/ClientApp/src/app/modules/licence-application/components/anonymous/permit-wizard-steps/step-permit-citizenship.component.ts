@@ -178,10 +178,10 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 										<ng-container
 											*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
 										>
-											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
+											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship</div>
 										</ng-container>
 										<ng-template #notCanadianCitizenTitle>
-											<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
+											<div class="text-minor-heading mb-2">Upload a photo of your selected document type</div>
 										</ng-template>
 										<app-file-upload
 											(fileUploaded)="onFileUploaded($event)"

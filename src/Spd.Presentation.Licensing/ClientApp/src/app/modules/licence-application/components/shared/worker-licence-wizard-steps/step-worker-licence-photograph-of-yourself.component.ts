@@ -1,12 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { AuthenticationService } from '@app/core/services/authentication.service';
+import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { AuthenticationService } from '@app/core/services/authentication.service';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself',
@@ -18,7 +17,9 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-applic
 						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
 					"
 				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title
@@ -51,7 +52,6 @@ import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-applic
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepWorkerLicencePhotographOfYourselfComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
