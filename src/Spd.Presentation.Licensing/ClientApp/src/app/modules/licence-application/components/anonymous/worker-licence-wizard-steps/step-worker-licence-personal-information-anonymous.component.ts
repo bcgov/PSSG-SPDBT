@@ -9,12 +9,10 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
-					<app-common-update-renewal-alert [applicationTypeCode]="applicationTypeCode"></app-common-update-renewal-alert>
+				<ng-container *ngIf="isRenewalOrUpdate">
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
 				</ng-container>
 
 				<app-step-title title="Your personal information"></app-step-title>
@@ -23,11 +21,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
 				</ng-container>
 
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-personal-information-renew-anonymous
 						[applicationTypeCode]="applicationTypeCode"
 						[form]="form"
@@ -50,5 +44,12 @@ export class StepWorkerLicencePersonalInformationAnonymousComponent implements L
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }

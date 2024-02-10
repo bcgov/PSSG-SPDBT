@@ -9,11 +9,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
 						[applicationTypeCode]="applicationTypeCode"
 					></app-common-update-renewal-alert>
@@ -41,5 +37,12 @@ export class StepPermitBcDriverLicenceComponent implements LicenceChildStepperSt
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
