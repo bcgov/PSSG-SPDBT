@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
 using Spd.Utilities.Recaptcha;
@@ -16,15 +17,18 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly ILogger<LicenceLookupController> _logger;
         private readonly IMediator _mediator;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
+        private readonly ITimeLimitedDataProtector _dataProtector;
 
         public LicenceLookupController(
             ILogger<LicenceLookupController> logger,
             IMediator mediator,
-            IRecaptchaVerificationService recaptchaVerificationService)
+            IRecaptchaVerificationService recaptchaVerificationService,
+            IDataProtectionProvider dpProvider)
         {
             _logger = logger;
             _mediator = mediator;
             _recaptchaVerificationService = recaptchaVerificationService;
+            _dataProtector = dpProvider.CreateProtector("LicenceAppAnonymousSubmitRequest").ToTimeLimitedDataProtector();
         }
 
         /// <summary>
@@ -52,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/anonymous/{licenceNumber}")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<LicenceResponse> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, CancellationToken ct, [FromBody] GoogleRecaptcha recaptcha, [FromQuery] string accessCode = null)
+        public async Task<LicenceResponse?> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, CancellationToken ct, [FromBody] GoogleRecaptcha recaptcha, [FromQuery] string accessCode = null)
         {
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
@@ -61,7 +65,17 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
             }
 
-            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            var response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+
+            if (response != null)
+            {
+                var encryptedLicAppId = _dataProtector.Protect(response.LicenceAppId.ToString(), DateTimeOffset.UtcNow.AddDays(1));
+
+                this.Response.Cookies.Append("LicenceApplicationContext",
+                    encryptedLicAppId,
+                    new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true, Expires = DateTimeOffset.UtcNow.AddDays(1) });
+            }
+            return response;
         }
     }
 }

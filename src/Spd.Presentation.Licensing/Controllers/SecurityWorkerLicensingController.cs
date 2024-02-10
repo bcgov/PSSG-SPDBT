@@ -19,6 +19,7 @@ using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -34,6 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
+        private readonly ITimeLimitedDataProtector _dataProtector;
 
         public SecurityWorkerLicensingController(ILogger<SecurityWorkerLicensingController> logger,
             IPrincipal currentUser,
@@ -41,7 +43,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
             IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
-            IMultipartRequestService multipartRequestService,
+            IDataProtectionProvider dpProvider,
             IMapper mapper,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache)
@@ -55,6 +57,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
+            _dataProtector = dpProvider.CreateProtector("AppAnonymousSubmitRequest").ToTimeLimitedDataProtector();
         }
 
         #region bcsc authenticated
@@ -76,9 +79,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Get Security Worker Licence Application
         /// </summary>
-        /// <param name="licenceCreateRequest"></param>
+        /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/{licenceAppId}")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
@@ -163,6 +167,32 @@ namespace Spd.Presentation.Licensing.Controllers
         #endregion
 
         #region anonymous 
+
+        /// <summary>
+        /// Get Security Worker Licence Application, anonymous one, so, we get the licenceAppId from cookies.
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-application")]
+        [HttpGet]
+        public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplicationAnonymous()
+        {
+            string? licenceAppIdStr;
+            Request.Cookies.TryGetValue("LicenceApplicationContext", out licenceAppIdStr);
+            if (string.IsNullOrEmpty(licenceAppIdStr))
+                throw new ApiException(HttpStatusCode.Unauthorized);
+            string? licenceAppId;
+            try
+            {
+                licenceAppId = _dataProtector.Unprotect(licenceAppIdStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
+            }
+            return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(licenceAppId)));
+        }
+
         /// <summary>
         /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>
