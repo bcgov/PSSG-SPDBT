@@ -45,7 +45,7 @@ export class CommonApplicationService {
 		// 	originalLicenceTermCode
 		// );
 
-		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
+		if (!workerLicenceTypeCode || !businessTypeCode) {
 			return [];
 		}
 
@@ -58,7 +58,7 @@ export class CommonApplicationService {
 			(item) =>
 				item.workerLicenceTypeCode == workerLicenceTypeCode &&
 				item.businessTypeCode == businessTypeCode &&
-				item.applicationTypeCode == applicationTypeCode &&
+				(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
 				item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
 		);
 	}

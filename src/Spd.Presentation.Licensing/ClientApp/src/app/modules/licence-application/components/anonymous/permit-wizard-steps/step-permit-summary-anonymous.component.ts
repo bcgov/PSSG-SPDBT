@@ -547,10 +547,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 
 	get licenceFee(): number | null {
-		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
-
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, businessTypeCode)
+			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BusinessTypeCode.None)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		return fee?.amount ? fee.amount : null;
@@ -706,6 +704,9 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 			}
 			if (armouredVehicleRequirement.isProtectionOfOthersProperty) {
 				reasonList.push(`Protection of other's property`);
+			}
+			if (armouredVehicleRequirement.isMyEmployment) {
+				reasonList.push('My employment');
 			}
 			if (armouredVehicleRequirement.isOther) {
 				reasonList.push('Other');

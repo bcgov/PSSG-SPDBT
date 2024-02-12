@@ -19,15 +19,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<app-step-title [title]="title"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
-					<div class="row" *ngIf="workerLicenceTypeCode.value === workerLicenceTypeCodes.BodyArmourPermit">
+					<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit">
 						<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
 							<div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
 								<mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
 								<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
-								<mat-checkbox formControlName="isMyEmployment">My employment</mat-checkbox>
-								<mat-checkbox formControlName="isTravelForConflict"
-									>Travel in response to international conflict</mat-checkbox
-								>
+								<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
+								<mat-checkbox formControlName="isTravelForConflict">
+									Travel in response to international conflict
+								</mat-checkbox>
 								<mat-checkbox formControlName="isOther">Other</mat-checkbox>
 								<mat-error
 									class="mat-option-error"
@@ -42,11 +42,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</div>
 						</div>
 					</div>
-					<div class="row" *ngIf="workerLicenceTypeCode.value === workerLicenceTypeCodes.ArmouredVehiclePermit">
+					<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit">
 						<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
 							<div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
 								<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
-								<mat-checkbox formControlName="isMyEmployment">My employment</mat-checkbox>
+								<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
 								<mat-checkbox formControlName="isProtectionOfAnotherPerson">
 									Protection of another person
 								</mat-checkbox>
@@ -56,7 +56,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<mat-checkbox formControlName="isProtectionOfOthersProperty">
 									Protection of other's property
 								</mat-checkbox>
-								<mat-checkbox formControlName="isOther">Other</mat-checkbox>
+								<mat-checkbox formControlName="isOther"> Other </mat-checkbox>
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
@@ -100,15 +100,15 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
+
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
 		const name =
-			this.workerLicenceTypeCode.value === WorkerLicenceTypeCode.BodyArmourPermit
-				? 'body armour'
-				: 'an armoured vehicle';
+			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
 		this.title = `Why do you require a permit for ${name}?`;
 	}
 
@@ -117,12 +117,8 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 		return this.form.valid;
 	}
 
-	get workerLicenceTypeCode(): FormControl {
-		return this.form.get('workerLicenceTypeCode') as FormControl;
-	}
-
 	get isOther(): boolean {
-		if (this.workerLicenceTypeCode.value === WorkerLicenceTypeCode.BodyArmourPermit) {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
 			const bodyArmourRequirementFormGroup = this.form.get('bodyArmourRequirementFormGroup') as FormGroup;
 			return (bodyArmourRequirementFormGroup.get('isOther') as FormControl).value;
 		}

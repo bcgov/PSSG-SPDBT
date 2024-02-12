@@ -8,7 +8,6 @@ import { StepPermitAliasesComponent } from './step-permit-aliases.component';
 import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from './step-permit-citizenship.component';
 import { StepPermitCriminalHistoryComponent } from './step-permit-criminal-history.component';
-import { StepPermitFingerprintsComponent } from './step-permit-fingerprints.component';
 import { StepPermitPersonalInformationComponent } from './step-permit-personal-information.component';
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physical-characteristics.component';
@@ -256,41 +255,6 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-fingerprints [applicationTypeCode]="applicationTypeCode"></app-step-permit-fingerprints>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_FINGERPRINTS)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_FINGERPRINTS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
 				<app-step-permit-physical-characteristics
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-physical-characteristics>
@@ -342,7 +306,6 @@ export class StepsPermitIdentificationAuthenticatedComponent
 {
 	readonly STEP_PERSONAL_INFORMATION = 1;
 	readonly STEP_CRIMINAL_HISTORY = 2;
-	readonly STEP_FINGERPRINTS = 3;
 	readonly STEP_ALIASES = 4;
 	readonly STEP_CITIZENSHIP = 5;
 	readonly STEP_BC_DRIVERS_LICENCE = 6;
@@ -361,7 +324,6 @@ export class StepsPermitIdentificationAuthenticatedComponent
 	@ViewChild(StepPermitPersonalInformationComponent)
 	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;
 	@ViewChild(StepPermitCriminalHistoryComponent) stepCriminalHistoryComponent!: StepPermitCriminalHistoryComponent;
-	@ViewChild(StepPermitFingerprintsComponent) stepFingerprintsComponent!: StepPermitFingerprintsComponent;
 	@ViewChild(StepPermitAliasesComponent) stepAliasesComponent!: StepPermitAliasesComponent;
 	@ViewChild(StepPermitCitizenshipComponent) stepCitizenshipComponent!: StepPermitCitizenshipComponent;
 	@ViewChild(StepPermitBcDriverLicenceComponent)
@@ -415,8 +377,6 @@ export class StepsPermitIdentificationAuthenticatedComponent
 				return this.stepPersonalInformationComponent.isFormValid();
 			case this.STEP_CRIMINAL_HISTORY:
 				return this.stepCriminalHistoryComponent.isFormValid();
-			case this.STEP_FINGERPRINTS:
-				return this.stepFingerprintsComponent.isFormValid();
 			case this.STEP_ALIASES:
 				return this.stepAliasesComponent.isFormValid();
 			case this.STEP_CITIZENSHIP:

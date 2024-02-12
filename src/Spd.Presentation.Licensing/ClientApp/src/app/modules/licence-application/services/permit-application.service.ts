@@ -268,19 +268,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				const employerInformationData = {
-					businessName: 'aaa',
-					supervisorName: 'ccc',
-					supervisorEmailAddress: 'bbb@bbb.com',
-					supervisorPhoneNumber: '5554448787',
-					addressSelected: true,
-					addressLine1: 'bbb1',
-					addressLine2: 'bbb2',
-					city: 'bbb3',
-					postalCode: 'V9A6D4',
-					province: 'bbb4',
-					country: 'bbb5',
-				};
+				// const employerInformationData = {
+				// 	businessName: 'aaa',
+				// 	supervisorName: 'ccc',
+				// 	supervisorEmailAddress: 'bbb@bbb.com',
+				// 	supervisorPhoneNumber: '5554448787',
+				// 	addressSelected: true,
+				// 	addressLine1: 'bbb1',
+				// 	addressLine2: 'bbb2',
+				// 	city: 'bbb3',
+				// 	postalCode: 'V9A6D4',
+				// 	province: 'bbb4',
+				// 	country: 'bbb5',
+				// };
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -290,7 +290,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						employerInformationData,
+						// employerInformationData,
 					},
 					{
 						emitEvent: false,
@@ -322,19 +322,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				const employerInformationData = {
-					businessName: 'aaa',
-					supervisorName: 'ccc',
-					supervisorEmailAddress: 'bbb@bbb.com',
-					supervisorPhoneNumber: '5554448787',
-					addressSelected: true,
-					addressLine1: 'bbb1',
-					addressLine2: 'bbb2',
-					city: 'bbb3',
-					postalCode: 'V9A6D4',
-					province: 'bbb4',
-					country: 'bbb5',
-				};
+				// const employerInformationData = {
+				// 	businessName: 'aaa',
+				// 	supervisorName: 'ccc',
+				// 	supervisorEmailAddress: 'bbb@bbb.com',
+				// 	supervisorPhoneNumber: '5554448787',
+				// 	addressSelected: true,
+				// 	addressLine1: 'bbb1',
+				// 	addressLine2: 'bbb2',
+				// 	city: 'bbb3',
+				// 	postalCode: 'V9A6D4',
+				// 	province: 'bbb4',
+				// 	country: 'bbb5',
+				// };
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -344,7 +344,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						employerInformationData,
+						// employerInformationData,
 					},
 					{
 						emitEvent: false,
@@ -403,19 +403,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		// TODO remove hardcoded
-		const employerInformationData = {
-			businessName: 'aaa',
-			supervisorName: 'ccc',
-			supervisorEmailAddress: 'bbb@bbb.com',
-			supervisorPhoneNumber: '5554448787',
-			addressSelected: true,
-			addressLine1: 'bbb1',
-			addressLine2: 'bbb2',
-			city: 'bbb3',
-			postalCode: 'V9A6D4',
-			province: 'bbb4',
-			country: 'bbb5',
-		};
+		// const employerInformationData = {
+		// 	businessName: 'aaa',
+		// 	supervisorName: 'ccc',
+		// 	supervisorEmailAddress: 'bbb@bbb.com',
+		// 	supervisorPhoneNumber: '5554448787',
+		// 	addressSelected: true,
+		// 	addressLine1: 'bbb1',
+		// 	addressLine2: 'bbb2',
+		// 	city: 'bbb3',
+		// 	postalCode: 'V9A6D4',
+		// 	province: 'bbb4',
+		// 	country: 'bbb5',
+		// };
 
 		this.permitModelFormGroup.patchValue(
 			{
@@ -423,7 +423,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
-				employerInformationData,
+				// employerInformationData,
 			},
 			{
 				emitEvent: false,
@@ -775,9 +775,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.permitRationaleFormGroup.valid
 		);
 
+		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
+
+		let showEmployerInformation = false;
+		if (workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+			const bodyArmourRequirement = this.permitModelFormGroup.get(
+				'permitRequirementData.bodyArmourRequirementFormGroup'
+			)?.value;
+
+			showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+		} else {
+			const armouredVehicleRequirement = this.permitModelFormGroup.get(
+				'permitRequirementData.armouredVehicleRequirementFormGroup'
+			)?.value;
+
+			showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+		}
+
 		return (
 			this.permitRequirementFormGroup.valid &&
-			this.employerInformationFormGroup.valid &&
+			(!showEmployerInformation || (showEmployerInformation && this.employerInformationFormGroup.valid)) &&
 			this.permitRationaleFormGroup.valid
 		);
 	}
