@@ -33,5 +33,6 @@ namespace Spd.Resource.Repository.Licence
         public DateOnly ExpiryDate { get; set; }
         public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
         public LicenceTermEnum? LicenceTermCode { get; set; }
+        public Guid? LicenceHolderId { get; set; }
     }
 }

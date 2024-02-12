@@ -65,7 +65,9 @@ public enum LicenceDocumentTypeCode
     RecordOfLandingDocument,
     StudyPermit,
     WorkPermit,
-    LegalNameChange
+    LegalNameChange,
+    NonCanadianPassport,
+    BCID
 }
 
 public enum BusinessTypeCode
