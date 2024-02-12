@@ -34,7 +34,8 @@ import { StepsPermitContactComponent } from './components/anonymous/permit-wizar
 import { StepsPermitDetailsNewComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-new.component';
 import { StepsPermitDetailsUpdateComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-update.component';
 import { StepsPermitDetailsRenewalComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component-renewal';
-import { StepsPermitIdentificationComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification.component';
+import { StepsPermitIdentificationAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification-anonymous.component';
+import { StepsPermitIdentificationAuthenticatedComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification-authenitcated.component';
 import { StepsPermitPurposeComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-review-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
@@ -280,7 +281,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsPermitContactComponent,
 		StepPermitAccessCodeComponent,
 		StepPermitConfirmationComponent,
-		StepsPermitIdentificationComponent,
+		StepsPermitIdentificationAnonymousComponent,
+		StepsPermitIdentificationAuthenticatedComponent,
 		StepPermitBcDriverLicenceComponent,
 		StepPermitPhysicalCharacteristicsComponent,
 		StepPermitPhotographOfYourselfComponent,

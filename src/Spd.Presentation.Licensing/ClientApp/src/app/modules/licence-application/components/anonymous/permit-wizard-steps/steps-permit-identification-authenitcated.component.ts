@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
+import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
-import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { StepPermitAliasesComponent } from './step-permit-aliases.component';
 import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from './step-permit-citizenship.component';
@@ -14,7 +14,7 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physical-characteristics.component';
 
 @Component({
-	selector: 'app-steps-permit-identification',
+	selector: 'app-steps-permit-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -336,7 +336,10 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitIdentificationComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitIdentificationAuthenticatedComponent
+	extends BaseWizardStepComponent
+	implements OnInit, OnDestroy
+{
 	readonly STEP_PERSONAL_INFORMATION = 1;
 	readonly STEP_CRIMINAL_HISTORY = 2;
 	readonly STEP_FINGERPRINTS = 3;

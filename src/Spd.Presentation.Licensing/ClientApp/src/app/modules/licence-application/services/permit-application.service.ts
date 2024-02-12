@@ -402,12 +402,28 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
 
+		// TODO remove hardcoded
+		const employerInformationData = {
+			businessName: 'aaa',
+			supervisorName: 'ccc',
+			supervisorEmailAddress: 'bbb@bbb.com',
+			supervisorPhoneNumber: '5554448787',
+			addressSelected: true,
+			addressLine1: 'bbb1',
+			addressLine2: 'bbb2',
+			city: 'bbb3',
+			postalCode: 'V9A6D4',
+			province: 'bbb4',
+			country: 'bbb5',
+		};
+
 		this.permitModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
+				employerInformationData,
 			},
 			{
 				emitEvent: false,

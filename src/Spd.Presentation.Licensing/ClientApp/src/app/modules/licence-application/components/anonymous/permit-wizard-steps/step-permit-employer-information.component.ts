@@ -27,7 +27,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Business Name </mat-label>
-										<input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="40" />
+										<input matInput formControlName="businessName" [errorStateMatcher]="matcher" maxlength="160" />
 										<mat-error *ngIf="form.get('businessName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
@@ -38,7 +38,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Supervisor's Name</mat-label>
-										<input matInput formControlName="supervisorName" [errorStateMatcher]="matcher" maxlength="40" />
+										<input matInput formControlName="supervisorName" [errorStateMatcher]="matcher" maxlength="100" />
 										<mat-error *ngIf="form.get('supervisorName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>

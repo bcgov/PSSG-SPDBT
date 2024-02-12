@@ -42,13 +42,13 @@ import { StepsBusinessInformationNewComponent } from './steps-business-informati
 
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Contact Information</ng-template>
-				<!-- <app-steps-permit-identification
+				<!-- <app-steps-permit-identification-anonymous
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-identification> -->
+				></app-steps-permit-identification-anonymous> -->
 			</mat-step>
 
 			<mat-step [completed]="step4Complete">
