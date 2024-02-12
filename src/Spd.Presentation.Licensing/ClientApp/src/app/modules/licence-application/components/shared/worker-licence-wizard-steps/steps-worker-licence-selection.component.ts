@@ -12,11 +12,24 @@ import { StepWorkerLicenceExpiredComponent } from './step-worker-licence-expired
 import { StepWorkerLicenceRestraintsComponent } from './step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-sole-proprietor.component';
 import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.component';
+import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-terms-of-use.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step *ngIf="!isLoggedIn">
+				<app-step-worker-licence-terms-of-use></app-step-worker-licence-terms-of-use>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-worker-licence-checklist-new></app-step-worker-licence-checklist-new>
@@ -272,13 +285,14 @@ import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.compo
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
-	// If step ordering changes, crutial to update this <- look for this comment below
+	// If step ordering changes, crucial  to update this <- look for this comment below
+	readonly STEP_TERMS = 0;
 	readonly STEP_SOLE_PROPRIETOR = 1;
 	readonly STEP_LICENCE_CONFIRMATION = 2;
-	readonly STEP_LICENCE_EXPIRED = 5;
-	readonly STEP_LICENCE_CATEGORY = 6;
-	readonly STEP_DOGS = 8;
-	readonly STEP_RESTRAINTS = 9;
+	readonly STEP_LICENCE_EXPIRED = 3;
+	readonly STEP_LICENCE_CATEGORY = 4;
+	readonly STEP_DOGS = 5;
+	readonly STEP_RESTRAINTS = 6;
 	readonly STEP_LICENCE_TERM = 7;
 
 	private authenticationSubscription!: Subscription;
@@ -288,6 +302,9 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
+
+	@ViewChild(StepWorkerLicenceTermsOfUseComponent)
+	termsOfUseComponent!: StepWorkerLicenceTermsOfUseComponent;
 
 	@ViewChild(StepWorkerLicenceSoleProprietorComponent)
 	soleProprietorComponent!: StepWorkerLicenceSoleProprietorComponent;
@@ -351,7 +368,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	override onGoToNextStep() {
 		console.debug('onGoToNextStep', this.childstepper.selectedIndex);
 
-		// If step ordering changes, crutial to update this
+		// If step ordering changes, crucial to update this
 		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 			if (
 				(this.childstepper.selectedIndex === 2 && !this.showStepDogsAndRestraints) ||
@@ -366,6 +383,8 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_TERMS:
+				return this.termsOfUseComponent.isFormValid();
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
 			case this.STEP_LICENCE_CONFIRMATION:

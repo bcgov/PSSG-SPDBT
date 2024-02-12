@@ -56,7 +56,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [],
 })
 export class StepPermitRationaleComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

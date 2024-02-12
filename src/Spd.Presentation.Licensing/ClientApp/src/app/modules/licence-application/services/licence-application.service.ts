@@ -59,6 +59,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
 		caseNumber: new FormControl(null), // placeholder to save info for display purposes
+		// agreeToTermsAndConditions: new FormControl(null),
 
 		originalApplicationId: new FormControl(null),
 		originalLicenceId: new FormControl(null),

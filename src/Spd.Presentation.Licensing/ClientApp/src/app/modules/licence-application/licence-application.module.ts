@@ -98,6 +98,7 @@ import { CommonPhotographOfYourselfComponent } from './components/shared/step-co
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/step-components/common-physical-characteristics.component';
 import { CommonReprintComponent } from './components/shared/step-components/common-reprint.component';
 import { CommonResidentialAddressComponent } from './components/shared/step-components/common-residential-address.component';
+import { CommonTermsComponent } from './components/shared/step-components/common-terms.component';
 import { CommonUpdateRenewalAlertComponent } from './components/shared/step-components/common-update-renewal-alert.component';
 import { CommonUserProfilePersonalInformationComponent } from './components/shared/step-components/common-user-profile-personal-information.component';
 import { CommonUserProfileComponent } from './components/shared/step-components/common-user-profile.component';
@@ -143,6 +144,7 @@ import { StepWorkerLicenceResidentialAddressComponent } from './components/share
 import { StepWorkerLicenceRestraintsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-sole-proprietor.component';
 import { StepWorkerLicenceTermComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-term.component';
+import { StepWorkerLicenceTermsOfUseComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-terms-of-use.component';
 import { StepWorkerLicenceUpdateFeeComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-update-fee.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-user-profile.component';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-steps/steps-worker-licence-background-renew-and-update.component';
@@ -165,6 +167,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonPhysicalCharacteristicsComponent,
 		CommonPhotographOfYourselfComponent,
 		CommonContactInformationComponent,
+		CommonTermsComponent,
 		UserFirstTimeLoginModalComponent,
 		LicenceApplicationComponent,
 		LicenceCategoryArmouredCarGuardComponent,
@@ -212,6 +215,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceDogsAuthorizationComponent,
 		StepWorkerLicenceFingerprintsComponent,
 		CommonAccessCodeAnonymousComponent,
+		StepWorkerLicenceTermsOfUseComponent,
 		StepWorkerLicenceAccessCodeComponent,
 		StepWorkerLicenceCategoryComponent,
 		StepWorkerLicenceConfirmationComponent,

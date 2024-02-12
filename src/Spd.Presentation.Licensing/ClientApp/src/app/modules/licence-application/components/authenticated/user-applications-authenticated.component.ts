@@ -571,7 +571,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		// ];
 
 		// TODO Handle first time login
-		// this.dialog.open(FirstTimeUserModalComponent, {
+		// this.dialog.open(UserFirstTimeLoginModalComponent, {
 		// 	width: '800px',
 		// });
 	}

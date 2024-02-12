@@ -89,7 +89,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [],
 })
 export class StepPermitReasonComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
