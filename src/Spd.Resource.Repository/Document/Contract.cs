@@ -34,6 +34,7 @@ namespace Spd.Resource.Repository.Document
         public Guid? ReportId { get; set; }
         public DateOnly? ExpiryDate { get; set; }
         public Guid? ContactId { get; set; }
+        public string? Folder { get; set; }
     }
 
     public abstract record DocumentCmd;
@@ -139,6 +140,8 @@ namespace Spd.Resource.Repository.Document
         ASTCertificate,
         UseForceEmployerLetter,
         UseForceEmployerLetterASTEquivalent,
-        Resume
+        Resume,
+        NonCanadianPassport,
+        BCID
     }
 }

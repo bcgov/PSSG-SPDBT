@@ -5,8 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Alba" Version="7.4.1" />
-    <PackageVersion Include="AutoMapper" Version="13.0.0" />
-    <PackageVersion Include="AWSSDK.S3" Version="3.7.305.22" />
+    <PackageVersion Include="AutoMapper" Version="13.0.1" />
+    <PackageVersion Include="AWSSDK.S3" Version="3.7.305.24" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="Flurl" Version="4.0.0" />
@@ -31,7 +31,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.OData.Client" Version="7.20.0" />
     <PackageVersion Include="Microsoft.OData.Core" Version="7.20.0" />
     <PackageVersion Include="Microsoft.OData.Edm" Version="7.20.0" />
