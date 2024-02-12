@@ -100,6 +100,7 @@ internal partial class LicenceAppDocumentManager :
             LicenceDocumentTypeCode.CanadianPassport,
             LicenceDocumentTypeCode.BirthCertificate,
             LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
+            LicenceDocumentTypeCode.CanadianCitizenship
         };
 
     public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new List<WorkerCategoryTypeCode> {
