@@ -106,7 +106,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef>Application Status</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Application Status:</span>
-							<mat-chip-row aria-label="Status" [ngClass]="application.applicationPortalStatusClass">
+							<mat-chip-row aria-label="Status" [ngClass]="application.applicationPortalStatusClass" class="w-100">
 								{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 							</mat-chip-row>
 						</mat-cell>
@@ -163,7 +163,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 210px;
+				min-width: 250px;
 			}
 
 			.mat-column-action1 {
