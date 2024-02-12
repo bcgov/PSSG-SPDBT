@@ -12,11 +12,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
 						[applicationTypeCode]="applicationTypeCode"
 					></app-common-update-renewal-alert>
@@ -78,5 +74,12 @@ export class StepPermitFingerprintsComponent implements LicenceChildStepperStepC
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
