@@ -57,7 +57,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
-            _dataProtector = dpProvider.CreateProtector("AppAnonymousSubmitRequest").ToTimeLimitedDataProtector();
+            _dataProtector = dpProvider.CreateProtector(SessionConstants.AnonymousRequestDataProtectorName).ToTimeLimitedDataProtector();
         }
 
         #region bcsc authenticated
@@ -177,19 +177,21 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplicationAnonymous()
         {
-            string? licenceAppIdStr;
-            Request.Cookies.TryGetValue("LicenceApplicationContext", out licenceAppIdStr);
-            if (string.IsNullOrEmpty(licenceAppIdStr))
+            string? licenceIdsStr;
+            Request.Cookies.TryGetValue(SessionConstants.AnonymousApplicationContext, out licenceIdsStr);
+            if (string.IsNullOrEmpty(licenceIdsStr))
                 throw new ApiException(HttpStatusCode.Unauthorized);
             string? licenceAppId;
             try
             {
-                licenceAppId = _dataProtector.Unprotect(licenceAppIdStr);
+                string ids = _dataProtector.Unprotect(licenceIdsStr);
+                licenceAppId = ids.Split("*")[1];
             }
             catch
             {
                 throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
             }
+
             return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(licenceAppId)));
         }
 
