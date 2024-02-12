@@ -202,7 +202,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns>Guid: keyCode</returns>
         [Route("api/worker-licence-applications/anonymous/keyCode")]
         [HttpPost]
-        public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
+        public async Task GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
@@ -211,8 +211,17 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
             }
             Guid keyCode = Guid.NewGuid();
-            await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(30));
-            return keyCode;
+            await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
+            var encryptedKeyCode = _dataProtector.Protect(keyCode.ToString(), DateTimeOffset.UtcNow.AddMinutes(20));           
+            this.Response.Cookies.Append(SessionConstants.AnonymousApplicationSubmitKeyCode,
+                encryptedKeyCode,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(20)
+                });
         }
 
         /// <summary>
@@ -223,11 +232,26 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/anonymous/{keyCode}/files")]
+        [Route("api/worker-licence-applications/anonymous/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
+            //get keyCode from Cookie
+            string keyCodeStr;
+            Request.Cookies.TryGetValue(SessionConstants.AnonymousApplicationSubmitKeyCode, out keyCodeStr);
+            if (string.IsNullOrEmpty(keyCodeStr))
+                throw new ApiException(HttpStatusCode.Unauthorized);
+            string keyCode;
+            try
+            {
+                keyCode = _dataProtector.Unprotect(keyCodeStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "KeyCode is incorrect");
+            }
+
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
             if (fileUploadConfig == null)
                 throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
@@ -269,10 +293,25 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
+        [Route("api/worker-licence-applications/anonymous/submit")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, Guid keyCode, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
         {
+            //get keyCode from Cookie
+            string keyCodeStr;
+            Request.Cookies.TryGetValue(SessionConstants.AnonymousApplicationSubmitKeyCode, out keyCodeStr);
+            if (string.IsNullOrEmpty(keyCodeStr))
+                throw new ApiException(HttpStatusCode.Unauthorized);
+            Guid keyCode;
+            try
+            {
+                keyCode = Guid.Parse(_dataProtector.Unprotect(keyCodeStr));
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "KeyCode is incorrect");
+            }
+
             //validate keyCode
             if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
             {

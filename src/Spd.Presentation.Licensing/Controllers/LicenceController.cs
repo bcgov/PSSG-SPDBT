@@ -59,7 +59,6 @@ namespace Spd.Presentation.Licensing.Controllers
         [AllowAnonymous]
         public async Task<LicenceResponse?> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, CancellationToken ct, [FromBody] GoogleRecaptcha recaptcha, [FromQuery] string accessCode = null)
         {
-            //temp del
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
             if (!isValid)
@@ -85,7 +84,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get licence photo by licenceId
+        /// Get licence photo by licenceId, the licenceId is put into cookie and encoded.
         /// Example: http://localhost:5114/api/licences/image
         /// </summary>
         /// <param name="licenceNumber"></param>
@@ -93,7 +92,6 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licences/image")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
         public async Task<FileStreamResult> GetLicencePhoto()
         {
             string? licenceIdsStr;
