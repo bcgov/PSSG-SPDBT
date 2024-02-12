@@ -12,11 +12,7 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
 						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
 						[applicationTypeCode]="applicationTypeCode"
@@ -1491,5 +1487,12 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	}
 	get showSecurityGuardUnderSupervision(): boolean {
 		return this.categorySecurityGuardSupFormGroup.get('isInclude')?.value;
+	}
+
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
