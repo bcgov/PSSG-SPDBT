@@ -325,9 +325,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		this.licenceModelFormGroup.reset();
 
-		// const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
-		// aliases.clear();
-
+		// clear the alias data - this does not seem to get reset during a formgroup reset
 		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
 		while (aliasesArray.length) {
 			aliasesArray.removeAt(0);
@@ -355,35 +353,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			body: doc,
 		});
 	}
-
-	/**
-	 * If this step is complete, mark the step as complete in the wizard
-	 * @returns
-	 */
-	// isStep1Complete(): boolean {
-	// 	// console.debug(
-	// 	// 	'isStep1Complete',
-	// 	// 	this.profileFormGroup.valid,
-	// 	// 	this.workerLicenceTypeFormGroup.valid,
-	// 	// 	this.applicationTypeFormGroup.valid,
-	// 	// );
-
-	// 	let isValid!: boolean;
-	// 	if (this.authenticationService.isLoggedIn()) {
-	// 		isValid =
-	// 			this.profileConfirmationFormGroup.valid &&
-	// 			this.personalInformationFormGroup.valid &&
-	// 			this.aliasesFormGroup.valid &&
-	// 			this.residentialAddressFormGroup.valid &&
-	// 			this.mailingAddressFormGroup.valid &&
-	// 			this.contactInformationFormGroup.valid;
-	// 		this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-	// 	} else {
-	// 		isValid = this.workerLicenceTypeFormGroup.valid && this.applicationTypeFormGroup.valid;
-	// 	}
-
-	// 	return isValid;
-	// }
 
 	/**
 	 * If this step is complete, mark the step as complete in the wizard
