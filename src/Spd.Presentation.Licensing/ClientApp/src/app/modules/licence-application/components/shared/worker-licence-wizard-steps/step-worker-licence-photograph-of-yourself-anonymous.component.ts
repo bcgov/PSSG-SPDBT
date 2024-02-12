@@ -10,11 +10,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
 						[applicationTypeCode]="applicationTypeCode"
 					></app-common-update-renewal-alert>
@@ -26,12 +22,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					subtitle="This will appear on your licence. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
 				></app-step-title>
 
-				<div
-					class="row mb-3"
-					*ngIf="
-						applicationTypeCode === applicationTypeCodes.Renewal || applicationTypeCode === applicationTypeCodes.Update
-					"
-				>
+				<div class="row mb-3" *ngIf="isRenewalOrUpdate">
 					<div class="col-12 text-center">
 						<div class="fs-5 mb-2">Current licence photo:</div>
 						<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
@@ -83,5 +74,12 @@ export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
