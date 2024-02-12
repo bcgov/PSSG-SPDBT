@@ -1,26 +1,38 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Manager.Shared;
+using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
+using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Licence;
 
 internal class LicenceManager :
         IRequestHandler<LicenceQuery, LicenceResponse>,
+        IRequestHandler<LicencePhotoQuery, FileResponse>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
+    private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
+    private readonly IFileStorageService _fileStorageService;
     private readonly IMapper _mapper;
 
     public LicenceManager(
         ILicenceRepository licenceRepository,
+        IDocumentRepository documentRepository,
         ILogger<ILicenceManager> logger,
+        IFileStorageService fileStorageService,
         IMapper mapper)
     {
         _licenceRepository = licenceRepository;
+        _documentRepository = documentRepository;
         _mapper = mapper;
         _logger = logger;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken ct)
@@ -40,5 +52,40 @@ internal class LicenceManager :
 
         LicenceResponse result = _mapper.Map<LicenceResponse>(response.Items.First());
         return result;
+    }
+
+    public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken ct)
+    {
+        //find contact id through licenceId
+        LicenceListResp lic = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = query.LicenceId }, ct);
+        Guid? applicantId = lic.Items.FirstOrDefault()?.LicenceHolderId;
+        if (applicantId == null)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence holder.");
+        }
+
+        DocumentQry qry = new DocumentQry
+        {
+            ApplicantId = applicantId,
+            FileType = Enum.Parse<DocumentTypeEnum>(DocumentTypeEnum.Photograph.ToString()),
+        };
+        DocumentListResp docList = await _documentRepository.QueryAsync(qry, ct);
+        if (docList == null || !docList.Items.Any())
+            return new FileResponse();
+        var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
+
+        if (docUrl != null)
+        {
+            FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = docUrl.Folder },
+                ct);
+            return new FileResponse
+            {
+                Content = fileResult.File.Content,
+                ContentType = fileResult.File.ContentType,
+                FileName = fileResult.File.FileName
+            };
+        }
+        return new FileResponse();
     }
 }

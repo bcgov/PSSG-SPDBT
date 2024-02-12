@@ -19,6 +19,7 @@ using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -34,6 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMapper _mapper;
         private readonly IRecaptchaVerificationService _recaptchaVerificationService;
         private readonly IDistributedCache _cache;
+        private readonly ITimeLimitedDataProtector _dataProtector;
 
         public SecurityWorkerLicensingController(ILogger<SecurityWorkerLicensingController> logger,
             IPrincipal currentUser,
@@ -41,7 +43,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
             IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
-            IMultipartRequestService multipartRequestService,
+            IDataProtectionProvider dpProvider,
             IMapper mapper,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache)
@@ -55,6 +57,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _recaptchaVerificationService = recaptchaVerificationService;
             _cache = cache;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
+            _dataProtector = dpProvider.CreateProtector(SessionConstants.AnonymousRequestDataProtectorName).ToTimeLimitedDataProtector();
         }
 
         #region bcsc authenticated
@@ -76,9 +79,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Get Security Worker Licence Application
         /// </summary>
-        /// <param name="licenceCreateRequest"></param>
+        /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/{licenceAppId}")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
@@ -163,6 +167,34 @@ namespace Spd.Presentation.Licensing.Controllers
         #endregion
 
         #region anonymous 
+
+        /// <summary>
+        /// Get Security Worker Licence Application, anonymous one, so, we get the licenceAppId from cookies.
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-application")]
+        [HttpGet]
+        public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplicationAnonymous()
+        {
+            string? licenceIdsStr;
+            Request.Cookies.TryGetValue(SessionConstants.AnonymousApplicationContext, out licenceIdsStr);
+            if (string.IsNullOrEmpty(licenceIdsStr))
+                throw new ApiException(HttpStatusCode.Unauthorized);
+            string? licenceAppId;
+            try
+            {
+                string ids = _dataProtector.Unprotect(licenceIdsStr);
+                licenceAppId = ids.Split("*")[1];
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
+            }
+
+            return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(licenceAppId)));
+        }
+
         /// <summary>
         /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>
@@ -170,7 +202,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns>Guid: keyCode</returns>
         [Route("api/worker-licence-applications/anonymous/keyCode")]
         [HttpPost]
-        public async Task<Guid> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
+        public async Task GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
@@ -179,8 +211,17 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
             }
             Guid keyCode = Guid.NewGuid();
-            await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(30));
-            return keyCode;
+            await _cache.Set<LicenceAppDocumentsCache>(keyCode.ToString(), new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
+            var encryptedKeyCode = _dataProtector.Protect(keyCode.ToString(), DateTimeOffset.UtcNow.AddMinutes(20));           
+            this.Response.Cookies.Append(SessionConstants.AnonymousApplicationSubmitKeyCode,
+                encryptedKeyCode,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(20)
+                });
         }
 
         /// <summary>
@@ -191,11 +232,26 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/anonymous/{keyCode}/files")]
+        [Route("api/worker-licence-applications/anonymous/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid keyCode, CancellationToken ct)
+        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
+            //get keyCode from Cookie
+            string keyCodeStr;
+            Request.Cookies.TryGetValue(SessionConstants.AnonymousApplicationSubmitKeyCode, out keyCodeStr);
+            if (string.IsNullOrEmpty(keyCodeStr))
+                throw new ApiException(HttpStatusCode.Unauthorized);
+            string keyCode;
+            try
+            {
+                keyCode = _dataProtector.Unprotect(keyCodeStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "KeyCode is incorrect");
+            }
+
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
             if (fileUploadConfig == null)
                 throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
@@ -237,10 +293,25 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/worker-licence-applications/anonymous/{keyCode}/submit")]
+        [Route("api/worker-licence-applications/anonymous/submit")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, Guid keyCode, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
         {
+            //get keyCode from Cookie
+            string keyCodeStr;
+            Request.Cookies.TryGetValue(SessionConstants.AnonymousApplicationSubmitKeyCode, out keyCodeStr);
+            if (string.IsNullOrEmpty(keyCodeStr))
+                throw new ApiException(HttpStatusCode.Unauthorized);
+            Guid keyCode;
+            try
+            {
+                keyCode = Guid.Parse(_dataProtector.Unprotect(keyCodeStr));
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "KeyCode is incorrect");
+            }
+
             //validate keyCode
             if (await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString()) == null)
             {
@@ -255,25 +326,25 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos, keyCode);
+                AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos, keyCode);
+                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos, keyCode);
+                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos, keyCode);
+                AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
             return null;
