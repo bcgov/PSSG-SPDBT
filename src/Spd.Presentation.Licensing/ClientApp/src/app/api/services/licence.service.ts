@@ -159,9 +159,9 @@ export class LicenceService extends BaseService {
   }
 
   /**
-   * Path part for operation apiLicencesImageGet
+   * Path part for operation apiLicencesLicencePhotoGet
    */
-  static readonly ApiLicencesImageGetPath = '/api/licences/image';
+  static readonly ApiLicencesLicencePhotoGetPath = '/api/licences/licence-photo';
 
   /**
    * Get licence photo by licenceId, the licenceId is put into cookie and encoded.
@@ -170,17 +170,17 @@ export class LicenceService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiLicencesImageGet()` instead.
+   * To access only the response body, use `apiLicencesLicencePhotoGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesImageGet$Response(params?: {
+  apiLicencesLicencePhotoGet$Response(params?: {
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<Blob>> {
 
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesImageGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicencePhotoGetPath, 'get');
     if (params) {
     }
 
@@ -203,17 +203,17 @@ export class LicenceService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiLicencesImageGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiLicencesLicencePhotoGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesImageGet(params?: {
+  apiLicencesLicencePhotoGet(params?: {
   },
   context?: HttpContext
 
 ): Observable<Blob> {
 
-    return this.apiLicencesImageGet$Response(params,context).pipe(
+    return this.apiLicencesLicencePhotoGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }

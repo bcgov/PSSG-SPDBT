@@ -18,8 +18,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 	selector: 'app-steps-worker-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="!isLoggedIn">
-				<app-step-worker-licence-terms-of-use></app-step-worker-licence-terms-of-use>
+			<mat-step *ngIf="showTermsOfUse">
+				<app-step-worker-licence-terms-of-use
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-terms-of-use>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
@@ -33,41 +35,33 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-worker-licence-checklist-new></app-step-worker-licence-checklist-new>
-
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
-					<!-- <div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div> -->
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-worker-licence-checklist-renewal></app-step-worker-licence-checklist-renewal>
-
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-step-worker-licence-checklist-update></app-step-worker-licence-checklist-update>
+				</ng-container>
 
+				<ng-container *ngIf="!isLoggedIn; else isLoggedInChecklistSteps">
+					<div class="row wizard-button-row">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
+				</ng-container>
+				<ng-template #isLoggedInChecklistSteps>
 					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
-				</ng-container>
+				</ng-template>
 			</mat-step>
 
 			<mat-step
@@ -403,5 +397,13 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get showTermsOfUse(): boolean {
+		// authenticated: only need to agree once for New/Renewal, and not again until/unless terms change
+		// authenticated: agree everytime for Update
+		// anonymous: agree everytime for all
+		// TODO update to show Terms of Use for first time user
+		return (this.isLoggedIn && this.applicationTypeCode === ApplicationTypeCode.Update) || !this.isLoggedIn;
 	}
 }

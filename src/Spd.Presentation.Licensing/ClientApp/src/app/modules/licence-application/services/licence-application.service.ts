@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SecurityContext } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import {
 	Alias,
 	ApplicationTypeCode,
@@ -23,9 +24,11 @@ import { FormControlValidators } from '@app/core/validators/form-control.validat
 import * as moment from 'moment';
 import {
 	BehaviorSubject,
+	catchError,
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
+	map,
 	Observable,
 	of,
 	Subscription,
@@ -56,6 +59,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	hasValueChanged = false;
 
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+	photographOfYourself: string | null = null;
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
@@ -135,7 +140,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
-		private utilService: UtilService
+		private utilService: UtilService,
+		private domSanitizer: DomSanitizer
 	) {
 		super(formBuilder, configService, formatDatePipe);
 
@@ -254,31 +260,47 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadLicenceRenewal().pipe(
-					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Renewal', applicationTypeCode, resp);
+				return forkJoin([this.loadLicenceRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
 						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadLicenceUpdate().pipe(
-					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Update', applicationTypeCode, resp);
+				return forkJoin([this.loadLicenceUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
 						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
 					})
 				);
 			}
 			default: {
-				//case ApplicationTypeCode.Replacement: {
 				return this.loadLicenceReplacement().pipe(
-					tap((resp: any) => {
+					tap((resp: WorkerLicenceResponse) => {
 						console.debug('[getLicenceOfType] Replacement', applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
 			}
 		}
+	}
+
+	private setPhotographOfYourself(image: Blob | null): void {
+		if (!image) {
+			this.photographOfYourself = null;
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(image);
+		this.photographOfYourself = this.domSanitizer.sanitize(
+			SecurityContext.RESOURCE_URL,
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+		);
 	}
 
 	/**
@@ -319,10 +341,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	reset(): void {
 		this.initialized = false;
-		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
+		this.photographOfYourself = null;
 
 		this.licenceModelFormGroup.reset();
+
+		console.debug('reset.initialized', this.initialized);
 
 		// clear the alias data - this does not seem to get reset during a formgroup reset
 		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;

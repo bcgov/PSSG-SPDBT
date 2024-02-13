@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ApplicationTypeCode } from '@app/api/models';
-import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -22,10 +22,10 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					subtitle="This will appear on your licence. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
 				></app-step-title>
 
-				<div class="row mb-3" *ngIf="isRenewalOrUpdate">
+				<div class="row mb-3" *ngIf="isRenewalOrUpdate && photographOfYourself">
 					<div class="col-12 text-center">
 						<div class="fs-5 mb-2">Current licence photo:</div>
-						<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
+						<img [src]="photographOfYourself" alt="Photograph of yourself" style="max-height: 15em;" />
 					</div>
 				</div>
 
@@ -46,16 +46,14 @@ export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
 {
 	applicationTypeCodes = ApplicationTypeCode;
 	originalPhotoOfYourselfExpired = false;
+	photographOfYourself = this.licenceApplicationService.photographOfYourself;
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
 
 	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(CommonPhotographOfYourselfComponent)
-	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
-
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService, private domSanitizer: DomSanitizer) {}
 
 	ngOnInit(): void {
 		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(

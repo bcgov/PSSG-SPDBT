@@ -28,6 +28,7 @@ import { StepPermitRationaleComponent } from './components/anonymous/permit-wiza
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
+import { StepPermitTermsOfUseComponent } from './components/anonymous/permit-wizard-steps/step-permit-terms-of-use.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsNewComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-new.component';
@@ -168,6 +169,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonPhotographOfYourselfComponent,
 		CommonContactInformationComponent,
 		CommonTermsComponent,
+		StepPermitTermsOfUseComponent,
 		UserFirstTimeLoginModalComponent,
 		LicenceApplicationComponent,
 		LicenceCategoryArmouredCarGuardComponent,
