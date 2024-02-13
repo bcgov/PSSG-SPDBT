@@ -45,5 +45,7 @@ export enum LicenceDocumentTypeCode {
   RecordOfLandingDocument = 'RecordOfLandingDocument',
   StudyPermit = 'StudyPermit',
   WorkPermit = 'WorkPermit',
-  LegalNameChange = 'LegalNameChange'
+  LegalNameChange = 'LegalNameChange',
+  NonCanadianPassport = 'NonCanadianPassport',
+  Bcid = 'BCID'
 }
