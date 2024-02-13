@@ -8,6 +8,7 @@ import {
 	Document,
 	GoogleRecaptcha,
 	HeightUnitCode,
+	IActionResult,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
@@ -32,7 +33,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceLookupService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -130,7 +131,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
-		private licenceLookupService: LicenceLookupService,
+		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
@@ -192,7 +193,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		accessCode: string,
 		recaptchaCode: string
 	): Observable<LicenceResponse> {
-		return this.licenceLookupService
+		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
 	}
@@ -202,12 +203,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		console.debug('getLicenceNew', licenceAppId);
+	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		console.debug('getLicenceToResume', licenceAppId);
 
-		return this.loadLicenceNew(licenceAppId).pipe(
+		return this.loadLicenceToResume(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD loadLicenceNew', resp);
+				console.debug('getLicenceToResume', resp);
 				this.initialized = true;
 			})
 		);
@@ -222,7 +223,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<WorkerLicenceResponse> {
-		return this.getLicenceOfType(accessCodeData.linkedLicenceAppId, applicationTypeCode!).pipe(
+		return this.getLicenceOfTypeUsingAccessCode(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
 				this.licenceModelFormGroup.patchValue(
 					{
@@ -250,32 +251,29 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private getLicenceOfType(
-		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
+	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadLicenceRenewal(licenceAppId).pipe(
+				return this.loadLicenceRenewal().pipe(
 					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Renewal', licenceAppId, applicationTypeCode, resp);
+						console.debug('[getLicenceOfType] Renewal', applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadLicenceUpdate(licenceAppId).pipe(
+				return this.loadLicenceUpdate().pipe(
 					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Update', licenceAppId, applicationTypeCode, resp);
+						console.debug('[getLicenceOfType] Update', applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
 			}
 			default: {
 				//case ApplicationTypeCode.Replacement: {
-				return this.loadLicenceReplacement(licenceAppId).pipe(
+				return this.loadLicenceReplacement().pipe(
 					tap((resp: any) => {
-						console.debug('[getLicenceOfType] Replacement', licenceAppId, applicationTypeCode, resp);
+						console.debug('[getLicenceOfType] Replacement', applicationTypeCode, resp);
 						this.initialized = true;
 					})
 				);
@@ -699,551 +697,564 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private loadSpecificLicence(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadExistingLicence(): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
+			tap((resp: WorkerLicenceResponse) => {
+				this.loadSpecificLicenceIntoModel(resp);
+			})
+		);
+	}
+
+	private loadExistingLicenceWithId(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
-				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
-
-				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-				const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
-				const soleProprietorData = {
-					isSoleProprietor: resp.businessTypeCode === BusinessTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
-					businessTypeCode: resp.businessTypeCode,
-				};
-
-				const expiredLicenceData = {
-					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
-					expiredLicenceNumber: resp.expiredLicenceNumber,
-					expiryDate: resp.expiryDate,
-					expiredLicenceId: resp.expiredLicenceId,
-				};
-
-				const licenceTermData = {
-					licenceTermCode: resp.licenceTermCode,
-				};
-
-				const bcDriversLicenceData = {
-					hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
-					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
-				};
-
-				const criminalHistoryData = {
-					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
-				};
-
-				const aliasesData = {
-					previousNameFlag: resp.hasPreviousName ? this.booleanToBooleanType(resp.hasPreviousName) : BooleanTypeCode.No,
-				};
-
-				let personalInformationData = {};
-				if (bcscUserWhoamiProfile) {
-					personalInformationData = {
-						givenName: bcscUserWhoamiProfile.firstName,
-						middleName1: bcscUserWhoamiProfile.middleName1,
-						middleName2: bcscUserWhoamiProfile.middleName2,
-						surname: bcscUserWhoamiProfile.lastName,
-						genderCode: bcscUserWhoamiProfile.gender,
-						dateOfBirth: bcscUserWhoamiProfile.birthDate,
-						origGivenName: bcscUserWhoamiProfile.firstName,
-						origMiddleName1: bcscUserWhoamiProfile.middleName1,
-						origMiddleName2: bcscUserWhoamiProfile.middleName2,
-						origSurname: bcscUserWhoamiProfile.lastName,
-						origGenderCode: bcscUserWhoamiProfile.gender,
-						origDateOfBirth: bcscUserWhoamiProfile.birthDate,
-					};
-				} else {
-					personalInformationData = {
-						givenName: resp.givenName,
-						middleName1: resp.middleName1,
-						middleName2: resp.middleName2,
-						surname: resp.surname,
-						genderCode: resp.genderCode,
-						dateOfBirth: resp.dateOfBirth,
-						origGivenName: resp.givenName,
-						origMiddleName1: resp.middleName1,
-						origMiddleName2: resp.middleName2,
-						origSurname: resp.surname,
-						origGenderCode: resp.genderCode,
-						origDateOfBirth: resp.dateOfBirth,
-					};
-				}
-
-				let height = resp.height ? resp.height + '' : null;
-				let heightInches = '';
-				if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
-					height = Math.trunc(resp.height / 12) + '';
-					heightInches = (resp.height % 12) + '';
-				}
-
-				const characteristicsData = {
-					hairColourCode: resp.hairColourCode,
-					eyeColourCode: resp.eyeColourCode,
-					height,
-					heightUnitCode: resp.heightUnitCode,
-					heightInches,
-					weight: resp.weight ? resp.weight + '' : null,
-					weightUnitCode: resp.weightUnitCode,
-				};
-
-				const contactInformationData = {
-					contactEmailAddress: resp.contactEmailAddress,
-					contactPhoneNumber: resp.contactPhoneNumber,
-				};
-
-				let residentialAddressData = {};
-				const isMailingTheSameAsResidential = resp.isMailingTheSameAsResidential ?? false;
-				if (bcscUserWhoamiProfile) {
-					residentialAddressData = {
-						addressSelected: true,
-						isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-						addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-						addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-						city: bcscUserWhoamiProfile.residentialAddress?.city,
-						country: bcscUserWhoamiProfile.residentialAddress?.country,
-						postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-						province: bcscUserWhoamiProfile.residentialAddress?.province,
-					};
-				} else {
-					residentialAddressData = {
-						...resp.residentialAddressData,
-						isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-						addressSelected: !!resp.residentialAddressData?.addressLine1,
-					};
-				}
-
-				let mailingAddressData = {};
-				// if (!isMailingTheSameAsResidential) {
-				mailingAddressData = {
-					...resp.mailingAddressData,
-					addressSelected: !!resp.mailingAddressData?.addressLine1,
-				};
-				// }
-
-				let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
-				let categoryClosedCircuitTelevisionInstallerFormGroup: any = { isInclude: false };
-				let categoryElectronicLockingDeviceInstallerFormGroup: any = { isInclude: false };
-				let categoryLocksmithSupFormGroup: any = { isInclude: false };
-				let categorySecurityGuardSupFormGroup: any = { isInclude: false };
-				let categorySecurityAlarmInstallerSupFormGroup: any = { isInclude: false };
-				let categorySecurityAlarmMonitorFormGroup: any = { isInclude: false };
-				let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
-				let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
-
-				let restraintsAuthorizationData: any = {};
-				let dogsAuthorizationData: any = {};
-
-				let categoryArmouredCarGuardFormGroup: {
-					isInclude: boolean;
-					expiryDate: string | null;
-					attachments: File[];
-				} = {
-					isInclude: false,
-					expiryDate: null,
-					attachments: [],
-				};
-
-				const categoryFireInvestigatorFormGroup: any = { isInclude: false };
-				let categoryLocksmithFormGroup: any = { isInclude: false };
-				const categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
-				let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
-				let categorySecurityGuardFormGroup: any = { isInclude: false };
-				let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
-				const categorySecurityConsultantFormGroup: any = { isInclude: false };
-
-				resp.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
-					switch (category) {
-						case WorkerCategoryTypeCode.BodyArmourSales:
-							categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-							categoryClosedCircuitTelevisionInstallerFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
-							categoryElectronicLockingDeviceInstallerFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
-							categoryLocksmithSupFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
-							categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
-							categorySecurityAlarmInstallerSupFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmMonitor:
-							categorySecurityAlarmMonitorFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmResponse:
-							categorySecurityAlarmResponseFormGroup = { isInclude: true, checkbox: true };
-							break;
-						case WorkerCategoryTypeCode.SecurityAlarmSales:
-							categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
-							break;
-					}
-				});
-
-				const policeBackgroundDataAttachments: Array<File> = [];
-				const fingerprintProofDataAttachments: Array<File> = [];
-				const mentalHealthConditionsDataAttachments: Array<File> = [];
-				const citizenshipDataAttachments: Array<File> = [];
-
-				let citizenshipData: {
-					isCanadianCitizen: BooleanTypeCode | null;
-					canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
-					notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
-					expiryDate: string | null;
-					attachments: File[];
-				} = {
-					isCanadianCitizen: null,
-					canadianCitizenProofTypeCode: null,
-					notCanadianCitizenProofTypeCode: null,
-					expiryDate: null,
-					attachments: [],
-				};
-				const additionalGovIdAttachments: Array<File> = [];
-				let additionalGovIdData: {
-					governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
-					expiryDate: string | null;
-					attachments: File[];
-				} = {
-					governmentIssuedPhotoTypeCode: null,
-					expiryDate: null,
-					attachments: [],
-				};
-				const photographOfYourselfAttachments: Array<File> = [];
-
-				const attachments1FireInvestigator: Array<File> = [];
-				const attachments2FireInvestigator: Array<File> = [];
-				const attachmentsLocksmith: Array<File> = [];
-				const attachments1PrivateInvestigator: Array<File> = [];
-				const attachments2PrivateInvestigator: Array<File> = [];
-				const attachments1PrivateInvestigatorUnderSupervision: Array<File> = [];
-				const attachmentsSecurityGuard: Array<File> = [];
-				const attachmentsDogs: Array<File> = [];
-				const attachmentsRestraints: Array<File> = [];
-				const attachmentsSecurityAlarmInstaller: Array<File> = [];
-				const attachments1SecurityConsultant: Array<File> = [];
-				const attachments2SecurityConsultant: Array<File> = [];
-				const attachmentsArmouredCarGuard: Array<File> = [];
-
-				resp.documentInfos?.forEach((doc: Document) => {
-					switch (doc.licenceDocumentTypeCode) {
-						case LicenceDocumentTypeCode.BcServicesCard:
-						case LicenceDocumentTypeCode.CanadianFirearmsLicence:
-						case LicenceDocumentTypeCode.CertificateOfIndianStatus:
-						case LicenceDocumentTypeCode.DriversLicence:
-						case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
-							// Additional Government ID: GovernmentIssuedPhotoIdTypes
-
-							const aFile = this.utilService.dummyFile(doc);
-							additionalGovIdAttachments.push(aFile);
-
-							additionalGovIdData = {
-								governmentIssuedPhotoTypeCode: doc.licenceDocumentTypeCode,
-								expiryDate: doc.expiryDate ?? null,
-								attachments: additionalGovIdAttachments,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.BirthCertificate:
-						case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
-						case LicenceDocumentTypeCode.CanadianPassport:
-						case LicenceDocumentTypeCode.CanadianCitizenship:
-						case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument:
-						case LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus:
-						case LicenceDocumentTypeCode.PermanentResidentCard:
-						case LicenceDocumentTypeCode.RecordOfLandingDocument:
-						case LicenceDocumentTypeCode.StudyPermit:
-						case LicenceDocumentTypeCode.WorkPermit: {
-							// Is Canadian:  ProofOfCanadianCitizenshipTypes
-							// Is Not Canadian: ProofOfAbilityToWorkInCanadaTypes
-
-							const aFile = this.utilService.dummyFile(doc);
-							citizenshipDataAttachments.push(aFile);
-
-							citizenshipData = {
-								isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
-								canadianCitizenProofTypeCode: resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null,
-								notCanadianCitizenProofTypeCode: resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode,
-								expiryDate: doc.expiryDate ?? null,
-								attachments: citizenshipDataAttachments,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
-							const armouredCarGuardExpiryDate = this.formatDatePipe.transform(
-								doc.expiryDate,
-								SPD_CONSTANTS.date.backendDateFormat
-							);
-
-							const aFile = this.utilService.dummyFile(doc);
-							attachmentsArmouredCarGuard.push(aFile);
-
-							categoryArmouredCarGuardFormGroup = {
-								isInclude: true,
-								expiryDate: armouredCarGuardExpiryDate,
-								attachments: attachmentsArmouredCarGuard,
-							};
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments1FireInvestigator.push(aFile);
-
-							categoryFireInvestigatorFormGroup.isInclude = true;
-							categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments = attachments1FireInvestigator;
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments2FireInvestigator.push(aFile);
-
-							categoryFireInvestigatorFormGroup.isInclude = true;
-							categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments = attachments2FireInvestigator;
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification:
-						case LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship:
-						case LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachmentsLocksmith.push(aFile);
-
-							categoryLocksmithFormGroup = {
-								isInclude: true,
-								requirementCode: doc.licenceDocumentTypeCode,
-								attachments: attachmentsLocksmith,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses:
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining:
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments1PrivateInvestigator.push(aFile);
-
-							categoryPrivateInvestigatorFormGroup.isInclude = true;
-							categoryPrivateInvestigatorFormGroup.requirementCode = doc.licenceDocumentTypeCode;
-							categoryPrivateInvestigatorFormGroup.attachments = attachments1PrivateInvestigator;
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse:
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments2PrivateInvestigator.push(aFile);
-
-							categoryPrivateInvestigatorFormGroup.isInclude = true;
-							categoryPrivateInvestigatorFormGroup.trainingCode = doc.licenceDocumentTypeCode;
-							categoryPrivateInvestigatorFormGroup.trainingAttachments = attachments2PrivateInvestigator;
-							break;
-						}
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion:
-						case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments1PrivateInvestigatorUnderSupervision.push(aFile);
-
-							categoryPrivateInvestigatorSupFormGroup = {
-								isInclude: true,
-								requirementCode: doc.licenceDocumentTypeCode,
-								attachments: attachments1PrivateInvestigatorUnderSupervision,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate:
-						case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachmentsSecurityAlarmInstaller.push(aFile);
-
-							categorySecurityAlarmInstallerFormGroup = {
-								isInclude: true,
-								requirementCode: doc.licenceDocumentTypeCode,
-								attachments: attachmentsSecurityAlarmInstaller,
-							};
-							break;
-						}
-						case LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters:
-						case LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments2SecurityConsultant.push(aFile);
-
-							categorySecurityConsultantFormGroup.isInclude = true;
-							categorySecurityConsultantFormGroup.requirementCode = doc.licenceDocumentTypeCode;
-							categorySecurityConsultantFormGroup.attachments = attachments2SecurityConsultant;
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategorySecurityConsultantResume: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachments1SecurityConsultant.push(aFile);
-
-							categorySecurityConsultantFormGroup.isInclude = true;
-							categorySecurityConsultantFormGroup.resumeAttachments = attachments1SecurityConsultant;
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate:
-						case LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining:
-						case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachmentsSecurityGuard.push(aFile);
-
-							categorySecurityGuardFormGroup = {
-								isInclude: true,
-								requirementCode: doc.licenceDocumentTypeCode,
-								attachments: attachmentsSecurityGuard,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachmentsDogs.push(aFile);
-
-							dogsAuthorizationData = {
-								useDogs: BooleanTypeCode.Yes,
-								dogsPurposeFormGroup: {
-									isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
-									isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
-									isDogsPurposeProtection: resp.isDogsPurposeProtection,
-								},
-								attachments: attachmentsDogs,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate:
-						case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter:
-						case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent: {
-							const aFile = this.utilService.dummyFile(doc);
-							attachmentsRestraints.push(aFile);
-
-							restraintsAuthorizationData = {
-								carryAndUseRestraints: BooleanTypeCode.Yes,
-								carryAndUseRestraintsDocument: doc.licenceDocumentTypeCode,
-								attachments: attachmentsRestraints,
-							};
-
-							break;
-						}
-						case LicenceDocumentTypeCode.MentalHealthCondition: {
-							const aFile = this.utilService.dummyFile(doc);
-							mentalHealthConditionsDataAttachments.push(aFile);
-							break;
-						}
-						case LicenceDocumentTypeCode.PhotoOfYourself: {
-							const aFile = this.utilService.dummyFile(doc);
-							photographOfYourselfAttachments.push(aFile);
-							break;
-						}
-						case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-							const aFile = this.utilService.dummyFile(doc);
-							policeBackgroundDataAttachments.push(aFile);
-							break;
-						}
-						case LicenceDocumentTypeCode.ProofOfFingerprint: {
-							const aFile = this.utilService.dummyFile(doc);
-							fingerprintProofDataAttachments.push(aFile);
-							break;
-						}
-					}
-				});
-
-				const policeBackgroundData = {
-					isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
-					policeOfficerRoleCode: resp.policeOfficerRoleCode,
-					otherOfficerRole: resp.otherOfficerRole,
-					attachments: policeBackgroundDataAttachments,
-				};
-
-				const fingerprintProofData = {
-					attachments: fingerprintProofDataAttachments,
-				};
-
-				const mentalHealthConditionsData = {
-					isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
-					attachments: mentalHealthConditionsDataAttachments,
-				};
-
-				const photographOfYourselfData = {
-					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
-					attachments: photographOfYourselfAttachments,
-				};
-
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: resp.licenceAppId,
-						caseNumber: resp.caseNumber,
-						originalBusinessTypeCode: soleProprietorData.businessTypeCode,
-						applicationPortalStatus: resp.applicationPortalStatus,
-						workerLicenceTypeData,
-						applicationTypeData,
-						soleProprietorData,
-						expiredLicenceData,
-						licenceTermData,
-						policeBackgroundData,
-						bcDriversLicenceData,
-						mentalHealthConditionsData,
-						fingerprintProofData,
-						criminalHistoryData,
-						aliasesData,
-						personalInformationData,
-						characteristicsData,
-						citizenshipData,
-						additionalGovIdData,
-						photographOfYourselfData,
-						contactInformationData,
-						profileConfirmationData: { isProfileUpToDate: true },
-						residentialAddressData: { ...residentialAddressData },
-						mailingAddressData: { ...mailingAddressData },
-						categoryArmouredCarGuardFormGroup,
-						categoryBodyArmourSalesFormGroup,
-						categoryClosedCircuitTelevisionInstallerFormGroup,
-						categoryElectronicLockingDeviceInstallerFormGroup,
-						categoryFireInvestigatorFormGroup,
-						categoryLocksmithFormGroup,
-						categoryLocksmithSupFormGroup,
-						categoryPrivateInvestigatorFormGroup,
-						categoryPrivateInvestigatorSupFormGroup,
-						categorySecurityGuardFormGroup,
-						categorySecurityGuardSupFormGroup,
-						categorySecurityAlarmInstallerFormGroup,
-						categorySecurityAlarmInstallerSupFormGroup,
-						categorySecurityAlarmMonitorFormGroup,
-						categorySecurityAlarmResponseFormGroup,
-						categorySecurityAlarmSalesFormGroup,
-						categorySecurityConsultantFormGroup,
-						restraintsAuthorizationData,
-						dogsAuthorizationData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
-				resp.aliases?.forEach((alias: Alias) => {
-					aliasesArray.push(
-						new FormGroup({
-							givenName: new FormControl(alias.givenName),
-							middleName1: new FormControl(alias.middleName1),
-							middleName2: new FormControl(alias.middleName2),
-							surname: new FormControl(alias.surname, [FormControlValidators.required]),
-						})
-					);
-				});
-
-				this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
-
-				console.debug('[loadSpecificLicence] licenceModelFormGroup', this.licenceModelFormGroup.value);
-			}),
-			take(1)
+				this.loadSpecificLicenceIntoModel(resp);
+			})
 		);
+	}
+
+	private loadSpecificLicenceIntoModel(resp: WorkerLicenceResponse): void {
+		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+
+		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
+		const soleProprietorData = {
+			isSoleProprietor: resp.businessTypeCode === BusinessTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
+			businessTypeCode: resp.businessTypeCode,
+		};
+
+		const expiredLicenceData = {
+			hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+			expiredLicenceNumber: resp.expiredLicenceNumber,
+			expiryDate: resp.expiryDate,
+			expiredLicenceId: resp.expiredLicenceId,
+		};
+
+		const licenceTermData = {
+			licenceTermCode: resp.licenceTermCode,
+		};
+
+		const bcDriversLicenceData = {
+			hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
+			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
+		};
+
+		const criminalHistoryData = {
+			hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
+		};
+
+		const aliasesData = {
+			previousNameFlag: resp.hasPreviousName ? this.booleanToBooleanType(resp.hasPreviousName) : BooleanTypeCode.No,
+		};
+
+		let personalInformationData = {};
+		if (bcscUserWhoamiProfile) {
+			personalInformationData = {
+				givenName: bcscUserWhoamiProfile.firstName,
+				middleName1: bcscUserWhoamiProfile.middleName1,
+				middleName2: bcscUserWhoamiProfile.middleName2,
+				surname: bcscUserWhoamiProfile.lastName,
+				genderCode: bcscUserWhoamiProfile.gender,
+				dateOfBirth: bcscUserWhoamiProfile.birthDate,
+				origGivenName: bcscUserWhoamiProfile.firstName,
+				origMiddleName1: bcscUserWhoamiProfile.middleName1,
+				origMiddleName2: bcscUserWhoamiProfile.middleName2,
+				origSurname: bcscUserWhoamiProfile.lastName,
+				origGenderCode: bcscUserWhoamiProfile.gender,
+				origDateOfBirth: bcscUserWhoamiProfile.birthDate,
+			};
+		} else {
+			personalInformationData = {
+				givenName: resp.givenName,
+				middleName1: resp.middleName1,
+				middleName2: resp.middleName2,
+				surname: resp.surname,
+				genderCode: resp.genderCode,
+				dateOfBirth: resp.dateOfBirth,
+				origGivenName: resp.givenName,
+				origMiddleName1: resp.middleName1,
+				origMiddleName2: resp.middleName2,
+				origSurname: resp.surname,
+				origGenderCode: resp.genderCode,
+				origDateOfBirth: resp.dateOfBirth,
+			};
+		}
+
+		let height = resp.height ? resp.height + '' : null;
+		let heightInches = '';
+		if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
+			height = Math.trunc(resp.height / 12) + '';
+			heightInches = (resp.height % 12) + '';
+		}
+
+		const characteristicsData = {
+			hairColourCode: resp.hairColourCode,
+			eyeColourCode: resp.eyeColourCode,
+			height,
+			heightUnitCode: resp.heightUnitCode,
+			heightInches,
+			weight: resp.weight ? resp.weight + '' : null,
+			weightUnitCode: resp.weightUnitCode,
+		};
+
+		const contactInformationData = {
+			contactEmailAddress: resp.contactEmailAddress,
+			contactPhoneNumber: resp.contactPhoneNumber,
+		};
+
+		let residentialAddressData = {};
+		const isMailingTheSameAsResidential = resp.isMailingTheSameAsResidential ?? false;
+		if (bcscUserWhoamiProfile) {
+			residentialAddressData = {
+				addressSelected: true,
+				isMailingTheSameAsResidential: isMailingTheSameAsResidential,
+				addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+				addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+				city: bcscUserWhoamiProfile.residentialAddress?.city,
+				country: bcscUserWhoamiProfile.residentialAddress?.country,
+				postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+				province: bcscUserWhoamiProfile.residentialAddress?.province,
+			};
+		} else {
+			residentialAddressData = {
+				...resp.residentialAddressData,
+				isMailingTheSameAsResidential: isMailingTheSameAsResidential,
+				addressSelected: !!resp.residentialAddressData?.addressLine1,
+			};
+		}
+
+		let mailingAddressData = {};
+		// if (!isMailingTheSameAsResidential) {
+		mailingAddressData = {
+			...resp.mailingAddressData,
+			addressSelected: !!resp.mailingAddressData?.addressLine1,
+		};
+		// }
+
+		let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
+		let categoryClosedCircuitTelevisionInstallerFormGroup: any = { isInclude: false };
+		let categoryElectronicLockingDeviceInstallerFormGroup: any = { isInclude: false };
+		let categoryLocksmithSupFormGroup: any = { isInclude: false };
+		let categorySecurityGuardSupFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmInstallerSupFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmMonitorFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
+
+		let restraintsAuthorizationData: any = {};
+		let dogsAuthorizationData: any = {};
+
+		let categoryArmouredCarGuardFormGroup: {
+			isInclude: boolean;
+			expiryDate: string | null;
+			attachments: File[];
+		} = {
+			isInclude: false,
+			expiryDate: null,
+			attachments: [],
+		};
+
+		const categoryFireInvestigatorFormGroup: any = { isInclude: false };
+		let categoryLocksmithFormGroup: any = { isInclude: false };
+		const categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
+		let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
+		let categorySecurityGuardFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
+		const categorySecurityConsultantFormGroup: any = { isInclude: false };
+
+		resp.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
+			switch (category) {
+				case WorkerCategoryTypeCode.BodyArmourSales:
+					categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+					categoryClosedCircuitTelevisionInstallerFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+					categoryElectronicLockingDeviceInstallerFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
+					categoryLocksmithSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
+					categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+					categorySecurityAlarmInstallerSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+					categorySecurityAlarmMonitorFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmResponse:
+					categorySecurityAlarmResponseFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmSales:
+					categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
+					break;
+			}
+		});
+
+		const policeBackgroundDataAttachments: Array<File> = [];
+		const fingerprintProofDataAttachments: Array<File> = [];
+		const mentalHealthConditionsDataAttachments: Array<File> = [];
+		const citizenshipDataAttachments: Array<File> = [];
+
+		let citizenshipData: {
+			isCanadianCitizen: BooleanTypeCode | null;
+			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			expiryDate: string | null;
+			attachments: File[];
+		} = {
+			isCanadianCitizen: null,
+			canadianCitizenProofTypeCode: null,
+			notCanadianCitizenProofTypeCode: null,
+			expiryDate: null,
+			attachments: [],
+		};
+		const additionalGovIdAttachments: Array<File> = [];
+		let additionalGovIdData: {
+			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
+			expiryDate: string | null;
+			attachments: File[];
+		} = {
+			governmentIssuedPhotoTypeCode: null,
+			expiryDate: null,
+			attachments: [],
+		};
+		const photographOfYourselfAttachments: Array<File> = [];
+
+		const attachments1FireInvestigator: Array<File> = [];
+		const attachments2FireInvestigator: Array<File> = [];
+		const attachmentsLocksmith: Array<File> = [];
+		const attachments1PrivateInvestigator: Array<File> = [];
+		const attachments2PrivateInvestigator: Array<File> = [];
+		const attachments1PrivateInvestigatorUnderSupervision: Array<File> = [];
+		const attachmentsSecurityGuard: Array<File> = [];
+		const attachmentsDogs: Array<File> = [];
+		const attachmentsRestraints: Array<File> = [];
+		const attachmentsSecurityAlarmInstaller: Array<File> = [];
+		const attachments1SecurityConsultant: Array<File> = [];
+		const attachments2SecurityConsultant: Array<File> = [];
+		const attachmentsArmouredCarGuard: Array<File> = [];
+
+		resp.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.BcServicesCard:
+				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatus:
+				case LicenceDocumentTypeCode.DriversLicence:
+				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
+					// Additional Government ID: GovernmentIssuedPhotoIdTypes
+
+					const aFile = this.utilService.dummyFile(doc);
+					additionalGovIdAttachments.push(aFile);
+
+					additionalGovIdData = {
+						governmentIssuedPhotoTypeCode: doc.licenceDocumentTypeCode,
+						expiryDate: doc.expiryDate ?? null,
+						attachments: additionalGovIdAttachments,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.BirthCertificate:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
+				case LicenceDocumentTypeCode.CanadianPassport:
+				case LicenceDocumentTypeCode.CanadianCitizenship:
+				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument:
+				case LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus:
+				case LicenceDocumentTypeCode.PermanentResidentCard:
+				case LicenceDocumentTypeCode.RecordOfLandingDocument:
+				case LicenceDocumentTypeCode.StudyPermit:
+				case LicenceDocumentTypeCode.WorkPermit: {
+					// Is Canadian:  ProofOfCanadianCitizenshipTypes
+					// Is Not Canadian: ProofOfAbilityToWorkInCanadaTypes
+
+					const aFile = this.utilService.dummyFile(doc);
+					citizenshipDataAttachments.push(aFile);
+
+					citizenshipData = {
+						isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
+						canadianCitizenProofTypeCode: resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null,
+						notCanadianCitizenProofTypeCode: resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode,
+						expiryDate: doc.expiryDate ?? null,
+						attachments: citizenshipDataAttachments,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate: {
+					const armouredCarGuardExpiryDate = this.formatDatePipe.transform(
+						doc.expiryDate,
+						SPD_CONSTANTS.date.backendDateFormat
+					);
+
+					const aFile = this.utilService.dummyFile(doc);
+					attachmentsArmouredCarGuard.push(aFile);
+
+					categoryArmouredCarGuardFormGroup = {
+						isInclude: true,
+						expiryDate: armouredCarGuardExpiryDate,
+						attachments: attachmentsArmouredCarGuard,
+					};
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments1FireInvestigator.push(aFile);
+
+					categoryFireInvestigatorFormGroup.isInclude = true;
+					categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments = attachments1FireInvestigator;
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments2FireInvestigator.push(aFile);
+
+					categoryFireInvestigatorFormGroup.isInclude = true;
+					categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments = attachments2FireInvestigator;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification:
+				case LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship:
+				case LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachmentsLocksmith.push(aFile);
+
+					categoryLocksmithFormGroup = {
+						isInclude: true,
+						requirementCode: doc.licenceDocumentTypeCode,
+						attachments: attachmentsLocksmith,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses:
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining:
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments1PrivateInvestigator.push(aFile);
+
+					categoryPrivateInvestigatorFormGroup.isInclude = true;
+					categoryPrivateInvestigatorFormGroup.requirementCode = doc.licenceDocumentTypeCode;
+					categoryPrivateInvestigatorFormGroup.attachments = attachments1PrivateInvestigator;
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse:
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments2PrivateInvestigator.push(aFile);
+
+					categoryPrivateInvestigatorFormGroup.isInclude = true;
+					categoryPrivateInvestigatorFormGroup.trainingCode = doc.licenceDocumentTypeCode;
+					categoryPrivateInvestigatorFormGroup.trainingAttachments = attachments2PrivateInvestigator;
+					break;
+				}
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion:
+				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments1PrivateInvestigatorUnderSupervision.push(aFile);
+
+					categoryPrivateInvestigatorSupFormGroup = {
+						isInclude: true,
+						requirementCode: doc.licenceDocumentTypeCode,
+						attachments: attachments1PrivateInvestigatorUnderSupervision,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate:
+				case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachmentsSecurityAlarmInstaller.push(aFile);
+
+					categorySecurityAlarmInstallerFormGroup = {
+						isInclude: true,
+						requirementCode: doc.licenceDocumentTypeCode,
+						attachments: attachmentsSecurityAlarmInstaller,
+					};
+					break;
+				}
+				case LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters:
+				case LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments2SecurityConsultant.push(aFile);
+
+					categorySecurityConsultantFormGroup.isInclude = true;
+					categorySecurityConsultantFormGroup.requirementCode = doc.licenceDocumentTypeCode;
+					categorySecurityConsultantFormGroup.attachments = attachments2SecurityConsultant;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategorySecurityConsultantResume: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachments1SecurityConsultant.push(aFile);
+
+					categorySecurityConsultantFormGroup.isInclude = true;
+					categorySecurityConsultantFormGroup.resumeAttachments = attachments1SecurityConsultant;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate:
+				case LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining:
+				case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachmentsSecurityGuard.push(aFile);
+
+					categorySecurityGuardFormGroup = {
+						isInclude: true,
+						requirementCode: doc.licenceDocumentTypeCode,
+						attachments: attachmentsSecurityGuard,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachmentsDogs.push(aFile);
+
+					dogsAuthorizationData = {
+						useDogs: BooleanTypeCode.Yes,
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
+							isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
+							isDogsPurposeProtection: resp.isDogsPurposeProtection,
+						},
+						attachments: attachmentsDogs,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate:
+				case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter:
+				case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent: {
+					const aFile = this.utilService.dummyFile(doc);
+					attachmentsRestraints.push(aFile);
+
+					restraintsAuthorizationData = {
+						carryAndUseRestraints: BooleanTypeCode.Yes,
+						carryAndUseRestraintsDocument: doc.licenceDocumentTypeCode,
+						attachments: attachmentsRestraints,
+					};
+
+					break;
+				}
+				case LicenceDocumentTypeCode.MentalHealthCondition: {
+					const aFile = this.utilService.dummyFile(doc);
+					mentalHealthConditionsDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PhotoOfYourself: {
+					const aFile = this.utilService.dummyFile(doc);
+					photographOfYourselfAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+					const aFile = this.utilService.dummyFile(doc);
+					policeBackgroundDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.ProofOfFingerprint: {
+					const aFile = this.utilService.dummyFile(doc);
+					fingerprintProofDataAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const policeBackgroundData = {
+			isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: resp.policeOfficerRoleCode,
+			otherOfficerRole: resp.otherOfficerRole,
+			attachments: policeBackgroundDataAttachments,
+		};
+
+		const fingerprintProofData = {
+			attachments: fingerprintProofDataAttachments,
+		};
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
+			attachments: mentalHealthConditionsDataAttachments,
+		};
+
+		const photographOfYourselfData = {
+			useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
+			attachments: photographOfYourselfAttachments,
+		};
+
+		this.licenceModelFormGroup.patchValue(
+			{
+				licenceAppId: resp.licenceAppId,
+				caseNumber: resp.caseNumber,
+				originalBusinessTypeCode: soleProprietorData.businessTypeCode,
+				applicationPortalStatus: resp.applicationPortalStatus,
+				workerLicenceTypeData,
+				applicationTypeData,
+				soleProprietorData,
+				expiredLicenceData,
+				licenceTermData,
+				policeBackgroundData,
+				bcDriversLicenceData,
+				mentalHealthConditionsData,
+				fingerprintProofData,
+				criminalHistoryData,
+				aliasesData,
+				personalInformationData,
+				characteristicsData,
+				citizenshipData,
+				additionalGovIdData,
+				photographOfYourselfData,
+				contactInformationData,
+				profileConfirmationData: { isProfileUpToDate: true },
+				residentialAddressData: { ...residentialAddressData },
+				mailingAddressData: { ...mailingAddressData },
+				categoryArmouredCarGuardFormGroup,
+				categoryBodyArmourSalesFormGroup,
+				categoryClosedCircuitTelevisionInstallerFormGroup,
+				categoryElectronicLockingDeviceInstallerFormGroup,
+				categoryFireInvestigatorFormGroup,
+				categoryLocksmithFormGroup,
+				categoryLocksmithSupFormGroup,
+				categoryPrivateInvestigatorFormGroup,
+				categoryPrivateInvestigatorSupFormGroup,
+				categorySecurityGuardFormGroup,
+				categorySecurityGuardSupFormGroup,
+				categorySecurityAlarmInstallerFormGroup,
+				categorySecurityAlarmInstallerSupFormGroup,
+				categorySecurityAlarmMonitorFormGroup,
+				categorySecurityAlarmResponseFormGroup,
+				categorySecurityAlarmSalesFormGroup,
+				categorySecurityConsultantFormGroup,
+				restraintsAuthorizationData,
+				dogsAuthorizationData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
+		resp.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
+
+		console.debug('[loadSpecificLicence] licenceModelFormGroup', this.licenceModelFormGroup.value);
 	}
 
 	/**
@@ -1251,21 +1262,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceNew(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		return this.loadSpecificLicence(licenceAppId).pipe(
+	private loadLicenceToResume(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicenceWithId(licenceAppId).pipe(
 			tap((resp: any) => {
-				console.debug('LOAD loadLicenceNew', resp);
+				console.debug('loadLicenceToResume', resp);
 			})
 		);
 	}
 
 	/**
 	 * Load an existing licence application for renewal
-	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceRenewal(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		return this.loadSpecificLicence(licenceAppId).pipe(
+	private loadLicenceRenewal(): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicence().pipe(
 			tap((_resp: WorkerLicenceResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
@@ -1384,11 +1394,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	/**
 	 * Load an existing licence application for update
-	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceUpdate(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		return this.loadSpecificLicence(licenceAppId).pipe(
+	private loadLicenceUpdate(): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicence().pipe(
 			tap((_resp: WorkerLicenceResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
@@ -1422,11 +1431,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	/**
 	 * Load an existing licence application for replacement
-	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadLicenceReplacement(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		return this.loadSpecificLicence(licenceAppId).pipe(
+	private loadLicenceReplacement(): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicence().pipe(
 			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
@@ -1522,15 +1530,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
-				switchMap((resp: string) => {
-					const keyCode = resp;
-
+				switchMap((_resp: IActionResult) => {
 					// pass in the list of document ids that were in the original
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
-						keyCode,
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
 						body,
 					});
 				})
@@ -1548,14 +1553,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		documentsToSave: Array<LicenceDocumentsToSave>,
 		body: WorkerLicenceAppAnonymousSubmitRequest
 	) {
-		let keyCode = '';
-
 		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
-				switchMap((resp: string) => {
-					keyCode = resp;
-
+				switchMap((_resp: IActionResult) => {
 					const documentsToSaveApis: Observable<string>[] = [];
 					documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
 						// Only pass new documents and get a keyCode for each of those.
@@ -1569,8 +1570,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						// should always be at least one new document
 						if (newDocumentsOnly.length > 0) {
 							documentsToSaveApis.push(
-								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
-									keyCode,
+								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
 									body: {
 										Documents: newDocumentsOnly,
 										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
@@ -1589,8 +1589,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
-						keyCode,
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
 						body,
 					});
 				})

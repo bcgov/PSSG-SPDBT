@@ -15,7 +15,7 @@ import { LicenceResponse } from '../models/licence-response';
 @Injectable({
   providedIn: 'root',
 })
-export class LicenceLookupService extends BaseService {
+export class LicenceService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -47,7 +47,7 @@ export class LicenceLookupService extends BaseService {
 
 ): Observable<StrictHttpResponse<LicenceResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, LicenceLookupService.ApiLicenceLookupLicenceNumberGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicenceLookupLicenceNumberGetPath, 'get');
     if (params) {
       rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
       rb.query('accessCode', params.accessCode, {"style":"form"});
@@ -114,7 +114,7 @@ export class LicenceLookupService extends BaseService {
 
 ): Observable<StrictHttpResponse<LicenceResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, LicenceLookupService.ApiLicenceLookupAnonymousLicenceNumberPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicenceLookupAnonymousLicenceNumberPostPath, 'post');
     if (params) {
       rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
       rb.query('accessCode', params.accessCode, {"style":"form"});
@@ -155,6 +155,66 @@ export class LicenceLookupService extends BaseService {
 
     return this.apiLicenceLookupAnonymousLicenceNumberPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiLicencesImageGet
+   */
+  static readonly ApiLicencesImageGetPath = '/api/licences/image';
+
+  /**
+   * Get licence photo by licenceId, the licenceId is put into cookie and encoded.
+   * Example: http://localhost:5114/api/licences/image.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicencesImageGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesImageGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesImageGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * Get licence photo by licenceId, the licenceId is put into cookie and encoded.
+   * Example: http://localhost:5114/api/licences/image.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicencesImageGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesImageGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiLicencesImageGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }
 

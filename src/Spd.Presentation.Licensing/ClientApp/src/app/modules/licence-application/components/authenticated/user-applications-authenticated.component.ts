@@ -622,7 +622,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	onResume(appl: WorkerLicenceAppListResponse): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.getLicenceNew(appl.licenceAppId!)
+				.getLicenceToResume(appl.licenceAppId!)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
