@@ -5,6 +5,7 @@ import {
 	ApplicationTypeCode,
 	BooleanTypeCode,
 	HeightUnitCode,
+	IActionResult,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
@@ -26,7 +27,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, LicenceLookupService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { LicenceFeeService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -102,7 +103,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		private licenceFeeService: LicenceFeeService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
-		private licenceLookupService: LicenceLookupService,
+		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
@@ -149,7 +150,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		accessCode: string,
 		recaptchaCode: string
 	): Observable<LicenceResponse> {
-		return this.licenceLookupService
+		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
 	}
@@ -268,19 +269,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				const employerInformationData = {
-					businessName: 'aaa',
-					supervisorName: 'ccc',
-					supervisorEmailAddress: 'bbb@bbb.com',
-					supervisorPhoneNumber: '5554448787',
-					addressSelected: true,
-					addressLine1: 'bbb1',
-					addressLine2: 'bbb2',
-					city: 'bbb3',
-					postalCode: 'V9A6D4',
-					province: 'bbb4',
-					country: 'bbb5',
-				};
+				// const employerInformationData = {
+				// 	businessName: 'aaa',
+				// 	supervisorName: 'ccc',
+				// 	supervisorEmailAddress: 'bbb@bbb.com',
+				// 	supervisorPhoneNumber: '5554448787',
+				// 	addressSelected: true,
+				// 	addressLine1: 'bbb1',
+				// 	addressLine2: 'bbb2',
+				// 	city: 'bbb3',
+				// 	postalCode: 'V9A6D4',
+				// 	province: 'bbb4',
+				// 	country: 'bbb5',
+				// };
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -290,7 +291,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						employerInformationData,
+						// employerInformationData,
 					},
 					{
 						emitEvent: false,
@@ -322,19 +323,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				const employerInformationData = {
-					businessName: 'aaa',
-					supervisorName: 'ccc',
-					supervisorEmailAddress: 'bbb@bbb.com',
-					supervisorPhoneNumber: '5554448787',
-					addressSelected: true,
-					addressLine1: 'bbb1',
-					addressLine2: 'bbb2',
-					city: 'bbb3',
-					postalCode: 'V9A6D4',
-					province: 'bbb4',
-					country: 'bbb5',
-				};
+				// const employerInformationData = {
+				// 	businessName: 'aaa',
+				// 	supervisorName: 'ccc',
+				// 	supervisorEmailAddress: 'bbb@bbb.com',
+				// 	supervisorPhoneNumber: '5554448787',
+				// 	addressSelected: true,
+				// 	addressLine1: 'bbb1',
+				// 	addressLine2: 'bbb2',
+				// 	city: 'bbb3',
+				// 	postalCode: 'V9A6D4',
+				// 	province: 'bbb4',
+				// 	country: 'bbb5',
+				// };
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -344,7 +345,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						employerInformationData,
+						// employerInformationData,
 					},
 					{
 						emitEvent: false,
@@ -402,12 +403,28 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
 
+		// TODO remove hardcoded
+		// const employerInformationData = {
+		// 	businessName: 'aaa',
+		// 	supervisorName: 'ccc',
+		// 	supervisorEmailAddress: 'bbb@bbb.com',
+		// 	supervisorPhoneNumber: '5554448787',
+		// 	addressSelected: true,
+		// 	addressLine1: 'bbb1',
+		// 	addressLine2: 'bbb2',
+		// 	city: 'bbb3',
+		// 	postalCode: 'V9A6D4',
+		// 	province: 'bbb4',
+		// 	country: 'bbb5',
+		// };
+
 		this.permitModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
+				// employerInformationData,
 			},
 			{
 				emitEvent: false,
@@ -759,9 +776,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.permitRationaleFormGroup.valid
 		);
 
+		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
+
+		let showEmployerInformation = false;
+		if (workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+			const bodyArmourRequirement = this.permitModelFormGroup.get(
+				'permitRequirementData.bodyArmourRequirementFormGroup'
+			)?.value;
+
+			showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+		} else {
+			const armouredVehicleRequirement = this.permitModelFormGroup.get(
+				'permitRequirementData.armouredVehicleRequirementFormGroup'
+			)?.value;
+
+			showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+		}
+
 		return (
 			this.permitRequirementFormGroup.valid &&
-			this.employerInformationFormGroup.valid &&
+			(!showEmployerInformation || (showEmployerInformation && this.employerInformationFormGroup.valid)) &&
 			this.permitRationaleFormGroup.valid
 		);
 	}
@@ -891,7 +925,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	private submitPermitAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		let keyCode = '';
 		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue());
 		console.debug('submitPermitAnonymous body', body);
 
@@ -905,14 +938,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
-				switchMap((resp: string) => {
-					keyCode = resp;
-
+				switchMap((_resp: IActionResult) => {
 					const documentsToSave: Observable<string>[] = [];
 					documentInfos.forEach((docBody: PermitDocumentsToSave) => {
 						documentsToSave.push(
-							this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeFilesPost({
-								keyCode,
+							this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
 								body: {
 									Documents: docBody.documents,
 									LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
@@ -927,8 +957,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// pass in the list of document key codes
 					body.documentKeyCodes = resps;
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousKeyCodeSubmitPost$Response({
-						keyCode,
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
 						body,
 					});
 				})

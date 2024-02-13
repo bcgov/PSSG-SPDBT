@@ -30,6 +30,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									formControlName="rationale"
 									style="min-height: 200px"
 									[errorStateMatcher]="matcher"
+									maxlength="3000"
 								></textarea>
 								<mat-error *ngIf="form.get('rationale')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
@@ -55,7 +56,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [],
 })
 export class StepPermitRationaleComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';

@@ -6,7 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 @Component({
 	selector: 'app-base-wizard',
 	template: ``,
-	styles: ``,
+	styles: [],
 })
 export class BaseWizardComponent {
 	@ViewChild('stepper') stepper!: MatStepper;

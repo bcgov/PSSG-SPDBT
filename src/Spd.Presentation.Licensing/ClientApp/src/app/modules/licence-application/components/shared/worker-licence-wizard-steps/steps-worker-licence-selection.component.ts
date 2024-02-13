@@ -12,49 +12,56 @@ import { StepWorkerLicenceExpiredComponent } from './step-worker-licence-expired
 import { StepWorkerLicenceRestraintsComponent } from './step-worker-licence-restraints.component';
 import { StepWorkerLicenceSoleProprietorComponent } from './step-worker-licence-sole-proprietor.component';
 import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.component';
+import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-terms-of-use.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step *ngIf="showTermsOfUse">
+				<app-step-worker-licence-terms-of-use
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-terms-of-use>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
 			<mat-step>
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-step-worker-licence-checklist-new></app-step-worker-licence-checklist-new>
-
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
-					<!-- <div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div> -->
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-step-worker-licence-checklist-renewal></app-step-worker-licence-checklist-renewal>
-
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-step-worker-licence-checklist-update></app-step-worker-licence-checklist-update>
+				</ng-container>
 
+				<ng-container *ngIf="!isLoggedIn; else isLoggedInChecklistSteps">
+					<div class="row wizard-button-row">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
+				</ng-container>
+				<ng-template #isLoggedInChecklistSteps>
 					<div class="row wizard-button-row">
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
 					</div>
-				</ng-container>
+				</ng-template>
 			</mat-step>
 
 			<mat-step
@@ -272,13 +279,14 @@ import { StepWorkerLicenceTermComponent } from './step-worker-licence-term.compo
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
-	// If step ordering changes, crutial to update this <- look for this comment below
+	// If step ordering changes, crucial  to update this <- look for this comment below
+	readonly STEP_TERMS = 0;
 	readonly STEP_SOLE_PROPRIETOR = 1;
 	readonly STEP_LICENCE_CONFIRMATION = 2;
-	readonly STEP_LICENCE_EXPIRED = 5;
-	readonly STEP_LICENCE_CATEGORY = 6;
-	readonly STEP_DOGS = 8;
-	readonly STEP_RESTRAINTS = 9;
+	readonly STEP_LICENCE_EXPIRED = 3;
+	readonly STEP_LICENCE_CATEGORY = 4;
+	readonly STEP_DOGS = 5;
+	readonly STEP_RESTRAINTS = 6;
 	readonly STEP_LICENCE_TERM = 7;
 
 	private authenticationSubscription!: Subscription;
@@ -288,6 +296,9 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
+
+	@ViewChild(StepWorkerLicenceTermsOfUseComponent)
+	termsOfUseComponent!: StepWorkerLicenceTermsOfUseComponent;
 
 	@ViewChild(StepWorkerLicenceSoleProprietorComponent)
 	soleProprietorComponent!: StepWorkerLicenceSoleProprietorComponent;
@@ -351,7 +362,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	override onGoToNextStep() {
 		console.debug('onGoToNextStep', this.childstepper.selectedIndex);
 
-		// If step ordering changes, crutial to update this
+		// If step ordering changes, crucial to update this
 		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 			if (
 				(this.childstepper.selectedIndex === 2 && !this.showStepDogsAndRestraints) ||
@@ -366,6 +377,8 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_TERMS:
+				return this.termsOfUseComponent.isFormValid();
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
 			case this.STEP_LICENCE_CONFIRMATION:
@@ -384,5 +397,13 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get showTermsOfUse(): boolean {
+		// authenticated: only need to agree once for New/Renewal, and not again until/unless terms change
+		// authenticated: agree everytime for Update
+		// anonymous: agree everytime for all
+		// TODO update to show Terms of Use for first time user
+		return (this.isLoggedIn && this.applicationTypeCode === ApplicationTypeCode.Update) || !this.isLoggedIn;
 	}
 }

@@ -8,7 +8,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
-	ProofOfAbilityToWorkInCanadaTypes,
+	PermitProofOfCitizenshipTypes,
+	PermitProofOfResidenceStatusTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -71,6 +72,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 									</mat-form-field>
 								</div>
 								<div class="col-lg-5 col-md-12">
+									<!-- TODO *ngIf="showIfPassport" -->
 									<mat-form-field>
 										<mat-label>Document Expiry Date</mat-label>
 										<input
@@ -114,7 +116,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 												<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
 													<mat-option
 														class="proof-option"
-														*ngFor="let item of proofOfAbilityToWorkInCanadaTypes"
+														*ngFor="let item of proofOfResidenceStatusTypes"
 														[value]="item.code"
 													>
 														{{ item.desc }}
@@ -132,7 +134,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 												<mat-select formControlName="proofOfCitizenshipCode" [errorStateMatcher]="matcher">
 													<mat-option
 														class="proof-option"
-														*ngFor="let item of proofOfAbilityToWorkInCanadaTypes"
+														*ngFor="let item of proofOfCitizenshipTypes"
 														[value]="item.code"
 													>
 														{{ item.desc }}
@@ -211,7 +213,8 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 })
 export class StepPermitCitizenshipComponent implements LicenceChildStepperStepComponent {
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
-	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;
+	proofOfResidenceStatusTypes = PermitProofOfResidenceStatusTypes;
+	proofOfCitizenshipTypes = PermitProofOfCitizenshipTypes;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
