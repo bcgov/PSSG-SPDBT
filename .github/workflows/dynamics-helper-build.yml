@@ -9,6 +9,8 @@ on:
       - src/**
       - "!src/Spd.Presentation.Licensing/**"
       - "!src/Spd.Presentation.Screening/**"
+      - "!src/Spd.Manager.Licence/**"
+      - "!src/Spd.Manager.Screening/**"
       - .github/workflows/dynamics-helper-build.yml
       - .github/workflows/docker-build-template.yml
 
@@ -17,6 +19,8 @@ on:
       - src/**
       - "!src/Spd.Presentation.Licensing/**"
       - "!src/Spd.Presentation.Screening/**"
+      - "!src/Spd.Manager.Licence/**"
+      - "!src/Spd.Manager.Screening/**"
       - .github/workflows/dynamics-helper-build.yml
       - .github/workflows/docker-build-template.yml
 
