@@ -202,7 +202,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns>Guid: keyCode</returns>
         [Route("api/worker-licence-applications/anonymous/keyCode")]
         [HttpPost]
-        public async Task GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
+        public async Task<IActionResult> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
         {
             _logger.LogInformation("do Google recaptcha verification");
             var isValid = await _recaptchaVerificationService.VerifyAsync(recaptcha.RecaptchaCode, ct);
@@ -222,6 +222,7 @@ namespace Spd.Presentation.Licensing.Controllers
                     Secure = true,
                     Expires = DateTimeOffset.UtcNow.AddMinutes(20)
                 });
+            return Ok();
         }
 
         /// <summary>
