@@ -103,16 +103,14 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
-		const applicationTypeCode = this.applicationTypeCode.value;
-		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
 
-		const fee = this.commonApplicationService.getLicenceTermsAndFees(
+		const fees = this.commonApplicationService.getLicenceTermsAndFees(
 			workerLicenceTypeCode,
-			applicationTypeCode,
-			businessTypeCode
+			null,
+			BusinessTypeCode.None
 		);
 
-		fee?.forEach((item: LicenceFeeResponse) => {
+		fees?.forEach((item: LicenceFeeResponse) => {
 			if (item.applicationTypeCode === ApplicationTypeCode.New) {
 				this.newCost = item.amount ? item.amount : null;
 			} else if (item.applicationTypeCode === ApplicationTypeCode.Renewal) {

@@ -67,10 +67,9 @@ export class StepPermitConfirmationComponent implements OnInit {
 
 		const workerLicenceTypeCode = this.permitModelData.workerLicenceTypeData.workerLicenceTypeCode;
 		const applicationTypeCode = this.permitModelData.applicationTypeData.applicationTypeCode;
-		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
 
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, businessTypeCode)
+			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, BusinessTypeCode.None)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		this.feeAmount = fee?.amount ? fee.amount : null;

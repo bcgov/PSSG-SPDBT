@@ -83,15 +83,13 @@ export class FormGroupValidators {
 			}
 
 			let checked = 0;
-			Object.keys(
-				form.value.forEach((key: any) => {
-					const control = form.value[key];
+			Object.keys(form.value).forEach((key) => {
+				const control = form.value[key];
 
-					if (control === true) {
-						checked++;
-					}
-				})
-			);
+				if (control === true) {
+					checked++;
+				}
+			});
 
 			if (checked < minRequired) {
 				return {

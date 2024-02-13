@@ -551,7 +551,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// 		isWithin14Days: false,
 		// 	},
 		// ];
-		// TODO Handle first time login
+		// TODO Display modal for first time login
 		// this.dialog.open(FirstTimeUserModalComponent, {
 		// 	width: '800px',
 		// });

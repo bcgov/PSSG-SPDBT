@@ -75,10 +75,13 @@ namespace Spd.Presentation.Licensing.Controllers
 
                 this.Response.Cookies.Append(SessionConstants.AnonymousApplicationContext,
                     encryptedIds,
-                    new CookieOptions { HttpOnly = true, 
-                        SameSite = SameSiteMode.Strict, 
-                        Secure = true, 
-                        Expires = DateTimeOffset.UtcNow.AddDays(1) });
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        SameSite = SameSiteMode.Strict,
+                        Secure = true,
+                        Expires = DateTimeOffset.UtcNow.AddDays(1)
+                    });
             }
             return response;
         }
@@ -90,7 +93,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceNumber"></param>
         /// <param name="accessCode"></param>
         /// <returns></returns>
-        [Route("api/licences/image")]
+        [Route("api/licences/licence-photo")]
         [HttpGet]
         public async Task<FileStreamResult> GetLicencePhoto()
         {
@@ -108,7 +111,7 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 throw new ApiException(HttpStatusCode.Unauthorized, "licence id is incorrect");
             }
-            FileResponse response =  await _mediator.Send(new LicencePhotoQuery(Guid.Parse(licenceId)));
+            FileResponse response = await _mediator.Send(new LicencePhotoQuery(Guid.Parse(licenceId)));
             var content = new MemoryStream(response?.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
