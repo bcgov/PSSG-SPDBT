@@ -267,6 +267,12 @@ internal partial class ApplicationRepository : IApplicationRepository
             delegateFilters = $"spd_delegateid eq '{appFilterBy.DelegatePortalUserId}'";
         }
 
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_EMPLOYEE.ToString(), out Guid crrpEmployeeServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_VOLUNTEER.ToString(), out Guid crrpVolunteerServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.PSSO.ToString(), out Guid pssoServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.PSSO_VS.ToString(), out Guid pssoVsServiceTypeId);
+        string? serviceTypeFilters = $"_spd_servicetypeid_value eq '{crrpEmployeeServiceTypeId}' or _spd_servicetypeid_value eq '{crrpVolunteerServiceTypeId}' or _spd_servicetypeid_value eq '{pssoServiceTypeId}' or _spd_servicetypeid_value eq '{pssoVsServiceTypeId}'";
+
         //get result filter string
         string result = string.Empty;
         if (orgFilter != null)
@@ -310,6 +316,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             result += $" and {delegateFilters}";
         }
+        result += $" and ({serviceTypeFilters})";
         return result;
     }
 
