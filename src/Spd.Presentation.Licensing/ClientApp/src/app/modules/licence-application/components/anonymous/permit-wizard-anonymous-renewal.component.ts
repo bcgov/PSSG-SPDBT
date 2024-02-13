@@ -10,7 +10,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
-import { StepsPermitIdentificationComponent } from './permit-wizard-steps/steps-permit-identification.component';
+import { StepsPermitIdentificationAnonymousComponent } from './permit-wizard-steps/steps-permit-identification-anonymous.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
 
@@ -47,13 +47,13 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Identification</ng-template>
-				<app-steps-permit-identification
+				<app-steps-permit-identification-anonymous
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-identification>
+				></app-steps-permit-identification-anonymous>
 			</mat-step>
 
 			<mat-step [completed]="step4Complete">
@@ -103,8 +103,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	@ViewChild(StepsPermitPurposeComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeComponent;
 
-	@ViewChild(StepsPermitIdentificationComponent)
-	stepsPermitIdentificationComponent!: StepsPermitIdentificationComponent;
+	@ViewChild(StepsPermitIdentificationAnonymousComponent)
+	stepsPermitIdentificationComponent!: StepsPermitIdentificationAnonymousComponent;
 
 	@ViewChild(StepsPermitContactComponent)
 	stepsPermitContactComponent!: StepsPermitContactComponent;

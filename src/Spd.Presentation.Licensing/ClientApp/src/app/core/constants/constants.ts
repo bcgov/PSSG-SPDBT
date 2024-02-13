@@ -69,4 +69,11 @@ export const SPD_CONSTANTS = {
 		permitArmouredVehicleViewExemptions:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/armoured-vehicles/who-not-require-permit',
 	},
+	files: {
+		securityServicesApplicantTerms: '/assets/files/Security Services Applicant Terms of Use.pdf',
+		securityServicesApplicantUpdateTerms: '/assets/files/Security Services Applicant Update Terms of Use.pdf',
+		securityServicesBusinessApplicantTerms: '/assets/files/Security Services Business Applicant Terms of Use .pdf',
+		securityServicesBusinessApplicantUpdateTerms:
+			'/assets/files/Security Services Business Applicant Update Terms of Use.pdf',
+	},
 };

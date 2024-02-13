@@ -347,19 +347,6 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Fingerprints</div>
-											<div class="row mt-0">
-												<div class="col-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Request for Fingerprinting Form</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
-											</div>
 										</div>
 									</mat-expansion-panel>
 
@@ -560,10 +547,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 
 	get licenceFee(): number | null {
-		const businessTypeCode = BusinessTypeCode.RegisteredPartnership; // TODO which business code to use?
-
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, businessTypeCode)
+			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BusinessTypeCode.None)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		return fee?.amount ? fee.amount : null;
@@ -611,10 +596,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get hasCriminalHistory(): string {
 		return this.permitModelData.criminalHistoryData.hasCriminalHistory ?? '';
-	}
-
-	get proofOfFingerprintAttachments(): File[] {
-		return this.permitModelData.fingerprintProofData.attachments ?? [];
 	}
 
 	get isCanadianCitizen(): string {
@@ -723,6 +704,9 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 			}
 			if (armouredVehicleRequirement.isProtectionOfOthersProperty) {
 				reasonList.push(`Protection of other's property`);
+			}
+			if (armouredVehicleRequirement.isMyEmployment) {
+				reasonList.push('My employment');
 			}
 			if (armouredVehicleRequirement.isOther) {
 				reasonList.push('Other');

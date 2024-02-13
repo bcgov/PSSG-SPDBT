@@ -18,6 +18,7 @@ export { GenderCode } from './models/gender-code';
 export { GoogleRecaptcha } from './models/google-recaptcha';
 export { HairColourCode } from './models/hair-colour-code';
 export { HeightUnitCode } from './models/height-unit-code';
+export { IActionResult } from './models/i-action-result';
 export { IdentityProviderTypeCode } from './models/identity-provider-type-code';
 export { LicenceAppDocumentResponse } from './models/licence-app-document-response';
 export { LicenceDocumentTypeCode } from './models/licence-document-type-code';

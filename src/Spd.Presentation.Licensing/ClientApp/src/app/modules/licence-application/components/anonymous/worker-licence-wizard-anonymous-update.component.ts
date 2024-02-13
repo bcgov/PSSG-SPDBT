@@ -227,7 +227,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		} else {
 			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-					console.debug('[onPay] submitLicenceAnonymous', resp.body);
+					console.debug('[onSubmitStep] submitLicenceAnonymous', resp.body);
 
 					const workerLicenceCommandResponse = resp.body;
 
