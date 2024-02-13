@@ -325,7 +325,6 @@ export class CommonTermsComponent implements OnInit {
 		this.form.markAllAsTouched();
 		this.displayValidationErrors = !this.hasScrolledToBottom;
 
-		console.log(this.form.valid, this.hasScrolledToBottom);
 		return this.form.valid && this.hasScrolledToBottom;
 	}
 

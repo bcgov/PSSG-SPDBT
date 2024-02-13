@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepWorkerLicenceConsentComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent.component';
+import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent-and-declaration.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-worker-licence-summary-review-authenticated.component';
 
 @Component({
@@ -23,7 +23,7 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-wor
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-consent></app-step-worker-licence-consent>
+				<app-step-worker-licence-consent-and-declaration></app-step-worker-licence-consent-and-declaration>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -44,7 +44,7 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 
 	@ViewChild(StepWorkerLicenceSummaryReviewAuthenticatedComponent)
 	summaryReviewComponent!: StepWorkerLicenceSummaryReviewAuthenticatedComponent;
-	@ViewChild(StepWorkerLicenceConsentComponent) consentAndDeclarationComponent!: StepWorkerLicenceConsentComponent;
+	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
 	constructor() {
 		super();
