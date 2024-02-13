@@ -11,23 +11,19 @@ public interface IPermitAppManager
 
 #region anonymous user
 public record AnonymousPermitAppNewCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
-    Guid KeyCode)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
     : IRequest<PermitAppCommandResponse>;
 
 public record AnonymousPermitAppReplaceCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
-    Guid KeyCode)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
     : IRequest<PermitAppCommandResponse>;
 
 public record AnonymousPermitAppRenewCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
-    Guid KeyCode)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
     : IRequest<PermitAppCommandResponse>;
 
 public record AnonymousPermitAppUpdateCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
-    Guid KeyCode)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
     : IRequest<PermitAppCommandResponse>;
 
 public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
