@@ -63,7 +63,7 @@ public enum ServiceTypeEnum
     PE_CRC_VS,
     SecurityWorkerLicence,
     PSSO_VS,
-    SECURITY_BUSINESS_LICENCE,
+    SecurityBusinessLicence,
     ArmouredVehiclePermit,
     BodyArmourPermit,
     MDRA,
