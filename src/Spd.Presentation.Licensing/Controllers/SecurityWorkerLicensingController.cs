@@ -117,7 +117,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Submit Security Worker Licence Application
         /// </summary>
-        /// <param name="WorkerLicenceAppSubmitRequest"></param>
+        /// <param name="licenceSubmitRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/submit")]
         [Authorize(Policy = "OnlyBcsc")]
@@ -159,7 +159,6 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Get Security Worker Licence Application, anonymous one, so, we get the licenceAppId from cookies.
         /// </summary>
-        /// <param name=""></param>
         /// <returns></returns>
         [Route("api/worker-licence-application")]
         [HttpGet]
