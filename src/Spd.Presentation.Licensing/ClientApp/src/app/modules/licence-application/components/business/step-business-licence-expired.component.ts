@@ -29,5 +29,7 @@ export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperS
 		return this.form.valid;
 	}
 
-	onLinkSuccess(): void {}
+	onLinkSuccess(): void {
+		// TODO handle onLinkSuccess
+	}
 }

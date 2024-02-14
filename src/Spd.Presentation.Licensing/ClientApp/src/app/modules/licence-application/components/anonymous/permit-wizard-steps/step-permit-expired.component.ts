@@ -29,5 +29,7 @@ export class StepPermitExpiredComponent implements PermitChildStepperStepCompone
 		return this.form.valid;
 	}
 
-	onLinkSuccess(): void {}
+	onLinkSuccess(): void {
+		// TODO handle onLinkSuccess
+	}
 }
