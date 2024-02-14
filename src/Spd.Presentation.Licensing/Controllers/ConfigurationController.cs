@@ -73,7 +73,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public string? ClientId { get; set; }
         public string? ResponseType { get; set; }
         public string? Scope { get; set; }
-        public string? PostLogoutRedirectUri { get; set; }
+        public Uri? PostLogoutRedirectUri { get; set; }
     }
     public record BcscConfiguration : OidcConfiguration;
     public record RecaptchaConfiguration(string Key);
