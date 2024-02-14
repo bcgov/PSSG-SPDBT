@@ -492,14 +492,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
-		const showAdditionalGovermentIdStep = this.citizenshipFormGroup
-			? (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-					this.citizenshipFormGroup.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			  (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.No &&
-					this.citizenshipFormGroup.value.notCanadianCitizenProofTypeCode !=
-						LicenceDocumentTypeCode.PermanentResidentCard)
-			: true;
-
 		const updateNameOrGenderChange = this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ?? false;
 
 		if (this.authenticationService.isLoggedIn()) {
@@ -920,7 +912,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const citizenshipDataAttachments: Array<File> = [];
 		const governmentIssuedAttachments: Array<File> = [];
 
-		let citizenshipData: {
+		const citizenshipData: {
 			isCanadianCitizen: BooleanTypeCode | null;
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
