@@ -79,7 +79,7 @@ public enum GenderEnum
 
 public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;
-public abstract record Addr
+public record Addr
 {
     public string? AddressLine1 { get; set; }
     public string? AddressLine2 { get; set; }

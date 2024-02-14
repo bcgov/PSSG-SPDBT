@@ -187,6 +187,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
         /// the keycode will be set in the cookies
         /// </summary>
+        /// <param name="recaptcha"></param>
         /// <param name="ct"></param>
         /// <returns>Guid: keyCode</returns>
         [Route("api/worker-licence-applications/anonymous/keyCode")]
@@ -267,7 +268,6 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
             }
 
-            _logger.LogInformation("validate payload");
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
@@ -300,19 +300,6 @@ namespace Spd.Presentation.Licensing.Controllers
         }
         #endregion
 
-        private async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfoAsync(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
-        {
-            if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
-            List<LicAppFileInfo> results = new List<LicAppFileInfo>();
-            foreach (Guid docKey in docKeyCodes)
-            {
-                IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
-                if (items.Any())
-                {
-                    results.AddRange(items);
-                }
-            }
-            return results;
-        }
+
     }
 }

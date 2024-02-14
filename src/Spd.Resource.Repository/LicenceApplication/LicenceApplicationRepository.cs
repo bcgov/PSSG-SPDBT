@@ -60,7 +60,10 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        ProcessCategories(cmd.CategoryCodes, app);
+        if(cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
+        {
+            ProcessCategories(cmd.CategoryCodes, app);
+        }
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
     }

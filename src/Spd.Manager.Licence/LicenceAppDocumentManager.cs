@@ -114,6 +114,19 @@ internal partial class LicenceAppDocumentManager :
             WorkerCategoryTypeCode.LocksmithUnderSupervision,
             WorkerCategoryTypeCode.BodyArmourSales
         };
+
+    public static readonly List<LicenceDocumentTypeCode> CanadianResidencyProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.PermanentResidentCard,
+            LicenceDocumentTypeCode.RecordOfLandingDocument,
+            LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
+            LicenceDocumentTypeCode.WorkPermit,
+            LicenceDocumentTypeCode.StudyPermit,
+        };
+
+    public static readonly List<LicenceDocumentTypeCode> NonCanadiaCitizenProofCodes = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.DriversLicence,
+            LicenceDocumentTypeCode.GovernmentIssuedPhotoId
+        };
     private async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
         ////citizenship

@@ -48,6 +48,8 @@ public abstract record PersonalLicenceAppBase
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public bool? HasNewMentalHealthCondition { get; set; }
+    public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
 public record ResidentialAddress : Address;

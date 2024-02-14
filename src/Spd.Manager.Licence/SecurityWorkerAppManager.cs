@@ -19,6 +19,7 @@ using System.Net;
 
 namespace Spd.Manager.Licence;
 internal partial class SecurityWorkerAppManager :
+        LicenceAppManagerBase,
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
@@ -30,13 +31,9 @@ internal partial class SecurityWorkerAppManager :
         ISecurityWorkerAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
-    private readonly ILicenceApplicationRepository _licenceAppRepository;
-    private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
     private readonly IIdentityRepository _identityRepository;
-    private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ISecurityWorkerAppManager> _logger;
-    private readonly ILicenceFeeRepository _feeRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IContactRepository _contactRepository;
     private readonly IDistributedCache _cache;
@@ -49,19 +46,15 @@ internal partial class SecurityWorkerAppManager :
         IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
         ILogger<ISecurityWorkerAppManager> logger,
-        ILicenceFeeRepository feeRepository,
         IDistributedCache cache,
         ITaskRepository taskRepository,
-        IContactRepository contactRepository)
+        ILicenceFeeRepository feeRepository,
+        IContactRepository contactRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
     {
         _licenceRepository = licenceRepository;
-        _licenceAppRepository = licenceAppRepository;
         _tempFile = tempFile;
-        _mapper = mapper;
         _identityRepository = identityRepository;
-        _documentRepository = documentUrlRepository;
         _logger = logger;
-        _feeRepository = feeRepository;
         _cache = cache;
         _taskRepository = taskRepository;
         _contactRepository = contactRepository;
@@ -161,21 +154,8 @@ internal partial class SecurityWorkerAppManager :
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, ct);
 
-        //if payment price is 0, directly set to Submitted, or PaymentPending
-        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
-        {
-            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
-            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
-            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
-            HasValidSwl90DayLicence = false
-        }, ct);
-        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
-        else
-            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-
-        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct, false);
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
@@ -212,21 +192,8 @@ internal partial class SecurityWorkerAppManager :
             }
         }
 
-        //if payment price is 0, directly set to Submitted, or PaymentPending
-        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
-        {
-            ApplicationTypeEnum = ApplicationTypeEnum.Replacement,
-            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
-            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
-            HasValidSwl90DayLicence = false
-        }, ct);
-        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
-        else
-            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-
-        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct, false);
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     /// <summary>
@@ -292,20 +259,9 @@ internal partial class SecurityWorkerAppManager :
         bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
             originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
 
-        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
-        {
-            ApplicationTypeEnum = ApplicationTypeEnum.Renewal,
-            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
-            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
-            HasValidSwl90DayLicence = hasSwl90DayLicence
-        }, ct);
-        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
-        else
-            await _licenceAppRepository.CommitLicenceApplicationAsync(response.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
 
-        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = price.LicenceFees.FirstOrDefault()?.Amount };
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     /// <summary>
@@ -350,19 +306,7 @@ internal partial class SecurityWorkerAppManager :
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-            var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
-            {
-                ApplicationTypeEnum = ApplicationTypeEnum.Update,
-                BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
-                LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
-                WorkerLicenceTypeEnum = WorkerLicenceTypeEnum.SecurityWorkerLicence,
-                HasValidSwl90DayLicence = false
-            }, ct);
-            cost = price.LicenceFees.FirstOrDefault()?.Amount;
-            if (cost == 0)
-                await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.Submitted, ct);
-            else
-                await _licenceAppRepository.CommitLicenceApplicationAsync(createLicResponse.LicenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct, false);           
         }
         else
         {
@@ -526,42 +470,6 @@ internal partial class SecurityWorkerAppManager :
             }, ct)).TaskId;
         }
         return changes;
-    }
-
-    private async Task UploadNewDocsAsync(WorkerLicenceAppAnonymousSubmitRequest request,
-        IEnumerable<LicAppFileInfo> newFileInfos,
-        Guid? licenceAppId,
-        Guid? contactId,
-        Guid? peaceOfficerStatusChangeTaskId,
-        Guid? mentalHealthStatusChangeTaskId,
-        CancellationToken ct)
-    {
-        if (newFileInfos != null && newFileInfos.Any())
-        {
-            foreach (LicAppFileInfo licAppFile in newFileInfos)
-            {
-                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
-                {
-                    fileCmd.TaskId = peaceOfficerStatusChangeTaskId;
-                }
-                else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
-                {
-                    fileCmd.TaskId = mentalHealthStatusChangeTaskId;
-                }
-                fileCmd.ApplicantId = contactId;
-                fileCmd.ApplicationId = licenceAppId;
-                fileCmd.ExpiryDate = request?
-                        .DocumentExpiredInfos?
-                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
-                        .ExpiryDate;
-                fileCmd.TempFile = tempFile;
-                fileCmd.SubmittedByApplicantId = contactId;
-                //create bcgov_documenturl and file
-                await _documentRepository.ManageAsync(fileCmd, ct);
-            }
-        }
     }
 
     private static void ValidateFilesForNewApp(AnonymousWorkerLicenceAppNewCommand cmd)

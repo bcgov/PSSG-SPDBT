@@ -128,31 +128,32 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
             }
 
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousPermitAppNewCommand command = new(jsonRequest);
+                AnonymousPermitAppNewCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousPermitAppReplaceCommand command = new(jsonRequest);
+                AnonymousPermitAppReplaceCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousPermitAppRenewCommand command = new(jsonRequest);
+                AnonymousPermitAppRenewCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousPermitAppUpdateCommand command = new(jsonRequest);
+                AnonymousPermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 return await _mediator.Send(command, ct);
             }
             return null;

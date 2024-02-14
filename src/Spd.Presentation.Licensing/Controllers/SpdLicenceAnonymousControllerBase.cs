@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Spd.Manager.Licence;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Cache;
 using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
@@ -58,5 +60,19 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
         }
+    }
+    protected async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfoAsync(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
+    {
+        if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
+        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+        foreach (Guid docKey in docKeyCodes)
+        {
+            IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
+            if (items.Any())
+            {
+                results.AddRange(items);
+            }
+        }
+        return results;
     }
 }

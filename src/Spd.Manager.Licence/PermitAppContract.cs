@@ -11,19 +11,23 @@ public interface IPermitAppManager
 
 #region anonymous user
 public record AnonymousPermitAppNewCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record AnonymousPermitAppReplaceCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record AnonymousPermitAppRenewCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record AnonymousPermitAppUpdateCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest)
+    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
@@ -41,17 +45,28 @@ public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
     public EmployerPrimaryAddress? EmployerPrimaryAddress { get; set; }
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
-    public IEnumerable<RequirePermitReasonCode>? RequirePermitReasonCode { get; set; }
+    public IEnumerable<BodyArmourPermitReasonCode>? BodyArmourPermitReasonCodes { get; set; } //for body armour
+    public IEnumerable<ArmouredVehiclePermitReasonCode>? ArmouredVehiclePermitReasonCodes { get; set; } // for armour vehicle
 }
 
 public record PermitAppCommandResponse : LicenceAppUpsertResponse;
 
-public enum RequirePermitReasonCode
+public enum BodyArmourPermitReasonCode
 {
     PersonalProtection,
     MyEmployment,
     OutdoorRecreation,
     TravelInResponseToInternationalConflict,
+    Other
+}
+
+public enum ArmouredVehiclePermitReasonCode
+{
+    ProtectionOfPersonalProperty, //armoured vehicle
+    ProtectionOfOtherProperty, //armoured vehicle
+    ProtectionOfAnotherPerson, //armoured vehicle
+    PersonalProtection, //armoured vehicle
+    MyEmployment,//armoured vehicle
     Other
 }
 public record EmployerPrimaryAddress : Address;

@@ -91,8 +91,7 @@ public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppBase //
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
-    public bool? HasNewMentalHealthCondition { get; set; }
-    public bool? HasNewCriminalRecordCharge { get; set; }
+
     public string? CriminalChargeDescription { get; set; }
 }
 
