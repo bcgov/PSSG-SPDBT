@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -93,14 +94,15 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@Output() linkPerformed = new EventEmitter();
+	@Output() linkSuccess = new EventEmitter();
 
 	constructor(
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
@@ -193,7 +195,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			//  access code matches licence, but the WorkerLicenceType does not match
 			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.errorMessage = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
-		} else if (moment().isAfter(resp.expiryDate)) {
+		} else if (!this.utilService.getIsFutureDate(resp.expiryDate)) {
 			// access code matches licence, but the licence is expired
 			this.isExpired = true;
 			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
@@ -222,7 +224,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 				linkedLicenceAppId: resp.licenceAppId,
 				linkedExpiryDate: resp.expiryDate,
 			});
-			this.linkPerformed.emit();
+			this.linkSuccess.emit();
 
 			const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.hotToastService.success(`The ${workerLicenceTypeDesc} has been found.`);

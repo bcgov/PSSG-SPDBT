@@ -13,7 +13,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 					subtitle="Processing time will be reduced if you provide info from your past permit"
 				></app-step-title>
 
-				<app-common-expired-licence [form]="form"></app-common-expired-licence>
+				<app-common-expired-licence [form]="form" (linkSuccess)="onLinkSuccess()"></app-common-expired-licence>
 			</div>
 		</section>
 	`,
@@ -28,4 +28,6 @@ export class StepPermitExpiredComponent implements PermitChildStepperStepCompone
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
+
+	onLinkSuccess(): void {}
 }

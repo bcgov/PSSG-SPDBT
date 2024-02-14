@@ -1,12 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { HotToastService } from '@ngneat/hot-toast';
+import * as moment from 'moment';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -46,7 +49,6 @@ import { Subject } from 'rxjs';
 									formControlName="expiredLicenceNumber"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
-									(keydown.enter)="onSearchKeyDown($event)"
 									maxlength="10"
 								/>
 
@@ -67,32 +69,16 @@ import { Subject } from 'rxjs';
 								>
 							</div>
 						</div>
-						<div class="col-lg-6 col-md-12 mt-2">
-							<button mat-flat-button color="primary" class="large" aria-label="search" (click)="onSearch()">
-								<mat-icon>search</mat-icon> Search
-							</button>
-						</div>
 
-						<div class="mt-4" *ngIf="isAfterSearch">
-							<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
-								This is a valid expired {{ label }} with an expiry date of
-								{{ expiryDate.value | formatDate : constants.date.formalDateFormat }}.
-							</app-alert>
-							<app-alert type="warning" *ngIf="isFound && !isExpired">
-								The {{ label }} is still valid. Please renew it when you get your renewal notice in the mail.
-							</app-alert>
-							<app-alert type="warning" *ngIf="isFound && !isExpired">
-								Your {{ label }} is still valid, and needs to be renewed. Please exit and
-								<a
-									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing"
-									target="_blank"
-									>renew your {{ label }}</a
-								>.
-							</app-alert>
-							<app-alert type="danger" icon="error" *ngIf="!isFound">
-								This {{ label }} number does not match any existing licences.
-							</app-alert>
-						</div>
+						<app-alert type="info" icon="check_circle" *ngIf="messageInfo">
+							{{ messageInfo }}
+						</app-alert>
+						<app-alert type="warning" *ngIf="messageWarn">
+							<div [innerHTML]="messageWarn"></div>
+						</app-alert>
+						<app-alert type="danger" icon="error" *ngIf="messageError">
+							{{ messageError }}
+						</app-alert>
 					</div>
 				</div>
 			</div>
@@ -101,49 +87,43 @@ import { Subject } from 'rxjs';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonExpiredLicenceComponent implements OnInit {
+export class CommonExpiredLicenceComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	constants = SPD_CONSTANTS;
 
 	titleLabel = 'Licence';
 	label = 'licence';
 
+	messageInfo = '';
+	messageWarn = '';
+	messageError = '';
+
 	matcher = new FormErrorStateMatcher();
 	resetRecaptcha: Subject<void> = new Subject<void>();
-
-	isAfterSearch = false;
-	isFound = false;
-	isExpired = false;
 
 	@Input() form!: FormGroup;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
-	constructor(private utilService: UtilService, private licenceService: LicenceService) {}
+	@Output() validExpiredLicenceData = new EventEmitter();
 
-	ngOnInit() {
-		this.isAfterSearch = !!(this.form && this.expiryDate && this.expiryDate.value);
-		this.isFound = !!(this.form && this.expiredLicenceId && this.expiredLicenceId.value);
-		this.isExpired = this.getIsExpiredDate(this.expiryDate.value);
+	constructor(
+		private utilService: UtilService,
+		private licenceService: LicenceService,
+		private formatDatePipe: FormatDatePipe,
+		private hotToastService: HotToastService
+	) {}
 
-		// this.label = this.workerLicenceTypeCode ? WorkerLicenceTypeCode.SecurityWorkerLicence // TODO update label
-	}
+	onValidateAndSearch(): void {
+		if (this.hasExpiredLicence.value === BooleanTypeCode.No) {
+			this.validExpiredLicenceData.emit();
+			return;
+		}
 
-	onSearchKeyDown(searchEvent: any): void {
-		const searchString = searchEvent.target.value;
-		this.performSearch(searchString);
-	}
-
-	onSearch(): void {
 		this.performSearch(this.expiredLicenceNumber.value);
 	}
 
 	private performSearch(licenceNumber: string) {
 		this.form.markAllAsTouched();
-
-		// reset flags
-		this.isAfterSearch = false;
-		this.isFound = false;
-		this.isExpired = false;
 
 		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
 
@@ -155,24 +135,62 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
 			.pipe()
 			.subscribe((resp: LicenceResponse) => {
-				this.isFound = !!resp?.expiryDate;
-				if (resp?.expiryDate) {
-					this.isExpired = this.getIsExpiredDate(resp.expiryDate);
-					if (this.isExpired) {
-						this.form.patchValue({ expiredLicenceId: resp.licenceId, expiryDate: resp.expiryDate });
-					}
-				}
+				const isFound = !!(resp && resp?.expiryDate);
+				const isExpired = isFound ? !this.utilService.getIsTodayOrFutureDate(resp?.expiryDate) : false;
+				const isInRenewalPeriod = isExpired ? false : this.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
 
-				if (!this.isFound || !this.isExpired) {
-					this.resetRecaptcha.next(); // reset the recaptcha
-				}
-
-				this.isAfterSearch = true;
+				this.handleLookupResult(isFound, isExpired, isInRenewalPeriod, resp?.expiryDate);
 			});
 	}
 
-	getIsExpiredDate(expiryDate: string | null): boolean {
-		return !expiryDate ? false : !this.utilService.getIsFutureDate(expiryDate);
+	private handleLookupResult(
+		isFound: boolean,
+		isExpired: boolean,
+		isInRenewalPeriod: boolean,
+		expiryDate: string | undefined
+	): void {
+		this.messageInfo = '';
+		this.messageWarn = '';
+		this.messageError = '';
+
+		if (isFound) {
+			if (isExpired) {
+				const formattedExpiryDate = this.formatDatePipe.transform(expiryDate, SPD_CONSTANTS.date.formalDateFormat);
+				this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
+
+				const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} has been found.`;
+				this.hotToastService.success(message);
+				this.validExpiredLicenceData.emit();
+				return;
+			} else {
+				if (isInRenewalPeriod) {
+					this.messageWarn = `Your ${this.label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${this.label}</a>.`;
+				} else {
+					this.messageWarn = `This ${this.label} is still valid. Please renew it when you get your renewal notice in the mail.`;
+				}
+			}
+		} else {
+			this.messageError = `This ${this.label} number does not match any existing licences.`;
+		}
+
+		this.resetRecaptcha.next();
+	}
+
+	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
+		if (!expiryDate || !licenceTermCode) {
+			return false;
+		}
+
+		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
+
+		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
+		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
+		let renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
+		if (licenceTermCode === LicenceTermCode.NinetyDays) {
+			renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDaysNinetyDayTerm;
+		}
+
+		return daysBetween > renewPeriodDays ? false : true;
 	}
 
 	get hasExpiredLicence(): FormControl {
