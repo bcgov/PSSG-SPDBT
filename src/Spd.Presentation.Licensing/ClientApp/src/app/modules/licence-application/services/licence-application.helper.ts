@@ -54,8 +54,8 @@ export abstract class LicenceApplicationHelper {
 	});
 
 	accessCodeFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumber: new FormControl('OPENTEST1', [FormControlValidators.required]), // TODO removed hard-coded
-		accessCode: new FormControl('6H0GXD0JZK', [FormControlValidators.required]), // TODO removed hard-coded
+		licenceNumber: new FormControl('', [FormControlValidators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceAppId: new FormControl(null),
 		linkedExpiryDate: new FormControl(null),
@@ -113,9 +113,16 @@ export abstract class LicenceApplicationHelper {
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
+			captchaFormGroup: new FormGroup({
+				token: new FormControl(''),
+			}),
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'captchaFormGroup.token',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes

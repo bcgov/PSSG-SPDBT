@@ -42,8 +42,8 @@ export abstract class PermitApplicationHelper {
 	});
 
 	accessCodeFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumber: new FormControl('OPENTEST1', [FormControlValidators.required]), // TODO removed hard-coded
-		accessCode: new FormControl('6H0GXD0JZK', [FormControlValidators.required]), // TODO removed hard-coded
+		licenceNumber: new FormControl('', [FormControlValidators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceAppId: new FormControl(null),
 		linkedExpiryDate: new FormControl(null),
@@ -86,6 +86,9 @@ export abstract class PermitApplicationHelper {
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
+			captchaFormGroup: new FormGroup({
+				token: new FormControl('', FormControlValidators.required),
+			}),
 		},
 		{
 			validators: [

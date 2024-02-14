@@ -24,6 +24,7 @@ import { Subject, take, tap } from 'rxjs';
 								<mat-label>Current {{ licenceNumberName }} Number</mat-label>
 								<input
 									matInput
+									type="search"
 									formControlName="licenceNumber"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
@@ -37,6 +38,7 @@ import { Subject, take, tap } from 'rxjs';
 								<mat-label>Access Code</mat-label>
 								<input
 									matInput
+									type="search"
 									formControlName="accessCode"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"

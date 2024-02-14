@@ -7,7 +7,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { EMPTY, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-common-expired-licence',
@@ -36,8 +36,8 @@ import { EMPTY, Observable } from 'rxjs';
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-					<div class="row mt-2">
-						<div class="col-lg-8 col-md-12 col-sm-12">
+					<div class="row">
+						<div class="col-lg-6 col-md-12 mt-2">
 							<mat-form-field>
 								<mat-label>Expired {{ titleLabel }} Number</mat-label>
 								<input
@@ -45,24 +45,35 @@ import { EMPTY, Observable } from 'rxjs';
 									type="search"
 									formControlName="expiredLicenceNumber"
 									oninput="this.value = this.value.toUpperCase()"
-									maxlength="20"
 									[errorStateMatcher]="matcher"
 									(keydown.enter)="onSearchKeyDown($event)"
+									maxlength="10"
 								/>
-								<button
-									mat-button
-									matSuffix
-									mat-flat-button
-									aria-label="search"
-									(click)="onSearch()"
-									class="search-icon-button"
-								>
-									<mat-icon>search</mat-icon>
-								</button>
+
 								<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-						<ng-container *ngIf="isAfterSearch">
+						<div class="col-lg-6 col-md-12 mt-2">
+							<div formGroupName="captchaFormGroup" class="mb-3">
+								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+										captchaFormGroup.get('token')?.invalid &&
+										captchaFormGroup.get('token')?.hasError('required')
+									"
+									>This is required</mat-error
+								>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-12 mt-2">
+							<button mat-flat-button color="primary" class="large" aria-label="search" (click)="onSearch()">
+								<mat-icon>search</mat-icon> Search
+							</button>
+						</div>
+
+						<div class="mt-4" *ngIf="isAfterSearch">
 							<app-alert type="info" icon="check_circle" *ngIf="isFound && isExpired">
 								This is a valid expired {{ label }} with an expiry date of
 								{{ expiryDate.value | formatDate : constants.date.formalDateFormat }}.
@@ -81,7 +92,7 @@ import { EMPTY, Observable } from 'rxjs';
 							<app-alert type="danger" icon="error" *ngIf="!isFound">
 								This {{ label }} number does not match any existing licences.
 							</app-alert>
-						</ng-container>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -98,6 +109,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	label = 'licence';
 
 	matcher = new FormErrorStateMatcher();
+	resetRecaptcha: Subject<void> = new Subject<void>();
 
 	isAfterSearch = false;
 	isFound = false;
@@ -111,19 +123,9 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	ngOnInit() {
 		this.isAfterSearch = !!(this.form && this.expiryDate && this.expiryDate.value);
 		this.isFound = !!(this.form && this.expiredLicenceId && this.expiredLicenceId.value);
-		this.isExpired = this.isExpiredDate;
+		this.isExpired = this.getIsExpiredDate(this.expiryDate.value);
 
 		// this.label = this.workerLicenceTypeCode ? WorkerLicenceTypeCode.SecurityWorkerLicence // TODO update label
-	}
-
-	public find(licenceNumber: string): Observable<LicenceResponse> {
-		if (!licenceNumber || licenceNumber.trim().length == 0) return EMPTY;
-
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({
-				licenceNumber,
-			})
-			.pipe();
 	}
 
 	onSearchKeyDown(searchEvent: any): void {
@@ -136,52 +138,56 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	}
 
 	private performSearch(licenceNumber: string) {
+		this.form.markAllAsTouched();
+
+		// reset flags
 		this.isAfterSearch = false;
 		this.isFound = false;
 		this.isExpired = false;
 
 		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
 
-		if (!licenceNumber || licenceNumber.trim().length == 0) return;
+		const recaptchaCode = this.captchaFormGroup.get('token')?.value;
+
+		if (!licenceNumber || licenceNumber.trim().length == 0 || !recaptchaCode) return;
 
 		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({
-				licenceNumber,
-			})
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
 			.pipe()
 			.subscribe((resp: LicenceResponse) => {
 				this.isFound = !!resp?.expiryDate;
 				if (resp?.expiryDate) {
-					this.isExpired = !this.utilService.getIsFutureDate(resp.expiryDate);
+					this.isExpired = this.getIsExpiredDate(resp.expiryDate);
 					if (this.isExpired) {
 						this.form.patchValue({ expiredLicenceId: resp.licenceId, expiryDate: resp.expiryDate });
 					}
 				}
+
+				if (!this.isFound || !this.isExpired) {
+					this.resetRecaptcha.next(); // reset the recaptcha
+				}
+
 				this.isAfterSearch = true;
 			});
 	}
 
-	get isExpiredDate(): boolean {
-		if (!this.expiryDate) {
-			return false;
-		}
-
-		return !this.utilService.getIsFutureDate(this.expiryDate.value);
+	getIsExpiredDate(expiryDate: string | null): boolean {
+		return !expiryDate ? false : !this.utilService.getIsFutureDate(expiryDate);
 	}
 
 	get hasExpiredLicence(): FormControl {
 		return this.form.get('hasExpiredLicence') as FormControl;
 	}
-
 	get expiredLicenceNumber(): FormControl {
 		return this.form.get('expiredLicenceNumber') as FormControl;
 	}
-
 	get expiredLicenceId(): FormControl {
 		return this.form.get('expiredLicenceId') as FormControl;
 	}
-
 	get expiryDate(): FormControl {
 		return this.form.get('expiryDate') as FormControl;
+	}
+	get captchaFormGroup(): FormGroup {
+		return this.form.get('captchaFormGroup') as FormGroup;
 	}
 }

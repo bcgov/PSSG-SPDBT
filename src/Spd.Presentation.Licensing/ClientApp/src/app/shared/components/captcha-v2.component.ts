@@ -8,17 +8,13 @@ import { ConfigService } from 'src/app/core/services/config.service';
 	selector: 'app-captcha-v2',
 	template: `
 		<div [formGroup]="captchaFormGroup">
-			<div class="row">
-				<div class="col-sm-12">
-					<re-captcha
-						formControlName="token"
-						[siteKey]="siteKey"
-						(resolved)="resolved($event)"
-						(error)="errored($event)"
-						required
-					></re-captcha>
-				</div>
-			</div>
+			<re-captcha
+				formControlName="token"
+				[siteKey]="siteKey"
+				(resolved)="resolved($event)"
+				(error)="errored($event)"
+				required
+			></re-captcha>
 		</div>
 	`,
 	styles: [],
