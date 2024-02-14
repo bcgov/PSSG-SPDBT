@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, BooleanTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepWorkerLicenceAdditionalGovIdComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-additional-gov-id.component';
 import { StepWorkerLicenceAliasesComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-aliases.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
@@ -98,39 +97,6 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_CITIZENSHIP)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showAdditionalGovermentIdStep && showCitizenshipStep">
-				<app-step-worker-licence-additional-gov-id
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-additional-gov-id>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_ADDITIONAL_GOV_ID)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_ADDITIONAL_GOV_ID)"
 						>
 							Next: Review
 						</button>
@@ -359,14 +325,13 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	readonly STEP_PERSONAL_INFORMATION = 0;
 	readonly STEP_ALIASES = 1;
 	readonly STEP_CITIZENSHIP = 2;
-	readonly STEP_ADDITIONAL_GOV_ID = 3;
-	readonly STEP_BC_DRIVERS_LICENCE = 4;
-	readonly STEP_HEIGHT_AND_WEIGHT = 5;
-	readonly STEP_PHOTO = 6;
-	readonly STEP_RESIDENTIAL_ADDRESS = 7;
-	readonly STEP_MAILING_ADDRESS = 8;
-	readonly STEP_CONTACT_INFORMATION = 9;
-	readonly STEP_REPRINT = 10;
+	readonly STEP_BC_DRIVERS_LICENCE = 3;
+	readonly STEP_HEIGHT_AND_WEIGHT = 4;
+	readonly STEP_PHOTO = 5;
+	readonly STEP_RESIDENTIAL_ADDRESS = 6;
+	readonly STEP_MAILING_ADDRESS = 7;
+	readonly STEP_CONTACT_INFORMATION = 8;
+	readonly STEP_REPRINT = 9;
 
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -379,8 +344,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	personalInformationComponent!: StepWorkerLicencePersonalInformationAnonymousComponent;
 	@ViewChild(StepWorkerLicenceAliasesComponent) aliasesComponent!: StepWorkerLicenceAliasesComponent;
 	@ViewChild(StepWorkerLicenceCitizenshipComponent) citizenshipComponent!: StepWorkerLicenceCitizenshipComponent;
-	@ViewChild(StepWorkerLicenceAdditionalGovIdComponent)
-	additionalGovIdComponent!: StepWorkerLicenceAdditionalGovIdComponent;
 	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent)
 	bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
 	@ViewChild(StepWorkerLicencePhysicalCharacteristicsComponent)
@@ -429,8 +392,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 				return this.aliasesComponent.isFormValid();
 			case this.STEP_CITIZENSHIP:
 				return this.citizenshipComponent.isFormValid();
-			case this.STEP_ADDITIONAL_GOV_ID:
-				return this.additionalGovIdComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:
 				return this.bcDriverLicenceComponent.isFormValid();
 			case this.STEP_HEIGHT_AND_WEIGHT:
@@ -454,15 +415,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	get showMailingAddressStep(): boolean {
 		const form = this.licenceApplicationService.residentialAddressFormGroup;
 		return !form.value.isMailingTheSameAsResidential;
-	}
-
-	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationService.citizenshipFormGroup;
-		return this.licenceApplicationService.includeAdditionalGovermentIdStepData(
-			form.value.isCanadianCitizen,
-			form.value.canadianCitizenProofTypeCode,
-			form.value.notCanadianCitizenProofTypeCode
-		);
 	}
 
 	get showCitizenshipStep(): boolean {

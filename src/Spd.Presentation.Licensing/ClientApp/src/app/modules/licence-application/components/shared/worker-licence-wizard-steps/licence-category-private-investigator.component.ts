@@ -193,7 +193,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 								trainingCode.value ===
 								privateInvestigatorTrainingCodes.CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge
 							"
-							>Upload document(s) providing proof of course completion or equivalent knowledge:</span
+							>Upload document(s) providing proof of course completion or equivalent knowledge</span
 						>
 					</div>
 					<app-file-upload

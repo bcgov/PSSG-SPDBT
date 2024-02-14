@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
+	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
@@ -621,29 +622,29 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.citizenshipData.attachments ?? [];
 	}
 
-	// get showAdditionalGovIdData(): boolean {
-	// 	return (
-	// 		(this.permitModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
-	// 			this.permitModelData.citizenshipData.canadianCitizenProofTypeCode !=
-	// 				LicenceDocumentTypeCode.CanadianPassport) ||
-	// 		(this.permitModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
-	// 			this.permitModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
-	// 				LicenceDocumentTypeCode.PermanentResidentCard)
-	// 	);
-	// }
+	get showAdditionalGovIdData(): boolean {
+		return (
+			(this.permitModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
+				this.permitModelData.citizenshipData.canadianCitizenProofTypeCode !=
+					LicenceDocumentTypeCode.CanadianPassport) ||
+			(this.permitModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
+				this.permitModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
+					LicenceDocumentTypeCode.PermanentResidentCard)
+		);
+	}
 
-	// get governmentIssuedPhotoTypeCode(): string {
-	// 	if (!this.showAdditionalGovIdData) return '';
-	// 	return this.permitModelData.additionalGovIdData.governmentIssuedPhotoTypeCode ?? '';
-	// }
-	// get governmentIssuedPhotoExpiryDate(): string {
-	// 	if (!this.showAdditionalGovIdData) return '';
-	// 	return this.permitModelData.additionalGovIdData.expiryDate ?? '';
-	// }
-	// get governmentIssuedPhotoAttachments(): File[] {
-	// 	if (!this.showAdditionalGovIdData) return [];
-	// 	return this.permitModelData.additionalGovIdData.attachments ?? [];
-	// }
+	get governmentIssuedPhotoTypeCode(): string {
+		if (!this.showAdditionalGovIdData) return '';
+		return this.permitModelData.citizenshipData.governmentIssuedPhotoTypeCode ?? '';
+	}
+	get governmentIssuedPhotoExpiryDate(): string {
+		if (!this.showAdditionalGovIdData) return '';
+		return this.permitModelData.citizenshipData.governmentIssuedExpiryDate ?? '';
+	}
+	get governmentIssuedPhotoAttachments(): File[] {
+		if (!this.showAdditionalGovIdData) return [];
+		return this.permitModelData.citizenshipData.governmentIssuedAttachments ?? [];
+	}
 
 	get hasBcDriversLicence(): string {
 		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';

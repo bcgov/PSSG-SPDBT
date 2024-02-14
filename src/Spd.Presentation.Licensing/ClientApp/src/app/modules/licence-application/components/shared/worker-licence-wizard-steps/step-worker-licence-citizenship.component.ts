@@ -1,9 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import {
 	BooleanTypeCode,
+	GovernmentIssuedPhotoIdTypes,
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
@@ -24,7 +25,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 				<form [formGroup]="form" novalidate>
 					<div class="row" *ngIf="isNotRenewal">
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<mat-radio-group aria-label="Select an option" formControlName="isCanadianCitizen">
+							<mat-radio-group aria-label="Is a canadian citizen" formControlName="isCanadianCitizen">
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-divider class="my-2"></mat-divider>
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -44,14 +45,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 					<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
 						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-divider class="mb-3 mat-divider-primary" *ngIf="isNotRenewal"></mat-divider>
-
-							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
-								<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload</div>
-							</ng-container>
-							<ng-template #notCanadianCitizenHeading>
-								<div class="text-minor-heading mb-2">Select proof of ability to work in Canada</div>
-							</ng-template>
-
 							<div class="row my-2">
 								<div class="col-lg-7 col-md-12">
 									<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
@@ -104,6 +97,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</mat-form-field>
 								</div>
 							</div>
+
 							<div
 								*ngIf="
 									(isCanadianCitizen.value === booleanTypeCodes.Yes && canadianCitizenProofTypeCode.value) ||
@@ -116,7 +110,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 										<ng-container
 											*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
 										>
-											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
+											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship</div>
 										</ng-container>
 										<ng-template #notCanadianCitizenTitle>
 											<div class="text-minor-heading mb-2">Upload a photo of your selected document type</div>
@@ -140,6 +134,66 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</div>
 								</div>
 							</div>
+
+							<div class="row mt-4" *ngIf="showAdditionalGovermentIdStep" @showHideTriggerSlideAnimation>
+								<div class="col-12">
+									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+									<div class="row my-2">
+										<div class="col-lg-6 col-md-12">
+											<mat-form-field>
+												<mat-label>Type of additional piece of government-issued photo ID</mat-label>
+												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
+													<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
+														{{ item.desc }}
+													</mat-option>
+												</mat-select>
+												<mat-hint>This ID can be from another country</mat-hint>
+												<mat-error *ngIf="form.get('governmentIssuedPhotoTypeCode')?.hasError('required')">
+													This is required
+												</mat-error>
+											</mat-form-field>
+										</div>
+										<div class="col-lg-6 col-md-12">
+											<mat-form-field>
+												<mat-label>Document Expiry Date</mat-label>
+												<input
+													matInput
+													[matDatepicker]="picker"
+													formControlName="governmentIssuedExpiryDate"
+													[errorStateMatcher]="matcher"
+												/>
+												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+												<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('required')">
+													This is required
+												</mat-error>
+											</mat-form-field>
+										</div>
+									</div>
+									<div class="row mb-2">
+										<div class="col-12">
+											<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
+											<app-file-upload
+												(fileUploaded)="onFileUploaded($event)"
+												(fileRemoved)="onFileRemoved()"
+												[maxNumberOfFiles]="10"
+												[control]="governmentIssuedAttachments"
+												[files]="governmentIssuedAttachments.value"
+											></app-file-upload>
+											<mat-error
+												class="mat-option-error"
+												*ngIf="
+													(form.get('governmentIssuedAttachments')?.dirty ||
+														form.get('governmentIssuedAttachments')?.touched) &&
+													form.get('governmentIssuedAttachments')?.invalid &&
+													form.get('governmentIssuedAttachments')?.hasError('required')
+												"
+												>This is required</mat-error
+											>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -159,6 +213,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	title = 'Are you a Canadian citizen?';
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;
+	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
@@ -211,23 +266,39 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 		return this.form.valid;
 	}
 
-	get isCanadianCitizen(): FormControl {
-		return this.form.get('isCanadianCitizen') as FormControl;
-	}
-
-	get canadianCitizenProofTypeCode(): FormControl {
-		return this.form.get('canadianCitizenProofTypeCode') as FormControl;
-	}
-
-	get notCanadianCitizenProofTypeCode(): FormControl {
-		return this.form.get('notCanadianCitizenProofTypeCode') as FormControl;
-	}
-
-	get attachments(): FormControl {
-		return this.form.get('attachments') as FormControl;
+	get showAdditionalGovermentIdStep(): boolean {
+		const canadianCitizenProofTypeCode =
+			this.canadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.CanadianPassport;
+		const notCanadianCitizenProofTypeCode =
+			this.notCanadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.PermanentResidentCard;
+		return (
+			(this.isCanadianCitizen.value == BooleanTypeCode.Yes &&
+				canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			(this.isCanadianCitizen.value == BooleanTypeCode.No &&
+				notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		);
 	}
 
 	get isNotRenewal(): boolean {
 		return this.applicationTypeCode != ApplicationTypeCode.Renewal;
+	}
+
+	get isCanadianCitizen(): FormControl {
+		return this.form.get('isCanadianCitizen') as FormControl;
+	}
+	get canadianCitizenProofTypeCode(): FormControl {
+		return this.form.get('canadianCitizenProofTypeCode') as FormControl;
+	}
+	get notCanadianCitizenProofTypeCode(): FormControl {
+		return this.form.get('notCanadianCitizenProofTypeCode') as FormControl;
+	}
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+	get governmentIssuedPhotoTypeCode(): FormControl {
+		return this.form.get('governmentIssuedPhotoTypeCode') as FormControl;
+	}
+	get governmentIssuedAttachments(): FormControl {
+		return this.form.get('governmentIssuedAttachments') as FormControl;
 	}
 }

@@ -65,7 +65,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
 		caseNumber: new FormControl(null), // placeholder to save info for display purposes
-		// agreeToTermsAndConditions: new FormControl(null),
 
 		originalApplicationId: new FormControl(null),
 		originalLicenceId: new FormControl(null),
@@ -115,7 +114,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		criminalHistoryData: this.criminalHistoryFormGroup,
 		fingerprintProofData: this.fingerprintProofFormGroup,
 		citizenshipData: this.citizenshipFormGroup,
-		additionalGovIdData: this.additionalGovIdFormGroup,
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
 		characteristicsData: this.characteristicsFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
@@ -156,13 +154,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					// console.debug(
-					// 	'licenceModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
-					// 	this.licenceModelFormGroup.getRawValue()
-					// );
+					console.debug(
+						'licenceModelFormGroup CHANGED',
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						this.licenceModelFormGroup.getRawValue()
+					);
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -249,57 +247,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
 			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application with a certain type
-	 * @param licenceAppId
-	 * @returns
-	 */
-	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadLicenceRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.initialized = true;
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					})
-				);
-			}
-			case ApplicationTypeCode.Update: {
-				return forkJoin([this.loadLicenceUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.initialized = true;
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					})
-				);
-			}
-			default: {
-				return this.loadLicenceReplacement().pipe(
-					tap((resp: WorkerLicenceResponse) => {
-						console.debug('[getLicenceOfType] Replacement', applicationTypeCode, resp);
-						this.initialized = true;
-					})
-				);
-			}
-		}
-	}
-
-	private setPhotographOfYourself(image: Blob | null): void {
-		if (!image) {
-			this.photographOfYourself = null;
-			return;
-		}
-
-		const objectUrl = URL.createObjectURL(image);
-		this.photographOfYourself = this.domSanitizer.sanitize(
-			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 	}
 
@@ -455,8 +402,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	this.fingerprintProofFormGroup.valid,
 		// 	'citizenshipData',
 		// 	this.citizenshipFormGroup.valid,
-		// 	'additionalGovIdData',
-		// 	this.additionalGovIdFormGroup.valid,
 		// 	'bcDriversLicenceData',
 		// 	this.bcDriversLicenceFormGroup.valid,
 		// 	'characteristicsData',
@@ -547,20 +492,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
-		const showAdditionalGovermentIdStep = this.citizenshipFormGroup
-			? (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.Yes &&
-					this.citizenshipFormGroup.value.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			  (this.citizenshipFormGroup.value.isCanadianCitizen == BooleanTypeCode.No &&
-					this.citizenshipFormGroup.value.notCanadianCitizenProofTypeCode !=
-						LicenceDocumentTypeCode.PermanentResidentCard)
-			: true;
-
 		const updateNameOrGenderChange = this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ?? false;
 
 		if (this.authenticationService.isLoggedIn()) {
 			return (
 				this.citizenshipFormGroup.valid &&
-				(showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true) &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
@@ -571,7 +507,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			// 	this.personalInformationFormGroup.valid,
 			// 	this.aliasesFormGroup.valid,
 			// 	this.citizenshipFormGroup.valid,
-			// 	showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true,
 			// 	this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
 			// 	this.photographOfYourselfFormGroup.valid,
@@ -585,7 +520,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.personalInformationFormGroup.valid &&
 				this.aliasesFormGroup.valid &&
 				this.citizenshipFormGroup.valid &&
-				(showAdditionalGovermentIdStep ? this.additionalGovIdFormGroup.valid : true) &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid &&
@@ -719,6 +653,56 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		}
 
 		return of(this.licenceModelFormGroup.value);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return forkJoin([this.loadLicenceRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			case ApplicationTypeCode.Update: {
+				return forkJoin([this.loadLicenceUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			default: {
+				return this.loadLicenceReplacement().pipe(
+					tap((_resp: WorkerLicenceResponse) => {
+						this.initialized = true;
+					})
+				);
+			}
+		}
+	}
+
+	private setPhotographOfYourself(image: Blob | null): void {
+		if (!image || image.size == 0) {
+			this.photographOfYourself = null;
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(image);
+		this.photographOfYourself = this.domSanitizer.sanitize(
+			SecurityContext.RESOURCE_URL,
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+		);
 	}
 
 	private loadExistingLicence(): Observable<WorkerLicenceResponse> {
@@ -926,30 +910,28 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const fingerprintProofDataAttachments: Array<File> = [];
 		const mentalHealthConditionsDataAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
+		const governmentIssuedAttachments: Array<File> = [];
 
-		let citizenshipData: {
+		const citizenshipData: {
 			isCanadianCitizen: BooleanTypeCode | null;
 			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
 			expiryDate: string | null;
 			attachments: File[];
+			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
+			governmentIssuedExpiryDate: string | null;
+			governmentIssuedAttachments: File[];
 		} = {
 			isCanadianCitizen: null,
 			canadianCitizenProofTypeCode: null,
 			notCanadianCitizenProofTypeCode: null,
 			expiryDate: null,
 			attachments: [],
-		};
-		const additionalGovIdAttachments: Array<File> = [];
-		let additionalGovIdData: {
-			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
-			expiryDate: string | null;
-			attachments: File[];
-		} = {
 			governmentIssuedPhotoTypeCode: null,
-			expiryDate: null,
-			attachments: [],
+			governmentIssuedExpiryDate: null,
+			governmentIssuedAttachments: [],
 		};
+
 		const photographOfYourselfAttachments: Array<File> = [];
 
 		const attachments1FireInvestigator: Array<File> = [];
@@ -976,13 +958,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					// Additional Government ID: GovernmentIssuedPhotoIdTypes
 
 					const aFile = this.utilService.dummyFile(doc);
-					additionalGovIdAttachments.push(aFile);
+					governmentIssuedAttachments.push(aFile);
 
-					additionalGovIdData = {
-						governmentIssuedPhotoTypeCode: doc.licenceDocumentTypeCode,
-						expiryDate: doc.expiryDate ?? null,
-						attachments: additionalGovIdAttachments,
-					};
+					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
+					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
 
 					break;
 				}
@@ -1002,13 +982,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.utilService.dummyFile(doc);
 					citizenshipDataAttachments.push(aFile);
 
-					citizenshipData = {
-						isCanadianCitizen: this.booleanToBooleanType(resp.isCanadianCitizen),
-						canadianCitizenProofTypeCode: resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null,
-						notCanadianCitizenProofTypeCode: resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode,
-						expiryDate: doc.expiryDate ?? null,
-						attachments: citizenshipDataAttachments,
-					};
+					citizenshipData.isCanadianCitizen = this.booleanToBooleanType(resp.isCanadianCitizen);
+					citizenshipData.canadianCitizenProofTypeCode = resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
+					citizenshipData.notCanadianCitizenProofTypeCode = resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode;
+					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.attachments = citizenshipDataAttachments;
 
 					break;
 				}
@@ -1233,7 +1211,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				personalInformationData,
 				characteristicsData,
 				citizenshipData,
-				additionalGovIdData,
 				photographOfYourselfData,
 				contactInformationData,
 				profileConfirmationData: { isProfileUpToDate: true },
@@ -1322,7 +1299,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				// If they were not born in Canada, they have to show proof for renewal
 				let citizenshipData = {};
-				let additionalGovIdData = {};
 				if (!_resp.isCanadianCitizen) {
 					citizenshipData = {
 						isCanadianCitizen: BooleanTypeCode.No,
@@ -1330,11 +1306,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						notCanadianCitizenProofTypeCode: null,
 						expiryDate: null,
 						attachments: [],
-					};
-					additionalGovIdData = {
 						governmentIssuedPhotoTypeCode: null,
-						expiryDate: null,
-						attachments: [],
+						governmentIssuedExpiryDate: null,
+						governmentIssuedAttachments: [],
 					};
 				}
 				const mentalHealthConditionsData = {
@@ -1401,7 +1375,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						aliasesData,
 						photographOfYourselfData,
 						citizenshipData,
-						additionalGovIdData,
 						dogsAuthorizationData,
 						mentalHealthConditionsData,
 						criminalHistoryData,

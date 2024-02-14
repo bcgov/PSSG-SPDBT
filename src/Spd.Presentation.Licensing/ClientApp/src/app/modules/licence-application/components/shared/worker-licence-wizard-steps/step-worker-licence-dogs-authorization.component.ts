@@ -46,7 +46,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 							<div class="row mt-2 mb-4">
 								<div class="col-12">
 									<div class="form-group" formGroupName="dogsPurposeFormGroup">
-										<div class="text-minor-heading my-2">I request authorization to use dogs for the purpose of</div>
+										<div class="text-minor-heading my-2">Purpose of using dogs</div>
 										<mat-checkbox formControlName="isDogsPurposeProtection"> Protection </mat-checkbox>
 										<mat-checkbox formControlName="isDogsPurposeDetectionDrugs"> Detection - Drugs </mat-checkbox>
 										<mat-checkbox formControlName="isDogsPurposeDetectionExplosives">
