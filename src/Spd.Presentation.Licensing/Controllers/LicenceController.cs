@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -75,7 +75,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Example: http://localhost:5114/api/licences/image
         /// </summary>
         /// <returns></returns>
-        [Route("api/licences/image")]
+        [Route("api/licences/licence-photo")]
         [HttpGet]
         [AllowAnonymous]
         public async Task<FileStreamResult> GetLicencePhoto()

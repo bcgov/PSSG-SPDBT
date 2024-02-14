@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceLookupService } from '@app/api/services';
+import { LicenceService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -107,7 +107,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
-	constructor(private utilService: UtilService, private licenceLookupService: LicenceLookupService) {}
+	constructor(private utilService: UtilService, private licenceService: LicenceService) {}
 
 	ngOnInit() {
 		this.isAfterSearch = !!(this.form && this.expiryDate && this.expiryDate.value);
@@ -120,7 +120,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	public find(licenceNumber: string): Observable<LicenceResponse> {
 		if (!licenceNumber || licenceNumber.trim().length == 0) return EMPTY;
 
-		return this.licenceLookupService
+		return this.licenceService
 			.apiLicenceLookupLicenceNumberGet({
 				licenceNumber,
 			})
@@ -145,7 +145,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 		if (!licenceNumber || licenceNumber.trim().length == 0) return;
 
-		return this.licenceLookupService
+		return this.licenceService
 			.apiLicenceLookupLicenceNumberGet({
 				licenceNumber,
 			})

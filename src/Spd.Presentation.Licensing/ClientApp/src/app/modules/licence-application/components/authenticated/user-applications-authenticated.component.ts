@@ -570,8 +570,8 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		// 	},
 		// ];
 
-		// TODO Handle first time login
-		// this.dialog.open(FirstTimeUserModalComponent, {
+		// TODO Display modal for first time login
+		// this.dialog.open(UserFirstTimeLoginModalComponent, {
 		// 	width: '800px',
 		// });
 	}
@@ -622,7 +622,7 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	onResume(appl: WorkerLicenceAppListResponse): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.getLicenceNew(appl.licenceAppId!)
+				.getLicenceToResume(appl.licenceAppId!)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

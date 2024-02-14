@@ -15,11 +15,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 					<app-step-title title="Consent and Declaration"></app-step-title>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 conditions px-3 mb-3">
-							<br />
-							<ng-container
-								*ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit; else bodyArmour"
-							>
-								<div class="fw-bold">I HEREBY AUTHORIZE:</div>
+							<ng-container *ngIf="isArmouredVehiclePermit; else bodyArmour">
+								<div class="mt-2 fw-bold">I HEREBY AUTHORIZE:</div>
 								<ul>
 									<li>
 										The Registrar, Security Services, to conduct a criminal record check through any city, municipal or
@@ -56,7 +53,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</ng-container>
 
 							<ng-template #bodyArmour>
-								<div class="fw-bold">I HEREBY AUTHORIZE:</div>
+								<div class="mt-2 fw-bold">I HEREBY AUTHORIZE:</div>
 								<ul>
 									<li>
 										The Registrar, Security Services, to conduct a criminal record check through any city, municipal or
@@ -120,7 +117,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						</div>
 					</div>
 
-					<div class="row my-4" *ngIf="displayCaptcha">
+					<div class="row mb-4" *ngIf="displayCaptcha.value">
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<div formGroupName="captchaFormGroup">
 								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
@@ -134,6 +131,20 @@ import { UtilService } from 'src/app/core/services/util.service';
 									>This is required</mat-error
 								>
 							</div>
+						</div>
+					</div>
+
+					<div class="row mt-4">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<app-alert type="info" icon="" [showBorder]="false">
+								<div class="mb-2">COLLECTION NOTICE</div>
+								All information regarding this application is collected under the
+								<i>{{ collectionNoticeActName }}</i> and its Regulation and will be used for that purpose. The use of
+								this information will comply with the <i>Freedom of Information</i> and <i>Privacy Act</i> and the
+								federal <i>Privacy Act</i>. If you have any questions regarding the collection or use of this
+								information, please contact
+								<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
+							</app-alert>
 						</div>
 					</div>
 				</div>
@@ -157,9 +168,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 	],
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
+	collectionNoticeActName = '';
 	form: FormGroup = this.permitApplicationService.consentAndDeclarationFormGroup;
 
-	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	constructor(
@@ -169,6 +180,12 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 	) {}
 
 	ngOnInit(): void {
+		if (this.isArmouredVehiclePermit) {
+			this.collectionNoticeActName = 'Armoured Vehicle and After Market Compartment Control Act';
+		} else {
+			this.collectionNoticeActName = 'Body Armour Control Act';
+		}
+
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
 		});
@@ -193,5 +210,8 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 	}
 	get displayCaptcha(): FormControl {
 		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
+	}
+	get isArmouredVehiclePermit(): boolean {
+		return this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit;
 	}
 }

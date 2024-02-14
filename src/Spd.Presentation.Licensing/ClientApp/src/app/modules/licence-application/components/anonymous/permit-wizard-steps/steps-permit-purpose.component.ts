@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -13,7 +13,10 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-reason [applicationTypeCode]="applicationTypeCode"></app-step-permit-reason>
+				<app-step-permit-reason
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-reason>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -52,7 +55,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="showEmployerInformation">
 				<app-step-permit-employer-information
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-employer-information>
@@ -143,8 +146,10 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 
 	isLoggedIn = false;
 	isFormValid = false;
+	showEmployerInformation = true;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
@@ -168,6 +173,26 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
+
+				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
+
+				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.bodyArmourRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+					console.log('bodyArmourRequirement', bodyArmourRequirement);
+				} else {
+					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.armouredVehicleRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+					console.log('armouredVehicleRequirement', armouredVehicleRequirement);
+				}
 			}
 		);
 
