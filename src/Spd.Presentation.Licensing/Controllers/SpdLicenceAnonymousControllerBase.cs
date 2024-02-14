@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Utilities.Cache;
