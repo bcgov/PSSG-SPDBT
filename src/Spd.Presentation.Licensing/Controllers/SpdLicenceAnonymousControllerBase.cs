@@ -63,14 +63,15 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
         }
     }
 
-    protected async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfoAsync(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
+    protected async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfoAsync(IEnumerable<Guid>? docKeyCodes, CancellationToken ct)
     {
-        if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();
+        Guid[]? array = docKeyCodes?.ToArray();
+        if (array == null || array.Length == 0) return Enumerable.Empty<LicAppFileInfo>();
         List<LicAppFileInfo> results = new List<LicAppFileInfo>();
-        foreach (Guid docKey in docKeyCodes)
+        foreach (Guid docKey in array)
         {
-            IEnumerable<LicAppFileInfo> items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
-            if (items.Any())
+            IEnumerable<LicAppFileInfo>? items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
+            if (items!=null && items.Any())
             {
                 results.AddRange(items);
             }

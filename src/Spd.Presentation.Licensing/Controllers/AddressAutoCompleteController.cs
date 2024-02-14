@@ -8,12 +8,10 @@ namespace Spd.Presentation.Licensing.Controllers;
 
 public class AddressAutoCompleteController : SpdControllerBase
 {
-    private readonly ILogger<AddressAutoCompleteController> _logger;
     private readonly IMediator _mediator;
 
-    public AddressAutoCompleteController(ILogger<AddressAutoCompleteController> logger, IMediator mediator)
+    public AddressAutoCompleteController(IMediator mediator)
     {
-        _logger = logger;
         _mediator = mediator;
     }
 
@@ -24,7 +22,7 @@ public class AddressAutoCompleteController : SpdControllerBase
     /// If the next step of the search process in returned data is Find, use the result Id as next Find lastId to do next round search.Or use null.
     /// If the next step of the search process in returned data is Retrieve, use the result Id as Retrieve endpoint Id to get final result.
     /// </remark>
-    /// <param name="searchTerm">required</param>
+    /// <param name="search">required</param>
     /// <param name="country">optional, The ISO 2 or 3 character code for the country to search in. Default would be CAN</param>
     /// <param name="lastId">optional, The Id from a previous Find</param>
     /// <returns>AddressFindResponse</returns>
