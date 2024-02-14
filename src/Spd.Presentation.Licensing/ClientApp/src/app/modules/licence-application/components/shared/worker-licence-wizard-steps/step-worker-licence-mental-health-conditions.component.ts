@@ -44,7 +44,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								your physician may download it and fill the form out on a computer if you provide them with the required
 								information. See the
 								<a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/07030_01" target="_blank">
-									Security Services Act </a
+									Security Services Act</a
 								>, s. 3, Security Services Regulation, s. 4(1)(e) for more information
 							</p>
 							<div class="row mt-2">

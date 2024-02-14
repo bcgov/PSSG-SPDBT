@@ -36,7 +36,6 @@ import { EMPTY, Observable } from 'rxjs';
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-					<div class="text-minor-heading mb-2">Expired {{ titleLabel }} Information</div>
 					<div class="row mt-2">
 						<div class="col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
@@ -121,7 +120,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		if (!licenceNumber || licenceNumber.trim().length == 0) return EMPTY;
 
 		return this.licenceService
-			.apiLicenceLookupLicenceNumberGet({
+			.apiLicenceLookupAnonymousLicenceNumberPost({
 				licenceNumber,
 			})
 			.pipe();
@@ -146,7 +145,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		if (!licenceNumber || licenceNumber.trim().length == 0) return;
 
 		return this.licenceService
-			.apiLicenceLookupLicenceNumberGet({
+			.apiLicenceLookupAnonymousLicenceNumberPost({
 				licenceNumber,
 			})
 			.pipe()

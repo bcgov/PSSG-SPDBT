@@ -493,6 +493,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 			}
 
 			.text-minor-heading {
+				font-size: 1.1rem !important;
 				color: var(--color-primary-light) !important;
 				font-weight: 300 !important;
 			}

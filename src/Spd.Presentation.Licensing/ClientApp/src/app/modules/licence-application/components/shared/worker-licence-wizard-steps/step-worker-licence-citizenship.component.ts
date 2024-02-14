@@ -45,19 +45,11 @@ import { HotToastService } from '@ngneat/hot-toast';
 					<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
 						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 							<mat-divider class="mb-3 mat-divider-primary" *ngIf="isNotRenewal"></mat-divider>
-
-							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
-								<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload</div>
-							</ng-container>
-							<ng-template #notCanadianCitizenHeading>
-								<div class="text-minor-heading mb-2">Select proof of ability to work in Canada to upload</div>
-							</ng-template>
-
 							<div class="row my-2">
 								<div class="col-lg-7 col-md-12">
 									<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 										<mat-form-field>
-											<mat-label>Type of Proof of Canadian Citizenship</mat-label>
+											<mat-label>Proof of Canadian citizenship</mat-label>
 											<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -74,7 +66,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</ng-container>
 									<ng-template #notCanadianCitizen>
 										<mat-form-field>
-											<mat-label>Type of Proof of Ability to Work in Canada</mat-label>
+											<mat-label>Proof of ability to work in Canada</mat-label>
 											<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -91,8 +83,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</ng-template>
 								</div>
 								<div class="col-lg-5 col-md-12">
-									<!-- TODO Show only if Are you a Canadian citizen? = "Yes" and Document Type = "Passport" and mandatory -->
-									<!-- TODO Show only if Are you a Canadian citizen? = "No". Applicant must provide expiry date if document = Work Permit or Study Permit -->
 									<mat-form-field>
 										<mat-label>Document Expiry Date</mat-label>
 										<input
@@ -120,7 +110,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 										<ng-container
 											*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle"
 										>
-											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship:</div>
+											<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship</div>
 										</ng-container>
 										<ng-template #notCanadianCitizenTitle>
 											<div class="text-minor-heading mb-2">Upload a photo of your selected document type</div>
@@ -148,12 +138,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 							<div class="row mt-4" *ngIf="showAdditionalGovermentIdStep" @showHideTriggerSlideAnimation>
 								<div class="col-12">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
-									<div class="text-minor-heading mb-2">Additional piece of government-issued photo ID to upload</div>
 									<div class="row my-2">
 										<div class="col-lg-6 col-md-12">
 											<mat-form-field>
-												<mat-label>Type of Additional Photo ID</mat-label>
+												<mat-label>Type of additional piece of government-issued photo ID</mat-label>
 												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
 													<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
 														{{ item.desc }}

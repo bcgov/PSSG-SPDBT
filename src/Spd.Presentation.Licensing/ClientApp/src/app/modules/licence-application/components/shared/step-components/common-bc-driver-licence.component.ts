@@ -32,7 +32,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 					<div class="row mt-2">
 						<div class="col-lg-6 col-md-12 col-sm-12 mx-auto">
-							<div class="text-minor-heading mb-2">BC driver's licence information</div>
 							<mat-form-field>
 								<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="bcDriversLicenceNumber" mask="00000009" />

@@ -42,7 +42,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 						<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
 							<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
 
-							<div class="text-minor-heading my-2">Document Type</div>
+							<div class="text-minor-heading my-2">Proof of qualification</div>
 							<mat-radio-group
 								class="category-radio-group"
 								aria-label="Select an option"
