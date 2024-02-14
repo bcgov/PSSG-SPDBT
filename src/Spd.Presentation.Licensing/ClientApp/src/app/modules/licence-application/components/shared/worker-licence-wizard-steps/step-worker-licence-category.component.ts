@@ -1311,71 +1311,54 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		) {
 			if (this.showArmouredCarGuard) {
 				this.blockArmouredCarGuard = true;
-				return;
 			}
 			if (this.showBodyArmourSales) {
 				this.blockBodyArmourSales = true;
-				return;
 			}
 			if (this.showClosedCircuitTelevisionInstaller) {
 				this.blockClosedCircuitTelevisionInstaller = true;
-				return;
 			}
 			if (this.showElectronicLockingDeviceInstaller) {
 				this.blockElectronicLockingDeviceInstaller = true;
-				return;
 			}
 			if (this.showFireInvestigator) {
 				this.blockFireInvestigator = true;
-				return;
 			}
 			if (this.showLocksmith) {
 				this.blockLocksmith = true;
-				return;
 			}
 			if (this.showLocksmithUnderSupervision) {
 				this.blockLocksmithUnderSupervision = true;
-				return;
 			}
 			if (this.showPrivateInvestigatorUnderSupervision) {
 				this.blockPrivateInvestigatorUnderSupervision = true;
-				return;
 			}
 			if (this.showPrivateInvestigator) {
 				this.blockPrivateInvestigator = true;
-				return;
 			}
 			if (this.showSecurityAlarmInstaller) {
 				this.blockSecurityAlarmInstaller = true;
-				return;
 			}
 			if (this.showSecurityAlarmInstallerUnderSupervision) {
 				this.blockSecurityAlarmInstallerUnderSupervision = true;
-				return;
 			}
 			if (this.showSecurityConsultant) {
 				this.blockSecurityConsultant = true;
-				return;
 			}
 			if (this.showSecurityGuard) {
 				this.blockSecurityGuard = true;
-				return;
 			}
 			if (this.showSecurityAlarmMonitor) {
 				this.blockSecurityAlarmMonitor = true;
-				return;
 			}
 			if (this.showSecurityAlarmResponse) {
 				this.blockSecurityAlarmResponse = true;
-				return;
 			}
 			if (this.showSecurityAlarmSales) {
 				this.blockSecurityAlarmSales = true;
-				return;
 			}
 			if (this.showSecurityGuardUnderSupervision) {
 				this.blockSecurityGuardUnderSupervision = true;
-				return;
 			}
 		}
 	}

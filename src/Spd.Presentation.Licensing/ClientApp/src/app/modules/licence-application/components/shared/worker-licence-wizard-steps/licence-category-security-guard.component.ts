@@ -62,7 +62,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 					Upload a training certificate or reference letter from your employment supervisor or human resources office:
 				</div>
 				<ng-template #uploadcopy>
-					<div class="fs-6 fw-bold mb-2">Upload a copy of your certificate:</div>
+					<div class="fs-6 fw-bold mb-2">Upload a copy of your certificate</div>
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload

@@ -365,7 +365,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 		// If step ordering changes, crucial to update this
 		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 			if (
-				(this.childstepper.selectedIndex === 2 && !this.showStepDogsAndRestraints) ||
+				(this.childstepper.selectedIndex === 3 && !this.showStepDogsAndRestraints) ||
 				(this.childstepper.selectedIndex === 4 && this.showStepDogsAndRestraints)
 			) {
 				this.nextStepperStep.emit(true);
