@@ -113,19 +113,16 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
-				<app-step-worker-licence-expired></app-step-worker-licence-expired>
+				<app-step-worker-licence-expired
+					(validExpiredLicenceData)="onValidExpiredLicence()"
+				></app-step-worker-licence-expired>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onExpiredLicenceNextStep()">
 							Next
 						</button>
 					</div>
@@ -345,7 +342,6 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 				this.showStepDogsAndRestraints =
 					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-				console.log('showStepDogsAndRestraints', this.showStepDogsAndRestraints);
 			}
 		);
 	}
@@ -357,6 +353,14 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	onCancel(): void {
 		this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()]);
+	}
+
+	onExpiredLicenceNextStep(): void {
+		this.licenceExpiredComponent.onSearchAndValidate();
+	}
+
+	onValidExpiredLicence(): void {
+		this.childNextStep.emit(true);
 	}
 
 	override onGoToNextStep() {
