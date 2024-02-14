@@ -76,15 +76,23 @@ internal class LicenceManager :
 
         if (docUrl != null)
         {
-            FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
-                new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = docUrl.Folder },
-                ct);
-            return new FileResponse
+            try
             {
-                Content = fileResult.File.Content,
-                ContentType = fileResult.File.ContentType,
-                FileName = fileResult.File.FileName
-            };
+                FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                    new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = docUrl.Folder },
+                    ct);
+                return new FileResponse
+                {
+                    Content = fileResult.File.Content,
+                    ContentType = fileResult.File.ContentType,
+                    FileName = fileResult.File.FileName
+                };
+            }
+            catch
+            {
+                //todo: add more logging
+                return new FileResponse(); //error in S3, probably cannot find the file
+            }
         }
         return new FileResponse();
     }
