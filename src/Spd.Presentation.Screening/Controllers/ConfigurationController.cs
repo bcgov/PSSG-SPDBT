@@ -75,11 +75,11 @@ namespace Spd.Presentation.Screening.Controllers
 
     public record OidcConfiguration
     {
-        public string Issuer { get; set; }
-        public string ClientId { get; set; }
-        public string ResponseType { get; set; }
-        public string Scope { get; set; }
-        public string PostLogoutRedirectUri { get; set; }
+        public string? Issuer { get; set; }
+        public string? ClientId { get; set; }
+        public string? ResponseType { get; set; }
+        public string? Scope { get; set; }
+        public Uri? PostLogoutRedirectUri { get; set; }
     }
     public record BcscConfiguration : OidcConfiguration;
     public record RecaptchaConfiguration(string Key);
