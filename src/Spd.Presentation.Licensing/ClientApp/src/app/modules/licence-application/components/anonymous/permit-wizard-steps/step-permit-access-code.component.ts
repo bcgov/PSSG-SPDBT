@@ -31,7 +31,7 @@ import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components
 				</app-step-title>
 
 				<app-common-access-code-anonymous
-					(linkPerformed)="onSearchSuccess()"
+					(linkSuccess)="onLinkSuccess()"
 					[form]="form"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
@@ -93,7 +93,7 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 		return this.form.valid;
 	}
 
-	onSearchSuccess(): void {
+	onLinkSuccess(): void {
 		const accessCodeData = this.form.value;
 
 		this.permitApplicationService

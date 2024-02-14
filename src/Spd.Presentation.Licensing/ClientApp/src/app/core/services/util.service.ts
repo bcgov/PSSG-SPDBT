@@ -51,8 +51,14 @@ export class UtilService {
 		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
-	getIsFutureDate(aDate: string): boolean {
-		return moment(aDate).isAfter(moment());
+	getIsFutureDate(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+		return moment(aDate).isAfter(moment(), 'day');
+	}
+
+	getIsTodayOrFutureDate(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+		return moment(aDate).isSameOrAfter(moment(), 'day');
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
