@@ -66,6 +66,11 @@ public record WorkerLicenceAppListResponse
 #region authenticated user
 public record WorkerLicenceAppUpsertRequest : PersonalLicenceAppBase
 {
+    public bool? CarryAndUseRestraints { get; set; }
+    public bool? UseDogs { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
@@ -85,6 +90,7 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 
 public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppBase //for anonymous user
 {
+    public bool? CarryAndUseRestraints { get; set; }
     public bool? UseDogs { get; set; }
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
