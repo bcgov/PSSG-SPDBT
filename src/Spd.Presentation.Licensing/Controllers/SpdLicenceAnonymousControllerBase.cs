@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Cache;
 using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
 public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
 {
-    protected readonly ITimeLimitedDataProtector _dataProtector;
-    protected readonly IDistributedCache _cache;
-    protected readonly IRecaptchaVerificationService _recaptchaVerificationService;
+    private readonly ITimeLimitedDataProtector _dataProtector;
+    private readonly IDistributedCache _cache;
+    private readonly IRecaptchaVerificationService _recaptchaVerificationService;
     protected SpdLicenceAnonymousControllerBase(IDistributedCache cache, IDataProtectionProvider dpProvider, IRecaptchaVerificationService recaptchaVerificationService)
     {
         _cache = cache;
@@ -20,6 +20,7 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
         _recaptchaVerificationService = recaptchaVerificationService;
     }
 
+    protected IDistributedCache Cache { get { return _cache; } }
     protected void SetValueToResponseCookie(string key, string value)
     {
         var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(20));
@@ -61,6 +62,7 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
         }
     }
+
     protected async Task<IEnumerable<LicAppFileInfo>> GetAllNewDocsInfoAsync(IEnumerable<Guid> docKeyCodes, CancellationToken ct)
     {
         if (docKeyCodes == null || !docKeyCodes.Any()) return Enumerable.Empty<LicAppFileInfo>();

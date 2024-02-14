@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
@@ -25,7 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<PermitAppAnonymousSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
- 
+
         public PermitController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
@@ -52,7 +51,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             string keyCode = Guid.NewGuid().ToString();
-            await _cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
+            await Cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
             return Ok();
         }
@@ -71,7 +70,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
             //validate keyCode
-            LicenceAppDocumentsCache? existingFileInfo = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+            LicenceAppDocumentsCache? existingFileInfo = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
             if (existingFileInfo == null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
@@ -98,7 +97,7 @@ namespace Spd.Presentation.Licensing.Controllers
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
-            await _cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
             return fileKeyCode;
         }
 
@@ -116,7 +115,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
             //validate keyCode
-            LicenceAppDocumentsCache? keyCodeValue = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+            LicenceAppDocumentsCache? keyCodeValue = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
             if (keyCodeValue == null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
