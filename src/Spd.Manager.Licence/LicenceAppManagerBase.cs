@@ -1,0 +1,80 @@
+﻿using AutoMapper;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
+
+namespace Spd.Manager.Licence;
+internal abstract class LicenceAppManagerBase
+{
+    protected readonly IMapper _mapper;
+    protected readonly IDocumentRepository _documentRepository;
+    protected readonly ILicenceFeeRepository _feeRepository;
+    protected readonly ILicenceApplicationRepository _licenceAppRepository;
+
+    public LicenceAppManagerBase(IMapper mapper, 
+        IDocumentRepository documentRepository, 
+        ILicenceFeeRepository feeRepository,
+        ILicenceApplicationRepository licenceAppRepository)
+    {
+        _mapper = mapper;
+        _documentRepository = documentRepository;
+        _feeRepository = feeRepository;
+        _licenceAppRepository = licenceAppRepository;
+    }
+
+    protected async Task<decimal?> CommitApplicationAsync(PersonalLicenceAppBase request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    {
+        //if payment price is 0, directly set to Submitted, or PaymentPending
+        var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
+        {
+            ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
+            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
+            HasValidSwl90DayLicence = HasSwl90DayLicence
+        }, ct);
+        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+        else
+            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+        return price.LicenceFees.FirstOrDefault()?.Amount;
+    }
+
+    protected async Task UploadNewDocsAsync(PersonalLicenceAppBase request,
+        IEnumerable<LicAppFileInfo> newFileInfos,
+        Guid? licenceAppId,
+        Guid? contactId,
+        Guid? peaceOfficerStatusChangeTaskId,
+        Guid? mentalHealthStatusChangeTaskId,
+        CancellationToken ct)
+    {
+        if (newFileInfos != null && newFileInfos.Any())
+        {
+            foreach (LicAppFileInfo licAppFile in newFileInfos)
+            {
+                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
+                {
+                    fileCmd.TaskId = peaceOfficerStatusChangeTaskId;
+                }
+                else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
+                {
+                    fileCmd.TaskId = mentalHealthStatusChangeTaskId;
+                }
+                fileCmd.ApplicantId = contactId;
+                fileCmd.ApplicationId = licenceAppId;
+                fileCmd.ExpiryDate = request?
+                        .DocumentExpiredInfos?
+                        .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
+                        .ExpiryDate;
+                fileCmd.TempFile = tempFile;
+                fileCmd.SubmittedByApplicantId = contactId;
+                //create bcgov_documenturl and file
+                await _documentRepository.ManageAsync(fileCmd, ct);
+            }
+        }
+    }
+}

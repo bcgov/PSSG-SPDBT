@@ -15,10 +15,18 @@ internal class Mappings : Profile
     {
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetIsTreatedForMHC(s)))
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+
+        CreateMap<PermitAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
+            .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetIsTreatedForMHC(s)))
+            .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
+            .ForMember(d => d.CategoryCodes, opt => opt.Ignore())
+            .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)));
+
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
@@ -100,22 +108,35 @@ internal class Mappings : Profile
         return LicenceDocumentType2Dictionary.FirstOrDefault(d => d.Value == documentType).Key;
     }
 
-    private static bool? GetIsTreatedForMHC(WorkerLicenceAppAnonymousSubmitRequest request)
+    private static bool? GetIsTreatedForMHC(PersonalLicenceAppBase request)
     {
-        if(request.ApplicationTypeCode==Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
+        if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {
             return request.HasNewMentalHealthCondition;
         }
         return request.IsTreatedForMHC;
     }
 
-    private static bool? GetHasCriminalHistory(WorkerLicenceAppAnonymousSubmitRequest request)
+    private static bool? GetHasCriminalHistory(PersonalLicenceAppBase request)
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {
             return request.HasNewCriminalRecordCharge;
         }
         return request.HasCriminalHistory;
+    }
+
+    private static IEnumerable<PermitPurposeEnum>? GetPermitPurposeEnums(PermitAppAnonymousSubmitRequest request)
+    {
+        if (request.BodyArmourPermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        {
+            return request.BodyArmourPermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
+        }
+        if (request.ArmouredVehiclePermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        {
+            return request.ArmouredVehiclePermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
+        }
+        return null;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
