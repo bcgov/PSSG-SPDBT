@@ -39,13 +39,13 @@ internal class PermitAppManager :
     public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand cmd, CancellationToken ct)
     {
         PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
-        ValidateFilesForNewApp(cmd);
+        //temp : ValidateFilesForNewApp(cmd);
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, ct);
-        await CommitApplicationAsync(request, response.LicenceAppId, ct);
-        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId };
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct);
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppReplaceCommand cmd, CancellationToken ct)

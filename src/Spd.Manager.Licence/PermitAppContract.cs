@@ -49,7 +49,10 @@ public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
     public IEnumerable<ArmouredVehiclePermitReasonCode>? ArmouredVehiclePermitReasonCodes { get; set; } // for armour vehicle
 }
 
-public record PermitAppCommandResponse : LicenceAppUpsertResponse;
+public record PermitAppCommandResponse : LicenceAppUpsertResponse
+{
+    public decimal? Cost { get; set; }
+};
 
 public enum BodyArmourPermitReasonCode
 {

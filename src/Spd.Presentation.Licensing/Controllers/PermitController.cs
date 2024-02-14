@@ -113,20 +113,20 @@ namespace Spd.Presentation.Licensing.Controllers
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
-        /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/permit-applications/anonymous/submit")]
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
         {
-            string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
-            //validate keyCode
-            LicenceAppDocumentsCache? keyCodeValue = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
-            if (keyCodeValue == null)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-            }
+            //temp del
+            //string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
+            ////validate keyCode
+            //LicenceAppDocumentsCache? keyCodeValue = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+            //if (keyCodeValue == null)
+            //{
+            //    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            //}
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);

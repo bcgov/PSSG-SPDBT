@@ -1,4 +1,5 @@
 using FluentValidation;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T : PersonalLicenceAppBase
@@ -39,6 +40,10 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.ResidentialAddressData.AddressLine1).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddressData != null);
         RuleFor(r => r.ResidentialAddressData.Country).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddressData != null);
         RuleFor(r => r.ResidentialAddressData.PostalCode).NotEmpty().MaximumLength(20).When(r => r.ResidentialAddressData != null);
+        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
+        RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
 
     }
 }
