@@ -2,6 +2,8 @@
 /* eslint-disable */
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
+import { ArmouredVehiclePermitReasonCode } from './armoured-vehicle-permit-reason-code';
+import { BodyArmourPermitReasonCode } from './body-armour-permit-reason-code';
 import { BusinessTypeCode } from './business-type-code';
 import { DocumentExpiredInfo } from './document-expired-info';
 import { EmployerPrimaryAddress } from './employer-primary-address';
@@ -12,7 +14,6 @@ import { HeightUnitCode } from './height-unit-code';
 import { LicenceTermCode } from './licence-term-code';
 import { MailingAddress } from './mailing-address';
 import { PoliceOfficerRoleCode } from './police-officer-role-code';
-import { RequirePermitReasonCode } from './require-permit-reason-code';
 import { ResidentialAddress } from './residential-address';
 import { WeightUnitCode } from './weight-unit-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
@@ -20,7 +21,9 @@ export interface PermitAppAnonymousSubmitRequest {
   agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationTypeCode?: ApplicationTypeCode;
+  armouredVehiclePermitReasonCodes?: null | Array<ArmouredVehiclePermitReasonCode>;
   bcDriversLicenceNumber?: null | string;
+  bodyArmourPermitReasonCodes?: null | Array<BodyArmourPermitReasonCode>;
   businessTypeCode?: BusinessTypeCode;
   carryAndUseRestraints?: null | boolean;
   contactEmailAddress?: null | string;
@@ -40,14 +43,13 @@ export interface PermitAppAnonymousSubmitRequest {
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
   hasLegalNameChanged?: null | boolean;
+  hasNewCriminalRecordCharge?: null | boolean;
+  hasNewMentalHealthCondition?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
   isCanadianCitizen?: null | boolean;
   isCanadianResident?: null | boolean;
-  isDogsPurposeDetectionDrugs?: null | boolean;
-  isDogsPurposeDetectionExplosives?: null | boolean;
-  isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
@@ -64,14 +66,12 @@ export interface PermitAppAnonymousSubmitRequest {
   previousDocumentIds?: null | Array<string>;
   rationale?: null | string;
   reprint?: null | boolean;
-  requirePermitReasonCode?: null | Array<RequirePermitReasonCode>;
   residentialAddressData?: ResidentialAddress;
   supervisorEmailAddress?: null | string;
   supervisorName?: null | string;
   supervisorPhoneNumber?: null | string;
   surname?: null | string;
   useBcServicesCardPhoto?: null | boolean;
-  useDogs?: null | boolean;
   weight?: null | number;
   weightUnitCode?: WeightUnitCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;

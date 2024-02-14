@@ -10,6 +10,7 @@ import {
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
@@ -521,7 +522,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: CommonApplicationService,
+		private optionsPipe: OptionsPipe
 	) {}
 
 	ngOnInit(): void {
@@ -695,6 +697,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
 			if (armouredVehicleRequirement.isPersonalProtection) {
+				// const categoryDesc = this.optionsPipe.transform(category, 'ArmouredVehiclePermitReasonTypes');
+				// const categoryDesc = this.optionsPipe.transform(category, 'BodyArmourPermitReasonTypes');
 				reasonList.push('Personal protection');
 			}
 			if (armouredVehicleRequirement.isProtectionOfAnotherPerson) {

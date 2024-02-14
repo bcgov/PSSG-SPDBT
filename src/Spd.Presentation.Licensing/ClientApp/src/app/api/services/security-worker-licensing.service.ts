@@ -407,6 +407,7 @@ export class SecurityWorkerLicensingService extends BaseService {
 
   /**
    * Upload licence application first step: frontend needs to make this first request to get a Guid code.
+   * the keycode will be set in the cookies.
    *
    *
    *
@@ -441,6 +442,7 @@ export class SecurityWorkerLicensingService extends BaseService {
 
   /**
    * Upload licence application first step: frontend needs to make this first request to get a Guid code.
+   * the keycode will be set in the cookies.
    *
    *
    *
@@ -467,7 +469,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   static readonly ApiWorkerLicenceApplicationsAnonymousFilesPostPath = '/api/worker-licence-applications/anonymous/files';
 
   /**
-   * Upload licence application files: frontend use the keyCode to upload following files.
+   * Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
    * Uploading file only save files in cache, the files are not connected to the appliation yet.
    *
    *
@@ -505,7 +507,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
-   * Upload licence application files: frontend use the keyCode to upload following files.
+   * Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
    * Uploading file only save files in cache, the files are not connected to the appliation yet.
    *
    *

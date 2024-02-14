@@ -43,13 +43,12 @@ export interface WorkerLicenceResponse {
   hasCriminalHistory?: null | boolean;
   hasExpiredLicence?: null | boolean;
   hasLegalNameChanged?: null | boolean;
+  hasNewCriminalRecordCharge?: null | boolean;
+  hasNewMentalHealthCondition?: null | boolean;
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
   isCanadianCitizen?: null | boolean;
-  isDogsPurposeDetectionDrugs?: null | boolean;
-  isDogsPurposeDetectionExplosives?: null | boolean;
-  isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
@@ -64,7 +63,6 @@ export interface WorkerLicenceResponse {
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;
   useBcServicesCardPhoto?: null | boolean;
-  useDogs?: null | boolean;
   weight?: null | number;
   weightUnitCode?: WeightUnitCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
