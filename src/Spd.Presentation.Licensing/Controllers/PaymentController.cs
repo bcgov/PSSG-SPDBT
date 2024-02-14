@@ -45,7 +45,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Return the direct pay payment link 
         /// </summary>
-        /// <param name="ApplicantPaymentLinkCreateRequest">which include Payment link create request</param>
+        /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
         /// <returns></returns>
         [Route("api/unauth-licence/{applicationId}/payment-link")]
         [HttpPost]
