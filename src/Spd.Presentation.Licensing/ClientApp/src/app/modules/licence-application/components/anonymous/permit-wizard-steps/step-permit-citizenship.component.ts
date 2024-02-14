@@ -235,28 +235,26 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 											</mat-form-field>
 										</div>
 									</div>
-									<div *ngIf="governmentIssuedPhotoTypeCode.value" @showHideTriggerSlideAnimation>
-										<div class="row mb-2">
-											<div class="col-12">
-												<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
-												<app-file-upload
-													(fileUploaded)="onFileUploaded($event)"
-													(fileRemoved)="onFileRemoved()"
-													[maxNumberOfFiles]="10"
-													[control]="governmentIssuedAttachments"
-													[files]="governmentIssuedAttachments.value"
-												></app-file-upload>
-												<mat-error
-													class="mat-option-error"
-													*ngIf="
-														(form.get('governmentIssuedAttachments')?.dirty ||
-															form.get('governmentIssuedAttachments')?.touched) &&
-														form.get('governmentIssuedAttachments')?.invalid &&
-														form.get('governmentIssuedAttachments')?.hasError('required')
-													"
-													>This is required</mat-error
-												>
-											</div>
+									<div class="row mb-2">
+										<div class="col-12">
+											<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
+											<app-file-upload
+												(fileUploaded)="onFileUploaded($event)"
+												(fileRemoved)="onFileRemoved()"
+												[maxNumberOfFiles]="10"
+												[control]="governmentIssuedAttachments"
+												[files]="governmentIssuedAttachments.value"
+											></app-file-upload>
+											<mat-error
+												class="mat-option-error"
+												*ngIf="
+													(form.get('governmentIssuedAttachments')?.dirty ||
+														form.get('governmentIssuedAttachments')?.touched) &&
+													form.get('governmentIssuedAttachments')?.invalid &&
+													form.get('governmentIssuedAttachments')?.hasError('required')
+												"
+												>This is required</mat-error
+											>
 										</div>
 									</div>
 								</div>

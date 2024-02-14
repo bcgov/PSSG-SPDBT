@@ -2,17 +2,17 @@
   "version": "6.0",
   "nxVersion": "17.1.2",
   "deps": {
-    "@angular/animations": "^17.0.4",
+    "@angular/animations": "^17.1.3",
     "@angular/cdk": "^17.0.1",
-    "@angular/common": "^17.0.4",
-    "@angular/compiler": "^17.0.4",
-    "@angular/core": "^17.0.4",
-    "@angular/forms": "^17.0.4",
+    "@angular/common": "^17.1.3",
+    "@angular/compiler": "^17.1.3",
+    "@angular/core": "^17.1.3",
+    "@angular/forms": "^17.1.3",
     "@angular/material": "^17.0.1",
     "@angular/material-moment-adapter": "^17.0.1",
-    "@angular/platform-browser": "^17.0.4",
-    "@angular/platform-browser-dynamic": "^17.0.4",
-    "@angular/router": "^17.0.4",
+    "@angular/platform-browser": "^17.1.3",
+    "@angular/platform-browser-dynamic": "^17.1.3",
+    "@angular/router": "^17.1.3",
     "@bcgov/bc-sans": "^2.1.0",
     "@ngneat/hot-toast": "^6.0.1",
     "@ngneat/overview": "^5.1.0",
@@ -30,14 +30,14 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0",
-    "@angular-devkit/build-angular": "^17.0.3",
+    "@angular-devkit/build-angular": "^17.1.3",
     "@angular-eslint/builder": "17.1.0",
     "@angular-eslint/eslint-plugin": "17.1.0",
     "@angular-eslint/eslint-plugin-template": "17.1.0",
     "@angular-eslint/schematics": "17.1.0",
     "@angular-eslint/template-parser": "17.1.0",
-    "@angular/cli": "~17.0.3",
-    "@angular/compiler-cli": "^17.0.3",
+    "@angular/cli": "~17.1.3",
+    "@angular/compiler-cli": "^17.1.3",
     "@types/jasmine": "~4.3.0",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
@@ -87,7 +87,7 @@
       },
       {
         "file": ".nx/cache/file-map.json",
-        "hash": "11741741119665890509"
+        "hash": "7388754620119418220"
       },
       {
         "file": ".nx/cache/lockfile.hash",
@@ -131,11 +131,11 @@
       },
       {
         "file": "package-lock.json",
-        "hash": "8697754992477100756"
+        "hash": "9504744854428139332"
       },
       {
         "file": "package.json",
-        "hash": "11647161532618576611"
+        "hash": "7881030482668655035"
       },
       {
         "file": "proxy.conf.json",
@@ -455,7 +455,7 @@
       },
       {
         "file": "src/app/core/code-types/model-desc.models.ts",
-        "hash": "6165663563822496733"
+        "hash": "11270758123344172378"
       },
       {
         "file": "src/app/core/components/base-wizard-step.component.ts",
@@ -863,7 +863,7 @@
       },
       {
         "file": "src/app/modules/licence-application/components/shared/step-components/common-access-code-anonymous.component.ts",
-        "hash": "11453865505800851512"
+        "hash": "2418531832551539317"
       },
       {
         "file": "src/app/modules/licence-application/components/shared/step-components/common-alias-list.component.ts",
@@ -1015,7 +1015,7 @@
       },
       {
         "file": "src/app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-category.component.ts",
-        "hash": "3706695163487754021"
+        "hash": "577681768513795553"
       },
       {
         "file": "src/app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-checklist-new.component.ts",
@@ -1155,7 +1155,7 @@
       },
       {
         "file": "src/app/modules/licence-application/services/licence-application.service.ts",
-        "hash": "4682646012054332645"
+        "hash": "18111170372588452898"
       },
       {
         "file": "src/app/modules/licence-application/services/permit-application.helper.ts",

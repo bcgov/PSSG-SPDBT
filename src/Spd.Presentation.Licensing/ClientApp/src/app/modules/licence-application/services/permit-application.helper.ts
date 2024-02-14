@@ -230,9 +230,25 @@ export abstract class PermitApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
 					(form) =>
-						form.get('isResidentOfCanada')?.value == BooleanTypeCode.Yes &&
-						(form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
-							form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.StudyPermit)
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							(form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
+								form.get('proofOfResidentStatusCode')?.value == LicenceDocumentTypeCode.StudyPermit))
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'governmentIssuedPhotoTypeCode',
+					(form) =>
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value !== LicenceDocumentTypeCode.CanadianPassport) ||
+						form.get('isResidentOfCanada')?.value == BooleanTypeCode.No ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							form.get('isResidentOfCanada')?.value == BooleanTypeCode.Yes &&
+							form.get('proofOfResidentStatusCode')?.value !== LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'governmentIssuedAttachments',
+					(form) => form.get('isResidentOfCanada')?.value == BooleanTypeCode.No
 				),
 			],
 		}
