@@ -1,5 +1,3 @@
-
-
 using Microsoft.AspNetCore.Mvc;
 using Spd.Utilities.Shared;
 

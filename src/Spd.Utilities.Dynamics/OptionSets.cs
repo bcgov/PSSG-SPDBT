@@ -337,4 +337,16 @@ namespace Spd.Utilities.Dynamics
         Normal = 1,
         High = 2
     }
+
+    public enum PermitPurposeOptionSet
+    {
+        ProtectionOfPersonalProperty = 100000006,
+        ProtectionOfOtherProperty = 100000007,
+        ProtectionOfAnotherPerson = 100000005,
+        PersonalProtection = 100000000,
+        MyEmployment = 100000001,
+        OutdoorRecreation = 100000003,
+        TravelInResponseToInternationalConflict = 100000004,
+        Other = 100000002
+    }
 }

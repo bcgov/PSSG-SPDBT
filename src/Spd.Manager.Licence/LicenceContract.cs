@@ -19,5 +19,5 @@ public record LicenceResponse
     public LicenceTermCode? LicenceTermCode { get; set; }
 };
 
-public record LicenceQuery(string LicenceNumber, string AccessCode) : IRequest<LicenceResponse>;
+public record LicenceQuery(string LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
 public record LicencePhotoQuery(Guid LicenceId) : IRequest<FileResponse>;
