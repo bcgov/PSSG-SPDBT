@@ -409,6 +409,9 @@ export abstract class LicenceApplicationHelper {
 			notCanadianCitizenProofTypeCode: new FormControl(''),
 			expiryDate: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
+			governmentIssuedPhotoTypeCode: new FormControl(''),
+			governmentIssuedExpiryDate: new FormControl(''),
+			governmentIssuedAttachments: new FormControl([]),
 		},
 		{
 			validators: [
@@ -426,37 +429,21 @@ export abstract class LicenceApplicationHelper {
 						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
 						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit
 				),
-			],
-		}
-	);
-
-	additionalGovIdFormGroup: FormGroup = this.formBuilder.group(
-		{
-			governmentIssuedPhotoTypeCode: new FormControl(''),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'governmentIssuedPhotoTypeCode',
-					(_form) =>
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.CanadianPassport) ||
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.PermanentResidentCard)
+					(form) =>
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(_form) =>
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							this.citizenshipFormGroup.get('canadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.CanadianPassport) ||
-						(this.citizenshipFormGroup.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							this.citizenshipFormGroup.get('notCanadianCitizenProofTypeCode')?.value !=
-								LicenceDocumentTypeCode.PermanentResidentCard)
+					'governmentIssuedAttachments',
+					(form) =>
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
 				),
 			],
 		}
@@ -627,7 +614,6 @@ export abstract class LicenceApplicationHelper {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
-		const additionalGovIdData = { ...licenceModelFormValue.additionalGovIdData };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
@@ -853,12 +839,12 @@ export abstract class LicenceApplicationHelper {
 			citizenshipData.notCanadianCitizenProofTypeCode
 		);
 
-		if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
+		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
 			const docs: Array<Blob> = [];
-			additionalGovIdData.attachments.forEach((doc: SpdFile) => {
+			citizenshipData.governmentIssuedAttachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
-			documents.push({ licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode, documents: docs });
+			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
 		}
 
 		if (photographOfYourselfData.attachments) {
@@ -908,7 +894,6 @@ export abstract class LicenceApplicationHelper {
 		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
 		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
-		const additionalGovIdData = { ...licenceModelFormValue.additionalGovIdData };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
@@ -1089,18 +1074,19 @@ export abstract class LicenceApplicationHelper {
 			citizenshipData.notCanadianCitizenProofTypeCode
 		);
 
-		if (isIncludeAdditionalGovermentIdStepData && additionalGovIdData.attachments) {
-			additionalGovIdData.attachments?.forEach((doc: any) => {
+		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
+			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
-					expiryDate: additionalGovIdData.expiryDate
-						? this.formatDatePipe.transform(additionalGovIdData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+					expiryDate: citizenshipData.governmentIssuedExpiryDate
+						? this.formatDatePipe.transform(
+								citizenshipData.governmentIssuedExpiryDate,
+								SPD_CONSTANTS.date.backendDateFormat
+						  )
 						: null,
-					licenceDocumentTypeCode: additionalGovIdData.governmentIssuedPhotoTypeCode,
+					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
 			});
-		} else {
-			this.additionalGovIdFormGroup.reset();
 		}
 
 		photographOfYourselfData.attachments?.forEach((doc: any) => {
@@ -1420,36 +1406,6 @@ export abstract class LicenceApplicationHelper {
 
 		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
-
-	// private getSaveDocumentInfosAnonymous(licenceModelFormValue: any): Array<DocumentBase> {
-	// 	const documents: Array<DocumentBase> = [];
-	// 	const savebody = this.getSaveBody(licenceModelFormValue);
-
-	// 	savebody.categoryData?.forEach((item: WorkerLicenceAppCategoryData) => {
-	// 		item.documents?.forEach((doc: Document) => {
-	// 			if (doc.expiryDate) {
-	// 				documents.push({ licenceDocumentTypeCode: doc.licenceDocumentTypeCode!, expiryDate: doc.expiryDate });
-	// 			}
-	// 		});
-	// 	});
-
-	// 	if (savebody.citizenshipDocument?.expiryDate) {
-	// 		documents.push({
-	// 			licenceDocumentTypeCode: savebody.citizenshipDocument.licenceDocumentTypeCode,
-	// 			expiryDate: savebody.citizenshipDocument.expiryDate,
-	// 		});
-	// 	}
-
-	// 	if (savebody.additionalGovIdDocument?.expiryDate) {
-	// 		documents.push({
-	// 			licenceDocumentTypeCode: savebody.additionalGovIdDocument.licenceDocumentTypeCode,
-	// 			expiryDate: savebody.additionalGovIdDocument.expiryDate,
-	// 		});
-	// 	}
-
-	// 	console.debug('submitLicenceAnonymous documentInfos', documents);
-	// 	return documents;
-	// }
 
 	includeAdditionalGovermentIdStepData(
 		isCanadianCitizen: BooleanTypeCode,
