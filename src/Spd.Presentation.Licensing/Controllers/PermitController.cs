@@ -22,26 +22,20 @@ namespace Spd.Presentation.Licensing.Controllers
     [ApiController]
     public class PermitController : SpdLicenceAnonymousControllerBase
     {
-        private readonly ILogger<PermitController> _logger;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<PermitAppAnonymousSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
-        private readonly IMapper _mapper;
-
-        public PermitController(ILogger<PermitController> logger,
-            IPrincipal currentUser,
+ 
+        public PermitController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<PermitAppAnonymousSubmitRequest> permitAppAnonymousSubmitRequestValidator,
-            IMapper mapper,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService)
         {
-            _logger = logger;
             _mediator = mediator;
             _configuration = configuration;
-            _mapper = mapper;
             _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
         }
 
@@ -59,12 +53,12 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             string keyCode = Guid.NewGuid().ToString();
             await _cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
-            AddInfoToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
             return Ok();
         }
 
         /// <summary>
-        /// Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode to upload following files.
+        /// Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
         /// Uploading file only save files in cache, the files are not connected to the appliation yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
@@ -111,6 +105,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Submit Body Armor or Armor Vehicle permit application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// The session keycode is stored in the cookies.
         /// </summary>
         /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
@@ -119,44 +114,47 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
         {
-            //temp del
-            //string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
-            ////validate keyCode
-            //LicenceAppDocumentsCache? keyCodeValue = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
-            //if (keyCodeValue == null)
-            //{
-            //    throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-            //}
+            string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
+            //validate keyCode
+            LicenceAppDocumentsCache? keyCodeValue = await _cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+            if (keyCodeValue == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+            }
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
+            PermitAppCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 AnonymousPermitAppNewCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
                 AnonymousPermitAppReplaceCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
                 AnonymousPermitAppRenewCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
                 AnonymousPermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
+
             }
-            return null;
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+            return response;
         }
         #endregion
     }

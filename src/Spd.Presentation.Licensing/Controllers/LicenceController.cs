@@ -65,7 +65,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (response != null)
             {
                 string str = $"{response.LicenceId}*{response.LicenceAppId}";
-                AddInfoToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
             }
             return response;
         }

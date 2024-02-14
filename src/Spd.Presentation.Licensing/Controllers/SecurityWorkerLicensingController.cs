@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +29,6 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
         private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequest> _anonymousLicenceAppSubmitRequestValidator;
-        private readonly IMapper _mapper;
 
         public SecurityWorkerLicensingController(ILogger<SecurityWorkerLicensingController> logger,
             IPrincipal currentUser,
@@ -40,15 +38,13 @@ namespace Spd.Presentation.Licensing.Controllers
             IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider,
-            IMapper mapper,
-            IRecaptchaVerificationService recaptchaVerificationService) :base(cache, dpProvider, recaptchaVerificationService)
+            IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
             _wslSubmitValidator = wslSubmitValidator;
-            _mapper = mapper;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
 
@@ -197,16 +193,15 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             string keyCode = Guid.NewGuid().ToString();
             await _cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
-            AddInfoToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
             return Ok();
         }
 
         /// <summary>
-        /// Upload licence application files: frontend use the keyCode to upload following files.
+        /// Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
         /// Uploading file only save files in cache, the files are not connected to the appliation yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
-        /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/anonymous/files")]
@@ -253,7 +248,6 @@ namespace Spd.Presentation.Licensing.Controllers
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
-        /// <param name="keyCode"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/anonymous/submit")]
@@ -273,30 +267,33 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
+            WorkerLicenceCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
                 AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
                 AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
                 AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
-                return await _mediator.Send(command, ct);
+                response = await _mediator.Send(command, ct);
             }
-            return null;
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+            SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+            return response;
         }
         #endregion
 

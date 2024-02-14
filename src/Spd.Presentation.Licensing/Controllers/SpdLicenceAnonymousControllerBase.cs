@@ -20,7 +20,7 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
         _recaptchaVerificationService = recaptchaVerificationService;
     }
 
-    protected void AddInfoToResponseCookie(string key, string value)
+    protected void SetValueToResponseCookie(string key, string value)
     {
         var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(20));
         this.Response.Cookies.Append(key,

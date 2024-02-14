@@ -39,7 +39,7 @@ internal class PermitAppManager :
     public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand cmd, CancellationToken ct)
     {
         PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
-        //temp : ValidateFilesForNewApp(cmd);
+        ValidateFilesForNewApp(cmd);
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
