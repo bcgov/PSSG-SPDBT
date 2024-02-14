@@ -14,11 +14,6 @@ import {
 } from '@app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
-// export interface SelectOptions<k = string | number | boolean> {
-// 	code: k;
-// 	desc: string;
-// }
-
 export interface SelectOptions<k = string> {
 	code: k;
 	desc: string;
@@ -228,6 +223,7 @@ export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
 ];
 
 export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
+	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{
 		desc: 'Confirmation of Permanent Residence Document (IMM 5292)',
 		code: LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
@@ -235,7 +231,6 @@ export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
 	{ desc: 'Record of Landing (IMM1000)', code: LicenceDocumentTypeCode.RecordOfLandingDocument },
 	{ desc: 'Study Permit', code: LicenceDocumentTypeCode.StudyPermit },
 	{ desc: 'Valid document to verify legal work status', code: LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus },
-	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{ desc: 'Work Permit', code: LicenceDocumentTypeCode.WorkPermit },
 ];
 
@@ -243,8 +238,8 @@ export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'BC Services Card', code: LicenceDocumentTypeCode.BcServicesCard },
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
 	{ desc: 'Canadian Native Status Card', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
-	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
+	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
 	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 ];

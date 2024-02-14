@@ -24,9 +24,11 @@ import { FormControlValidators } from '@app/core/validators/form-control.validat
 import * as moment from 'moment';
 import {
 	BehaviorSubject,
+	catchError,
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
+	map,
 	Observable,
 	of,
 	Subscription,
@@ -245,71 +247,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
 			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application with a certain type
-	 * @param licenceAppId
-	 * @returns
-	 */
-	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return this.loadLicenceRenewal().pipe(
-					tap((resp: WorkerLicenceResponse) => {
-						console.debug('[getLicenceOfType] Renewal', applicationTypeCode, resp);
-						this.initialized = true;
-					})
-				);
-
-				// return forkJoin([this.loadLicenceRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-				// 	catchError((error) => of(error)),
-				// 	map((resps: any[]) => {
-				// 		this.initialized = true;
-				// 		this.setPhotographOfYourself(resps[1]);
-				// 		return resps[0];
-				// 	})
-				// );
-			}
-			case ApplicationTypeCode.Update: {
-				return this.loadLicenceUpdate().pipe(
-					tap((resp: WorkerLicenceResponse) => {
-						console.debug('[getLicenceOfType] Update', applicationTypeCode, resp);
-						this.initialized = true;
-					})
-				);
-
-				// return forkJoin([this.loadLicenceUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-				// 	catchError((error) => of(error)),
-				// 	map((resps: any[]) => {
-				// 		this.initialized = true;
-				// 		this.setPhotographOfYourself(resps[1]);
-				// 		return resps[0];
-				// 	})
-				// );
-			}
-			default: {
-				return this.loadLicenceReplacement().pipe(
-					tap((resp: WorkerLicenceResponse) => {
-						console.debug('[getLicenceOfType] Replacement', applicationTypeCode, resp);
-						this.initialized = true;
-					})
-				);
-			}
-		}
-	}
-
-	private setPhotographOfYourself(image: Blob | null): void {
-		if (!image) {
-			this.photographOfYourself = null;
-			return;
-		}
-
-		const objectUrl = URL.createObjectURL(image);
-		this.photographOfYourself = this.domSanitizer.sanitize(
-			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 	}
 
@@ -724,6 +661,56 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		}
 
 		return of(this.licenceModelFormGroup.value);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return forkJoin([this.loadLicenceRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			case ApplicationTypeCode.Update: {
+				return forkJoin([this.loadLicenceUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			default: {
+				return this.loadLicenceReplacement().pipe(
+					tap((_resp: WorkerLicenceResponse) => {
+						this.initialized = true;
+					})
+				);
+			}
+		}
+	}
+
+	private setPhotographOfYourself(image: Blob | null): void {
+		if (!image || image.size == 0) {
+			this.photographOfYourself = null;
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(image);
+		this.photographOfYourself = this.domSanitizer.sanitize(
+			SecurityContext.RESOURCE_URL,
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+		);
 	}
 
 	private loadExistingLicence(): Observable<WorkerLicenceResponse> {
