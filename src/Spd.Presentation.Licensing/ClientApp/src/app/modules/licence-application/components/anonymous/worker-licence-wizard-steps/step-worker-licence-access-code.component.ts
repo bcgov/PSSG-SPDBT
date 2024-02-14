@@ -29,7 +29,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				</app-step-title>
 
 				<app-common-access-code-anonymous
-					(linkPerformed)="onLinkPerformed()"
+					(linkSuccess)="onLinkSuccess()"
 					[form]="form"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
@@ -93,7 +93,7 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 		return this.form.valid;
 	}
 
-	onLinkPerformed(): void {
+	onLinkSuccess(): void {
 		const accessCodeData = this.form.value;
 
 		this.licenceApplicationService

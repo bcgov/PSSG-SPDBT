@@ -13,7 +13,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 					subtitle="Processing time will be reduced if you provide info from your past licence"
 				></app-step-title>
 
-				<app-common-expired-licence [form]="form"></app-common-expired-licence>
+				<app-common-expired-licence [form]="form" (linkSuccess)="onLinkSuccess()"></app-common-expired-licence>
 			</div>
 		</section>
 	`,
@@ -27,5 +27,9 @@ export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperS
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onLinkSuccess(): void {
+		// TODO handle onLinkSuccess
 	}
 }
