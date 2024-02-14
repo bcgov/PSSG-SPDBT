@@ -245,10 +245,6 @@ public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAp
 
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
-        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
-        RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)

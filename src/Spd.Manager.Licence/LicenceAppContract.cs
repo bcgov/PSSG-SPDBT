@@ -40,14 +40,12 @@ public abstract record PersonalLicenceAppBase
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRestraints { get; set; }
-    public bool? UseDogs { get; set; }
-    public bool? IsDogsPurposeProtection { get; set; }
-    public bool? IsDogsPurposeDetectionDrugs { get; set; }
-    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public bool? HasNewMentalHealthCondition { get; set; }
+    public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
 public record ResidentialAddress : Address;
