@@ -493,6 +493,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 			}
 
 			.text-minor-heading {
+				font-size: 1.1rem !important;
 				color: var(--color-primary-light) !important;
 				font-weight: 300 !important;
 			}
@@ -740,6 +741,18 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	get citizenshipAttachments(): File[] {
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
+	get governmentIssuedPhotoTypeCode(): string {
+		if (!this.showAdditionalGovIdData) return '';
+		return this.licenceModelData.citizenshipData.governmentIssuedPhotoTypeCode ?? '';
+	}
+	get governmentIssuedPhotoExpiryDate(): string {
+		if (!this.showAdditionalGovIdData) return '';
+		return this.licenceModelData.citizenshipData.governmentIssuedExpiryDate ?? '';
+	}
+	get governmentIssuedPhotoAttachments(): File[] {
+		if (!this.showAdditionalGovIdData) return [];
+		return this.licenceModelData.citizenshipData.governmentIssuedAttachments ?? [];
+	}
 
 	get showAdditionalGovIdData(): boolean {
 		return (
@@ -750,19 +763,6 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 				this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
 					LicenceDocumentTypeCode.PermanentResidentCard)
 		);
-	}
-
-	get governmentIssuedPhotoTypeCode(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.additionalGovIdData.governmentIssuedPhotoTypeCode ?? '';
-	}
-	get governmentIssuedPhotoExpiryDate(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.additionalGovIdData.expiryDate ?? '';
-	}
-	get governmentIssuedPhotoAttachments(): File[] {
-		if (!this.showAdditionalGovIdData) return [];
-		return this.licenceModelData.additionalGovIdData.attachments ?? [];
 	}
 
 	get hasBcDriversLicence(): string {

@@ -120,7 +120,6 @@ import { LicenceCategorySecurityAlarmSalesComponent } from './components/shared/
 import { LicenceCategorySecurityConsultantComponent } from './components/shared/worker-licence-wizard-steps/licence-category-security-consultant.component';
 import { LicenceCategorySecurityGuardSupComponent } from './components/shared/worker-licence-wizard-steps/licence-category-security-guard-sup.component';
 import { LicenceCategorySecurityGuardComponent } from './components/shared/worker-licence-wizard-steps/licence-category-security-guard.component';
-import { StepWorkerLicenceAdditionalGovIdComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-additional-gov-id.component';
 import { StepWorkerLicenceAliasesComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-aliases.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCategoryComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-category.component';
@@ -236,7 +235,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitTypeAnonymousComponent,
 		StepWorkerLicenceAccessCodeAuthorizedComponent,
 		StepWorkerLicenceAccessCodeComponent,
-		StepWorkerLicenceAdditionalGovIdComponent,
 		StepWorkerLicenceAliasesComponent,
 		StepWorkerLicenceAllUpdatesAuthenticatedComponent,
 		StepWorkerLicenceApplicationTypeAnonymousComponent,
