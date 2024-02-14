@@ -39,6 +39,10 @@ export class AddressAutoCompleteService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiMetadataAddressGet$Response(params: {
+
+    /**
+     * required
+     */
     search: string;
 
     /**
@@ -85,6 +89,10 @@ export class AddressAutoCompleteService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiMetadataAddressGet(params: {
+
+    /**
+     * required
+     */
     search: string;
 
     /**

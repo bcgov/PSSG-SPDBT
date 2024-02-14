@@ -25,7 +25,6 @@ export interface PermitAppAnonymousSubmitRequest {
   bcDriversLicenceNumber?: null | string;
   bodyArmourPermitReasonCodes?: null | Array<BodyArmourPermitReasonCode>;
   businessTypeCode?: BusinessTypeCode;
-  carryAndUseRestraints?: null | boolean;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
   dateOfBirth?: null | string;

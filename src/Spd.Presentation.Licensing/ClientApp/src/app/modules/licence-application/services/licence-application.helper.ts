@@ -13,7 +13,7 @@ import {
 	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { SpdFile } from '@app/core/services/util.service';
+import { SpdFile, UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -587,7 +587,8 @@ export abstract class LicenceApplicationHelper {
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe
+		protected formatDatePipe: FormatDatePipe,
+		protected utilService: UtilService
 	) {}
 
 	getSaveBodyAnonymous(licenceModelFormValue: any): any {
@@ -727,7 +728,7 @@ export abstract class LicenceApplicationHelper {
 				});
 			}
 
-			if (this.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs)) {
+			if (this.utilService.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs)) {
 				if (licenceModelFormValue.dogsAuthorizationData.attachments) {
 					const docs: Array<Blob> = [];
 					licenceModelFormValue.dogsAuthorizationData.attachments.forEach((doc: SpdFile) => {
@@ -740,7 +741,9 @@ export abstract class LicenceApplicationHelper {
 				}
 			}
 
-			if (this.booleanTypeToBoolean(licenceModelFormValue.restraintsAuthorizationData.carryAndUseRestraints)) {
+			if (
+				this.utilService.booleanTypeToBoolean(licenceModelFormValue.restraintsAuthorizationData.carryAndUseRestraints)
+			) {
 				if (licenceModelFormValue.restraintsAuthorizationData.attachments) {
 					const docs: Array<Blob> = [];
 					licenceModelFormValue.restraintsAuthorizationData.attachments.forEach((doc: SpdFile) => {
@@ -976,7 +979,7 @@ export abstract class LicenceApplicationHelper {
 			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
 
 			dogsAuthorizationData = {
-				useDogs: this.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs),
+				useDogs: this.utilService.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs),
 				isDogsPurposeDetectionDrugs: licenceModelFormValue.dogsAuthorizationData.useDogs ? isDetectionDrugs : null,
 				isDogsPurposeDetectionExplosives: licenceModelFormValue.dogsAuthorizationData.useDogs
 					? isDetectionExplosives
@@ -985,7 +988,7 @@ export abstract class LicenceApplicationHelper {
 			};
 
 			restraintsAuthorizationData = {
-				carryAndUseRestraints: this.booleanTypeToBoolean(
+				carryAndUseRestraints: this.utilService.booleanTypeToBoolean(
 					licenceModelFormValue.restraintsAuthorizationData.carryAndUseRestraints
 				),
 			};
@@ -1135,13 +1138,13 @@ export abstract class LicenceApplicationHelper {
 					? BusinessTypeCode.None
 					: soleProprietorData.businessTypeCode,
 			//-----------------------------------
-			hasPreviousName: this.booleanTypeToBoolean(licenceModelFormValue.aliasesData.previousNameFlag),
+			hasPreviousName: this.utilService.booleanTypeToBoolean(licenceModelFormValue.aliasesData.previousNameFlag),
 			aliases:
 				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
 					? licenceModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
-			hasBcDriversLicence: this.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
+			hasBcDriversLicence: this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
 			bcDriversLicenceNumber:
 				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
 					? bcDriversLicenceData.bcDriversLicenceNumber
@@ -1160,13 +1163,15 @@ export abstract class LicenceApplicationHelper {
 			//-----------------------------------
 			...personalInformationData,
 			//-----------------------------------
-			hasCriminalHistory: this.booleanTypeToBoolean(licenceModelFormValue.criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: this.booleanTypeToBoolean(
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(
+				licenceModelFormValue.criminalHistoryData.hasCriminalHistory
+			),
+			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(
 				licenceModelFormValue.criminalHistoryData.hasCriminalHistory
 			), // used by the backend for an Update or Renewal
 			criminalChargeDescription: licenceModelFormValue.criminalHistoryData.criminalChargeDescription,
 			//-----------------------------------
-			reprint: this.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
+			reprint: this.utilService.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
@@ -1176,14 +1181,14 @@ export abstract class LicenceApplicationHelper {
 				: mailingAddressData,
 			residentialAddressData,
 			//-----------------------------------
-			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
+			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
-			useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			useBcServicesCardPhoto: this.utilService.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
 			//-----------------------------------
-			isTreatedForMHC: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			hasNewMentalHealthCondition: this.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: this.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
+			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
 			otherOfficerRole: policeBackgroundData.otherOfficerRole,
 			//-----------------------------------
@@ -1326,7 +1331,7 @@ export abstract class LicenceApplicationHelper {
 			});
 		});
 
-		if (this.booleanTypeToBoolean(dogsAuthorizationData.useDogs)) {
+		if (this.utilService.booleanTypeToBoolean(dogsAuthorizationData.useDogs)) {
 			dogsAuthorizationData.attachments?.forEach((doc: any) => {
 				documents.push({
 					documentUrlId: doc.documentUrlId,
@@ -1335,7 +1340,7 @@ export abstract class LicenceApplicationHelper {
 			});
 		}
 
-		if (this.booleanTypeToBoolean(restraintsAuthorizationData.carryAndUseRestraints)) {
+		if (this.utilService.booleanTypeToBoolean(restraintsAuthorizationData.carryAndUseRestraints)) {
 			dogsAuthorizationData.attachments?.forEach((doc: any) => {
 				documents.push({
 					documentUrlId: doc.documentUrlId,
@@ -1390,31 +1395,8 @@ export abstract class LicenceApplicationHelper {
 		return documents;
 	}
 
-	/**
-	 * Convert BooleanTypeCode to boolean
-	 * @param value
-	 * @returns
-	 */
-	private booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
-		if (!value) return null;
-
-		if (value == BooleanTypeCode.Yes) return true;
-		return false;
-	}
-
-	/**
-	 * Convert boolean to BooleanTypeCode
-	 * @param value
-	 * @returns
-	 */
-	public booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
-		const isBooleanType = typeof value === 'boolean';
-		if (!isBooleanType) return null;
-
-		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
-	}
-
 	includeAdditionalGovermentIdStepData(
+		// TODO should be able to remove this ?
 		isCanadianCitizen: BooleanTypeCode,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null

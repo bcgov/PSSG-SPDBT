@@ -27,7 +27,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { LicenceFeeService, LicenceService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -101,15 +101,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
+		utilService: UtilService,
 		private licenceFeeService: LicenceFeeService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
-		private licenceService: LicenceService,
+		private permitService: PermitService,
+		private templicenceService: LicenceService, // TODO remove later
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: CommonApplicationService,
-		private utilService: UtilService
+		private commonApplicationService: CommonApplicationService
 	) {
-		super(formBuilder, configService, formatDatePipe);
+		super(formBuilder, configService, formatDatePipe, utilService);
 
 		this.permitModelChangedSubscription = this.permitModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -150,7 +151,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		accessCode: string,
 		recaptchaCode: string
 	): Observable<LicenceResponse> {
-		return this.licenceService
+		return this.templicenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
 	}
@@ -516,7 +517,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 
 				const expiredLicenceData = {
-					hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+					hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
 					expiredLicenceNumber: resp.expiredLicenceNumber,
 					expiryDate: resp.expiryDate,
 					expiredLicenceId: resp.expiredLicenceId,
@@ -527,7 +528,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				const bcDriversLicenceData = {
-					hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
+					hasBcDriversLicence: this.utilService.booleanToBooleanType(resp.hasBcDriversLicence),
 					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 				};
 
@@ -544,11 +545,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				const criminalHistoryData = {
-					hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
+					hasCriminalHistory: this.utilService.booleanToBooleanType(resp.hasCriminalHistory),
 				};
 
 				const aliasesData = {
-					previousNameFlag: resp.hasPreviousName ? this.booleanToBooleanType(resp.hasPreviousName) : BooleanTypeCode.No,
+					previousNameFlag: resp.hasPreviousName
+						? this.utilService.booleanToBooleanType(resp.hasPreviousName)
+						: BooleanTypeCode.No,
 				};
 
 				let personalInformationData = {};
@@ -632,7 +635,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				// }
 
 				const photographOfYourselfData = {
-					useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
+					useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 					attachments: photographOfYourselfAttachments,
 				};
 

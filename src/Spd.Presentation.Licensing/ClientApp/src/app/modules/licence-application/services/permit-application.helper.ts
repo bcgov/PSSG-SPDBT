@@ -4,12 +4,14 @@ import {
 	ApplicationTypeCode,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
+	PermitAppAnonymousSubmitRequest,
 	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceAppSubmitRequest,
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -369,14 +371,16 @@ export abstract class PermitApplicationHelper {
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe
+		protected formatDatePipe: FormatDatePipe,
+		protected utilService: UtilService
 	) {}
 
 	/**
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	public getSaveBody(permitModelFormValue: any): WorkerLicenceAppUpsertRequest | WorkerLicenceAppSubmitRequest {
+	public getSaveBody(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
+		// TODO WorkerLicenceAppUpsertRequest |
 		console.debug('getSaveBody permitModelFormValue', permitModelFormValue);
 
 		const licenceAppId = permitModelFormValue.licenceAppId;
@@ -462,13 +466,13 @@ export abstract class PermitApplicationHelper {
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
-			hasPreviousName: this.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag),
+			hasPreviousName: this.utilService.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag),
 			aliases:
 				permitModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
 					? permitModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
-			hasBcDriversLicence: this.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
+			hasBcDriversLicence: this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
 			bcDriversLicenceNumber:
 				bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
 					? bcDriversLicenceData.bcDriversLicenceNumber
@@ -487,7 +491,9 @@ export abstract class PermitApplicationHelper {
 			//-----------------------------------
 			...personalInformationData,
 			//-----------------------------------
-			hasCriminalHistory: this.booleanTypeToBoolean(permitModelFormValue.criminalHistoryData.hasCriminalHistory),
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(
+				permitModelFormValue.criminalHistoryData.hasCriminalHistory
+			),
 			//-----------------------------------
 			licenceTermCode: permitModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
@@ -497,12 +503,12 @@ export abstract class PermitApplicationHelper {
 				: mailingAddressData,
 			residentialAddressData,
 			//-----------------------------------
-			isCanadianCitizen: this.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
+			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			// citizenshipDocument,
 			//-----------------------------------
 			// fingerprintProofDocument,
 			//-----------------------------------
-			// useBcServicesCardPhoto: this.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			// useBcServicesCardPhoto: this.utilService.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
 			// idPhotoDocument,
 			//-----------------------------------
 		};
@@ -513,7 +519,7 @@ export abstract class PermitApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	public getSaveBodyAnonymous(permitModelFormValue: any): WorkerLicenceAppAnonymousSubmitRequest {
+	public getSaveBodyAnonymous(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
 		const savebody = this.getSaveBody(permitModelFormValue);
 
 		// const documentInfos = this.getSaveDocumentInfosAnonymous(permitModelFormValue);
@@ -556,11 +562,6 @@ export abstract class PermitApplicationHelper {
 			otherOfficerRole: savebody.otherOfficerRole,
 			isTreatedForMHC: savebody.isTreatedForMHC,
 			useBcServicesCardPhoto: savebody.useBcServicesCardPhoto,
-			carryAndUseRestraints: savebody.carryAndUseRestraints ?? null,
-			useDogs: savebody.useDogs ?? null,
-			isDogsPurposeProtection: savebody.isDogsPurposeProtection ?? null,
-			isDogsPurposeDetectionDrugs: savebody.isDogsPurposeDetectionDrugs ?? null,
-			isDogsPurposeDetectionExplosives: savebody.isDogsPurposeDetectionExplosives ?? null,
 			isCanadianCitizen: savebody.isCanadianCitizen,
 			aliases: savebody.aliases ? [...savebody.aliases] : [],
 			residentialAddressData: { ...savebody.residentialAddressData },
@@ -634,28 +635,4 @@ export abstract class PermitApplicationHelper {
 
 	// 	return documents;
 	// }
-
-	/**
-	 * Convert BooleanTypeCode to boolean
-	 * @param value
-	 * @returns
-	 */
-	booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
-		if (!value) return null;
-
-		if (value == BooleanTypeCode.Yes) return true;
-		return false;
-	}
-
-	/**
-	 * Convert boolean to BooleanTypeCode
-	 * @param value
-	 * @returns
-	 */
-	public booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
-		const isBooleanType = typeof value === 'boolean';
-		if (!isBooleanType) return null;
-
-		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
-	}
 }

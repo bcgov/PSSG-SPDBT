@@ -45,6 +45,9 @@ export interface WorkerLicenceAppSubmitRequest {
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
   isCanadianCitizen?: null | boolean;
+  isDogsPurposeDetectionDrugs?: null | boolean;
+  isDogsPurposeDetectionExplosives?: null | boolean;
+  isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
@@ -59,6 +62,7 @@ export interface WorkerLicenceAppSubmitRequest {
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;
   useBcServicesCardPhoto?: null | boolean;
+  useDogs?: null | boolean;
   weight?: null | number;
   weightUnitCode?: WeightUnitCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;

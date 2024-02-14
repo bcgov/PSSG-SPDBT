@@ -24,7 +24,6 @@ export interface WorkerLicenceResponse {
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
   businessTypeCode?: BusinessTypeCode;
-  carryAndUseRestraints?: null | boolean;
   caseNumber?: null | string;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   contactEmailAddress?: null | string;
