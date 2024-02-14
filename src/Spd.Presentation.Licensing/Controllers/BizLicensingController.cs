@@ -6,11 +6,9 @@ namespace Spd.Presentation.Licensing.Controllers
     [ApiController]
     public class BizLicensingController : SpdControllerBase
     {
-        private readonly ILogger<BizLicensingController> _logger;
 
-        public BizLicensingController(ILogger<BizLicensingController> logger)
+        public BizLicensingController()
         {
-            _logger = logger;
         }
     }
 }

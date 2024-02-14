@@ -24,7 +24,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// If the next step of the search process in returned data is Find, use the result Id as next Find lastId to do next round search.Or use null.
         /// If the next step of the search process in returned data is Retrieve, use the result Id as Retrieve endpoint Id to get final result.
         /// </remark>
-        /// <param name="searchTerm">required</param>
+        /// <param name="search"></param>
         /// <param name="country">optional, The ISO 2 or 3 character code for the country to search in. Default would be CAN</param>
         /// <param name="lastId">optional, The Id from a previous Find</param>
         /// <returns>AddressFindResponse</returns>

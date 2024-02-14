@@ -5,6 +5,7 @@ using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -51,7 +52,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             var invalidCategoryMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
             if (invalidCategoryMatrix == null)
-                throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
+                throw new ApiException(HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
             return await Task.FromResult(new ConfigurationResponse(oidcResp,
                 recaptchaResp,
