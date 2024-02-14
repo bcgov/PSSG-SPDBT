@@ -5,13 +5,13 @@ namespace Spd.Utilities.LogonUser.Configurations
     public class BCeIDAuthenticationConfiguration 
     {
         [Required]
-        public string Authority { get; set; }
+        public string Authority { get; set; } = null!;
 
         [Required]
-        public string Issuer { get; set; }
+        public string Issuer { get; set; } = null!;
 
         [Required]
-        public string Audiences { get; set; }
+        public string Audiences { get; set; } = null!;
 
         public const string Name = "BCeIDAuthentication";
 
@@ -19,6 +19,6 @@ namespace Spd.Utilities.LogonUser.Configurations
         public string ResponseType { get; set; } = "code";
         public string Scope { get; set; } = "openid profile email offline_access";
         public string ClientId { get; set; } = null!;
-        public string PostLogoutRedirectUri { get; set; } = null;
+        public Uri? PostLogoutRedirectUri { get; set; }
     }
 }

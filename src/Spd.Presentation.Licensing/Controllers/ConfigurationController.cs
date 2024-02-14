@@ -53,31 +53,27 @@ namespace Spd.Presentation.Licensing.Controllers
             if (invalidCategoryMatrix == null)
                 throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
-            return await Task.FromResult(new ConfigurationResponse()
-            {
-                OidcConfiguration = oidcResp,
-                RecaptchaConfiguration = recaptchaResp,
-                BcscConfiguration = bcscConfig,
-                InvalidWorkerLicenceCategoryMatrixConfiguration = invalidCategoryMatrix
-            });
+            return await Task.FromResult(new ConfigurationResponse(oidcResp,
+                recaptchaResp,
+                bcscConfig,
+                invalidCategoryMatrix));
         }
     }
 
-    public record ConfigurationResponse
-    {
-        public OidcConfiguration OidcConfiguration { get; set; } = null!;
-        public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;
-        public BcscConfiguration BcscConfiguration { get; set; } = null!;
-        public Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration { get; set; } = null!;
-    }
+    public record ConfigurationResponse(
+        OidcConfiguration OidcConfiguration,
+        RecaptchaConfiguration RecaptchaConfiguration,
+        BcscConfiguration BcscConfiguration,
+        Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration
+    );
 
     public record OidcConfiguration
     {
-        public string Issuer { get; set; }
-        public string ClientId { get; set; }
-        public string ResponseType { get; set; }
-        public string Scope { get; set; }
-        public string PostLogoutRedirectUri { get; set; }
+        public string? Issuer { get; set; }
+        public string? ClientId { get; set; }
+        public string? ResponseType { get; set; }
+        public string? Scope { get; set; }
+        public Uri? PostLogoutRedirectUri { get; set; }
     }
     public record BcscConfiguration : OidcConfiguration;
     public record RecaptchaConfiguration(string Key);

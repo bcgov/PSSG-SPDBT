@@ -39,7 +39,6 @@ public abstract record PersonalLicenceAppBase
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
-    public bool? CarryAndUseRestraints { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
