@@ -239,7 +239,7 @@ internal partial class SecurityWorkerAppManager :
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
-                response.ContactId,
+                response?.ContactId,
                 null,
                 null,
                 ct);
