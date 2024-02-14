@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepWorkerLicenceAdditionalGovIdComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-additional-gov-id.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
@@ -35,41 +34,6 @@ import { Subscription } from 'rxjs';
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_CITIZENSHIP)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showAdditionalGovermentIdStep">
-				<app-step-worker-licence-additional-gov-id></app-step-worker-licence-additional-gov-id>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_ADDITIONAL_GOV_ID)">
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_ADDITIONAL_GOV_ID)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_ADDITIONAL_GOV_ID)"
 						>
 							Next: Review
 						</button>
@@ -184,7 +148,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	implements OnInit, OnDestroy
 {
 	readonly STEP_CITIZENSHIP = 2;
-	readonly STEP_ADDITIONAL_GOV_ID = 3;
 	readonly STEP_BC_DRIVERS_LICENCE = 4;
 	readonly STEP_HEIGHT_AND_WEIGHT = 5;
 	readonly STEP_PHOTO = 6;
@@ -195,8 +158,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	isFormValid = false;
 
 	@ViewChild(StepWorkerLicenceCitizenshipComponent) citizenshipComponent!: StepWorkerLicenceCitizenshipComponent;
-	@ViewChild(StepWorkerLicenceAdditionalGovIdComponent)
-	additionalGovIdComponent!: StepWorkerLicenceAdditionalGovIdComponent;
 	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent)
 	bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
 	@ViewChild(StepWorkerLicencePhysicalCharacteristicsComponent)
@@ -226,8 +187,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 		switch (step) {
 			case this.STEP_CITIZENSHIP:
 				return this.citizenshipComponent.isFormValid();
-			case this.STEP_ADDITIONAL_GOV_ID:
-				return this.additionalGovIdComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:
 				return this.bcDriverLicenceComponent.isFormValid();
 			case this.STEP_HEIGHT_AND_WEIGHT:
@@ -238,14 +197,5 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	get showAdditionalGovermentIdStep(): boolean {
-		const form = this.licenceApplicationService.citizenshipFormGroup;
-		return this.licenceApplicationService.includeAdditionalGovermentIdStepData(
-			form.value.isCanadianCitizen,
-			form.value.canadianCitizenProofTypeCode,
-			form.value.notCanadianCitizenProofTypeCode
-		);
 	}
 }

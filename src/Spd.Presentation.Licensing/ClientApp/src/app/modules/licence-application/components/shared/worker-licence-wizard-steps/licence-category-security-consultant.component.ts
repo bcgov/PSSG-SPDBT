@@ -38,7 +38,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 				</div>
 			</div>
 
-			<div class="fs-6 fw-bold mb-2">Upload your resume:</div>
+			<div class="fs-6 fw-bold mb-2">Upload your resume</div>
 
 			<div class="my-2">
 				<app-file-upload
