@@ -43,6 +43,11 @@ public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumera
 
 public record WorkerLicenceResponse : PersonalLicenceAppBase
 {
+    public bool? CarryAndUseRestraints { get; set; }
+    public bool? UseDogs { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
     public string? CaseNumber { get; set; }
