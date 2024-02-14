@@ -85,14 +85,16 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 
 public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppBase //for anonymous user
 {
+    public bool? UseDogs { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
-    public bool? HasNewMentalHealthCondition { get; set; }
-    public bool? HasNewCriminalRecordCharge { get; set; }
     public string? CriminalChargeDescription { get; set; }
 }
 

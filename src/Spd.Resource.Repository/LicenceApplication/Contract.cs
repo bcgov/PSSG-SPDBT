@@ -61,6 +61,15 @@ public record LicenceApplication
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
+    public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+    public string? PermitOtherRequiredReason { get; set; }
+    public string? EmployerName { get; set; }
+    public string? SupervisorName { get; set; }
+    public string? SupervisorEmailAddress { get; set; }
+    public string? SupervisorPhoneNumber { get; set; }
+    public Addr? EmployerPrimaryAddress { get; set; }
+    public string? Rationale { get; set; }
+    public bool? IsCanadianResident { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
@@ -75,6 +84,7 @@ public record CreateLicenceApplicationCmd() : LicenceApplication
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
+
 };
 
 public record LicenceApplicationResp() : LicenceApplication
@@ -180,4 +190,16 @@ public enum WorkerCategoryTypeEnum
     SecurityAlarmResponse,
     SecurityAlarmSales,
     SecurityConsultant,
+}
+
+public enum PermitPurposeEnum
+{
+    ProtectionOfPersonalProperty, //armoured vehicle
+    ProtectionOfOtherProperty, //armoured vehicle
+    ProtectionOfAnotherPerson, //armoured vehicle
+    PersonalProtection, //ba
+    MyEmployment, //av, ba
+    OutdoorRecreation, //ba
+    TravelInResponseToInternationalConflict, //ba
+    Other //av,ba
 }
