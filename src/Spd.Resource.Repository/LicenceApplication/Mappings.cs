@@ -107,7 +107,21 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
          .ForMember(d => d.spd_consent, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
          .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => GetDeclarationDate(s)))
-         .ForMember(d => d.spd_legalnamechange, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasLegalNameChanged)))
+         .ForMember(d => d.spd_legalnamechange, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasLegalNameChanged)))////
+         .ForMember(d => d.spd_employeraddress1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.AddressLine1))
+         .ForMember(d => d.spd_employeraddress2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.AddressLine2))
+         .ForMember(d => d.spd_employercity, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.City))
+         .ForMember(d => d.spd_employercountry, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.Country))
+         .ForMember(d => d.spd_employerpostalcode, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.PostalCode))
+         .ForMember(d => d.spd_employerprovince, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.Province))
+         .ForMember(d => d.spd_employeremail, opt => opt.MapFrom(s => s.SupervisorEmailAddress))
+         .ForMember(d => d.spd_employerphonenumber, opt => opt.MapFrom(s => s.SupervisorPhoneNumber))
+         .ForMember(d => d.spd_employercontactname, opt => opt.MapFrom(s => s.SupervisorName))
+         .ForMember(d => d.spd_employername, opt => opt.MapFrom(s => s.EmployerName))
+         .ForMember(d => d.spd_rationale, opt => opt.MapFrom(s => s.Rationale))
+         .ForMember(d => d.spd_permitpurposeother, opt => opt.MapFrom(s => s.PermitOtherRequiredReason))
+         .ForMember(d => d.spd_resideincanada, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsCanadianResident)))
+         .ForMember(d => d.spd_permitpurpose, opt => opt.MapFrom(s => GetPermitPurposeOptionSets(s.PermitPurposeEnums)))
          .ReverseMap()
          .ForMember(d => d.ContactEmailAddress, opt => opt.Ignore())
          .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
@@ -149,6 +163,9 @@ internal class Mappings : Profile
          .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
+         .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => GetEmployerAddressData(s)))
+         .ForMember(d => d.IsCanadianResident, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_resideincanada)))
+         .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s.spd_permitpurpose) ))
          ;
 
         _ = CreateMap<CreateLicenceApplicationCmd, spd_application>()
@@ -344,6 +361,18 @@ internal class Mappings : Profile
         mailingAddress.PostalCode = c.address1_postalcode;
         return mailingAddress;
     }
+
+    private static Addr? GetEmployerAddressData(spd_application app)
+    {
+        Addr addr = new Addr();
+        addr.AddressLine1 = app.spd_employeraddress1;
+        addr.AddressLine2 = app.spd_employeraddress2;
+        addr.City = app.spd_employercity;
+        addr.Province = app.spd_employerprovince;
+        addr.Country = app.spd_employercountry;
+        addr.PostalCode = app.spd_employerpostalcode;
+        return addr;
+    }
     private static ResidentialAddr? GetResidentialAddressData(contact c)
     {
         ResidentialAddr mailingAddress = new ResidentialAddr();
@@ -406,6 +435,19 @@ internal class Mappings : Profile
         return string.IsNullOrWhiteSpace(result) ? null : result;
     }
 
+    private static string? GetPermitPurposeOptionSets(IEnumerable<PermitPurposeEnum>? permitPurposes)
+    {
+        if (permitPurposes == null) return null;
+        var result = String.Join(',', permitPurposes.Select(p => ((int)Enum.Parse<PermitPurposeOptionSet>(p.ToString())).ToString()).ToArray());
+        return string.IsNullOrWhiteSpace(result) ? null : result;
+    }
+
+    private static IEnumerable<PermitPurposeEnum> GetPermitPurposeEnums(string? optionsetStr)
+    {
+        if (optionsetStr == null) return null;
+        string[] strs = optionsetStr.Split(',');
+        return strs.Select(s => Enum.Parse<PermitPurposeEnum>(Enum.GetName(typeof(PermitPurposeOptionSet), s))).ToList();
+    }
     private static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
     {
         if (dogreasonsStr == null) return null;
