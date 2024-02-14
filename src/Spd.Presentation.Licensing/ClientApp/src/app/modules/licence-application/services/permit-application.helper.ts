@@ -205,6 +205,9 @@ export abstract class PermitApplicationHelper {
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
 			attachments: new FormControl([], [Validators.required]),
+			governmentIssuedPhotoTypeCode: new FormControl(''),
+			governmentIssuedExpiryDate: new FormControl(''),
+			governmentIssuedAttachments: new FormControl([]),
 		},
 		{
 			validators: [
