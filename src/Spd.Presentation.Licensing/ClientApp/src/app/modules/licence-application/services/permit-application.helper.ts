@@ -630,6 +630,7 @@ export abstract class PermitApplicationHelper {
 
 		const documents: Array<PermitDocumentsToSave> = [];
 
+		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
 		const citizenshipData = { ...permitModelFormValue.citizenshipData };
 		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
@@ -682,11 +683,16 @@ export abstract class PermitApplicationHelper {
 		}
 
 		if (permitRationaleData.attachments) {
+			const documentTypeCode =
+				workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+					? LicenceDocumentTypeCode.ArmouredVehicleRationale
+					: LicenceDocumentTypeCode.BodyArmourRationale;
+
 			const docs: Array<Blob> = [];
 			permitRationaleData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs }); // TODO update to use correct doc type
+			documents.push({ licenceDocumentTypeCode: documentTypeCode, documents: docs });
 		}
 
 		console.debug('getDocsToSaveAnonymousBlobs documentsToSave', documents);

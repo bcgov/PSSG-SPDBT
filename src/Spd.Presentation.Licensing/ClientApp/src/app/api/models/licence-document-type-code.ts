@@ -47,5 +47,7 @@ export enum LicenceDocumentTypeCode {
   WorkPermit = 'WorkPermit',
   LegalNameChange = 'LegalNameChange',
   NonCanadianPassport = 'NonCanadianPassport',
-  Bcid = 'BCID'
+  Bcid = 'BCID',
+  ArmouredVehicleRationale = 'ArmouredVehicleRationale',
+  BodyArmourRationale = 'BodyArmourRationale'
 }

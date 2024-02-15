@@ -470,7 +470,7 @@ export class SecurityWorkerLicensingService extends BaseService {
 
   /**
    * Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
    *
@@ -508,7 +508,7 @@ export class SecurityWorkerLicensingService extends BaseService {
 
   /**
    * Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
    *

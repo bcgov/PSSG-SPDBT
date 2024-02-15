@@ -94,7 +94,7 @@ export class PermitService extends BaseService {
 
   /**
    * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
    *
@@ -132,7 +132,7 @@ export class PermitService extends BaseService {
 
   /**
    * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
    *

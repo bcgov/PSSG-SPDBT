@@ -9,7 +9,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
-import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
+import { StepsPermitDetailsNewComponent } from './permit-wizard-steps/steps-permit-details-new.component';
 import { StepsPermitIdentificationAnonymousComponent } from './permit-wizard-steps/steps-permit-identification-anonymous.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
@@ -97,8 +97,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	step3Complete = false;
 	step4Complete = false;
 
-	@ViewChild(StepsPermitDetailsUpdateComponent)
-	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
+	@ViewChild(StepsPermitDetailsNewComponent)
+	stepsPermitDetailsComponent!: StepsPermitDetailsNewComponent;
 
 	@ViewChild(StepsPermitPurposeComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeComponent;
