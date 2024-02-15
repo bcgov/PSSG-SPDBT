@@ -243,8 +243,15 @@ public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAp
         .When(c => c.CategoryCodes != null)
         .WithMessage("Some category cannot be in the same licence request.");
 
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
+        RuleFor(r => r.PoliceOfficerRoleCode).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
+        RuleFor(r => r.OtherOfficerRole).NotEmpty()
+            .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode != null && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
+        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
+        RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)

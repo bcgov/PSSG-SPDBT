@@ -22,7 +22,7 @@ internal class Mappings : Profile
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
 
         CreateMap<PermitAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
-            .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetIsTreatedForMHC(s)))
+            .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.Ignore())
             .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)));
@@ -108,7 +108,7 @@ internal class Mappings : Profile
         return LicenceDocumentType2Dictionary.FirstOrDefault(d => d.Value == documentType).Key;
     }
 
-    private static bool? GetIsTreatedForMHC(PersonalLicenceAppBase request)
+    private static bool? GetIsTreatedForMHC(WorkerLicenceAppBase request)
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {
