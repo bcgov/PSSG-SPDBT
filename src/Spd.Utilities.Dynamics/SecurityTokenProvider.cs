@@ -50,8 +50,7 @@ namespace Spd.Utilities.Dynamics
                         _ => TimeSpan.FromMilliseconds(timeoutInMilliSecs),
                         (result, timespan, retryNo, context) =>
                         {
-                            logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within " +
-                                $"{timespan.TotalMilliseconds}ms. Get timeout rejection");
+                            logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within {timespan.TotalMilliseconds}ms. Get timeout rejection");
                         }
                     );
             var pollyContext = new Context("GetDynamicsToken");
