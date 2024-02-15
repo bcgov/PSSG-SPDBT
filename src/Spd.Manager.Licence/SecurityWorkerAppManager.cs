@@ -306,7 +306,7 @@ internal partial class SecurityWorkerAppManager :
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct, false);           
+            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct, false);
         }
         else
         {
@@ -532,7 +532,7 @@ internal partial class SecurityWorkerAppManager :
 
         if (request.PreviousDocumentIds != null)
         {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId))
+            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
             .Select(f => new LicAppFileInfo()
             {
                 FileName = f.FileName ?? String.Empty,
