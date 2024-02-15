@@ -446,7 +446,7 @@ internal class Mappings : Profile
     {
         if (optionsetStr == null) return null;
         string[] strs = optionsetStr.Split(',');
-        return strs.Select(s => Enum.Parse<PermitPurposeEnum>(Enum.GetName(typeof(PermitPurposeOptionSet), s))).ToList();
+        return strs.Select(s => Enum.Parse<PermitPurposeEnum>(Enum.GetName(typeof(PermitPurposeOptionSet), Int32.Parse(s)))).ToList();
     }
     private static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
     {
