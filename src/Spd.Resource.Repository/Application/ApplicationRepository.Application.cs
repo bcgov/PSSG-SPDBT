@@ -312,11 +312,14 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             result += $" and {submitToDate}";
         }
-        if (delegateFilters != null)
-        {
-            result += $" and {delegateFilters}";
-        }
         result += $" and ({serviceTypeFilters})";
+
+        //dynamics did something special for delegateid, so, this has to be at the end of the query.
+        if (delegateFilters != null) 
+        {
+            result += $" and {delegateFilters}"; //when dynamics detect delegatId here, it will do filtering on their side.
+        }
+        
         return result;
     }
 
