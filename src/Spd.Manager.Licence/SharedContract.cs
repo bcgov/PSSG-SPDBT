@@ -67,7 +67,9 @@ public enum LicenceDocumentTypeCode
     WorkPermit,
     LegalNameChange,
     NonCanadianPassport,
-    BCID
+    BCID,
+    ArmouredVehicleRationale,
+    BodyArmourRationale
 }
 
 public enum BusinessTypeCode
