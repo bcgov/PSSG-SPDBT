@@ -3,8 +3,15 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import {
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	PermitAppCommandResponse,
+} from '@app/api/models';
+import { PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
@@ -97,6 +104,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	step3Complete = false;
 	step4Complete = false;
 
+	licenceAppId: string | null = null;
+
 	@ViewChild(StepsPermitDetailsNewComponent)
 	stepsPermitDetailsComponent!: StepsPermitDetailsNewComponent;
 
@@ -116,6 +125,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
+		private paymentService: PaymentService,
 		private permitApplicationService: PermitApplicationService
 	) {
 		super(breakpointObserver);
@@ -172,38 +182,25 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitPermit().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your permit has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
-	}
+		// If the creation worked and the payment failed, do not post again
+		if (this.licenceAppId) {
+			this.payNow(this.licenceAppId);
+		} else {
+			this.permitApplicationService.submitPermitAnonymous().subscribe({
+				next: (resp: StrictHttpResponse<PermitAppCommandResponse>) => {
+					// save this locally just in payment fails
+					this.licenceAppId = resp.body.licenceAppId!;
 
-	// onPayNow(application: PaymentResponse): void {
-	// 	const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-	// 	const body: PaymentLinkCreateRequest = {
-	// 		applicationId: application.id!,
-	// 		paymentMethod: PaymentMethodCode.CreditCard,
-	// 		description: `Payment for Case ID: ${application.applicationNumber}`,
-	// 	};
-	// 	this.paymentService
-	// 		.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
-	// 			orgId: orgId!,
-	// 			applicationId: application.id!,
-	// 			body,
-	// 		})
-	// 		.pipe()
-	// 		.subscribe((res: PaymentLinkResponse) => {
-	// 			if (res.paymentLinkUrl) {
-	// 				window.location.assign(res.paymentLinkUrl);
-	// 			}
-	// 		});
-	// }
+					this.hotToastService.success('Your permit has been successfully submitted');
+					this.payNow(this.licenceAppId);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		}
+	}
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
@@ -235,14 +232,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		}, 250);
 	}
 
-	private updateCompleteStatus(): void {
-		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
-		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
-		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
-		this.step4Complete = this.permitApplicationService.isStepContactComplete();
-		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete); //, this.step4Complete);
-	}
-
 	onChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
@@ -259,5 +248,33 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 				break;
 		}
 		this.updateCompleteStatus();
+	}
+
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
+		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
+		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
+		this.step4Complete = this.permitApplicationService.isStepContactComplete();
+
+		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+	}
+
+	private payNow(licenceAppId: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for New Permit`,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 }

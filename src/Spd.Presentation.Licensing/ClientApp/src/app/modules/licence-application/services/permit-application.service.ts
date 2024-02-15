@@ -12,7 +12,7 @@ import {
 	LicenceResponse,
 	LicenceTermCode,
 	PermitAppAnonymousSubmitRequest,
-	WorkerLicenceCommandResponse,
+	PermitAppCommandResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -29,10 +29,9 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceFeeService, LicenceService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { LicenceService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
@@ -104,12 +103,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
-		private licenceFeeService: LicenceFeeService,
-		private securityWorkerLicensingService: SecurityWorkerLicensingService,
+		private tempSecurityWorkerLicensingService: SecurityWorkerLicensingService, // TODO remove later
 		private permitService: PermitService,
-		private templicenceService: LicenceService, // TODO remove later
+		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
-		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService);
@@ -153,13 +150,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		accessCode: string,
 		recaptchaCode: string
 	): Observable<LicenceResponse> {
-		return this.templicenceService
+		return this.licenceService
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
 			.pipe(take(1));
 	}
 
 	/**
-	 * Load an existing licence application
+	 * Load an existing permit application
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -175,7 +172,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Load an existing licence application
+	 * Load an existing permit application
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -207,7 +204,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Load an existing licence application
+	 * Load an existing permit application
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -238,7 +235,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Load an existing draft licence application
+	 * Load an existing draft permit application
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -253,7 +250,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Load an existing licence application for renewal
+	 * Load an existing permit application for renewal
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -307,7 +304,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Load an existing licence application for update
+	 * Load an existing permit application for update
 	 * @param licenceAppId
 	 * @returns
 	 */
@@ -361,7 +358,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Create an empty licence
+	 * Create an empty permit
 	 * @returns
 	 */
 	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
@@ -377,7 +374,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Create an empty licence
+	 * Create an empty permit
 	 * @returns
 	 */
 	createNewPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
@@ -522,7 +519,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadSpecificPermit(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
+		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
@@ -722,7 +719,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Reset the licence data
+	 * Reset the permit data
 	 */
 	reset(): void {
 		this.initialized = false;
@@ -737,7 +734,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	 * Upload a file of a certain type. Return a reference to the file that will used when the permit is saved
 	 * @param documentCode
 	 * @param document
 	 * @returns
@@ -751,7 +748,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
+		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -867,14 +864,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Save the licence data
+	 * Save the permit data
 	 * @returns
 	 */
-	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = {}; // this.getSaveBody(this.permitModelFormGroup.getRawValue());
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
+	saveLicenceStep(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
+		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
-			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
 				const formValue = this.permitModelFormGroup.getRawValue();
 				if (!formValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -883,20 +880,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
-	submitPermit(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		if (this.authenticationService.isLoggedIn()) {
-			return this.submitPermitAuthenticated();
-		} else {
-			return this.submitPermitAnonymous();
-		}
-	}
-
 	/**
-	 * Submit the licence data
+	 * Submit the permit data
 	 * @returns
 	 */
-	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix
+	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
 		console.debug('submitLicenceAuthenticated body', body);
 
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
@@ -906,14 +895,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the permit data
 	 * @returns
 	 */
-	private submitPermitAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitPermitAnonymous(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
 
 		const body = this.getSaveBodyAnonymous(permitModelFormValue);
-		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
-
 		const documentsToSave = this.getDocsToSaveAnonymousBlobs(permitModelFormValue);
+
+		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
+		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
 		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -928,23 +917,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Post licence anonymous. This licence must not have any new documents (for example: with an update or replacement)
+	 * Post permit anonymous. This permit must not have any new documents (for example: with an update or replacement)
 	 * @returns
 	 */
-	private postPermitAnonymousNoNewDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		// existingDocumentIds: Array<string>,
-		body: PermitAppAnonymousSubmitRequest
-	) {
-		return this.securityWorkerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+	private postPermitAnonymousNoNewDocuments(googleRecaptcha: GoogleRecaptcha, body: PermitAppAnonymousSubmitRequest) {
+		return this.permitService
+			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					// body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+					return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({
 						body,
 					});
 				})
@@ -953,17 +934,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Post licence anonymous. This licence has new documents (for example: with new or renew)
+	 * Post permit anonymous. This permit has new documents (for example: with new or renew)
 	 * @returns
 	 */
 	private postPermitAnonymousNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
-		// existingDocumentIds: Array<string>,
 		documentsToSave: Array<PermitDocumentsToSave>,
 		body: PermitAppAnonymousSubmitRequest
 	) {
-		return this.securityWorkerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+		return this.permitService
+			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
 					const documentsToSaveApis: Observable<string>[] = [];
@@ -979,7 +959,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						// should always be at least one new document
 						if (newDocumentsOnly.length > 0) {
 							documentsToSaveApis.push(
-								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
+								this.permitService.apiPermitApplicationsAnonymousFilesPost({
 									body: {
 										Documents: newDocumentsOnly,
 										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
@@ -994,11 +974,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
 					body.documentKeyCodes = [...resps];
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					// body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+					return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({
 						body,
 					});
 				})

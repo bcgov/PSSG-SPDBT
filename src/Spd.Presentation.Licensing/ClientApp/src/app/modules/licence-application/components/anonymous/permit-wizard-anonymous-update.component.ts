@@ -172,7 +172,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitPermit().subscribe({
+		this.permitApplicationService.submitPermitAnonymous().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit update has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
@@ -183,27 +183,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 			},
 		});
 	}
-
-	// onPayNow(application: PaymentResponse): void {
-	// 	const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-	// 	const body: PaymentLinkCreateRequest = {
-	// 		applicationId: application.id!,
-	// 		paymentMethod: PaymentMethodCode.CreditCard,
-	// 		description: `Payment for Case ID: ${application.applicationNumber}`,
-	// 	};
-	// 	this.paymentService
-	// 		.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
-	// 			orgId: orgId!,
-	// 			applicationId: application.id!,
-	// 			body,
-	// 		})
-	// 		.pipe()
-	// 		.subscribe((res: PaymentLinkResponse) => {
-	// 			if (res.paymentLinkUrl) {
-	// 				window.location.assign(res.paymentLinkUrl);
-	// 			}
-	// 		});
-	// }
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
@@ -229,14 +208,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 		}, 250);
 	}
 
-	private updateCompleteStatus(): void {
-		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
-		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
-		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
-		this.step4Complete = this.permitApplicationService.isStepContactComplete();
-		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete); //, this.step4Complete);
-	}
-
 	onChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
@@ -253,5 +224,14 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 				break;
 		}
 		this.updateCompleteStatus();
+	}
+
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
+		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
+		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
+		this.step4Complete = this.permitApplicationService.isStepContactComplete();
+
+		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 }

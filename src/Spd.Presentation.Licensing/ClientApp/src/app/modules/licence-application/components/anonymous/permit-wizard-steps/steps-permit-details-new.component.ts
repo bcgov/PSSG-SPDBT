@@ -13,7 +13,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	selector: 'app-steps-permit-details-new',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step *ngIf="showTermsOfUse">
+			<!-- <mat-step *ngIf="showTermsOfUse"> // TODO uncomment later
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
 				<div class="row wizard-button-row">

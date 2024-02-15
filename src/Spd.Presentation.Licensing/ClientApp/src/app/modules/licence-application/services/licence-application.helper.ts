@@ -1036,6 +1036,7 @@ export abstract class LicenceApplicationHelper {
 				});
 			});
 		}
+		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
 
 		policeBackgroundData.attachments?.forEach((doc: any) => {
 			documentInfos.push({

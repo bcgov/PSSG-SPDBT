@@ -172,7 +172,7 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitPermit().subscribe({
+		this.permitApplicationService.submitPermitAnonymous().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit renewal has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
@@ -229,14 +229,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		}, 250);
 	}
 
-	private updateCompleteStatus(): void {
-		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
-		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
-		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
-		this.step4Complete = this.permitApplicationService.isStepContactComplete();
-		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
-	}
-
 	onChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERMIT_DETAILS:
@@ -253,5 +245,14 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 				break;
 		}
 		this.updateCompleteStatus();
+	}
+
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
+		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
+		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
+		this.step4Complete = this.permitApplicationService.isStepContactComplete();
+
+		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 }

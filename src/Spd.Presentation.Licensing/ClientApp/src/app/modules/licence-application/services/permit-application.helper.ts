@@ -442,6 +442,7 @@ export abstract class PermitApplicationHelper {
 					previousDocumentIds.push(doc.documentUrlId);
 				});
 		}
+		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
 
 		permitRationaleData.attachments
 			?.filter((doc: any) => doc.documentUrlId)
