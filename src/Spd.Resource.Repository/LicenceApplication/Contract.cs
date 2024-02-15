@@ -6,7 +6,7 @@ public partial interface ILicenceApplicationRepository
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
-    public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken ct);
+    public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
 
     //connect spd_appliation with spd_contact and update application to correct status
     public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct);
@@ -34,7 +34,7 @@ public record LicenceApplication
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
     public bool? UseDogs { get; set; }
-    public Alias[]? Aliases { get; set; }
+    public IEnumerable<Alias>? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public HairColourEnum? HairColourCode { get; set; }
@@ -57,7 +57,7 @@ public record LicenceApplication
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
-    public WorkerCategoryTypeEnum[] CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
+    public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }

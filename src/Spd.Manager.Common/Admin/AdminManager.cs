@@ -52,7 +52,7 @@ namespace Spd.Manager.Common.Admin
 
         public async Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken)
         {
-            var result = (OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BC_GOV_ORG_ID, IncludeInactive: true), cancellationToken);
+            var result = (OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BcGovOrgId, IncludeInactive: true), cancellationToken);
             return _mapper.Map<IEnumerable<MinistryResponse>>(result.OrgResults);
         }
     }

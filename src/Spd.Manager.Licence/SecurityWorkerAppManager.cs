@@ -62,10 +62,10 @@ internal partial class SecurityWorkerAppManager :
 
     #region for portal
     //authenticated save
-    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken cancellationToken)
     {
         _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
-        var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Repository.Registration.IdentityProviderTypeEnum.BcServicesCard), ct);
+        var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Repository.Registration.IdentityProviderTypeEnum.BcServicesCard), cancellationToken);
         if (identityResult.Items.Any())
         {
             Guid contactId = (Guid)identityResult.Items.First().ContactId;
@@ -73,7 +73,7 @@ internal partial class SecurityWorkerAppManager :
             bool hasDuplicate = await HasDuplicates(contactId,
                 Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
                 cmd.LicenceUpsertRequest.LicenceAppId,
-                ct);
+                cancellationToken);
             if (hasDuplicate)
             {
                 throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
@@ -82,7 +82,7 @@ internal partial class SecurityWorkerAppManager :
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         saveCmd.BcscGuid = cmd.BcscGuid;
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, ct);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
 
         //await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
         //await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
@@ -90,9 +90,9 @@ internal partial class SecurityWorkerAppManager :
     }
 
     // authenticated submit
-    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken cancellationToken)
     {
-        var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, ct);
+        var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
         //check if payment is done
         //todo
 
@@ -104,16 +104,16 @@ internal partial class SecurityWorkerAppManager :
 
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
-    public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct)
+    public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken cancellationToken)
     {
-        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
+        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
         WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), ct);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
         return result;
     }
 
-    public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct)
+    public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken cancellationToken)
     {
         LicenceAppQuery q = new LicenceAppQuery
         (
@@ -136,7 +136,7 @@ internal partial class SecurityWorkerAppManager :
                 ApplicationPortalStatusEnum.VerifyIdentity
             }
         );
-        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        var response = await _licenceAppRepository.QueryAsync(q, cancellationToken);
         return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
     }
 
@@ -144,35 +144,35 @@ internal partial class SecurityWorkerAppManager :
 
     #region anonymous
 
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken cancellationToken)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         ValidateFilesForNewApp(cmd);
 
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, ct);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, cancellationToken);
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct, false);
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken cancellationToken)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
             throw new ArgumentException("should be a replacement request");
 
         //validation: check if original licence meet replacement condition.
-        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
         if (licences == null || !licences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
         if (DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         //add photo file copying here.
         if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
@@ -181,18 +181,18 @@ internal partial class SecurityWorkerAppManager :
             new DocumentQry(
                 ApplicationId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
                 FileType: DocumentTypeEnum.Photograph),
-            ct);
+            cancellationToken);
         if (photos.Items.Any())
         {
             foreach (var photo in photos.Items)
             {
                 await _documentRepository.ManageAsync(
                     new CopyDocumentCmd(photo.DocumentUrlId, response.LicenceAppId, response.ContactId),
-                    ct);
+                    cancellationToken);
             }
         }
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct, false);
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -204,17 +204,17 @@ internal partial class SecurityWorkerAppManager :
     /// copy all the old files(except the file types of new uploaded files) to the new application.
     /// </summary>
     /// <param name="cmd"></param>
-    /// <param name="ct"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken cancellationToken)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet replacement condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         LicenceResp originalLic = originalLicences.Items.First();
@@ -232,17 +232,17 @@ internal partial class SecurityWorkerAppManager :
         }
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
-            ct);
+            cancellationToken);
 
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
                 null,
                 null,
-                ct);
+                cancellationToken);
 
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
@@ -251,7 +251,7 @@ internal partial class SecurityWorkerAppManager :
             {
                 await _documentRepository.ManageAsync(
                     new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
-                    ct);
+                    cancellationToken);
             }
         }
 
@@ -259,7 +259,7 @@ internal partial class SecurityWorkerAppManager :
         bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
             originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, ct, hasSwl90DayLicence);
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence);
 
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -277,17 +277,17 @@ internal partial class SecurityWorkerAppManager :
     /// If any changes that needs creating tasks and also need creating application, then do both.
     /// </summary>
     /// <param name="cmd"></param>
-    /// <param name="ct"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken ct)
+    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken cancellationToken)
     {
         WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be a update request");
 
         //validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, ct);
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
         LicenceResp originalLic = originalLicences.Items.First();
@@ -295,25 +295,25 @@ internal partial class SecurityWorkerAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
-            ct);
+            cancellationToken);
 
-        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, ct);
-        ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, ct);
+        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
+        ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         decimal? cost = 0;
         if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-            createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, ct);
-            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, ct, false);           
+            createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false);           
         }
         else
         {
             //update contact directly
             UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
             updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
-            await _contactRepository.ManageAsync(updateCmd, ct);
+            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
 
         await UploadNewDocsAsync(request,
@@ -322,7 +322,7 @@ internal partial class SecurityWorkerAppManager :
             originalApp.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
-            ct);
+            cancellationToken);
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
 
     }
@@ -386,7 +386,7 @@ internal partial class SecurityWorkerAppManager :
     {
         ChangeSpec changes = new ChangeSpec();
         //categories changed
-        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Length)
+        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
             changes.CategoriesChanged = true;
         else
         {

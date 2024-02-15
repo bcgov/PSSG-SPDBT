@@ -131,7 +131,7 @@ namespace Spd.Resource.Repository.User
                 _dynaContext.SetLink(user, nameof(spd_portaluser.spd_IdentityId), id);
             }
 
-            if (createUserCmd.User.OrganizationId == SpdConstants.BC_GOV_ORG_ID)
+            if (createUserCmd.User.OrganizationId == SpdConstants.BcGovOrgId)
             {
                 //psso: no role, no invitation.
                 await _dynaContext.SaveChangesAsync(ct);
@@ -149,8 +149,8 @@ namespace Spd.Resource.Repository.User
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
-            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.USER_INVITE_VALID_DAYS)));
-            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}{SpdConstants.USER_INVITE_LINK}{encryptedInviteId}";
+            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
+            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}{SpdConstants.UserInviteLink}{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
@@ -294,7 +294,7 @@ namespace Spd.Resource.Repository.User
             }
             catch (DataServiceQueryException ex)
             {
-                _logger.LogWarning($"Cannot find the user with userId {userId}");
+                _logger.LogWarning($"Cannot find the user with userId {userId}, message={ex.Message}");
                 throw;
             }
         }
