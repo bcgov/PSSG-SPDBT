@@ -26,11 +26,6 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.IsMailingTheSameAsResidential).NotEmpty();
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(15).NotEmpty();
         RuleFor(r => r.ContactEmailAddress).MaximumLength(75).When(r => r.ContactEmailAddress != null);
-        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
-        RuleFor(r => r.PoliceOfficerRoleCode).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
-        RuleFor(r => r.OtherOfficerRole).NotEmpty()
-            .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode != null && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
-        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
         RuleFor(r => r.UseBcServicesCardPhoto).NotEmpty();
         RuleFor(r => r.IsCanadianCitizen).NotEmpty();
         //residential address
@@ -42,9 +37,6 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.ResidentialAddressData.PostalCode).NotEmpty().MaximumLength(20).When(r => r.ResidentialAddressData != null);
         RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
-        RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
-
     }
 }
 

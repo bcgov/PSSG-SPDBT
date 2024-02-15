@@ -34,16 +34,11 @@ public abstract record PersonalLicenceAppBase
     public bool? IsMailingTheSameAsResidential { get; set; }
     public ResidentialAddress? ResidentialAddressData { get; set; }
     public MailingAddress? MailingAddressData { get; set; }
-    public bool? IsPoliceOrPeaceOfficer { get; set; }
-    public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
-    public string? OtherOfficerRole { get; set; }
-    public bool? IsTreatedForMHC { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
-    public bool? HasNewMentalHealthCondition { get; set; }
     public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
