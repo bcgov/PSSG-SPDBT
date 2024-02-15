@@ -188,6 +188,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.LegalNameChange, DocumentTypeEnum.LegalNameChange},
         {LicenceDocumentTypeCode.NonCanadianPassport, DocumentTypeEnum.AdditionalGovIdDocument},
         {LicenceDocumentTypeCode.BCID, DocumentTypeEnum.AdditionalGovIdDocument},
+        {LicenceDocumentTypeCode.ArmouredVehicleRationale, DocumentTypeEnum.ArmouredVehicleRationale},
+        {LicenceDocumentTypeCode.BodyArmourRationale, DocumentTypeEnum.BodyArmourRationale},
     }.ToImmutableDictionary();
 
 
@@ -240,5 +242,7 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.LegalNameChange, DocumentTypeEnum.LegalNameChange},
         {LicenceDocumentTypeCode.NonCanadianPassport, DocumentTypeEnum.NonCanadianPassport},
         {LicenceDocumentTypeCode.BCID, DocumentTypeEnum.BCID},
+        {LicenceDocumentTypeCode.ArmouredVehicleRationale, DocumentTypeEnum.ArmouredVehicleRationale},
+        {LicenceDocumentTypeCode.BodyArmourRationale, DocumentTypeEnum.BodyArmourRationale},
     }.ToImmutableDictionary();
 }
