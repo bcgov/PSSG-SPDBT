@@ -144,13 +144,13 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             _logger.LogInformation("Get GetLicenceApplications");
             var info = _currentUser.GetBcscUserIdentityInfo();
-            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub), ct);
             if (response == null)
             {
                 //no contact found for this person
                 return Array.Empty<WorkerLicenceAppListResponse>();
             }
-            return await _mediator.Send(new GetWorkerLicenceAppListQuery(response.ApplicantId));
+            return await _mediator.Send(new GetWorkerLicenceAppListQuery(response.ApplicantId), ct);
         }
         #endregion
 

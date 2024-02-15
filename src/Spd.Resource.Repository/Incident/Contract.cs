@@ -24,9 +24,9 @@ namespace Spd.Resource.Repository.Incident
     public abstract record IncidentCmd;
     public record IncidentQry
     {
-        public Guid? IncidentId { get; set; } = null;
-        public Guid? ApplicationId { get; set; } = null;
-        public string? CaseNumber { get; set; } = null;
+        public Guid? IncidentId { get; set; }
+        public Guid? ApplicationId { get; set; }
+        public string? CaseNumber { get; set; }
     };
     public record UpdateIncidentCmd : IncidentCmd
     {

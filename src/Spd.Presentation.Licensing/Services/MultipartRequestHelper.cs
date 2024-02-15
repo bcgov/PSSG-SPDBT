@@ -47,14 +47,14 @@ public static class MultipartRequestHelper
                 || !string.IsNullOrEmpty(contentDisposition.FileNameStar.Value));
     }
 
-    public static Encoding GetEncoding(MultipartSection section)
+    public static Encoding? GetEncoding(MultipartSection section)
     {
-        var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out MediaTypeHeaderValue mediaType);
+        var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out MediaTypeHeaderValue? mediaType);
 
         if (!hasMediaTypeHeader)
         {
             return Encoding.UTF8;
         }
-        return mediaType.Encoding;
+        return mediaType?.Encoding;
     }
 }

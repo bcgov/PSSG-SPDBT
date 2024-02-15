@@ -227,7 +227,7 @@ internal class PermitAppManager :
         return changes;
     }
 
-    private record ChangeSpec
+    private sealed record ChangeSpec
     {
         public bool PeaceOfficerStatusChanged { get; set; } //task
         public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
