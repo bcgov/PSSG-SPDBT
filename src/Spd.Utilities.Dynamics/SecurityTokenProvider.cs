@@ -40,7 +40,7 @@ namespace Spd.Utilities.Dynamics
                 TimeSpan.FromMinutes(options.AuthenticationSettings.OAuth2TokenCachedInMins)) ?? string.Empty;
 
 
-        private async Task<string> AcquireTokenInternal()
+        private async Task<string?> AcquireTokenInternal()
         {
             var timeoutInMilliSecs = this.options.AuthenticationSettings.OAuth2TokenRequestTimeoutInMilliSeconds; // Time out the request after 200 ms
             var timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromMilliseconds(timeoutInMilliSecs), TimeoutStrategy.Pessimistic);
