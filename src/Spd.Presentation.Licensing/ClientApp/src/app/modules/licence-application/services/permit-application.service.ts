@@ -4,12 +4,14 @@ import {
 	Alias,
 	ApplicationTypeCode,
 	BooleanTypeCode,
+	GoogleRecaptcha,
 	HeightUnitCode,
 	IActionResult,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	LicenceTermCode,
+	PermitAppAnonymousSubmitRequest,
 	WorkerLicenceCommandResponse,
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
@@ -68,7 +70,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		permitRequirementData: this.permitRequirementFormGroup,
-		employerInformationData: this.employerInformationFormGroup,
+		employerPrimaryAddress: this.employerInformationFormGroup,
 		permitRationaleData: this.permitRationaleFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
@@ -270,8 +272,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				// const employerInformationData = {
-				// 	businessName: 'aaa',
+				// const employerPrimaryAddress = {
+				// 	employerName: 'aaa',
 				// 	supervisorName: 'ccc',
 				// 	supervisorEmailAddress: 'bbb@bbb.com',
 				// 	supervisorPhoneNumber: '5554448787',
@@ -292,7 +294,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						// employerInformationData,
+						// employerPrimaryAddress,
 					},
 					{
 						emitEvent: false,
@@ -324,8 +326,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				// const employerInformationData = {
-				// 	businessName: 'aaa',
+				// const employerPrimaryAddress = {
+				// 	employerName: 'aaa',
 				// 	supervisorName: 'ccc',
 				// 	supervisorEmailAddress: 'bbb@bbb.com',
 				// 	supervisorPhoneNumber: '5554448787',
@@ -346,7 +348,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						// employerInformationData,
+						// employerPrimaryAddress,
 					},
 					{
 						emitEvent: false,
@@ -405,19 +407,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		// TODO remove hardcoded
-		// const employerInformationData = {
-		// 	businessName: 'aaa',
-		// 	supervisorName: 'ccc',
-		// 	supervisorEmailAddress: 'bbb@bbb.com',
-		// 	supervisorPhoneNumber: '5554448787',
-		// 	addressSelected: true,
-		// 	addressLine1: 'bbb1',
-		// 	addressLine2: 'bbb2',
-		// 	city: 'bbb3',
-		// 	postalCode: 'V9A6D4',
-		// 	province: 'bbb4',
-		// 	country: 'bbb5',
-		// };
+		const employerPrimaryAddress = {
+			employerName: 'aaa',
+			supervisorName: 'ccc',
+			supervisorEmailAddress: 'bbb@bbb.com',
+			supervisorPhoneNumber: '5554448787',
+			addressSelected: true,
+			addressLine1: 'bbb1',
+			addressLine2: 'bbb2',
+			city: 'bbb3',
+			postalCode: 'V9A6D4',
+			province: 'bbb4',
+			country: 'bbb5',
+		};
+
+		const characteristicsData = {
+			eyeColourCode: 'Blue',
+			hairColourCode: 'Brown',
+			height: '33',
+			heightInches: null,
+			heightUnitCode: 'Centimeters',
+			weight: '44',
+			weightUnitCode: 'Kilograms',
+		};
 
 		this.permitModelFormGroup.patchValue(
 			{
@@ -425,7 +437,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
-				// employerInformationData,
+				employerPrimaryAddress,
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -530,18 +543,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const bcDriversLicenceData = {
 					hasBcDriversLicence: this.utilService.booleanToBooleanType(resp.hasBcDriversLicence),
 					bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
-				};
-
-				const fingerprintProofDataAttachments: Array<File> = [];
-				// if (resp.fingerprintProofDocument?.documentResponses) {
-				// 	resp.fingerprintProofDocument.documentResponses?.forEach((item: LicenceAppDocumentResponse) => {
-				// 		const aFile = this.utilService.dummyFile(item);
-				// 		fingerprintProofDataAttachments.push(aFile);
-				// 	});
-				// }
-
-				const fingerprintProofData = {
-					attachments: fingerprintProofDataAttachments,
 				};
 
 				const criminalHistoryData = {
@@ -684,7 +685,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						expiredLicenceData,
 						licenceTermData,
 						bcDriversLicenceData,
-						fingerprintProofData,
 						criminalHistoryData,
 						aliasesData,
 						personalInformationData,
@@ -861,28 +861,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isSaveStep(): boolean {
-		// console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged;
-		// const shouldSaveStep =
-		// 	this.hasValueChanged &&
-		// 	((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
-
 		console.debug('shouldSaveStep', shouldSaveStep);
 		return shouldSaveStep;
 	}
@@ -892,7 +871,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
+		const body = {}; // this.getSaveBody(this.permitModelFormGroup.getRawValue());
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
@@ -917,10 +896,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	private submitPermitAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBody(this.permitModelFormGroup.getRawValue());
+		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix
 		console.debug('submitLicenceAuthenticated body', body);
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
 	}
 
 	/**
@@ -928,37 +907,96 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	private submitPermitAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue());
-		console.debug('submitPermitAnonymous body', body);
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
 
-		const documentInfos: Array<PermitDocumentsToSave> = []; //this.getSaveDocsAnonymous(this.permitModelFormGroup.getRawValue());
-		// console.log('documentInfos', documentInfos);
+		const body = this.getSaveBodyAnonymous(permitModelFormValue);
+		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
 
-		const formValue = this.consentAndDeclarationFormGroup.getRawValue();
-		// console.debug('submitPermitAnonymous', formValue);
+		const documentsToSave = this.getDocsToSaveAnonymousBlobs(permitModelFormValue);
+		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
 
-		const googleRecaptcha = { recaptchaCode: formValue.captchaFormGroup.token };
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		if (documentsToSave?.length > 0) {
+			return this.postPermitAnonymousNewDocuments(googleRecaptcha, documentsToSave, body);
+		} else {
+			return this.postPermitAnonymousNoNewDocuments(googleRecaptcha, body);
+		}
+	}
+
+	/**
+	 * Post licence anonymous. This licence must not have any new documents (for example: with an update or replacement)
+	 * @returns
+	 */
+	private postPermitAnonymousNoNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		// existingDocumentIds: Array<string>,
+		body: PermitAppAnonymousSubmitRequest
+	) {
 		return this.securityWorkerLicensingService
 			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
-					const documentsToSave: Observable<string>[] = [];
-					documentInfos.forEach((docBody: PermitDocumentsToSave) => {
-						documentsToSave.push(
-							this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
-								body: {
-									Documents: docBody.documents,
-									LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-								},
-							})
-						);
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					// body.previousDocumentIds = [...existingDocumentIds];
+
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
+	}
+
+	/**
+	 * Post licence anonymous. This licence has new documents (for example: with new or renew)
+	 * @returns
+	 */
+	private postPermitAnonymousNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		// existingDocumentIds: Array<string>,
+		documentsToSave: Array<PermitDocumentsToSave>,
+		body: PermitAppAnonymousSubmitRequest
+	) {
+		return this.securityWorkerLicensingService
+			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((_resp: IActionResult) => {
+					const documentsToSaveApis: Observable<string>[] = [];
+					documentsToSave.forEach((docBody: PermitDocumentsToSave) => {
+						// Only pass new documents and get a keyCode for each of those.
+						const newDocumentsOnly: Array<Blob> = [];
+						docBody.documents.forEach((doc: any) => {
+							if (!doc.documentUrlId) {
+								newDocumentsOnly.push(doc);
+							}
+						});
+
+						// should always be at least one new document
+						if (newDocumentsOnly.length > 0) {
+							documentsToSaveApis.push(
+								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
+									body: {
+										Documents: newDocumentsOnly,
+										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+									},
+								})
+							);
+						}
 					});
 
-					return forkJoin(documentsToSave);
+					return forkJoin(documentsToSaveApis);
 				}),
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					body.documentKeyCodes = resps;
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					// body.previousDocumentIds = [...existingDocumentIds];
 
 					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
 						body,

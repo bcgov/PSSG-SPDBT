@@ -174,7 +174,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	onNextPayStep(): void {
 		this.permitApplicationService.submitPermit().subscribe({
 			next: (_resp: any) => {
-				this.hotToastService.success('Your licence has been successfully submitted');
+				this.hotToastService.success('Your permit has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
 			},
 			error: (error: any) => {

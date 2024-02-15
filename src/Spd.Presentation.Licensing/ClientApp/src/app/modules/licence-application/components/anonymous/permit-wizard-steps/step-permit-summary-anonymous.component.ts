@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
+	ArmouredVehiclePermitReasonCode,
+	BodyArmourPermitReasonCode,
 	BusinessTypeCode,
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
@@ -147,7 +149,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Business Name</div>
 													<div class="summary-text-data">
-														{{ businessName }}
+														{{ employerName }}
 													</div>
 												</div>
 												<div class="col-lg-6 col-md-12 mt-lg-2">
@@ -693,48 +695,79 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get reasonForRequirement(): string {
 		const reasonList = [];
-
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
 			if (armouredVehicleRequirement.isPersonalProtection) {
-				// const categoryDesc = this.optionsPipe.transform(category, 'ArmouredVehiclePermitReasonTypes');
-				// const categoryDesc = this.optionsPipe.transform(category, 'BodyArmourPermitReasonTypes');
-				reasonList.push('Personal protection');
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.PersonalProtection,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
 			}
 			if (armouredVehicleRequirement.isProtectionOfAnotherPerson) {
-				reasonList.push('Protection of another person');
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
 			}
 			if (armouredVehicleRequirement.isProtectionOfPersonalProperty) {
-				reasonList.push('Protection of personal property');
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
 			}
 			if (armouredVehicleRequirement.isProtectionOfOthersProperty) {
-				reasonList.push(`Protection of other's property`);
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
 			}
 			if (armouredVehicleRequirement.isMyEmployment) {
-				reasonList.push('My employment');
+				reasonList.push(
+					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.MyEmployment, 'ArmouredVehiclePermitReasonTypes')
+				);
 			}
 			if (armouredVehicleRequirement.isOther) {
-				reasonList.push('Other');
+				reasonList.push(
+					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.Other, 'ArmouredVehiclePermitReasonTypes')
+				);
 			}
 		} else {
 			const bodyArmourRequirementFormGroup = this.permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
 			if (bodyArmourRequirementFormGroup.isOutdoorRecreation) {
-				reasonList.push('Outdoor recreation');
+				reasonList.push(
+					this.optionsPipe.transform(BodyArmourPermitReasonCode.OutdoorRecreation, 'BodyArmourPermitReasonTypes')
+				);
 			}
 			if (bodyArmourRequirementFormGroup.isPersonalProtection) {
-				reasonList.push('Personal protection');
+				reasonList.push(
+					this.optionsPipe.transform(BodyArmourPermitReasonCode.PersonalProtection, 'BodyArmourPermitReasonTypes')
+				);
 			}
 			if (bodyArmourRequirementFormGroup.isMyEmployment) {
-				reasonList.push('My employment');
+				reasonList.push(
+					this.optionsPipe.transform(BodyArmourPermitReasonCode.MyEmployment, 'BodyArmourPermitReasonTypes')
+				);
 			}
 			if (bodyArmourRequirementFormGroup.isTravelForConflict) {
-				reasonList.push('Travel for conflict');
+				reasonList.push(
+					this.optionsPipe.transform(
+						BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict,
+						'BodyArmourPermitReasonTypes'
+					)
+				);
 			}
 			if (bodyArmourRequirementFormGroup.isOther) {
-				reasonList.push('Other');
+				reasonList.push(this.optionsPipe.transform(BodyArmourPermitReasonCode.Other, 'BodyArmourPermitReasonTypes'));
 			}
 		}
-
 		return reasonList.join(', ');
 	}
 	get isOtherReason(): boolean {
@@ -760,35 +793,35 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.permitRationaleData?.attachments ?? [];
 	}
 
-	get businessName(): string {
-		return this.permitModelData.employerInformationData?.businessName ?? '';
+	get employerName(): string {
+		return this.permitModelData.employerPrimaryAddress?.employerName ?? '';
 	}
 	get supervisorName(): string {
-		return this.permitModelData.employerInformationData?.supervisorName ?? '';
+		return this.permitModelData.employerPrimaryAddress?.supervisorName ?? '';
 	}
 	get supervisorEmailAddress(): string {
-		return this.permitModelData.employerInformationData?.supervisorEmailAddress ?? '';
+		return this.permitModelData.employerPrimaryAddress?.supervisorEmailAddress ?? '';
 	}
 	get supervisorPhoneNumber(): string {
-		return this.permitModelData.employerInformationData?.supervisorPhoneNumber ?? '';
+		return this.permitModelData.employerPrimaryAddress?.supervisorPhoneNumber ?? '';
 	}
 	get businessAddressLine1(): string {
-		return this.permitModelData.employerInformationData?.addressLine1 ?? '';
+		return this.permitModelData.employerPrimaryAddress?.addressLine1 ?? '';
 	}
 	get businessAddressLine2(): string {
-		return this.permitModelData.employerInformationData?.addressLine2 ?? '';
+		return this.permitModelData.employerPrimaryAddress?.addressLine2 ?? '';
 	}
 	get businessCity(): string {
-		return this.permitModelData.employerInformationData?.city ?? '';
+		return this.permitModelData.employerPrimaryAddress?.city ?? '';
 	}
 	get businessPostalCode(): string {
-		return this.permitModelData.employerInformationData?.postalCode ?? '';
+		return this.permitModelData.employerPrimaryAddress?.postalCode ?? '';
 	}
 	get businessProvince(): string {
-		return this.permitModelData.employerInformationData?.province ?? '';
+		return this.permitModelData.employerPrimaryAddress?.province ?? '';
 	}
 	get businessCountry(): string {
-		return this.permitModelData.employerInformationData?.country ?? '';
+		return this.permitModelData.employerPrimaryAddress?.country ?? '';
 	}
 
 	get residentialAddressLine1(): string {

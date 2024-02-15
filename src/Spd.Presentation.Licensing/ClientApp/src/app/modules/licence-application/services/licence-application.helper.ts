@@ -593,13 +593,6 @@ export abstract class LicenceApplicationHelper {
 
 	getSaveBodyAnonymous(licenceModelFormValue: any): any {
 		const requestbody = this.getSaveBodyBase(licenceModelFormValue);
-		// console.debug('savebody', savebody);
-
-		// const requestbody = savebody as WorkerLicenceAppAnonymousSubmitRequestJson;
-		console.debug('requestbody', requestbody);
-
-		// requestbody.originalApplicationId = licenceModelFormValue.originalApplicationId;
-		// requestbody.originalLicenceId = licenceModelFormValue.originalLicenceId;
 
 		console.debug('[getSaveBodyAnonymous] requestbody', requestbody);
 		return requestbody;
@@ -865,7 +858,7 @@ export abstract class LicenceApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
 		}
 
-		console.debug('getDocsToSaveAnonymousBlobs documents', documents);
+		console.debug('getDocsToSaveAnonymousBlobs documentsToSave', documents);
 
 		return documents;
 	}

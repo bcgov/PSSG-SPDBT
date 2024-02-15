@@ -24,6 +24,7 @@ export interface WorkerLicenceResponse {
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
   businessTypeCode?: BusinessTypeCode;
+  carryAndUseRestraints?: null | boolean;
   caseNumber?: null | string;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   contactEmailAddress?: null | string;
@@ -48,6 +49,9 @@ export interface WorkerLicenceResponse {
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
   isCanadianCitizen?: null | boolean;
+  isDogsPurposeDetectionDrugs?: null | boolean;
+  isDogsPurposeDetectionExplosives?: null | boolean;
+  isDogsPurposeProtection?: null | boolean;
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
@@ -62,6 +66,7 @@ export interface WorkerLicenceResponse {
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;
   useBcServicesCardPhoto?: null | boolean;
+  useDogs?: null | boolean;
   weight?: null | number;
   weightUnitCode?: WeightUnitCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;

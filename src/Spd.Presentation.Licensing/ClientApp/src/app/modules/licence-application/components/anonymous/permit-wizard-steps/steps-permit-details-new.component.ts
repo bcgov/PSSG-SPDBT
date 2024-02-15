@@ -22,14 +22,14 @@ import { StepPermitExpiredComponent } from './step-permit-expired.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-expired></app-step-permit-expired>
+				<app-step-permit-expired (validExpiredLicenceData)="onValidExpiredLicence()"></app-step-permit-expired>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PERMIT_EXPIRED)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onExpiredLicenceNextStep()">
 							Next
 						</button>
 					</div>
@@ -84,6 +84,14 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 
 	onCancel(): void {
 		this.router.navigate([LicenceApplicationRoutes.pathPermitAnonymous()]);
+	}
+
+	onExpiredLicenceNextStep(): void {
+		this.stepPermitExpiredComponent.onSearchAndValidate();
+	}
+
+	onValidExpiredLicence(): void {
+		this.nextStepperStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {
