@@ -25,6 +25,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				</div>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+				<!--  //TODO add display of service type code -->
 				<div class="mt-4 text-center fs-5">Your update to your Security Worker Licence has been received.</div>
 
 				<div class="my-4 text-center">We will contact you if we need more information.</div>
@@ -48,6 +49,18 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ caseNumber }}</div>
 					</div>
+				</div>
+
+				<div class="d-flex justify-content-end">
+					<button
+						mat-stroked-button
+						color="primary"
+						class="large w-auto m-2"
+						aria-label="Back"
+						(click)="onBackToHome()"
+					>
+						<mat-icon>arrow_back</mat-icon>Back to Home
+					</button>
 				</div>
 			</div>
 		</div>
@@ -86,6 +99,10 @@ export class CommonUpdateReceivedSuccessComponent implements OnInit {
 
 	onPrint(): void {
 		window.print();
+	}
+
+	onBackToHome(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
 	}
 
 	get licenceTermCode(): string {

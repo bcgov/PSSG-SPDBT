@@ -198,7 +198,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
-        /// Uploading file only save files in cache, the files are not connected to the appliation yet.
+        /// Uploading file only save files in cache, the files are not connected to the application yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="ct"></param>

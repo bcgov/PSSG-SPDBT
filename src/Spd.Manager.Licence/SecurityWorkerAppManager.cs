@@ -271,7 +271,7 @@ internal partial class SecurityWorkerAppManager :
     /// Only Name Changed, reprint = No => openshift update the contact directly, no need to create application or task.
     /// If license categories or Dog constraints changed, (no matter if reprint is true or false), openshift needs to create a new application with Update type, the application spd_currentexpiredlicenseid with be the selected old licenced.Do not need to copy old files to the new application.
     /// If only contact info, address changed, openshift directly update contact.
-    /// If Criminal Charges, or New Offsence Conviction, or treated for mental Health changed, created task, assign to Licesing RA team
+    /// If Criminal Charges, or New Offence Conviction, or treated for mental Health changed, created task, assign to Licesing RA team
     /// If only hold a position with peace officer changed, create a task for license cs team., link peace officer document to this task and contact.
     /// If mental health changed, create a task for license to licensing team, link mental document to this task and contact
     /// If any changes that needs creating tasks and also need creating application, then do both.

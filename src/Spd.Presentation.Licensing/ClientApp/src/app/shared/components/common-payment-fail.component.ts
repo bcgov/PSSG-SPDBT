@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
 	selector: 'app-common-payment-fail',
 	template: `
 		<div class="row">
-			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
 					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Failed</h2>
@@ -13,16 +14,6 @@ import { Router } from '@angular/router';
 
 					<div class="col-xl-6 col-lg-4 col-md-12">
 						<div class="d-flex justify-content-end">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large w-auto m-2"
-								aria-label="Back"
-								*ngIf="isBackRoute"
-								(click)="onBack()"
-							>
-								<mat-icon>arrow_back</mat-icon>Back
-							</button>
 							<button
 								mat-flat-button
 								color="primary"
@@ -37,51 +28,64 @@ import { Router } from '@angular/router';
 					</div>
 				</div>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
-			</div>
-		</div>
 
-		<div class="d-flex justify-content-center">
-			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-fail.png" alt="Payment fail" />
-			</div>
-		</div>
-
-		<div class="row mx-4">
-			<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
-				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="mt-4">
-						Your application has been submitted, but it won't be processed until payment is received.
-					</div>
-					<div class="my-4">
-						Please download and complete the
-						<a
-							tabindex="0"
-							(click)="onDownloadManualPaymentForm()"
-							(keydown)="onKeydownDownloadManualPaymentForm($event)"
-							>Manual Payment Form</a
-						>
-						then follow the instructions on the form to submit payment to the Security Programs Division.
+				<div class="d-flex justify-content-center">
+					<div class="payment__image text-center">
+						<img class="payment__image__item" src="/assets/payment-fail.png" alt="Payment fail" />
 					</div>
 				</div>
-			</ng-container>
 
-			<ng-template #remainingAttempts>
-				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="mt-4">
-						Please ensure the information you entered is correct and try again, or use a different credit card. You have
-						{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
-					</div>
-					<div class="my-4">
-						Alternatively, you can download the
-						<a
-							tabindex="0"
-							(click)="onDownloadManualPaymentForm()"
-							(keydown)="onKeydownDownloadManualPaymentForm($event)"
-							>Manual Payment Form</a
-						>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
-					</div>
+				<div class="row mx-4">
+					<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
+						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+							<div class="mt-4">
+								Your application has been submitted, but it won't be processed until payment is received.
+							</div>
+							<div class="my-4">
+								Please download and complete the
+								<a
+									tabindex="0"
+									(click)="onDownloadManualPaymentForm()"
+									(keydown)="onKeydownDownloadManualPaymentForm($event)"
+									>Manual Payment Form</a
+								>
+								then follow the instructions on the form to submit payment to the Security Programs Division.
+							</div>
+						</div>
+					</ng-container>
+
+					<ng-template #remainingAttempts>
+						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+							<div class="mt-4">
+								Please ensure the information you entered is correct and try again, or use a different credit card. You
+								have
+								{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
+							</div>
+							<div class="my-4">
+								Alternatively, you can download the
+								<a
+									tabindex="0"
+									(click)="onDownloadManualPaymentForm()"
+									(keydown)="onKeydownDownloadManualPaymentForm($event)"
+									>Manual Payment Form</a
+								>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
+							</div>
+						</div>
+					</ng-template>
 				</div>
-			</ng-template>
+
+				<div class="d-flex justify-content-end">
+					<button
+						mat-stroked-button
+						color="primary"
+						class="large w-auto m-2"
+						aria-label="Back"
+						(click)="onBackToHome()"
+					>
+						<mat-icon>arrow_back</mat-icon>Back to Home
+					</button>
+				</div>
+			</div>
 		</div>
 	`,
 	styles: [
@@ -92,8 +96,7 @@ import { Router } from '@angular/router';
 		`,
 	],
 })
-export class CommonPaymentFailComponent implements OnInit {
-	isBackRoute = false;
+export class CommonPaymentFailComponent {
 	payBySecureLink = true;
 
 	private _payment: PaymentResponse | null = null;
@@ -128,15 +131,10 @@ export class CommonPaymentFailComponent implements OnInit {
 		return this._numberOfAttemptsRemaining;
 	}
 
-	@Output() backRoute: EventEmitter<any> = new EventEmitter();
 	@Output() payNow: EventEmitter<any> = new EventEmitter();
 	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
 	constructor(private router: Router) {}
-
-	ngOnInit(): void {
-		this.isBackRoute = this.backRoute.observed;
-	}
 
 	onDownloadManualPaymentForm(): void {
 		this.downloadManualPaymentForm.emit();
@@ -152,7 +150,7 @@ export class CommonPaymentFailComponent implements OnInit {
 		this.payNow.emit();
 	}
 
-	onBack(): void {
-		this.backRoute.emit();
+	onBackToHome(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
 	}
 }

@@ -6,7 +6,9 @@ export { Alias } from './models/alias';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationTypeCode } from './models/application-type-code';
+export { ArmouredVehiclePermitReasonCode } from './models/armoured-vehicle-permit-reason-code';
 export { BcscConfiguration } from './models/bcsc-configuration';
+export { BodyArmourPermitReasonCode } from './models/body-armour-permit-reason-code';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { BusinessTypeCode } from './models/business-type-code';
 export { ConfigurationResponse } from './models/configuration-response';
@@ -41,7 +43,6 @@ export { PermitAppAnonymousSubmitRequest } from './models/permit-app-anonymous-s
 export { PermitAppCommandResponse } from './models/permit-app-command-response';
 export { PoliceOfficerRoleCode } from './models/police-officer-role-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
-export { RequirePermitReasonCode } from './models/require-permit-reason-code';
 export { ResidentialAddress } from './models/residential-address';
 export { UserInfo } from './models/user-info';
 export { UserInfoMsgTypeCode } from './models/user-info-msg-type-code';

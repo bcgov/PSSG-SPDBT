@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { GoogleRecaptcha } from '../models/google-recaptcha';
+import { IActionResult } from '../models/i-action-result';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { PermitAppAnonymousSubmitRequest } from '../models/permit-app-anonymous-submit-request';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
@@ -45,7 +46,7 @@ export class PermitService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<string>> {
+): Observable<StrictHttpResponse<IActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsAnonymousKeyCodePostPath, 'post');
     if (params) {
@@ -59,7 +60,7 @@ export class PermitService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<string>;
+        return r as StrictHttpResponse<IActionResult>;
       })
     );
   }
@@ -79,31 +80,30 @@ export class PermitService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<string> {
+): Observable<IActionResult> {
 
     return this.apiPermitApplicationsAnonymousKeyCodePost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<string>) => r.body as string)
+      map((r: StrictHttpResponse<IActionResult>) => r.body as IActionResult)
     );
   }
 
   /**
-   * Path part for operation apiPermitApplicationsAnonymousKeyCodeFilesPost
+   * Path part for operation apiPermitApplicationsAnonymousFilesPost
    */
-  static readonly ApiPermitApplicationsAnonymousKeyCodeFilesPostPath = '/api/permit-applications/anonymous/{keyCode}/files';
+  static readonly ApiPermitApplicationsAnonymousFilesPostPath = '/api/permit-applications/anonymous/files';
 
   /**
-   * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
+   * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsAnonymousKeyCodeFilesPost()` instead.
+   * To access only the response body, use `apiPermitApplicationsAnonymousFilesPost()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiPermitApplicationsAnonymousKeyCodeFilesPost$Response(params: {
-    keyCode: string;
+  apiPermitApplicationsAnonymousFilesPost$Response(params?: {
     body?: {
 'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
@@ -113,9 +113,8 @@ export class PermitService extends BaseService {
 
 ): Observable<StrictHttpResponse<string>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsAnonymousKeyCodeFilesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsAnonymousFilesPostPath, 'post');
     if (params) {
-      rb.path('keyCode', params.keyCode, {"style":"simple"});
       rb.body(params.body, 'multipart/form-data');
     }
 
@@ -132,18 +131,17 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the appliation yet.
+   * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
+   * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousKeyCodeFilesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousFilesPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiPermitApplicationsAnonymousKeyCodeFilesPost(params: {
-    keyCode: string;
+  apiPermitApplicationsAnonymousFilesPost(params?: {
     body?: {
 'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
@@ -153,29 +151,29 @@ export class PermitService extends BaseService {
 
 ): Observable<string> {
 
-    return this.apiPermitApplicationsAnonymousKeyCodeFilesPost$Response(params,context).pipe(
+    return this.apiPermitApplicationsAnonymousFilesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<string>) => r.body as string)
     );
   }
 
   /**
-   * Path part for operation apiPermitApplicationsAnonymousKeyCodeSubmitPost
+   * Path part for operation apiPermitApplicationsAnonymousSubmitPost
    */
-  static readonly ApiPermitApplicationsAnonymousKeyCodeSubmitPostPath = '/api/permit-applications/anonymous/{keyCode}/submit';
+  static readonly ApiPermitApplicationsAnonymousSubmitPostPath = '/api/permit-applications/anonymous/submit';
 
   /**
    * Submit Body Armor or Armor Vehicle permit application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   * The session keycode is stored in the cookies.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsAnonymousKeyCodeSubmitPost()` instead.
+   * To access only the response body, use `apiPermitApplicationsAnonymousSubmitPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiPermitApplicationsAnonymousKeyCodeSubmitPost$Response(params: {
-    keyCode: string;
+  apiPermitApplicationsAnonymousSubmitPost$Response(params?: {
 
     /**
      * PermitAppAnonymousSubmitRequest data
@@ -186,9 +184,8 @@ export class PermitService extends BaseService {
 
 ): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsAnonymousKeyCodeSubmitPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsAnonymousSubmitPostPath, 'post');
     if (params) {
-      rb.path('keyCode', params.keyCode, {"style":"simple"});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -207,16 +204,16 @@ export class PermitService extends BaseService {
   /**
    * Submit Body Armor or Armor Vehicle permit application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   * The session keycode is stored in the cookies.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousKeyCodeSubmitPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousSubmitPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiPermitApplicationsAnonymousKeyCodeSubmitPost(params: {
-    keyCode: string;
+  apiPermitApplicationsAnonymousSubmitPost(params?: {
 
     /**
      * PermitAppAnonymousSubmitRequest data
@@ -227,7 +224,7 @@ export class PermitService extends BaseService {
 
 ): Observable<PermitAppCommandResponse> {
 
-    return this.apiPermitApplicationsAnonymousKeyCodeSubmitPost$Response(params,context).pipe(
+    return this.apiPermitApplicationsAnonymousSubmitPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<PermitAppCommandResponse>) => r.body as PermitAppCommandResponse)
     );
   }
