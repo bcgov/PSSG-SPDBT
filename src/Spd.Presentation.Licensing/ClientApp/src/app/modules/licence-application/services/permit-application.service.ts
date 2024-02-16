@@ -69,7 +69,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		permitRequirementData: this.permitRequirementFormGroup,
-		employerPrimaryAddress: this.employerInformationFormGroup,
+		employerData: this.employerInformationFormGroup,
 		permitRationaleData: this.permitRationaleFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
@@ -269,7 +269,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				// const employerPrimaryAddress = {
+				// const employerData = {
 				// 	employerName: 'aaa',
 				// 	supervisorName: 'ccc',
 				// 	supervisorEmailAddress: 'bbb@bbb.com',
@@ -291,7 +291,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						// employerPrimaryAddress,
+						// employerData,
 					},
 					{
 						emitEvent: false,
@@ -323,7 +323,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				};
 
 				// TODO remove hardcoded
-				// const employerPrimaryAddress = {
+				// const employerData = {
 				// 	employerName: 'aaa',
 				// 	supervisorName: 'ccc',
 				// 	supervisorEmailAddress: 'bbb@bbb.com',
@@ -345,7 +345,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						// employerPrimaryAddress,
+						// employerData,
 					},
 					{
 						emitEvent: false,
@@ -404,7 +404,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		// TODO remove hardcoded
-		const employerPrimaryAddress = {
+		const employerData = {
 			employerName: 'aaa',
 			supervisorName: 'ccc',
 			supervisorEmailAddress: 'bbb@bbb.com',
@@ -434,7 +434,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
-				employerPrimaryAddress,
+				employerData,
 				characteristicsData,
 			},
 			{

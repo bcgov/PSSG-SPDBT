@@ -11,6 +11,8 @@ export {
 	HairColourTypes,
 	HeightUnitTypes,
 	LicenceTermTypes,
+	PermitProofOfCitizenshipTypes,
+	PermitProofOfResidenceStatusTypes,
 	PoliceOfficerRoleTypes,
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,

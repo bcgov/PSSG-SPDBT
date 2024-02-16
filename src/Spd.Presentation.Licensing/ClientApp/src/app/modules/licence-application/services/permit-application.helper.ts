@@ -416,9 +416,10 @@ export abstract class PermitApplicationHelper {
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
 
 		const permitRequirementData = { ...permitModelFormValue.permitRequirementData };
-		const employerPrimaryAddress = { ...permitModelFormValue.employerPrimaryAddress };
 		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
 		const printPermitData = { ...permitModelFormValue.printPermitData };
+		let employerData = {};
+		let employerPrimaryAddress = {};
 
 		// default the flags
 		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
@@ -554,6 +555,25 @@ export abstract class PermitApplicationHelper {
 			}
 		}
 
+		if (includesMyEmployement) {
+			const allEmployerData = { ...permitModelFormValue.employerData };
+			employerData = {
+				employerName: allEmployerData.employerName,
+				supervisorName: allEmployerData.supervisorName,
+				supervisorEmailAddress: allEmployerData.supervisorEmailAddress,
+				supervisorPhoneNumber: allEmployerData.supervisorPhoneNumber,
+			};
+
+			employerPrimaryAddress = {
+				addressLine1: allEmployerData.addressLine1,
+				addressLine2: allEmployerData.addressLine2,
+				city: allEmployerData.city,
+				postalCode: allEmployerData.postalCode,
+				province: allEmployerData.province,
+				country: allEmployerData.country,
+			};
+		}
+
 		const body = {
 			licenceAppId,
 			originalApplicationId,
@@ -612,7 +632,8 @@ export abstract class PermitApplicationHelper {
 			//-----------------------------------
 			rationale: permitRationaleData.rationale,
 			//-----------------------------------
-			employerPrimaryAddress: includesMyEmployement ? employerPrimaryAddress : null,
+			...employerData,
+			employerPrimaryAddress,
 			//-----------------------------------
 			armouredVehiclePermitReasonCodes,
 			bodyArmourPermitReasonCodes,
