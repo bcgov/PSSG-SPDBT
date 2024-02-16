@@ -121,8 +121,13 @@ namespace Spd.Manager.Shared
         MCFD,
         PE_CRC,
         PE_CRC_VS,
-        LICENSING,
-        PSSO_VS
+        SecurityWorkerLicence,
+        PSSO_VS,
+        SecurityBusinessLicence,
+        ArmouredVehiclePermit,
+        BodyArmourPermit,
+        MDRA,
+        SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
     }
     public record FileResponse
     {
