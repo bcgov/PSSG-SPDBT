@@ -194,14 +194,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		}, 250);
 	}
 
-	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
-
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
-	}
-
 	onChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
@@ -253,6 +245,14 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 	onPayStep(): void {
 		this.payNow(this.newLicenceAppId!);
+	}
+
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+
+		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private payNow(licenceAppId: string): void {

@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, PaymentResponse } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 
 @Component({
 	selector: 'app-common-payment-success',
@@ -16,16 +17,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 
 					<div class="col-6">
 						<div class="d-flex justify-content-end">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large w-auto m-2"
-								aria-label="Back"
-								*ngIf="isBackRoute"
-								(click)="onBack()"
-							>
-								<mat-icon>arrow_back</mat-icon>Back
-							</button>
 							<button
 								mat-flat-button
 								color="primary"
@@ -47,6 +38,8 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 				</div>
 
 				<div class="row mt-4">
+					<!--  //TODO add display of service type code -->
+
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.New">
 						<div class="text-center fs-5">Your application for a new Security Worker Licence has been received.</div>
 					</ng-container>
@@ -124,13 +117,24 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						<div class="payment__text">{{ payment?.transOrderId }}</div>
 					</div>
 				</div>
+
+				<div class="d-flex justify-content-end">
+					<button
+						mat-stroked-button
+						color="primary"
+						class="large w-auto m-2"
+						aria-label="Back"
+						(click)="onBackToHome()"
+					>
+						<mat-icon>arrow_back</mat-icon>Back to Home
+					</button>
+				</div>
 			</div>
 		</div>
 	`,
 	styles: [],
 })
-export class CommonPaymentSuccessComponent implements OnInit {
-	isBackRoute = false;
+export class CommonPaymentSuccessComponent {
 	appConstants = SPD_CONSTANTS;
 	applicationTypeCodes = ApplicationTypeCode;
 
@@ -152,20 +156,15 @@ export class CommonPaymentSuccessComponent implements OnInit {
 		return this._payment;
 	}
 
-	@Output() backRoute: EventEmitter<any> = new EventEmitter();
 	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
 	constructor(private router: Router) {}
 
-	ngOnInit(): void {
-		this.isBackRoute = this.backRoute.observed;
-	}
-
-	onBack(): void {
-		this.backRoute.emit();
-	}
-
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();
+	}
+
+	onBackToHome(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
 	}
 }

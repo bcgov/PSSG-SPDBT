@@ -1,6 +1,8 @@
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
+	ArmouredVehiclePermitReasonCode,
+	BodyArmourPermitReasonCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -235,9 +237,9 @@ export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
 ];
 
 export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
-	{ desc: 'BC Services Card', code: LicenceDocumentTypeCode.BcServicesCard },
+	{ desc: 'BC Services Card (with photo)', code: LicenceDocumentTypeCode.BcServicesCard },
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
-	{ desc: 'Canadian Native Status Card', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
+	{ desc: 'Canadian Native Status Card (with photo)', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
 	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
@@ -325,6 +327,26 @@ export const PoliceOfficerRoleTypes: SelectOptions[] = [
 		code: PoliceOfficerRoleCode.SpecialProvincialOrMunicipalConstable,
 	},
 	{ desc: 'Other', code: PoliceOfficerRoleCode.Other },
+];
+
+export const ArmouredVehiclePermitReasonTypes: SelectOptions[] = [
+	{ desc: 'Personal Protection', code: ArmouredVehiclePermitReasonCode.PersonalProtection },
+	{ desc: 'My Employment', code: ArmouredVehiclePermitReasonCode.MyEmployment },
+	{ desc: 'Other', code: ArmouredVehiclePermitReasonCode.Other },
+	{ desc: 'Protection of Personal Property', code: ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty },
+	{ desc: `Protection of Other's Property`, code: ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty },
+	{ desc: 'Protection of Another Person', code: ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson },
+];
+
+export const BodyArmourPermitReasonTypes: SelectOptions[] = [
+	{ desc: 'My Employment', code: BodyArmourPermitReasonCode.MyEmployment },
+	{ desc: 'Other', code: BodyArmourPermitReasonCode.Other },
+	{ desc: 'Outdoor Recreation', code: BodyArmourPermitReasonCode.OutdoorRecreation },
+	{ desc: 'Personal Protection', code: BodyArmourPermitReasonCode.PersonalProtection },
+	{
+		desc: 'Travel in Response to International Conflict',
+		code: BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict,
+	},
 ];
 
 export const CountryTypes: SelectOptions[] = [

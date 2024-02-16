@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
@@ -87,12 +87,12 @@ import { Subject } from 'rxjs';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonExpiredLicenceComponent {
+export class CommonExpiredLicenceComponent implements OnInit {
 	booleanTypeCodes = BooleanTypeCode;
 	constants = SPD_CONSTANTS;
 
-	titleLabel = 'Licence';
-	label = 'licence';
+	titleLabel!: string;
+	label!: string;
 
 	messageInfo = '';
 	messageWarn = '';
@@ -102,6 +102,7 @@ export class CommonExpiredLicenceComponent {
 	resetRecaptcha: Subject<void> = new Subject<void>();
 
 	@Input() form!: FormGroup;
+	@Input() name!: string;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	@Output() validExpiredLicenceData = new EventEmitter();
@@ -112,6 +113,16 @@ export class CommonExpiredLicenceComponent {
 		private formatDatePipe: FormatDatePipe,
 		private hotToastService: HotToastService
 	) {}
+
+	ngOnInit(): void {
+		if (this.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			this.titleLabel = 'Licence';
+			this.label = 'licence';
+		} else {
+			this.titleLabel = 'Permit';
+			this.label = 'permit';
+		}
+	}
 
 	onValidateAndSearch(): void {
 		if (this.hasExpiredLicence.value === BooleanTypeCode.No) {

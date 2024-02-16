@@ -127,14 +127,14 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
+						<!-- <button
 							mat-stroked-button
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_LICENCE_EXPIRED)"
 						>
 							Next: Review
-						</button>
+						</button> -->
 					</div>
 				</div>
 			</mat-step>
