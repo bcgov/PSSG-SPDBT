@@ -54,7 +54,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname))
             .ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_jobtitle))
             .ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => GetScreenType(s.spd_screeningrequesttype)))
-            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
+            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));
         }
@@ -85,12 +85,6 @@ namespace Spd.Resource.Repository.ApplicationInvite
         {
             if (code == null) return null;
             return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
-        }
-
-        private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
-        {
-            if (serviceTypeGuid == null) return null;
-            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
         }
     }
 }
