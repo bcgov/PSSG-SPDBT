@@ -176,14 +176,14 @@ namespace Spd.Presentation.Screening.Controllers
 
             //validation file
             string fileName = bulkUploadRequest.File.FileName;
-            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION, StringComparison.InvariantCultureIgnoreCase))
+            if (!fileName.EndsWith(SpdConstants.BulkAppUploadFileExtension, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION} file supported.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BulkAppUploadFileExtension} file supported.");
             }
             long fileSize = bulkUploadRequest.File.Length;
-            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            if (fileSize > SpdConstants.UploadFileMaxSize)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UploadFileMaxSize}.");
             }
 
             //parse file
@@ -220,7 +220,7 @@ namespace Spd.Presentation.Screening.Controllers
                         oneRequest.LineNumber = lineNo;
                         try
                         {
-                            string[] data = line.Split(SpdConstants.BULK_APP_UPLOAD_COL_SEPARATOR);
+                            string[] data = line.Split(SpdConstants.BulkAppUploadColSeperator);
                             oneRequest.OrgId = orgId;
                             oneRequest.Surname = CleanString(data[0]);
                             oneRequest.GivenName = CleanString(data[1]);
@@ -249,7 +249,7 @@ namespace Spd.Presentation.Screening.Controllers
                             if (string.IsNullOrEmpty(birthDateStr))
                                 oneRequest.DateOfBirth = null;
                             else
-                                oneRequest.DateOfBirth = DateOnly.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
+                                oneRequest.DateOfBirth = DateOnly.ParseExact(birthDateStr, SpdConstants.BulkAppUploadBirthdateFormat, CultureInfo.InvariantCulture);
                             string? genderStr = CleanString(data[21]);
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? GenderCode.U : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = CleanString(data[22]);
@@ -399,7 +399,7 @@ namespace Spd.Presentation.Screening.Controllers
 
             if (isPSSO)
             {
-                return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, SpdConstants.BC_GOV_ORG_ID, Guid.Parse(userId), null));
+                return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, SpdConstants.BcGovOrgId, Guid.Parse(userId), null));
             }
             else
             {
@@ -493,7 +493,7 @@ namespace Spd.Presentation.Screening.Controllers
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
-            if (orgId == SpdConstants.BC_GOV_ORG_ID)
+            if (orgId == SpdConstants.BcGovOrgId)
             {
                 appListFilterBy = new AppListFilterBy(null);
                 appListFilterBy.ParentOrgId = orgId;

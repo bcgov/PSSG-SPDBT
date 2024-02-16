@@ -15,17 +15,14 @@ namespace Spd.Presentation.Licensing.Controllers
     [ApiController]
     public class LicenceController : SpdLicenceAnonymousControllerBase
     {
-        private readonly ILogger<LicenceController> _logger;
         private readonly IMediator _mediator;
 
         public LicenceController(
-            ILogger<LicenceController> logger,
             IMediator mediator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDataProtectionProvider dpProvider,
             IDistributedCache cache) : base(cache, dpProvider, recaptchaVerificationService)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 
@@ -91,10 +88,21 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 throw new ApiException(HttpStatusCode.Unauthorized, "licence id is incorrect");
             }
-            FileResponse response = await _mediator.Send(new LicencePhotoQuery(Guid.Parse(licenceId)));
-            var content = new MemoryStream(response?.Content);
-            var contentType = response.ContentType ?? "application/octet-stream";
-            return File(content, contentType, response.FileName);
+            FileResponse? response = await _mediator.Send(new LicencePhotoQuery(Guid.Parse(licenceId)));
+            MemoryStream content;
+            string contentType;
+            if (response == null)
+            {
+                content = new MemoryStream(Array.Empty<byte>());
+                contentType = string.Empty;
+            }
+            else
+            {
+                content = new MemoryStream(response.Content);
+                contentType = response.ContentType ?? "application/octet-stream";
+            }
+
+            return File(content, contentType, response?.FileName);
         }
     }
 }

@@ -28,12 +28,12 @@ internal partial class LicenceAppDocumentManager :
         _documentRepository = documentUrlRepository;
     }
 
-    public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken ct)
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken cancellationToken)
     {
         DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
         DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
 
-        LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, ct);
+        LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, cancellationToken);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
 
@@ -42,7 +42,7 @@ internal partial class LicenceAppDocumentManager :
         IList<DocumentResp> docResps = new List<DocumentResp>();
         foreach (var file in command.Request.Documents)
         {
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), cancellationToken);
             SpdTempFile spdTempFile = new()
             {
                 TempFileKey = fileKey,
@@ -60,20 +60,20 @@ internal partial class LicenceAppDocumentManager :
                 DocumentType2 = docType2,
                 SubmittedByApplicantId = contactId,
                 ApplicantId = contactId,
-            }, ct);
+            }, cancellationToken);
             docResps.Add(docResp);
         }
 
         return _mapper.Map<IEnumerable<LicenceAppDocumentResponse>>(docResps);
     }
 
-    public async Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken ct)
+    public async Task<IEnumerable<LicAppFileInfo>> Handle(CreateDocumentInCacheCommand command, CancellationToken cancellationToken)
     {
         //put file to cache
         IList<LicAppFileInfo> cacheFileInfos = new List<LicAppFileInfo>();
         foreach (var file in command.Request.Documents)
         {
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), cancellationToken);
             LicAppFileInfo f = new()
             {
                 TempFileKey = fileKey,

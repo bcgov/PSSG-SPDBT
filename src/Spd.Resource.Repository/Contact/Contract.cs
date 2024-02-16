@@ -25,8 +25,8 @@ namespace Spd.Resource.Repository.Contact
         public DateOnly BirthDate { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
-        public ResidentialAddr? ResidentialAddress { get; set; } = null;
-        public MailingAddr? MailingAddress { get; set; } = null;
+        public ResidentialAddr? ResidentialAddress { get; set; }
+        public MailingAddr? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
     }
 
@@ -47,8 +47,8 @@ namespace Spd.Resource.Repository.Contact
         public string? MiddleName2 { get; set; }
         public DateOnly BirthDate { get; set; }
         public GenderEnum? Gender { get; set; }
-        public ResidentialAddr? ResidentialAddress { get; set; } = null;
-        public MailingAddr? MailingAddress { get; set; } = null;
+        public ResidentialAddr? ResidentialAddress { get; set; }
+        public MailingAddr? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
     };
     public record UpdateContactCmd : ContactCmd
