@@ -8,7 +8,7 @@ public partial interface ILicenceApplicationRepository
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken ct);
 
-    //connect spd_appliation with spd_contact and update application to correct status
+    //connect spd_application with spd_contact and update application to correct status
     public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct);
 }
 

@@ -42,6 +42,10 @@ export class PaymentService extends BaseService {
    */
   apiUnauthLicenceApplicationIdPaymentLinkPost$Response(params: {
     applicationId: string;
+
+    /**
+     * which include Payment link create request
+     */
     body: PaymentLinkCreateRequest
   },
   context?: HttpContext
@@ -78,6 +82,10 @@ export class PaymentService extends BaseService {
    */
   apiUnauthLicenceApplicationIdPaymentLinkPost(params: {
     applicationId: string;
+
+    /**
+     * which include Payment link create request
+     */
     body: PaymentLinkCreateRequest
   },
   context?: HttpContext

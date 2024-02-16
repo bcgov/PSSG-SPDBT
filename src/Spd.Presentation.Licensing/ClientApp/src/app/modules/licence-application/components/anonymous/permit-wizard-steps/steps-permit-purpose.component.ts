@@ -184,14 +184,12 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 					)?.value;
 
 					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-					console.log('bodyArmourRequirement', bodyArmourRequirement);
 				} else {
 					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
 						'permitRequirementData.armouredVehicleRequirementFormGroup'
 					)?.value;
 
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-					console.log('armouredVehicleRequirement', armouredVehicleRequirement);
 				}
 			}
 		);
