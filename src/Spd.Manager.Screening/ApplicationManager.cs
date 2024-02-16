@@ -143,7 +143,7 @@ namespace Spd.Manager.Screening
             result.CreateSuccess = true;
 
             //if it is PSSO, add hiring manager
-            if (request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
+            if (request.ParentOrgId == SpdConstants.BcGovOrgId)
             {
                 //add initiator
                 await _delegateRepository.ManageAsync(
@@ -156,7 +156,7 @@ namespace Spd.Manager.Screening
             }
 
             //update status : if psso or volunteer, go directly to submitted
-            if ((request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+            if ((request.ParentOrgId == SpdConstants.BcGovOrgId || request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
                 && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
             {
                 await _applicationRepository.UpdateAsync(
@@ -179,7 +179,7 @@ namespace Spd.Manager.Screening
             if (request.IsPSSO)
             {
                 filterBy.OrgId = null;
-                filterBy.ParentOrgId = SpdConstants.BC_GOV_ORG_ID;
+                filterBy.ParentOrgId = SpdConstants.BcGovOrgId;
                 filterBy.DelegatePortalUserId = null;
                 if (!request.ShowAllPSSOApps)
                 {
@@ -242,7 +242,7 @@ namespace Spd.Manager.Screening
             else
             {
                 //if org is psso or if org is volunteer crrp, set application status to submitted.
-                if (org.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER)) //is PSSO
+                if (org.OrgResult.ParentOrgId == SpdConstants.BcGovOrgId || org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER)) //is PSSO
                 {
                     updateCmd.Status = ApplicationStatusEnum.Submitted;
                 }
@@ -444,7 +444,7 @@ namespace Spd.Manager.Screening
                 }
 
                 //update status : if psso or volunteer, go directly to submitted
-                if ((cmd.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+                if ((cmd.ParentOrgId == SpdConstants.BcGovOrgId || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
                     && command.ApplicationCreateRequest.HaveVerifiedIdentity == true)
                 {
                     await _applicationRepository.UpdateAsync(
@@ -458,7 +458,7 @@ namespace Spd.Manager.Screening
                 }
 
                 //if orgId is bc government id, then add invite creator to application delegate as initiator.
-                if (cmd.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
+                if (cmd.ParentOrgId == SpdConstants.BcGovOrgId)
                 {
                     //add initiator
                     if (invite?.CreatedByUserId != null)

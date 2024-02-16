@@ -40,7 +40,7 @@ namespace Spd.Utilities.Dynamics
                 TimeSpan.FromMinutes(options.AuthenticationSettings.OAuth2TokenCachedInMins)) ?? string.Empty;
 
 
-        private async Task<string> AcquireTokenInternal()
+        private async Task<string?> AcquireTokenInternal()
         {
             var timeoutInMilliSecs = this.options.AuthenticationSettings.OAuth2TokenRequestTimeoutInMilliSeconds; // Time out the request after 200 ms
             var timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromMilliseconds(timeoutInMilliSecs), TimeoutStrategy.Pessimistic);
@@ -50,8 +50,7 @@ namespace Spd.Utilities.Dynamics
                         _ => TimeSpan.FromMilliseconds(timeoutInMilliSecs),
                         (result, timespan, retryNo, context) =>
                         {
-                            logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within " +
-                                $"{timespan.TotalMilliseconds}ms. Get timeout rejection");
+                            logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within {timespan.TotalMilliseconds}ms. Get timeout rejection");
                         }
                     );
             var pollyContext = new Context("GetDynamicsToken");

@@ -41,7 +41,7 @@ namespace Spd.Engine.Search
 
             ClearanceQry qry = new ClearanceQry(
                 ContactId: contact.ContactId,
-                FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
+                FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.ShareableClearanceExpiredDateBufferInMonths),
                 Shareable: true,
                 WorkWith: org.OrgResult.EmployeeInteractionType,
                 ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())

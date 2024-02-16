@@ -117,7 +117,7 @@ namespace Spd.Manager.Screening
 
         private static Guid? GetParentOrgId(ServiceTypeCode serviceType)
         {
-            if (serviceType == ServiceTypeCode.PSSO || serviceType == ServiceTypeCode.PSSO_VS) return SpdConstants.BC_GOV_ORG_ID;
+            if (serviceType == ServiceTypeCode.PSSO || serviceType == ServiceTypeCode.PSSO_VS) return SpdConstants.BcGovOrgId;
             return null;
         }
     }
