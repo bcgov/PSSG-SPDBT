@@ -101,7 +101,7 @@ namespace Spd.Manager.Payment
         public string TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
-        public ServiceTypeCode? WorkerLicenceTypeCode { get; set; }
+        public ServiceTypeCode? ServiceTypeCode { get; set; }
     }
     #endregion
 
