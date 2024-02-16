@@ -97,15 +97,15 @@ namespace Spd.Resource.Repository.ApplicationInvite
         private async Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken ct)
         {
             spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
-            if (createInviteCmd.OrgId != SpdConstants.BC_GOV_ORG_ID)
+            if (createInviteCmd.OrgId != SpdConstants.BcGovOrgId)
             {
                 account? org = await _dynaContext.GetOrgById(createInviteCmd.OrgId, ct);
 
                 foreach (var item in createInviteCmd.ApplicationInvites)
                 {
                     spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
-                    var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
-                    invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.CRRP_APPLICATION_INVITE_LINK}{encryptedInviteId}";
+                    var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
+                    invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.CrrpApplicationInviteLink}{encryptedInviteId}";
                     _dynaContext.AddTospd_portalinvitations(invitation);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
@@ -132,8 +132,8 @@ namespace Spd.Resource.Repository.ApplicationInvite
                 {
                     account? org = await _dynaContext.GetOrgById((Guid)item.OrgId, ct);
                     spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
-                    var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
-                    invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.PSSO_APPLICATION_INVITE_LINK}{encryptedInviteId}";
+                    var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
+                    invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.PssoApplicationInviteLink}{encryptedInviteId}";
                     _dynaContext.AddTospd_portalinvitations(invitation);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);

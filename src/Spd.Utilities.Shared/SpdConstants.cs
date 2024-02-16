@@ -1,17 +1,17 @@
 ﻿namespace Spd.Utilities.Shared;
 public static class SpdConstants
 {
-    public static readonly Guid BC_GOV_ORG_ID = Guid.Parse("720dbb43-0a37-ee11-b845-00505683fbf4");
-    public static readonly int USER_INVITE_VALID_DAYS = 7;
-    public static readonly int APPLICATION_INVITE_VALID_DAYS = 14;
-    public static readonly string BULK_APP_UPLOAD_FILE_EXTENSION = ".tsv";
-    public static readonly long UPLOAD_FILE_MAX_SIZE = 26214400; //25M
-    public static readonly string BULK_APP_UPLOAD_COL_SEPARATOR = "\"\t\"";
-    public static readonly string BULK_APP_UPLOAD_BIRTHDATE_FORMAT = "yyyy-MM-dd";
-    public static readonly string DEFAULT_BANNER_MSG = "10 business days for online applications and 20 business days for manual applications.";
-    public static readonly string USER_INVITE_LINK = "crrp/invitation/";
-    public static readonly string CRRP_APPLICATION_INVITE_LINK = "crrpa/invitation/";
-    public static readonly string PSSO_APPLICATION_INVITE_LINK = "pssoa/invitation/";
-    public static readonly int SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS = 6;
-    public static readonly string[] VALID_UPLOAD_FILE_EXE = { ".docx", ".doc", ".bmp", ".jpeg", ".jpg", ".tif", ".tiff", ".png", ".gif", ".pdf", ".html", ".htm" };
+    public static readonly Guid BcGovOrgId = Guid.Parse("720dbb43-0a37-ee11-b845-00505683fbf4");
+    public static readonly int UserInviteValidDays = 7;
+    public static readonly int ApplicationInviteValidDays = 14;
+    public static readonly string BulkAppUploadFileExtension = ".tsv";
+    public static readonly long UploadFileMaxSize = 26214400; //25M
+    public static readonly string BulkAppUploadColSeperator = "\"\t\"";
+    public static readonly string BulkAppUploadBirthdateFormat = "yyyy-MM-dd";
+    public static readonly string DefaultBannerMsg = "10 business days for online applications and 20 business days for manual applications.";
+    public static readonly string UserInviteLink = "crrp/invitation/";
+    public static readonly string CrrpApplicationInviteLink = "crrpa/invitation/";
+    public static readonly string PssoApplicationInviteLink = "pssoa/invitation/";
+    public static readonly int ShareableClearanceExpiredDateBufferInMonths = 6;
+    public static readonly string[] ValidUploadFileExe = { ".docx", ".doc", ".bmp", ".jpeg", ".jpg", ".tif", ".tiff", ".png", ".gif", ".pdf", ".html", ".htm" };
 }

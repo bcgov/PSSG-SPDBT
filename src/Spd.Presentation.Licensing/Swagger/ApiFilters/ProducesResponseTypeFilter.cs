@@ -27,7 +27,7 @@ namespace Spd.Presentation.Licensing.Swagger.ApiFilters
             operation.Responses.Add("200", openApiResponseSuccess);
         }
 
-        private static Type GetReturnType(OperationFilterContext context)
+        private static Type? GetReturnType(OperationFilterContext context)
         {
             var descriptor = context.ApiDescription.ActionDescriptor as ControllerActionDescriptor;
             var returnType = descriptor?.MethodInfo?.ReturnType;

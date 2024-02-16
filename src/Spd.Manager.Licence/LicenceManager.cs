@@ -35,14 +35,14 @@ internal class LicenceManager :
         _fileStorageService = fileStorageService;
     }
 
-    public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken ct)
+    public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken cancellationToken)
     {
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
             {
                 LicenceNumber = query.LicenceNumber,
                 AccessCode = query.AccessCode
-            }, ct);
+            }, cancellationToken);
 
         if (!response.Items.Any())
         {
@@ -54,10 +54,10 @@ internal class LicenceManager :
         return result;
     }
 
-    public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken ct)
+    public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)
     {
         //find contact id through licenceId
-        LicenceListResp lic = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = query.LicenceId }, ct);
+        LicenceListResp lic = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = query.LicenceId }, cancellationToken);
         Guid? applicantId = lic.Items.FirstOrDefault()?.LicenceHolderId;
         if (applicantId == null)
         {
@@ -69,7 +69,7 @@ internal class LicenceManager :
             ApplicantId = applicantId,
             FileType = Enum.Parse<DocumentTypeEnum>(DocumentTypeEnum.Photograph.ToString()),
         };
-        DocumentListResp docList = await _documentRepository.QueryAsync(qry, ct);
+        DocumentListResp docList = await _documentRepository.QueryAsync(qry, cancellationToken);
         if (docList == null || !docList.Items.Any())
             return new FileResponse();
         var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
@@ -80,7 +80,7 @@ internal class LicenceManager :
             {
                 FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
                     new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = docUrl.Folder },
-                    ct);
+                    cancellationToken);
                 return new FileResponse
                 {
                     Content = fileResult.File.Content,
