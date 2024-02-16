@@ -1,6 +1,8 @@
 export {
 	ApplicationPortalStatusTypes,
 	ApplicationTypes,
+	ArmouredVehiclePermitReasonTypes,
+	BodyArmourPermitReasonTypes,
 	BooleanTypes,
 	CountryTypes,
 	EyeColourTypes,

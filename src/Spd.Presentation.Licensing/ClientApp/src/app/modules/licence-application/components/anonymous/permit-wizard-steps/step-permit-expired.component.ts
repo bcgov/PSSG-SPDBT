@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { CommonExpiredLicenceComponent } from '../../shared/step-components/common-expired-licence.component';
 
 @Component({
 	selector: 'app-step-permit-expired',
@@ -13,7 +14,10 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 					subtitle="Processing time will be reduced if you provide info from your past permit"
 				></app-step-title>
 
-				<app-common-expired-licence [form]="form" (linkSuccess)="onLinkSuccess()"></app-common-expired-licence>
+				<app-common-expired-licence
+					[form]="form"
+					(validExpiredLicenceData)="onValidData()"
+				></app-common-expired-licence>
 			</div>
 		</section>
 	`,
@@ -22,14 +26,23 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 export class StepPermitExpiredComponent implements PermitChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.expiredLicenceFormGroup;
 
+	@Output() validExpiredLicenceData = new EventEmitter();
+
+	@ViewChild(CommonExpiredLicenceComponent)
+	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
+
 	constructor(private permitApplicationService: PermitApplicationService) {}
+
+	onSearchAndValidate(): void {
+		this.commonExpiredLicenceComponent.onValidateAndSearch();
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	onLinkSuccess(): void {
-		// TODO handle onLinkSuccess
+	onValidData(): void {
+		this.validExpiredLicenceData.emit();
 	}
 }

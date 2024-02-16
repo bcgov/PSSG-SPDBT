@@ -133,15 +133,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
+		utilService: UtilService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
-		private utilService: UtilService,
 		private domSanitizer: DomSanitizer
 	) {
-		super(formBuilder, configService, formatDatePipe);
+		super(formBuilder, configService, formatDatePipe, utilService);
 
 		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -736,7 +736,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const expiredLicenceData = {
-			hasExpiredLicence: this.booleanToBooleanType(resp.hasExpiredLicence),
+			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
 			expiredLicenceNumber: resp.expiredLicenceNumber,
 			expiryDate: resp.expiryDate,
 			expiredLicenceId: resp.expiredLicenceId,
@@ -747,16 +747,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const bcDriversLicenceData = {
-			hasBcDriversLicence: this.booleanToBooleanType(resp.hasBcDriversLicence),
+			hasBcDriversLicence: this.utilService.booleanToBooleanType(resp.hasBcDriversLicence),
 			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 		};
 
 		const criminalHistoryData = {
-			hasCriminalHistory: this.booleanToBooleanType(resp.hasCriminalHistory),
+			hasCriminalHistory: this.utilService.booleanToBooleanType(resp.hasCriminalHistory),
 		};
 
 		const aliasesData = {
-			previousNameFlag: resp.hasPreviousName ? this.booleanToBooleanType(resp.hasPreviousName) : BooleanTypeCode.No,
+			previousNameFlag: resp.hasPreviousName
+				? this.utilService.booleanToBooleanType(resp.hasPreviousName)
+				: BooleanTypeCode.No,
 		};
 
 		let personalInformationData = {};
@@ -982,7 +984,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.utilService.dummyFile(doc);
 					citizenshipDataAttachments.push(aFile);
 
-					citizenshipData.isCanadianCitizen = this.booleanToBooleanType(resp.isCanadianCitizen);
+					citizenshipData.isCanadianCitizen = this.utilService.booleanToBooleanType(resp.isCanadianCitizen);
 					citizenshipData.canadianCitizenProofTypeCode = resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
 					citizenshipData.notCanadianCitizenProofTypeCode = resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
@@ -1171,7 +1173,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		});
 
 		const policeBackgroundData = {
-			isPoliceOrPeaceOfficer: this.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
+			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: resp.policeOfficerRoleCode,
 			otherOfficerRole: resp.otherOfficerRole,
 			attachments: policeBackgroundDataAttachments,
@@ -1182,12 +1184,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const mentalHealthConditionsData = {
-			isTreatedForMHC: this.booleanToBooleanType(resp.isTreatedForMHC),
+			isTreatedForMHC: this.utilService.booleanToBooleanType(resp.isTreatedForMHC),
 			attachments: mentalHealthConditionsDataAttachments,
 		};
 
 		const photographOfYourselfData = {
-			useBcServicesCardPhoto: this.booleanToBooleanType(resp.useBcServicesCardPhoto),
+			useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 			attachments: photographOfYourselfAttachments,
 		};
 
@@ -1350,7 +1352,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				let dogsAuthorizationData = {};
 				if (originalDogAuthorizationExists) {
 					dogsAuthorizationData = {
-						useDogs: this.booleanToBooleanType(_resp.useDogs),
+						useDogs: this.utilService.booleanToBooleanType(_resp.useDogs),
 						dogsPurposeFormGroup: {
 							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
 							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,

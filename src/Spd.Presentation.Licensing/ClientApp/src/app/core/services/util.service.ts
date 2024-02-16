@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Document } from '@app/api/models';
+import { BooleanTypeCode, Document } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
@@ -153,6 +153,30 @@ export class UtilService {
 
 	getDateString(date: Date): string {
 		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
+	}
+
+	/**
+	 * Convert BooleanTypeCode to boolean
+	 * @param value
+	 * @returns
+	 */
+	booleanTypeToBoolean(value: BooleanTypeCode | null): boolean | null {
+		if (!value) return null;
+
+		if (value == BooleanTypeCode.Yes) return true;
+		return false;
+	}
+
+	/**
+	 * Convert boolean to BooleanTypeCode
+	 * @param value
+	 * @returns
+	 */
+	public booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
+		const isBooleanType = typeof value === 'boolean';
+		if (!isBooleanType) return null;
+
+		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 
 	//------------------------------------

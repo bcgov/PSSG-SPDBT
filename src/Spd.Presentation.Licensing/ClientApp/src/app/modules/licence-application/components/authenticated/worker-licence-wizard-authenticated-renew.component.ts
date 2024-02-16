@@ -289,14 +289,6 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 		}
 	}
 
-	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
-
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
-	}
-
 	onChildNextStep() {
 		if (this.licenceApplicationService.isSaveStep()) {
 			this.licenceApplicationService.saveLicenceStep().subscribe({
@@ -315,6 +307,14 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+
+		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private handleDuplicateLicence(): void {

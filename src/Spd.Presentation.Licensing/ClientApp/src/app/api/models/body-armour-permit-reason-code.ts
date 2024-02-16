@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum RequirePermitReasonCode {
+export enum BodyArmourPermitReasonCode {
   PersonalProtection = 'PersonalProtection',
   MyEmployment = 'MyEmployment',
   OutdoorRecreation = 'OutdoorRecreation',
