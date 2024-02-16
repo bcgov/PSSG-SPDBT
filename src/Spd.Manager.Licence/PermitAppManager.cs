@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -29,7 +28,7 @@ internal class PermitAppManager :
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
-        IContactRepository contactRepository) : base(mapper, documentUrlRepository,feeRepository,licenceAppRepository)
+        IContactRepository contactRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
     {
         _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
@@ -179,17 +178,6 @@ internal class PermitAppManager :
     {
         PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
-        if (request.IsPoliceOrPeaceOfficer == true &&
-            !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
-        }
-
-        if (request.IsTreatedForMHC == true &&
-            !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
-        }
 
         if (request.IsCanadianCitizen == false && request.IsCanadianResident == true)
         {

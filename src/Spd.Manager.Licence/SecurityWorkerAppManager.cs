@@ -532,7 +532,7 @@ internal partial class SecurityWorkerAppManager :
 
         if (request.PreviousDocumentIds != null)
         {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId))
+            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
             .Select(f => new LicAppFileInfo()
             {
                 FileName = f.FileName ?? String.Empty,
