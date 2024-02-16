@@ -16,7 +16,7 @@ namespace Spd.Manager.Payment
             CreateMap<PaybcPaymentResult, UpdatePaymentCmd>();
             CreateMap<PaymentResp, PaymentResponse>()
                 .ForMember(d => d.PaymentStatus, opt => opt.MapFrom(s => s.PaidSuccess ? PaymentStatusCode.Success : PaymentStatusCode.Failure))
-                .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.ServiceType));
+                .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.ServiceType));
             CreateMap<PaymentResp, RefundPaymentCmd>()
                 .ForMember(d => d.TxnNumber, opt => opt.MapFrom(s => s.TransactionNumber))
                 .ForMember(d => d.OrderNumber, opt => opt.MapFrom(s => s.TransOrderId))
