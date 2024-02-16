@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Spd.Presentation.Licensing.Services;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class DisableFormValueModelBindingAttribute : Attribute, IResourceFilter
+public sealed class DisableFormValueModelBindingAttribute : Attribute, IResourceFilter
 {
     public void OnResourceExecuting(ResourceExecutingContext context)
     {

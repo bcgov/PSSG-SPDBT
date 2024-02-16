@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Shared;
 using Spd.Manager.Payment;
+using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
@@ -26,6 +26,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="mediator"></param>
         /// <param name="mapper"></param>
         /// <param name="configuration"></param>
+        /// <param name="logger"></param>
         public PaymentController(IMediator mediator,
             IMapper mapper,
             IConfiguration configuration,
@@ -35,10 +36,11 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _mapper = mapper;
             _configuration = configuration;
-            _paymentsConfiguration = configuration.GetSection("Payments").Get<PaymentsConfiguration>();
             _logger = logger;
-            if (_paymentsConfiguration == null)
+            PaymentsConfiguration? paymentsConfiguration = configuration.GetSection("Payments").Get<PaymentsConfiguration>();
+            if (paymentsConfiguration == null)
                 throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
+            _paymentsConfiguration = paymentsConfiguration;
         }
 
         #region unauth-applicant-payment
@@ -174,7 +176,6 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"CreateLinkRedirectToPaybcPaymentPage has errors +{ex}");
                 return Redirect($"{hostUrl}{errorPath}");
             }
         }

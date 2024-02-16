@@ -7,14 +7,12 @@ namespace Spd.Utilities.Dynamics
 {
     internal class ODataClientHandler : IODataClientHandler
     {
-        private readonly DynamicsSettings options;
         private readonly ISecurityTokenProvider tokenProvider;
         private readonly ILogger<IODataClientHandler> logger;
         private string? authToken;
 
-        public ODataClientHandler(IOptions<DynamicsSettings> options, ISecurityTokenProvider tokenProvider, ILogger<IODataClientHandler> logger)
+        public ODataClientHandler(ISecurityTokenProvider tokenProvider, ILogger<IODataClientHandler> logger)
         {
-            this.options = options.Value;
             this.tokenProvider = tokenProvider;
             this.logger = logger;
         }
@@ -34,12 +32,12 @@ namespace Spd.Utilities.Dynamics
             client.SendingRequest2 += Client_SendingRequest2;
         }
 
-        private void Client_SendingRequest2(object sender, SendingRequest2EventArgs e)
+        private void Client_SendingRequest2(object? sender, SendingRequest2EventArgs e)
         {
             e.RequestMessage.SetHeader("Authorization", $"Bearer {authToken}");
         }
 
-        private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
+        private void Client_BuildingRequest(object? sender, BuildingRequestEventArgs e)
         {
             if (e.RequestUri.IsAbsoluteUri)
             {
@@ -70,14 +68,5 @@ namespace Spd.Utilities.Dynamics
             }
             logger.LogDebug($"send {e.RequestUri.ToString()} to dynamics");
         }
-
-#pragma warning disable S3358 // Ternary operators should not be nested
-
-        //private static Uri RewriteRequestUri(DataServiceContext ctx, Uri endpointUri, Uri requestUri) =>
-        //   requestUri.IsAbsoluteUri
-        //         ? new Uri(endpointUri, $"{(endpointUri.AbsolutePath == "/" ? string.Empty : endpointUri.AbsolutePath)}{requestUri.AbsolutePath}{requestUri.Query}")
-        //         : new Uri(endpointUri, $"{(endpointUri.AbsolutePath == "/" ? string.Empty : endpointUri.AbsolutePath)}{ctx.BaseUri.AbsolutePath}{requestUri.ToString()}");
-
-#pragma warning restore S3358 // Ternary operators should not be nested
     }
 }

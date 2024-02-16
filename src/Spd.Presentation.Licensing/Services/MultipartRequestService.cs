@@ -61,10 +61,10 @@ public class MultipartRequestService : IMultipartRequestService
         var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(request.ContentType), defaultFormOptions.MultipartBoundaryLengthLimit);
         var reader = new MultipartReader(boundary, request.Body);
 
-        MultipartSection section = null;
+        MultipartSection? section = null;
 
         var formAccumulator = new KeyValueAccumulator();
-        ICollection<UploadFileInfo> uploadFileInfoList = new Collection<UploadFileInfo>();
+        Collection<UploadFileInfo> uploadFileInfoList = new Collection<UploadFileInfo>();
         while ((section = await reader.ReadNextSectionAsync()) != null)
         {
             var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out ContentDispositionHeaderValue contentDisposition);

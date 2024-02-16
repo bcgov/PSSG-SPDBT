@@ -20,7 +20,7 @@ internal class PortalUserRepository : IPortalUserRepository
         _logger = logger;
     }
 
-    public async Task<PortalUserListResp> QueryAsync(PortalUserQry qry, CancellationToken ct)
+    public async Task<PortalUserListResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken)
     {
         IQueryable<spd_portaluser> users = _context.spd_portalusers
             .Expand(d => d.spd_OrganizationId);
@@ -41,26 +41,29 @@ internal class PortalUserRepository : IPortalUserRepository
         {
             results = userList.Where(d => d._spd_organizationid_value == qry.OrgIdOrParentOrgId || d.spd_OrganizationId._parentaccountid_value == qry.OrgIdOrParentOrgId);
         }
-
-        return new PortalUserListResp 
+        return new PortalUserListResp
         {
             Items = _mapper.Map<IEnumerable<PortalUserResp>>(results)
         };
     }
 
-    public async Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken ct)
+    public async Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken)
     {
         return cmd switch
         {
-            UpdatePortalUserCmd c => await UpdatePortalUserAsync(c, ct),
-            CreatePortalUserCmd c => await CreatePortalUserAsync(c, ct),
+            UpdatePortalUserCmd c => await UpdatePortalUserAsync(c, cancellationToken),
+            CreatePortalUserCmd c => await CreatePortalUserAsync(c, cancellationToken),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
 
     private async Task<PortalUserResp> UpdatePortalUserAsync(UpdatePortalUserCmd c, CancellationToken ct)
     {
-        spd_portaluser portalUser = await _context.GetUserById(c.Id, ct);
+        spd_portaluser? portalUser = await _context.GetUserById(c.Id, ct);
+        if (portalUser == null)
+        {
+            throw new ArgumentException($"Cannot find the user for userId {c.Id}");
+        }
         account? org = null;
         spd_identity? identity = null;
         if (c.FirstName != null) portalUser.spd_firstname = c.FirstName;
@@ -78,7 +81,7 @@ internal class PortalUserRepository : IPortalUserRepository
             identity = await _context.GetIdentityById((Guid)c.IdentityId, ct);
             _context.SetLink(portalUser, nameof(portalUser.spd_IdentityId), identity);
         }
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
         return _mapper.Map<PortalUserResp>(portalUser);
     }
 

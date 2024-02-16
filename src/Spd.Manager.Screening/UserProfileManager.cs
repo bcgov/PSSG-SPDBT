@@ -178,7 +178,7 @@ namespace Spd.Manager.Screening
             _logger.LogDebug($"from webservice orgCode = {idirDetail.MinistryCode}");
 
             OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
-            Guid orgId = orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BC_GOV_ORG_ID;
+            Guid orgId = orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BcGovOrgId;
 
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
@@ -196,7 +196,7 @@ namespace Spd.Manager.Screening
             if (cmd.IdirUserIdentity.Email != null)
             {
                 var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-                    new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
+                    new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
 
                 var result = existingUser.Items.FirstOrDefault();
@@ -250,7 +250,7 @@ namespace Spd.Manager.Screening
             if (identity != null)
             {
                 var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-                    new PortalUserQry() { IdentityId = identityId, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
+                    new PortalUserQry() { IdentityId = identityId, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
                 var result = existingUser.Items.FirstOrDefault();
                 if (result != null)
@@ -259,7 +259,7 @@ namespace Spd.Manager.Screening
                     response.UserGuid = qry.IdirUserIdentity?.UserGuid;
                     response.UserDisplayName = qry.IdirUserIdentity?.DisplayName;
                     response.IdirUserName = qry.IdirUserIdentity?.IdirUserName;
-                    response.OrgId = result.OrganizationId ?? SpdConstants.BC_GOV_ORG_ID;
+                    response.OrgId = result.OrganizationId ?? SpdConstants.BcGovOrgId;
                     return response;
                 }
                 return null;
