@@ -29,6 +29,7 @@ namespace Spd.Resource.Repository.Payment
         public decimal TransAmount { get; set; }
         public PaymentTypeEnum? PaymentType { get; set; }
         public bool? Refunded { get; set; } = null;
+        public ServiceTypeEnum? ServiceType { get; set; }
     }
 
     public abstract record PaymentCmd;
