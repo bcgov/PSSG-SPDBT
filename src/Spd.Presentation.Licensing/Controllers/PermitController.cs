@@ -133,12 +133,6 @@ namespace Spd.Presentation.Licensing.Controllers
                 response = await _mediator.Send(command, ct);
             }
 
-            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
-            {
-                AnonymousPermitAppReplaceCommand command = new(jsonRequest, newDocInfos);
-                response = await _mediator.Send(command, ct);
-            }
-
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
                 AnonymousPermitAppRenewCommand command = new(jsonRequest, newDocInfos);
