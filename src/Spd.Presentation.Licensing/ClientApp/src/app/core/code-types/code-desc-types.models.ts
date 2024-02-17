@@ -17,6 +17,7 @@ export {
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 	RestraintDocumentTypes,
+	ServiceTypes,
 	WeightUnitTypes,
 	WorkerCategoryTypes,
 	WorkerLicenceTypes,

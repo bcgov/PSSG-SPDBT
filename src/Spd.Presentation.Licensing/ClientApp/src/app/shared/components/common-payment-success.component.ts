@@ -38,25 +38,29 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 				</div>
 
 				<div class="row mt-4">
-					<!--  //TODO add display of service type code -->
-
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.New">
-						<div class="text-center fs-5">Your application for a new Security Worker Licence has been received.</div>
+						<div class="text-center fs-5">
+							Your application for a new {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been received.
+						</div>
 					</ng-container>
 
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Renewal">
 						<div class="text-center fs-5">
-							Your application for renewing your Security Worker Licence has been received.
+							Your application for renewing your {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been
+							received.
 						</div>
 					</ng-container>
 
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Update">
-						<div class="text-center fs-5">Your update to your Security Worker Licence has been received.</div>
+						<div class="text-center fs-5">
+							Your update to your {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been received.
+						</div>
 					</ng-container>
 
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Replacement">
 						<div class="text-center fs-5">
-							Your application for a replacement Security Worker Licence has been received.
+							Your application for a replacement {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been
+							received.
 						</div>
 					</ng-container>
 
