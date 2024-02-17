@@ -96,7 +96,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											<div class="text-minor-heading mt-4">Purpose and Rationale</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason for Requirement</div>
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason to Require a Permit</div>
 													<div class="summary-text-data">
 														{{ reasonForRequirement }}
 													</div>
@@ -107,18 +107,18 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														{{ otherReason }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isRationaleAttachments">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Supporting Documents</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of rationaleAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
 												<div class="col-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Rationale</div>
 													<div class="summary-text-data">
 														{{ rationale }}
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isRationaleAttachments">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Rationale Supporting Documents</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of rationaleAttachments; let i = index">
+															{{ doc.name }}
+														</div>
 													</div>
 												</div>
 											</div>
@@ -283,7 +283,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 												</div>
 												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Are you a resident of Canada?</div>
-													<div class="summary-text-data">{{ isResidentOfCanada }}</div>
+													<div class="summary-text-data">{{ isCanadianResident }}</div>
 												</div>
 												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -627,20 +627,20 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 			? this.permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
 			: '';
 	}
-	get isResidentOfCanada(): string {
+	get isCanadianResident(): string {
 		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? this.permitModelData.citizenshipData.isResidentOfCanada ?? ''
+			? this.permitModelData.citizenshipData.isCanadianResident ?? ''
 			: '';
 	}
 	get proofOfResidentStatusCode(): string {
 		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
-			this.permitModelData.citizenshipData.isResidentOfCanada === BooleanTypeCode.Yes
+			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.Yes
 			? this.permitModelData.citizenshipData.proofOfResidentStatusCode ?? ''
 			: '';
 	}
 	get proofOfCitizenshipCode(): string {
 		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
-			this.permitModelData.citizenshipData.isResidentOfCanada === BooleanTypeCode.No
+			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.No
 			? this.permitModelData.citizenshipData.proofOfCitizenshipCode ?? ''
 			: '';
 	}
@@ -655,8 +655,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return (
 			(this.isCanadianCitizen == BooleanTypeCode.Yes &&
 				this.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			this.isResidentOfCanada == BooleanTypeCode.No ||
-			(this.isResidentOfCanada == BooleanTypeCode.Yes &&
+			this.isCanadianResident == BooleanTypeCode.No ||
+			(this.isCanadianResident == BooleanTypeCode.Yes &&
 				this.proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}
