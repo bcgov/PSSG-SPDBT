@@ -18,8 +18,8 @@ namespace Spd.Manager.Screening
             // If not a volunteer org or PSSO, then the payee type is required
             if (org != null &&
                 org.OrgResult.VolunteerOrganizationTypeCode == null &&
-                org.OrgResult.ParentOrgId != SpdConstants.BC_GOV_ORG_ID &&
-                org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID)
+                org.OrgResult.ParentOrgId != SpdConstants.BcGovOrgId &&
+                org.OrgResult.Id != SpdConstants.BcGovOrgId)
             {
                 if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
                 {
@@ -44,8 +44,8 @@ namespace Spd.Manager.Screening
                 }
             }
             var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
-            if (createCmd.IsPSA || org.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
-                cmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
+            if (createCmd.IsPSA || org.OrgResult.ParentOrgId == SpdConstants.BcGovOrgId)
+                cmd.OrgId = SpdConstants.BcGovOrgId;
             else
                 cmd.OrgId = createCmd.OrgId;
             cmd.CreatedByUserId = createCmd.UserId;

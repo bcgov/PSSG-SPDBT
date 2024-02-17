@@ -40,7 +40,8 @@ namespace Spd.Resource.Repository.Payment
                 .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_ApplicationId.spd_licenceterm)))
                 .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_ApplicationId.spd_licenceapplicationtype)))
                 .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_ApplicationId.spd_name))
-                .ForMember(d => d.Refunded, opt => opt.MapFrom(s => s.statuscode == (int)PaymentStatusCodeOptionSet.Refunded));
+                .ForMember(d => d.Refunded, opt => opt.MapFrom(s => s.statuscode == (int)PaymentStatusCodeOptionSet.Refunded))
+                .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s.spd_ApplicationId._spd_servicetypeid_value)));
         }
 
         private int? GetResponseCode(bool? success)

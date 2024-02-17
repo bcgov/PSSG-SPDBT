@@ -27,7 +27,7 @@ namespace Spd.Manager.Screening
             //if already has an user. use email to connect
             Guid? userId = null;
             PortalUserListResp userList = await _portalUserRepository.QueryAsync(
-                new PortalUserQry() { UserEmail = command.CreateRequest.EmailAddress, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
+                new PortalUserQry() { UserEmail = command.CreateRequest.EmailAddress, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                 ct
                 );
             if (userList.Items.Any())
@@ -56,7 +56,7 @@ namespace Spd.Manager.Screening
             {
                 //create user shell
                 var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(command.CreateRequest);
-                createPortalUserCmd.OrgId = SpdConstants.BC_GOV_ORG_ID; //we do not know the user's org id yet.
+                createPortalUserCmd.OrgId = SpdConstants.BcGovOrgId; //we do not know the user's org id yet.
                 var user = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
                 userId = user.Id;
             }

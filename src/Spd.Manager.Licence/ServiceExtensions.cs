@@ -9,5 +9,6 @@ public class ServiceExtension : IConfigureComponentServices
         configurationServices.Services.AddTransient<ISecurityWorkerAppManager, SecurityWorkerAppManager>();
         configurationServices.Services.AddTransient<IFeeManager, FeeManager>();
         configurationServices.Services.AddTransient<ILicenceManager, LicenceManager>();
+        configurationServices.Services.AddTransient<IPermitAppManager, PermitAppManager>();
     }
 }

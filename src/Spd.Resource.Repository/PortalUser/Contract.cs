@@ -4,7 +4,7 @@ namespace Spd.Resource.Repository.PortalUser
 {
     public interface IPortalUserRepository
     {
-        public Task<PortalUserListResp> QueryAsync(PortalUserQry cmd, CancellationToken cancellationToken);
+        public Task<PortalUserListResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken);
         public Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken);
     }
 

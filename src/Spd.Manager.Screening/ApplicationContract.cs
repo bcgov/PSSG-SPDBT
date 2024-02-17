@@ -680,7 +680,7 @@ namespace Spd.Manager.Screening
             RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, 7 digits
                 .Length(7)
                 .Must(r => int.TryParse(r, out var i) && i > 0)
-                .When(r => r.OrgId == SpdConstants.BC_GOV_ORG_ID && !string.IsNullOrEmpty(r.EmployeeId));
+                .When(r => r.OrgId == SpdConstants.BcGovOrgId && !string.IsNullOrEmpty(r.EmployeeId));
         }
     }
 

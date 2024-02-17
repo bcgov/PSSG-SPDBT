@@ -66,7 +66,7 @@ namespace Spd.Utilities.LogonUser
             else if (context.User.GetIdentityProvider() == IPrincipalExtensions.IDIR_IDENTITY_PROVIDER)
             {
                 //idir user
-                bool isSuccess = await ProcessIdirUser(SpdConstants.BC_GOV_ORG_ID, context, mediator);
+                bool isSuccess = await ProcessIdirUser(SpdConstants.BcGovOrgId, context, mediator);
                 if (isSuccess)
                 {
                     await next(context);
