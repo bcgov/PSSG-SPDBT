@@ -11,11 +11,11 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 		<div class="row">
 			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
-					<div class="col-6">
+					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Received</h2>
 					</div>
 
-					<div class="col-6">
+					<div class="col-xl-6 col-lg-4 col-md-12 col-sm-6">
 						<div class="d-flex justify-content-end">
 							<button
 								mat-flat-button

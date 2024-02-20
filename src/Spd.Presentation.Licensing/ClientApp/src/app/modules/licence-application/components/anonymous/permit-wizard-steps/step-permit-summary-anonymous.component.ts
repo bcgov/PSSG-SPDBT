@@ -125,7 +125,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="showEmployerInformation">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
@@ -275,18 +275,21 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											</div>
 											<mat-divider class="mt-4 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Identification</div>
+											<div class="text-minor-heading">Citizenship</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
 													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2">
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Are you a resident of Canada?</div>
 													<div class="summary-text-data">{{ isCanadianResident }}</div>
 												</div>
 												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														<span *ngIf="canadianCitizenProofTypeCode">
+															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+														</span>
 														<span *ngIf="proofOfResidentStatusCode">
 															{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
 														</span>
@@ -311,7 +314,12 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														</div>
 													</div>
 												</div>
+											</div>
 
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Identification</div>
+											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph of Yourself</div>
 													<div class="summary-text-data">
@@ -529,6 +537,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 })
 export class StepPermitSummaryAnonymousComponent implements OnInit {
 	permitModelData: any = {};
+	showEmployerInformation = false;
 
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
@@ -716,6 +725,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get reasonForRequirement(): string {
 		const reasonList = [];
+		this.showEmployerInformation = false;
+
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
 			if (armouredVehicleRequirement.isPersonalProtection) {
@@ -751,6 +762,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 				);
 			}
 			if (armouredVehicleRequirement.isMyEmployment) {
+				this.showEmployerInformation = true;
 				reasonList.push(
 					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.MyEmployment, 'ArmouredVehiclePermitReasonTypes')
 				);
@@ -773,6 +785,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 				);
 			}
 			if (bodyArmourRequirementFormGroup.isMyEmployment) {
+				this.showEmployerInformation = true;
 				reasonList.push(
 					this.optionsPipe.transform(BodyArmourPermitReasonCode.MyEmployment, 'BodyArmourPermitReasonTypes')
 				);

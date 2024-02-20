@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -25,8 +25,9 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				</div>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-				<!--  //TODO add display of service type code -->
-				<div class="mt-4 text-center fs-5">Your update to your Security Worker Licence has been received.</div>
+				<div class="mt-4 text-center fs-5">
+					Your update to your {{ serviceTypeCode | options : 'ServiceTypes' }} has been received.
+				</div>
 
 				<div class="my-4 text-center">We will contact you if we need more information.</div>
 
@@ -86,6 +87,8 @@ export class CommonUpdateReceivedSuccessComponent implements OnInit {
 	isBackRoute = false;
 	appConstants = SPD_CONSTANTS;
 	applicationTypeCodes = ApplicationTypeCode;
+
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private licenceApplicationService: LicenceApplicationService, private router: Router) {}
 

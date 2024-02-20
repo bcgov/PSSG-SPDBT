@@ -462,10 +462,12 @@ export abstract class PermitApplicationHelper {
 					}
 				}
 
-				documentExpiredInfos.push({
-					expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
-					licenceDocumentTypeCode,
-				});
+				if (citizenshipData.expiryDate) {
+					documentExpiredInfos.push({
+						expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
+						licenceDocumentTypeCode,
+					});
+				}
 			}
 			if (doc.documentUrlId) {
 				previousDocumentIds.push(doc.documentUrlId);
@@ -481,7 +483,7 @@ export abstract class PermitApplicationHelper {
 
 		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
 			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
-				if (citizenshipData.expiryDate) {
+				if (citizenshipData.governmentIssuedExpiryDate) {
 					documentExpiredInfos.push({
 						expiryDate: this.formatDatePipe.transform(
 							citizenshipData.governmentIssuedExpiryDate,
@@ -644,7 +646,7 @@ export abstract class PermitApplicationHelper {
 			rationale: permitRationaleData.rationale,
 			//-----------------------------------
 			...employerData,
-			employerPrimaryAddress,
+			employerPrimaryAddress: includesMyEmployement ? employerPrimaryAddress : null,
 			//-----------------------------------
 			armouredVehiclePermitReasonCodes,
 			bodyArmourPermitReasonCodes,
