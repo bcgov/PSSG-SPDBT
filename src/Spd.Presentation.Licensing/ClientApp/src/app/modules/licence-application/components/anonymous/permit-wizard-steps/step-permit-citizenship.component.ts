@@ -90,16 +90,16 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 							<ng-template #notCanadianCitizen>
 								<div class="row my-2">
 									<div class="col-lg-7 col-md-12">
-										<mat-radio-group aria-label="Select an option" formControlName="isResidentOfCanada">
+										<mat-radio-group aria-label="Select an option" formControlName="isCanadianResident">
 											<mat-radio-button [value]="booleanTypeCodes.Yes">I am a resident of Canada</mat-radio-button>
 											<mat-radio-button [value]="booleanTypeCodes.No">I am not a Canadian resident</mat-radio-button>
 										</mat-radio-group>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('isResidentOfCanada')?.dirty || form.get('isResidentOfCanada')?.touched) &&
-												form.get('isResidentOfCanada')?.invalid &&
-												form.get('isResidentOfCanada')?.hasError('required')
+												(form.get('isCanadianResident')?.dirty || form.get('isCanadianResident')?.touched) &&
+												form.get('isCanadianResident')?.invalid &&
+												form.get('isCanadianResident')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -107,10 +107,10 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 								</div>
 							</ng-template>
 
-							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.No && isResidentOfCanada.value">
+							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.No && isCanadianResident.value">
 								<div class="row my-2">
 									<div class="col-lg-7 col-md-12">
-										<ng-container *ngIf="isResidentOfCanada.value === booleanTypeCodes.Yes; else notResidentOfCanada">
+										<ng-container *ngIf="isCanadianResident.value === booleanTypeCodes.Yes; else notResidentOfCanada">
 											<mat-form-field>
 												<mat-label>Proof of resident status</mat-label>
 												<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
@@ -164,7 +164,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 							</ng-container>
 
 							<div
-								*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes || isResidentOfCanada.value"
+								*ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes || isCanadianResident.value"
 								@showHideTriggerSlideAnimation
 							>
 								<div class="row mb-2">
@@ -301,7 +301,7 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 		// 	const proofTypeCode =
 		// 		this.isCanadianCitizen.value == BooleanTypeCode.Yes
 		// 			? this.canadianCitizenProofTypeCode.value
-		// 			: this.isResidentOfCanada.value;
+		// 			: this.isCanadianResident.value;
 		// 	this.permitApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
 		// 		next: (resp: any) => {
 		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
@@ -337,8 +337,8 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 		return (
 			(this.isCanadianCitizen.value == BooleanTypeCode.Yes &&
 				canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			this.isResidentOfCanada.value == BooleanTypeCode.No ||
-			(this.isResidentOfCanada.value == BooleanTypeCode.Yes &&
+			this.isCanadianResident.value == BooleanTypeCode.No ||
+			(this.isCanadianResident.value == BooleanTypeCode.Yes &&
 				proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}
@@ -349,8 +349,8 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 	get canadianCitizenProofTypeCode(): FormControl {
 		return this.form.get('canadianCitizenProofTypeCode') as FormControl;
 	}
-	get isResidentOfCanada(): FormControl {
-		return this.form.get('isResidentOfCanada') as FormControl;
+	get isCanadianResident(): FormControl {
+		return this.form.get('isCanadianResident') as FormControl;
 	}
 	get proofOfResidentStatusCode(): FormControl {
 		return this.form.get('proofOfResidentStatusCode') as FormControl;
