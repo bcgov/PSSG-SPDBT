@@ -330,87 +330,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	isStepLicenceSelectionComplete(): boolean {
 		// console.debug(
-		// 	'personalInformationData',
-		// 	this.personalInformationFormGroup.valid,
-		// 	'reprintLicenceData',
-		// 	this.reprintLicenceFormGroup.valid,
-		// 	'aliasesData',
-		// 	this.aliasesFormGroup.valid,
-		// 	'expiredLicenceData',
-		// 	this.expiredLicenceFormGroup.valid,
-		// 	'residentialAddressData',
-		// 	this.residentialAddressFormGroup.valid,
-		// 	'mailingAddressData',
-		// 	this.mailingAddressFormGroup.valid,
-		// 	'contactInformationData',
-		// 	this.contactInformationFormGroup.valid,
-		// 	'profileConfirmationData',
-		// 	this.profileConfirmationFormGroup.valid,
-		// 	'workerLicenceTypeData',
-		// 	this.workerLicenceTypeFormGroup.valid,
-		// 	'applicationTypeData',
-		// 	this.applicationTypeFormGroup.valid,
-		// 	'soleProprietorData',
-		// 	this.soleProprietorFormGroup.valid,
-		// 	'licenceTermData',
-		// 	this.licenceTermFormGroup.valid,
-		// 	'restraintsAuthorizationData',
-		// 	this.restraintsAuthorizationFormGroup.valid,
-		// 	'dogsAuthorizationData',
-		// 	this.dogsAuthorizationFormGroup.valid,
-		// 	'categoryArmouredCarGuardFormGroup',
-		// 	this.categoryArmouredCarGuardFormGroup.valid,
-		// 	'categoryBodyArmourSalesFormGroup',
-		// 	this.categoryBodyArmourSalesFormGroup.valid,
-		// 	'categoryClosedCircuitTelevisionInstallerFormGroup',
-		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,
-		// 	'categoryElectronicLockingDeviceInstallerFormGroup',
-		// 	this.categoryElectronicLockingDeviceInstallerFormGroup.valid,
-		// 	'categoryFireInvestigatorFormGroup',
-		// 	this.categoryFireInvestigatorFormGroup.valid,
-		// 	'categoryLocksmithFormGroup',
-		// 	this.categoryLocksmithFormGroup.valid,
-		// 	'categoryLocksmithSupFormGroup',
-		// 	this.categoryLocksmithSupFormGroup.valid,
-		// 	'categoryPrivateInvestigatorFormGroup',
-		// 	this.categoryPrivateInvestigatorFormGroup.valid,
-		// 	'categoryPrivateInvestigatorSupFormGroup',
-		// 	this.categoryPrivateInvestigatorSupFormGroup.valid,
-		// 	'categorySecurityAlarmInstallerFormGroup',
-		// 	this.categorySecurityAlarmInstallerFormGroup.valid,
-		// 	'categorySecurityAlarmInstallerSupFormGroup',
-		// 	this.categorySecurityAlarmInstallerSupFormGroup.valid,
-		// 	'categorySecurityConsultantFormGroup',
-		// 	this.categorySecurityConsultantFormGroup.valid,
-		// 	'categorySecurityAlarmMonitorFormGroup',
-		// 	this.categorySecurityAlarmMonitorFormGroup.valid,
-		// 	'categorySecurityAlarmResponseFormGroup',
-		// 	this.categorySecurityAlarmResponseFormGroup.valid,
-		// 	'categorySecurityAlarmSalesFormGroup',
-		// 	this.categorySecurityAlarmSalesFormGroup.valid,
-		// 	'categorySecurityGuardFormGroup',
-		// 	this.categorySecurityGuardFormGroup.valid,
-		// 	'categorySecurityGuardSupFormGroup',
-		// 	this.categorySecurityGuardSupFormGroup.valid,
-		// 	'policeBackgroundData',
-		// 	this.policeBackgroundFormGroup.valid,
-		// 	'mentalHealthConditionsData',
-		// 	this.mentalHealthConditionsFormGroup.valid,
-		// 	'criminalHistoryData',
-		// 	this.criminalHistoryFormGroup.valid,
-		// 	'fingerprintProofData',
-		// 	this.fingerprintProofFormGroup.valid,
-		// 	'citizenshipData',
-		// 	this.citizenshipFormGroup.valid,
-		// 	'bcDriversLicenceData',
-		// 	this.bcDriversLicenceFormGroup.valid,
-		// 	'characteristicsData',
-		// 	this.characteristicsFormGroup.valid,
-		// 	'photographOfYourselfData',
-		// 	this.photographOfYourselfFormGroup.valid
-		// );
-
-		// console.debug(
 		// 	'isStepLicenceSelectionComplete',
 		// 	this.soleProprietorFormGroup.valid,
 		// 	this.expiredLicenceFormGroup.valid,
@@ -496,6 +415,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		if (this.authenticationService.isLoggedIn()) {
 			return (
+				// console.debug(
+				// 	'isStepIdentificationComplete',
+				// 	this.citizenshipFormGroup.valid,
+				// 	this.bcDriversLicenceFormGroup.valid,
+				// 	this.characteristicsFormGroup.valid,
+				// 	this.photographOfYourselfFormGroup.valid,
+				// );
 				this.citizenshipFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
@@ -1299,7 +1225,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					bcDriversLicenceNumber: null,
 				};
 
-				// If they were not born in Canada, they have to show proof for renewal
+				// If they do not have canadian citizenship, they have to show proof for renewal
 				let citizenshipData = {};
 				if (!_resp.isCanadianCitizen) {
 					citizenshipData = {

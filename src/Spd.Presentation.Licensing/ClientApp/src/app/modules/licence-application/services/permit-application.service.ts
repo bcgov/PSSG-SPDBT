@@ -519,6 +519,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private loadSpecificPermit(licenceAppId: string): Observable<WorkerLicenceResponse> {
 		this.reset();
 
+		// TODO Permit service is reference swl service - fix
 		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceResponse) => {
 				const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
@@ -748,6 +749,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
+		// TODO Permit service is reference swl service - fix
 		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
@@ -869,6 +871,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	saveLicenceStep(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
+		// TODO Permit service is reference swl service - fix
 		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {

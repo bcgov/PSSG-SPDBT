@@ -396,7 +396,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Are you a Canadian citizen?</div>
 													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
 												</div>
 												<div class="col-lg-6 col-md-12 mt-lg-2">

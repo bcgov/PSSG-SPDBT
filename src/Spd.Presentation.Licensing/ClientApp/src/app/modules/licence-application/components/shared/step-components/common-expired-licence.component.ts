@@ -8,6 +8,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
@@ -102,13 +103,13 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	resetRecaptcha: Subject<void> = new Subject<void>();
 
 	@Input() form!: FormGroup;
-	@Input() name!: string;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	@Output() validExpiredLicenceData = new EventEmitter();
 
 	constructor(
 		private utilService: UtilService,
+		private optionsPipe: OptionsPipe,
 		private licenceService: LicenceService,
 		private formatDatePipe: FormatDatePipe,
 		private hotToastService: HotToastService
@@ -150,11 +151,12 @@ export class CommonExpiredLicenceComponent implements OnInit {
 				const isExpired = isFound ? !this.utilService.getIsTodayOrFutureDate(resp?.expiryDate) : false;
 				const isInRenewalPeriod = isExpired ? false : this.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
 
-				this.handleLookupResult(isFound, isExpired, isInRenewalPeriod, resp?.expiryDate);
+				this.handleLookupResult(resp.workerLicenceTypeCode!, isFound, isExpired, isInRenewalPeriod, resp?.expiryDate);
 			});
 	}
 
 	private handleLookupResult(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
 		isFound: boolean,
 		isExpired: boolean,
 		isInRenewalPeriod: boolean,
@@ -165,19 +167,25 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		this.messageError = '';
 
 		if (isFound) {
-			if (isExpired) {
-				const formattedExpiryDate = this.formatDatePipe.transform(expiryDate, SPD_CONSTANTS.date.formalDateFormat);
-				this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
-
-				const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} has been found.`;
-				this.hotToastService.success(message);
-				this.validExpiredLicenceData.emit();
-				return;
+			if (workerLicenceTypeCode !== this.workerLicenceTypeCode) {
+				//   WorkerLicenceType does not match
+				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+				this.messageError = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
-				if (isInRenewalPeriod) {
-					this.messageWarn = `Your ${this.label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${this.label}</a>.`;
+				if (isExpired) {
+					const formattedExpiryDate = this.formatDatePipe.transform(expiryDate, SPD_CONSTANTS.date.formalDateFormat);
+					this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
+
+					const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} has been found.`;
+					this.hotToastService.success(message);
+					this.validExpiredLicenceData.emit();
+					return;
 				} else {
-					this.messageWarn = `This ${this.label} is still valid. Please renew it when you get your renewal notice in the mail.`;
+					if (isInRenewalPeriod) {
+						this.messageWarn = `Your ${this.label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${this.label}</a>.`;
+					} else {
+						this.messageWarn = `This ${this.label} is still valid. Please renew it when you get your renewal notice in the mail.`;
+					}
 				}
 			}
 		} else {
