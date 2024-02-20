@@ -404,29 +404,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		// TODO remove hardcoded
-		const employerData = {
-			employerName: 'aaa',
-			supervisorName: 'ccc',
-			supervisorEmailAddress: 'bbb@bbb.com',
-			supervisorPhoneNumber: '5554448787',
-			addressSelected: true,
-			addressLine1: 'bbb1',
-			addressLine2: 'bbb2',
-			city: 'bbb3',
-			postalCode: 'V9A6D4',
-			province: 'bbb4',
-			country: 'bbb5',
-		};
+		// const employerData = {
+		// 	employerName: 'aaa',
+		// 	supervisorName: 'ccc',
+		// 	supervisorEmailAddress: 'bbb@bbb.com',
+		// 	supervisorPhoneNumber: '5554448787',
+		// 	addressSelected: true,
+		// 	addressLine1: 'bbb1',
+		// 	addressLine2: 'bbb2',
+		// 	city: 'bbb3',
+		// 	postalCode: 'V9A6D4',
+		// 	province: 'bbb4',
+		// 	country: 'bbb5',
+		// };
 
-		const characteristicsData = {
-			eyeColourCode: 'Blue',
-			hairColourCode: 'Brown',
-			height: '33',
-			heightInches: null,
-			heightUnitCode: 'Centimeters',
-			weight: '44',
-			weightUnitCode: 'Kilograms',
-		};
+		// const characteristicsData = {
+		// 	eyeColourCode: 'Blue',
+		// 	hairColourCode: 'Brown',
+		// 	height: '33',
+		// 	heightInches: null,
+		// 	heightUnitCode: 'Centimeters',
+		// 	weight: '44',
+		// 	weightUnitCode: 'Kilograms',
+		// };
 
 		this.permitModelFormGroup.patchValue(
 			{
@@ -434,8 +434,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
-				employerData,
-				characteristicsData,
+				// employerData,
+				// characteristicsData,
 			},
 			{
 				emitEvent: false,
