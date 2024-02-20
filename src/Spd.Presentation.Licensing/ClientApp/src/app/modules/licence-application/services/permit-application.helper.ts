@@ -207,7 +207,7 @@ export abstract class PermitApplicationHelper {
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
 			canadianCitizenProofTypeCode: new FormControl(''),
-			isResidentOfCanada: new FormControl(''),
+			isCanadianResident: new FormControl(''),
 			proofOfResidentStatusCode: new FormControl(''),
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
@@ -223,16 +223,16 @@ export abstract class PermitApplicationHelper {
 					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'isResidentOfCanada',
+					'isCanadianResident',
 					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.No
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'proofOfResidentStatusCode',
-					(form) => form.get('isResidentOfCanada')?.value == BooleanTypeCode.Yes
+					(form) => form.get('isCanadianResident')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'proofOfCitizenshipCode',
-					(form) => form.get('isResidentOfCanada')?.value == BooleanTypeCode.No
+					(form) => form.get('isCanadianResident')?.value == BooleanTypeCode.No
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
@@ -248,14 +248,14 @@ export abstract class PermitApplicationHelper {
 					(form) =>
 						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
 							form.get('canadianCitizenProofTypeCode')?.value !== LicenceDocumentTypeCode.CanadianPassport) ||
-						form.get('isResidentOfCanada')?.value == BooleanTypeCode.No ||
+						form.get('isCanadianResident')?.value == BooleanTypeCode.No ||
 						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('isResidentOfCanada')?.value == BooleanTypeCode.Yes &&
+							form.get('isCanadianResident')?.value == BooleanTypeCode.Yes &&
 							form.get('proofOfResidentStatusCode')?.value !== LicenceDocumentTypeCode.PermanentResidentCard)
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'governmentIssuedAttachments',
-					(form) => form.get('isResidentOfCanada')?.value == BooleanTypeCode.No
+					(form) => form.get('isCanadianResident')?.value == BooleanTypeCode.No
 				),
 			],
 		}
@@ -416,9 +416,10 @@ export abstract class PermitApplicationHelper {
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
 
 		const permitRequirementData = { ...permitModelFormValue.permitRequirementData };
-		const employerPrimaryAddress = { ...permitModelFormValue.employerPrimaryAddress };
 		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
 		const printPermitData = { ...permitModelFormValue.printPermitData };
+		let employerData = {};
+		let employerPrimaryAddress = {};
 
 		// default the flags
 		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
@@ -452,13 +453,21 @@ export abstract class PermitApplicationHelper {
 
 		citizenshipData.attachments?.forEach((doc: any) => {
 			if (citizenshipData.expiryDate) {
-				documentExpiredInfos.push({
-					expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
-					licenceDocumentTypeCode:
-						citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-							? citizenshipData.canadianCitizenProofTypeCode
-							: citizenshipData.notCanadianCitizenProofTypeCode,
-				});
+				let licenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
+				if (citizenshipData.isCanadianCitizen != BooleanTypeCode.Yes) {
+					if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
+						licenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
+					} else {
+						licenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
+					}
+				}
+
+				if (citizenshipData.expiryDate) {
+					documentExpiredInfos.push({
+						expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
+						licenceDocumentTypeCode,
+					});
+				}
 			}
 			if (doc.documentUrlId) {
 				previousDocumentIds.push(doc.documentUrlId);
@@ -468,13 +477,13 @@ export abstract class PermitApplicationHelper {
 		const isIncludeAdditionalGovermentIdStepData =
 			(citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
 				citizenshipData.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			citizenshipData.isResidentOfCanada == BooleanTypeCode.No ||
-			(citizenshipData.isResidentOfCanada == BooleanTypeCode.Yes &&
+			citizenshipData.isCanadianResident == BooleanTypeCode.No ||
+			(citizenshipData.isCanadianResident == BooleanTypeCode.Yes &&
 				citizenshipData.proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard);
 
 		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
 			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
-				if (citizenshipData.expiryDate) {
+				if (citizenshipData.governmentIssuedExpiryDate) {
 					documentExpiredInfos.push({
 						expiryDate: this.formatDatePipe.transform(
 							citizenshipData.governmentIssuedExpiryDate,
@@ -554,6 +563,27 @@ export abstract class PermitApplicationHelper {
 			}
 		}
 
+		if (includesMyEmployement) {
+			const allEmployerData = { ...permitModelFormValue.employerData };
+			employerData = {
+				employerName: allEmployerData.employerName,
+				supervisorName: allEmployerData.supervisorName,
+				supervisorEmailAddress: allEmployerData.supervisorEmailAddress,
+				supervisorPhoneNumber: allEmployerData.supervisorPhoneNumber,
+			};
+
+			employerPrimaryAddress = {
+				addressLine1: allEmployerData.addressLine1,
+				addressLine2: allEmployerData.addressLine2,
+				city: allEmployerData.city,
+				postalCode: allEmployerData.postalCode,
+				province: allEmployerData.province,
+				country: allEmployerData.country,
+			};
+		}
+
+		const isCanadianCitizen = this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen);
+
 		const body = {
 			licenceAppId,
 			originalApplicationId,
@@ -606,12 +636,16 @@ export abstract class PermitApplicationHelper {
 				: mailingAddressData,
 			residentialAddressData,
 			//-----------------------------------
-			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
+			isCanadianCitizen,
+			isCanadianResident: isCanadianCitizen
+				? null
+				: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianResident),
 			//-----------------------------------
 			useBcServicesCardPhoto: this.utilService.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
 			//-----------------------------------
 			rationale: permitRationaleData.rationale,
 			//-----------------------------------
+			...employerData,
 			employerPrimaryAddress: includesMyEmployement ? employerPrimaryAddress : null,
 			//-----------------------------------
 			armouredVehiclePermitReasonCodes,
@@ -653,18 +687,24 @@ export abstract class PermitApplicationHelper {
 			citizenshipData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
-			const citizenshipLicenceDocumentTypeCode =
-				citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
-					? citizenshipData.canadianCitizenProofTypeCode
-					: citizenshipData.notCanadianCitizenProofTypeCode;
+
+			let citizenshipLicenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
+			if (citizenshipData.isCanadianCitizen != BooleanTypeCode.Yes) {
+				if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
+					citizenshipLicenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
+				} else {
+					citizenshipLicenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
+				}
+			}
+
 			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
 		}
 
 		const isIncludeAdditionalGovermentIdStepData =
 			(citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
 				citizenshipData.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			citizenshipData.isResidentOfCanada == BooleanTypeCode.No ||
-			(citizenshipData.isResidentOfCanada == BooleanTypeCode.Yes &&
+			citizenshipData.isCanadianResident == BooleanTypeCode.No ||
+			(citizenshipData.isCanadianResident == BooleanTypeCode.Yes &&
 				citizenshipData.proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard);
 
 		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
