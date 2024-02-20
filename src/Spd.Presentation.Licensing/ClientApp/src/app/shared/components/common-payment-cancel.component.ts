@@ -6,13 +6,12 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 	selector: 'app-common-payment-cancel',
 	template: `
 		<div class="row">
-			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row">
 					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Cancelled</h2>
 					</div>
-
-					<div class="col-xl-6 col-lg-4 col-md-12">
+					<div class="col-xl-6 col-lg-4 col-md-12 col-sm-6">
 						<div class="d-flex justify-content-end">
 							<button
 								mat-flat-button
@@ -34,12 +33,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 					</div>
 				</div>
 
-				<div class="row mx-4">
-					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="mt-4 text-center">
-							Your application is submitted, but it won't be processed until payment is received.
-						</div>
-					</div>
+				<div class="my-4 text-center">
+					Your application is submitted, but it won't be processed until payment is received.
 				</div>
 
 				<div class="d-flex justify-content-end">
