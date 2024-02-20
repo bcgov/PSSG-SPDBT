@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -6,6 +6,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { take, tap } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 
@@ -182,7 +183,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 		`,
 	],
 })
-export class LoginSelectionComponent {
+export class LoginSelectionComponent implements OnInit {
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 
@@ -191,8 +192,13 @@ export class LoginSelectionComponent {
 		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService,
-		private businessApplicationService: BusinessApplicationService
+		private businessApplicationService: BusinessApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {}
+
+	ngOnInit(): void {
+		this.commonApplicationService.setApplicationTitle();
+	}
 
 	async onRegisterWithBceid(): Promise<void> {
 		this.businessApplicationService

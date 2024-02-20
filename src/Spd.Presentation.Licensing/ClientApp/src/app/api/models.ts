@@ -44,6 +44,7 @@ export { PermitAppCommandResponse } from './models/permit-app-command-response';
 export { PoliceOfficerRoleCode } from './models/police-officer-role-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { ResidentialAddress } from './models/residential-address';
+export { ServiceTypeCode } from './models/service-type-code';
 export { UserInfo } from './models/user-info';
 export { UserInfoMsgTypeCode } from './models/user-info-msg-type-code';
 export { WeightUnitCode } from './models/weight-unit-code';
