@@ -12,7 +12,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 						<h2 class="fs-3 mt-0 mt-md-3">Payment Failed</h2>
 					</div>
 
-					<div class="col-xl-6 col-lg-4 col-md-12">
+					<div class="col-xl-6 col-lg-4 col-md-12 col-sm-6">
 						<div class="d-flex justify-content-end">
 							<button
 								mat-flat-button
@@ -35,44 +35,37 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 					</div>
 				</div>
 
-				<div class="row mx-4">
-					<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
-						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-							<div class="mt-4">
-								Your application has been submitted, but it won't be processed until payment is received.
-							</div>
-							<div class="my-4">
-								Please download and complete the
-								<a
-									tabindex="0"
-									(click)="onDownloadManualPaymentForm()"
-									(keydown)="onKeydownDownloadManualPaymentForm($event)"
-									>Manual Payment Form</a
-								>
-								then follow the instructions on the form to submit payment to the Security Programs Division.
-							</div>
-						</div>
-					</ng-container>
+				<ng-container *ngIf="numberOfAttemptsRemaining === 0; else remainingAttempts">
+					<div class="mt-4">
+						Your application has been submitted, but it won't be processed until payment is received.
+					</div>
+					<div class="my-4">
+						Please download and complete the
+						<a
+							tabindex="0"
+							(click)="onDownloadManualPaymentForm()"
+							(keydown)="onKeydownDownloadManualPaymentForm($event)"
+							>Manual Payment Form</a
+						>
+						then follow the instructions on the form to submit payment to the Security Programs Division.
+					</div>
+				</ng-container>
 
-					<ng-template #remainingAttempts>
-						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-							<div class="mt-4">
-								Please ensure the information you entered is correct and try again, or use a different credit card. You
-								have
-								{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
-							</div>
-							<div class="my-4">
-								Alternatively, you can download the
-								<a
-									tabindex="0"
-									(click)="onDownloadManualPaymentForm()"
-									(keydown)="onKeydownDownloadManualPaymentForm($event)"
-									>Manual Payment Form</a
-								>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
-							</div>
-						</div>
-					</ng-template>
-				</div>
+				<ng-template #remainingAttempts>
+					<div class="mt-4">
+						Please ensure the information you entered is correct and try again, or use a different credit card. You have
+						{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining === 1 ? '' : 's' }}.
+					</div>
+					<div class="my-4">
+						Alternatively, you can download the
+						<a
+							tabindex="0"
+							(click)="onDownloadManualPaymentForm()"
+							(keydown)="onKeydownDownloadManualPaymentForm($event)"
+							>Manual Payment Form</a
+						>. Fill it out, and follow the instructions to submit it to the Security Programs Division.
+					</div>
+				</ng-template>
 
 				<div class="d-flex justify-content-end">
 					<button

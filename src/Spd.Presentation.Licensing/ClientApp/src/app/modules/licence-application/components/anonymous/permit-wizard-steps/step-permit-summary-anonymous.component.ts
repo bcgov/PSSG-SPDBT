@@ -96,7 +96,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											<div class="text-minor-heading mt-4">Purpose and Rationale</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason for Requirement</div>
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason to Require a Permit</div>
 													<div class="summary-text-data">
 														{{ reasonForRequirement }}
 													</div>
@@ -107,25 +107,25 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														{{ otherReason }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isRationaleAttachments">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Supporting Documents</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of rationaleAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
 												<div class="col-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Rationale</div>
 													<div class="summary-text-data">
 														{{ rationale }}
 													</div>
 												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isRationaleAttachments">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Rationale Supporting Documents</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of rationaleAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="showEmployerInformation">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
@@ -275,68 +275,92 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											</div>
 											<mat-divider class="mt-4 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Identification</div>
+											<div class="text-minor-heading">Citizenship</div>
 											<div class="row mt-0">
-												<div class="col-lg-8 col-md-12">
-													<div class="row mt-0">
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
-															<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																<span *ngIf="canadianCitizenProofTypeCode">
-																	{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-																</span>
-																<span *ngIf="notCanadianCitizenProofTypeCode">
-																	{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
-																</span>
-															</div>
-															<div class="summary-text-data">
-																<div *ngFor="let doc of attachments; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
-															<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
-															<div class="summary-text-data">
-																{{ height }}
-																{{ heightUnitCode | options : 'HeightUnitTypes' }}
-																{{ heightInches }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
-															<div class="summary-text-data">
-																{{ weight }}
-																{{ weightUnitCode | options : 'WeightUnitTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
-															<div class="summary-text-data">
-																{{ hairColourCode | options : 'HairColourTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
-															<div class="summary-text-data">
-																{{ eyeColourCode | options : 'EyeColourTypes' }}
-															</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Were you born in Canada?</div>
+													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Are you a resident of Canada?</div>
+													<div class="summary-text-data">{{ isCanadianResident }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														<span *ngIf="canadianCitizenProofTypeCode">
+															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+														</span>
+														<span *ngIf="proofOfResidentStatusCode">
+															{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
+														</span>
+														<span *ngIf="proofOfCitizenshipCode">
+															{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
+														</span>
+													</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of attachments; let i = index">
+															{{ doc.name }}
 														</div>
 													</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
+
+												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="governmentIssuedPhotoTypeCode">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+													</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<mat-divider class="mt-4 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Identification</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12 mt-lg-2">
 													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph of Yourself</div>
 													<div class="summary-text-data">
 														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
 															{{ doc.name }}
 														</div>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
+													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+												</div>
+											</div>
+
+											<div class="row mt-0">
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
+													<div class="summary-text-data">
+														{{ height }}
+														{{ heightUnitCode | options : 'HeightUnitTypes' }}
+														{{ heightInches }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
+													<div class="summary-text-data">
+														{{ weight }}
+														{{ weightUnitCode | options : 'WeightUnitTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
+													<div class="summary-text-data">
+														{{ hairColourCode | options : 'HairColourTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12 mt-lg-2">
+													<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
+													<div class="summary-text-data">
+														{{ eyeColourCode | options : 'EyeColourTypes' }}
 													</div>
 												</div>
 											</div>
@@ -513,6 +537,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 })
 export class StepPermitSummaryAnonymousComponent implements OnInit {
 	permitModelData: any = {};
+	showEmployerInformation = false;
 
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
@@ -611,13 +636,22 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 			? this.permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
 			: '';
 	}
-	get notCanadianCitizenProofTypeCode(): string {
+	get isCanadianResident(): string {
 		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? this.permitModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? ''
+			? this.permitModelData.citizenshipData.isCanadianResident ?? ''
 			: '';
 	}
-	get proofOfAbility(): string {
-		return this.permitModelData.citizenshipData.proofOfAbility ?? '';
+	get proofOfResidentStatusCode(): string {
+		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
+			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.Yes
+			? this.permitModelData.citizenshipData.proofOfResidentStatusCode ?? ''
+			: '';
+	}
+	get proofOfCitizenshipCode(): string {
+		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
+			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.No
+			? this.permitModelData.citizenshipData.proofOfCitizenshipCode ?? ''
+			: '';
 	}
 	get citizenshipExpiryDate(): string {
 		return this.permitModelData.citizenshipData.expiryDate ?? '';
@@ -628,26 +662,22 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get showAdditionalGovIdData(): boolean {
 		return (
-			(this.permitModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
-				this.permitModelData.citizenshipData.canadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.CanadianPassport) ||
-			(this.permitModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
-				this.permitModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.PermanentResidentCard)
+			(this.isCanadianCitizen == BooleanTypeCode.Yes &&
+				this.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			this.isCanadianResident == BooleanTypeCode.No ||
+			(this.isCanadianResident == BooleanTypeCode.Yes &&
+				this.proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
 	}
 
 	get governmentIssuedPhotoTypeCode(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.permitModelData.citizenshipData.governmentIssuedPhotoTypeCode ?? '';
+		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedPhotoTypeCode : '';
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.permitModelData.citizenshipData.governmentIssuedExpiryDate ?? '';
+		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedExpiryDate : '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
-		if (!this.showAdditionalGovIdData) return [];
-		return this.permitModelData.citizenshipData.governmentIssuedAttachments ?? [];
+		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedAttachments : [];
 	}
 
 	get hasBcDriversLicence(): string {
@@ -695,6 +725,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get reasonForRequirement(): string {
 		const reasonList = [];
+		this.showEmployerInformation = false;
+
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
 			if (armouredVehicleRequirement.isPersonalProtection) {
@@ -730,6 +762,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 				);
 			}
 			if (armouredVehicleRequirement.isMyEmployment) {
+				this.showEmployerInformation = true;
 				reasonList.push(
 					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.MyEmployment, 'ArmouredVehiclePermitReasonTypes')
 				);
@@ -752,6 +785,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 				);
 			}
 			if (bodyArmourRequirementFormGroup.isMyEmployment) {
+				this.showEmployerInformation = true;
 				reasonList.push(
 					this.optionsPipe.transform(BodyArmourPermitReasonCode.MyEmployment, 'BodyArmourPermitReasonTypes')
 				);
@@ -794,34 +828,34 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 
 	get employerName(): string {
-		return this.permitModelData.employerPrimaryAddress?.employerName ?? '';
+		return this.permitModelData.employerData?.employerName ?? '';
 	}
 	get supervisorName(): string {
-		return this.permitModelData.employerPrimaryAddress?.supervisorName ?? '';
+		return this.permitModelData.employerData?.supervisorName ?? '';
 	}
 	get supervisorEmailAddress(): string {
-		return this.permitModelData.employerPrimaryAddress?.supervisorEmailAddress ?? '';
+		return this.permitModelData.employerData?.supervisorEmailAddress ?? '';
 	}
 	get supervisorPhoneNumber(): string {
-		return this.permitModelData.employerPrimaryAddress?.supervisorPhoneNumber ?? '';
+		return this.permitModelData.employerData?.supervisorPhoneNumber ?? '';
 	}
 	get businessAddressLine1(): string {
-		return this.permitModelData.employerPrimaryAddress?.addressLine1 ?? '';
+		return this.permitModelData.employerData?.addressLine1 ?? '';
 	}
 	get businessAddressLine2(): string {
-		return this.permitModelData.employerPrimaryAddress?.addressLine2 ?? '';
+		return this.permitModelData.employerData?.addressLine2 ?? '';
 	}
 	get businessCity(): string {
-		return this.permitModelData.employerPrimaryAddress?.city ?? '';
+		return this.permitModelData.employerData?.city ?? '';
 	}
 	get businessPostalCode(): string {
-		return this.permitModelData.employerPrimaryAddress?.postalCode ?? '';
+		return this.permitModelData.employerData?.postalCode ?? '';
 	}
 	get businessProvince(): string {
-		return this.permitModelData.employerPrimaryAddress?.province ?? '';
+		return this.permitModelData.employerData?.province ?? '';
 	}
 	get businessCountry(): string {
-		return this.permitModelData.employerPrimaryAddress?.country ?? '';
+		return this.permitModelData.employerData?.country ?? '';
 	}
 
 	get residentialAddressLine1(): string {
