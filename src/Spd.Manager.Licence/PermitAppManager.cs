@@ -12,7 +12,7 @@ using System.Net;
 namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
-        IRequestHandler<GetPermitApplicationQuery, PermitLicenseAppResponse>,
+        IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
         IRequestHandler<AnonymousPermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<AnonymousPermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<AnonymousPermitAppUpdateCommand, PermitAppCommandResponse>,
@@ -35,11 +35,11 @@ internal class PermitAppManager :
 
     #region anonymous
 
-    public async Task<PermitLicenseAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
+    public async Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
     {
-        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenseApplicationId, cancellationToken);
-        PermitLicenseAppResponse result = _mapper.Map<PermitLicenseAppResponse>(response);
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenseApplicationId), cancellationToken);
+        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
+        PermitLicenceAppResponse result = _mapper.Map<PermitLicenceAppResponse>(response);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
         return result;
     }

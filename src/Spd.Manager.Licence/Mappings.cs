@@ -70,7 +70,7 @@ internal class Mappings : Profile
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
         CreateMap<LicAppFileInfo, SpdTempFile>();
-        CreateMap<LicenceApplicationResp, PermitLicenseAppResponse>()
+        CreateMap<LicenceApplicationResp, PermitLicenceAppResponse>()
             .ForPath(d => d.EmployerPrimaryAddress.AddressLine1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine1))
             .ForPath(d => d.EmployerPrimaryAddress.AddressLine2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine2))
             .ForPath(d => d.EmployerPrimaryAddress.Province, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.Province))
