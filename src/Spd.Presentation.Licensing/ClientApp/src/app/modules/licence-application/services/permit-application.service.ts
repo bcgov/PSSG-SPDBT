@@ -74,7 +74,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		personalInformationData: this.personalInformationFormGroup,
 		criminalHistoryData: this.criminalHistoryFormGroup,
-		fingerprintProofData: this.fingerprintProofFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		citizenshipData: this.citizenshipFormGroup,
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
@@ -761,7 +760,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepPermitDetailsComplete(): boolean {
-		console.debug('isStepPermitDetailsComplete', this.expiredLicenceFormGroup.valid);
+		console.debug('isStepPermitDetailsComplete', this.expiredLicenceFormGroup.valid, this.expiredLicenceFormGroup);
 
 		return this.expiredLicenceFormGroup.valid;
 	}
@@ -811,7 +810,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			'isStepIdentificationComplete',
 			this.personalInformationFormGroup.valid,
 			this.criminalHistoryFormGroup.valid,
-			this.fingerprintProofFormGroup.valid,
 			this.aliasesFormGroup.valid,
 			this.citizenshipFormGroup.valid,
 			this.bcDriversLicenceFormGroup.valid,
@@ -830,7 +828,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return (
 			this.personalInformationFormGroup.valid &&
 			this.criminalHistoryFormGroup.valid &&
-			this.fingerprintProofFormGroup.valid &&
 			this.aliasesFormGroup.valid &&
 			this.citizenshipFormGroup.valid &&
 			this.bcDriversLicenceFormGroup.valid &&
