@@ -48,12 +48,11 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<PermitLicenseAppResponse> GetPermitApplicationAnonymous()
         {
-            //string licenseIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+            string licenseIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
             string? licenseAppId;
             try
             {
-                //licenseAppId = licenseIdsStr.Split("*")[1];
-                licenseAppId = "f8213b85-2f4e-46a3-867b-4b9bf6c3fc66";
+                licenseAppId = licenseIdsStr.Split("*")[1];
             }
             catch
             {
