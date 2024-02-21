@@ -63,7 +63,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload  Body Armor or Armor Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
+        /// Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>
         /// <param name="recaptcha"></param>
         /// <param name="ct"></param>
