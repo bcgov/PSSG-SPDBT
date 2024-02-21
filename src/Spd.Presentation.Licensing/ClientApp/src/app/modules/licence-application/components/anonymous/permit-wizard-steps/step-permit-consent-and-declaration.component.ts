@@ -159,8 +159,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 			.conditions {
 				border: 1px solid var(--color-grey-light);
-				max-height: 300px;
-				overflow-y: auto;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 				font-size: smaller;
 			}
