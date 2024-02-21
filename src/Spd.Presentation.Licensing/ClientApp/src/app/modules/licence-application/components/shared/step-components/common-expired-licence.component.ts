@@ -116,13 +116,8 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		if (this.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.titleLabel = 'Licence';
-			this.label = 'licence';
-		} else {
-			this.titleLabel = 'Permit';
-			this.label = 'permit';
-		}
+		this.titleLabel = this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
+		this.label = this.titleLabel.toLowerCase();
 	}
 
 	onValidateAndSearch(): void {
@@ -170,7 +165,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			if (workerLicenceTypeCode !== this.workerLicenceTypeCode) {
 				//   WorkerLicenceType does not match
 				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-				this.messageError = `This licence is not a ${selWorkerLicenceTypeDesc}.`;
+				this.messageError = `This ${this.label} is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
 				if (isExpired) {
 					const formattedExpiryDate = this.formatDatePipe.transform(expiryDate, SPD_CONSTANTS.date.formalDateFormat);
@@ -189,7 +184,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 				}
 			}
 		} else {
-			this.messageError = `This ${this.label} number does not match any existing licences.`;
+			this.messageError = `This ${this.label} number does not match any existing ${this.label}s.`;
 		}
 
 		this.resetRecaptcha.next();

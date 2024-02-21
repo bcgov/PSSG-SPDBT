@@ -21,9 +21,7 @@ import { distinctUntilChanged } from 'rxjs';
 		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 			<mat-step>
 				<ng-template matStepLabel> Licence Confirmation </ng-template>
-				<app-step-worker-licence-confirmation
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-confirmation>
+				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">

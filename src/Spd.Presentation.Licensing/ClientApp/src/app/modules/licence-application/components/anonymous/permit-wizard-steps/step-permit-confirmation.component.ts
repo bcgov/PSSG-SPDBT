@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ApplicationTypeCode, BusinessTypeCode } from '@app/api/models';
+import { Component, OnInit } from '@angular/core';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
@@ -19,25 +18,23 @@ import { UtilService } from 'src/app/core/services/util.service';
 							regular office hours: {{ spdPhoneNumber }}
 						</app-alert>
 						<div class="row mt-0 mb-3">
-							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
-								<div class="text-label d-block text-muted mt-2">Permit Holder Name</div>
-								<div class="summary-text-data">{{ permitHolderName }}</div>
-							</div>
 							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">Permit Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
 							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Permit Type</div>
+								<div class="summary-text-data">{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}</div>
+							</div>
+							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
 								<div class="text-label d-block text-muted mt-2">Expiry Date</div>
 								<div class="summary-text-data">
 									{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
 								</div>
 							</div>
-							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-								<div class="text-label d-block text-muted mt-2">{{ applicationTypeCode }} Fee</div>
-								<div class="summary-text-data">
-									{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
-								</div>
+							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
+								<div class="text-label d-block text-muted mt-2">Name on Permit</div>
+								<div class="summary-text-data">{{ permitHolderName }}</div>
 							</div>
 						</div>
 					</div>
@@ -49,30 +46,17 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepPermitConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	feeAmount: null | number = null;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	private permitModelData: any = {};
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	constructor(
-		private utilService: UtilService,
-		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService
-	) {}
+	constructor(private utilService: UtilService, private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit() {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
 
-		const workerLicenceTypeCode = this.permitModelData.workerLicenceTypeData.workerLicenceTypeCode;
-		const applicationTypeCode = this.permitModelData.applicationTypeData.applicationTypeCode;
-
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(workerLicenceTypeCode, applicationTypeCode, BusinessTypeCode.None)
-			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
-
-		this.feeAmount = fee?.amount ? fee.amount : null;
+		this.workerLicenceTypeCode = this.permitModelData.workerLicenceTypeData.workerLicenceTypeCode;
 	}
 
 	get permitHolderName(): string {
