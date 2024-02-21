@@ -24,7 +24,7 @@ public record AnonymousPermitAppUpdateCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
-public record GetPermitApplicationQuery(Guid LicenseApplicationId) : IRequest<PermitLicenseAppResponse>;
+public record GetPermitApplicationQuery(Guid LicenseApplicationId) : IRequest<PermitLicenceAppResponse>;
 
 public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
 {
@@ -50,7 +50,7 @@ public record PermitAppCommandResponse : LicenceAppUpsertResponse
     public decimal? Cost { get; set; }
 };
 
-public record PermitLicenseAppResponse : PersonalLicenceAppBase
+public record PermitLicenceAppResponse : PersonalLicenceAppBase
 {
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
