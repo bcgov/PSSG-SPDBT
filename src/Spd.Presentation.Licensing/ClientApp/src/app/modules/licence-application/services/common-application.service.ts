@@ -14,7 +14,10 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class CommonApplicationService {
-	applicationTitle$: BehaviorSubject<string> = new BehaviorSubject<string>('Licensing Application');
+	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([
+		'Licensing Application',
+		'Licensing Application',
+	]);
 
 	licenceFees: Array<LicenceFeeResponse> = [];
 
@@ -63,50 +66,51 @@ export class CommonApplicationService {
 		);
 	}
 
-	// private updateTitle(title: string) {
-	// 	this.applicationTitle$.next(title);
-	// }
-
 	setApplicationTitle(
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined = undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
 		originalLicenceNumber: string | undefined = undefined
 	) {
-		// console.debug('setApplicationTitle', workerLicenceTypeCode, applicationTypeCode, originalLicenceNumber);
-
 		let title = '';
+		let mobileTitle = '';
 
 		if (workerLicenceTypeCode) {
 			switch (workerLicenceTypeCode) {
 				case WorkerLicenceTypeCode.SecurityBusinessLicence: {
 					title = 'Security Business Licence';
+					mobileTitle = 'SBL';
 					break;
 				}
 				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 					title = 'Security Worker Licence';
+					mobileTitle = 'SWL';
 					break;
 				}
 				case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
 					title = 'Armoured Vehicle Permit';
+					mobileTitle = 'AVP';
 					break;
 				}
 				case WorkerLicenceTypeCode.BodyArmourPermit: {
 					title = 'Body Armour Permit';
+					mobileTitle = 'BAP';
 					break;
 				}
 			}
 
 			if (applicationTypeCode) {
 				title += ` - ${applicationTypeCode}`;
+				mobileTitle += ` ${applicationTypeCode}`;
 			}
 
 			if (originalLicenceNumber) {
 				title += ` - ${originalLicenceNumber}`;
+				mobileTitle += ` ${originalLicenceNumber}`;
 			}
 		} else {
-			title = 'Licensing Application';
+			mobileTitle = title = 'Licensing Application';
 		}
 
-		this.applicationTitle$.next(title);
+		this.applicationTitle$.next([title, mobileTitle]);
 	}
 }

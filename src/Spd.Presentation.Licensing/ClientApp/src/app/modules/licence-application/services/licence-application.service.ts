@@ -329,6 +329,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isStepLicenceSelectionComplete(): boolean {
+		const hasNoExpired = this.expiredLicenceFormGroup.value.hasExpiredLicence == BooleanTypeCode.No;
+		const captchaFormGroup = this.expiredLicenceFormGroup.get('captchaFormGroup') as FormGroup;
+
+		// If the user toggles the 'has expired' flag multiple times, the form is never marked as valid
+		// something to do with the recaptcha not revalidating properly
+		if (hasNoExpired && !captchaFormGroup.valid) {
+			captchaFormGroup.reset();
+		}
+
 		// console.debug(
 		// 	'isStepLicenceSelectionComplete',
 		// 	this.soleProprietorFormGroup.valid,

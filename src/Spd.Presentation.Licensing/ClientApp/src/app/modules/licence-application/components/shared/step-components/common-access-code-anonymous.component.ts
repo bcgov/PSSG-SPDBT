@@ -19,7 +19,7 @@ import { Subject, take, tap } from 'rxjs';
 		<div class="row">
 			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mx-auto">
 				<form [formGroup]="form" novalidate>
-					<div class="row my-4">
+					<div class="row mt-4">
 						<div class="col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Current {{ titleLabel }} Number</mat-label>
@@ -49,7 +49,7 @@ import { Subject, take, tap } from 'rxjs';
 							</mat-form-field>
 						</div>
 						<div class="col-12">
-							<div class="mt-2 mb-3" formGroupName="captchaFormGroup">
+							<div class="mt-2" formGroupName="captchaFormGroup">
 								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
 								<mat-error
 									class="mat-option-error"
@@ -64,15 +64,17 @@ import { Subject, take, tap } from 'rxjs';
 						</div>
 					</div>
 
-					<app-alert type="danger" icon="error" *ngIf="errorMessage">
-						{{ errorMessage }}
-					</app-alert>
+					<div class="mt-3" *ngIf="errorMessage">
+						<app-alert type="danger" icon="error">
+							{{ errorMessage }}
+						</app-alert>
+					</div>
 
-					<ng-container *ngIf="isExpired">
+					<div class="mt-3" *ngIf="isExpired">
 						<a class="w-auto" tabindex="0" (click)="onCreateNewLicence()" (keydown)="onKeydownCreateNewLicence($event)">
 							Apply for a new Licence
 						</a>
-					</ng-container>
+					</div>
 				</form>
 			</div>
 		</div>

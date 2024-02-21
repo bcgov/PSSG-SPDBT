@@ -190,7 +190,10 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		this.resetRecaptcha.next();
 	}
 
-	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
+	private getIsInRenewalPeriod(
+		expiryDate: string | null | undefined,
+		licenceTermCode: LicenceTermCode | undefined
+	): boolean {
 		if (!expiryDate || !licenceTermCode) {
 			return false;
 		}

@@ -51,24 +51,24 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<div class="panel-body">
 											<div class="text-minor-heading mt-4">Permit Information</div>
 											<div class="row mt-0">
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Permit Type</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Permit Type</div>
 													<div class="summary-text-data">
 														{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Application Type</div>
 													<div class="summary-text-data">
 														{{ applicationTypeCode | options : 'ApplicationTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Permit Term</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Permit Term</div>
 													<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Fee</div>
 													<div class="summary-text-data">
 														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 													</div>
@@ -76,45 +76,45 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											</div>
 
 											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-												<mat-divider class="mt-4 mb-2"></mat-divider>
+												<mat-divider class="mt-3 mb-2"></mat-divider>
 												<div class="text-minor-heading">Expired Permit</div>
 												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Permit Number</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Expired Permit Number</div>
 														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Permit Expiry Date</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Expired Permit Expiry Date</div>
 														<div class="summary-text-data">
 															{{ expiredLicenceExpiryDate | formatDate | default }}
 														</div>
 													</div>
 												</div>
 											</ng-container>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading mt-4">Purpose and Rationale</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason to Require a Permit</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Reason to Require a Permit</div>
 													<div class="summary-text-data">
 														{{ reasonForRequirement }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isOtherReason">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Other Reason</div>
+												<div class="col-lg-6 col-md-12" *ngIf="isOtherReason">
+													<div class="text-label d-block text-muted">Other Reason</div>
 													<div class="summary-text-data">
 														{{ otherReason }}
 													</div>
 												</div>
-												<div class="col-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Rationale</div>
+												<div class="col-12">
+													<div class="text-label d-block text-muted">Rationale</div>
 													<div class="summary-text-data">
 														{{ rationale }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isRationaleAttachments">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Rationale Supporting Documents</div>
+												<div class="col-lg-6 col-md-12" *ngIf="isRationaleAttachments">
+													<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
 													<div class="summary-text-data">
 														<div *ngFor="let doc of rationaleAttachments; let i = index">
 															{{ doc.name }}
@@ -146,59 +146,59 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<div class="panel-body">
 											<div class="text-minor-heading">Business Name</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Business Name</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Business Name</div>
 													<div class="summary-text-data">
 														{{ employerName }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Supervisor's Name</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Supervisor's Name</div>
 													<div class="summary-text-data">
 														{{ supervisorName }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
 														{{ supervisorEmailAddress }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Email Address</div>
 													<div class="summary-text-data">
 														{{ supervisorPhoneNumber | mask : constants.phone.displayMask }}
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Business's Primary Address</div>
 											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Address Line 1</div>
 													<div class="summary-text-data">{{ businessAddressLine1 | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Address Line 2</div>
 													<div class="summary-text-data">{{ businessAddressLine2 | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">City</div>
 													<div class="summary-text-data">{{ businessCity | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Postal Code</div>
 													<div class="summary-text-data">{{ businessPostalCode | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Province</div>
 													<div class="summary-text-data">
 														{{ businessProvince | default }}
 													</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Country</div>
 													<div class="summary-text-data">
 														{{ businessCountry | default }}
 													</div>
@@ -228,39 +228,37 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<div class="panel-body">
 											<div class="text-minor-heading mt-4">Personal Information</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Applicant Name</div>
 													<div class="summary-text-data">
 														{{ givenName }} {{ middleName1 }} {{ middleName2 }}
 														{{ surname }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Date of Birth</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Date of Birth</div>
 													<div class="summary-text-data">
 														{{ dateOfBirth | formatDate | default }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Sex</div>
 													<div class="summary-text-data">
 														{{ genderCode | options : 'GenderTypes' | default }}
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Aliases</div>
 											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">
-														Do you have any previous names or aliases?
-													</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Do you have any previous names or aliases?</div>
 													<div class="summary-text-data">{{ previousNameFlag }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
+												<div class="col-lg-4 col-md-12">
 													<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Alias Name(s)</div>
+														<div class="text-label d-block text-muted">Alias Name(s)</div>
 														<div class="summary-text-data">
 															<div
 																*ngFor="let alias of aliases; let i = index; let first = first"
@@ -273,20 +271,20 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													</ng-container>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Citizenship</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Are you a Canadian citizen?</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
 													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Are you a resident of Canada?</div>
+												<div class="col-lg-6 col-md-12" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
+													<div class="text-label d-block text-muted">Are you a resident of Canada?</div>
 													<div class="summary-text-data">{{ isCanadianResident }}</div>
 												</div>
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">
 														<span *ngIf="canadianCitizenProofTypeCode">
 															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
 														</span>
@@ -304,8 +302,8 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													</div>
 												</div>
 
-												<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="governmentIssuedPhotoTypeCode">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
+													<div class="text-label d-block text-muted">
 														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 													</div>
 													<div class="summary-text-data">
@@ -316,12 +314,12 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 												</div>
 											</div>
 
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Photograph of Yourself</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Photograph of Yourself</div>
 													<div class="summary-text-data">
 														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
 															{{ doc.name }}
@@ -329,47 +327,47 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													</div>
 												</div>
 
-												<div class="col-lg-6 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">BC Driver's Licence</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">BC Driver's Licence</div>
 													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
 												</div>
 											</div>
 
 											<div class="row mt-0">
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Height</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Height</div>
 													<div class="summary-text-data">
 														{{ height }}
 														{{ heightUnitCode | options : 'HeightUnitTypes' }}
 														{{ heightInches }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Weight</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Weight</div>
 													<div class="summary-text-data">
 														{{ weight }}
 														{{ weightUnitCode | options : 'WeightUnitTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Hair Colour</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Hair Colour</div>
 													<div class="summary-text-data">
 														{{ hairColourCode | options : 'HairColourTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Eye Colour</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Eye Colour</div>
 													<div class="summary-text-data">
 														{{ eyeColourCode | options : 'EyeColourTypes' }}
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Criminal History</div>
 											<div class="row mt-0">
-												<div class="col-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">
+												<div class="col-12">
+													<div class="text-label d-block text-muted">
 														Have you previously been charged or convicted of a crime?
 													</div>
 													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
@@ -399,84 +397,84 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<div class="panel-body">
 											<div class="text-minor-heading mt-4">Contact</div>
 											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Email Address</div>
 													<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
 														{{ contactPhoneNumber | mask : constants.phone.displayMask }}
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Residential Address</div>
 											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Address Line 1</div>
 													<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Address Line 2</div>
 													<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">City</div>
 													<div class="summary-text-data">{{ residentialCity | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Postal Code</div>
 													<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Province</div>
 													<div class="summary-text-data">
 														{{ residentialProvince | default }}
 													</div>
 												</div>
-												<div class="col-lg-4 col-md-12 mt-lg-2">
-													<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Country</div>
 													<div class="summary-text-data">
 														{{ residentialCountry | default }}
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-4 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Mailing Address</div>
 											<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
 												<div class="row mt-0">
-													<div class="col-12 mt-lg-2">
+													<div class="col-12">
 														<div class="summary-text-data">Mailing address is the same as the residential address</div>
 													</div>
 												</div>
 											</ng-container>
 											<ng-template #mailingIsDifferentThanResidential>
 												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Address Line 1</div>
 														<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Address Line 2</div>
 														<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">City</div>
 														<div class="summary-text-data">{{ mailingCity | default }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Postal Code</div>
 														<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Province</div>
 														<div class="summary-text-data">{{ mailingProvince | default }}</div>
 													</div>
-													<div class="col-lg-4 col-md-12 mt-lg-2">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Country</div>
 														<div class="summary-text-data">{{ mailingCountry | default }}</div>
 													</div>
 												</div>

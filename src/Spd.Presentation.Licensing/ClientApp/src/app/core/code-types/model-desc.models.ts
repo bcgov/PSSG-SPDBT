@@ -3,6 +3,7 @@ import {
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
 	BodyArmourPermitReasonCode,
+	BusinessTypeCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -182,6 +183,15 @@ export const ApplicationPortalStatusTypes: SelectOptions[] = [
 	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
 	{ desc: 'Cancelled by Org.', code: ApplicationPortalStatusCode.CancelledByOrganization },
 	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
+];
+
+export const BusinessTypes: SelectOptions[] = [
+	{ desc: 'Non-Registered Sole Proprietor', code: BusinessTypeCode.NonRegisteredSoleProprietor },
+	{ desc: 'Non-Registered Partnership', code: BusinessTypeCode.NonRegisteredPartnership },
+	{ desc: 'Registered Sole Proprietor', code: BusinessTypeCode.RegisteredSoleProprietor },
+	{ desc: 'Registered Partnership', code: BusinessTypeCode.RegisteredPartnership },
+	{ desc: 'Corporation', code: BusinessTypeCode.Corporation },
+	{ desc: 'None', code: BusinessTypeCode.None },
 ];
 
 export const GenderTypes: SelectOptions[] = [

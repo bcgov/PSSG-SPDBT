@@ -18,22 +18,22 @@ import { UtilService } from 'src/app/core/services/util.service';
 							regular office hours: {{ spdPhoneNumber }}
 						</app-alert>
 						<div class="row mt-0 mb-3">
-							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-								<div class="text-label d-block text-muted mt-2">Permit Number</div>
+							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Permit Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
-							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
-								<div class="text-label d-block text-muted mt-2">Permit Type</div>
+							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Permit Type</div>
 								<div class="summary-text-data">{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}</div>
 							</div>
-							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12 mt-lg-2">
-								<div class="text-label d-block text-muted mt-2">Expiry Date</div>
+							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Expiry Date</div>
 								<div class="summary-text-data">
 									{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
 								</div>
 							</div>
-							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12 mt-lg-2">
-								<div class="text-label d-block text-muted mt-2">Name on Permit</div>
+							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Name on Permit</div>
 								<div class="summary-text-data">{{ permitHolderName }}</div>
 							</div>
 						</div>

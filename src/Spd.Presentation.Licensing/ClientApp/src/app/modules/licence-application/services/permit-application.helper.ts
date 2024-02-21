@@ -91,11 +91,15 @@ export abstract class PermitApplicationHelper {
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
 			captchaFormGroup: new FormGroup({
-				token: new FormControl('', FormControlValidators.required),
+				token: new FormControl(''),
 			}),
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'captchaFormGroup.token',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
@@ -198,10 +202,6 @@ export abstract class PermitApplicationHelper {
 			],
 		}
 	);
-
-	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl('', [Validators.required]),
-	});
 
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
