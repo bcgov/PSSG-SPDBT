@@ -24,7 +24,7 @@ public record AnonymousPermitAppUpdateCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
-public record GetPermitApplicationQuery(Guid LicenseApplicationId) : IRequest<PermitLicenceAppResponse>;
+public record GetPermitApplicationQuery(Guid LicenceApplicationId) : IRequest<PermitLicenceAppResponse>;
 
 public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
 {
