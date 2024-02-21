@@ -30,6 +30,8 @@ public record AnonymousPermitAppUpdateCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
+public record GetPermitApplicationQuery(Guid LicenseApplicationId) : IRequest<PermitLicenseAppResponse>;
+
 public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
@@ -53,6 +55,25 @@ public record PermitAppCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }
 };
+
+public record PermitLicenseAppResponse : PersonalLicenceAppBase
+{
+    public IEnumerable<Guid>? DocumentKeyCodes { get; set; } // pending
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } // pending
+    public Guid? OriginalApplicationId { get; set; } // not found
+    public Guid? OriginalLicenceId { get; set; } // not found
+    public bool? Reprint { get; set; } // not found
+    public string? PermitOtherRequiredReason { get; set; }
+    public string? EmployerName { get; set; }
+    public string? SupervisorName { get; set; }
+    public string? SupervisorEmailAddress { get; set; }
+    public string? SupervisorPhoneNumber { get; set; }
+    public EmployerPrimaryAddress? EmployerPrimaryAddress { get; set; }
+    public string? Rationale { get; set; }
+    public bool? IsCanadianResident { get; set; }
+    public IEnumerable<BodyArmourPermitReasonCode>? BodyArmourPermitReasonCodes { get; set; } //for body armour
+    public IEnumerable<ArmouredVehiclePermitReasonCode>? ArmouredVehiclePermitReasonCodes { get; set; } // for armour vehicle
+}
 
 public enum BodyArmourPermitReasonCode
 {
