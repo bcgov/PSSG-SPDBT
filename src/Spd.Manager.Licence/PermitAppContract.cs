@@ -58,11 +58,11 @@ public record PermitAppCommandResponse : LicenceAppUpsertResponse
 
 public record PermitLicenseAppResponse : PersonalLicenceAppBase
 {
-    public IEnumerable<Guid>? DocumentKeyCodes { get; set; } // pending
-    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } // pending
-    public Guid? OriginalApplicationId { get; set; } // not found
-    public Guid? OriginalLicenceId { get; set; } // not found
-    public bool? Reprint { get; set; } // not found
+    public Guid LicenceAppId { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
+    public string? CaseNumber { get; set; }
+    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     public string? PermitOtherRequiredReason { get; set; }
     public string? EmployerName { get; set; }
     public string? SupervisorName { get; set; }
