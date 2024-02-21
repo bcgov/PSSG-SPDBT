@@ -46,20 +46,20 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/permit-application")]
         [HttpGet]
-        public async Task<PermitLicenseAppResponse> GetPermitApplicationAnonymous()
+        public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
-            string licenseIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
-            string? licenseAppId;
+            string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+            string? licenceAppId;
             try
             {
-                licenseAppId = licenseIdsStr.Split("*")[1];
+                licenceAppId = licenceIdsStr.Split("*")[1];
             }
             catch
             {
                 throw new ApiException(HttpStatusCode.Unauthorized, "license app id is incorrect");
             }
 
-            return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenseAppId)));
+            return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
         }
 
         /// <summary>
