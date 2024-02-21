@@ -955,16 +955,13 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
 	get governmentIssuedPhotoTypeCode(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.citizenshipData.governmentIssuedPhotoTypeCode ?? '';
+		return this.showAdditionalGovIdData ? this.licenceModelData.citizenshipData.governmentIssuedPhotoTypeCode : '';
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.citizenshipData.governmentIssuedExpiryDate ?? '';
+		return this.showAdditionalGovIdData ? this.licenceModelData.citizenshipData.governmentIssuedExpiryDate : '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
-		if (!this.showAdditionalGovIdData) return [];
-		return this.licenceModelData.citizenshipData.governmentIssuedAttachments ?? [];
+		return this.showAdditionalGovIdData ? this.licenceModelData.citizenshipData.governmentIssuedAttachments : [];
 	}
 
 	get showAdditionalGovIdData(): boolean {

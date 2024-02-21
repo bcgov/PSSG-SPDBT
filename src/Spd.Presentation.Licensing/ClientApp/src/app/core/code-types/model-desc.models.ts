@@ -10,6 +10,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceTermCode,
 	PoliceOfficerRoleCode,
+	ServiceTypeCode,
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
@@ -261,6 +262,25 @@ export const PermitProofOfCitizenshipTypes: SelectOptions[] = [
 	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Valid Government Issued Photo ID', code: LicenceDocumentTypeCode.GovernmentIssuedPhotoId },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
+];
+
+export const ServiceTypes: SelectOptions[] = [
+	{ desc: 'Psso', code: ServiceTypeCode.Psso },
+	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
+	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
+	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
+	{ desc: 'PssoVs', code: ServiceTypeCode.PssoVs },
+	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
+	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
+	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
+	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
+	{
+		desc: 'Security Business Licence Controlling Member Crc',
+		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+	},
 ];
 
 export const HairColourTypes: SelectOptions[] = [

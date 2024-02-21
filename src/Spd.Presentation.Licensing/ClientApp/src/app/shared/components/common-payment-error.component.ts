@@ -6,12 +6,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 	selector: 'app-common-payment-error',
 	template: `
 		<div class="row">
-			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-				<div class="row">
-					<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-						<h2 class="fs-3 mt-0 mt-md-3">Payment Error</h2>
-					</div>
-				</div>
+			<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<h2 class="fs-3 mt-0 mt-md-3">Payment Error</h2>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 				<div class="d-flex justify-content-center">
