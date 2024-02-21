@@ -340,26 +340,23 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 		this.application = application;
 		this.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(application.status);
 
-		if (application.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-			switch (application.caseSubStatus) {
-				case CaseSubStatusCode.Fingerprints:
-					this.fingerprintsAlert = this.getFingerprintsText();
-					this.associatedFileType = FileTypeCode.ConfirmationOfFingerprints;
-					break;
-				case CaseSubStatusCode.OpportunityToRespond:
-					this.opportunityToRespondAlert = this.getOpportunityToRespondText();
-					this.associatedFileType = FileTypeCode.OpportunityToRespond;
-					break;
-				case CaseSubStatusCode.ApplicantInformation:
-					this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
-					this.associatedFileType = FileTypeCode.ApplicantInformation;
-					break;
-			}
-		} else if (application.status == ApplicationPortalStatusCode.UnderAssessment) {
-			if (application.caseSubStatus == CaseSubStatusCode.StatutoryDeclaration) {
+		switch (application.caseSubStatus) {
+			case CaseSubStatusCode.Fingerprints:
+				this.fingerprintsAlert = this.getFingerprintsText();
+				this.associatedFileType = FileTypeCode.ConfirmationOfFingerprints;
+				break;
+			case CaseSubStatusCode.OpportunityToRespond:
+				this.opportunityToRespondAlert = this.getOpportunityToRespondText();
+				this.associatedFileType = FileTypeCode.OpportunityToRespond;
+				break;
+			case CaseSubStatusCode.ApplicantInformation:
+				this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
+				this.associatedFileType = FileTypeCode.ApplicantInformation;
+				break;
+			case CaseSubStatusCode.StatutoryDeclaration:
 				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
 				this.associatedFileType = FileTypeCode.StatutoryDeclaration;
-			}
+				break;
 		}
 
 		this.loadDocumentHistory();
