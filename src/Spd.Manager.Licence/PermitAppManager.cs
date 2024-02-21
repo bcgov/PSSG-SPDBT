@@ -13,6 +13,7 @@ using System.Net;
 namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
+        IRequestHandler<GetPermitApplicationQuery, PermitLicenseAppResponse>,
         IRequestHandler<AnonymousPermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<AnonymousPermitAppReplaceCommand, PermitAppCommandResponse>,
         IRequestHandler<AnonymousPermitAppRenewCommand, PermitAppCommandResponse>,
@@ -35,6 +36,16 @@ internal class PermitAppManager :
     }
 
     #region anonymous
+
+    public async Task<PermitLicenseAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
+    {
+        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenseApplicationId, cancellationToken);
+        PermitLicenseAppResponse result = _mapper.Map<PermitLicenseAppResponse>(response);        //PermitLicenseAppResponse
+        //var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenseApplicationId), cancellationToken);
+        //result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
+        return result;
+    }
+
     public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand cmd, CancellationToken cancellationToken)
     {
         PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
