@@ -39,8 +39,31 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         #region anonymous 
+
         /// <summary>
-        /// Upload  Body Armor or Armor Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
+        /// Get anonymous Permit Application, thus the licenseAppId is retreived from cookies.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/permit-application")]
+        [HttpGet]
+        public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
+        {
+            string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+            string? licenceAppId;
+            try
+            {
+                licenceAppId = licenceIdsStr.Split("*")[1];
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "license app id is incorrect");
+            }
+
+            return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
+        }
+
+        /// <summary>
+        /// Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
         /// </summary>
         /// <param name="recaptcha"></param>
         /// <param name="ct"></param>

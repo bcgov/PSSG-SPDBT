@@ -70,6 +70,15 @@ internal class Mappings : Profile
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
         CreateMap<LicAppFileInfo, SpdTempFile>();
+        CreateMap<LicenceApplicationResp, PermitLicenceAppResponse>()
+            .ForPath(d => d.EmployerPrimaryAddress.AddressLine1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine1))
+            .ForPath(d => d.EmployerPrimaryAddress.AddressLine2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine2))
+            .ForPath(d => d.EmployerPrimaryAddress.Province, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.Province))
+            .ForPath(d => d.EmployerPrimaryAddress.City, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.City))
+            .ForPath(d => d.EmployerPrimaryAddress.Country, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.Country))
+            .ForPath(d => d.EmployerPrimaryAddress.PostalCode, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.PostalCode))
+            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
+            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -245,4 +254,38 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.ArmouredVehicleRationale, DocumentTypeEnum.ArmouredVehicleRationale},
         {LicenceDocumentTypeCode.BodyArmourRationale, DocumentTypeEnum.BodyArmourRationale},
     }.ToImmutableDictionary();
+
+    private static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    {
+        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = new();
+
+        if (workerLicenceType != WorkerLicenceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
+
+        foreach (PermitPurposeEnum permitPurpose in permitPurposes)
+        {
+            BodyArmourPermitReasonCode bodyArmourPermitReasonCode;
+
+            if (Enum.TryParse(permitPurpose.ToString(), out bodyArmourPermitReasonCode))
+                bodyArmourPermitReasonCodes.Add(bodyArmourPermitReasonCode);
+        }
+
+        return bodyArmourPermitReasonCodes;
+    }
+
+    private static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    {
+        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = new();
+
+        if (workerLicenceType != WorkerLicenceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
+
+        foreach (PermitPurposeEnum permitPurpose in permitPurposes)
+        {
+            ArmouredVehiclePermitReasonCode armouredVehiclePermitReasonCode;
+
+            if (Enum.TryParse(permitPurpose.ToString(), out armouredVehiclePermitReasonCode))
+                armouredVehiclePermitReasonCodes.Add(armouredVehiclePermitReasonCode);
+        }
+
+        return armouredVehiclePermitReasonCodes;
+    }
 }
