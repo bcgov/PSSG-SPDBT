@@ -242,7 +242,9 @@ namespace Spd.Manager.Screening
             else
             {
                 //if org is psso or if org is volunteer crrp, set application status to submitted.
-                if (org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER || t == ServiceTypeEnum.PSSO || t == ServiceTypeEnum.PSSO_VS)) //is PSSO
+                if (org.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || 
+                    org.OrgResult.Id == SpdConstants.BC_GOV_ORG_ID ||
+                    org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER || t == ServiceTypeEnum.PSSO || t == ServiceTypeEnum.PSSO_VS)) //is PSSO
                 {
                     updateCmd.Status = ApplicationStatusEnum.Submitted;
                 }
