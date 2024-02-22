@@ -22,6 +22,11 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     {
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+
+        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.Renewal 
+            && (cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.ArmouredVehiclePermit || cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit))
+            app._spd_currentexpiredlicenceid_value = cmd.OriginalLicenceId;
+
         _context.AddTospd_applications(app);
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         contact contact = _mapper.Map<contact>(cmd);
