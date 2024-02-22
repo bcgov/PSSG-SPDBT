@@ -82,6 +82,14 @@ internal class PermitAppManager :
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         //todo: upload new files
+        await UploadNewDocsAsync(request,
+                cmd.LicAppFileInfos,
+                response?.LicenceAppId,
+                response?.ContactId,
+                null,
+                null,
+                cancellationToken);
+
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
         {
