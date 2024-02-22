@@ -178,7 +178,7 @@ namespace Spd.Manager.Screening
             _logger.LogDebug($"from webservice orgCode = {idirDetail.MinistryCode}");
 
             OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
-            Guid orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BcGovOrgId;
+            Guid orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BC_GOV_ORG_ID;
 
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
