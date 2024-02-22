@@ -42,7 +42,7 @@ namespace Spd.Manager.Licence
                 //add identity
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
                 CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
-                createContactCmd.IdentityId = id.Id;
+                createContactCmd.IdentityId = id?.Id;
                 contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 ApplicantProfileResponse response = _mapper.Map<ApplicantProfileResponse>(contactResp);
                 response.IsFirstTimeLogin = true;
@@ -53,11 +53,12 @@ namespace Spd.Manager.Licence
                 Identity? id = result.Items.FirstOrDefault();
                 if (id?.ContactId != null)
                 {
-                    //depends on requirement, probably update later when user select "yes" in user profile for licensing portal.
                     UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
                     updateContactCmd.Id = (Guid)id.ContactId;
                     updateContactCmd.IdentityId = id.Id;
                     contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+                    ApplicantProfileResponse response = _mapper.Map<ApplicantProfileResponse>(contactResp);
+                    return response;
                 }
                 else
                 {
@@ -65,8 +66,10 @@ namespace Spd.Manager.Licence
                     CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                     createContactCmd.IdentityId = id?.Id;
                     contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
+                    ApplicantProfileResponse response = _mapper.Map<ApplicantProfileResponse>(contactResp);
+                    response.IsFirstTimeLogin = true;
+                    return response;
                 }
-                return _mapper.Map<ApplicantProfileResponse>(contactResp);
             }
         }
     }
