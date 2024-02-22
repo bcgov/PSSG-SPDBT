@@ -36,14 +36,12 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Country))
             .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Province))
             .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.PostalCode))
-            //.ForMember(d => d.address1_addresstypecode, opt => opt.MapFrom(s => AddressTypeOptionSet.Mailing))
             .ForMember(d => d.address2_line1, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.AddressLine1))
             .ForMember(d => d.address2_line2, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.AddressLine2))
             .ForMember(d => d.address2_city, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.City))
             .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.Country))
             .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.Province))
             .ForMember(d => d.address2_postalcode, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.PostalCode))
-            //.ForMember(d => d.address2_addresstypecode, opt => opt.MapFrom(s => AddressTypeOptionSet.Physical))
             ;
 
             _ = CreateMap<CreateContactCmd, contact>()

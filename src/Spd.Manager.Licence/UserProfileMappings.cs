@@ -2,8 +2,7 @@
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Identity;
-using Spd.Resource.Repository.Org;
-using Spd.Resource.Repository.User;
+using System.Text.Json;
 
 namespace Spd.Manager.Licence
 {
@@ -11,14 +10,6 @@ namespace Spd.Manager.Licence
     {
         public UserProfileMappings()
         {
-            CreateMap<OrgResult, OrgSettings>();
-            CreateMap<UserResult, UserInfo>()
-               .ForMember(d => d.OrgName, opt => opt.Ignore())
-               .ForMember(d => d.OrgSettings, opt => opt.Ignore())
-               .ForMember(d => d.UserId, opt => opt.MapFrom(s => s.Id))
-               .ForMember(d => d.OrgRegistrationId, opt => opt.Ignore())
-               .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
-
             CreateMap<Identity, ApplicantProfileResponse>()
                 .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId))
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress))
@@ -38,7 +29,9 @@ namespace Spd.Manager.Licence
                .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName1))
                .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName2))
                .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.BcscIdentityInfo.BirthDate))
-               .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnum(s.BcscIdentityInfo.Gender)));
+               .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnum(s.BcscIdentityInfo.Gender)))
+               .ForMember(d => d.MailingAddress, opt => opt.Ignore())
+               .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetAddressFromStr(s.BcscIdentityInfo.Address)));
 
             CreateMap<ContactResp, ApplicantProfileResponse>()
                .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id));
@@ -47,7 +40,7 @@ namespace Spd.Manager.Licence
         public static GenderEnum? GetGenderEnum(string? bscsGender)
         {
             if (bscsGender == null) return null;
-            string? str = bscsGender?.ToLower();
+            string? str = bscsGender.ToLower();
             GenderEnum? gender = str switch
             {
                 "female" => GenderEnum.F,
@@ -57,5 +50,41 @@ namespace Spd.Manager.Licence
             };
             return gender;
         }
+
+        private static readonly JsonSerializerOptions jOption = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+
+        private static Address? GetAddressFromStr(string? jsonStr)
+        {
+            if (jsonStr == null) return null;
+            try
+            {
+                var result = JsonSerializer.Deserialize<BcscAddress>(jsonStr, jOption);
+                return new Address()
+                {
+                    AddressLine1 = result?.Street_address,
+                    City = result?.Locality,
+                    Country = result?.Country,
+                    PostalCode = result?.Postal_code,
+                    Province = result?.Region,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+
+    internal class BcscAddress
+    {
+        public string? Street_address { get; set; }
+        public string? Country { get; set; }
+        public string? Locality { get; set; } //city
+        public string? Postal_code { get; set; }
+        public string? Region { get; set; } //province
     }
 }
