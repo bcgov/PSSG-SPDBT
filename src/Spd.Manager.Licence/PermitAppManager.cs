@@ -240,7 +240,6 @@ internal class PermitAppManager :
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
         }
-
     }
 
     private sealed record ChangeSpec
