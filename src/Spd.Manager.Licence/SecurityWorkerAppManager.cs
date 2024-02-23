@@ -104,15 +104,6 @@ internal partial class SecurityWorkerAppManager :
 
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
-    public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken cancellationToken)
-    {
-        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
-        WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
-        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
-        return result;
-    }
-
     public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken cancellationToken)
     {
         LicenceAppQuery q = new LicenceAppQuery
@@ -141,6 +132,15 @@ internal partial class SecurityWorkerAppManager :
     }
 
     #endregion
+
+    public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken cancellationToken)
+    {
+        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
+        WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
+        return result;
+    }
 
     #region anonymous
 
@@ -536,7 +536,7 @@ internal partial class SecurityWorkerAppManager :
             .Select(f => new LicAppFileInfo()
             {
                 FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType2),
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
             }).ToList();
         }
 
