@@ -73,7 +73,6 @@ internal class PermitAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
-        //todo: add ValidateFilesForRenewUpdateAppAsync refer to SecurityWorkerAppManager
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
@@ -81,7 +80,6 @@ internal class PermitAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
-        //todo: upload new files
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
