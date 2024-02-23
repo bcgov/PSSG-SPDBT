@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from '@app/api/models';
+import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { switchMap } from 'rxjs';
-import { UtilService } from 'src/app/core/services/util.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 
 @Component({
 	selector: 'app-licence-payment-fail',
@@ -30,8 +29,8 @@ export class LicencePaymentFailComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private utilService: UtilService,
-		private paymentService: PaymentService
+		private paymentService: PaymentService,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -57,32 +56,13 @@ export class LicencePaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		const body: PaymentLinkCreateRequest = {
-			applicationId: this.payment!.applicationId!,
-			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
-		};
-		this.paymentService
-			.apiUnauthLicenceApplicationIdPaymentLinkPost({
-				applicationId: this.payment!.applicationId!,
-				body,
-			})
-			.pipe()
-			.subscribe((res: PaymentLinkResponse) => {
-				if (res.paymentLinkUrl) {
-					window.location.assign(res.paymentLinkUrl);
-				}
-			});
+		this.commonApplicationService.payNowUnauthenticated(
+			this.payment!.applicationId!,
+			`Payment for: ${this.payment!.caseNumber}`
+		);
 	}
 
 	onDownloadManualPaymentForm(): void {
-		this.paymentService
-			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
-				applicationId: this.payment?.applicationId!,
-			})
-			.pipe()
-			.subscribe((resp: StrictHttpResponse<Blob>) => {
-				this.utilService.downloadFile(resp.headers, resp.body);
-			});
+		this.commonApplicationService.downloadManualPaymentFormUnauthenticated(this.payment?.applicationId!);
 	}
 }

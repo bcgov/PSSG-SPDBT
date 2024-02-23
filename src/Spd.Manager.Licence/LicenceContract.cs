@@ -17,6 +17,8 @@ public record LicenceResponse
     public DateOnly ExpiryDate { get; set; }
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
+    public string? LicenceHolderFirstName { get; set; }
+    public string? LicenceHolderLastName { get; set; }
 };
 
 public record LicenceQuery(string LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;

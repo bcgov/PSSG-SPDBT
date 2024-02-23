@@ -4,6 +4,7 @@ export {
 	ArmouredVehiclePermitReasonTypes,
 	BodyArmourPermitReasonTypes,
 	BooleanTypes,
+	BusinessTypes,
 	CountryTypes,
 	EyeColourTypes,
 	GenderTypes,

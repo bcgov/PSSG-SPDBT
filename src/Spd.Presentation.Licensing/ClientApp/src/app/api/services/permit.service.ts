@@ -14,6 +14,7 @@ import { IActionResult } from '../models/i-action-result';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { PermitAppAnonymousSubmitRequest } from '../models/permit-app-anonymous-submit-request';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
+import { PermitLicenceAppResponse } from '../models/permit-licence-app-response';
 
 @Injectable({
   providedIn: 'root',
@@ -27,12 +28,70 @@ export class PermitService extends BaseService {
   }
 
   /**
+   * Path part for operation apiPermitApplicationGet
+   */
+  static readonly ApiPermitApplicationGetPath = '/api/permit-application';
+
+  /**
+   * Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiPermitApplicationGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiPermitApplicationGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PermitLicenceAppResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PermitLicenceAppResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiPermitApplicationGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiPermitApplicationGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<PermitLicenceAppResponse> {
+
+    return this.apiPermitApplicationGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PermitLicenceAppResponse>) => r.body as PermitLicenceAppResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiPermitApplicationsAnonymousKeyCodePost
    */
   static readonly ApiPermitApplicationsAnonymousKeyCodePostPath = '/api/permit-applications/anonymous/keyCode';
 
   /**
-   * Upload  Body Armor or Armor Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
+   * Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
    *
    *
    *
@@ -66,7 +125,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Upload  Body Armor or Armor Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
+   * Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
    *
    *
    *
@@ -93,7 +152,7 @@ export class PermitService extends BaseService {
   static readonly ApiPermitApplicationsAnonymousFilesPostPath = '/api/permit-applications/anonymous/files';
 
   /**
-   * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
+   * Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
    * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
@@ -131,7 +190,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
+   * Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
    * Uploading file only save files in cache, the files are not connected to the application yet.
    *
    *
@@ -162,7 +221,7 @@ export class PermitService extends BaseService {
   static readonly ApiPermitApplicationsAnonymousSubmitPostPath = '/api/permit-applications/anonymous/submit';
 
   /**
-   * Submit Body Armor or Armor Vehicle permit application Anonymously
+   * Submit Body Armour or Armour Vehicle permit application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    * The session keycode is stored in the cookies.
    *
@@ -202,7 +261,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Submit Body Armor or Armor Vehicle permit application Anonymously
+   * Submit Body Armour or Armour Vehicle permit application Anonymously
    * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
    * The session keycode is stored in the cookies.
    *
