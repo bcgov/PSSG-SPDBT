@@ -51,11 +51,12 @@ public enum LicenceDocumentTypeCode
     CategorySecurityGuard_ASTCertificate,
     CategorySecurityGuard_UseForceEmployerLetter,
     CategorySecurityGuard_UseForceEmployerLetterASTEquivalent,
-    CertificateOfIndianStatus,
+    CertificateOfIndianStatusAdditional,
     CertificateOfIndianStatusForCitizen,
     ConfirmationOfPermanentResidenceDocument,
     DocumentToVerifyLegalWorkStatus,
     DriversLicence,
+    DriverLicenceAdditional,
     GovernmentIssuedPhotoId,
     MentalHealthCondition,
     PermanentResidentCard,
@@ -69,7 +70,8 @@ public enum LicenceDocumentTypeCode
     NonCanadianPassport,
     BCID,
     ArmouredVehicleRationale,
-    BodyArmourRationale
+    BodyArmourRationale,
+    PassportAdditional,
 }
 
 public enum BusinessTypeCode
