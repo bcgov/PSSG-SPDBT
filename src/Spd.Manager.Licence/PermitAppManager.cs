@@ -207,20 +207,21 @@ internal class PermitAppManager :
             }).ToList();
         }
 
+        // check UI if this is part of the questions - OK, validation stays
         if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
         }
 
-        if (request.IsCanadianCitizen == false)
+        if (request.IsCanadianResident == true)
         {
-            if (!newFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
-                !existingFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains(f.LicenceDocumentTypeCode)))
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian resident.");
             }
         }
-        else
+        else if (request.IsCanadianCitizen == true)
         {
             if (!newFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
                 !existingFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
@@ -228,16 +229,36 @@ internal class PermitAppManager :
                 throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian.");
             }
         }
-
-        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) &&
-            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+        else
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+            }
         }
 
-        if ((request.UseBcServicesCardPhoto == false || request.UseBcServicesCardPhoto == null)
-            && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself)
-            && !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+        // check also if it is resident
+        //if (request.IsCanadianCitizen == false)
+        //{
+        //    if (!newFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+        //        !existingFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
+        //    {
+        //        throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+        //    }
+        //}
+        //else
+        //{
+        //    if (!newFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+        //        !existingFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
+        //    {
+        //        throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian.");
+        //    }
+        //}
+        
+        // double check requirement (new file must have, adjust validation) - Requieres photo of applicant
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
         }
