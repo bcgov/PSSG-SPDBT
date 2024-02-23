@@ -60,6 +60,7 @@ public enum LicenceDocumentTypeCode
     GovernmentIssuedPhotoId,
     MentalHealthCondition,
     PermanentResidentCard,
+    PermanentResidentCardAdditional,
     PhotoOfYourself,
     PoliceBackgroundLetterOfNoConflict,
     ProofOfFingerprint,
