@@ -201,7 +201,7 @@ internal class PermitAppManager :
             .Select(f => new LicAppFileInfo()
             {
                 FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType2),
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
             }).ToList();
         }
 
