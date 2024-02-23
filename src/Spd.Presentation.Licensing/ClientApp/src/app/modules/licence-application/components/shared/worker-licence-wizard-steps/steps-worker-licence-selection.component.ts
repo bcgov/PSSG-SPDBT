@@ -69,9 +69,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					applicationTypeCode === applicationTypeCodes.Update || applicationTypeCode === applicationTypeCodes.Renewal
 				"
 			>
-				<app-step-worker-licence-confirmation
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-confirmation>
+				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">

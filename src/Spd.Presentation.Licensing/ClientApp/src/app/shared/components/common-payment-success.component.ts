@@ -89,25 +89,25 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 
 				<div class="row mb-3">
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Licence Term</div>
+						<div class="d-block payment__text-label text-md-end">Licence Term</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Amount Paid</div>
+						<div class="d-block payment__text-label text-md-end">Amount Paid</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.transAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Case ID</div>
+						<div class="d-block payment__text-label text-md-end">Case ID</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.caseNumber }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Date and Time of Transaction</div>
+						<div class="d-block payment__text-label text-md-end">Date and Time of Transaction</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">
@@ -115,7 +115,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 						</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Invoice/Order Number</div>
+						<div class="d-block payment__text-label text-md-end">Invoice/Order Number</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.transOrderId }}</div>

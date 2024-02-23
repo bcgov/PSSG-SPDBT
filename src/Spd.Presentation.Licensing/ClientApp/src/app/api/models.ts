@@ -41,6 +41,7 @@ export { PaymentStatusCode } from './models/payment-status-code';
 export { PaymentTypeCode } from './models/payment-type-code';
 export { PermitAppAnonymousSubmitRequest } from './models/permit-app-anonymous-submit-request';
 export { PermitAppCommandResponse } from './models/permit-app-command-response';
+export { PermitLicenceAppResponse } from './models/permit-licence-app-response';
 export { PoliceOfficerRoleCode } from './models/police-officer-role-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { ResidentialAddress } from './models/residential-address';

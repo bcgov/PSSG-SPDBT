@@ -116,7 +116,7 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService // private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -184,27 +184,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		});
 	}
 
-	// onPayNow(application: PaymentResponse): void {
-	// 	const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-	// 	const body: PaymentLinkCreateRequest = {
-	// 		applicationId: application.id!,
-	// 		paymentMethod: PaymentMethodCode.CreditCard,
-	// 		description: `Payment for Case ID: ${application.applicationNumber}`,
-	// 	};
-	// 	this.paymentService
-	// 		.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
-	// 			orgId: orgId!,
-	// 			applicationId: application.id!,
-	// 			body,
-	// 		})
-	// 		.pipe()
-	// 		.subscribe((res: PaymentLinkResponse) => {
-	// 			if (res.paymentLinkUrl) {
-	// 				window.location.assign(res.paymentLinkUrl);
-	// 			}
-	// 		});
-	// }
-
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
 
@@ -246,6 +225,10 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		}
 		this.updateCompleteStatus();
 	}
+
+	// private payNow(licenceAppId: string): void {
+	// 	this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for Permit Renewal');
+	// }
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
