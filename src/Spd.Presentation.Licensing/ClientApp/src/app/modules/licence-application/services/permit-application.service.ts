@@ -680,13 +680,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		resp.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
+				// case LicenceDocumentTypeCode.DriversLicence: // TODO AdditionalDriversLicence
+				// case LicenceDocumentTypeCode.PermanentResidentCard:  // TODO AdditionalPermanentResidentCard
 				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatus:
-				case LicenceDocumentTypeCode.DriversLicence: // TODO AdditionalDriversLicence
-				case LicenceDocumentTypeCode.NonCanadianPassport:
-				case LicenceDocumentTypeCode.PermanentResidentCard: {
+				case LicenceDocumentTypeCode.NonCanadianPassport: {
 					const aFile = this.utilService.dummyFile(doc);
 					governmentIssuedAttachments.push(aFile);
 
@@ -695,17 +695,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
 					break;
 				}
-				//ProofOfCanadianCitizenshipTypes
-				case LicenceDocumentTypeCode.BirthCertificate:
+				case LicenceDocumentTypeCode.BirthCertificate: //ProofOfCanadianCitizenshipTypes
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
 				case LicenceDocumentTypeCode.CanadianPassport:
 				case LicenceDocumentTypeCode.CanadianCitizenship:
-				//PermitProofOfCitizenshipTypes
-				case LicenceDocumentTypeCode.DriversLicence:
-				case LicenceDocumentTypeCode.NonCanadianPassport:
+				case LicenceDocumentTypeCode.DriversLicence: //PermitProofOfCitizenshipTypes
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId:
-				//PermitProofOfResidenceStatusTypes
-				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument:
+				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument: //PermitProofOfResidenceStatusTypes
 				case LicenceDocumentTypeCode.PermanentResidentCard:
 				case LicenceDocumentTypeCode.RecordOfLandingDocument:
 				case LicenceDocumentTypeCode.StudyPermit:
