@@ -14,12 +14,11 @@ import { Subscription } from 'rxjs';
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
 			</span>
 			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
-			<div class="app-header-text pl-3">{{ title }}</div>
+			<div class="app-header-text pl-3">
+				<span class="desktop"> {{ fullTitle }}</span>
+				<span class="mobile"> {{ mobileTitle }} </span>
+			</div>
 			<span style="flex: 1 1 auto;"></span>
-
-			<!-- <button mat-button class="w-auto" (click)="onHome()">
-				<mat-icon style="font-size: 32px !important; height: 32px !important; width: 32px !important;">home</mat-icon>
-			</button> -->
 
 			<div *ngIf="loggedInUserDisplay">
 				<button mat-button [matMenuTriggerFor]="menu" class="login-user-menu-button w-auto" style="font-size: inherit;">
@@ -53,6 +52,21 @@ import { Subscription } from 'rxjs';
 				line-height: 20px;
 			}
 
+			span.mobile {
+				display: none;
+			}
+			span.desktop {
+				display: block;
+			}
+			@media screen and (max-width: 480px) {
+				span.mobile {
+					display: block;
+				}
+				span.desktop {
+					display: none;
+				}
+			}
+
 			.app-header-divider {
 				height: 70%;
 				border-right-color: gray;
@@ -72,7 +86,8 @@ import { Subscription } from 'rxjs';
 	],
 })
 export class SpdHeaderComponent implements OnInit, OnDestroy {
-	title = '';
+	fullTitle = '';
+	mobileTitle = '';
 	loggedInUserDisplay: string | null = null;
 
 	private applicationTitleSubscription!: Subscription;
@@ -95,9 +110,12 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 			this.getUserInfo();
 		});
 
-		this.applicationTitleSubscription = this.commonApplicationService.applicationTitle$.subscribe((_resp: string) => {
-			this.title = _resp;
-		});
+		this.applicationTitleSubscription = this.commonApplicationService.applicationTitle$.subscribe(
+			(_resp: [string, string]) => {
+				this.fullTitle = _resp[0];
+				this.mobileTitle = _resp[1];
+			}
+		);
 	}
 
 	ngOnDestroy() {

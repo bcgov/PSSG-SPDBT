@@ -33,7 +33,8 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 					</div>
 				</div>
 
-				<div class="my-4 text-center">
+				<div class="fs-4 text-center mt-4">Your payment attempt was cancelled</div>
+				<div class="text-center my-4">
 					Your application is submitted, but it won't be processed until payment is received.
 				</div>
 

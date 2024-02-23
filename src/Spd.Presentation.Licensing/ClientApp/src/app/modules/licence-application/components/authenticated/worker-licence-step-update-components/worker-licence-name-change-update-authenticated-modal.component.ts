@@ -10,11 +10,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 			<div class="mb-2">Your licence will be updated with your new name:</div>
 			<div class="row">
 				<div class="col-md-6 col-sm-12">
-					<div class="text-label d-block text-muted mt-2 mt-lg-0">New Name</div>
+					<div class="text-label d-block text-muted">New Name</div>
 					<div class="summary-text-data">Joanna Lee</div>
 				</div>
 				<div class="col-md-6 col-sm-12">
-					<div class="text-label d-block text-muted mt-2 mt-lg-0">Previous Name</div>
+					<div class="text-label d-block text-muted">Previous Name</div>
 					<div class="summary-text-data">Joanna Lee Smith</div>
 				</div>
 

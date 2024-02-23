@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -197,7 +198,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 								</div>
 							</div>
 
-							<div class="row mt-4" *ngIf="showAdditionalGovermentIdStep" @showHideTriggerSlideAnimation>
+							<div class="row mt-4" *ngIf="showAdditionalGovIdData" @showHideTriggerSlideAnimation>
 								<div class="col-12">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
@@ -293,6 +294,7 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 	constructor(
 		private authenticationService: AuthenticationService,
 		private permitApplicationService: PermitApplicationService,
+		private utilService: UtilService,
 		private hotToastService: HotToastService
 	) {}
 
@@ -329,17 +331,19 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 		return this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CanadianPassport;
 	}
 
-	get showAdditionalGovermentIdStep(): boolean {
+	get showAdditionalGovIdData(): boolean {
 		const canadianCitizenProofTypeCode =
 			this.canadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.CanadianPassport;
 		const proofOfResidentStatusCode =
 			this.proofOfResidentStatusCode.value ?? LicenceDocumentTypeCode.PermanentResidentCard;
-		return (
-			(this.isCanadianCitizen.value == BooleanTypeCode.Yes &&
-				canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			this.isCanadianResident.value == BooleanTypeCode.No ||
-			(this.isCanadianResident.value == BooleanTypeCode.Yes &&
-				proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		const proofOfCitizenshipCode = this.proofOfCitizenshipCode.value ?? LicenceDocumentTypeCode.NonCanadianPassport;
+
+		return this.utilService.getPermitShowAdditionalGovIdData(
+			this.isCanadianCitizen.value == BooleanTypeCode.Yes,
+			this.isCanadianResident.value == BooleanTypeCode.Yes,
+			canadianCitizenProofTypeCode,
+			proofOfResidentStatusCode,
+			proofOfCitizenshipCode
 		);
 	}
 
@@ -355,8 +359,8 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 	get proofOfResidentStatusCode(): FormControl {
 		return this.form.get('proofOfResidentStatusCode') as FormControl;
 	}
-	get proofOfCitizenship(): FormControl {
-		return this.form.get('proofOfCitizenship') as FormControl;
+	get proofOfCitizenshipCode(): FormControl {
+		return this.form.get('proofOfCitizenshipCode') as FormControl;
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
