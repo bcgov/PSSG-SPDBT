@@ -13,7 +13,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	selector: 'app-steps-permit-details-new',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step *ngIf="showTermsOfUse"> // TODO uncomment later
+			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
 				<div class="row wizard-button-row">
@@ -33,7 +33,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-step-permit-expired (validExpiredLicenceData)="onValidExpiredLicence()"></app-step-permit-expired>

@@ -836,8 +836,8 @@ export abstract class LicenceApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
 		}
 
-		const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-			citizenshipData.isCanadianCitizen,
+		const isIncludeAdditionalGovermentIdStepData = this.utilService.getSwlShowAdditionalGovIdData(
+			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
 			citizenshipData.canadianCitizenProofTypeCode,
 			citizenshipData.notCanadianCitizenProofTypeCode
 		);
@@ -1072,8 +1072,8 @@ export abstract class LicenceApplicationHelper {
 			});
 		});
 
-		const isIncludeAdditionalGovermentIdStepData = this.includeAdditionalGovermentIdStepData(
-			citizenshipData.isCanadianCitizen,
+		const isIncludeAdditionalGovermentIdStepData = this.utilService.getSwlShowAdditionalGovIdData(
+			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
 			citizenshipData.canadianCitizenProofTypeCode,
 			citizenshipData.notCanadianCitizenProofTypeCode
 		);
@@ -1387,19 +1387,5 @@ export abstract class LicenceApplicationHelper {
 		});
 
 		return documents;
-	}
-
-	includeAdditionalGovermentIdStepData(
-		// TODO should be able to remove this ?
-		isCanadianCitizen: BooleanTypeCode,
-		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
-	): boolean {
-		return (
-			(isCanadianCitizen == BooleanTypeCode.Yes &&
-				canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(isCanadianCitizen == BooleanTypeCode.No &&
-				notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
-		);
 	}
 }

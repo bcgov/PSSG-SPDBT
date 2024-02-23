@@ -21,7 +21,7 @@ import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-ste
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-confirmation [applicationTypeCode]="applicationTypeCode"></app-step-permit-confirmation>
+				<app-step-permit-confirmation></app-step-permit-confirmation>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">

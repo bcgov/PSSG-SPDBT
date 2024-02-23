@@ -19,11 +19,12 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 				<app-step-title
 					class="fs-7"
 					title="Upload a photograph of yourself"
-					subtitle="This will appear on your licence. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
+					subtitle="This will appear on your permit. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
 				></app-step-title>
 
 				<app-common-photograph-of-yourself
 					[form]="form"
+					name="permit"
 					[isAnonymous]="true"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
