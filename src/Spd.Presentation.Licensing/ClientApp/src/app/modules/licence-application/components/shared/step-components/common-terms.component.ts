@@ -246,7 +246,7 @@ import { UtilService } from '@app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="row mt-2">
+			<div class="row my-2">
 				<div class="offset-xxl-1 col-xxl-7 offset-xl-1 col-xl-6 col-lg-7 col-md-12 col-sm-12 mb-2">
 					<mat-checkbox formControlName="agreeToTermsAndConditions" (click)="onCheckboxChange()">
 						I have read and accept the above Terms of Use
