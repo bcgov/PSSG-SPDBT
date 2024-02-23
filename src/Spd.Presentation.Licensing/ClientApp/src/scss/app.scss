@@ -532,5 +532,9 @@ ngx-dropzone-remove-badge {
 
   &__text {
     font-size: 1.1em;
+  }  
+
+  &__text-label {
+    font-size: 0.9rem !important;
   }
 }

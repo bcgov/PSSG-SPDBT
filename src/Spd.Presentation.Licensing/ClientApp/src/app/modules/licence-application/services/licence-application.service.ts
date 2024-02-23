@@ -291,9 +291,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.hasValueChanged = false;
 		this.photographOfYourself = null;
 
+		this.accessCodeFormGroup.reset();
+		this.consentAndDeclarationFormGroup.reset();
 		this.licenceModelFormGroup.reset();
-
-		console.debug('reset.initialized', this.initialized);
 
 		// clear the alias data - this does not seem to get reset during a formgroup reset
 		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
@@ -301,6 +301,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			aliasesArray.removeAt(0);
 		}
 		this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
+
+		console.debug('reset.initialized', this.initialized, this.licenceModelFormGroup.value);
 	}
 
 	/**
@@ -887,10 +889,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		resp.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatus:
-				case LicenceDocumentTypeCode.DriversLicence:
+				case LicenceDocumentTypeCode.DriversLicence: // TODO AdditionalDriversLicence
+				case LicenceDocumentTypeCode.NonCanadianPassport:
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
 					// Additional Government ID: GovernmentIssuedPhotoIdTypes
 

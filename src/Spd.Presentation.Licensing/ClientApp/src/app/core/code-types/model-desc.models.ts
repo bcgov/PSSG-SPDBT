@@ -249,12 +249,12 @@ export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
 
 export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'BC Services Card (with photo)', code: LicenceDocumentTypeCode.BcServicesCard },
+	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
 	{ desc: 'Canadian Native Status Card (with photo)', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
 	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
-	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 ];
 
 export const PermitProofOfResidenceStatusTypes: SelectOptions[] = [

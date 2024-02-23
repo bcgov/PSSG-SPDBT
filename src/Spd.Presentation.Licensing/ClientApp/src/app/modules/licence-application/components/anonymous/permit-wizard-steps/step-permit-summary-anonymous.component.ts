@@ -10,6 +10,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -548,6 +549,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	constructor(
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService,
+		private utilService: UtilService,
 		private optionsPipe: OptionsPipe
 	) {}
 
@@ -659,12 +661,12 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		return (
-			(this.isCanadianCitizen == BooleanTypeCode.Yes &&
-				this.canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			this.isCanadianResident == BooleanTypeCode.No ||
-			(this.isCanadianResident == BooleanTypeCode.Yes &&
-				this.proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		return this.utilService.getPermitShowAdditionalGovIdData(
+			this.isCanadianCitizen == BooleanTypeCode.Yes,
+			this.isCanadianResident == BooleanTypeCode.Yes,
+			this.canadianCitizenProofTypeCode as LicenceDocumentTypeCode,
+			this.proofOfResidentStatusCode as LicenceDocumentTypeCode,
+			this.proofOfCitizenshipCode as LicenceDocumentTypeCode
 		);
 	}
 
@@ -896,99 +898,4 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	get mailingCountry(): string {
 		return this.permitModelData.mailingAddressData?.country ?? '';
 	}
-
-	// get categoryList(): Array<WorkerCategoryTypeCode> {
-	// 	const list: Array<WorkerCategoryTypeCode> = [];
-	// 	if (this.permitModelData.categoryArmouredCarGuardFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
-	// 	}
-	// 	if (this.permitModelData.categoryBodyArmourSalesFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.BodyArmourSales);
-	// 	}
-	// 	if (this.permitModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-	// 	}
-	// 	if (this.permitModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-	// 	}
-	// 	if (this.permitModelData.categoryFireInvestigatorFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.FireInvestigator);
-	// 	}
-	// 	if (this.permitModelData.categoryLocksmithFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.Locksmith);
-	// 	}
-	// 	if (this.permitModelData.categoryLocksmithSupFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
-	// 	}
-	// 	if (this.permitModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.PrivateInvestigator);
-	// 	}
-	// 	if (this.permitModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityConsultantFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityConsultant);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityGuardFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityGuard);
-	// 	}
-	// 	if (this.permitModelData.categorySecurityGuardSupFormGroup.isInclude) {
-	// 		list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
-	// 	}
-
-	// 	return list;
-	// }
-
-	// get isAnyDocuments(): boolean {
-	// 	return (
-	// 		this.showArmouredCarGuard ||
-	// 		this.showFireInvestigator ||
-	// 		this.showLocksmith ||
-	// 		this.showPrivateInvestigator ||
-	// 		this.showPrivateInvestigatorUnderSupervision ||
-	// 		this.showSecurityAlarmInstaller ||
-	// 		this.showSecurityConsultant ||
-	// 		this.showSecurityGuard
-	// 	);
-	// }
-
-	// get showArmouredCarGuard(): boolean {
-	// 	return this.permitModelData.categoryArmouredCarGuardFormGroup?.isInclude ?? false;
-	// }
-	// get showFireInvestigator(): boolean {
-	// 	return this.permitModelData.categoryFireInvestigatorFormGroup?.isInclude ?? false;
-	// }
-	// get showLocksmith(): boolean {
-	// 	return this.permitModelData.categoryLocksmithFormGroup?.isInclude ?? false;
-	// }
-	// get showPrivateInvestigator(): boolean {
-	// 	return this.permitModelData.categoryPrivateInvestigatorFormGroup?.isInclude ?? false;
-	// }
-	// get showPrivateInvestigatorUnderSupervision(): boolean {
-	// 	return this.permitModelData.categoryPrivateInvestigatorSupFormGroup?.isInclude ?? false;
-	// }
-	// get showSecurityAlarmInstaller(): boolean {
-	// 	return this.permitModelData.categorySecurityAlarmInstallerFormGroup?.isInclude ?? false;
-	// }
-	// get showSecurityConsultant(): boolean {
-	// 	return this.permitModelData.categorySecurityConsultantFormGroup?.isInclude ?? false;
-	// }
-	// get showSecurityGuard(): boolean {
-	// 	return this.permitModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
-	// }
 }

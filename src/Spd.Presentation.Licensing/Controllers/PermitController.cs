@@ -41,7 +41,7 @@ namespace Spd.Presentation.Licensing.Controllers
         #region anonymous 
 
         /// <summary>
-        /// Get anonymous Permit Application, thus the licenseAppId is retreived from cookies.
+        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
         /// </summary>
         /// <returns></returns>
         [Route("api/permit-application")]
@@ -56,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             catch
             {
-                throw new ApiException(HttpStatusCode.Unauthorized, "license app id is incorrect");
+                throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
             }
 
             return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
@@ -80,7 +80,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload Body Armor or Armor Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
+        /// Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
         /// Uploading file only save files in cache, the files are not connected to the application yet.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
@@ -125,7 +125,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Submit Body Armor or Armor Vehicle permit application Anonymously
+        /// Submit Body Armour or Armour Vehicle permit application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// The session keycode is stored in the cookies.
         /// </summary>

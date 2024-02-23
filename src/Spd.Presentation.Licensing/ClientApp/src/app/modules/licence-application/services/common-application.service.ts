@@ -5,9 +5,14 @@ import {
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
 	LicenceTermCode,
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { LicenceFeeService } from '@app/api/services';
+import { LicenceFeeService, PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { UtilService } from '@app/core/services/util.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -21,7 +26,11 @@ export class CommonApplicationService {
 
 	licenceFees: Array<LicenceFeeResponse> = [];
 
-	constructor(private licenceFeeService: LicenceFeeService) {
+	constructor(
+		private utilService: UtilService,
+		private licenceFeeService: LicenceFeeService,
+		private paymentService: PaymentService
+	) {
 		this.licenceFeeService
 			.apiLicenceFeeGet()
 			.pipe()
@@ -112,5 +121,35 @@ export class CommonApplicationService {
 		}
 
 		this.applicationTitle$.next([title, mobileTitle]);
+	}
+
+	payNowUnauthenticated(licenceAppId: string, description: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
+	}
+
+	downloadManualPaymentFormUnauthenticated(licenceAppId: string): void {
+		this.paymentService
+			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
+				applicationId: licenceAppId,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 }

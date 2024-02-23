@@ -1,19 +1,13 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-	ApplicationTypeCode,
-	PaymentLinkCreateRequest,
-	PaymentLinkResponse,
-	PaymentMethodCode,
-	WorkerLicenceCommandResponse,
-} from '@app/api/models';
-import { PaymentService } from '@app/api/services';
+import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepWorkerLicenceMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-replacement',
@@ -63,8 +57,8 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
-		private paymentService: PaymentService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -106,21 +100,9 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	}
 
 	private payNow(licenceAppId: string): void {
-		const body: PaymentLinkCreateRequest = {
-			applicationId: licenceAppId,
-			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Licence Replacement`,
-		};
-		this.paymentService
-			.apiUnauthLicenceApplicationIdPaymentLinkPost({
-				applicationId: licenceAppId,
-				body,
-			})
-			.pipe()
-			.subscribe((res: PaymentLinkResponse) => {
-				if (res.paymentLinkUrl) {
-					window.location.assign(res.paymentLinkUrl);
-				}
-			});
+		this.commonApplicationService.payNowUnauthenticated(
+			licenceAppId,
+			'Payment for Security Worker Licence Replacement'
+		);
 	}
 }

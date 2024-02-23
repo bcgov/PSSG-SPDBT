@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
-	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
@@ -11,6 +10,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -555,7 +555,8 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: CommonApplicationService,
+		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
@@ -738,26 +739,20 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.licenceModelData.citizenshipData.attachments ?? [];
 	}
 	get governmentIssuedPhotoTypeCode(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.citizenshipData.governmentIssuedPhotoTypeCode ?? '';
+		return this.showAdditionalGovIdData ? this.licenceModelData.citizenshipData.governmentIssuedPhotoTypeCode : '';
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		if (!this.showAdditionalGovIdData) return '';
-		return this.licenceModelData.citizenshipData.governmentIssuedExpiryDate ?? '';
+		return this.showAdditionalGovIdData ? this.licenceModelData.citizenshipData.governmentIssuedExpiryDate : '';
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
-		if (!this.showAdditionalGovIdData) return [];
-		return this.licenceModelData.citizenshipData.governmentIssuedAttachments ?? [];
+		return this.showAdditionalGovIdData ? this.licenceModelData.citizenshipData.governmentIssuedAttachments : [];
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		return (
-			(this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
-				this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.CanadianPassport) ||
-			(this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
-				this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.PermanentResidentCard)
+		return this.utilService.getSwlShowAdditionalGovIdData(
+			this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode,
+			this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode
 		);
 	}
 
