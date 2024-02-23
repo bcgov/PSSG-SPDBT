@@ -2,14 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import {
-	ApplicationTypeCode,
-	PaymentLinkCreateRequest,
-	PaymentLinkResponse,
-	PaymentMethodCode,
-	WorkerLicenceCommandResponse,
-} from '@app/api/models';
-import { PaymentService } from '@app/api/services';
+import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
@@ -17,6 +10,7 @@ import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-appli
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 
@@ -111,7 +105,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService,
-		private paymentService: PaymentService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -234,21 +228,9 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	private payNow(licenceAppId: string): void {
-		const body: PaymentLinkCreateRequest = {
-			applicationId: licenceAppId,
-			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Licence Application`,
-		};
-		this.paymentService
-			.apiUnauthLicenceApplicationIdPaymentLinkPost({
-				applicationId: licenceAppId,
-				body,
-			})
-			.pipe()
-			.subscribe((res: PaymentLinkResponse) => {
-				if (res.paymentLinkUrl) {
-					window.location.assign(res.paymentLinkUrl);
-				}
-			});
+		this.commonApplicationService.payNowUnauthenticated(
+			licenceAppId,
+			'Payment for New Security Worker Licence Application'
+		);
 	}
 }

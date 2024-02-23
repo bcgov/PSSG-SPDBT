@@ -3,6 +3,7 @@ import {
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
 	BodyArmourPermitReasonCode,
+	BusinessTypeCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -184,6 +185,15 @@ export const ApplicationPortalStatusTypes: SelectOptions[] = [
 	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
 ];
 
+export const BusinessTypes: SelectOptions[] = [
+	{ desc: 'Non-Registered Sole Proprietor', code: BusinessTypeCode.NonRegisteredSoleProprietor },
+	{ desc: 'Non-Registered Partnership', code: BusinessTypeCode.NonRegisteredPartnership },
+	{ desc: 'Registered Sole Proprietor', code: BusinessTypeCode.RegisteredSoleProprietor },
+	{ desc: 'Registered Partnership', code: BusinessTypeCode.RegisteredPartnership },
+	{ desc: 'Corporation', code: BusinessTypeCode.Corporation },
+	{ desc: 'None', code: BusinessTypeCode.None },
+];
+
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },
@@ -239,12 +249,12 @@ export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
 
 export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'BC Services Card (with photo)', code: LicenceDocumentTypeCode.BcServicesCard },
+	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
 	{ desc: 'Canadian Native Status Card (with photo)', code: LicenceDocumentTypeCode.CertificateOfIndianStatus },
 	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCard },
 	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
-	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 ];
 
 export const PermitProofOfResidenceStatusTypes: SelectOptions[] = [

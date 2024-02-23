@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BooleanTypeCode, Document } from '@app/api/models';
+import { BooleanTypeCode, Document, LicenceDocumentTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
@@ -149,6 +149,34 @@ export class UtilService {
 	// }
 
 	//------------------------------------
+	// Sort
+
+	private compareByString(a: any, b: any, ascending = true) {
+		if (ascending) {
+			if (a < b) {
+				return -1;
+			}
+			if (a > b) {
+				return 1;
+			}
+		} else {
+			if (a < b) {
+				return 1;
+			}
+			if (a > b) {
+				return -1;
+			}
+		}
+		return 0;
+	}
+
+	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending = true) {
+		const aUpper = a ? a.toUpperCase() : '';
+		const bUpper = b ? b.toUpperCase() : '';
+		return this.compareByString(aUpper, bUpper, ascending);
+	}
+
+	//------------------------------------
 	// Misc
 
 	getDateString(date: Date): string {
@@ -179,31 +207,32 @@ export class UtilService {
 		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 
-	//------------------------------------
-	// Sort
-
-	private compareByString(a: any, b: any, ascending = true) {
-		if (ascending) {
-			if (a < b) {
-				return -1;
-			}
-			if (a > b) {
-				return 1;
-			}
-		} else {
-			if (a < b) {
-				return 1;
-			}
-			if (a > b) {
-				return -1;
-			}
-		}
-		return 0;
+	public getPermitShowAdditionalGovIdData(
+		isCanadianCitizen: boolean,
+		isCanadianResident: boolean,
+		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		proofOfResidentStatusCode: LicenceDocumentTypeCode | null,
+		proofOfCitizenshipCode: LicenceDocumentTypeCode | null
+	): boolean {
+		return (
+			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			(!isCanadianCitizen &&
+				isCanadianResident &&
+				proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard) ||
+			(!isCanadianCitizen &&
+				!isCanadianResident &&
+				proofOfCitizenshipCode != LicenceDocumentTypeCode.NonCanadianPassport)
+		);
 	}
 
-	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending = true) {
-		const aUpper = a ? a.toUpperCase() : '';
-		const bUpper = b ? b.toUpperCase() : '';
-		return this.compareByString(aUpper, bUpper, ascending);
+	public getSwlShowAdditionalGovIdData(
+		isCanadianCitizen: boolean,
+		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+	): boolean {
+		return (
+			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			(!isCanadianCitizen && notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		);
 	}
 }

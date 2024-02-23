@@ -11,18 +11,18 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<div class="alert-confirm mb-3 p-2">
 					<div class="row mt-0 mx-3 mb-2" *ngIf="showLicenceData">
-						<div class="col-lg-4 col-md-12 mt-lg-2">
-							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Licence Number</div>
+						<div class="col-lg-4 col-md-12">
+							<div class="text-label text-center d-block text-muted mt-3">Licence Number</div>
 							<div class="summary-text-data text-center">{{ originalLicenceNumber }}</div>
 						</div>
-						<div class="col-lg-4 col-md-12 mt-lg-2">
-							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Current Licence Expiry Date</div>
+						<div class="col-lg-4 col-md-12">
+							<div class="text-label text-center d-block text-muted mt-3">Current Licence Expiry Date</div>
 							<div class="summary-text-data text-center">
 								{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-12 mt-lg-2">
-							<div class="text-label text-center d-block text-muted mt-2 mt-lg-0">Term</div>
+						<div class="col-lg-4 col-md-12">
+							<div class="text-label text-center d-block text-muted mt-3">Term</div>
 							<div class="summary-text-data text-center">
 								{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}
 							</div>
