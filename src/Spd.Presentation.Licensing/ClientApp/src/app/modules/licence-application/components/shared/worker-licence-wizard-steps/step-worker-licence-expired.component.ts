@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { CommonExpiredLicenceComponent } from '../step-components/common-expired-licence.component';
@@ -16,6 +17,7 @@ import { CommonExpiredLicenceComponent } from '../step-components/common-expired
 
 				<app-common-expired-licence
 					[form]="form"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					(validExpiredLicenceData)="onValidData()"
 				></app-common-expired-licence>
 			</div>
@@ -23,8 +25,9 @@ import { CommonExpiredLicenceComponent } from '../step-components/common-expired
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceExpiredComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	@Output() validExpiredLicenceData = new EventEmitter();
 
@@ -32,6 +35,12 @@ export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperSte
 	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			'workerLicenceTypeData.workerLicenceTypeCode'
+		)?.value;
+	}
 
 	onSearchAndValidate(): void {
 		this.commonExpiredLicenceComponent.onValidateAndSearch();

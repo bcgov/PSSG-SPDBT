@@ -35,8 +35,8 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 						<div class="text-minor-heading mb-2">Upload a photo of yourself</div>
 
 						<p>
-							This will appear on your licence. It must be a passport-quality photo of your face looking straight at the
-							camera, against a plain, white background. It must be from within the last year.
+							This will appear on your {{ label }}. It must be a passport-quality photo of your face looking straight at
+							the camera, against a plain, white background. It must be from within the last year.
 						</p>
 					</ng-container>
 
@@ -46,7 +46,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 					</app-alert>
 
 					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
-						We require a new photo every 5 years. Please provide a new photo for your licence
+						We require a new photo every 5 years. Please provide a new photo for your {{ label }}
 					</app-alert>
 
 					<app-file-upload
@@ -79,6 +79,7 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 
 	@Input() form!: FormGroup;
 	@Input() isAnonymous = false;
+	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
 	@Input() isCalledFromModal = false;
 

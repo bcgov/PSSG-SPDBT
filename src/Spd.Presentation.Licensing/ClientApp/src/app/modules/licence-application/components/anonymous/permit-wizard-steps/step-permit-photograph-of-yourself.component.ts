@@ -20,12 +20,12 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 				<app-step-title
 					*ngIf="!isCalledFromModal"
 					title="Upload a photograph of yourself"
-					subtitle="I accept using this BC Services Card photo on my licence."
+					subtitle="I accept using this BC Services Card photo on my permit."
 				></app-step-title>
 				<app-step-title
 					class="fs-7"
 					*ngIf="isCalledFromModal"
-					title="Did you want to use your BC Services Card photo on your licence?"
+					title="Did you want to use your BC Services Card photo on your permit?"
 					subtitle="If not, you will be allowed upload a new photo."
 				></app-step-title>
 
@@ -37,6 +37,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 
 				<app-common-photograph-of-yourself
 					[form]="form"
+					name="permit"
 					[isAnonymous]="false"
 					[isCalledFromModal]="isCalledFromModal"
 					(fileUploaded)="onFileUploaded($event)"

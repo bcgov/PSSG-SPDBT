@@ -9,6 +9,7 @@ import {
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -135,7 +136,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								</div>
 							</div>
 
-							<div class="row mt-4" *ngIf="showAdditionalGovermentIdStep" @showHideTriggerSlideAnimation>
+							<div class="row mt-4" *ngIf="showAdditionalGovIdData" @showHideTriggerSlideAnimation>
 								<div class="col-12">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 									<div class="row my-2">
@@ -228,6 +229,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	constructor(
 		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService,
+		private utilService: UtilService,
 		private hotToastService: HotToastService
 	) {}
 
@@ -266,16 +268,16 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 		return this.form.valid;
 	}
 
-	get showAdditionalGovermentIdStep(): boolean {
+	get showAdditionalGovIdData(): boolean {
 		const canadianCitizenProofTypeCode =
 			this.canadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.CanadianPassport;
 		const notCanadianCitizenProofTypeCode =
 			this.notCanadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.PermanentResidentCard;
-		return (
-			(this.isCanadianCitizen.value == BooleanTypeCode.Yes &&
-				canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(this.isCanadianCitizen.value == BooleanTypeCode.No &&
-				notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+
+		return this.utilService.getSwlShowAdditionalGovIdData(
+			this.isCanadianCitizen.value == BooleanTypeCode.Yes,
+			canadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
 		);
 	}
 

@@ -5,20 +5,32 @@ import {
 	LicenceFeeListResponse,
 	LicenceFeeResponse,
 	LicenceTermCode,
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { LicenceFeeService } from '@app/api/services';
+import { LicenceFeeService, PaymentService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { UtilService } from '@app/core/services/util.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CommonApplicationService {
-	applicationTitle$: BehaviorSubject<string> = new BehaviorSubject<string>('Licensing Application');
+	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([
+		'Licensing Application',
+		'Licensing Application',
+	]);
 
 	licenceFees: Array<LicenceFeeResponse> = [];
 
-	constructor(private licenceFeeService: LicenceFeeService) {
+	constructor(
+		private utilService: UtilService,
+		private licenceFeeService: LicenceFeeService,
+		private paymentService: PaymentService
+	) {
 		this.licenceFeeService
 			.apiLicenceFeeGet()
 			.pipe()
@@ -63,50 +75,81 @@ export class CommonApplicationService {
 		);
 	}
 
-	// private updateTitle(title: string) {
-	// 	this.applicationTitle$.next(title);
-	// }
-
 	setApplicationTitle(
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined = undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
 		originalLicenceNumber: string | undefined = undefined
 	) {
-		// console.debug('setApplicationTitle', workerLicenceTypeCode, applicationTypeCode, originalLicenceNumber);
-
 		let title = '';
+		let mobileTitle = '';
 
 		if (workerLicenceTypeCode) {
 			switch (workerLicenceTypeCode) {
 				case WorkerLicenceTypeCode.SecurityBusinessLicence: {
 					title = 'Security Business Licence';
+					mobileTitle = 'SBL';
 					break;
 				}
 				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 					title = 'Security Worker Licence';
+					mobileTitle = 'SWL';
 					break;
 				}
 				case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
 					title = 'Armoured Vehicle Permit';
+					mobileTitle = 'AVP';
 					break;
 				}
 				case WorkerLicenceTypeCode.BodyArmourPermit: {
 					title = 'Body Armour Permit';
+					mobileTitle = 'BAP';
 					break;
 				}
 			}
 
 			if (applicationTypeCode) {
 				title += ` - ${applicationTypeCode}`;
+				mobileTitle += ` ${applicationTypeCode}`;
 			}
 
 			if (originalLicenceNumber) {
 				title += ` - ${originalLicenceNumber}`;
+				mobileTitle += ` ${originalLicenceNumber}`;
 			}
 		} else {
-			title = 'Licensing Application';
+			mobileTitle = title = 'Licensing Application';
 		}
 
-		this.applicationTitle$.next(title);
+		this.applicationTitle$.next([title, mobileTitle]);
+	}
+
+	payNowUnauthenticated(licenceAppId: string, description: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description,
+		};
+		this.paymentService
+			.apiUnauthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
+	}
+
+	downloadManualPaymentFormUnauthenticated(licenceAppId: string): void {
+		this.paymentService
+			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
+				applicationId: licenceAppId,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 }
