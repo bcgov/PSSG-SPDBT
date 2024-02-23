@@ -15,7 +15,9 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_expirydate)))
              .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value)))
-             .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)));
+             .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
+             .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.firstname))
+             .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.lastname));
         }
     }
 }

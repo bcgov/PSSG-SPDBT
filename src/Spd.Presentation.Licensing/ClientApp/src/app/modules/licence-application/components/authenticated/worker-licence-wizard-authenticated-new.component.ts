@@ -113,7 +113,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
-	) {
+	) // private commonApplicationService: CommonApplicationService
+	{
 		super(breakpointObserver);
 	}
 
@@ -224,25 +225,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		});
 	}
 
-	// onPayNow(application: PaymentResponse): void {
-	// 	const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-	// 	const body: PaymentLinkCreateRequest = {
-	// 		applicationId: application.id!,
-	// 		paymentMethod: PaymentMethodCode.CreditCard,
-	// 		description: `Payment for Case ID: ${application.applicationNumber}`,
-	// 	};
-	// 	this.paymentService
-	// 		.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
-	// 			orgId: orgId!,
-	// 			applicationId: application.id!,
-	// 			body,
-	// 		})
-	// 		.pipe()
-	// 		.subscribe((res: PaymentLinkResponse) => {
-	// 			if (res.paymentLinkUrl) {
-	// 				window.location.assign(res.paymentLinkUrl);
-	// 			}
-	// 		});
+	// private payNow(licenceAppId: string): void {
+	// 	this.commonApplicationService.payNow(licenceAppId,  `Payment for Case ID: ${application.applicationNumber}`);
 	// }
 
 	onGoToStep(step: number) {

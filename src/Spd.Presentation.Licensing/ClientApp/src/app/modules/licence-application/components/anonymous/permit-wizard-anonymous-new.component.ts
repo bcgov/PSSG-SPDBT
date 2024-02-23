@@ -2,18 +2,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
-import {
-	PaymentLinkCreateRequest,
-	PaymentLinkResponse,
-	PaymentMethodCode,
-	PermitAppCommandResponse,
-} from '@app/api/models';
-import { PaymentService } from '@app/api/services';
+import { PermitAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsNewComponent } from './permit-wizard-steps/steps-permit-details-new.component';
@@ -123,10 +117,9 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
 		private hotToastService: HotToastService,
-		private paymentService: PaymentService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -210,12 +203,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	onGoToStep(step: number) {
-		// if (step == 99) {
-		// 	this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		// 	this.stepIdentificationComponent.onGoToContactStep();
-		// 	return;
-		// }
-
 		this.stepsPermitDetailsComponent?.onGoToFirstStep();
 		this.stepsPermitPurposeComponent?.onGoToFirstStep();
 		this.stepsPermitIdentificationComponent?.onGoToFirstStep();
@@ -260,21 +247,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	private payNow(licenceAppId: string): void {
-		const body: PaymentLinkCreateRequest = {
-			applicationId: licenceAppId,
-			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for New Permit`,
-		};
-		this.paymentService
-			.apiUnauthLicenceApplicationIdPaymentLinkPost({
-				applicationId: licenceAppId,
-				body,
-			})
-			.pipe()
-			.subscribe((res: PaymentLinkResponse) => {
-				if (res.paymentLinkUrl) {
-					window.location.assign(res.paymentLinkUrl);
-				}
-			});
+		this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for New Permit');
 	}
 }

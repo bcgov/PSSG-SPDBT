@@ -26,13 +26,13 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 						>
 							<div class="text-label d-block text-muted">Name</div>
 							<div class="summary-text-data">{{ option.name }}</div>
-							<div class="text-label d-block text-muted mt-2">Date of Birth</div>
+							<div class="text-label d-block text-muted">Date of Birth</div>
 							<div class="summary-text-data">
 								{{ option.dateOfBirth | formatDate : constants.date.formalDateFormat }}
 							</div>
-							<div class="text-label d-block text-muted mt-2">Licence Number</div>
+							<div class="text-label d-block text-muted">Licence Number</div>
 							<div class="summary-text-data">{{ option.licenceNumber }}</div>
-							<div class="text-label d-block text-muted mt-2">Expiry Date</div>
+							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
 								{{ option.expiryDate | formatDate : constants.date.formalDateFormat }}
 							</div>

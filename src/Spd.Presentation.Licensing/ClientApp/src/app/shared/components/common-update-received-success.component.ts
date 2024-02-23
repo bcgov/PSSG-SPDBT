@@ -33,19 +33,19 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 
 				<div class="row mb-3">
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Licence Term</div>
+						<div class="d-block payment__text-label text-md-end">Licence Term</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Update Fee</div>
+						<div class="d-block payment__text-label text-md-end">Update Fee</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ 0 | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block text-label text-md-end">Case ID</div>
+						<div class="d-block payment__text-label text-md-end">Case ID</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ caseNumber }}</div>
