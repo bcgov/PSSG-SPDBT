@@ -129,17 +129,6 @@ public enum BusinessTypeEnum
     None
 }
 
-public enum PoliceOfficerRoleEnum
-{
-    AuxiliaryorReserveConstable,
-    SheriffDeputySheriff,
-    CorrectionsOfficer,
-    CourtAppointedBailiff,
-    SpecialProvincialOrMunicipalConstable,
-    PoliceOfficer,
-    Other,
-}
-
 public enum HairColourEnum
 {
     Black,
