@@ -73,11 +73,21 @@ internal class PermitAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
-        //todo: add ValidateFilesForRenewUpdateAppAsync refer to SecurityWorkerAppManager
+        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
+            cmd.LicAppFileInfos.ToList(),
+            cancellationToken);
+
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
-        //todo: upload new files
+        await UploadNewDocsAsync(request,
+                cmd.LicAppFileInfos,
+                response?.LicenceAppId,
+                response?.ContactId,
+                null,
+                null,
+                cancellationToken);
+
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
         {
@@ -176,6 +186,60 @@ internal class PermitAppManager :
         ChangeSpec changes = new ChangeSpec();
 
         return changes;
+    }
+
+    private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppAnonymousSubmitRequest request,
+        IList<LicAppFileInfo> newFileInfos,
+        CancellationToken ct)
+    {
+        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
+        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+        if (request.PreviousDocumentIds != null)
+        {
+            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
+            .Select(f => new LicAppFileInfo()
+            {
+                FileName = f.FileName ?? String.Empty,
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
+            }).ToList();
+        }
+
+        if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
+        }
+
+        if (request.IsCanadianResident == true)
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian resident.");
+            }
+        }
+        else if (request.IsCanadianCitizen == true)
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian.");
+            }
+        }
+        else
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+            }
+        }
+
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
+        }
     }
 
     private sealed record ChangeSpec
