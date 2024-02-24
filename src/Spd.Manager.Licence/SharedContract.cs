@@ -56,7 +56,7 @@ public enum LicenceDocumentTypeCode
     ConfirmationOfPermanentResidenceDocument,
     DocumentToVerifyLegalWorkStatus,
     DriversLicence,
-    DriverLicenceAdditional,
+    DriversLicenceAdditional,
     GovernmentIssuedPhotoId,
     MentalHealthCondition,
     PermanentResidentCard,

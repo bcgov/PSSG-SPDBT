@@ -31,14 +31,16 @@ export enum LicenceDocumentTypeCode {
   CategorySecurityGuardAstCertificate = 'CategorySecurityGuard_ASTCertificate',
   CategorySecurityGuardUseForceEmployerLetter = 'CategorySecurityGuard_UseForceEmployerLetter',
   CategorySecurityGuardUseForceEmployerLetterAstEquivalent = 'CategorySecurityGuard_UseForceEmployerLetterASTEquivalent',
-  CertificateOfIndianStatus = 'CertificateOfIndianStatus',
+  CertificateOfIndianStatusAdditional = 'CertificateOfIndianStatusAdditional',
   CertificateOfIndianStatusForCitizen = 'CertificateOfIndianStatusForCitizen',
   ConfirmationOfPermanentResidenceDocument = 'ConfirmationOfPermanentResidenceDocument',
   DocumentToVerifyLegalWorkStatus = 'DocumentToVerifyLegalWorkStatus',
   DriversLicence = 'DriversLicence',
+  DriversLicenceAdditional = 'DriversLicenceAdditional',
   GovernmentIssuedPhotoId = 'GovernmentIssuedPhotoId',
   MentalHealthCondition = 'MentalHealthCondition',
   PermanentResidentCard = 'PermanentResidentCard',
+  PermanentResidentCardAdditional = 'PermanentResidentCardAdditional',
   PhotoOfYourself = 'PhotoOfYourself',
   PoliceBackgroundLetterOfNoConflict = 'PoliceBackgroundLetterOfNoConflict',
   ProofOfFingerprint = 'ProofOfFingerprint',
@@ -49,5 +51,6 @@ export enum LicenceDocumentTypeCode {
   NonCanadianPassport = 'NonCanadianPassport',
   Bcid = 'BCID',
   ArmouredVehicleRationale = 'ArmouredVehicleRationale',
-  BodyArmourRationale = 'BodyArmourRationale'
+  BodyArmourRationale = 'BodyArmourRationale',
+  PassportAdditional = 'PassportAdditional'
 }
