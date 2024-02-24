@@ -680,12 +680,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		resp.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
-				// case LicenceDocumentTypeCode.DriversLicence: // TODO AdditionalDriversLicence
-				// case LicenceDocumentTypeCode.PermanentResidentCard:  // TODO AdditionalPermanentResidentCard
+				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
-				case LicenceDocumentTypeCode.CertificateOfIndianStatus:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
 				case LicenceDocumentTypeCode.NonCanadianPassport: {
 					const aFile = this.utilService.dummyFile(doc);
 					governmentIssuedAttachments.push(aFile);
@@ -713,7 +713,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					citizenshipData.proofOfResidentStatusCode =
 						!resp.isCanadianCitizen && resp.isCanadianResident ? doc.licenceDocumentTypeCode : null;
 					citizenshipData.proofOfCitizenshipCode =
-						!resp.isCanadianCitizen && !citizenshipData.isCanadianResident ? doc.licenceDocumentTypeCode : null;
+						!resp.isCanadianCitizen && !resp.isCanadianResident ? doc.licenceDocumentTypeCode : null;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
 					break;
