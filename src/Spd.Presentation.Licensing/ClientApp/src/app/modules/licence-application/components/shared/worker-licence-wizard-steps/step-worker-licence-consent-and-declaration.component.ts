@@ -208,14 +208,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 			</form>
 		</section>
 	`,
-	styles: [
-		`
-			.conditions {
-				border: 1px solid var(--color-grey-light);
-				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-			}
-		`,
-	],
+	styles: [],
 })
 export class StepWorkerLicenceConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;

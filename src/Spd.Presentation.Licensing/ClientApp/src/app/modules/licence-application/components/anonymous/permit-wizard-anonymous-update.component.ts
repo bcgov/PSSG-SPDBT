@@ -3,10 +3,13 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode, PermitAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
@@ -70,9 +73,9 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-permit-review-anonymous
+					[applicationTypeCode]="applicationTypeCodes.Update"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
+					(nextSubmitStep)="onSubmitStep()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-permit-review-anonymous>
@@ -97,6 +100,11 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	step3Complete = false;
 	step4Complete = false;
 
+	applicationTypeCodes = ApplicationTypeCode;
+
+	newLicenceAppId: string | null = null;
+	newLicenceCost = 0;
+
 	@ViewChild(StepsPermitDetailsUpdateComponent)
 	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
 
@@ -116,7 +124,8 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -171,19 +180,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 		}
 	}
 
-	onNextPayStep(): void {
-		this.permitApplicationService.submitPermitAnonymous().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your permit update has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
-	}
-
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
 
@@ -226,6 +222,44 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 		this.updateCompleteStatus();
 	}
 
+	onSubmitStep(): void {
+		if (this.newLicenceAppId) {
+			if (this.newLicenceCost > 0) {
+				this.stepReviewLicenceComponent?.onGoToLastStep();
+			} else {
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+			}
+		} else {
+			this.permitApplicationService.submitPermitAnonymous().subscribe({
+				next: (resp: StrictHttpResponse<PermitAppCommandResponse>) => {
+					console.debug('[onSubmitStep] submitPermitAnonymous', resp.body);
+
+					const workerLicenceCommandResponse = resp.body;
+
+					// save this locally just in application payment fails
+					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
+					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
+
+					this.hotToastService.success('Your permit update has been successfully submitted');
+
+					if (this.newLicenceCost > 0) {
+						this.stepReviewLicenceComponent?.onGoToLastStep();
+					} else {
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+					}
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		}
+	}
+
+	onNextPayStep(): void {
+		this.payNow(this.newLicenceAppId!);
+	}
+
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();
 		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
@@ -233,5 +267,9 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 		this.step4Complete = this.permitApplicationService.isStepContactComplete();
 
 		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+	}
+
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for Permit Update');
 	}
 }
