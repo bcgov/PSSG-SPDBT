@@ -36,6 +36,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.Aliases));
+
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
         CreateMap<LicenceResp, LicenceResponse>();
