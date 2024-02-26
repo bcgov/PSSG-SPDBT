@@ -6,14 +6,12 @@ import { CommonApplicationService } from '../../services/common-application.serv
 @Component({
 	selector: 'app-licence-payment-cancel',
 	template: `
-		<div class="container my-3">
-			<section class="step-section">
-				<app-common-payment-cancel
-					(payNow)="onPayNow()"
-					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-				></app-common-payment-cancel>
-			</section>
-		</div>
+		<section class="step-section">
+			<app-common-payment-cancel
+				(payNow)="onPayNow()"
+				(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
+			></app-common-payment-cancel>
+		</section>
 	`,
 	styles: [],
 })
