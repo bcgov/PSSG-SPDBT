@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode, ScreeningTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, ScreeningTypeCode, ServiceTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -18,59 +18,65 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						title="Confirm the following information related to your criminal record check"
 					></app-step-title>
 					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>
-									<span *ngIf="orgData.isCrrpa">Requesting Organization</span>
-									<span *ngIf="!orgData.isCrrpa">Ministry</span>
-								</mat-label>
-								<input matInput formControlName="orgName" />
-							</mat-form-field>
-						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12" *ngIf="orgData.isCrrpa">
-							<mat-form-field>
-								<mat-label>Organization Email</mat-label>
-								<input matInput formControlName="orgEmail" />
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row" *ngIf="orgData.isCrrpa">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Organization Phone Number</mat-label>
-								<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
-							</mat-form-field>
-						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Organization Address</mat-label>
-								<input matInput formControlName="orgAddress" />
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Job Title</mat-label>
-								<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
-								<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Vulnerable Sector Category</mat-label>
-								<input matInput formControlName="vulnerableSectorCategoryDesc" />
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row" *ngIf="facilityNameShow">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>{{ companyFacilityLabel }}</mat-label>
-								<input matInput formControlName="contractedCompanyName" />
-								<mat-hint>{{ companyFacilityHint }}</mat-hint>
-								<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
+						<div class="col-lg-8 col-md-12 col-sm-12 mx-auto">
+							<div class="row">
+								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<mat-form-field>
+										<mat-label>
+											<span *ngIf="orgData.isCrrpa">Requesting Organization</span>
+											<span *ngIf="!orgData.isCrrpa">Ministry</span>
+										</mat-label>
+										<input matInput formControlName="orgName" />
+									</mat-form-field>
+								</div>
+								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12" *ngIf="orgData.isCrrpa">
+									<mat-form-field>
+										<mat-label>Organization Email</mat-label>
+										<input matInput formControlName="orgEmail" />
+									</mat-form-field>
+								</div>
+								<ng-container *ngIf="orgData.isCrrpa">
+									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>Organization Phone Number</mat-label>
+											<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="false" />
+										</mat-form-field>
+									</div>
+									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>Organization Address</mat-label>
+											<input matInput formControlName="orgAddress" />
+										</mat-form-field>
+									</div>
+								</ng-container>
+								<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<mat-form-field>
+										<mat-label>Job Title</mat-label>
+										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
+										<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+								<ng-container *ngIf="notPssoOnly">
+									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>Vulnerable Sector Category</mat-label>
+											<input matInput formControlName="vulnerableSectorCategoryDesc" />
+										</mat-form-field>
+									</div>
+								</ng-container>
+								<ng-container *ngIf="facilityNameShow">
+									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>{{ companyFacilityLabel }}</mat-label>
+											<input matInput formControlName="contractedCompanyName" />
+											<mat-hint>{{ companyFacilityHint }}</mat-hint>
+											<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')"
+												>This is required</mat-error
+											>
+										</mat-form-field>
+									</div>
+								</ng-container>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -80,6 +86,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	styles: [],
 })
 export class SaSecurityInformationComponent implements CrcFormStepComponent {
+	notPssoOnly = true;
 	facilityNameShow = false;
 	facilityNameRequired = false;
 	companyFacilityLabel = '';
@@ -94,6 +101,8 @@ export class SaSecurityInformationComponent implements CrcFormStepComponent {
 
 		let companyFacilityLabel = '';
 		let companyFacilityHint = '';
+
+		this.notPssoOnly = data.serviceType != ServiceTypeCode.Psso;
 
 		if (data.screeningType) {
 			if (data.isCrrpa) {
