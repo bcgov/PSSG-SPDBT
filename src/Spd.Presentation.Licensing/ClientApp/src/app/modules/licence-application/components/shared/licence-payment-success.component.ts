@@ -9,14 +9,12 @@ import { UtilService } from '@app/core/services/util.service';
 @Component({
 	selector: 'app-licence-payment-success',
 	template: `
-		<div class="container my-3">
-			<section class="step-section">
-				<app-common-payment-success
-					[payment]="payment"
-					(downloadReceipt)="onDownloadReceipt()"
-				></app-common-payment-success>
-			</section>
-		</div>
+		<section class="step-section">
+			<app-common-payment-success
+				[payment]="payment"
+				(downloadReceipt)="onDownloadReceipt()"
+			></app-common-payment-success>
+		</section>
 	`,
 	styles: [],
 })
