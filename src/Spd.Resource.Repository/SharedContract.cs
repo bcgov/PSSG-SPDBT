@@ -112,3 +112,14 @@ public enum LicenceTermEnum
     ThreeYears,
     FiveYears
 }
+
+public enum PoliceOfficerRoleEnum
+{
+    AuxiliaryorReserveConstable,
+    SheriffDeputySheriff,
+    CorrectionsOfficer,
+    CourtAppointedBailiff,
+    SpecialProvincialOrMunicipalConstable,
+    PoliceOfficer,
+    Other,
+}
