@@ -20,6 +20,12 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
+            .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_selfdisclosure)))
+            .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.spd_selfdisclosuredetails))
+            .ForMember(d => d.OtherOfficerRole, opt => opt.MapFrom(s => s.spd_peaceofficerother))
+            .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
+            .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
+            .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
             ;
 
             _ = CreateMap<ContactCmd, contact>()
@@ -43,7 +49,12 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.Country))
             .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.Province))
             .ForMember(d => d.address2_postalcode, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.PostalCode))
-            //.ForMember(d => d.address2_addresstypecode, opt => opt.MapFrom(s => AddressTypeOptionSet.Physical))
+            .ForMember(d => d.spd_selfdisclosure, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
+            .ForMember(d => d.spd_selfdisclosuredetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
+            .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsPoliceOrPeaceOfficer)))
+            .ForMember(d => d.spd_peaceofficerstatus, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
+            .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
+            .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
             ;
 
             _ = CreateMap<CreateContactCmd, contact>()
