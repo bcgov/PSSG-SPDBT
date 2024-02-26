@@ -64,7 +64,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
-					(nextPayStep)="onPay()"
+					(nextPayStep)="onNextPayStep()"
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
@@ -192,13 +192,13 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		this.updateCompleteStatus();
 	}
 
-	onPay(): void {
+	onNextPayStep(): void {
 		if (this.newLicenceAppId) {
 			this.payNow(this.newLicenceAppId);
 		} else {
 			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-					console.debug('[onPay] submitLicenceAnonymous', resp.body);
+					console.debug('[onNextPayStep] submitLicenceAnonymous', resp.body);
 
 					// save this locally just in application payment fails
 					this.newLicenceAppId = resp.body.licenceAppId!;

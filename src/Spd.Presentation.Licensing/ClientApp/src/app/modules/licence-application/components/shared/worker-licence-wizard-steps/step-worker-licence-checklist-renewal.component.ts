@@ -18,6 +18,29 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							<div class="fw-semibold fs-6">For all applicants:</div>
 
 							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">Proof of fingerprinting request</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								All applicants must submit a proof of fingerprinting request. Download the
+								<a
+									aria-label="Request for Fingerprinting form"
+									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
+									target="_blank"
+									>Request for Fingerprinting form</a
+								>, take it your local police department, and return to this application when you have this form
+								completed.
+							</p>
+
+							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">Proof of training and experience</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								Some categories of security workers, such as security guards, require proof of training or experience.
+								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp;about the types of
+								documents we accept for each security worker category.
+							</p>
+
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Authorization to Carry (ATC)</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -45,7 +68,19 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							</mat-checkbox>
 							<p class="checklist-info">
 								You must supply proof of ability to work in Canada. See all accepted forms of identification on the
-								Security Worker Licence requirements page.
+								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank"
+									>Security Worker Licence requirements page</a
+								>.
+							</p>
+
+							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">Photograph of yourself for the licence</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								You will need to upload a passport-quality photo of your face looking straight at the camera against a
+								plain, white background. Uploading a photo that does not meet the criteria will delay your application's
+								processing time. For further information on Passport Quality Photographs, please review the Government
+								of Canada’s passport photograph requirements.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -63,7 +98,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">
-									If you have a mental health condition, provide a physician's assessment
+									If you have a new mental health condition, provide a physician's assessment
 								</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -75,6 +110,14 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
+							</p>
+
+							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">If you have changed your name, proof of legal name change</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								You must upload one of the following documents: marriage certificate, certificate of name change, or a
+								copy of your driver's licence/BCID with new name.
 							</p>
 						</form>
 					</div>

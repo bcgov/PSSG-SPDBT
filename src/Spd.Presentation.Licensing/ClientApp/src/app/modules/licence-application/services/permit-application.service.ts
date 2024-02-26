@@ -1007,22 +1007,36 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitAnonymous(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-
 		const body = this.getSaveBodyAnonymous(permitModelFormValue);
 		const documentsToSave = this.getDocsToSaveAnonymousBlobs(permitModelFormValue);
-
-		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
-		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
-		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		let newDocumentsExist = false;
+		documentsToSave.forEach((docPermit: PermitDocumentsToSave) => {
+			docPermit.documents.forEach((doc: any) => {
+				if (doc.documentUrlId) {
+					existingDocumentIds.push(doc.documentUrlId);
+				} else {
+					newDocumentsExist = true;
+				}
+			});
+		});
+
+		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
+		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
+		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
+		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
+
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		if (documentsToSave?.length > 0) {
-			return this.postPermitAnonymousNewDocuments(googleRecaptcha, documentsToSave, body);
+		if (newDocumentsExist) {
+			return this.postPermitAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
 		} else {
-			return this.postPermitAnonymousNoNewDocuments(googleRecaptcha, body);
+			return this.postPermitAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 		}
 	}
 
@@ -1030,11 +1044,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Post permit anonymous. This permit must not have any new documents (for example: with an update or replacement)
 	 * @returns
 	 */
-	private postPermitAnonymousNoNewDocuments(googleRecaptcha: GoogleRecaptcha, body: PermitAppAnonymousSubmitRequest) {
+	private postPermitAnonymousNoNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
+		body: PermitAppAnonymousSubmitRequest
+	) {
 		return this.permitService
 			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
+
 					return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({
 						body,
 					});
@@ -1049,6 +1071,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	private postPermitAnonymousNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
 		documentsToSave: Array<PermitDocumentsToSave>,
 		body: PermitAppAnonymousSubmitRequest
 	) {
@@ -1084,6 +1107,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
 					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
+
 					return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({
 						body,
 					});

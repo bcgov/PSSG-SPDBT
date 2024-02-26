@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from './step-permit-consent-and-declaration.component';
@@ -32,7 +32,9 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">
+							{{ submitPayLabel }}
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -42,7 +44,10 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent implements OnInit {
+	submitPayLabel = '';
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -55,6 +60,11 @@ export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent
 	}
 
 	ngOnInit(): void {
+		this.submitPayLabel = 'Pay Now';
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.submitPayLabel = 'Submit';
+		}
+
 		this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
@@ -64,7 +74,11 @@ export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent
 		const isValid = this.consentAndDeclarationComponent.isFormValid();
 		if (!isValid) return;
 
-		this.nextPayStep.emit();
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.nextSubmitStep.emit();
+		} else {
+			this.nextPayStep.emit();
+		}
 	}
 
 	onGoToStep(step: number): void {
