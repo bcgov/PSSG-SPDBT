@@ -47,7 +47,7 @@ import { UtilService } from '@app/core/services/util.service';
 						<p class="fw-bold">Please print a copy of these Terms of Use for your records.</p>
 
 						<ol>
-							<div class="fs-5 mb-2 terms-subtitle">Disclaimer:</div>
+							<div class="fs-5 terms-subtitle">Disclaimer:</div>
 							<li>
 								Reasonable efforts have been made to provide accurate, complete and timely information regarding the
 								Services and the Site in general. However, you are encouraged to refer to the
@@ -76,7 +76,7 @@ import { UtilService } from '@app/core/services/util.service';
 								</ol>
 							</li>
 							<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
-							<div class="fs-5 mb-2 terms-subtitle">Information Collection:</div>
+							<div class="fs-5 terms-subtitle">Information Collection:</div>
 							<li>
 								When you visit the Site or use the Services, certain types of information are automatically collected
 								from you, through the use of audit logs or cookies. This information is collected, used and disclosed in
@@ -99,7 +99,7 @@ import { UtilService } from '@app/core/services/util.service';
 								Any personal information that may be collected from you on this Site is collected, used and disclosed in
 								accordance with the collection notice presented to you at the time of collection.
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Authentication:</div>
+							<div class="fs-5 terms-subtitle">Authentication:</div>
 							<li>
 								You must be authenticated to submit an online application for a new or renewed security business
 								licence, including as applicable a Controlling Member’s request to submit to Prescribed Checks. In most
@@ -116,12 +116,12 @@ import { UtilService } from '@app/core/services/util.service';
 									>BC Services Card Site</a
 								>, following which you will be returned to, and allowed to access the application portions of, the Site.
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Payment:</div>
+							<div class="fs-5 terms-subtitle">Payment:</div>
 							<li>
 								You may be required to access an external payment processing site (“Payment Site” or, as the context
 								requires, “Associated Service” ) in order to pay the required licence or permit fee.
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Additional Terms and Personal Information Collection:</div>
+							<div class="fs-5 terms-subtitle">Additional Terms and Personal Information Collection:</div>
 							<li>
 								You may be required to accept additional terms and conditions in order to use or access an Associated
 								Service, including the BCeID site, BC Services Card Site, and/or the Payment Site, in which case your
@@ -132,7 +132,7 @@ import { UtilService } from '@app/core/services/util.service';
 								Additional personal information may be collected from you by the providers of the Associated Services in
 								accordance with their terms and any associated privacy statement(s).
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Warranty:</div>
+							<div class="fs-5 terms-subtitle">Warranty:</div>
 							<li>
 								In accessing or using the Site, you represent and warrant that:
 								<ol type="a">
@@ -140,7 +140,7 @@ import { UtilService } from '@app/core/services/util.service';
 									<li>You have the power and capacity to accept, execute and comply with these Terms of Use.</li>
 								</ol>
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Acceptable Use and Security:</div>
+							<div class="fs-5 terms-subtitle">Acceptable Use and Security:</div>
 							<li>
 								You must not:
 								<ol type="a">
@@ -169,7 +169,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</li>
 								</ol>
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Ownership and Non-permitted Uses:</div>
+							<div class="fs-5 terms-subtitle">Ownership and Non-permitted Uses:</div>
 							<li>
 								You acknowledge and agree that at all times the Province and/or the providers of the Associated
 								Services, or their respective licensors are the owners of any software, hardware, servers, networks or
@@ -185,7 +185,7 @@ import { UtilService } from '@app/core/services/util.service';
 								You will not remove or alter any proprietary symbol or notice, including any copyright notice, trademark
 								or logo displayed in connection with the Services.
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Suspension or Cancellation of Services:</div>
+							<div class="fs-5 terms-subtitle">Suspension or Cancellation of Services:</div>
 							<li>
 								Your use of any of the Services may be suspended or cancelled at any time if:
 								<ol type="a">
@@ -207,7 +207,7 @@ import { UtilService } from '@app/core/services/util.service';
 									<li>modify these Terms of Use at any time, without notice being provided directly to you.</li>
 								</ol>
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Limitation of Liability:</div>
+							<div class="fs-5 terms-subtitle">Limitation of Liability:</div>
 							<li>
 								In addition to the Province’s general
 								<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">
@@ -223,7 +223,7 @@ import { UtilService } from '@app/core/services/util.service';
 								or the provider of any Associated Service has been specifically advised of the possibility of any such
 								loss, claim, injury or damage.
 							</li>
-							<div class="fs-5 mb-2 terms-subtitle">Enforceability and Jurisdiction:</div>
+							<div class="fs-5 terms-subtitle">Enforceability and Jurisdiction:</div>
 							<li>
 								If any term or provision of these Terms of Use is invalid, illegal or unenforceable, all other terms and
 								provisions of these Terms of Use will nonetheless remain in full force and effect.
@@ -288,16 +288,9 @@ import { UtilService } from '@app/core/services/util.service';
 	`,
 	styles: [
 		`
-			li:not(:last-child) {
-				margin-bottom: 1em;
-			}
-
 			.conditions {
-				border: 1px solid var(--color-grey-light);
 				max-height: 300px;
 				overflow-y: auto;
-				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-				font-size: smaller;
 			}
 		`,
 	],
