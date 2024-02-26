@@ -46,7 +46,7 @@ public record ResidentialAddress : Address;
 public record MailingAddress : Address;
 public record DocumentExpiredInfo
 {
-    public LicenceDocumentTypeCode? LicenceDocumentTypeCode { get; set; }
+    public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
     public DateOnly? ExpiryDate { get; set; }
 }
 public record LicenceAppUpsertResponse
