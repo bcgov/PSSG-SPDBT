@@ -71,17 +71,36 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 
 	constructor(private optionsPipe: OptionsPipe, private permitApplicationService: PermitApplicationService) {}
 
+	// Provide your rationale for requiring ${name}
+	// The information you provide will assist the Registrar in deciding whether to issue your body armour permit
+	// What are your proposed activities in British Columbia for which you require body armour?
+	// TODO Show only if permit type = Body Armour Permit 90-day exemption AND reason = temporary
+
+	// Provide your rationale for requiring ${name}
+	// The information you provide will assist the Registrar in deciding whether to issue your body armour permit
+	// Please provide documented evidence of the imminent risk to your safety
+	// TODO Show only if permit type = Body Armour Permit 90-day exemption AND reason = imminent risk
+
 	ngOnInit(): void {
 		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
-
 		const name =
 			workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
-		this.title = `Provide your rationale for requiring ${name}`;
-
 		const workerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-		this.subtitle = `The information you provide will assist the Registrar in deciding whether to issue your ${workerLicenceTypeDesc}`;
+
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = `Provide your rationale for requiring ${name}`;
+				this.subtitle = `The information you provide will assist the Registrar in deciding whether to issue your ${workerLicenceTypeDesc}`;
+				break;
+			}
+			default: {
+				this.title = `Confirm your rationale for requiring ${name}`;
+				this.subtitle = `If the purpose for requiring ${workerLicenceTypeDesc} has changed from your previous application, update your rationale`;
+				break;
+			}
+		}
 	}
 
 	onFileUploaded(_file: File): void {
