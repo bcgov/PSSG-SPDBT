@@ -151,19 +151,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</form>
 		</section>
 	`,
-	styles: [
-		`
-			li:not(:last-child) {
-				margin-bottom: 1em;
-			}
-
-			.conditions {
-				border: 1px solid var(--color-grey-light);
-				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-				font-size: smaller;
-			}
-		`,
-	],
+	styles: [],
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';

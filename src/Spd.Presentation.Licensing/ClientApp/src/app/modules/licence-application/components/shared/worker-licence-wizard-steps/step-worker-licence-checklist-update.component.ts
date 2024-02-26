@@ -50,7 +50,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">
-									If you have a mental health condition, provide a physician's assessment
+									If you have a new mental health condition, provide a physician's assessment
 								</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -62,6 +62,13 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								>
 									Mental Health Condition form</a
 								>, and give it to your physician to fill out. You will need to upload the completed form.
+							</p>
+							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">If you have changed your name, proof of legal name change</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								You must upload one of the following documents: marriage certificate, certificate of name change, or a
+								copy of your driver's licence/BCID with new name.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
