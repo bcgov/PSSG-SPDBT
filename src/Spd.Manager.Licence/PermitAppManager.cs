@@ -40,7 +40,7 @@ internal class PermitAppManager :
         var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
         PermitLicenceAppResponse result = _mapper.Map<PermitLicenceAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
-        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();  // Exclude licence document type code that are not defined in the related dictionary
         return result;
     }
 
