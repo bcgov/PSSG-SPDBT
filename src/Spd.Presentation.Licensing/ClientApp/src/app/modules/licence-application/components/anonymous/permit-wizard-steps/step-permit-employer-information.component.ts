@@ -167,7 +167,7 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	readonly title_new = 'Provide your employer’s information';
-	readonly title_replacement = 'Review your employer’s information';
+	readonly title_not_new = 'Confirm your employer’s information';
 
 	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
@@ -181,7 +181,7 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 				break;
 			}
 			default: {
-				this.title = this.title_replacement;
+				this.title = this.title_not_new;
 				break;
 			}
 		}
