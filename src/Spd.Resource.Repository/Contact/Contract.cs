@@ -12,32 +12,7 @@ namespace Spd.Resource.Repository.Contact
         public IEnumerable<ContactResp> Items { get; set; } = Array.Empty<ContactResp>();
     }
 
-    public record ContactResp
-    {
-        public Guid Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? DisplayName { get; set; }
-        public string? Email { get; set; }
-        public string? Gender { get; set; }
-        public string? Age { get; set; }
-        public string Sub { get; set; } = null!;
-        public DateOnly BirthDate { get; set; }
-        public string? MiddleName1 { get; set; }
-        public string? MiddleName2 { get; set; }
-        public ResidentialAddr? ResidentialAddress { get; set; }
-        public MailingAddr? MailingAddress { get; set; }
-        public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
-    }
-
-    public record ContactQry
-    {
-        public Guid? IdentityId { get; set; }
-        public string? UserEmail { get; set; }
-        public bool IncludeInactive { get; set; }
-    };
-
-    public abstract record ContactCmd
+    public record Contact
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -50,7 +25,31 @@ namespace Spd.Resource.Repository.Contact
         public ResidentialAddr? ResidentialAddress { get; set; }
         public MailingAddr? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
+        public bool? IsPoliceOrPeaceOfficer { get; set; }
+        public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
+        public string? OtherOfficerRole { get; set; }
+        public bool? IsTreatedForMHC { get; set; }
+        public bool? HasCriminalHistory { get; set; }
+        public string? CriminalChargeDescription { get; set; }
+    }
+    public record ContactResp : Contact
+    {
+        public Guid Id { get; set; }
+        public string? DisplayName { get; set; }
+        public string? Email { get; set; }
+        public string? Age { get; set; }
+        public string Sub { get; set; } = null!;
+
+    }
+
+    public record ContactQry
+    {
+        public Guid? IdentityId { get; set; }
+        public string? UserEmail { get; set; }
+        public bool IncludeInactive { get; set; }
     };
+
+    public abstract record ContactCmd : Contact;
     public record UpdateContactCmd : ContactCmd
     {
         public Guid Id { get; set; }
@@ -60,7 +59,5 @@ namespace Spd.Resource.Repository.Contact
         public string? DisplayName { get; set; }
 
         public string Sub { get; set; } = null!;
-
     }
-
 }
