@@ -1420,11 +1420,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
-
 		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
-
 		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -1443,7 +1439,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		delete body.documentInfos;
 
-		console.debug('[submitLicenceAnonymous] body', body);
+		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
 		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
 		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
