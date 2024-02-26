@@ -514,7 +514,7 @@ internal partial class SecurityWorkerAppManager :
         {
             if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
             {
-                if (!fileInfos.Any(f => Mappings.GetDocumentType1Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+                if (!fileInfos.Any(f => Mappings.GetDocumentType2Enum(f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, $"Missing file for {code}");
                 }
