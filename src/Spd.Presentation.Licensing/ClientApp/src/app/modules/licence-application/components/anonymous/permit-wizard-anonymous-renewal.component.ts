@@ -3,10 +3,12 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode, PermitAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
@@ -70,6 +72,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-permit-review-anonymous
+					[applicationTypeCode]="applicationTypeCodes.Renewal"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
@@ -97,6 +100,10 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	step3Complete = false;
 	step4Complete = false;
 
+	applicationTypeCodes = ApplicationTypeCode;
+
+	newLicenceAppId: string | null = null;
+
 	@ViewChild(StepsPermitDetailsUpdateComponent)
 	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
 
@@ -116,7 +123,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private permitApplicationService: PermitApplicationService // private commonApplicationService: CommonApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -171,19 +179,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		}
 	}
 
-	onNextPayStep(): void {
-		this.permitApplicationService.submitPermitAnonymous().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your permit renewal has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
-	}
-
 	onNextStepperStep(stepper: MatStepper): void {
 		this.updateCompleteStatus();
 
@@ -226,9 +221,31 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		this.updateCompleteStatus();
 	}
 
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for Permit Renewal');
-	// }
+	onNextPayStep(): void {
+		if (this.newLicenceAppId) {
+			this.payNow(this.newLicenceAppId);
+		} else {
+			this.permitApplicationService.submitPermitAnonymous().subscribe({
+				next: (resp: StrictHttpResponse<PermitAppCommandResponse>) => {
+					console.debug('[onPay] submitPermitAnonymous', resp.body);
+
+					// save this locally just in application payment fails
+					this.newLicenceAppId = resp.body.licenceAppId!;
+
+					this.hotToastService.success('Your permit renewal has been successfully submitted');
+					this.payNow(this.newLicenceAppId);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		}
+	}
+
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for Permit Renewal');
+	}
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.permitApplicationService.isStepPermitDetailsComplete();

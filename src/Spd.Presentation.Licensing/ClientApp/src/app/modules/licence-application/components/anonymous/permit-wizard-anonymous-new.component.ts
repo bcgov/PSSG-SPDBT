@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { PermitAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -71,6 +71,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-permit-review-anonymous
+					[applicationTypeCode]="applicationTypeCodes.New"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
@@ -97,6 +98,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	step2Complete = false;
 	step3Complete = false;
 	step4Complete = false;
+
+	applicationTypeCodes = ApplicationTypeCode;
 
 	licenceAppId: string | null = null;
 

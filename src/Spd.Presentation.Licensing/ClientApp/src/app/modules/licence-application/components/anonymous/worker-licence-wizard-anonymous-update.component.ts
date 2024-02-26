@@ -65,7 +65,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[licenceCost]="newLicenceCost"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmitStep()"
-					(nextPayStep)="onPayStep()"
+					(nextPayStep)="onNextPayStep()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-worker-licence-review-anonymous>
@@ -237,7 +237,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		}
 	}
 
-	onPayStep(): void {
+	onNextPayStep(): void {
 		this.payNow(this.newLicenceAppId!);
 	}
 
