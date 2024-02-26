@@ -110,7 +110,7 @@ public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //fo
 
 public record Document : LicenceAppDocumentResponse
 {
-    public LicenceDocumentTypeCode LicenceDocumentTypeCode { get; set; }
+    public LicenceDocumentTypeCode? LicenceDocumentTypeCode { get; set; }
     public DateOnly? ExpiryDate { get; set; }
 };
 
