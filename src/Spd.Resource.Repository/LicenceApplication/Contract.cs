@@ -70,6 +70,7 @@ public record LicenceApplication
     public Addr? EmployerPrimaryAddress { get; set; }
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
+    public string? CriminalChargeDescription { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
@@ -127,17 +128,6 @@ public enum BusinessTypeEnum
     RegisteredPartnership,
     Corporation,
     None
-}
-
-public enum PoliceOfficerRoleEnum
-{
-    AuxiliaryorReserveConstable,
-    SheriffDeputySheriff,
-    CorrectionsOfficer,
-    CourtAppointedBailiff,
-    SpecialProvincialOrMunicipalConstable,
-    PoliceOfficer,
-    Other,
 }
 
 public enum HairColourEnum
