@@ -11,7 +11,7 @@ namespace Spd.Manager.Licence
 {
     internal class ApplicantProfileManager :
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
-        IRequestHandler<ApplicantLoginCommand, ApplicantProfileResponse>,
+        IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -37,12 +37,13 @@ namespace Spd.Manager.Licence
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
         {
+            //to be implemented
             // var result = await _idRepository.Query(new IdentityQry(request.BcscSub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
             // return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
             return null;
         }
 
-        public async Task<ApplicantProfileResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
+        public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
         {
             ContactResp contactResp = null;
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
@@ -53,6 +54,7 @@ namespace Spd.Manager.Licence
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
                 CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                 createContactCmd.IdentityId = id.Id;
+                createContactCmd.Source = SourceEnum.LICENSING;
                 contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 contactResp.IdentityId = id.Id;
             }
@@ -79,7 +81,7 @@ namespace Spd.Manager.Licence
                 contactResp.IdentityId = id.Id;
             }
 
-            return _mapper.Map<ApplicantProfileResponse>(contactResp);
+            return _mapper.Map<ApplicantLoginResponse>(contactResp);
         }
     }
 }

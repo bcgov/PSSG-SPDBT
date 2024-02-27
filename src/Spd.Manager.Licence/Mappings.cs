@@ -51,6 +51,9 @@ internal class Mappings : Profile
             .IncludeBase<Contact, Applicant>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
             ;
+        CreateMap<ContactResp, ApplicantLoginResponse>()
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.IsFirstTimeLoginLicensing));
 
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))

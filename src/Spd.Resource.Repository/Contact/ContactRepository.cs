@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Polly;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -65,9 +66,13 @@ internal class ContactRepository : IContactRepository
         {
             newContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
         }
-        contact existingContact = await _context.UpdateContact(c.Id, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+        ContactResp resp = new();
+        contact existingContact = await _context.GetContactById(c.Id, ct);
+        resp.IsFirstTimeLoginLicensing = existingContact.spd_lastloggedinlicensingportal == null;
+        resp.IsFirstTimeLoginScreening = existingContact.spd_lastloggedinscreeningportal == null;    
+        existingContact = await _context.UpdateContact(existingContact, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
         await _context.SaveChangesAsync(ct);
-        return _mapper.Map<ContactResp>(existingContact);
+        return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
 
     private async Task<ContactResp> CreateContactAsync(CreateContactCmd c, CancellationToken ct)
@@ -94,7 +99,10 @@ internal class ContactRepository : IContactRepository
         //two saveChanges because "Associate of 1:N navigation property with Create of Update is not supported in CRM"
         contact = await _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
         await _context.SaveChangesAsync(ct);
-        return _mapper.Map<ContactResp>(contact);
+        ContactResp resp = _mapper.Map<ContactResp>(contact);
+        resp.IsFirstTimeLoginLicensing = true;
+        resp.IsFirstTimeLoginScreening = true;
+        return resp;
     }
 }
 

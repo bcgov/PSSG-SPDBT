@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
-using Spd.Manager.Shared;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Security.Principal;
@@ -25,31 +24,29 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Security Worker whoami, for security worker portal
+        /// whoami, for swl/permit portal
         /// return 204 No Content when there is no contact found with this BCSC.
         /// </summary>
         /// <returns></returns>
         [Route("api/applicant/whoami")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<ApplicantProfileResponse?> SecurityWorkerWhoami()
+        public async Task<ApplicantProfileResponse?> ApplicantWhoami()
         {
             return null;
         }
 
         /// <summary>
-        /// Security Worker whoami, for security worker portal
+        /// login, for swl/permit portal, bc service card login
         /// </summary>
         /// <returns></returns>
         [Route("api/applicant/login")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<ApplicantProfileResponse?> SwlPermitPortalLogin()
+        public async Task<ApplicantLoginResponse?> ApplicantPortalLogin()
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
             var response = await _mediator.Send(new ApplicantLoginCommand(info));
-            response.Sub = info.Sub;
-            response.IdentityProviderTypeCode = IdentityProviderTypeCode.BcServicesCard;
             return response;
         }
 

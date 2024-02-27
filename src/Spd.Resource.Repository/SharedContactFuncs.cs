@@ -29,13 +29,12 @@ internal static class SharedContactFuncs
     }
 
     public static async Task<contact?> UpdateContact(this DynamicsContext context,
-        Guid existingContactId,
+        contact existingContact,
         contact newContact,
         spd_identity? identity,
         IEnumerable<spd_alias> aliases,
         CancellationToken ct)
     {
-        contact existingContact = await context.GetContactById(existingContactId, ct);
         if (!NameIsSame(existingContact, newContact))
         {
             //put old name to spd_alias

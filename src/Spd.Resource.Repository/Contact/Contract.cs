@@ -39,7 +39,8 @@ namespace Spd.Resource.Repository.Contact
         public Guid Id { get; set; }
         public string? DisplayName { get; set; }
         public string Sub { get; set; } = null!;
-
+        public bool? IsFirstTimeLoginScreening { get; set; } = false;
+        public bool? IsFirstTimeLoginLicensing { get; set; } = false;
     }
 
     public record ContactQry
