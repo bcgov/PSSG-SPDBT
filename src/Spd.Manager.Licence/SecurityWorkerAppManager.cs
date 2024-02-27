@@ -302,7 +302,8 @@ internal partial class SecurityWorkerAppManager :
 
         LicenceApplicationCmdResp? createLicResponse = null;
         decimal? cost = 0;
-        if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged))
+        if ((request.Reprint != null && request.Reprint.Value) || (changes.CategoriesChanged || changes.DogRestraintsChanged) || 
+            (request.Reprint != null && request.Reprint.Value && changes.NameChanged))
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
@@ -385,7 +386,17 @@ internal partial class SecurityWorkerAppManager :
         LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
-        //categories changed
+
+        // Name changed
+        if (newRequest.GivenName != originalApp.GivenName ||
+            newRequest.Surname != originalApp.Surname ||
+            newRequest.MiddleName1 != originalApp.MiddleName1 || 
+            newRequest.MiddleName2 != originalApp.MiddleName2)
+        {
+            changes.NameChanged = true;
+        }
+
+        // Categories changed
         if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
             changes.CategoriesChanged = true;
         else
@@ -397,14 +408,13 @@ internal partial class SecurityWorkerAppManager :
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
-        //if any new doc contains category document, we think categorieschanged.
+        // If any new doc contains category document, we think categorieschanged.
         if (!changes.CategoriesChanged && newFileInfos != null)
         {
             changes.CategoriesChanged = newFileInfos.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
         }
 
-
-        //DogRestraintsChanged
+        // DogRestraintsChanged
         if (newRequest.UseDogs != originalApp.UseDogs ||
             newRequest.CarryAndUseRestraints != originalApp.CarryAndUseRestraints ||
             newRequest.IsDogsPurposeProtection != originalApp.IsDogsPurposeProtection ||
@@ -414,7 +424,7 @@ internal partial class SecurityWorkerAppManager :
             changes.DogRestraintsChanged = true;
         }
 
-        //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
+        // PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
             : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
 
@@ -437,7 +447,7 @@ internal partial class SecurityWorkerAppManager :
             }, ct)).TaskId;
         }
 
-        //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
+        // MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
         if (newRequest.HasNewMentalHealthCondition == true)
         {
             changes.MentalHealthStatusChanged = true;
@@ -454,7 +464,7 @@ internal partial class SecurityWorkerAppManager :
             }, ct)).TaskId;
         }
 
-        //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
+        // CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
         if (newRequest.HasNewCriminalRecordCharge == true)
         {
             changes.CriminalHistoryChanged = true;
@@ -606,6 +616,7 @@ internal partial class SecurityWorkerAppManager :
 
     private sealed record ChangeSpec
     {
+        public bool NameChanged { get; set; } //full update
         public bool CategoriesChanged { get; set; } //full update
         public bool DogRestraintsChanged { get; set; } //full update
         public bool PeaceOfficerStatusChanged { get; set; } //task
