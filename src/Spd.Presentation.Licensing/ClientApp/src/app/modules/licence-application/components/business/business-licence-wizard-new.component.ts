@@ -7,6 +7,7 @@ import { BaseWizardComponent } from '@app/core/components/base-wizard.component'
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { StepsBusinessLicenceContactInformationNewComponent } from './steps-business-licence-contact-information-new.component';
 import { StepsBusinessLicenceInformationNewComponent } from './steps-business-licence-information-new.component';
 import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-licence-selection-new.component';
 
@@ -43,13 +44,13 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Contact Information</ng-template>
-				<!-- <app-steps-permit-identification-anonymous
+				<app-steps-business-licence-contact-information-new
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-identification-anonymous> -->
+				></app-steps-business-licence-contact-information-new>
 			</mat-step>
 
 			<mat-step [completed]="step4Complete">
@@ -99,6 +100,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	@ViewChild(StepsBusinessLicenceSelectionNewComponent)
 	stepsBusinessSelectionNewComponent!: StepsBusinessLicenceSelectionNewComponent;
 
+	@ViewChild(StepsBusinessLicenceContactInformationNewComponent)
+	stepsBusinessContactInformationNewComponent!: StepsBusinessLicenceContactInformationNewComponent;
+
 	// @ViewChild(StepsPermitIdentificationComponent)
 	// stepsPermitIdentificationComponent!: StepsPermitIdentificationComponent;
 
@@ -134,9 +138,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsBusinessSelectionNewComponent?.onGoToFirstStep();
 				break;
-			// 		case this.STEP_CONTACT_INFORMATION:
-			// 			this.stepsPermitIdentificationComponent?.onGoToFirstStep();
-			// 			break;
+			case this.STEP_CONTACT_INFORMATION:
+				this.stepsBusinessContactInformationNewComponent?.onGoToFirstStep();
+				break;
 			// 		case this.STEP_CONTROLLING_MEMBERS:
 			// 			this.stepsPermitContactComponent?.onGoToFirstStep();
 			// 			break;
@@ -158,9 +162,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsBusinessSelectionNewComponent?.onGoToLastStep();
 				break;
-			// 		case this.STEP_CONTACT_INFORMATION:
-			// 			this.stepsPermitIdentificationComponent?.onGoToLastStep();
-			// 			break;
+			case this.STEP_CONTACT_INFORMATION:
+				this.stepsBusinessContactInformationNewComponent?.onGoToLastStep();
+				break;
 			// 		case this.STEP_CONTROLLING_MEMBERS:
 			// 			this.stepsPermitContactComponent?.onGoToLastStep();
 			// 			break;
@@ -194,7 +198,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	onGoToStep(_step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsBusinessSelectionNewComponent?.onGoToFirstStep();
-		// 	this.stepsPermitIdentificationComponent?.onGoToFirstStep();
+		this.stepsBusinessContactInformationNewComponent?.onGoToFirstStep();
 		// 	this.stepsPermitContactComponent?.onGoToFirstStep();
 		// 	this.stepper.selectedIndex = step;
 	}
@@ -225,9 +229,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsBusinessSelectionNewComponent?.onGoToNextStep();
 				break;
-			// 		case this.STEP_CONTACT_INFORMATION:
-			// 			this.stepsPermitIdentificationComponent?.onGoToNextStep();
-			// 			break;
+			case this.STEP_CONTACT_INFORMATION:
+				this.stepsBusinessContactInformationNewComponent?.onGoToNextStep();
+				break;
 			// 		case this.STEP_CONTROLLING_MEMBERS:
 			// 			this.stepsPermitContactComponent?.onGoToNextStep();
 			// 			break;

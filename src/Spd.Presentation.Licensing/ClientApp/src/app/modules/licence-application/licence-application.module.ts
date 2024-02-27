@@ -79,9 +79,14 @@ import { StepBusinessLicenceChecklistRenewComponent } from './components/busines
 import { StepBusinessLicenceCompanyBrandingComponent } from './components/business/step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './components/business/step-business-licence-liability.component';
+import { StepBusinessLicenceMailingAddressComponent } from './components/business/step-business-licence-mailing-address.component';
+import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
 import { StepBusinessLicenceNameComponent } from './components/business/step-business-licence-name.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
 import { StepBusinessLicenceTypeComponent } from './components/business/step-business-licence-type.component';
+import { StepBusinessLicenceBcBusinessAddressComponent } from './components/business/step-business_licence-bc-business-address.component';
+import { StepBusinessLicenceBusinessAddressComponent } from './components/business/step-business_licence-business-address.component';
+import { StepsBusinessLicenceContactInformationNewComponent } from './components/business/steps-business-licence-contact-information-new.component';
 import { StepsBusinessLicenceInformationNewComponent } from './components/business/steps-business-licence-information-new.component';
 import { StepsBusinessLicenceSelectionNewComponent } from './components/business/steps-business-licence-selection-new.component';
 import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
@@ -212,6 +217,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
 		PermitWizardAnonymousUpdateComponent,
+		StepBusinessLicenceBcBusinessAddressComponent,
+		StepBusinessLicenceBusinessAddressComponent,
 		StepBusinessLicenceCategoryComponent,
 		StepBusinessLicenceChecklistNewComponent,
 		StepBusinessLicenceChecklistRenewComponent,
@@ -221,6 +228,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceTermComponent,
 		StepBusinessLicenceTypeComponent,
 		StepBusinessLicenceExpiredComponent,
+		StepBusinessLicenceMailingAddressComponent,
+		StepBusinessLicenceManagerInformationComponent,
 		StepPermitAccessCodeComponent,
 		StepPermitAliasesComponent,
 		StepPermitBcDriverLicenceComponent,
@@ -288,6 +297,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceUserProfileComponent,
 		StepsBusinessLicenceInformationNewComponent,
 		StepsBusinessLicenceSelectionNewComponent,
+		StepsBusinessLicenceContactInformationNewComponent,
 		StepsPermitContactComponent,
 		StepsPermitDetailsNewComponent,
 		StepsPermitDetailsRenewalComponent,

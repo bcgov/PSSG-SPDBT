@@ -53,6 +53,68 @@ export abstract class BusinessApplicationHelper {
 		attachments: new FormControl(''),
 	});
 
+	businessAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+		isMailingTheSameAsResidential: new FormControl(false),
+	});
+
+	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
+		{
+			addressSelected: new FormControl(false),
+			addressLine1: new FormControl(''),
+			addressLine2: new FormControl(''),
+			city: new FormControl(''),
+			postalCode: new FormControl(''),
+			province: new FormControl(''),
+			country: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
+					'addressSelected',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'addressLine1',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'city',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'postalCode',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'province',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'country',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+			],
+		}
+	);
+
+	bcBusinessAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+		isMailingTheSameAsResidential: new FormControl(false),
+	});
+
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
