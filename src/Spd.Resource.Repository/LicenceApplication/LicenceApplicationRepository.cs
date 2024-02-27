@@ -24,7 +24,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        contact contact = _mapper.Map<contact>(cmd);
+        contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
             if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
@@ -37,7 +37,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             {
                 spd_application originApp = await _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefaultAsync(ct);
                 //for replace, renew, update, "contact" is already exists, so, do update.
-                contact existingContact = await _context.GetContactById((Guid)originApp._spd_applicantid_value, ct);
+                contact? existingContact = await _context.GetContactById((Guid)originApp._spd_applicantid_value, ct);
                 contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             }
             else

@@ -11,7 +11,7 @@ namespace Spd.Manager.Licence
         public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand request, CancellationToken ct); //used for applicant portal
     }
 
-    public record GetApplicantProfileQuery(Guid ContactId) : IRequest<ApplicantProfileResponse>;
+    public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
     public record ApplicantLoginCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantLoginResponse>;
 
     public record Applicant
@@ -19,7 +19,6 @@ namespace Spd.Manager.Licence
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? EmailAddress { get; set; }
-        public Guid? IdentityId { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public DateOnly BirthDate { get; set; }
@@ -39,6 +38,7 @@ namespace Spd.Manager.Licence
         public Guid ApplicantId { get; set; } //which is contact id in db
         public string Sub { get; set; } = null!; //bcsc sub
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
+        public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     }
 
     public record ApplicantLoginResponse
@@ -49,6 +49,6 @@ namespace Spd.Manager.Licence
         public string? EmailAddress { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
-        public bool IsFirstTimeLogin { get; set; } = false;
+        public bool? IsFirstTimeLogin { get; set; } = false;
     }
 }

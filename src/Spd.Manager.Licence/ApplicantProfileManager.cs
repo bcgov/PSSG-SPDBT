@@ -3,9 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Identity;
-using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Registration;
-using Spd.Resource.Repository.User;
 
 namespace Spd.Manager.Licence
 {
@@ -20,9 +18,7 @@ namespace Spd.Manager.Licence
         private readonly ILogger<IApplicantProfileManager> _logger;
 
         public ApplicantProfileManager(
-            IOrgUserRepository orgUserRepository,
             IIdentityRepository idRepository,
-            IOrgRepository orgRepository,
             IContactRepository contactRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger)
@@ -33,14 +29,12 @@ namespace Spd.Manager.Licence
             _contactRepository = contactRepository;
         }
 
-
-
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
         {
-            //to be implemented
-            // var result = await _idRepository.Query(new IdentityQry(request.BcscSub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-            // return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
-            return null;
+            var result = await _contactRepository.GetAsync(request.ApplicantId, ct);
+            //todo: add read document here.
+            //only get document for mental health and police officer.
+            return _mapper.Map<ApplicantProfileResponse>(result);
         }
 
         public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
@@ -56,12 +50,11 @@ namespace Spd.Manager.Licence
                 createContactCmd.IdentityId = id.Id;
                 createContactCmd.Source = SourceEnum.LICENSING;
                 contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
-                contactResp.IdentityId = id.Id;
             }
             else
             {
-                Identity id = result.Items.FirstOrDefault();
-                if (id.ContactId != null)
+                Identity? id = result.Items.FirstOrDefault();
+                if (id?.ContactId != null)
                 {
                     //contact exists
                     UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
@@ -78,7 +71,6 @@ namespace Spd.Manager.Licence
                     createContactCmd.Source = SourceEnum.LICENSING;
                     contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 }
-                contactResp.IdentityId = id.Id;
             }
 
             return _mapper.Map<ApplicantLoginResponse>(contactResp);

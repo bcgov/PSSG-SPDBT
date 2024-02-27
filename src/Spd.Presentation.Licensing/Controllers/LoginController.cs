@@ -24,19 +24,6 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// whoami, for swl/permit portal
-        /// return 204 No Content when there is no contact found with this BCSC.
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicant/whoami")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<ApplicantProfileResponse?> ApplicantWhoami()
-        {
-            return null;
-        }
-
-        /// <summary>
         /// login, for swl/permit portal, bc service card login
         /// </summary>
         /// <returns></returns>

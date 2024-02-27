@@ -67,9 +67,9 @@ internal class ContactRepository : IContactRepository
             newContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
         }
         ContactResp resp = new();
-        contact existingContact = await _context.GetContactById(c.Id, ct);
-        resp.IsFirstTimeLoginLicensing = existingContact.spd_lastloggedinlicensingportal == null;
-        resp.IsFirstTimeLoginScreening = existingContact.spd_lastloggedinscreeningportal == null;    
+        contact? existingContact = await _context.GetContactById(c.Id, ct);
+        resp.IsFirstTimeLoginLicensing = existingContact?.spd_lastloggedinlicensingportal == null;
+        resp.IsFirstTimeLoginScreening = existingContact?.spd_lastloggedinscreeningportal == null;    
         existingContact = await _context.UpdateContact(existingContact, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
