@@ -12,27 +12,27 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<app-step-title title="Confirm your current permit information"></app-step-title>
 
 				<div class="row">
-					<div class="col-xxl-8 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<app-alert type="warning" icon="warning">
 							If any of this information is not correct, please call the Security Program's Licensing Unit during
 							regular office hours: {{ spdPhoneNumber }}
 						</app-alert>
 						<div class="row mt-0 mb-3">
-							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Permit Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
-							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Permit Type</div>
 								<div class="summary-text-data">{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}</div>
 							</div>
-							<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Expiry Date</div>
 								<div class="summary-text-data">
 									{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
 								</div>
 							</div>
-							<div class="col-xxl-7 col-xl-7 col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Name on Permit</div>
 								<div class="summary-text-data">{{ permitHolderName }}</div>
 							</div>

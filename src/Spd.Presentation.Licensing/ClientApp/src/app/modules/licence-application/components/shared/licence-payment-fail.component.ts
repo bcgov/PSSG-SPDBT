@@ -10,15 +10,13 @@ import { CommonApplicationService } from '../../services/common-application.serv
 @Component({
 	selector: 'app-licence-payment-fail',
 	template: `
-		<div class="container my-3">
-			<section class="step-section">
-				<app-common-payment-fail
-					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
-					(payNow)="onPayNow()"
-					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-				></app-common-payment-fail>
-			</section>
-		</div>
+		<section class="step-section">
+			<app-common-payment-fail
+				[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
+				(payNow)="onPayNow()"
+				(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
+			></app-common-payment-fail>
+		</section>
 	`,
 	styles: [],
 })

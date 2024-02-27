@@ -39,7 +39,7 @@ import { CommonAccessCodeAnonymousComponent } from '../../shared/step-components
 			</div>
 		</section>
 
-		<div class="row wizard-button-row">
+		<div class="row outside-wizard-button-row">
 			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 			</div>
