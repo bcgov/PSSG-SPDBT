@@ -57,13 +57,30 @@ internal class ContactRepository : IContactRepository
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact newContact = _mapper.Map<contact>(c);
+        if (c.Source == SourceEnum.SCREENING)
+        {
+            newContact.spd_lastloggedinscreeningportal = DateTimeOffset.UtcNow;
+        }
+        if (c.Source == SourceEnum.LICENSING)
+        {
+            newContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
+        }
         contact existingContact = await _context.UpdateContact(c.Id, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+        await _context.SaveChangesAsync(ct);
         return _mapper.Map<ContactResp>(existingContact);
     }
 
     private async Task<ContactResp> CreateContactAsync(CreateContactCmd c, CancellationToken ct)
     {
         contact contact = _mapper.Map<contact>(c);
+        if (c.Source == SourceEnum.SCREENING)
+        {
+            contact.spd_lastloggedinscreeningportal = DateTimeOffset.UtcNow;
+        }
+        if (c.Source == SourceEnum.LICENSING)
+        {
+            contact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
+        }
         spd_identity? identity = null;
         if (c.IdentityId != null)
         {
@@ -76,6 +93,7 @@ internal class ContactRepository : IContactRepository
         }
         //two saveChanges because "Associate of 1:N navigation property with Create of Update is not supported in CRM"
         contact = await _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+        await _context.SaveChangesAsync(ct);
         return _mapper.Map<ContactResp>(contact);
     }
 }

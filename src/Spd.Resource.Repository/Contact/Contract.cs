@@ -1,3 +1,5 @@
+using System.Data.Common;
+
 namespace Spd.Resource.Repository.Contact
 {
     public interface IContactRepository
@@ -36,8 +38,6 @@ namespace Spd.Resource.Repository.Contact
     {
         public Guid Id { get; set; }
         public string? DisplayName { get; set; }
-        public string? Email { get; set; }
-        public string? Age { get; set; }
         public string Sub { get; set; } = null!;
 
     }
@@ -53,11 +53,20 @@ namespace Spd.Resource.Repository.Contact
     public record UpdateContactCmd : ContactCmd
     {
         public Guid Id { get; set; }
+        public SourceEnum Source { get; set; } = SourceEnum.SCREENING;
+
     };
     public record CreateContactCmd : ContactCmd
     {
         public string? DisplayName { get; set; }
+        public SourceEnum Source { get; set; } = SourceEnum.SCREENING;
 
         public string Sub { get; set; } = null!;
+    }
+
+    public enum SourceEnum
+    {
+        LICENSING,
+        SCREENING
     }
 }

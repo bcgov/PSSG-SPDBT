@@ -7,6 +7,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace Spd.Manager.Licence;
 internal class Mappings : Profile
@@ -26,6 +27,30 @@ internal class Mappings : Profile
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.Ignore())
             .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)));
+
+        CreateMap<ApplicantLoginCommand, Contact>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.BcscIdentityInfo.FirstName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.BcscIdentityInfo.LastName))
+            .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName1))
+            .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.BcscIdentityInfo.MiddleName2))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.BcscIdentityInfo.Email))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.BcscIdentityInfo.BirthDate))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnumFromStr(s.BcscIdentityInfo.Gender)))
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetAddressFromStr(s.BcscIdentityInfo.Address)));
+
+
+        CreateMap<ApplicantLoginCommand, CreateContactCmd>()
+            .IncludeBase<ApplicantLoginCommand, Contact>()
+            .ForMember(d => d.DisplayName, opt => opt.MapFrom(s => s.BcscIdentityInfo.DisplayName));
+
+        CreateMap<ApplicantLoginCommand, UpdateContactCmd>()
+            .IncludeBase<ApplicantLoginCommand, Contact>();
+
+        CreateMap<Contact, Applicant>();
+        CreateMap<ContactResp, ApplicantProfileResponse>()
+            .IncludeBase<Contact, Applicant>()
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
+            ;
 
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
@@ -125,6 +150,42 @@ internal class Mappings : Profile
         return null;
     }
 
+    private ResidentialAddr? GetAddressFromStr(string? jsonStr)
+    {
+        if (jsonStr == null) return null;
+        try
+        {
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            var result = JsonSerializer.Deserialize<BcscAddress>(jsonStr, serializeOptions);
+            return new ResidentialAddr()
+            {
+                AddressLine1 = result?.Street_address,
+                City = result.Locality,
+                Country = result.Country,
+                PostalCode = result.Postal_code,
+                Province = result.Region,
+            };
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    private static GenderEnum? GetGenderEnumFromStr(string? genderStr)
+    {
+        return genderStr switch
+        {
+            "female" => GenderEnum.F,
+            "male" => GenderEnum.M,
+            "diverse" => GenderEnum.U,
+            _ => null,
+        };
+    }
     private static bool? GetIsTreatedForMHC(WorkerLicenceAppBase request)
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
@@ -302,4 +363,13 @@ internal class Mappings : Profile
 
         return armouredVehiclePermitReasonCodes;
     }
+}
+
+internal class BcscAddress
+{
+    public string? Street_address { get; set; }
+    public string? Country { get; set; }
+    public string? Locality { get; set; } //city
+    public string? Postal_code { get; set; }
+    public string? Region { get; set; } //province
 }

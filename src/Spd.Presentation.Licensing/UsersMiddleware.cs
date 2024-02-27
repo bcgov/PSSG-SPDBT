@@ -59,21 +59,21 @@ namespace Spd.Presentation.Licensing
             }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
-                //bcsc user
-                var applicantInfo = context.User.GetBcscUserIdentityInfo();
-                //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
-                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"{WorkerCacheKeyPrefix}{applicantInfo.Sub}");
-                if (appProfile == null)
-                {
-                    appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
-                    if (appProfile != null)
-                        await cache.Set($"{WorkerCacheKeyPrefix}{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
-                }
+                ////bcsc user
+                //var applicantInfo = context.User.GetBcscUserIdentityInfo();
+                ////we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
+                //ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"{WorkerCacheKeyPrefix}{applicantInfo.Sub}");
+                //if (appProfile == null)
+                //{
+                //    appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
+                //    if (appProfile != null)
+                //        await cache.Set($"{WorkerCacheKeyPrefix}{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
+                //}
 
-                if (appProfile != null)
-                {
-                    context.User.AddUpdateClaim(ClaimTypes.Role, "Worker");
-                }
+                //if (appProfile != null)
+                //{
+                //    context.User.AddUpdateClaim(ClaimTypes.Role, "Worker");
+                //}
                 await next(context);
             }
             else
