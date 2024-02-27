@@ -81,6 +81,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									maxlength="500"
 									[errorStateMatcher]="matcher"
 								></textarea>
+								<mat-hint>Maximum 500 characters</mat-hint>
 								<mat-error *ngIf="form.get('otherReason')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
