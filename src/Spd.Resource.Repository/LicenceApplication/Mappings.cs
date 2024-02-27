@@ -49,7 +49,11 @@ internal class Mappings : Profile
         .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_selfdisclosure)))
         .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
         .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
-        .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)));
+        .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
+        .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.firstname))
+        .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
+        .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
+        .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.lastname));
 
         _ = CreateMap<contact, LicenceApplicationResp>()
         .IncludeBase<contact, LicenceApplication>();
