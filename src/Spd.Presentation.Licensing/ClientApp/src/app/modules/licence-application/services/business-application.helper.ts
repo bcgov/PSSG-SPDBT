@@ -22,9 +22,16 @@ export abstract class BusinessApplicationHelper {
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
+			captchaFormGroup: new FormGroup({
+				token: new FormControl(''),
+			}),
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'captchaFormGroup.token',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
@@ -40,6 +47,11 @@ export abstract class BusinessApplicationHelper {
 			],
 		}
 	);
+
+	companyBrandingFormGroup: FormGroup = this.formBuilder.group({
+		noLogoOrBranding: new FormControl(false),
+		attachments: new FormControl(''),
+	});
 
 	constructor(
 		protected formBuilder: FormBuilder,

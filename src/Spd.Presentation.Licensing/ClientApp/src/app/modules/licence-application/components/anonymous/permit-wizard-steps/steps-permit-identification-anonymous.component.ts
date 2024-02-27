@@ -298,13 +298,6 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	override onFormValidNextStep(_formNumber: number): void {
-		const isValid = this.dirtyForm(_formNumber);
-		if (!isValid) return;
-
-		this.childNextStep.next(true);
-	}
-
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_PERSONAL_INFORMATION:

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
-	selector: 'app-step-business-licence-checklist-new',
+	selector: 'app-step-business-licence-checklist-renew',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -18,38 +18,11 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							<div class="fw-semibold fs-6">For all applicants:</div>
 
 							<mat-checkbox formControlName="checklistItem">
-								<span class="checklist-label">Images of business branding</span>
-							</mat-checkbox>
-							<p class="checklist-info">
-								Provide examples of your business's logo or branding on uniforms, advertising, vehicles, business cards,
-								etc. We recommend you do not finalize any branding, marketing or advertising until your licence is
-								approved.
-							</p>
-
-							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of insurance</span>
 							</mat-checkbox>
 							<p class="checklist-info">
 								You will need to provide proof of this security business’s valid general liability insurance of not less
 								than $1 million coverage.
-							</p>
-
-							<mat-checkbox formControlName="checklistItem">
-								<span class="checklist-label">Security worker licence information</span>
-							</mat-checkbox>
-							<p class="checklist-info">
-								You will need to provide a valid security worker licence that supports the licence category the business
-								wishes to be licensed for. This includes sole proprietors, employees, and controlling members.
-							</p>
-
-							<mat-checkbox formControlName="checklistItem">
-								<span class="checklist-label">Business type</span>
-							</mat-checkbox>
-							<p class="checklist-info">
-								You will need to know if your business is registered with
-								<a aria-label="B.C. Corporate Registries" href="https://www.bcregistry.gov.bc.ca/" target="_blank"
-									>B.C. Corporate Registries</a
-								>, and if the business is a Sole Proprietor, Partnership, or Corporation.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -61,18 +34,30 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							<div class="fw-semibold fs-6">For some applicants:</div>
 
 							<mat-checkbox formControlName="checklistItem">
-								<span class="checklist-label">Expired licence (if applicable)</span>
+								<span class="checklist-label">If your business's branding has changed, provide new images</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								If you have a Security Worker Licence that has expired, we can use the number and expiry date to connect
-								this application to your file.
+								Provide examples of your business's logo or branding on uniforms, advertising, vehicles, business cards,
+								etc.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
-								<span class="checklist-label">Controlling member security worker licence information</span>
+								<span class="checklist-label">If your business name has changed, proof of legal name change</span>
+							</mat-checkbox>
+							<p class="checklist-info">You must upload documentation of legal business name change.</p>
+
+							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">New employee security worker licence information</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								You will need to provide a valid Security Worker Licence for each
+								If you have new employees, provide their names and valid Security Worker Licence numbers.
+							</p>
+
+							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">New controlling member security worker licence information</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								You will need to provide a valid Security Worker Licence for each new
 								<a
 									aria-label="controlling member of your business"
 									href="https://www2.gov.bc.ca/gov/content?id=F8B3EE1C1BAE4E07BC88BF0E787D67B4"
@@ -112,7 +97,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceChecklistNewComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceChecklistRenewComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
