@@ -109,7 +109,7 @@ internal class PermitAppManager :
     {
         PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
-            throw new ArgumentException("should be a update request");
+            throw new ArgumentException("should be an update request");
 
         //validation: check if original licence meet update condition.
         LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
