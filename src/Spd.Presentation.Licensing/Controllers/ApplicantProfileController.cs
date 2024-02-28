@@ -3,7 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
+using Spd.Manager.Payment;
 using Spd.Utilities.Shared;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -23,7 +25,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get
+        /// Get Applicant Profile Info
         /// </summary>
         /// <returns></returns>
         [Route("api/applicant/{id}")]
@@ -34,7 +36,18 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetApplicantProfileQuery(id));
         }
 
-        //todo: add update endpoint here.
+        /// <summary>
+        /// Update Applicant Profile Info
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant/{id}")]
+        [HttpPut]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<Guid?> UpdateApplicantInfo([FromRoute]Guid id, [FromBody][Required]ApplicantProfileUpdateRequest applicantProfileUpdateRequest)
+        {
+            //to be implemented.
+            return null;
+        }
     }
 
 

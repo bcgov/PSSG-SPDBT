@@ -36,8 +36,6 @@ namespace Spd.Manager.Licence
     public record ApplicantProfileResponse : Applicant
     {
         public Guid ApplicantId { get; set; } //which is contact id in db
-        public string Sub { get; set; } = null!; //bcsc sub
-        public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
         public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     }
 
@@ -50,5 +48,11 @@ namespace Spd.Manager.Licence
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public bool? IsFirstTimeLogin { get; set; } = false;
+        public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
+    }
+
+    public record ApplicantProfileUpdateRequest : Applicant
+    {
+        public Guid ApplicantId { get; set; } //which is contact id in db
     }
 }
