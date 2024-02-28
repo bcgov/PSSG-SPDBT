@@ -243,6 +243,22 @@ internal class PermitAppManager :
             }, ct)).TaskId;
         }
 
+        // Rationale changed, create a task for Licensing RA team
+        if (newRequest.Rationale != originalApp.Rationale)
+        {
+            changes.RationaleChanged = true;
+            changes.RationaleChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Please see changes done in rationale",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Rationale Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
+        }
+
         return changes;
     }
 
@@ -304,8 +320,8 @@ internal class PermitAppManager :
     {
         public bool PurposeChanged { get; set; } //task
         public Guid? PurposeChangeTaskId { get; set; }
-        public bool MentalHealthStatusChanged { get; set; } //task
-        public Guid? MentalHealthStatusChangeTaskId { get; set; }
+        public bool RationaleChanged { get; set; } //task
+        public Guid? RationaleChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
     }
