@@ -59,7 +59,7 @@ namespace Spd.Resource.Repository.Incident
         CPICCheck,
         PRIMECheck,
         Fingerprints,
-        StatutoryDeclaration,
+        SelfDisclosure,
         ApplicantInformation,
         AwaitingRCC,
         Incomplete,
