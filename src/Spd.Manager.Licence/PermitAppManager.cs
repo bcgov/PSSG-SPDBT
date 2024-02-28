@@ -259,7 +259,24 @@ internal class PermitAppManager :
             }, ct)).TaskId;
         }
 
+        // Criminal history changed, create a task for Licensing RA team
+        if (newRequest.HasNewCriminalRecordCharge == true)
+        {
+            changes.CriminalHistoryChanged = true;
+            changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Please see the criminal charges submitted by the licensee",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
+        }
+
         return changes;
+
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppAnonymousSubmitRequest request,
