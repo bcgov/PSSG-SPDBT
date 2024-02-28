@@ -253,7 +253,6 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	isFormValid = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
 	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;
@@ -296,13 +295,6 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-	}
-
-	override onFormValidNextStep(_formNumber: number): void {
-		const isValid = this.dirtyForm(_formNumber);
-		if (!isValid) return;
-
-		this.childNextStep.next(true);
 	}
 
 	override dirtyForm(step: number): boolean {

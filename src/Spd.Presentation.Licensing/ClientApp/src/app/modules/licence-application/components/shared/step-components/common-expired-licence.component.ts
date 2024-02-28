@@ -38,11 +38,11 @@ import { Subject } from 'rxjs';
 			</div>
 
 			<div class="row mt-4" *ngIf="hasExpiredLicence.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div class="offset-md-2 col-md-8 col-sm-12">
+				<div class="col-xxl-8 col-xl-10 col-lg-8 col-md-8 col-sm-12 mx-auto">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 					<div class="row">
-						<div class="col-lg-6 col-md-12 mt-2">
+						<div class="col-xl-6 col-lg-12 mt-2">
 							<mat-form-field>
 								<mat-label>Expired {{ titleLabel }} Number</mat-label>
 								<input
@@ -53,11 +53,11 @@ import { Subject } from 'rxjs';
 									[errorStateMatcher]="matcher"
 									maxlength="10"
 								/>
-
 								<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-6 col-md-12 mt-2">
+
+						<div class="col-xl-6 col-lg-12 mt-2">
 							<div formGroupName="captchaFormGroup" class="mb-3">
 								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
 								<mat-error
@@ -117,7 +117,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.titleLabel = this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
+		this.titleLabel = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 		this.label = this.titleLabel.toLowerCase();
 	}
 

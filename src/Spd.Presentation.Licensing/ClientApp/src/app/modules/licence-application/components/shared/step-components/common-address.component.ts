@@ -5,7 +5,7 @@ import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-common-mailing-address',
+	selector: 'app-common-address',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row" *ngIf="!isReadOnly">
@@ -90,7 +90,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonMailingAddressComponent implements OnInit {
+export class CommonAddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];

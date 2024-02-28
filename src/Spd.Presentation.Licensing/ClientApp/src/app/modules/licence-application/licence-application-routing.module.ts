@@ -23,8 +23,8 @@ import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/au
 import { StepWorkerLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-access-code-authorized.component';
 import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
-import { BusinessApplicationBaseComponent } from './components/business/business-application-base.component';
-import { BusinessWizardNewComponent } from './components/business/business-wizard-new.component';
+import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
+import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
@@ -207,7 +207,7 @@ const routes: Routes = [
 			{
 				// BUSINESS - AUTHENTICATED
 				path: LicenceApplicationRoutes.BUSINESS_BASE,
-				component: BusinessApplicationBaseComponent,
+				component: BusinessLicenceApplicationBaseComponent,
 				children: [
 					{
 						path: LicenceApplicationRoutes.USER_BUSINESS_APPLICATIONS,
@@ -215,11 +215,11 @@ const routes: Routes = [
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_NEW,
-						component: BusinessWizardNewComponent,
+						component: BusinessLicenceWizardNewComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_RENEW,
-						component: BusinessWizardNewComponent,
+						component: BusinessLicenceWizardNewComponent,
 					},
 					{
 						path: '',

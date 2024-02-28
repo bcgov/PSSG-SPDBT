@@ -64,7 +64,6 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 	matcher = new FormErrorStateMatcher();
 	form: FormGroup = this.permitApplicationService.permitRationaleFormGroup;
 
-	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
