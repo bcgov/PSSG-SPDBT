@@ -6,7 +6,10 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Tasks;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using System.Linq;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -20,6 +23,7 @@ internal class PermitAppManager :
 {
     private readonly ILicenceRepository _licenceRepository;
     private readonly IContactRepository _contactRepository;
+    private readonly ITaskRepository _taskRepository;
 
     public PermitAppManager(
         ILicenceRepository licenceRepository,
@@ -27,10 +31,12 @@ internal class PermitAppManager :
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
-        IContactRepository contactRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
+        IContactRepository contactRepository,
+        ITaskRepository taskRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
     {
         _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
+        _taskRepository = taskRepository;
     }
 
     #region anonymous
@@ -135,13 +141,13 @@ internal class PermitAppManager :
             //update contact directly
             await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), cancellationToken);
         }
-        await UploadNewDocsAsync(request,
-            cmd.LicAppFileInfos,
-            createLicResponse?.LicenceAppId,
-            originalApp.ContactId,
-            changes.PeaceOfficerStatusChangeTaskId,
-            changes.MentalHealthStatusChangeTaskId,
-            cancellationToken);
+        //await UploadNewDocsAsync(request,
+        //    cmd.LicAppFileInfos,
+        //    createLicResponse?.LicenceAppId,
+        //    originalApp.ContactId,
+        //    changes.PeaceOfficerStatusChangeTaskId,
+        //    changes.MentalHealthStatusChangeTaskId,
+        //    cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
 
@@ -180,10 +186,62 @@ internal class PermitAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newApp, LicenceResp originalLic, CancellationToken ct)
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest, LicenceResp originalLic, CancellationToken ct)
     {
-        //todo: add code according to spec
         ChangeSpec changes = new ChangeSpec();
+        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = SharedUtilities.GetBodyArmourPermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
+        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = SharedUtilities.GetArmouredVehiclePermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
+
+        // Check if there is a different selection in Body armour reasons
+        if (newRequest.BodyArmourPermitReasonCodes.Count() != bodyArmourPermitReasonCodes.Count)
+            changes.PurposeChanged = true;
+        else
+        {
+            List<BodyArmourPermitReasonCode> newList = newRequest.BodyArmourPermitReasonCodes.ToList();
+            newList.Sort();
+            List<BodyArmourPermitReasonCode> originalList = bodyArmourPermitReasonCodes;
+            originalList.Sort();
+
+            if (!newList.SequenceEqual(originalList)) changes.PurposeChanged = true;
+        }
+
+        // Check if there is a different reason if Body armour selected reason is "other"
+        if (newRequest.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && bodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) &&
+            newRequest.PermitOtherRequiredReason != originalApp.PermitOtherRequiredReason)
+            changes.PurposeChanged = true;
+
+        // Check if there is a different selection in Armoured vehicule reasons
+        if (newRequest.ArmouredVehiclePermitReasonCodes.Count() != armouredVehiclePermitReasonCodes.Count)
+            changes.PurposeChanged = true;
+        else
+        {
+            List<ArmouredVehiclePermitReasonCode> newList = newRequest.ArmouredVehiclePermitReasonCodes.ToList();
+            newList.Sort();
+            List<ArmouredVehiclePermitReasonCode> originalList = armouredVehiclePermitReasonCodes;
+            originalList.Sort();
+
+            if (!newList.SequenceEqual(originalList)) changes.PurposeChanged = true;
+        }
+
+        // Check if there is a different reason if Armoured vehicule selected reason is "other"
+        if (newRequest.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && armouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) &&
+            newRequest.PermitOtherRequiredReason != originalApp.PermitOtherRequiredReason)
+            changes.PurposeChanged = true;
+
+        // Purpose changed, create a task for Licensing RA team
+        if (changes.PurposeChanged)
+        {
+            changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Please see changes done in body armour and armoured vehicule selection",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Purpose Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
+        }
 
         return changes;
     }
@@ -244,8 +302,8 @@ internal class PermitAppManager :
 
     private sealed record ChangeSpec
     {
-        public bool PeaceOfficerStatusChanged { get; set; } //task
-        public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
+        public bool PurposeChanged { get; set; } //task
+        public Guid? PurposeChangeTaskId { get; set; }
         public bool MentalHealthStatusChanged { get; set; } //task
         public Guid? MentalHealthStatusChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
