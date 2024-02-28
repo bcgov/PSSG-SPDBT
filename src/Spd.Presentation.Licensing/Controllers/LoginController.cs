@@ -37,25 +37,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-        /// <summary>
-        /// Biz bceid login, for biz licence
-        /// </summary>
-        /// <returns></returns>
-        //[Route("api/biz-licence/whoami")]
-        //[HttpGet]
-        //[Authorize(Policy = "OnlyBceid")]
-        //public async Task<OrgUserProfileResponse?> BizLicenceWhoami()
-        //{
-        //    var info = _currentUser.GetBceidUserIdentityInfo();
-        //    return new OrgUserProfileResponse
-        //    {
-        //        IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
-        //        UserDisplayName = info.DisplayName,
-        //        UserGuid = info.UserGuid
-        //    };
-        //}
-
-
     }
 
 

@@ -38,7 +38,6 @@ internal class Mappings : Profile
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => GetGenderEnumFromStr(s.BcscIdentityInfo.Gender)))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetAddressFromStr(s.BcscIdentityInfo.Address)));
 
-
         CreateMap<ApplicantLoginCommand, CreateContactCmd>()
             .IncludeBase<ApplicantLoginCommand, Contact>()
             .ForMember(d => d.DisplayName, opt => opt.MapFrom(s => s.BcscIdentityInfo.DisplayName));
@@ -47,10 +46,11 @@ internal class Mappings : Profile
             .IncludeBase<ApplicantLoginCommand, Contact>();
 
         CreateMap<Contact, Applicant>();
+
         CreateMap<ContactResp, ApplicantProfileResponse>()
             .IncludeBase<Contact, Applicant>()
-            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
-            ;
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id));
+
         CreateMap<ContactResp, ApplicantLoginResponse>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.IsFirstTimeLoginLicensing));
@@ -66,39 +66,55 @@ internal class Mappings : Profile
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.Aliases));
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
+
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+
         CreateMap<LicenceResp, LicenceResponse>();
+
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
+
         CreateMap<DocumentResp, LicenceAppDocumentResponse>()
              .ForMember(d => d.DocumentExtension, opt => opt.MapFrom(s => s.FileExtension))
              .ForMember(d => d.DocumentName, opt => opt.MapFrom(s => s.FileName))
              .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.ApplicationId));
+
         CreateMap<DocumentResp, Document>()
              .IncludeBase<DocumentResp, LicenceAppDocumentResponse>()
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate))
              .ForMember(d => d.LicenceDocumentTypeCode, opt => opt.MapFrom(s => GetLicenceDocumentTypeCode(s.DocumentType, s.DocumentType2)));
+
         CreateMap<Address, Addr>()
             .ReverseMap();
+
         CreateMap<ResidentialAddress, ResidentialAddr>()
             .IncludeBase<Address, Addr>()
             .ReverseMap();
+
         CreateMap<MailingAddress, MailingAddr>()
             .IncludeBase<Address, Addr>()
             .ReverseMap();
+
         CreateMap<UploadFileRequest, CreateDocumentCmd>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType1Enum(s.FileTypeCode)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2Enum(s.FileTypeCode)));
+
         CreateMap<LicAppFileInfo, CreateDocumentCmd>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType1Enum(s.LicenceDocumentTypeCode)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2Enum(s.LicenceDocumentTypeCode)));
+
         CreateMap<Alias, Spd.Resource.Repository.Alias>()
             .ReverseMap();
+
         CreateMap<LicenceAppListResp, WorkerLicenceAppListResponse>();
+
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
+
         CreateMap<LicAppFileInfo, SpdTempFile>();
+
         CreateMap<LicenceApplicationResp, PermitLicenceAppResponse>()
             .ForPath(d => d.EmployerPrimaryAddress.AddressLine1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine1))
             .ForPath(d => d.EmployerPrimaryAddress.AddressLine2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine2))
