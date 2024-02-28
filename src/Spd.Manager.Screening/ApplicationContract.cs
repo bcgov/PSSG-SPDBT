@@ -750,7 +750,7 @@ namespace Spd.Manager.Screening
     {
         ApplicantInformation,
         Fingerprints,
-        StatutoryDeclaration,
+        SelfDisclosure,
         OpportunityToRespond
     }
     #endregion
@@ -773,7 +773,7 @@ namespace Spd.Manager.Screening
     public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<ApplicantAppFileCreateResponse>>;
     public record ApplicantAppFileUploadRequest(
         IList<IFormFile> Files,
-        FileTypeCode FileType = FileTypeCode.StatutoryDeclaration
+        FileTypeCode FileType = FileTypeCode.SelfDisclosure
     );
     public record ApplicantAppFileCreateResponse
     {
@@ -823,7 +823,7 @@ namespace Spd.Manager.Screening
         SecurityAlarmInstaller,
         SecurityConsultant,
         SecurityGuard,
-        StatutoryDeclaration,
+        SelfDisclosure,
         ValidationCertificate,
         OpportunityToRespond
     }
@@ -831,7 +831,7 @@ namespace Spd.Manager.Screening
     public enum FileTemplateTypeCode
     {
         FingerprintsPkg,
-        StatutoryDeclarationPkg
+        SelfDisclosurePkg
     }
     #endregion
 
