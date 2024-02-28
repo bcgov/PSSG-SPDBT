@@ -5,7 +5,7 @@ public static class SharedUtilities
 {
     public static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
     {
-        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = new();
+        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = [];
 
         if (workerLicenceType != WorkerLicenceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
 
@@ -22,7 +22,7 @@ public static class SharedUtilities
 
     public static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
     {
-        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = new();
+        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = [];
 
         if (workerLicenceType != WorkerLicenceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
 
