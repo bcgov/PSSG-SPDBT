@@ -663,7 +663,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private loadSpecificLicenceIntoModel(resp: WorkerLicenceResponse): void {
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };

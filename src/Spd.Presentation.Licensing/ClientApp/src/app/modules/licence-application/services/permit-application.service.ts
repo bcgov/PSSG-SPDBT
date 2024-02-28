@@ -516,7 +516,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private loadSpecificPermitIntoModel(resp: PermitLicenceAppResponse): void {
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 
