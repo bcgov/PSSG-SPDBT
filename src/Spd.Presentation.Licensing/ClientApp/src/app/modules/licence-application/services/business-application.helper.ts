@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BooleanTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
@@ -108,26 +108,38 @@ export abstract class BusinessApplicationHelper {
 	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl([]),
+			givenName: new FormControl(''),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl(''),
+			managerLicenceNumber: new FormControl(''),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('surname', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'managerLicenceNumber',
+					(form) => form.get('isInclude')?.value
+				),
 			],
 		}
 	);
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			expiryDate: new FormControl(''),
+			isRequestDogAuthorization: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'isRequestDogAuthorization',
+					(form) => form.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('isInclude')?.value && form.get('isRequestDogAuthorization')?.value === BooleanTypeCode.Yes
+				),
 			],
 		}
 	);

@@ -23,7 +23,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 		</div>
 
 		<form [formGroup]="form" novalidate>
-			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate</div>
+			<div class="fs-5">Upload your valid Authorization to Carry certificate</div>
 			<div class="my-2">
 				<app-file-upload
 					(fileUploaded)="onFileUploaded($event)"

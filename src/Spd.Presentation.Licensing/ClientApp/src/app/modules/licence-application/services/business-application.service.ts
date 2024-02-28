@@ -22,6 +22,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		businessTypeData: this.businessTypeFormGroup,
+		categoryData: this.categoryFormGroup,
+		categoryArmouredCarGuardData: this.categoryArmouredCarGuardFormGroup,
+		categoryPrivateInvestigatorData: this.categoryPrivateInvestigatorFormGroup,
+		categorySecurityGuardData: this.categorySecurityGuardFormGroup,
+		businessAddressData: this.businessAddressFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
+		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
+		branchesInBcData: this.branchesInBcFormGroup,
 	});
 
 	constructor(
