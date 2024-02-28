@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BooleanTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
@@ -16,15 +16,40 @@ export abstract class BusinessApplicationHelper {
 		applicationTypeCode: new FormControl('', [Validators.required]),
 	});
 
+	businessTypeFormGroup: FormGroup = this.formBuilder.group({
+		businessTypeCode: new FormControl('', [Validators.required]),
+	});
+
+	licenceTermFormGroup: FormGroup = this.formBuilder.group({
+		licenceTermCode: new FormControl('', [FormControlValidators.required]),
+	});
+
+	businessManagerFormGroup: FormGroup = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+		isBusinessManager: new FormControl(),
+	});
+
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
+			captchaFormGroup: new FormGroup({
+				token: new FormControl(''),
+			}),
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'captchaFormGroup.token',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
@@ -40,6 +65,151 @@ export abstract class BusinessApplicationHelper {
 			],
 		}
 	);
+
+	companyBrandingFormGroup: FormGroup = this.formBuilder.group({
+		noLogoOrBranding: new FormControl(false),
+		attachments: new FormControl(''),
+	});
+
+	categoryFormGroup: FormGroup = this.formBuilder.group({
+		ArmouredCarGuard: new FormControl(false),
+		BodyArmourSales: new FormControl(false),
+		ClosedCircuitTelevisionInstaller: new FormControl(false),
+		ElectronicLockingDeviceInstaller: new FormControl(false),
+		FireInvestigator: new FormControl(false),
+		Locksmith: new FormControl(false),
+		LocksmithUnderSupervision: new FormControl(false),
+		PrivateInvestigator: new FormControl(false),
+		PrivateInvestigatorUnderSupervision: new FormControl(false),
+		SecurityGuard: new FormControl(false),
+		SecurityGuardUnderSupervision: new FormControl(false),
+		SecurityAlarmInstallerUnderSupervision: new FormControl(false),
+		SecurityAlarmInstaller: new FormControl(false),
+		SecurityAlarmMonitor: new FormControl(false),
+		SecurityAlarmResponse: new FormControl(false),
+		SecurityAlarmSales: new FormControl(false),
+		SecurityConsultant: new FormControl(false),
+	});
+
+	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			givenName: new FormControl(''),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl(''),
+			managerLicenceNumber: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator('surname', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'managerLicenceNumber',
+					(form) => form.get('isInclude')?.value
+				),
+			],
+		}
+	);
+	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			isRequestDogAuthorization: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'isRequestDogAuthorization',
+					(form) => form.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('isInclude')?.value && form.get('isRequestDogAuthorization')?.value === BooleanTypeCode.Yes
+				),
+			],
+		}
+	);
+
+	businessAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+		isMailingTheSame: new FormControl(false),
+	});
+
+	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
+		{
+			addressSelected: new FormControl(false),
+			addressLine1: new FormControl(''),
+			addressLine2: new FormControl(''),
+			city: new FormControl(''),
+			postalCode: new FormControl(''),
+			province: new FormControl(''),
+			country: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
+					'addressSelected',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'addressLine1',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'city',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'postalCode',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'province',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'country',
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+				),
+			],
+		}
+	);
+
+	bcBusinessAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [FormControlValidators.required]),
+		country: new FormControl('', [FormControlValidators.required]),
+		isMailingTheSameAsResidential: new FormControl(false),
+	});
+
+	branchesInBcFormGroup: FormGroup = this.formBuilder.group({
+		hasBranchesInBc: new FormControl(''),
+		branches: this.formBuilder.array([]),
+	});
 
 	constructor(
 		protected formBuilder: FormBuilder,

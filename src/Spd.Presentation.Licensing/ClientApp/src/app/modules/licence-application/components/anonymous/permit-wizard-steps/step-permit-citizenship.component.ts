@@ -284,7 +284,6 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	form: FormGroup = this.permitApplicationService.citizenshipFormGroup;

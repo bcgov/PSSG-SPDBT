@@ -155,9 +155,14 @@ export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, 
 // ============================================================
 
 export const WorkerLicenceTypes: SelectOptions[] = [
-	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },
+	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
+	{ desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
+	{
+		desc: 'Security Business Licence Controlling Member Crc',
+		code: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+	},
 ];
 
 export const ApplicationTypes: SelectOptions[] = [
@@ -168,29 +173,29 @@ export const ApplicationTypes: SelectOptions[] = [
 ];
 
 export const ApplicationPortalStatusTypes: SelectOptions[] = [
-	{ desc: 'Draft', code: ApplicationPortalStatusCode.Draft },
-	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
-	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
-	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
 	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
 	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
-	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
-	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
-	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
-	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
+	{ desc: 'Cancelled by Org.', code: ApplicationPortalStatusCode.CancelledByOrganization },
 	{ desc: 'Closed - Judicial Review', code: ApplicationPortalStatusCode.ClosedJudicialReview },
 	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
 	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
-	{ desc: 'Cancelled by Org.', code: ApplicationPortalStatusCode.CancelledByOrganization },
-	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
+	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
+	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Draft', code: ApplicationPortalStatusCode.Draft },
+	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
+	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
+	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
+	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
+	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
 ];
 
 export const BusinessTypes: SelectOptions[] = [
-	{ desc: 'Non-Registered Sole Proprietor', code: BusinessTypeCode.NonRegisteredSoleProprietor },
-	{ desc: 'Non-Registered Partnership', code: BusinessTypeCode.NonRegisteredPartnership },
-	{ desc: 'Registered Sole Proprietor', code: BusinessTypeCode.RegisteredSoleProprietor },
-	{ desc: 'Registered Partnership', code: BusinessTypeCode.RegisteredPartnership },
 	{ desc: 'Corporation', code: BusinessTypeCode.Corporation },
+	{ desc: 'Non-Registered Partnership', code: BusinessTypeCode.NonRegisteredPartnership },
+	{ desc: 'Non-Registered Sole Proprietor', code: BusinessTypeCode.NonRegisteredSoleProprietor },
+	{ desc: 'Registered Partnership', code: BusinessTypeCode.RegisteredPartnership },
+	{ desc: 'Registered Sole Proprietor', code: BusinessTypeCode.RegisteredSoleProprietor },
 	{ desc: 'None', code: BusinessTypeCode.None },
 ];
 
@@ -278,18 +283,18 @@ export const PermitProofOfCitizenshipTypes: SelectOptions[] = [
 ];
 
 export const ServiceTypes: SelectOptions[] = [
-	{ desc: 'Psso', code: ServiceTypeCode.Psso },
+	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
+	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
 	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
 	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
+	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
 	{ desc: 'PeCrc', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PeCrcVs', code: ServiceTypeCode.PeCrcVs },
-	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
+	{ desc: 'Psso', code: ServiceTypeCode.Psso },
 	{ desc: 'PssoVs', code: ServiceTypeCode.PssoVs },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
-	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
-	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
-	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
+	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{
 		desc: 'Security Business Licence Controlling Member Crc',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
@@ -349,17 +354,32 @@ export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Guard - Under Supervision', code: WorkerCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
+export const BusinessCategoryTypes: SelectOptions[] = [
+	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
+	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
+	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	{ desc: 'Locksmith', code: WorkerCategoryTypeCode.Locksmith },
+	{ desc: 'Private Investigator', code: WorkerCategoryTypeCode.PrivateInvestigator },
+	{ desc: 'Security Alarm Installer', code: WorkerCategoryTypeCode.SecurityAlarmInstaller },
+	{ desc: 'Security Alarm Monitor', code: WorkerCategoryTypeCode.SecurityAlarmMonitor },
+	{ desc: 'Security Alarm Response', code: WorkerCategoryTypeCode.SecurityAlarmResponse },
+	{ desc: 'Security Alarm Sales', code: WorkerCategoryTypeCode.SecurityAlarmSales },
+	{ desc: 'Security Consultant', code: WorkerCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: WorkerCategoryTypeCode.SecurityGuard },
+];
+
 export const PoliceOfficerRoleTypes: SelectOptions[] = [
 	{ desc: 'Auxiliary or Reserve Constable', code: PoliceOfficerRoleCode.AuxiliaryorReserveConstable },
 	{ desc: 'Corrections Officer', code: PoliceOfficerRoleCode.CorrectionsOfficer },
 	{ desc: 'Court Appointed Bailiff', code: PoliceOfficerRoleCode.CourtAppointedBailiff },
+	{ desc: 'Other', code: PoliceOfficerRoleCode.Other },
 	{ desc: 'Police Officer', code: PoliceOfficerRoleCode.PoliceOfficer },
 	{ desc: 'Sheriff Deputy Sheriff', code: PoliceOfficerRoleCode.SheriffDeputySheriff },
 	{
 		desc: 'Special Provincial Or Municipal Constable',
 		code: PoliceOfficerRoleCode.SpecialProvincialOrMunicipalConstable,
 	},
-	{ desc: 'Other', code: PoliceOfficerRoleCode.Other },
 ];
 
 export const ArmouredVehiclePermitReasonTypes: SelectOptions[] = [

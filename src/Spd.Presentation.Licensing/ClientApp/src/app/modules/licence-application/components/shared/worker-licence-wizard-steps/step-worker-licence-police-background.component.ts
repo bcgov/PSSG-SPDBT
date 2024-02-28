@@ -125,7 +125,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 	styles: [],
 })
 export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;

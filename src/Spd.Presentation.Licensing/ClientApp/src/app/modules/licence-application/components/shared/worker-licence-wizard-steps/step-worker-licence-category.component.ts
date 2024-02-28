@@ -1051,7 +1051,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	workerLicenceTypes = WorkerLicenceTypeCode;
 	workerCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
