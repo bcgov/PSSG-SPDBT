@@ -69,8 +69,8 @@ import {
 					<app-alert type="danger" *ngIf="fingerprintsAlert">
 						<div class="fw-semibold">{{ fingerprintsAlert }}</div>
 					</app-alert>
-					<app-alert type="danger" *ngIf="statutoryDeclarationAlert">
-						<div class="fw-semibold">{{ statutoryDeclarationAlert }}</div>
+					<app-alert type="danger" *ngIf="selfDisclosureAlert">
+						<div class="fw-semibold">{{ selfDisclosureAlert }}</div>
 					</app-alert>
 				</div>
 			</div>
@@ -108,7 +108,7 @@ import {
 			</div>
 		</ng-container>
 
-		<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
+		<ng-container *ngIf="fingerprintsAlert || selfDisclosureAlert">
 			<h4 class="subheading fw-normal mb-2">Downloadable Documents</h4>
 			<div class="row">
 				<div class="col-12" *ngIf="fingerprintsAlert">
@@ -122,21 +122,21 @@ import {
 						<mat-icon>file_download</mat-icon>Download Fingerprint Package
 					</button>
 				</div>
-				<div class="col-12" *ngIf="statutoryDeclarationAlert">
+				<div class="col-12" *ngIf="selfDisclosureAlert">
 					<button
 						mat-stroked-button
 						color="primary"
 						class="large w-auto mb-4"
-						(click)="onDownloadFile(fileTemplateTypeCodes.StatutoryDeclarationPkg)"
-						aria-label="Download Statutory Declaration"
+						(click)="onDownloadFile(fileTemplateTypeCodes.SelfDisclosurePkg)"
+						aria-label="Download Self Disclosure"
 					>
-						<mat-icon>file_download</mat-icon>Download Statutory Declaration
+						<mat-icon>file_download</mat-icon>Download Self Disclosure
 					</button>
 				</div>
 			</div>
 		</ng-container>
 
-		<ng-container *ngIf="statutoryDeclarationAlert">
+		<ng-container *ngIf="selfDisclosureAlert">
 			<h4 class="subheading fw-normal mb-2">Upload Document</h4>
 			<div class="row">
 				<div class="col-12">
@@ -147,7 +147,7 @@ import {
 						aria-label="Upload a Word or PDF document providing more information"
 						(click)="onUploadFile()"
 					>
-						<mat-icon>file_upload</mat-icon>Upload Completed Statutory Declaration Form
+						<mat-icon>file_upload</mat-icon>Upload Completed Self Disclosure Form
 					</button>
 				</div>
 			</div>
@@ -235,7 +235,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	opportunityToRespondAlert: string | null = null;
 	requestForAdditionalInfoAlert: string | null = null;
 	fingerprintsAlert: string | null = null;
-	statutoryDeclarationAlert: string | null = null;
+	selfDisclosureAlert: string | null = null;
 	associatedFileType: FileTypeCode | null = null;
 
 	constructor(
@@ -353,9 +353,12 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 				this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
 				this.associatedFileType = FileTypeCode.ApplicantInformation;
 				break;
-			case CaseSubStatusCode.StatutoryDeclaration:
-				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
-				this.associatedFileType = FileTypeCode.StatutoryDeclaration;
+			case CaseSubStatusCode.SelfDisclosure:
+				// SPDBT-2237 self disclosure only applies to PSSO/PssoVs
+				if (application.serviceType === ServiceTypeCode.Psso || application.serviceType === ServiceTypeCode.PssoVs) {
+					this.selfDisclosureAlert = this.getStatutoryDeclarationText();
+					this.associatedFileType = FileTypeCode.SelfDisclosure;
+				}
 				break;
 		}
 
@@ -385,6 +388,6 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	}
 
 	private getStatutoryDeclarationText(): string | null {
-		return 'Statutory declaration requested. Download statutory declaration form and upload the filled form.';
+		return 'Self Disclosure requested. Download self disclosure form and upload the filled form.';
 	}
 }
