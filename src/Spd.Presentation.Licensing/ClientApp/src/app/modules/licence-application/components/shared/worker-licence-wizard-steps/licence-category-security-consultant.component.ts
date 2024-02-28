@@ -38,7 +38,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 				</div>
 			</div>
 
-			<div class="fs-6 fw-bold mb-2">Upload your resume</div>
+			<div class="fs-5 mb-2">Upload your resume</div>
 
 			<div class="my-2">
 				<app-file-upload
@@ -87,7 +87,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-6 fw-bold mb-2">
+				<div class="fs-5 mb-2">
 					<span
 						*ngIf="
 							requirementCode.value === securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters
@@ -101,7 +101,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 							securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters
 						"
 					>
-						Upload recommendation letters:
+						Upload recommendation letters
 					</span>
 				</div>
 

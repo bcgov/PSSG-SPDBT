@@ -1,6 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BooleanTypeCode, Document, LicenceDocumentTypeCode } from '@app/api/models';
+import { Document, LicenceDocumentTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';

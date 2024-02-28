@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { StepBusinessChecklistNewComponent } from './components/anonymous/business-wizard-steps/step-business-checklist-new.component';
 import { PermitApplicationBaseAnonymousComponent } from './components/anonymous/permit-application-base-anonymous.component';
 import { PermitWizardAnonymousNewComponent } from './components/anonymous/permit-wizard-anonymous-new.component';
 import { PermitWizardAnonymousRenewalComponent } from './components/anonymous/permit-wizard-anonymous-renewal.component';
@@ -72,11 +71,28 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './componen
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
-import { BusinessApplicationBaseComponent } from './components/business/business-application-base.component';
-import { BusinessWizardNewComponent } from './components/business/business-wizard-new.component';
+import { BusinessCategoryAmouredCarGuardComponent } from './components/business/business-category-amoured-car-guard.component';
+import { BusinessCategoryPrivateInvestigatorComponent } from './components/business/business-category-private-investigator.component';
+import { BusinessCategorySecurityGuardComponent } from './components/business/business-category-security-guard.component';
+import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
+import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
+import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
 import { StepBusinessLicenceChecklistNewComponent } from './components/business/step-business-licence-checklist-new.component';
+import { StepBusinessLicenceChecklistRenewComponent } from './components/business/step-business-licence-checklist-renew.component';
+import { StepBusinessLicenceCompanyBrandingComponent } from './components/business/step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
-import { StepsBusinessInformationNewComponent } from './components/business/steps-business-information-new.component';
+import { StepBusinessLicenceLiabilityComponent } from './components/business/step-business-licence-liability.component';
+import { StepBusinessLicenceMailingAddressComponent } from './components/business/step-business-licence-mailing-address.component';
+import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
+import { StepBusinessLicenceNameComponent } from './components/business/step-business-licence-name.component';
+import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
+import { StepBusinessLicenceTypeComponent } from './components/business/step-business-licence-type.component';
+import { StepBusinessLicenceBcBusinessAddressComponent } from './components/business/step-business_licence-bc-business-address.component';
+import { StepBusinessLicenceBranchesComponent } from './components/business/step-business_licence-branches.component';
+import { StepBusinessLicenceBusinessAddressComponent } from './components/business/step-business_licence-business-address.component';
+import { StepsBusinessLicenceContactInformationNewComponent } from './components/business/steps-business-licence-contact-information-new.component';
+import { StepsBusinessLicenceInformationNewComponent } from './components/business/steps-business-licence-information-new.component';
+import { StepsBusinessLicenceSelectionNewComponent } from './components/business/steps-business-licence-selection-new.component';
 import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
@@ -85,6 +101,7 @@ import { LicencePaymentSuccessComponent } from './components/shared/licence-paym
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
+import { CommonAddressComponent } from './components/shared/step-components/common-address.component';
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
@@ -92,7 +109,6 @@ import { CommonContactInformationComponent } from './components/shared/step-comp
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
 import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
-import { CommonMailingAddressComponent } from './components/shared/step-components/common-mailing-address.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
 import { CommonPersonalInformationRenewAnonymousComponent } from './components/shared/step-components/common-personal-information-renew-anonymous.component';
 import { CommonPhotographOfYourselfComponent } from './components/shared/step-components/common-photograph-of-yourself.component';
@@ -156,9 +172,10 @@ import { LicenceApplicationService } from './services/licence-application.servic
 
 @NgModule({
 	declarations: [
-		BusinessApplicationBaseComponent,
-		BusinessWizardNewComponent,
+		BusinessLicenceApplicationBaseComponent,
+		BusinessLicenceWizardNewComponent,
 		CommonAccessCodeAnonymousComponent,
+		CommonAddressComponent,
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
@@ -166,7 +183,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonCriminalHistoryComponent,
 		CommonExpiredLicenceComponent,
 		CommonFingerprintsComponent,
-		CommonMailingAddressComponent,
 		CommonPersonalInformationNewAnonymousComponent,
 		CommonPersonalInformationRenewAnonymousComponent,
 		CommonPhotographOfYourselfComponent,
@@ -205,9 +221,20 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
 		PermitWizardAnonymousUpdateComponent,
-		StepBusinessChecklistNewComponent,
+		StepBusinessLicenceBcBusinessAddressComponent,
+		StepBusinessLicenceBranchesComponent,
+		StepBusinessLicenceBusinessAddressComponent,
+		StepBusinessLicenceCategoryComponent,
 		StepBusinessLicenceChecklistNewComponent,
+		StepBusinessLicenceChecklistRenewComponent,
+		StepBusinessLicenceCompanyBrandingComponent,
+		StepBusinessLicenceLiabilityComponent,
+		StepBusinessLicenceNameComponent,
+		StepBusinessLicenceTermComponent,
+		StepBusinessLicenceTypeComponent,
 		StepBusinessLicenceExpiredComponent,
+		StepBusinessLicenceMailingAddressComponent,
+		StepBusinessLicenceManagerInformationComponent,
 		StepPermitAccessCodeComponent,
 		StepPermitAliasesComponent,
 		StepPermitBcDriverLicenceComponent,
@@ -273,7 +300,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceTypeAuthenticatedComponent,
 		StepWorkerLicenceUpdateFeeComponent,
 		StepWorkerLicenceUserProfileComponent,
-		StepsBusinessInformationNewComponent,
+		StepsBusinessLicenceInformationNewComponent,
+		StepsBusinessLicenceSelectionNewComponent,
+		StepsBusinessLicenceContactInformationNewComponent,
 		StepsPermitContactComponent,
 		StepsPermitDetailsNewComponent,
 		StepsPermitDetailsRenewalComponent,
@@ -307,6 +336,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		WorkerLicenceWizardAuthenticatedNewComponent,
 		WorkerLicenceWizardAuthenticatedRenewComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
+		BusinessCategoryAmouredCarGuardComponent,
+		BusinessCategoryPrivateInvestigatorComponent,
+		BusinessCategorySecurityGuardComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],

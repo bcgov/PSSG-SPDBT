@@ -24,8 +24,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	styles: [],
 })
 export class StepWorkerLicencePhysicalCharacteristicsComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

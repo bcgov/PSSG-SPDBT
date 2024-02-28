@@ -5,7 +5,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonResidentialAddressComponent } from '@app/modules/licence-application/components/shared/step-components/common-residential-address.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-step-permit-residential-address',
@@ -27,14 +26,11 @@ import { Subscription } from 'rxjs';
 	styles: [],
 })
 export class StepPermitResidentialAddressComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	readonly subtitle_unauth_new = 'This is the address where you currently live';
 	readonly subtitle_auth_new = `This is the address from your BC Services Card. If you need to make any updates, visit <a href="${SPD_CONSTANTS.urls.addressChangeUrl}" target="_blank">addresschange.gov.bc.ca</a>`;
 
 	subtitle = '';
 
-	authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	form: FormGroup = this.permitApplicationService.residentialAddressFormGroup;

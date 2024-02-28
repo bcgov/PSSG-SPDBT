@@ -34,8 +34,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 	styles: [],
 })
 export class StepPermitPhotographOfYourselfAnonymousComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

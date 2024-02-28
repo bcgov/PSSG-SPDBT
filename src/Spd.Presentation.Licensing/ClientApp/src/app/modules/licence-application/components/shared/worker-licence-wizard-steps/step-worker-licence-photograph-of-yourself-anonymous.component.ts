@@ -25,7 +25,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				<div class="row mb-3" *ngIf="isRenewalOrUpdate && photographOfYourself">
 					<div class="col-12 text-center">
 						<div class="fs-5 mb-2">Current licence photo:</div>
-						<img [src]="photographOfYourself" alt="Photograph of yourself" style="max-height: 15em;" />
+						<img
+							[src]="photographOfYourself"
+							alt="Photograph of yourself"
+							style="max-height: 200px;max-width: 200px;"
+						/>
 					</div>
 				</div>
 
@@ -44,7 +48,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
 	implements OnInit, LicenceChildStepperStepComponent
 {
-	applicationTypeCodes = ApplicationTypeCode;
 	originalPhotoOfYourselfExpired = false;
 	photographOfYourself = this.licenceApplicationService.photographOfYourself;
 
