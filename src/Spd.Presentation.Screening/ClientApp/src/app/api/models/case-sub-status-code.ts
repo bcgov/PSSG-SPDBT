@@ -3,6 +3,6 @@
 export enum CaseSubStatusCode {
   ApplicantInformation = 'ApplicantInformation',
   Fingerprints = 'Fingerprints',
-  StatutoryDeclaration = 'StatutoryDeclaration',
+  SelfDisclosure = 'SelfDisclosure',
   OpportunityToRespond = 'OpportunityToRespond'
 }
