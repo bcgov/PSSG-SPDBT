@@ -354,6 +354,21 @@ export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Guard - Under Supervision', code: WorkerCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
+export const BusinessCategoryTypes: SelectOptions[] = [
+	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
+	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
+	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	{ desc: 'Locksmith', code: WorkerCategoryTypeCode.Locksmith },
+	{ desc: 'Private Investigator', code: WorkerCategoryTypeCode.PrivateInvestigator },
+	{ desc: 'Security Alarm Installer', code: WorkerCategoryTypeCode.SecurityAlarmInstaller },
+	{ desc: 'Security Alarm Monitor', code: WorkerCategoryTypeCode.SecurityAlarmMonitor },
+	{ desc: 'Security Alarm Response', code: WorkerCategoryTypeCode.SecurityAlarmResponse },
+	{ desc: 'Security Alarm Sales', code: WorkerCategoryTypeCode.SecurityAlarmSales },
+	{ desc: 'Security Consultant', code: WorkerCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: WorkerCategoryTypeCode.SecurityGuard },
+];
+
 export const PoliceOfficerRoleTypes: SelectOptions[] = [
 	{ desc: 'Auxiliary or Reserve Constable', code: PoliceOfficerRoleCode.AuxiliaryorReserveConstable },
 	{ desc: 'Corrections Officer', code: PoliceOfficerRoleCode.CorrectionsOfficer },

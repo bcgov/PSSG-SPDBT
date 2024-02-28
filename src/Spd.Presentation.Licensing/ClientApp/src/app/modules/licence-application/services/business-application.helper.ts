@@ -71,6 +71,67 @@ export abstract class BusinessApplicationHelper {
 		attachments: new FormControl(''),
 	});
 
+	categoryFormGroup: FormGroup = this.formBuilder.group({
+		ArmouredCarGuard: new FormControl(false),
+		BodyArmourSales: new FormControl(false),
+		ClosedCircuitTelevisionInstaller: new FormControl(false),
+		ElectronicLockingDeviceInstaller: new FormControl(false),
+		FireInvestigator: new FormControl(false),
+		Locksmith: new FormControl(false),
+		LocksmithUnderSupervision: new FormControl(false),
+		PrivateInvestigator: new FormControl(false),
+		PrivateInvestigatorUnderSupervision: new FormControl(false),
+		SecurityGuard: new FormControl(false),
+		SecurityGuardUnderSupervision: new FormControl(false),
+		SecurityAlarmInstallerUnderSupervision: new FormControl(false),
+		SecurityAlarmInstaller: new FormControl(false),
+		SecurityAlarmMonitor: new FormControl(false),
+		SecurityAlarmResponse: new FormControl(false),
+		SecurityAlarmSales: new FormControl(false),
+		SecurityConsultant: new FormControl(false),
+	});
+
+	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator('expiryDate', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),

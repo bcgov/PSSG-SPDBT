@@ -71,6 +71,9 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './componen
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
+import { BusinessCategoryAmouredCarGuardComponent } from './components/business/business-category-amoured-car-guard.component';
+import { BusinessCategoryPrivateInvestigatorComponent } from './components/business/business-category-private-investigator.component';
+import { BusinessCategorySecurityGuardComponent } from './components/business/business-category-security-guard.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
@@ -333,6 +336,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		WorkerLicenceWizardAuthenticatedNewComponent,
 		WorkerLicenceWizardAuthenticatedRenewComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
+		BusinessCategoryAmouredCarGuardComponent,
+		BusinessCategoryPrivateInvestigatorComponent,
+		BusinessCategorySecurityGuardComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 	providers: [LicenceApplicationService],
