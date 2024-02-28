@@ -336,6 +336,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	private licenceModelChangedSubscription!: Subscription;
 
 	isFormValid = false;
+	showMailingAddressStep!: boolean;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
@@ -364,6 +365,11 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	}
 
 	ngOnInit(): void {
+		// default it
+		this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
+			'residentialAddressData.isMailingTheSameAsResidential'
+		)?.value;
+
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				// console.debig('StepIdentificationAnonymousComponent licenceModelValueChanges$', _resp);
@@ -371,6 +377,10 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 
 				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
+					'residentialAddressData.isMailingTheSameAsResidential'
 				)?.value;
 			}
 		);
@@ -410,11 +420,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	get showMailingAddressStep(): boolean {
-		const form = this.licenceApplicationService.residentialAddressFormGroup;
-		return !form.value.isMailingTheSameAsResidential;
 	}
 
 	get showCitizenshipStep(): boolean {

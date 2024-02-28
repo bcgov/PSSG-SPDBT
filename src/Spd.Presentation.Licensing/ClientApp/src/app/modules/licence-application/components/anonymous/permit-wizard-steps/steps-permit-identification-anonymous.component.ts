@@ -253,7 +253,6 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	isFormValid = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
 	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;

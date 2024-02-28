@@ -11,12 +11,12 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 	selector: 'app-steps-business-licence-selection-new',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<app-step-business-licence-category></app-step-business-licence-category>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
@@ -39,7 +39,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-step-business-licence-term></app-step-business-licence-term>
@@ -76,7 +76,6 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;

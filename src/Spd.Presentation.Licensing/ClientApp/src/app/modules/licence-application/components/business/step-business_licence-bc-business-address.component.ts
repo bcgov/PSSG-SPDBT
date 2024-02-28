@@ -20,7 +20,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 					subtitle="Provide an address in British Columbia for document service"
 				></app-step-title>
 
-				<app-common-mailing-address [form]="form"></app-common-mailing-address>
+				<app-common-address [form]="form"></app-common-address>
 			</div>
 		</section>
 	`,
@@ -31,7 +31,7 @@ export class StepBusinessLicenceBcBusinessAddressComponent implements LicenceChi
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	// @ViewChild(CommonMailingAddressComponent) commonAddressComponent!: CommonMailingAddressComponent;
+	// @ViewChild(CommonAddressComponent) commonAddressComponent!: CommonAddressComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 

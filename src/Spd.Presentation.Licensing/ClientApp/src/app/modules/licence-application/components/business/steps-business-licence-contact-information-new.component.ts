@@ -7,6 +7,7 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 import { StepBusinessLicenceMailingAddressComponent } from './step-business-licence-mailing-address.component';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 import { StepBusinessLicenceBcBusinessAddressComponent } from './step-business_licence-bc-business-address.component';
+import { StepBusinessLicenceBranchesComponent } from './step-business_licence-branches.component';
 import { StepBusinessLicenceBusinessAddressComponent } from './step-business_licence-business-address.component';
 
 @Component({
@@ -18,7 +19,7 @@ import { StepBusinessLicenceBusinessAddressComponent } from './step-business_lic
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
@@ -115,7 +116,7 @@ import { StepBusinessLicenceBusinessAddressComponent } from './step-business_lic
 							mat-flat-button
 							color="primary"
 							class="large mb-2"
-							(click)="onStepNext(STEP_LICENCE_BC_BUSINESS_ADDRESS)"
+							(click)="onFormValidNextStep(STEP_LICENCE_BC_BUSINESS_ADDRESS)"
 						>
 							Next
 						</button>
@@ -132,6 +133,31 @@ import { StepBusinessLicenceBusinessAddressComponent } from './step-business_lic
 					</div>
 				</div>
 			</mat-step>
+
+			<mat-step>
+				<app-step-business-licence-branches></app-step-business-licence-branches>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_BRANCHES)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_BRANCHES)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -142,10 +168,10 @@ export class StepsBusinessLicenceContactInformationNewComponent extends BaseWiza
 	readonly STEP_LICENCE_BUSINESS_ADDRESS = 2;
 	readonly STEP_LICENCE_MAILING_ADDRESS = 3;
 	readonly STEP_LICENCE_BC_BUSINESS_ADDRESS = 4;
+	readonly STEP_LICENCE_BRANCHES = 5;
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerInformationComponent!: StepBusinessLicenceManagerInformationComponent;
@@ -155,6 +181,8 @@ export class StepsBusinessLicenceContactInformationNewComponent extends BaseWiza
 	stepMailingAddressComponent!: StepBusinessLicenceMailingAddressComponent;
 	@ViewChild(StepBusinessLicenceBcBusinessAddressComponent)
 	stepBcBusinessAddressComponent!: StepBusinessLicenceBcBusinessAddressComponent;
+	@ViewChild(StepBusinessLicenceBranchesComponent)
+	stepBranchesComponent!: StepBusinessLicenceBranchesComponent;
 
 	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {
 		super();
@@ -190,6 +218,8 @@ export class StepsBusinessLicenceContactInformationNewComponent extends BaseWiza
 				return this.stepMailingAddressComponent.isFormValid();
 			case this.STEP_LICENCE_BC_BUSINESS_ADDRESS:
 				return this.stepBcBusinessAddressComponent.isFormValid();
+			case this.STEP_LICENCE_BRANCHES:
+				return this.stepBranchesComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

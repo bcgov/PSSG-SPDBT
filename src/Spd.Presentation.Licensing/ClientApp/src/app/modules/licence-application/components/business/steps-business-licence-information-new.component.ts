@@ -14,7 +14,7 @@ import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.c
 	selector: 'app-steps-business-licence-information-new',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<app-step-business-licence-checklist-new></app-step-business-licence-checklist-new>
 
 				<div class="row wizard-button-row">
@@ -132,7 +132,7 @@ import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.c
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-step-business-licence-liability></app-step-business-licence-liability>
@@ -174,7 +174,6 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
 	@ViewChild(StepBusinessLicenceTypeComponent) stepTypeComponent!: StepBusinessLicenceTypeComponent;

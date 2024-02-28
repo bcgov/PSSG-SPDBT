@@ -150,7 +150,6 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
 	@ViewChild(StepPermitEmployerInformationComponent)

@@ -20,7 +20,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 					subtitle="Provide your business mailing address, if different from your business location"
 				></app-step-title>
 
-				<app-common-mailing-address [form]="form"></app-common-mailing-address>
+				<app-common-address [form]="form"></app-common-address>
 			</div>
 		</section>
 	`,
@@ -31,7 +31,7 @@ export class StepBusinessLicenceMailingAddressComponent implements LicenceChildS
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	// @ViewChild(CommonMailingAddressComponent) commonAddressComponent!: CommonMailingAddressComponent;
+	// @ViewChild(CommonAddressComponent) commonAddressComponent!: CommonAddressComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 

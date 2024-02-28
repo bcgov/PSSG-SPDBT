@@ -44,7 +44,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
 	implements OnInit, LicenceChildStepperStepComponent
 {
-	applicationTypeCodes = ApplicationTypeCode;
 	originalPhotoOfYourselfExpired = false;
 	photographOfYourself = this.licenceApplicationService.photographOfYourself;
 

@@ -103,15 +103,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	@ViewChild(StepsBusinessLicenceContactInformationNewComponent)
 	stepsBusinessContactInformationNewComponent!: StepsBusinessLicenceContactInformationNewComponent;
 
-	// @ViewChild(StepsPermitIdentificationComponent)
-	// stepsPermitIdentificationComponent!: StepsPermitIdentificationComponent;
-
-	// @ViewChild(StepsPermitContactComponent)
-	// stepsPermitContactComponent!: StepsPermitContactComponent;
-
-	// @ViewChild(StepsPermitReviewAnonymousComponent)
-	// stepsPermitReviewComponent!: StepsPermitReviewAnonymousComponent;
-
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
@@ -195,12 +186,12 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		stepper.next();
 	}
 
-	onGoToStep(_step: number) {
+	onGoToStep(step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsBusinessSelectionNewComponent?.onGoToFirstStep();
 		this.stepsBusinessContactInformationNewComponent?.onGoToFirstStep();
 		// 	this.stepsPermitContactComponent?.onGoToFirstStep();
-		// 	this.stepper.selectedIndex = step;
+		this.stepper.selectedIndex = step;
 	}
 
 	onGoToReview() {
@@ -221,7 +212,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onChildNextStep() {
-		console.log('onChildNextStep', this.stepper.selectedIndex);
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_BUSINESS_INFORMATION:
 				this.stepsBusinessInformationComponent?.onGoToNextStep();

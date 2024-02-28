@@ -82,7 +82,6 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	subtitle = '';
 	label = '';
 	booleanTypeCodes = BooleanTypeCode;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
 

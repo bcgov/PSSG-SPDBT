@@ -20,13 +20,13 @@ import { BusinessApplicationService } from '../../services/business-application.
 					subtitle="This is the address of your business's primary location"
 				></app-step-title>
 
-				<app-common-mailing-address [form]="form"></app-common-mailing-address>
+				<app-common-address [form]="form"></app-common-address>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8">
-							<mat-checkbox formControlName="isMailingTheSameAsResidential">
-								My residential address and mailing address are the same
+							<mat-checkbox formControlName="isMailingTheSame">
+								The mailing address is the same as the business address
 							</mat-checkbox>
 						</div>
 					</div>
@@ -41,7 +41,7 @@ export class StepBusinessLicenceBusinessAddressComponent implements LicenceChild
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	// @ViewChild(CommonMailingAddressComponent) commonAddressComponent!: CommonMailingAddressComponent;
+	// @ViewChild(CommonAddressComponent) commonAddressComponent!: CommonAddressComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 

@@ -62,7 +62,6 @@ export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, Licenc
 	title = '';
 	showCriminalHistory = false;
 	booleanTypeCodes = BooleanTypeCode;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	matcher = new FormErrorStateMatcher();
 

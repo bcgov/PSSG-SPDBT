@@ -16,6 +16,24 @@ export abstract class BusinessApplicationHelper {
 		applicationTypeCode: new FormControl('', [Validators.required]),
 	});
 
+	businessTypeFormGroup: FormGroup = this.formBuilder.group({
+		businessTypeCode: new FormControl('', [Validators.required]),
+	});
+
+	licenceTermFormGroup: FormGroup = this.formBuilder.group({
+		licenceTermCode: new FormControl('', [FormControlValidators.required]),
+	});
+
+	businessManagerFormGroup: FormGroup = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+		isBusinessManager: new FormControl(),
+	});
+
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
@@ -61,7 +79,7 @@ export abstract class BusinessApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [FormControlValidators.required]),
 		country: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(false),
+		isMailingTheSame: new FormControl(false),
 	});
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
@@ -113,6 +131,11 @@ export abstract class BusinessApplicationHelper {
 		province: new FormControl('', [FormControlValidators.required]),
 		country: new FormControl('', [FormControlValidators.required]),
 		isMailingTheSameAsResidential: new FormControl(false),
+	});
+
+	branchesInBcFormGroup: FormGroup = this.formBuilder.group({
+		hasBranchesInBc: new FormControl(''),
+		branches: this.formBuilder.array([]),
 	});
 
 	constructor(

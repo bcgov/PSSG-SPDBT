@@ -14,23 +14,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	initialized = false;
 	hasValueChanged = false;
 
-	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
+		businessTypeData: this.businessTypeFormGroup,
 	});
 
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
-		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private securityWorkerLicensingService: WorkerLicensingService, // private licenceLookupService: LicenceLookupService, // private authUserBcscService: AuthUserBcscService,
-	) // private authenticationService: AuthenticationService,
-	// private utilService: UtilService
-	{
+		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private securityWorkerLicensingService: WorkerLicensingService, // private licenceLookupService: LicenceLookupService, // private authUserBcscService: AuthUserBcscService, // private authenticationService: AuthenticationService, // private utilService: UtilService
+	) {
 		super(formBuilder, configService, formatDatePipe);
 	}
 

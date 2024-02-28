@@ -100,7 +100,6 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 	form: FormGroup = this.permitApplicationService.permitRequirementFormGroup;
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
