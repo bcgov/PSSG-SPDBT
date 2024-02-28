@@ -191,7 +191,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 											<div class="text-data">CAS-2023-P1F3S11005</div>
 											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
 													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
-													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Active</span>
+													<span class="appl-chip-option-item ms-2 fs-5">Active</span>
 												</mat-chip-option> -->
 										</div>
 										<mat-divider class="my-2"></mat-divider>
@@ -331,7 +331,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 											</button> -->
 											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
 													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
-													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Expired</span>
+													<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
 												</mat-chip-option> -->
 										</div>
 									</div>

@@ -3,16 +3,18 @@ import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { CommonAddressComponent } from './common-address.component';
 import { CommonAliasListComponent } from './common-alias-list.component';
 import { CommonContactInformationComponent } from './common-contact-information.component';
-import { CommonMailingAddressComponent } from './common-mailing-address.component';
 
 @Component({
 	selector: 'app-common-user-profile',
 	template: `
 		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
-		<app-common-user-profile-personal-information [isReadOnly]="isReadOnly"></app-common-user-profile-personal-information>
+		<app-common-user-profile-personal-information
+			[isReadOnly]="isReadOnly"
+		></app-common-user-profile-personal-information>
 
 		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
@@ -58,11 +60,11 @@ import { CommonMailingAddressComponent } from './common-mailing-address.componen
 					</div>
 				</ng-container>
 				<ng-template #mailingIsDifferentThanResidential>
-					<app-common-mailing-address
+					<app-common-address
 						[form]="mailingAddressFormGroup"
 						[isWizardStep]="false"
 						[isReadOnly]="isReadOnly"
-					></app-common-mailing-address>
+					></app-common-address>
 				</ng-template>
 			</div>
 		</div>
@@ -79,7 +81,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
 	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
-	@ViewChild(CommonMailingAddressComponent) mailingAddressComponent!: CommonMailingAddressComponent;
+	@ViewChild(CommonAddressComponent) mailingAddressComponent!: CommonAddressComponent;
 
 	isReadOnly = true;
 

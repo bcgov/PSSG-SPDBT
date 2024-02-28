@@ -145,9 +145,9 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 
 	isLoggedIn = false;
 	isFormValid = false;
+	showMailingAddressStep!: boolean;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitResidentialAddressComponent)
 	stepResidentialAddressComponent!: StepPermitResidentialAddressComponent;
@@ -163,6 +163,11 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 	}
 
 	ngOnInit(): void {
+		// default it
+		this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
+			'residentialAddressData.isMailingTheSameAsResidential'
+		)?.value;
+
 		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
 				// console.debug('permitModelValueChanges$', _resp);
@@ -170,6 +175,10 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
+					'residentialAddressData.isMailingTheSameAsResidential'
 				)?.value;
 			}
 		);
@@ -203,10 +212,5 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 				return this.stepContactInformationComponent.isFormValid();
 		}
 		return false;
-	}
-
-	get showMailingAddressStep(): boolean {
-		const form = this.permitApplicationService.residentialAddressFormGroup;
-		return !form.value.isMailingTheSameAsResidential;
 	}
 }

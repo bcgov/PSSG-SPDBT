@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SecurityContext } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { HotToastService } from '@ngneat/hot-toast';
 
@@ -94,30 +95,17 @@ export class FileUploadHelper {
 			</ngx-dropzone-label>
 
 			<ng-container *ngIf="files">
-				<ng-container *ngIf="files.length === 1">
-					<ng-container *ngFor="let file of files">
-						<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-							<ngx-dropzone-label>
-								<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-								<span>{{ file.name }}</span>
-								<!-- ({{ getFileSize(file.size) }} KB) -->
-							</ngx-dropzone-label>
-						</ngx-dropzone-preview>
-
-						<div class="text-center w-100 mx-4 mb-2">
-							<ng-container *ngTemplateOutlet="infoText"></ng-container>
-						</div>
-					</ng-container>
-				</ng-container>
-
-				<ng-container *ngIf="files.length > 1">
+				<ng-container *ngIf="files.length > 0">
 					<div class="row">
 						<ng-container *ngFor="let file of files">
-							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+							<div class="col-lg-6 col-md-12 col-sm-12">
 								<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
 									<ngx-dropzone-label>
 										<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
 										<span>{{ file.name }} </span>
+										<div class="image-preview-container" *ngIf="previewImage">
+											<img class="image-preview-container__image" [src]="getPreviewImage(file)" alt="Image preview" />
+										</div>
 										<!-- ({{ getFileSize(file.size) }} KB) -->
 									</ngx-dropzone-label>
 								</ngx-dropzone-preview>
@@ -171,6 +159,15 @@ export class FileUploadHelper {
 			.fine-print {
 				font-size: var(--font-size-small);
 			}
+
+			.image-preview-container {
+				// border: 1px solid var(--color-grey-lighter);
+
+				&__image {
+					max-height: 200px;
+					max-width: 200px;
+				}
+			}
 		`,
 	],
 })
@@ -184,6 +181,7 @@ export class FileUploadComponent implements OnInit {
 	@Input() disableClick = false;
 	@Input() isReadOnly = false;
 	@Input() disabled = false;
+	@Input() previewImage = false;
 	@Input() files: Array<File> = [];
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept
@@ -194,7 +192,7 @@ export class FileUploadComponent implements OnInit {
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
 
-	constructor(private hotToastService: HotToastService) {}
+	constructor(private hotToastService: HotToastService, private domSanitizer: DomSanitizer) {}
 
 	ngOnInit(): void {
 		if (!this.files) {
@@ -279,6 +277,16 @@ export class FileUploadComponent implements OnInit {
 
 		if (size < 1) return 'Less than 1';
 		else return size;
+	}
+
+	getPreviewImage(_file: File): string {
+		const objectUrl = URL.createObjectURL(_file);
+		const previewFile = this.domSanitizer.sanitize(
+			SecurityContext.RESOURCE_URL,
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+		);
+
+		return previewFile!;
 	}
 
 	private filesUpdated(): void {

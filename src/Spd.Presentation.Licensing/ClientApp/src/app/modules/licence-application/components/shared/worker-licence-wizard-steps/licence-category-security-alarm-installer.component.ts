@@ -51,14 +51,14 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-6 fw-bold mb-2">
+				<div class="fs-5 mb-2">
 					<span
 						*ngIf="
 							requirementCode.value ===
 							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
 						"
 					>
-						Upload a copy of your certificate:
+						Upload a copy of your certificate
 					</span>
 					<span
 						*ngIf="
@@ -66,7 +66,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
 						"
 					>
-						Upload document(s) providing proof of equivalent training:
+						Upload document(s) providing proof of equivalent training
 					</span>
 				</div>
 
