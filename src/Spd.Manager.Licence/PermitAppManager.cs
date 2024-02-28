@@ -249,7 +249,7 @@ internal class PermitAppManager :
             changes.RationaleChanged = true;
             changes.RationaleChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see changes done in rationale",
+                Description = $"Please see the rationale submitted by the licensee with details as following : {newRequest.Rationale}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Rationale Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
