@@ -241,6 +241,8 @@ internal class PermitAppManager :
                 ChangeInEmployerInfo(originalApp, newRequest))
                 changes.PurposeChanged = true;
         }
+        
+        List<string> purposes = GetPurposes(newRequest);
 
         // Purpose changed, create a task for Licensing RA team
         if (changes.PurposeChanged)
@@ -249,7 +251,7 @@ internal class PermitAppManager :
             changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Permit holder have requested to update the below provided rationale: \n" +
-                $" - Purpose: {newRequest.WorkerLicenceTypeCode} \n" +
+                $" - Purpose: {string.Join(";", purposes)} \n" +
                 $" - Rationale: {newRequest.Rationale} \n" +
                 $" - {string.Join(";", fileNames)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
@@ -269,7 +271,7 @@ internal class PermitAppManager :
             changes.RationaleChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Permit holder have requested to update the below provided rationale: \n" +
-                $" - Purpose: {newRequest.WorkerLicenceTypeCode} \n" +
+                $" - Purpose: {string.Join(";", purposes)} \n" +
                 $" - Rationale: {newRequest.Rationale} \n" +
                 $" - {string.Join(";", fileNames)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
@@ -372,6 +374,23 @@ internal class PermitAppManager :
         }
 
         return false;
+    }
+
+    private List<string> GetPurposes(PermitAppAnonymousSubmitRequest newRequest)
+    {
+        List<string> purposes = [];
+
+        if (newRequest.ArmouredVehiclePermitReasonCodes.Any())
+        {
+            foreach (var reasonCode in newRequest.ArmouredVehiclePermitReasonCodes)
+                purposes.Add(reasonCode.ToString());
+        } else
+        {
+            foreach (var reasonCode in newRequest.BodyArmourPermitReasonCodes)
+                purposes.Add(reasonCode.ToString());
+        }
+
+        return purposes;
     }
 
     private sealed record ChangeSpec
