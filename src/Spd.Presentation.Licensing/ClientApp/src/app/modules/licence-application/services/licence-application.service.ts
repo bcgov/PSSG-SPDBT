@@ -4,7 +4,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import {
 	Alias,
 	ApplicationTypeCode,
-	BooleanTypeCode,
 	BusinessTypeCode,
 	Document,
 	GoogleRecaptcha,
@@ -19,19 +18,20 @@ import {
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import * as moment from 'moment';
 import {
 	BehaviorSubject,
+	Observable,
+	Subscription,
 	catchError,
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
 	map,
-	Observable,
 	of,
-	Subscription,
 	switchMap,
 	take,
 	tap,
@@ -541,53 +541,53 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private createEmptyLicenceAuthenticated(): Observable<any> {
 		this.reset();
 
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
-		if (bcscUserWhoamiProfile) {
-			const personalInformationData = {
-				givenName: bcscUserWhoamiProfile.firstName,
-				middleName1: bcscUserWhoamiProfile.middleName1,
-				middleName2: bcscUserWhoamiProfile.middleName2,
-				surname: bcscUserWhoamiProfile.lastName,
-				dateOfBirth: bcscUserWhoamiProfile.birthDate,
-				genderCode: bcscUserWhoamiProfile.gender,
-			};
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;// TODO fix for authenticated
+		// if (bcscUserWhoamiProfile) {
+		// 	const personalInformationData = {
+		// 		givenName: bcscUserWhoamiProfile.firstName,
+		// 		middleName1: bcscUserWhoamiProfile.middleName1,
+		// 		middleName2: bcscUserWhoamiProfile.middleName2,
+		// 		surname: bcscUserWhoamiProfile.lastName,
+		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 		genderCode: bcscUserWhoamiProfile.gender,
+		// 	};
 
-			const residentialAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: false,
-				addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-				addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-				city: bcscUserWhoamiProfile.residentialAddress?.city,
-				country: bcscUserWhoamiProfile.residentialAddress?.country,
-				postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-				province: bcscUserWhoamiProfile.residentialAddress?.province,
-			};
+		// 	const residentialAddressData = {
+		// 		addressSelected: true,
+		// 		isMailingTheSameAsResidential: false,
+		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
+		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
+		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
+		// 	};
 
-			this.licenceModelFormGroup.patchValue(
-				{
-					personalInformationData: { ...personalInformationData },
-					residentialAddressData: { ...residentialAddressData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		} else {
-			const residentialAddressData = {
-				isMailingTheSameAsResidential: false,
-			};
+		// 	this.licenceModelFormGroup.patchValue(
+		// 		{
+		// 			personalInformationData: { ...personalInformationData },
+		// 			residentialAddressData: { ...residentialAddressData },
+		// 			aliasesData: { previousNameFlag: BooleanTypeCode.No },
+		// 		},
+		// 		{
+		// 			emitEvent: false,
+		// 		}
+		// 	);
+		// } else {
+		const residentialAddressData = {
+			isMailingTheSameAsResidential: false,
+		};
 
-			this.licenceModelFormGroup.patchValue(
-				{
-					residentialAddressData: { ...residentialAddressData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		}
+		this.licenceModelFormGroup.patchValue(
+			{
+				residentialAddressData: { ...residentialAddressData },
+				aliasesData: { previousNameFlag: BooleanTypeCode.No },
+			},
+			{
+				emitEvent: false,
+			}
+		);
+		// }
 
 		return of(this.licenceModelFormGroup.value);
 	}
@@ -663,7 +663,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private loadSpecificLicenceIntoModel(resp: WorkerLicenceResponse): void {
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
@@ -699,37 +699,37 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		let personalInformationData = {};
-		if (bcscUserWhoamiProfile) {
-			personalInformationData = {
-				givenName: bcscUserWhoamiProfile.firstName,
-				middleName1: bcscUserWhoamiProfile.middleName1,
-				middleName2: bcscUserWhoamiProfile.middleName2,
-				surname: bcscUserWhoamiProfile.lastName,
-				genderCode: bcscUserWhoamiProfile.gender,
-				dateOfBirth: bcscUserWhoamiProfile.birthDate,
-				origGivenName: bcscUserWhoamiProfile.firstName,
-				origMiddleName1: bcscUserWhoamiProfile.middleName1,
-				origMiddleName2: bcscUserWhoamiProfile.middleName2,
-				origSurname: bcscUserWhoamiProfile.lastName,
-				origGenderCode: bcscUserWhoamiProfile.gender,
-				origDateOfBirth: bcscUserWhoamiProfile.birthDate,
-			};
-		} else {
-			personalInformationData = {
-				givenName: resp.givenName,
-				middleName1: resp.middleName1,
-				middleName2: resp.middleName2,
-				surname: resp.surname,
-				genderCode: resp.genderCode,
-				dateOfBirth: resp.dateOfBirth,
-				origGivenName: resp.givenName,
-				origMiddleName1: resp.middleName1,
-				origMiddleName2: resp.middleName2,
-				origSurname: resp.surname,
-				origGenderCode: resp.genderCode,
-				origDateOfBirth: resp.dateOfBirth,
-			};
-		}
+		// if (bcscUserWhoamiProfile) {// TODO fix for authenticated
+		// 	personalInformationData = {
+		// 		givenName: bcscUserWhoamiProfile.firstName,
+		// 		middleName1: bcscUserWhoamiProfile.middleName1,
+		// 		middleName2: bcscUserWhoamiProfile.middleName2,
+		// 		surname: bcscUserWhoamiProfile.lastName,
+		// 		genderCode: bcscUserWhoamiProfile.gender,
+		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 		origGivenName: bcscUserWhoamiProfile.firstName,
+		// 		origMiddleName1: bcscUserWhoamiProfile.middleName1,
+		// 		origMiddleName2: bcscUserWhoamiProfile.middleName2,
+		// 		origSurname: bcscUserWhoamiProfile.lastName,
+		// 		origGenderCode: bcscUserWhoamiProfile.gender,
+		// 		origDateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 	};
+		// } else {
+		personalInformationData = {
+			givenName: resp.givenName,
+			middleName1: resp.middleName1,
+			middleName2: resp.middleName2,
+			surname: resp.surname,
+			genderCode: resp.genderCode,
+			dateOfBirth: resp.dateOfBirth,
+			origGivenName: resp.givenName,
+			origMiddleName1: resp.middleName1,
+			origMiddleName2: resp.middleName2,
+			origSurname: resp.surname,
+			origGenderCode: resp.genderCode,
+			origDateOfBirth: resp.dateOfBirth,
+		};
+		// }
 
 		let height = resp.height ? resp.height + '' : null;
 		let heightInches = '';
@@ -755,24 +755,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		let residentialAddressData = {};
 		const isMailingTheSameAsResidential = resp.isMailingTheSameAsResidential ?? false;
-		if (bcscUserWhoamiProfile) {
-			residentialAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-				addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-				addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-				city: bcscUserWhoamiProfile.residentialAddress?.city,
-				country: bcscUserWhoamiProfile.residentialAddress?.country,
-				postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-				province: bcscUserWhoamiProfile.residentialAddress?.province,
-			};
-		} else {
-			residentialAddressData = {
-				...resp.residentialAddressData,
-				isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-				addressSelected: !!resp.residentialAddressData?.addressLine1,
-			};
-		}
+		// if (bcscUserWhoamiProfile) {// TODO fix for authenticated
+		// 	residentialAddressData = {
+		// 		addressSelected: true,
+		// 		isMailingTheSameAsResidential: isMailingTheSameAsResidential,
+		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
+		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
+		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
+		// 	};
+		// } else {
+		residentialAddressData = {
+			...resp.residentialAddressData,
+			isMailingTheSameAsResidential: isMailingTheSameAsResidential,
+			addressSelected: !!resp.residentialAddressData?.addressLine1,
+		};
+		// }
 
 		let mailingAddressData = {};
 		// if (!isMailingTheSameAsResidential) {

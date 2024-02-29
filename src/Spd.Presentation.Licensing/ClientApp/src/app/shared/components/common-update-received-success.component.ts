@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -86,7 +86,6 @@ export class CommonUpdateReceivedSuccessComponent implements OnInit {
 
 	isBackRoute = false;
 	appConstants = SPD_CONSTANTS;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 

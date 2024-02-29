@@ -11,6 +11,7 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
+	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -61,8 +62,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 				<app-alert type="danger" *ngIf="fingerprintsAlert">
 					<div class="fw-semibold">{{ fingerprintsAlert }}</div>
 				</app-alert>
-				<app-alert type="danger" *ngIf="statutoryDeclarationAlert">
-					<div class="fw-semibold">{{ statutoryDeclarationAlert }}</div>
+				<app-alert type="danger" *ngIf="selfDisclosureAlert">
+					<div class="fw-semibold">{{ selfDisclosureAlert }}</div>
 				</app-alert>
 			</div>
 		</div>
@@ -202,7 +203,7 @@ export class SecurityScreeningListComponent implements OnInit {
 	opportunityToRespondAlert: string | null = null;
 	requestForAdditionalInfoAlert: string | null = null;
 	fingerprintsAlert: string | null = null;
-	statutoryDeclarationAlert: string | null = null;
+	selfDisclosureAlert: string | null = null;
 
 	constructor(
 		private router: Router,
@@ -265,12 +266,12 @@ export class SecurityScreeningListComponent implements OnInit {
 		this.opportunityToRespondAlert = null;
 		this.requestForAdditionalInfoAlert = null;
 		this.fingerprintsAlert = null;
-		this.statutoryDeclarationAlert = null;
+		this.selfDisclosureAlert = null;
 
 		let opportunityToRespondCount = 0;
 		let requestForAdditionalInfoCount = 0;
 		const fingerprintsCount = 0;
-		let statutoryDeclarationCount = 0;
+		let selfDisclosureCount = 0;
 
 		this.applicantService
 			.apiApplicantsApplicantIdScreeningsGet({
@@ -314,9 +315,13 @@ export class SecurityScreeningListComponent implements OnInit {
 								break;
 						}
 					} else if (app.status == ApplicationPortalStatusCode.UnderAssessment) {
-						if (app.caseSubStatus == CaseSubStatusCode.StatutoryDeclaration) {
+						// SPDBT-2237 self disclosure only applies to PSSO/PssoVs
+						if (
+							app.caseSubStatus == CaseSubStatusCode.SelfDisclosure &&
+							(app.serviceType === ServiceTypeCode.Psso || app.serviceType === ServiceTypeCode.PssoVs)
+						) {
 							documentsRequiredCount++;
-							statutoryDeclarationCount++;
+							selfDisclosureCount++;
 						}
 					}
 
@@ -328,7 +333,7 @@ export class SecurityScreeningListComponent implements OnInit {
 				this.opportunityToRespondAlert = this.getOpportunityToRespondText(opportunityToRespondCount);
 				this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText(requestForAdditionalInfoCount);
 				this.fingerprintsAlert = this.getFingerprintsText(fingerprintsCount);
-				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText(statutoryDeclarationCount);
+				this.selfDisclosureAlert = this.getSelfDisclosureText(selfDisclosureCount);
 
 				this.setFilterApplications();
 			});
@@ -377,10 +382,10 @@ export class SecurityScreeningListComponent implements OnInit {
 			: 'Fingerprint information required on 1 application';
 	}
 
-	private getStatutoryDeclarationText(count: number): string | null {
+	private getSelfDisclosureText(count: number): string | null {
 		if (count == 0) return null;
 		return count > 1
-			? `You have the opportunity to provide a statutory declaration on ${count} applications`
-			: 'You have the opportunity to provide a statutory declaration on 1 application';
+			? `You have the opportunity to provide a self disclosure on ${count} applications`
+			: 'You have the opportunity to provide a self disclosure on 1 application';
 	}
 }

@@ -24,8 +24,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitCriminalHistoryComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.permitApplicationService.criminalHistoryFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

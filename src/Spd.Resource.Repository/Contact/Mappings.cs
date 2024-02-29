@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
-            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.emailaddress1))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
@@ -26,6 +26,8 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
+            .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
+            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
             ;
 
             _ = CreateMap<ContactCmd, contact>()
@@ -55,6 +57,8 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.spd_peaceofficerstatus, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
             .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
+            .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
+            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
             ;
 
             _ = CreateMap<CreateContactCmd, contact>()

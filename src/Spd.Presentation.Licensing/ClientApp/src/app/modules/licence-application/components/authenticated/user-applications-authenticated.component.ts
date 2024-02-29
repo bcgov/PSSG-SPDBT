@@ -8,7 +8,6 @@ import { ApplicationPortalStatusCode, WorkerLicenceAppListResponse, WorkerLicenc
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import * as moment from 'moment';
 import { Subscription, take, tap } from 'rxjs';
 import { SecurityWorkerLicensingService } from 'src/app/api/services';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -207,7 +206,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 											<div class="text-data">CAS-2023-P1F3S11005</div>
 											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
 													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
-													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Active</span>
+													<span class="appl-chip-option-item ms-2 fs-5">Active</span>
 												</mat-chip-option> -->
 										</div>
 										<mat-divider class="my-2"></mat-divider>
@@ -347,7 +346,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 											</button> -->
 											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
 													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
-													<span class="appl-chip-option-item ms-2 fs-6 fw-bold">Expired</span>
+													<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
 												</mat-chip-option> -->
 										</div>
 									</div>
@@ -473,64 +472,53 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
 			(isLoggedIn: boolean) => {
 				if (isLoggedIn) {
-					this.securityWorkerLicensingService
-						.apiWorkerLicenceApplicationsGet()
-						.pipe()
-						.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
-							const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
-							const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
-							const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
-
-							// TODO remove when backend updated...
-							// If 30 days or more have passed since the last save, the application does not appear in this list
-							const inProgressResults = resp.filter(
-								(item: WorkerLicenceAppListResponse) =>
-									item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
-									// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
-									(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-										moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
-							);
-
-							const activeResults = resp.filter(
-								(item: WorkerLicenceAppListResponse) =>
-									item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
-							);
-
-							const expiredResults = resp.filter(
-								(item: WorkerLicenceAppListResponse) =>
-									item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress
-							);
-
-							this.isNoActiveOrExpiredLicences = resp.length === 0;
-
-							this.isAllowCreateNew = true;
-
-							// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
-
-							inProgressResults.map((item: any) => {
-								if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
-									item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
-									item.isWarningMessage = false;
-									item.isErrorMessage = false;
-
-									if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
-										item.isErrorMessage = true;
-									} else if (
-										moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))
-									) {
-										item.isWarningMessage = true;
-									}
-								}
-							});
-
-							this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
-
-							this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
-
-							this.inProgressDataSource = new MatTableDataSource(
-								(inProgressResults as Array<WorkerLicenceInProgress>) ?? []
-							);
-						});
+					// this.securityWorkerLicensingService
+					// 	.apiWorkerLicenceApplicationsGet()
+					// 	.pipe()
+					// 	.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
+					// 		const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
+					// 		const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
+					// 		const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
+					// 		// TODO remove when backend updated...
+					// 		// If 30 days or more have passed since the last save, the application does not appear in this list
+					// 		const inProgressResults = resp.filter(
+					// 			(item: WorkerLicenceAppListResponse) =>
+					// 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+					// 				// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+					// 				(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+					// 					moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
+					// 		);
+					// 		const activeResults = resp.filter(
+					// 			(item: WorkerLicenceAppListResponse) =>
+					// 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+					// 		);
+					// 		const expiredResults = resp.filter(
+					// 			(item: WorkerLicenceAppListResponse) =>
+					// 				item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress
+					// 		);
+					// 		this.isNoActiveOrExpiredLicences = resp.length === 0;
+					// 		this.isAllowCreateNew = true;
+					// 		// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
+					// 		inProgressResults.map((item: any) => {
+					// 			if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
+					// 				item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
+					// 				item.isWarningMessage = false;
+					// 				item.isErrorMessage = false;
+					// 				if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
+					// 					item.isErrorMessage = true;
+					// 				} else if (
+					// 					moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))
+					// 				) {
+					// 					item.isWarningMessage = true;
+					// 				}
+					// 			}
+					// 		});
+					// 		this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
+					// 		this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
+					// 		this.inProgressDataSource = new MatTableDataSource(
+					// 			(inProgressResults as Array<WorkerLicenceInProgress>) ?? []
+					// 		);
+					// 	});
 				}
 			}
 		);

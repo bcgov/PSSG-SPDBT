@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-common-reprint',

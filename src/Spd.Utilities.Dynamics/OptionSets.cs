@@ -103,7 +103,7 @@ namespace Spd.Utilities.Dynamics
         CPICCheck = 100000001,
         PRIMECheck = 100000002,
         Fingerprints = 100000003,
-        StatutoryDeclaration = 100000004,
+        SelfDisclosure = 100000004,
         ApplicantInformation = 100000005,
         AwaitingRCC = 100000006,
         Incomplete = 100000007,

@@ -23,7 +23,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicenceBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
 
-	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}

@@ -38,7 +38,7 @@ export enum FileTypeCode {
   SecurityAlarmInstaller = 'SecurityAlarmInstaller',
   SecurityConsultant = 'SecurityConsultant',
   SecurityGuard = 'SecurityGuard',
-  StatutoryDeclaration = 'StatutoryDeclaration',
+  SelfDisclosure = 'SelfDisclosure',
   ValidationCertificate = 'ValidationCertificate',
   OpportunityToRespond = 'OpportunityToRespond'
 }

@@ -49,8 +49,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 	styles: [],
 })
 export class StepPermitPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 
 	@Input() isCalledFromModal = false;

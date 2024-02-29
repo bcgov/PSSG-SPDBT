@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, BooleanTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -62,7 +63,6 @@ export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, Licenc
 	title = '';
 	showCriminalHistory = false;
 	booleanTypeCodes = BooleanTypeCode;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	matcher = new FormErrorStateMatcher();
 
