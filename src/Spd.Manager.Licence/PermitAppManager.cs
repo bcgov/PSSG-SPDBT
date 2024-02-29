@@ -193,8 +193,8 @@ internal class PermitAppManager :
         LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
-        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = SharedUtilities.GetBodyArmourPermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
-        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = SharedUtilities.GetArmouredVehiclePermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
+        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = Mappings.GetBodyArmourPermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
+        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = Mappings.GetArmouredVehiclePermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
 
         if (newRequest.BodyArmourPermitReasonCodes.Any())
         {
