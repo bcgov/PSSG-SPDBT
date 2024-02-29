@@ -7,13 +7,14 @@ namespace Spd.Manager.Licence
 {
     public interface IApplicantProfileManager
     {
-        public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
-        public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand request, CancellationToken ct); //used for applicant portal
+        public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery query, CancellationToken ct);
+        public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct); //used for applicant portal
+        public Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct);
     }
 
     public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
     public record ApplicantLoginCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantLoginResponse>;
-
+    public record ApplicantTermAgreeCommand(Guid ApplicantId) : IRequest<Unit>;
     public record Applicant
     {
         public string? FirstName { get; set; }

@@ -1,4 +1,3 @@
-
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +36,18 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
+        /// <summary>
+        /// when user select agree to the Term. Call this endpoint.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant/{applicantId}/term-agree")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<ActionResult> ApplicantPortalTermAgree([FromRoute] Guid applicantId)
+        {
+            await _mediator.Send(new ApplicantTermAgreeCommand(applicantId));
+            return Ok();
+        }
     }
 
 
