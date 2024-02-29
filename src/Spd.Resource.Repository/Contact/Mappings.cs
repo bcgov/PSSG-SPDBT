@@ -26,6 +26,8 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_peaceofficer)))
             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
+            .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
+            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
             ;
 
             _ = CreateMap<ContactCmd, contact>()
@@ -59,6 +61,8 @@ namespace Spd.Resource.Repository.Contact
 
             _ = CreateMap<CreateContactCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
+            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
             .IncludeBase<ContactCmd, contact>();
 
             _ = CreateMap<UpdateContactCmd, contact>()

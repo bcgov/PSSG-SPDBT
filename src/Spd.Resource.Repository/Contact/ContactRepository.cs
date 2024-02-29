@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
-using Polly;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -51,6 +50,7 @@ internal class ContactRepository : IContactRepository
         {
             UpdateContactCmd c => await UpdateContactAsync(c, ct),
             CreateContactCmd c => await CreateContactAsync(c, ct),
+            TermAgreementCmd c => await TermAgreeAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -58,18 +58,8 @@ internal class ContactRepository : IContactRepository
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact newContact = _mapper.Map<contact>(c);
-        if (c.Source == SourceEnum.SCREENING)
-        {
-            newContact.spd_lastloggedinscreeningportal = DateTimeOffset.UtcNow;
-        }
-        if (c.Source == SourceEnum.LICENSING)
-        {
-            newContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
-        }
         ContactResp resp = new();
         contact? existingContact = await _context.GetContactById(c.Id, ct);
-        resp.IsFirstTimeLoginLicensing = existingContact?.spd_lastloggedinlicensingportal == null;
-        resp.IsFirstTimeLoginScreening = existingContact?.spd_lastloggedinscreeningportal == null;    
         existingContact = await _context.UpdateContact(existingContact, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
@@ -78,14 +68,8 @@ internal class ContactRepository : IContactRepository
     private async Task<ContactResp> CreateContactAsync(CreateContactCmd c, CancellationToken ct)
     {
         contact contact = _mapper.Map<contact>(c);
-        if (c.Source == SourceEnum.SCREENING)
-        {
-            contact.spd_lastloggedinscreeningportal = DateTimeOffset.UtcNow;
-        }
-        if (c.Source == SourceEnum.LICENSING)
-        {
-            contact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
-        }
+        contact.spd_lastloggedinscreeningportal = null;
+        contact.spd_lastloggedinlicensingportal = null;
         spd_identity? identity = null;
         if (c.IdentityId != null)
         {
@@ -100,9 +84,22 @@ internal class ContactRepository : IContactRepository
         contact = await _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
         await _context.SaveChangesAsync(ct);
         ContactResp resp = _mapper.Map<ContactResp>(contact);
-        resp.IsFirstTimeLoginLicensing = true;
-        resp.IsFirstTimeLoginScreening = true;
         return resp;
+    }
+
+    private async Task<ContactResp> TermAgreeAsync(TermAgreementCmd c, CancellationToken ct)
+    {
+        ContactResp resp = new();
+        contact? existingContact = await _context.GetContactById(c.Id, ct);
+        if(existingContact == null)
+        {
+            _logger.LogError($"no valid contact for {c.Id}");
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid contact id.");
+        }
+        existingContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
+        _context.UpdateObject(existingContact);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
 }
 
