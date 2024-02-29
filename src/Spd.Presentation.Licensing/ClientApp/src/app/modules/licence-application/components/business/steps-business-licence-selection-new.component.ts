@@ -1,35 +1,30 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
+import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { Subscription } from 'rxjs';
-import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { BusinessApplicationService } from '../../services/business-application.service';
-import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
+import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
+import { StepBusinessLicenceTermComponent } from './step-business-licence-term.component';
 
 @Component({
-	selector: 'app-steps-business-information-new',
+	selector: 'app-steps-business-licence-selection-new',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-checklist-new></app-step-permit-checklist-new>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-business-licence-expired></app-step-business-licence-expired>
+				<app-step-business-licence-category></app-step-business-licence-category>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_EXPIRED)">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
+						>
 							Next
 						</button>
 					</div>
@@ -38,7 +33,32 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 							mat-stroked-button
 							color="primary"
 							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_EXPIRED)"
+							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-business-licence-term></app-step-business-licence-term>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_TERM)"
 						>
 							Next: Review
 						</button>
@@ -50,17 +70,15 @@ import { StepBusinessLicenceExpiredComponent } from './step-business-licence-exp
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessInformationNewComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_EXPIRED = 1;
-
-	private licenceModelChangedSubscription!: Subscription;
+export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepComponent {
+	readonly STEP_LICENCE_CATEGORY = 1;
+	readonly STEP_LICENCE_TERM = 2;
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
-	@ViewChild(StepBusinessLicenceExpiredComponent)
-	stepLicenceExpiredComponent!: StepBusinessLicenceExpiredComponent;
+	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
+	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;
 
 	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {
 		super();
@@ -88,8 +106,10 @@ export class StepsBusinessInformationNewComponent extends BaseWizardStepComponen
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
-			case this.STEP_LICENCE_EXPIRED:
-				return this.stepLicenceExpiredComponent.isFormValid();
+			case this.STEP_LICENCE_CATEGORY:
+				return this.stepCategoryComponent.isFormValid();
+			case this.STEP_LICENCE_TERM:
+				return this.stepTermComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

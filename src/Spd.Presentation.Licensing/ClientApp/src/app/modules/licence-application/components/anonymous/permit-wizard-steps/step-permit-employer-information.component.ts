@@ -169,7 +169,6 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	readonly title_new = 'Provide your employer’s information';
 	readonly title_not_new = 'Confirm your employer’s information';
 
-	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}

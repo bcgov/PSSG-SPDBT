@@ -33,7 +33,7 @@ internal class DocumentTemplateRepository : IDocumentTemplateRepository
         {
             DocTemplateTypeEnum.ManualPaymentForm => "Manual Payment Form",
             //DocTemplateTypeEnum.MonthlyReport => "Monthly Report",
-            DocTemplateTypeEnum.StatutoryDeclaration => "Statutory Declaration",
+            DocTemplateTypeEnum.SelfDisclosure => "Self Disclosure",
             DocTemplateTypeEnum.ClearanceLetter => "Clearance Letter",
             _ => throw new NotSupportedException()
         };
@@ -55,7 +55,7 @@ internal class DocumentTemplateRepository : IDocumentTemplateRepository
         result.DocumentType = cmd.DocTemplateType switch
         {
             DocTemplateTypeEnum.ManualPaymentForm => DocumentTypeEnum.ManualPaymentForm,
-            DocTemplateTypeEnum.StatutoryDeclaration => DocumentTypeEnum.StatutoryDeclarationPkg,
+            DocTemplateTypeEnum.SelfDisclosure => DocumentTypeEnum.SelfDisclosurePkg,
             DocTemplateTypeEnum.ClearanceLetter => DocumentTypeEnum.ClearanceLetter,
             _ => throw new NotSupportedException()
         };

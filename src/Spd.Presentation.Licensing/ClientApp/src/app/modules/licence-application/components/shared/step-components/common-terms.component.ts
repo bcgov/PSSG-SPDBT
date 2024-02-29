@@ -301,8 +301,6 @@ export class CommonTermsComponent implements OnInit {
 
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantTerms;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 

@@ -5,13 +5,14 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
+import { ApplicantProfileService } from './services/applicant-profile.service';
 import { ConfigurationService } from './services/configuration.service';
 import { LicenceService } from './services/licence.service';
 import { LicenceFeeService } from './services/licence-fee.service';
+import { LoginService } from './services/login.service';
 import { PaymentService } from './services/payment.service';
 import { PermitService } from './services/permit.service';
 import { SecurityWorkerLicensingService } from './services/security-worker-licensing.service';
-import { UserProfileService } from './services/user-profile.service';
 
 /**
  * Module that provides all services and configuration.
@@ -22,13 +23,14 @@ import { UserProfileService } from './services/user-profile.service';
   declarations: [],
   providers: [
     AddressAutoCompleteService,
+    ApplicantProfileService,
     ConfigurationService,
     LicenceService,
     LicenceFeeService,
+    LoginService,
     PaymentService,
     PermitService,
     SecurityWorkerLicensingService,
-    UserProfileService,
     ApiConfiguration
   ],
 })

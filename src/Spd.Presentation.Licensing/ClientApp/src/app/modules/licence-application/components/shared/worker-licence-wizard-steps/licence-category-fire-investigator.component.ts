@@ -15,7 +15,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-6 fw-bold mb-2">Experience:</div>
+					<div class="fs-5 mb-2">Experience:</div>
 					To qualify for a Fire Investigator security worker licence, you must meet both of the following experience
 					requirements:
 					<ul>
@@ -29,7 +29,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 			</div>
 
 			<div class="my-2">
-				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate</div>
+				<div class="fs-5 mb-2">Upload a copy of your course certificate</div>
 				<app-file-upload
 					(fileUploaded)="onFileCertificateAdded($event)"
 					(fileRemoved)="onFileRemoved()"
@@ -51,7 +51,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 			</div>
 
 			<div class="mt-3 mb-2">
-				<div class="fs-6 fw-bold mb-2">Upload a verification letter</div>
+				<div class="fs-5 mb-2">Upload a verification letter</div>
 				<app-file-upload
 					(fileUploaded)="onFileVerificationAdded($event)"
 					(fileRemoved)="onFileRemoved()"

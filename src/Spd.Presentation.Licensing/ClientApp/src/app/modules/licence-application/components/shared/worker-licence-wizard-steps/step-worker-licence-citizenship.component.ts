@@ -221,7 +221,6 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 
 	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
 
-	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;

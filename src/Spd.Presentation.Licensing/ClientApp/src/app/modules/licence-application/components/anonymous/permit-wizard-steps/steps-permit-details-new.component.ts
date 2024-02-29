@@ -74,7 +74,6 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	isLoggedIn = false;
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitTermsOfUseComponent)
 	termsOfUseComponent!: StepPermitTermsOfUseComponent;

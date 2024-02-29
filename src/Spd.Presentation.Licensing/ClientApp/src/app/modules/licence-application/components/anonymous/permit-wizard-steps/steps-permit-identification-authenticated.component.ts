@@ -319,7 +319,6 @@ export class StepsPermitIdentificationAuthenticatedComponent
 	isFormValid = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
 	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;

@@ -6,11 +6,11 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 
 @Component({
-	selector: 'app-business-application-base',
+	selector: 'app-business-licence-application-base',
 	template: ` <router-outlet></router-outlet> `,
 	styles: [],
 })
-export class BusinessApplicationBaseComponent implements OnInit {
+export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private businessApplicationService: BusinessApplicationService,

@@ -28,8 +28,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	styles: [],
 })
 export class StepWorkerLicenceContactInformationComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

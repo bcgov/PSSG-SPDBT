@@ -50,7 +50,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 	styles: [],
 })
 export class StepWorkerLicencePhotographOfYourselfComponent implements OnInit, LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
 	originalPhotoOfYourselfExpired = false;
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
