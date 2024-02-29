@@ -9,7 +9,6 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Manager.Licence;
