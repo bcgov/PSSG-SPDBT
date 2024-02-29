@@ -125,7 +125,7 @@ internal class PermitAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
-        await MakeChanges(originalApp, request, originalLic, cancellationToken);
+        await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value))
@@ -187,7 +187,10 @@ internal class PermitAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest, LicenceResp originalLic, CancellationToken ct)
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, 
+        PermitAppAnonymousSubmitRequest newRequest,
+        IEnumerable<LicAppFileInfo> newFileInfos,
+        LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
         List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = SharedUtilities.GetBodyArmourPermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
@@ -242,9 +245,13 @@ internal class PermitAppManager :
         // Purpose changed, create a task for Licensing RA team
         if (changes.PurposeChanged)
         {
+            IEnumerable<string> fileNames = newFileInfos.Select(d => d.FileName);
             changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Permit holder have requested to update the below provided purpose: {newRequest.WorkerLicenceTypeCode}",
+                Description = $"Permit holder have requested to update the below provided rationale: \n" +
+                $" - Purpose: {newRequest.WorkerLicenceTypeCode} \n" +
+                $" - Rationale: {newRequest.Rationale} \n" +
+                $" - {string.Join(";", fileNames)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Rational update for {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
@@ -257,10 +264,14 @@ internal class PermitAppManager :
         // Rationale changed, create a task for Licensing RA team
         if (newRequest.Rationale != originalApp.Rationale)
         {
+            IEnumerable<string> fileNames = newFileInfos.Select(d => d.FileName);
             changes.RationaleChanged = true;
             changes.RationaleChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Permit holder have requested to update the below provided rationale: {newRequest.Rationale}",
+                Description = $"Permit holder have requested to update the below provided rationale: \n" +
+                $" - Purpose: {newRequest.WorkerLicenceTypeCode} \n" +
+                $" - Rationale: {newRequest.Rationale} \n" +
+                $" - {string.Join(";", fileNames)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Rationale Update for {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
