@@ -125,7 +125,7 @@ internal class PermitAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
-        ChangeSpec changes = await MakeChanges(originalApp, request, originalLic, cancellationToken);
+        await MakeChanges(originalApp, request, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value))
@@ -138,7 +138,9 @@ internal class PermitAppManager :
         else
         {
             //update contact directly
-            await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), cancellationToken);
+            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+            updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
+            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
         await UploadNewDocsAsync(request,
             cmd.LicAppFileInfos,
