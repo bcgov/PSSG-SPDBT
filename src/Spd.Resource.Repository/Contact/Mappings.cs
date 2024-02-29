@@ -57,12 +57,12 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.spd_peaceofficerstatus, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
             .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
+            .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
+            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
             ;
 
             _ = CreateMap<CreateContactCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
-            .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
-            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
             .IncludeBase<ContactCmd, contact>();
 
             _ = CreateMap<UpdateContactCmd, contact>()
