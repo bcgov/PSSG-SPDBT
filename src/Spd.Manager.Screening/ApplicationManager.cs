@@ -532,7 +532,7 @@ namespace Spd.Manager.Screening
             FileTypeCode? validFileCode = app.CaseSubStatus switch
             {
                 CaseSubStatusEnum.ApplicantInformation => FileTypeCode.ApplicantInformation,
-                CaseSubStatusEnum.StatutoryDeclaration => FileTypeCode.StatutoryDeclaration,
+                CaseSubStatusEnum.SelfDisclosure => FileTypeCode.SelfDisclosure,
                 CaseSubStatusEnum.OpportunityToRespond => FileTypeCode.OpportunityToRespond,
                 _ => throw new ArgumentException("Invalid File Type")
             };

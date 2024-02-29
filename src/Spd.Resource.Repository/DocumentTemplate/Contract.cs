@@ -18,7 +18,7 @@ namespace Spd.Resource.Repository.DocumentTemplate
     {
         MonthlyReport,
         ManualPaymentForm,
-        StatutoryDeclaration,
+        SelfDisclosure,
         ClearanceLetter
     }
 

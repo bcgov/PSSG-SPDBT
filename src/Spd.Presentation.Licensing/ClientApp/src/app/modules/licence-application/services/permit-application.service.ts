@@ -5,7 +5,6 @@ import {
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
 	BodyArmourPermitReasonCode,
-	BooleanTypeCode,
 	Document,
 	GoogleRecaptcha,
 	HeightUnitCode,
@@ -20,15 +19,16 @@ import {
 	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import {
 	BehaviorSubject,
+	Observable,
+	Subscription,
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	Observable,
 	of,
-	Subscription,
 	switchMap,
 	take,
 	tap,
@@ -446,59 +446,59 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
 
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
-		if (bcscUserWhoamiProfile) {
-			const personalInformationData = {
-				givenName: bcscUserWhoamiProfile.firstName,
-				middleName1: bcscUserWhoamiProfile.middleName1,
-				middleName2: bcscUserWhoamiProfile.middleName2,
-				surname: bcscUserWhoamiProfile.lastName,
-				dateOfBirth: bcscUserWhoamiProfile.birthDate,
-				genderCode: bcscUserWhoamiProfile.gender,
-			};
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile; // TODO fix for authenticated
+		// if (bcscUserWhoamiProfile) {
+		// 	const personalInformationData = {
+		// 		givenName: bcscUserWhoamiProfile.firstName,
+		// 		middleName1: bcscUserWhoamiProfile.middleName1,
+		// 		middleName2: bcscUserWhoamiProfile.middleName2,
+		// 		surname: bcscUserWhoamiProfile.lastName,
+		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 		genderCode: bcscUserWhoamiProfile.gender,
+		// 	};
 
-			const residentialAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: false,
-				addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-				addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-				city: bcscUserWhoamiProfile.residentialAddress?.city,
-				country: bcscUserWhoamiProfile.residentialAddress?.country,
-				postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-				province: bcscUserWhoamiProfile.residentialAddress?.province,
-			};
+		// 	const residentialAddressData = {
+		// 		addressSelected: true,
+		// 		isMailingTheSameAsResidential: false,
+		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
+		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
+		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
+		// 	};
 
-			this.permitModelFormGroup.patchValue(
-				{
-					personalInformationData: { ...personalInformationData },
-					residentialAddressData: { ...residentialAddressData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-					workerLicenceTypeData,
-					permitRequirementData,
-					licenceTermData,
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		} else {
-			const residentialAddressData = {
-				isMailingTheSameAsResidential: false,
-			};
+		// 	this.permitModelFormGroup.patchValue(
+		// 		{
+		// 			personalInformationData: { ...personalInformationData },
+		// 			residentialAddressData: { ...residentialAddressData },
+		// 			aliasesData: { previousNameFlag: BooleanTypeCode.No },
+		// 			workerLicenceTypeData,
+		// 			permitRequirementData,
+		// 			licenceTermData,
+		// 		},
+		// 		{
+		// 			emitEvent: false,
+		// 		}
+		// 	);
+		// } else {
+		const residentialAddressData = {
+			isMailingTheSameAsResidential: false,
+		};
 
-			this.permitModelFormGroup.patchValue(
-				{
-					residentialAddressData: { ...residentialAddressData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-					workerLicenceTypeData,
-					permitRequirementData,
-					licenceTermData,
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		}
+		this.permitModelFormGroup.patchValue(
+			{
+				residentialAddressData: { ...residentialAddressData },
+				aliasesData: { previousNameFlag: BooleanTypeCode.No },
+				workerLicenceTypeData,
+				permitRequirementData,
+				licenceTermData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+		// }
 
 		console.debug('[createPermitAuthenticated] permitModelFormGroup', this.permitModelFormGroup.value);
 
@@ -516,7 +516,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private loadSpecificPermitIntoModel(resp: PermitLicenceAppResponse): void {
-		const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 
@@ -547,37 +547,37 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		let personalInformationData = {};
-		if (bcscUserWhoamiProfile) {
-			personalInformationData = {
-				givenName: bcscUserWhoamiProfile.firstName,
-				middleName1: bcscUserWhoamiProfile.middleName1,
-				middleName2: bcscUserWhoamiProfile.middleName2,
-				surname: bcscUserWhoamiProfile.lastName,
-				genderCode: bcscUserWhoamiProfile.gender,
-				dateOfBirth: bcscUserWhoamiProfile.birthDate,
-				origGivenName: bcscUserWhoamiProfile.firstName,
-				origMiddleName1: bcscUserWhoamiProfile.middleName1,
-				origMiddleName2: bcscUserWhoamiProfile.middleName2,
-				origSurname: bcscUserWhoamiProfile.lastName,
-				origGenderCode: bcscUserWhoamiProfile.gender,
-				origDateOfBirth: bcscUserWhoamiProfile.birthDate,
-			};
-		} else {
-			personalInformationData = {
-				givenName: resp.givenName,
-				middleName1: resp.middleName1,
-				middleName2: resp.middleName2,
-				surname: resp.surname,
-				genderCode: resp.genderCode,
-				dateOfBirth: resp.dateOfBirth,
-				origGivenName: resp.givenName,
-				origMiddleName1: resp.middleName1,
-				origMiddleName2: resp.middleName2,
-				origSurname: resp.surname,
-				origGenderCode: resp.genderCode,
-				origDateOfBirth: resp.dateOfBirth,
-			};
-		}
+		// if (bcscUserWhoamiProfile) { // TODO fix for authenticated
+		// 	personalInformationData = {
+		// 		givenName: bcscUserWhoamiProfile.firstName,
+		// 		middleName1: bcscUserWhoamiProfile.middleName1,
+		// 		middleName2: bcscUserWhoamiProfile.middleName2,
+		// 		surname: bcscUserWhoamiProfile.lastName,
+		// 		genderCode: bcscUserWhoamiProfile.gender,
+		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 		origGivenName: bcscUserWhoamiProfile.firstName,
+		// 		origMiddleName1: bcscUserWhoamiProfile.middleName1,
+		// 		origMiddleName2: bcscUserWhoamiProfile.middleName2,
+		// 		origSurname: bcscUserWhoamiProfile.lastName,
+		// 		origGenderCode: bcscUserWhoamiProfile.gender,
+		// 		origDateOfBirth: bcscUserWhoamiProfile.birthDate,
+		// 	};
+		// } else {
+		personalInformationData = {
+			givenName: resp.givenName,
+			middleName1: resp.middleName1,
+			middleName2: resp.middleName2,
+			surname: resp.surname,
+			genderCode: resp.genderCode,
+			dateOfBirth: resp.dateOfBirth,
+			origGivenName: resp.givenName,
+			origMiddleName1: resp.middleName1,
+			origMiddleName2: resp.middleName2,
+			origSurname: resp.surname,
+			origGenderCode: resp.genderCode,
+			origDateOfBirth: resp.dateOfBirth,
+		};
+		// }
 
 		const bodyArmourRequirementFormGroup = {
 			isOutdoorRecreation: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.OutdoorRecreation),
@@ -744,24 +744,24 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		let residentialAddressData = {};
 		const isMailingTheSameAsResidential = resp.isMailingTheSameAsResidential ?? false;
-		if (bcscUserWhoamiProfile) {
-			residentialAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-				addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-				addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-				city: bcscUserWhoamiProfile.residentialAddress?.city,
-				country: bcscUserWhoamiProfile.residentialAddress?.country,
-				postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-				province: bcscUserWhoamiProfile.residentialAddress?.province,
-			};
-		} else {
-			residentialAddressData = {
-				...resp.residentialAddressData,
-				isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-				addressSelected: !!resp.residentialAddressData?.addressLine1,
-			};
-		}
+		// if (bcscUserWhoamiProfile) {// TODO fix for authenticated
+		// 	residentialAddressData = {
+		// 		addressSelected: true,
+		// 		isMailingTheSameAsResidential: isMailingTheSameAsResidential,
+		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
+		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
+		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
+		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
+		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
+		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
+		// 	};
+		// } else {
+		residentialAddressData = {
+			...resp.residentialAddressData,
+			isMailingTheSameAsResidential: isMailingTheSameAsResidential,
+			addressSelected: !!resp.residentialAddressData?.addressLine1,
+		};
+		// }
 
 		const mailingAddressData = {
 			...resp.mailingAddressData,

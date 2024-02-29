@@ -29,7 +29,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 export class StepPermitBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.bcDriversLicenceFormGroup;
 
-	applicationTypeCodes = ApplicationTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}

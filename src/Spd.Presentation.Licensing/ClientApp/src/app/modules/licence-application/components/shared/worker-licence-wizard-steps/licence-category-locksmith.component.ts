@@ -66,23 +66,23 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-6 fw-bold mb-2">
+				<div class="fs-5 mb-2">
 					<span
 						*ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification"
 					>
-						Upload a copy of your certificate:
+						Upload a copy of your certificate
 					</span>
 					<span
 						*ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
 					>
-						Upload a letter of recommendation:
+						Upload a letter of recommendation
 						<div class="fw-normal mb-2">
 							This letter must be on company letterhead, and proof of successful completion of an approved
 							apprenticeship program, other than that provided by the <i>Industry Training Authority</i>.
 						</div>
 					</span>
 					<span *ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
-						Upload a letter of recommendation:
+						Upload a letter of recommendation
 						<div class="fw-normal mb-2">
 							This letter must be on company letterhead, proof of experience, and proof of successful completion of an
 							approved course.
