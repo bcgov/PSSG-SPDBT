@@ -273,7 +273,8 @@ internal class PermitAppManager :
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Permit holder has updated the self declaration for their criminal history",
+                Description = $"Permit holder has updated the self declaration for their criminal history. \n" +
+                $" - {newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.High,
