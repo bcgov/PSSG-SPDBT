@@ -9,6 +9,7 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -359,16 +360,16 @@ internal class PermitAppManager :
 
     private bool ChangeInEmployerInfo(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
     {
-        if (originalApp.EmployerName != newRequest.EmployerName || 
-            originalApp.SupervisorName != newRequest.SupervisorName || 
-            originalApp.SupervisorEmailAddress != newRequest.SupervisorEmailAddress ||
-            originalApp.SupervisorPhoneNumber != newRequest.SupervisorPhoneNumber ||
-            originalApp.EmployerPrimaryAddress?.AddressLine1 != newRequest.EmployerPrimaryAddress?.AddressLine1 ||
-            originalApp.EmployerPrimaryAddress?.AddressLine2 != newRequest.EmployerPrimaryAddress?.AddressLine2 ||
-            originalApp.EmployerPrimaryAddress?.City != newRequest.EmployerPrimaryAddress?.City ||
-            originalApp.EmployerPrimaryAddress?.Country != newRequest.EmployerPrimaryAddress?.Country ||
-            originalApp.EmployerPrimaryAddress?.PostalCode != newRequest.EmployerPrimaryAddress?.PostalCode ||
-            originalApp.EmployerPrimaryAddress?.Province != newRequest.EmployerPrimaryAddress?.Province)
+        if (!String.Equals(SanitizeNull(originalApp.EmployerName), SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.SupervisorName), SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.SupervisorEmailAddress), SanitizeNull(newRequest.SupervisorEmailAddress), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.SupervisorPhoneNumber), SanitizeNull(newRequest.SupervisorPhoneNumber), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine1), SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine1), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine2), SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine2), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.City), SanitizeNull(newRequest.EmployerPrimaryAddress?.City), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.Country), SanitizeNull(newRequest.EmployerPrimaryAddress?.Country), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.PostalCode), SanitizeNull(newRequest.EmployerPrimaryAddress?.PostalCode), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.Province), SanitizeNull(newRequest.EmployerPrimaryAddress?.Province), StringComparison.OrdinalIgnoreCase))
         {
             return true;
         }
@@ -392,6 +393,9 @@ internal class PermitAppManager :
 
         return purposes;
     }
+
+    private string SanitizeNull(string? text)
+    {  return text ?? string.Empty; }
 
     private sealed record ChangeSpec
     {
