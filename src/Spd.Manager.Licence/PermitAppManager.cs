@@ -262,7 +262,7 @@ internal class PermitAppManager :
         }
 
         // Rationale changed, create a task for Licensing RA team
-        if (newRequest.Rationale != originalApp.Rationale)
+        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase))
         {
             IEnumerable<string> fileNames = newFileInfos.Select(d => d.FileName);
             changes.RationaleChanged = true;
