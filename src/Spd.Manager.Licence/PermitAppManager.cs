@@ -242,10 +242,14 @@ internal class PermitAppManager :
                 changes.PurposeChanged = true;
         }
         
+        // Check if rationale changed
+        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase))
+            changes.RationaleChanged = true;
+        
         List<string> purposes = GetPurposes(newRequest);
 
-        // Purpose changed, create a task for Licensing RA team
-        if (changes.PurposeChanged)
+        // Purpose or rationale changed, create a task for Licensing RA team
+        if (changes.PurposeChanged || changes.RationaleChanged)
         {
             IEnumerable<string> fileNames = newFileInfos.Select(d => d.FileName);
             changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
@@ -256,26 +260,6 @@ internal class PermitAppManager :
                 $" - {string.Join(";", fileNames)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Rational update for {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                LicenceId = originalLic.LicenceId
-            }, ct)).TaskId;
-        }
-
-        // Rationale changed, create a task for Licensing RA team
-        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase))
-        {
-            IEnumerable<string> fileNames = newFileInfos.Select(d => d.FileName);
-            changes.RationaleChanged = true;
-            changes.RationaleChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = $"Permit holder have requested to update the below provided rationale: \n" +
-                $" - Purpose: {string.Join(";", purposes)} \n" +
-                $" - Rationale: {newRequest.Rationale} \n" +
-                $" - {string.Join(";", fileNames)}",
-                DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Rationale Update for {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
