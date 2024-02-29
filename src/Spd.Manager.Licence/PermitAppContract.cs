@@ -43,6 +43,7 @@ public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
     public bool? IsCanadianResident { get; set; }
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
+    public string? CriminalChargeDescription { get; set; }
 }
 
 public record PermitAppCommandResponse : LicenceAppUpsertResponse
