@@ -132,8 +132,8 @@ internal class Mappings : Profile
             .ForPath(d => d.EmployerPrimaryAddress.City, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.City))
             .ForPath(d => d.EmployerPrimaryAddress.Country, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.Country))
             .ForPath(d => d.EmployerPrimaryAddress.PostalCode, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.PostalCode))
-            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => SharedUtilities.GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
-            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => SharedUtilities.GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
+            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
+            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -244,6 +244,40 @@ internal class Mappings : Profile
             return request.ArmouredVehiclePermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
         }
         return null;
+    }
+
+    public static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    {
+        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = [];
+
+        if (workerLicenceType != WorkerLicenceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
+
+        foreach (PermitPurposeEnum permitPurpose in permitPurposes)
+        {
+            BodyArmourPermitReasonCode bodyArmourPermitReasonCode;
+
+            if (Enum.TryParse(permitPurpose.ToString(), out bodyArmourPermitReasonCode))
+                bodyArmourPermitReasonCodes.Add(bodyArmourPermitReasonCode);
+        }
+
+        return bodyArmourPermitReasonCodes;
+    }
+
+    public static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    {
+        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = [];
+
+        if (workerLicenceType != WorkerLicenceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
+
+        foreach (PermitPurposeEnum permitPurpose in permitPurposes)
+        {
+            ArmouredVehiclePermitReasonCode armouredVehiclePermitReasonCode;
+
+            if (Enum.TryParse(permitPurpose.ToString(), out armouredVehiclePermitReasonCode))
+                armouredVehiclePermitReasonCodes.Add(armouredVehiclePermitReasonCode);
+        }
+
+        return armouredVehiclePermitReasonCodes;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
