@@ -34,8 +34,8 @@ namespace Spd.Resource.Repository.Contact
     public record ContactResp : Contact
     {
         public Guid Id { get; set; }
-        public bool? IsFirstTimeLoginScreening { get; set; } = false;
-        public bool? IsFirstTimeLoginLicensing { get; set; } = false;
+        public DateTime? LastestScreeningLogin { get; set; }
+        public DateTimeOffset? LicensingTermAgreedDateTime { get; set; }
     }
 
     public record ContactQry
@@ -50,20 +50,12 @@ namespace Spd.Resource.Repository.Contact
     {
         public Guid Id { get; set; }
         public Guid? IdentityId { get; set; }
-        public SourceEnum Source { get; set; } = SourceEnum.SCREENING;
-
     };
+    public record TermAgreementCmd(Guid Id): ContactCmd;
     public record CreateContactCmd : ContactCmd
     {
         public Guid? IdentityId { get; set; }
         public string? DisplayName { get; set; }
-        public SourceEnum Source { get; set; } = SourceEnum.SCREENING;
         public string Sub { get; set; } = null!;
-    }
-
-    public enum SourceEnum
-    {
-        LICENSING,
-        SCREENING
     }
 }

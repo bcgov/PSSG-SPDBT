@@ -10,6 +10,7 @@ namespace Spd.Manager.Licence
     internal class ApplicantProfileManager :
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
+        IRequestHandler<ApplicantTermAgreeCommand, Unit>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -48,7 +49,6 @@ namespace Spd.Manager.Licence
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
                 CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                 createContactCmd.IdentityId = id.Id;
-                createContactCmd.Source = SourceEnum.LICENSING;
                 contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
             }
             else
@@ -60,7 +60,6 @@ namespace Spd.Manager.Licence
                     UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
                     updateContactCmd.Id = (Guid)id.ContactId;
                     updateContactCmd.IdentityId = id.Id;
-                    updateContactCmd.Source = SourceEnum.LICENSING;
                     contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
                 }
                 else
@@ -68,12 +67,17 @@ namespace Spd.Manager.Licence
                     //there is identity, but no contact
                     CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                     createContactCmd.IdentityId = id.Id;
-                    createContactCmd.Source = SourceEnum.LICENSING;
                     contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 }
             }
 
             return _mapper.Map<ApplicantLoginResponse>(contactResp);
+        }
+
+        public async Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct)
+        {
+            await _contactRepository.ManageAsync(new TermAgreementCmd(cmd.ApplicantId), ct);
+            return default;
         }
     }
 }
