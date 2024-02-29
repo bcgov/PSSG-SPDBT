@@ -9,7 +9,6 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
-using System.Linq;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -141,13 +140,13 @@ internal class PermitAppManager :
             //update contact directly
             await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), cancellationToken);
         }
-        //await UploadNewDocsAsync(request,
-        //    cmd.LicAppFileInfos,
-        //    createLicResponse?.LicenceAppId,
-        //    originalApp.ContactId,
-        //    changes.PeaceOfficerStatusChangeTaskId,
-        //    changes.MentalHealthStatusChangeTaskId,
-        //    cancellationToken);
+        await UploadNewDocsAsync(request,
+            cmd.LicAppFileInfos,
+            createLicResponse?.LicenceAppId,
+            originalApp.ContactId,
+            null,
+            null,
+            cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
 
