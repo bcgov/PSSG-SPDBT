@@ -259,9 +259,9 @@ internal class PermitAppManager :
             changes.RationaleChanged = true;
             changes.RationaleChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the rationale submitted by the licensee with details as following : {newRequest.Rationale}",
+                Description = $"Permit holder have requested to update the below provided rationale: {newRequest.Rationale}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Rationale Update on {originalLic.LicenceNumber}",
+                Subject = $"Rationale Update for {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
@@ -275,10 +275,10 @@ internal class PermitAppManager :
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the criminal charges submitted by the licensee",
+                Description = $"Permit holder has updated the self declaration for their criminal history",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                TaskPriorityEnum = TaskPriorityEnum.High,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
