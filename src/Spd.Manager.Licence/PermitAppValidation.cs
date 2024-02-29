@@ -71,6 +71,10 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
             .When(r => r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit && r.ArmouredVehiclePermitReasonCodes != null);
         RuleFor(r => r.LicenceTermCode).Must(t => t == LicenceTermCode.FiveYears)
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit);
+        RuleFor(r => r.CriminalChargeDescription)
+            .NotEmpty()
+            .MaximumLength(1000)
+            .When(r => r.HasNewCriminalRecordCharge == true && r.ApplicationTypeCode == ApplicationTypeCode.Update);
     }
 
 }
