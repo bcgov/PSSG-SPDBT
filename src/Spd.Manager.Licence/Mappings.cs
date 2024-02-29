@@ -37,6 +37,16 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.Aliases));
 
+        CreateMap<PermitAppAnonymousSubmitRequest, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
+            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData))
+            .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.Aliases));
+
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
         CreateMap<LicenceResp, LicenceResponse>();
