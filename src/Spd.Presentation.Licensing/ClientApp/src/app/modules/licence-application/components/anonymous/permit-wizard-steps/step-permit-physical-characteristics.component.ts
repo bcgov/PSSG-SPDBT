@@ -24,8 +24,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitPhysicalCharacteristicsComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.permitApplicationService.characteristicsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

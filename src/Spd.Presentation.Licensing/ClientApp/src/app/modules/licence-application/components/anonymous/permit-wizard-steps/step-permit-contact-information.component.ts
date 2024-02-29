@@ -28,8 +28,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitContactInformationComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	form: FormGroup = this.permitApplicationService.contactInformationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

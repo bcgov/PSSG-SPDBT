@@ -18,7 +18,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-6 fw-bold mb-2">Experience:</div>
+					<div class="fs-5 mb-2">Experience:</div>
 					To qualify for a security guard security worker licence, you must meet one of the following training or
 					experience requirements:
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
@@ -53,7 +53,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div
-					class="fs-6 fw-bold mb-2"
+					class="fs-5 mb-2"
 					*ngIf="
 						requirementCode.value === securityGuardRequirementCodes.CategorySecurityGuard_PoliceExperienceOrTraining;
 						else uploadcopy
@@ -62,7 +62,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 					Upload a training certificate or reference letter from your employment supervisor or human resources office:
 				</div>
 				<ng-template #uploadcopy>
-					<div class="fs-6 fw-bold mb-2">Upload a copy of your certificate</div>
+					<div class="fs-5 mb-2">Upload a copy of your certificate</div>
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload

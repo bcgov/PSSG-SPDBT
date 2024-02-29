@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { ApplicantProfileResponse } from '@app/api/models';
+import { ApplicantLoginResponse } from '@app/api/models';
 import { lastValueFrom } from 'rxjs';
-import { UserProfileService } from 'src/app/api/services';
+import { LoginService } from 'src/app/api/services';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBcscService {
-	bcscUserWhoamiProfile: ApplicantProfileResponse | null = null;
+	bcscUserWhoamiProfile: ApplicantLoginResponse | null = null;
 
-	constructor(private userProfileService: UserProfileService) {}
+	constructor(private loginService: LoginService) {}
 
 	async whoAmIAsync(): Promise<boolean> {
 		this.clearUserData();
 
-		const resp: ApplicantProfileResponse = await lastValueFrom(this.userProfileService.apiSecurityWorkerWhoamiGet());
+		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet());
 		if (resp) {
 			this.bcscUserWhoamiProfile = resp;
 			return Promise.resolve(true);

@@ -19,7 +19,7 @@ export interface SelectOptions<k = string | number | boolean> {
 export const CaseSubStatuses: SelectOptions[] = [
 	{ desc: 'Applicant Information', code: CaseSubStatusCode.ApplicantInformation },
 	{ desc: 'Confirmation Of Fingerprints', code: CaseSubStatusCode.Fingerprints },
-	{ desc: 'Statutory Declaration', code: CaseSubStatusCode.StatutoryDeclaration },
+	{ desc: 'Self Disclosure', code: CaseSubStatusCode.SelfDisclosure },
 	{ desc: 'Opportunity To Respond', code: CaseSubStatusCode.OpportunityToRespond },
 ];
 
@@ -64,7 +64,7 @@ export const FileTypes: SelectOptions[] = [
 	{ desc: 'Security Alarm Installer', code: FileTypeCode.SecurityAlarmInstaller },
 	{ desc: 'Security Consultant', code: FileTypeCode.SecurityConsultant },
 	{ desc: 'Security Guard', code: FileTypeCode.SecurityGuard },
-	{ desc: 'Statutory Declaration', code: FileTypeCode.StatutoryDeclaration },
+	{ desc: 'Self Disclosure', code: FileTypeCode.SelfDisclosure },
 	{ desc: 'Validation Certificate', code: FileTypeCode.ValidationCertificate },
 	{ desc: 'Opportunity To Respond', code: FileTypeCode.OpportunityToRespond },
 ];
@@ -87,8 +87,16 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
-	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
 	{ desc: 'PSSO +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
+	{ desc: 'SecurityWorkerLicence', code: ServiceTypeCode.SecurityWorkerLicence },
+	{ desc: 'SecurityBusinessLicence', code: ServiceTypeCode.SecurityBusinessLicence },
+	{ desc: 'ArmouredVehiclePermit', code: ServiceTypeCode.ArmouredVehiclePermit },
+	{ desc: 'BodyArmourPermit', code: ServiceTypeCode.BodyArmourPermit },
+	{ desc: 'Mdra', code: ServiceTypeCode.Mdra },
+	{
+		desc: 'SecurityBusinessLicenceControllingMemberCrc',
+		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+	},
 ];
 
 export const GenderTypes: SelectOptions[] = [

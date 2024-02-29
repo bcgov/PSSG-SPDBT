@@ -14,7 +14,7 @@ namespace Spd.Resource.Repository.Identity
              .ForMember(d => d.IdentityNumber, opt => opt.MapFrom(s => s.spd_identitynumber))
              .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_identityid))
              .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._organizationid_value))
-             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ContactId.contactid))
+             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s._spd_contactid_value))
              .ForMember(d => d.LastName, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.lastname)))
              .ForMember(d => d.FirstName, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.firstname)))
              .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.spd_middlename1)))

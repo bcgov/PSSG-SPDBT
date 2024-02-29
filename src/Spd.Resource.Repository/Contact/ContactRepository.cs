@@ -50,6 +50,7 @@ internal class ContactRepository : IContactRepository
         {
             UpdateContactCmd c => await UpdateContactAsync(c, ct),
             CreateContactCmd c => await CreateContactAsync(c, ct),
+            TermAgreementCmd c => await TermAgreeAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -57,13 +58,18 @@ internal class ContactRepository : IContactRepository
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact newContact = _mapper.Map<contact>(c);
-        contact existingContact = await _context.UpdateContact(c.Id, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
-        return _mapper.Map<ContactResp>(existingContact);
+        ContactResp resp = new();
+        contact? existingContact = await _context.GetContactById(c.Id, ct);
+        existingContact = await _context.UpdateContact(existingContact, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
 
     private async Task<ContactResp> CreateContactAsync(CreateContactCmd c, CancellationToken ct)
     {
         contact contact = _mapper.Map<contact>(c);
+        contact.spd_lastloggedinscreeningportal = null;
+        contact.spd_lastloggedinlicensingportal = null;
         spd_identity? identity = null;
         if (c.IdentityId != null)
         {
@@ -76,7 +82,24 @@ internal class ContactRepository : IContactRepository
         }
         //two saveChanges because "Associate of 1:N navigation property with Create of Update is not supported in CRM"
         contact = await _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
-        return _mapper.Map<ContactResp>(contact);
+        await _context.SaveChangesAsync(ct);
+        ContactResp resp = _mapper.Map<ContactResp>(contact);
+        return resp;
+    }
+
+    private async Task<ContactResp> TermAgreeAsync(TermAgreementCmd c, CancellationToken ct)
+    {
+        ContactResp resp = new();
+        contact? existingContact = await _context.GetContactById(c.Id, ct);
+        if(existingContact == null)
+        {
+            _logger.LogError($"no valid contact for {c.Id}");
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid contact id.");
+        }
+        existingContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
+        _context.UpdateObject(existingContact);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
 }
 

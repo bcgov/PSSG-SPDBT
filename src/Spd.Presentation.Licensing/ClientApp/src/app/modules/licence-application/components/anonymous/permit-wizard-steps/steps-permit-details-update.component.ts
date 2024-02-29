@@ -66,7 +66,6 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent i
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepPermitPrintComponent)
 	stepPermitPrintComponent!: StepPermitPrintComponent;

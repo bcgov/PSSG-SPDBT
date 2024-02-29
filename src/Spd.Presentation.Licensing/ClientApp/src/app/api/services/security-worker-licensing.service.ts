@@ -32,64 +32,6 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiWorkerLicenceApplicationsGet
-   */
-  static readonly ApiWorkerLicenceApplicationsGetPath = '/api/worker-licence-applications';
-
-  /**
-   * Get List of draft or InProgress Security Worker Licence Application.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicenceApplicationsGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiWorkerLicenceApplicationsGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<WorkerLicenceAppListResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<WorkerLicenceAppListResponse>>;
-      })
-    );
-  }
-
-  /**
-   * Get List of draft or InProgress Security Worker Licence Application.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiWorkerLicenceApplicationsGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<Array<WorkerLicenceAppListResponse>> {
-
-    return this.apiWorkerLicenceApplicationsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<WorkerLicenceAppListResponse>>) => r.body as Array<WorkerLicenceAppListResponse>)
-    );
-  }
-
-  /**
    * Path part for operation apiWorkerLicenceApplicationsPost
    */
   static readonly ApiWorkerLicenceApplicationsPostPath = '/api/worker-licence-applications';
@@ -339,6 +281,67 @@ export class SecurityWorkerLicensingService extends BaseService {
 
     return this.apiWorkerLicenceApplicationsSubmitPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsApplicantIdWorkerLicenceApplicationsGet
+   */
+  static readonly ApiApplicantsApplicantIdWorkerLicenceApplicationsGetPath = '/api/applicants/{applicantId}/worker-licence-applications';
+
+  /**
+   * Get List of draft or InProgress Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdWorkerLicenceApplicationsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdWorkerLicenceApplicationsGet$Response(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<WorkerLicenceAppListResponse>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiApplicantsApplicantIdWorkerLicenceApplicationsGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<WorkerLicenceAppListResponse>>;
+      })
+    );
+  }
+
+  /**
+   * Get List of draft or InProgress Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdWorkerLicenceApplicationsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdWorkerLicenceApplicationsGet(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<Array<WorkerLicenceAppListResponse>> {
+
+    return this.apiApplicantsApplicantIdWorkerLicenceApplicationsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<WorkerLicenceAppListResponse>>) => r.body as Array<WorkerLicenceAppListResponse>)
     );
   }
 

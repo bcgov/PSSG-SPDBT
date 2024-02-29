@@ -19,7 +19,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-6 fw-bold mb-2">Training:</div>
+					<div class="fs-5 mb-2">Training:</div>
 					To qualify for a Private Investigator Under Supervision licence, you must meet one of the following training
 					requirements:
 
@@ -65,14 +65,14 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="fs-6 fw-bold mb-2">
+				<div class="fs-5 mb-2">
 					<span
 						*ngIf="
 							requirementCode.value ===
 							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
 						"
 					>
-						Upload proof of course completion:
+						Upload proof of course completion
 					</span>
 					<span
 						*ngIf="
@@ -80,7 +80,7 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
 						"
 					>
-						Upload document(s) providing proof of course completion or equivalent knowledge:
+						Upload document(s) providing proof of course completion or equivalent knowledge
 					</span>
 				</div>
 

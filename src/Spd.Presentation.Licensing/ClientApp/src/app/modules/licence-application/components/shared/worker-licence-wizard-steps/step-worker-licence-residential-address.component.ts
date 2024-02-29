@@ -27,8 +27,6 @@ import { Subscription } from 'rxjs';
 	styles: [],
 })
 export class StepWorkerLicenceResidentialAddressComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	readonly subtitle_unauth_new = 'This is the address where you currently live';
 	readonly subtitle_auth_new = `This is the address from your BC Services Card. If you need to make any updates, visit <a href="${SPD_CONSTANTS.urls.addressChangeUrl}" target="_blank">addresschange.gov.bc.ca</a>`;
 
