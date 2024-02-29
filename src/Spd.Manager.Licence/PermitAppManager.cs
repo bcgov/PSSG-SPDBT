@@ -214,7 +214,7 @@ internal class PermitAppManager :
             // Check if there is a different reason if Body armour selected reason is "other"
             if (newRequest.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && 
                 bodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) &&
-                newRequest.PermitOtherRequiredReason != originalApp.PermitOtherRequiredReason &&
+                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase) &&
                 ChangeInEmployerInfo(originalApp, newRequest))
                 changes.PurposeChanged = true;
         }
@@ -237,7 +237,7 @@ internal class PermitAppManager :
             // Check if there is a different reason if Armoured vehicule selected reason is "other"
             if (newRequest.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && 
                 armouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) &&
-                newRequest.PermitOtherRequiredReason != originalApp.PermitOtherRequiredReason &&
+                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase) &&
                 ChangeInEmployerInfo(originalApp, newRequest))
                 changes.PurposeChanged = true;
         }
