@@ -214,7 +214,12 @@ internal class PermitAppManager :
             // Check if there is a different reason if Body armour selected reason is "other"
             if (newRequest.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && 
                 bodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) &&
-                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase) &&
+                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
+                changes.PurposeChanged = true;
+
+            // Check if there is a change in employer if Body armour selected reason is "my employment"
+            if (newRequest.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) &&
+                bodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) &&
                 ChangeInEmployerInfo(originalApp, newRequest))
                 changes.PurposeChanged = true;
         }
@@ -237,11 +242,16 @@ internal class PermitAppManager :
             // Check if there is a different reason if Armoured vehicule selected reason is "other"
             if (newRequest.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && 
                 armouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) &&
-                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase) &&
+                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
+                changes.PurposeChanged = true;
+
+            // Check if there is a change in employer if Armoured vehicule selected reason is "my employment"
+            if (newRequest.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) &&
+                armouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) &&
                 ChangeInEmployerInfo(originalApp, newRequest))
                 changes.PurposeChanged = true;
         }
-        
+
         // Check if rationale changed
         if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase))
             changes.RationaleChanged = true;
