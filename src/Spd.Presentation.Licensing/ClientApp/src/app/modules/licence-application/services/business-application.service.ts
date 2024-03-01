@@ -38,7 +38,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
-		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private securityWorkerLicensingService: WorkerLicensingService, // private licenceLookupService: LicenceLookupService, // private authUserBcscService: AuthUserBcscService, // private authenticationService: AuthenticationService, // private utilService: UtilService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe);
 
