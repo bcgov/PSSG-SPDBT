@@ -41,7 +41,7 @@ namespace Spd.Manager.Licence
 
         public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
         {
-            ContactResp contactResp = null;
+            ContactResp? contactResp = null;
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
 
             if (result != null && result.Items.Any())
@@ -89,7 +89,8 @@ namespace Spd.Manager.Licence
                 ReturnLicenceInfo = true,
                 IdentityId = Guid.Empty, //mean no identity connected with the contact
             }, ct);
-            return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items);
+
+            return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items.Where(i => i.LicenceInfos.Any())); //if no licence, no return
         }
     }
 }
