@@ -10,7 +10,7 @@ namespace Spd.Manager.Licence
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery query, CancellationToken ct);
         public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct); //used for applicant portal
         public Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct);
-        public Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct); 
+        public Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct);
     }
 
     public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
