@@ -6,90 +6,94 @@ import { ConfigurationResponse, IdentityProviderTypeCode } from 'src/app/api/mod
 import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
-	providedIn: 'root',
+  providedIn: 'root',
 })
 export class ConfigService {
-	public configs: ConfigurationResponse | null = null;
+  public configs: ConfigurationResponse | null = null;
 
-	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
+  constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) { }
 
-	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
-		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
-			return this.getBceidConfig(redirectUri).then((config) => {
-				this.oauthService.configure(config);
-				this.oauthService.setupAutomaticSilentRefresh();
-			});
-		}
+  public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
+    if (loginType == IdentityProviderTypeCode.BusinessBceId) {
+      return this.getBceidConfig(redirectUri).then((config) => {
+        this.oauthService.configure(config);
+        this.oauthService.setupAutomaticSilentRefresh();
+      });
+    }
 
-		if (loginType == IdentityProviderTypeCode.Idir) {
-			return this.getIdirConfig(redirectUri).then((config) => {
-				this.oauthService.configure(config);
-				this.oauthService.setupAutomaticSilentRefresh();
-			});
-		}
+    if (loginType == IdentityProviderTypeCode.Idir) {
+      return this.getIdirConfig(redirectUri).then((config) => {
+        this.oauthService.configure(config);
+        this.oauthService.setupAutomaticSilentRefresh();
+      });
+    }
 
-		return this.getBcscConfig(redirectUri).then((config) => {
-			this.oauthService.configure(config);
-		});
-	}
+    return this.getBcscConfig(redirectUri).then((config) => {
+      this.oauthService.configure(config);
+    });
+  }
 
-	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.bcscConfiguration!;
-		const bcscConfig = {
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
-			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
-			showDebugInformation: true,
-			strictDiscoveryDocumentValidation: false,
-		};
-		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
-		return bcscConfig;
-	}
+  private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
+    const resp = this.configs?.bcscConfiguration!;
+    const bcscConfig: AuthConfig = {
+      issuer: resp.issuer!,
+      clientId: resp.clientId!,
+      redirectUri,
+      responseType: resp.responseType!,
+      scope: resp.scope!,
+      showDebugInformation: true,
+      strictDiscoveryDocumentValidation: false,
+      customQueryParams: { kc_idp_hint: resp.identityProvider },
+      useSilentRefresh: true,
+    };
+    console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
+    return bcscConfig;
+  }
 
-	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.oidcConfiguration!;
-		const bceIdConfig = {
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
-			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
-			showDebugInformation: true,
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			customQueryParams: { kc_idp_hint: 'bceidbusiness' },
-		};
-		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
-		return bceIdConfig;
-	}
+  private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
+    const resp = this.configs?.bciedConfiguration!;
+    const bceIdConfig: AuthConfig = {
+      issuer: resp.issuer!,
+      clientId: resp.clientId!,
+      redirectUri,
+      responseType: resp.responseType!,
+      scope: resp.scope!,
+      showDebugInformation: true,
+      postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+      customQueryParams: { kc_idp_hint: resp.identityProvider },
+      useSilentRefresh: true,
+    };
+    console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
+    return bceIdConfig;
+  }
 
-	private async getIdirConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.oidcConfiguration!;
-		const idirConfig = {
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
-			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
-			showDebugInformation: true,
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			customQueryParams: { kc_idp_hint: 'idir' },
-		};
-		console.debug('[ConfigService] getIdirConfig', idirConfig, 'redirectUri', redirectUri);
-		return idirConfig;
-	}
+  private async getIdirConfig(redirectUri?: string): Promise<AuthConfig> {
+    const resp = this.configs?.idirConfiguration!;
+    const idirConfig: AuthConfig = {
+      issuer: resp.issuer!,
+      clientId: resp.clientId!,
+      redirectUri,
+      responseType: resp.responseType!,
+      scope: resp.scope!,
+      showDebugInformation: true,
+      postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+      customQueryParams: { kc_idp_hint: resp.identityProvider },
+      useSilentRefresh: true,
+    };
+    console.debug('[ConfigService] getIdirConfig', idirConfig, 'redirectUri', redirectUri);
+    return idirConfig;
+  }
 
-	public getConfigs(): Observable<ConfigurationResponse> {
-		if (this.configs) {
-			return of(this.configs);
-		}
+  public getConfigs(): Observable<ConfigurationResponse> {
+    if (this.configs) {
+      return of(this.configs);
+    }
 
-		return this.configurationService.apiConfigurationGet().pipe(
-			tap((resp: ConfigurationResponse) => {
-				this.configs = { ...resp };
-				return resp;
-			})
-		);
-	}
+    return this.configurationService.apiConfigurationGet().pipe(
+      tap((resp: ConfigurationResponse) => {
+        this.configs = { ...resp };
+        return resp;
+      })
+    );
+  }
 }
