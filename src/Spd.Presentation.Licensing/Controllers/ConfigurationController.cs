@@ -31,10 +31,9 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
         }
 
-
         [Route("api/configuration")]
         [HttpGet]
-        public async Task<ConfigurationResponse> Get([FromQuery] WorkerLicenceTypeCode? workerLicenceTypeCode = null)
+        public async Task<ConfigurationResponse> Get()
         {
             OidcConfiguration oidcResp = new OidcConfiguration
             {
@@ -58,7 +57,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (invalidCategoryMatrix == null)
                 throw new ApiException(HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
-            var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(workerLicenceTypeCode));
+            var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(null));
 
             return await Task.FromResult(new ConfigurationResponse(oidcResp,
                 recaptchaResp,
