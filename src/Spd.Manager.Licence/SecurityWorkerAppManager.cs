@@ -152,7 +152,7 @@ internal partial class SecurityWorkerAppManager :
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, cancellationToken);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
 
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -242,6 +242,7 @@ internal partial class SecurityWorkerAppManager :
                 response?.ContactId,
                 null,
                 null,
+                null,
                 cancellationToken);
 
         //copying all old files to new application in PreviousFileIds 
@@ -322,6 +323,7 @@ internal partial class SecurityWorkerAppManager :
             originalApp.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
+            null,
             cancellationToken);
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
 
