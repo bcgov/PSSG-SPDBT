@@ -113,7 +113,7 @@ export class AuthProcessService {
 		console.debug('initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
 		if (nextUrl) {
-			const success = await this.authUserBcscService.whoAmIAsync();
+			const success = await this.authUserBcscService.applicantLoginAsync();
 			this.notify(success);
 
 			const nextRoute = decodeURIComponent(nextUrl);

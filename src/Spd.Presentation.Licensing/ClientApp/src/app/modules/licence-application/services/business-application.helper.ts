@@ -169,27 +169,27 @@ export abstract class BusinessApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
 					'addressSelected',
-					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSame')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressLine1',
-					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSame')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'city',
-					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSame')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'postalCode',
-					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSame')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'province',
-					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSame')?.value == false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'country',
-					(_form) => this.businessAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => this.businessAddressFormGroup.get('isMailingTheSame')?.value == false
 				),
 			],
 		}
@@ -201,9 +201,11 @@ export abstract class BusinessApplicationHelper {
 		addressLine2: new FormControl(''),
 		city: new FormControl('', [FormControlValidators.required]),
 		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(false),
+		province: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.requiredValue('British Columbia'),
+		]),
+		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
 	});
 
 	branchesInBcFormGroup: FormGroup = this.formBuilder.group({
