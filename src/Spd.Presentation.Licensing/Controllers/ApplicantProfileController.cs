@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
+using Spd.Manager.Payment;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Security.Principal;
 
@@ -23,7 +25,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get
+        /// Get applicant profile
         /// </summary>
         /// <returns></returns>
         [Route("api/applicant/{id}")]
@@ -35,6 +37,19 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         //todo: add update endpoint here.
+
+        /// <summary>
+        /// Get applicants who has the same name and birthday as login person
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant/search")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<ApplicantListResponse>> SearchApplicantsSameAsloginUser()
+        {
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return await _mediator.Send(new ApplicantSearchCommand(info, false));
+        }
     }
 
 

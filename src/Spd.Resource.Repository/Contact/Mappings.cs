@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Contact
@@ -76,6 +77,12 @@ namespace Spd.Resource.Repository.Contact
               .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
               .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered))
               .ReverseMap();
+
+            _ = CreateMap<spd_licence, LicenceInfo>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_licenceid))
+             .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
+             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_expirydate)));
+
         }
 
         private static ResidentialAddr? GetResidentialAddress(contact contact)

@@ -11,6 +11,7 @@ namespace Spd.Manager.Licence
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
+        IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -43,15 +44,7 @@ namespace Spd.Manager.Licence
             ContactResp contactResp = null;
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
 
-            if (result == null || !result.Items.Any()) //first time to use system
-            {
-                //add identity
-                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-                CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
-                createContactCmd.IdentityId = id.Id;
-                contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
-            }
-            else
+            if (result != null && result.Items.Any())
             {
                 Identity? id = result.Items.FirstOrDefault();
                 if (id?.ContactId != null)
@@ -61,23 +54,42 @@ namespace Spd.Manager.Licence
                     updateContactCmd.Id = (Guid)id.ContactId;
                     updateContactCmd.IdentityId = id.Id;
                     contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
-                }
-                else
-                {
-                    //there is identity, but no contact
-                    CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
-                    createContactCmd.IdentityId = id.Id;
-                    contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
+                    return _mapper.Map<ApplicantLoginResponse>(contactResp);
                 }
             }
-
-            return _mapper.Map<ApplicantLoginResponse>(contactResp);
+            //no contact or identity found
+            return new ApplicantLoginResponse
+            {
+                ApplicantId = Guid.Empty,
+                FirstName = cmd.BcscIdentityInfo?.FirstName,
+                LastName = cmd.BcscIdentityInfo?.LastName,
+                IsFirstTimeLogin = true,
+                EmailAddress = cmd.BcscIdentityInfo?.Email,
+                MiddleName1 = cmd.BcscIdentityInfo?.MiddleName1,
+                MiddleName2 = cmd.BcscIdentityInfo?.MiddleName2
+            };
         }
 
         public async Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct)
         {
             await _contactRepository.ManageAsync(new TermAgreementCmd(cmd.ApplicantId), ct);
             return default;
+        }
+
+        public async Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct)
+        {
+            var results = await _contactRepository.QueryAsync(new ContactQry
+            {
+                FirstName = cmd.BcscIdentityInfo.FirstName,
+                LastName = cmd.BcscIdentityInfo.LastName,
+                MiddleName1 = cmd.BcscIdentityInfo.MiddleName1,
+                MiddleName2 = cmd.BcscIdentityInfo.MiddleName2,
+                BirthDate = cmd.BcscIdentityInfo.BirthDate,
+                IncludeInactive = false,
+                ReturnLicenceInfo = true,
+                IdentityId = Guid.Empty, //mean no identity connected with the contact
+            }, ct);
+            return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items);
         }
     }
 }
