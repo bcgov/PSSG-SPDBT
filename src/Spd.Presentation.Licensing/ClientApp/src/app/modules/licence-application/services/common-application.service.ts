@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
-	LicenceFeeListResponse,
 	LicenceFeeResponse,
 	LicenceTermCode,
 	PaymentLinkCreateRequest,
@@ -10,8 +9,9 @@ import {
 	PaymentMethodCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { LicenceFeeService, PaymentService } from '@app/api/services';
+import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ConfigService } from '@app/core/services/config.service';
 import { UtilService } from '@app/core/services/util.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -24,20 +24,11 @@ export class CommonApplicationService {
 		'Licensing Application',
 	]);
 
-	licenceFees: Array<LicenceFeeResponse> = [];
-
 	constructor(
 		private utilService: UtilService,
-		private licenceFeeService: LicenceFeeService,
+		private configService: ConfigService,
 		private paymentService: PaymentService
-	) {
-		this.licenceFeeService
-			.apiLicenceFeeGet()
-			.pipe()
-			.subscribe((resp: LicenceFeeListResponse) => {
-				this.licenceFees = resp.licenceFees ?? [];
-			});
-	}
+	) {}
 
 	/**
 	 * Get the licence fees for the licence and application type and business type
@@ -66,13 +57,15 @@ export class CommonApplicationService {
 			hasValidSwl90DayLicence = true;
 		}
 
-		return this.licenceFees?.filter(
-			(item) =>
-				item.workerLicenceTypeCode == workerLicenceTypeCode &&
-				item.businessTypeCode == businessTypeCode &&
-				(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
-				item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
-		);
+		return this.configService
+			.getLicenceFees()
+			.filter(
+				(item) =>
+					item.workerLicenceTypeCode == workerLicenceTypeCode &&
+					item.businessTypeCode == businessTypeCode &&
+					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
+					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
+			);
 	}
 
 	setApplicationTitle(

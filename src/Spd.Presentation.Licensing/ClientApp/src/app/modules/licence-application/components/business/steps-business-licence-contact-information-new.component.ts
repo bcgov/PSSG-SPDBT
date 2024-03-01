@@ -4,10 +4,10 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { StepBusinessLicenceBcBranchesComponent } from './step-business-licence-bc-branches.component';
 import { StepBusinessLicenceMailingAddressComponent } from './step-business-licence-mailing-address.component';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 import { StepBusinessLicenceBcBusinessAddressComponent } from './step-business_licence-bc-business-address.component';
-import { StepBusinessLicenceBranchesComponent } from './step-business_licence-branches.component';
 import { StepBusinessLicenceBusinessAddressComponent } from './step-business_licence-business-address.component';
 
 @Component({
@@ -135,7 +135,7 @@ import { StepBusinessLicenceBusinessAddressComponent } from './step-business_lic
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-branches></app-step-business-licence-branches>
+				<app-step-business-licence-bc-branches></app-step-business-licence-bc-branches>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -181,8 +181,8 @@ export class StepsBusinessLicenceContactInformationNewComponent extends BaseWiza
 	stepMailingAddressComponent!: StepBusinessLicenceMailingAddressComponent;
 	@ViewChild(StepBusinessLicenceBcBusinessAddressComponent)
 	stepBcBusinessAddressComponent!: StepBusinessLicenceBcBusinessAddressComponent;
-	@ViewChild(StepBusinessLicenceBranchesComponent)
-	stepBranchesComponent!: StepBusinessLicenceBranchesComponent;
+	@ViewChild(StepBusinessLicenceBcBranchesComponent)
+	stepBranchesComponent!: StepBusinessLicenceBcBranchesComponent;
 
 	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {
 		super();

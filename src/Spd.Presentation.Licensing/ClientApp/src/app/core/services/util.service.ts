@@ -1,5 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SortDirection } from '@angular/material/sort';
 import { Document, LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -13,6 +14,8 @@ export interface SpdFile extends File {
 	documentUrlId?: string | null;
 	lastModifiedDate?: string | null;
 }
+
+export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
@@ -175,6 +178,36 @@ export class UtilService {
 		const aUpper = a ? a.toUpperCase() : '';
 		const bUpper = b ? b.toUpperCase() : '';
 		return this.compareByString(aUpper, bUpper, ascending);
+	}
+
+	/**
+	 * @description
+	 * Generic sorting of a JSON object by direction.
+	 */
+	public sortByDirection<T>(a: T, b: T, direction: SortDirection = 'asc', withTrailingNull = true): SortWeight {
+		let result: SortWeight;
+
+		if (a === null && withTrailingNull) {
+			result = -1;
+		} else if (b === null && withTrailingNull) {
+			result = 1;
+		} else {
+			result = this.sort(a, b);
+		}
+
+		if (direction === 'desc') {
+			result *= -1;
+		}
+
+		return result as SortWeight;
+	}
+
+	/**
+	 * @description
+	 * Generic sorting of a JSON object by key.
+	 */
+	public sort<T>(a: T, b: T): SortWeight {
+		return a > b ? 1 : a < b ? -1 : 0;
 	}
 
 	//------------------------------------

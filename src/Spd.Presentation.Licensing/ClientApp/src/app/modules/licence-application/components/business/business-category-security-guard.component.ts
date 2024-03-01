@@ -70,6 +70,8 @@ export class BusinessCategorySecurityGuardComponent implements LicenceChildStepp
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		// return this.form.valid;
 		return true;
 	}
 

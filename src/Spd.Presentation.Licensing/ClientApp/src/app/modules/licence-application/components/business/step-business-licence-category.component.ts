@@ -325,6 +325,8 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 	// }
 
 	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		// return this.form.valid;
 		return true;
 		// this.categoryArmouredCarGuardFormGroup.markAllAsTouched();
 		// this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();

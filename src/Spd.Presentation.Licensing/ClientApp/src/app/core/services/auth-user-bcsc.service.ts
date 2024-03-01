@@ -1,27 +1,49 @@
 import { Injectable } from '@angular/core';
-import { ApplicantLoginResponse } from '@app/api/models';
+import { ApplicantLoginResponse, ApplicantProfileResponse } from '@app/api/models';
 import { lastValueFrom } from 'rxjs';
-import { LoginService } from 'src/app/api/services';
+import { ApplicantProfileService, LoginService } from 'src/app/api/services';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBcscService {
-	bcscUserWhoamiProfile: ApplicantLoginResponse | null = null;
+	applicantLoginProfile: ApplicantLoginResponse | null = null;
+	applicantProfile: ApplicantProfileResponse | null = null;
 
-	constructor(private loginService: LoginService) {}
+	constructor(private loginService: LoginService, private applicantProfileService: ApplicantProfileService) {}
 
-	async whoAmIAsync(): Promise<boolean> {
+	async applicantLoginAsync(): Promise<boolean> {
 		this.clearUserData();
 
 		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet());
 		if (resp) {
-			this.bcscUserWhoamiProfile = resp;
+			this.applicantLoginProfile = resp;
+
+			const resp2: ApplicantLoginResponse = await lastValueFrom(
+				this.applicantProfileService.apiApplicantIdGet({ id: this.applicantLoginProfile?.applicantId! })
+			);
+			if (resp2) {
+				this.applicantProfile = resp2;
+			}
+
 			return Promise.resolve(true);
 		}
 
 		return Promise.resolve(false);
 	}
 
+	// async applicantProfileAsync(): Promise<boolean> {
+	// 	const resp: ApplicantLoginResponse = await lastValueFrom(
+	// 		this.applicantProfileService.apiApplicantIdGet({ id: this.applicantLoginProfile?.applicantId! })
+	// 	);
+	// 	if (resp) {
+	// 		this.applicantProfile = resp;
+	// 		return Promise.resolve(true);
+	// 	}
+
+	// 	return Promise.resolve(false);
+	// }
+
 	public clearUserData(): void {
-		this.bcscUserWhoamiProfile = null;
+		this.applicantLoginProfile = null;
+		this.applicantProfile = null;
 	}
 }
