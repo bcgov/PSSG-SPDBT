@@ -6,7 +6,10 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Tasks;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -20,6 +23,7 @@ internal class PermitAppManager :
 {
     private readonly ILicenceRepository _licenceRepository;
     private readonly IContactRepository _contactRepository;
+    private readonly ITaskRepository _taskRepository;
 
     public PermitAppManager(
         ILicenceRepository licenceRepository,
@@ -27,10 +31,12 @@ internal class PermitAppManager :
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
-        IContactRepository contactRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
+        IContactRepository contactRepository,
+        ITaskRepository taskRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
     {
         _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
+        _taskRepository = taskRepository;
     }
 
     #region anonymous
@@ -51,7 +57,7 @@ internal class PermitAppManager :
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, cancellationToken);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -86,6 +92,7 @@ internal class PermitAppManager :
                 response?.ContactId,
                 null,
                 null,
+                null,
                 cancellationToken);
 
         //copying all old files to new application in PreviousFileIds 
@@ -109,7 +116,7 @@ internal class PermitAppManager :
     {
         PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
-            throw new ArgumentException("should be a update request");
+            throw new ArgumentException("should be an update request");
 
         //validation: check if original licence meet update condition.
         LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
@@ -120,7 +127,7 @@ internal class PermitAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
-        ChangeSpec changes = await MakeChanges(originalApp, request, originalLic, cancellationToken);
+        ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value))
@@ -133,14 +140,17 @@ internal class PermitAppManager :
         else
         {
             //update contact directly
-            await _contactRepository.ManageAsync(_mapper.Map<UpdateContactCmd>(request), cancellationToken);
+            UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+            updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
+            await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
         await UploadNewDocsAsync(request,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
             originalApp.ContactId,
-            changes.PeaceOfficerStatusChangeTaskId,
-            changes.MentalHealthStatusChangeTaskId,
+            null,
+            null,
+            changes.PurposeChangeTaskId,
             cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
@@ -180,12 +190,62 @@ internal class PermitAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newApp, LicenceResp originalLic, CancellationToken ct)
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, 
+        PermitAppAnonymousSubmitRequest newRequest,
+        IEnumerable<LicAppFileInfo> newFileInfos,
+        LicenceResp originalLic, CancellationToken ct)
     {
-        //todo: add code according to spec
         ChangeSpec changes = new ChangeSpec();
+        
+        // Check if prupose changed
+        changes.PurposeChanged = ChangeInPurpose(originalApp, newRequest);
+
+        // Check if rationale changed
+        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase) ||
+            newFileInfos.Any(n => n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale))
+            changes.RationaleChanged = true;
+        
+        List<string> purposes = GetPurposes(newRequest);
+
+        // Purpose or rationale changed, create a task for Licensing RA team
+        if (changes.PurposeChanged || changes.RationaleChanged)
+        {
+            IEnumerable<string> fileNames = newFileInfos.Where(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || 
+                f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale).Select(f => f.FileName);
+            changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Permit holder have requested to update the below provided rationale: \n" +
+                $" - Purpose: {string.Join(";", purposes)} \n" +
+                $" - Rationale: {newRequest.Rationale} \n" +
+                $" - {string.Join(";", fileNames)}",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Rational update for {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
+        }
+
+        // Criminal history changed, create a task for Licensing RA team
+        if (newRequest.HasNewCriminalRecordCharge == true)
+        {
+            changes.CriminalHistoryChanged = true;
+            changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Permit holder has updated the self declaration for their criminal history. \n" +
+                $" - {newRequest.CriminalChargeDescription}",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.High,
+                RegardingContactId = originalApp.ContactId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = originalLic.LicenceId
+            }, ct)).TaskId;
+        }
 
         return changes;
+
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppAnonymousSubmitRequest request,
@@ -242,12 +302,97 @@ internal class PermitAppManager :
         }
     }
 
+    private bool ChangeInEmployerInfo(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
+    {
+        if (!String.Equals(StringHelper.SanitizeNull(originalApp.EmployerName), StringHelper.SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorName), StringHelper.SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorEmailAddress), StringHelper.SanitizeNull(newRequest.SupervisorEmailAddress), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorPhoneNumber), StringHelper.SanitizeNull(newRequest.SupervisorPhoneNumber), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine1), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine1), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine2), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine2), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.City), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.City), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.Country), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Country), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.PostalCode), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.PostalCode), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.Province), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Province), StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private List<string> GetPurposes(PermitAppAnonymousSubmitRequest newRequest)
+    {
+        List<string> purposes = [];
+
+        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        {
+            foreach (var reasonCode in newRequest.ArmouredVehiclePermitReasonCodes)
+                purposes.Add(reasonCode.ToString());
+        } else
+        {
+            foreach (var reasonCode in newRequest.BodyArmourPermitReasonCodes)
+                purposes.Add(reasonCode.ToString());
+        }
+
+        return purposes;
+    }
+
+    private bool ChangeInPurpose(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
+    {
+        List<PermitPurposeEnum> permitPurposeRequest = [];
+
+        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        {
+            foreach (BodyArmourPermitReasonCode bodyArmourPermitReason in newRequest.BodyArmourPermitReasonCodes)
+            {
+                PermitPurposeEnum permitPurpose = Enum.Parse<PermitPurposeEnum>(bodyArmourPermitReason.ToString());
+                permitPurposeRequest.Add(permitPurpose);
+            }
+        }
+        else
+        {
+            foreach (ArmouredVehiclePermitReasonCode armouredVehiclePermitReason in newRequest.ArmouredVehiclePermitReasonCodes)
+            {
+                PermitPurposeEnum permitPurpose = Enum.Parse<PermitPurposeEnum>(armouredVehiclePermitReason.ToString());
+                permitPurposeRequest.Add(permitPurpose);
+            }
+        }
+
+        // Check if there is a different selection in reasons
+        if (permitPurposeRequest.Count != originalApp.PermitPurposeEnums?.Count())
+            return true;
+        else
+        {
+            List<PermitPurposeEnum> newList = permitPurposeRequest;
+            newList.Sort();
+            List<PermitPurposeEnum> originalList = originalApp.PermitPurposeEnums.ToList();
+            originalList.Sort();
+
+            if (!newList.SequenceEqual(originalList)) 
+                return true;
+        }
+
+        // Check if there is a different reason when selected value is "other"
+        if (permitPurposeRequest.Contains(PermitPurposeEnum.Other) &&
+            originalApp.PermitPurposeEnums.Contains(PermitPurposeEnum.Other) &&
+            !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // Check if there is a change in employer when selected value is "my employment"
+        if (permitPurposeRequest.Contains(PermitPurposeEnum.MyEmployment) &&
+            originalApp.PermitPurposeEnums.Contains(PermitPurposeEnum.MyEmployment) &&
+            ChangeInEmployerInfo(originalApp, newRequest))
+            return true;
+
+        return false;
+    }
+
     private sealed record ChangeSpec
     {
-        public bool PeaceOfficerStatusChanged { get; set; } //task
-        public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
-        public bool MentalHealthStatusChanged { get; set; } //task
-        public Guid? MentalHealthStatusChangeTaskId { get; set; }
+        public bool PurposeChanged { get; set; } //task
+        public Guid? PurposeChangeTaskId { get; set; }
+        public bool RationaleChanged { get; set; } //task
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
     }
