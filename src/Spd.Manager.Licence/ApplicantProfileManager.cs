@@ -44,7 +44,15 @@ namespace Spd.Manager.Licence
             ContactResp? contactResp = null;
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
 
-            if (result != null && result.Items.Any())
+            if (result == null || !result.Items.Any()) //first time to use system
+            {
+                //add identity
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
+                createContactCmd.IdentityId = id.Id;
+                contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
+            }
+            else
             {
                 Identity? id = result.Items.FirstOrDefault();
                 if (id?.ContactId != null)
@@ -54,20 +62,16 @@ namespace Spd.Manager.Licence
                     updateContactCmd.Id = (Guid)id.ContactId;
                     updateContactCmd.IdentityId = id.Id;
                     contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
-                    return _mapper.Map<ApplicantLoginResponse>(contactResp);
+                }
+                else
+                {
+                    //there is identity, but no contact
+                    CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
+                    createContactCmd.IdentityId = id.Id;
+                    contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 }
             }
-            //no contact or identity found
-            return new ApplicantLoginResponse
-            {
-                ApplicantId = Guid.Empty,
-                FirstName = cmd.BcscIdentityInfo?.FirstName,
-                LastName = cmd.BcscIdentityInfo?.LastName,
-                IsFirstTimeLogin = true,
-                EmailAddress = cmd.BcscIdentityInfo?.Email,
-                MiddleName1 = cmd.BcscIdentityInfo?.MiddleName1,
-                MiddleName2 = cmd.BcscIdentityInfo?.MiddleName2
-            };
+            return _mapper.Map<ApplicantLoginResponse>(contactResp);
         }
 
         public async Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct)
