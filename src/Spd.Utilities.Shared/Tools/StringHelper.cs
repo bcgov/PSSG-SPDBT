@@ -14,4 +14,7 @@ public static class StringHelper
         if (string.IsNullOrEmpty(str)) return null;
         return str;
     }
+
+    public static string SanitizeNull(string? text)
+    { return text ?? string.Empty; }
 }
