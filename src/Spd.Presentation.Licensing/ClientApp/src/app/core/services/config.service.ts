@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConfigurationResponse, IdentityProviderTypeCode } from '@app/api/models';
+import { ConfigurationResponse, IdentityProviderTypeCode, LicenceFeeResponse } from '@app/api/models';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -13,6 +13,18 @@ export class ConfigService {
 
 	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
 
+	public getConfigs(): Observable<ConfigurationResponse> {
+		if (this.configs) {
+			return of(this.configs);
+		}
+		return this.configurationService.apiConfigurationGet().pipe(
+			tap((resp: ConfigurationResponse) => {
+				this.configs = { ...resp };
+				return resp;
+			})
+		);
+	}
+
 	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
 		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
 			return this.getBceidConfig(redirectUri).then((config) => {
@@ -24,6 +36,15 @@ export class ConfigService {
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
 		});
+	}
+
+	public getBcscIssuer(): string | null {
+		const resp = this.configs?.bcscConfiguration ?? {};
+		return resp.issuer ?? null;
+	}
+
+	public getLicenceFees(): Array<LicenceFeeResponse> {
+		return this.configs?.licenceFees ?? [];
 	}
 
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
@@ -56,22 +77,5 @@ export class ConfigService {
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;
-	}
-
-	public getBcscIssuer(): string | null {
-		const resp = this.configs?.bcscConfiguration ?? {};
-		return resp.issuer ?? null;
-	}
-
-	public getConfigs(): Observable<ConfigurationResponse> {
-		if (this.configs) {
-			return of(this.configs);
-		}
-		return this.configurationService.apiConfigurationGet().pipe(
-			tap((resp: ConfigurationResponse) => {
-				this.configs = { ...resp };
-				return resp;
-			})
-		);
 	}
 }
