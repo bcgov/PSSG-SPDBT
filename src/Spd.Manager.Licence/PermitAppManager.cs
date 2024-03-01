@@ -198,7 +198,7 @@ internal class PermitAppManager :
         List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = Mappings.GetBodyArmourPermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
         List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = Mappings.GetArmouredVehiclePermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
 
-        if (newRequest.BodyArmourPermitReasonCodes.Any())
+        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
         {
             // Check if there is a different selection in Body armour reasons
             if (newRequest.BodyArmourPermitReasonCodes.Count() != bodyArmourPermitReasonCodes.Count)
@@ -226,7 +226,7 @@ internal class PermitAppManager :
                 changes.PurposeChanged = true;
         }
 
-        if (newRequest.ArmouredVehiclePermitReasonCodes.Any())
+        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
         {
             // Check if there is a different selection in Armoured vehicule reasons
             if (newRequest.ArmouredVehiclePermitReasonCodes.Count() != armouredVehiclePermitReasonCodes.Count)
