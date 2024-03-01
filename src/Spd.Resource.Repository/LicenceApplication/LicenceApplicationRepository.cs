@@ -168,7 +168,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
 
     }
 
-
     private void ProcessCategories(IEnumerable<WorkerCategoryTypeEnum> categories, spd_application app)
     {
         foreach (var c in categories)
