@@ -51,6 +51,11 @@ internal class Mappings : Profile
             .IncludeBase<Contact, Applicant>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id));
 
+        CreateMap<ContactResp, ApplicantListResponse>()
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceInfos.FirstOrDefault().LicenceNumber))
+            .ForMember(d => d.LicenceExpiryDate, opt => opt.MapFrom(s => s.LicenceInfos.FirstOrDefault().ExpiryDate));
+
         CreateMap<ContactResp, ApplicantLoginResponse>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.LicensingTermAgreedDateTime == null));

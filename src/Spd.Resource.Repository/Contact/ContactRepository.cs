@@ -31,17 +31,38 @@ internal class ContactRepository : IContactRepository
 
     public async Task<ContactListResp> QueryAsync(ContactQry qry, CancellationToken ct)
     {
-        IQueryable<contact> contacts = _context.contacts.Expand(c => c.spd_Contact_Alias);
+        IQueryable<contact> contacts = _context.contacts.Expand(c => c.spd_Contact_Alias).Expand(c => c.spd_contact_spd_identity);
 
         if (!qry.IncludeInactive)
             contacts = contacts.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         if (qry.UserEmail != null) contacts = contacts.Where(d => d.emailaddress1 == qry.UserEmail);
-
+        if (qry.FirstName != null) contacts = contacts.Where(d => d.firstname == qry.FirstName);
+        if (qry.LastName != null) contacts = contacts.Where(d => d.lastname == qry.LastName);
+        if (qry.MiddleName1 != null) contacts = contacts.Where(d => d.spd_middlename1 == qry.MiddleName1);
+        if (qry.MiddleName2 != null) contacts = contacts.Where(d => d.spd_middlename2 == qry.MiddleName2);
+        if (qry.BirthDate != null)
+        {
+            var birthdate = new Microsoft.OData.Edm.Date(qry.BirthDate.Value.Year, qry.BirthDate.Value.Month, qry.BirthDate.Value.Day);
+            contacts = contacts.Where(d => d.birthdate == birthdate);
+        }
+        if (qry.IdentityId != null)
+        {
+            if (qry.IdentityId == Guid.Empty)
+                contacts = contacts.Where(d => !d.spd_contact_spd_identity.Any());
+        }
         List<contact> contactList = contacts.ToList();
-        return new ContactListResp
+        var result = new ContactListResp
         {
             Items = _mapper.Map<IEnumerable<ContactResp>>(contactList)
         };
+        if (qry.ReturnLicenceInfo)
+        {
+            foreach (ContactResp resp in result.Items)
+            {
+                resp.LicenceInfos = _mapper.Map<IEnumerable<LicenceInfo>>(_context.spd_licences.Where(l => l._spd_licenceholder_value == resp.Id).ToList());
+            }
+        }
+        return result;
     }
 
     public async Task<ContactResp> ManageAsync(ContactCmd cmd, CancellationToken ct)
@@ -91,7 +112,7 @@ internal class ContactRepository : IContactRepository
     {
         ContactResp resp = new();
         contact? existingContact = await _context.GetContactById(c.Id, ct);
-        if(existingContact == null)
+        if (existingContact == null)
         {
             _logger.LogError($"no valid contact for {c.Id}");
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid contact id.");
