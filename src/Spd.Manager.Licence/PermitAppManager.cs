@@ -196,67 +196,13 @@ internal class PermitAppManager :
         LicenceResp originalLic, CancellationToken ct)
     {
         ChangeSpec changes = new ChangeSpec();
-        List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = Mappings.GetBodyArmourPermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
-        List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = Mappings.GetArmouredVehiclePermitReasonCodes(originalApp.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)originalApp.PermitPurposeEnums);
-
-        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
-        {
-            // Check if there is a different selection in Body armour reasons
-            if (newRequest.BodyArmourPermitReasonCodes.Count() != bodyArmourPermitReasonCodes.Count)
-                changes.PurposeChanged = true;
-            else
-            {
-                List<BodyArmourPermitReasonCode> newList = newRequest.BodyArmourPermitReasonCodes.ToList();
-                newList.Sort();
-                List<BodyArmourPermitReasonCode> originalList = bodyArmourPermitReasonCodes;
-                originalList.Sort();
-
-                if (!newList.SequenceEqual(originalList)) changes.PurposeChanged = true;
-            }
-
-            // Check if there is a different reason if Body armour selected reason is "other"
-            if (newRequest.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && 
-                bodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) &&
-                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
-                changes.PurposeChanged = true;
-
-            // Check if there is a change in employer if Body armour selected reason is "my employment"
-            if (newRequest.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) &&
-                bodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) &&
-                ChangeInEmployerInfo(originalApp, newRequest))
-                changes.PurposeChanged = true;
-        }
-
-        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
-        {
-            // Check if there is a different selection in Armoured vehicule reasons
-            if (newRequest.ArmouredVehiclePermitReasonCodes.Count() != armouredVehiclePermitReasonCodes.Count)
-                changes.PurposeChanged = true;
-            else
-            {
-                List<ArmouredVehiclePermitReasonCode> newList = newRequest.ArmouredVehiclePermitReasonCodes.ToList();
-                newList.Sort();
-                List<ArmouredVehiclePermitReasonCode> originalList = armouredVehiclePermitReasonCodes;
-                originalList.Sort();
-
-                if (!newList.SequenceEqual(originalList)) changes.PurposeChanged = true;
-            }
-
-            // Check if there is a different reason if Armoured vehicule selected reason is "other"
-            if (newRequest.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && 
-                armouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) &&
-                !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
-                changes.PurposeChanged = true;
-
-            // Check if there is a change in employer if Armoured vehicule selected reason is "my employment"
-            if (newRequest.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) &&
-                armouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) &&
-                ChangeInEmployerInfo(originalApp, newRequest))
-                changes.PurposeChanged = true;
-        }
+        
+        // Check if prupose changed
+        changes.PurposeChanged = ChangeInPurpose(originalApp, newRequest);
 
         // Check if rationale changed
-        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase))
+        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase) ||
+            newFileInfos.Any(n => n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale))
             changes.RationaleChanged = true;
         
         List<string> purposes = GetPurposes(newRequest);
@@ -378,7 +324,7 @@ internal class PermitAppManager :
     {
         List<string> purposes = [];
 
-        if (newRequest.ArmouredVehiclePermitReasonCodes.Any())
+        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
         {
             foreach (var reasonCode in newRequest.ArmouredVehiclePermitReasonCodes)
                 purposes.Add(reasonCode.ToString());
@@ -391,7 +337,55 @@ internal class PermitAppManager :
         return purposes;
     }
 
-    
+    private bool ChangeInPurpose(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
+    {
+        List<PermitPurposeEnum> permitPurposeRequest = [];
+
+        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        {
+            foreach (BodyArmourPermitReasonCode bodyArmourPermitReason in newRequest.BodyArmourPermitReasonCodes)
+            {
+                PermitPurposeEnum permitPurpose = Enum.Parse<PermitPurposeEnum>(bodyArmourPermitReason.ToString());
+                permitPurposeRequest.Add(permitPurpose);
+            }
+        }
+        else
+        {
+            foreach (ArmouredVehiclePermitReasonCode armouredVehiclePermitReason in newRequest.ArmouredVehiclePermitReasonCodes)
+            {
+                PermitPurposeEnum permitPurpose = Enum.Parse<PermitPurposeEnum>(armouredVehiclePermitReason.ToString());
+                permitPurposeRequest.Add(permitPurpose);
+            }
+        }
+
+        // Check if there is a different selection in reasons
+        if (permitPurposeRequest.Count != originalApp.PermitPurposeEnums?.Count())
+            return true;
+        else
+        {
+            List<PermitPurposeEnum> newList = permitPurposeRequest;
+            newList.Sort();
+            List<PermitPurposeEnum> originalList = originalApp.PermitPurposeEnums.ToList();
+            originalList.Sort();
+
+            if (!newList.SequenceEqual(originalList)) 
+                return true;
+        }
+
+        // Check if there is a different reason when selected value is "other"
+        if (permitPurposeRequest.Contains(PermitPurposeEnum.Other) &&
+            originalApp.PermitPurposeEnums.Contains(PermitPurposeEnum.Other) &&
+            !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // Check if there is a change in employer when selected value is "my employment"
+        if (permitPurposeRequest.Contains(PermitPurposeEnum.MyEmployment) &&
+            originalApp.PermitPurposeEnums.Contains(PermitPurposeEnum.MyEmployment) &&
+            ChangeInEmployerInfo(originalApp, newRequest))
+            return true;
+
+        return false;
+    }
 
     private sealed record ChangeSpec
     {
