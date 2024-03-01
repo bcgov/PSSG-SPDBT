@@ -81,7 +81,7 @@ export class StepBusinessLicenceLiabilityComponent implements LicenceChildSteppe
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
+		this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;
 	}

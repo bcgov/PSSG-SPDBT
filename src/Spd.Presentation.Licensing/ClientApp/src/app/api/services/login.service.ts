@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ActionResult } from '../models/action-result';
 import { ApplicantLoginResponse } from '../models/applicant-login-response';
 
 @Injectable({
@@ -77,6 +78,67 @@ export class LoginService extends BaseService {
 
     return this.apiApplicantLoginGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicantLoginResponse>) => r.body as ApplicantLoginResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantApplicantIdTermAgreeGet
+   */
+  static readonly ApiApplicantApplicantIdTermAgreeGetPath = '/api/applicant/{applicantId}/term-agree';
+
+  /**
+   * when user select agree to the Term. Call this endpoint.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantApplicantIdTermAgreeGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantApplicantIdTermAgreeGet$Response(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiApplicantApplicantIdTermAgreeGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * when user select agree to the Term. Call this endpoint.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantApplicantIdTermAgreeGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantApplicantIdTermAgreeGet(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiApplicantApplicantIdTermAgreeGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 
