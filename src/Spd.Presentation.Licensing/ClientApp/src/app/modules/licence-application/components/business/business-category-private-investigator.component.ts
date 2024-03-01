@@ -69,6 +69,8 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		// return this.form.valid;
 		return true;
 	}
 }

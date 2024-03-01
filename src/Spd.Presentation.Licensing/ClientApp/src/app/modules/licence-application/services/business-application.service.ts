@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, tap } from 'rxjs';
 import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService } from './common-application.service';
 
@@ -32,6 +32,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		branchesInBcData: this.branchesInBcFormGroup,
 	});
 
+	businessModelChangedSubscription!: Subscription;
+
 	constructor(
 		formBuilder: FormBuilder,
 		configService: ConfigService,
@@ -39,6 +41,29 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private commonApplicationService: CommonApplicationService // private licenceFeeService: LicenceFeeService, // private securityWorkerLicensingService: WorkerLicensingService, // private licenceLookupService: LicenceLookupService, // private authUserBcscService: AuthUserBcscService, // private authenticationService: AuthenticationService, // private utilService: UtilService
 	) {
 		super(formBuilder, configService, formatDatePipe);
+
+		this.businessModelChangedSubscription = this.businessModelFormGroup.valueChanges
+			.pipe(debounceTime(200), distinctUntilChanged())
+			.subscribe((_resp: any) => {
+				if (this.initialized) {
+					this.hasValueChanged = true;
+
+					// const step1Complete = this.isStepLicenceSelectionComplete();
+					// const step2Complete = this.isStepBackgroundComplete();
+					// const step3Complete = this.isStepIdentificationComplete();
+					const isValid = false; //TODO is businessModelFormGroup valid? // step1Complete && step2Complete && step3Complete;
+
+					console.debug(
+						'businessModelFormGroup CHANGED',
+						// 	step1Complete,
+						// 	step2Complete,
+						// 	step3Complete,
+						this.businessModelFormGroup.getRawValue()
+					);
+
+					this.businessModelValueChanges$.next(isValid);
+				}
+			});
 	}
 
 	/**

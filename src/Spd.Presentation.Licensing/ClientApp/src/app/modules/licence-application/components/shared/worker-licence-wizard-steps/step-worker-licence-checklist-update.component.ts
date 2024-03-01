@@ -22,9 +22,9 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								<span class="checklist-label">Proof of training and experience</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								Some categories of security workers, such as security guards, require proof of training or experience.
-								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp;about the types of
-								documents we accept for each security worker category.
+								If you are adding a new category to your licence, you may need to provide proof of training and/or
+								experience. <a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp; about
+								the types of documents we accept for each security worker category.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -74,7 +74,10 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Credit card</span>
 							</mat-checkbox>
-							<p class="checklist-info">All major credit cards accepted through our secure payment platform.</p>
+							<p class="checklist-info">
+								Updates to your legal name, licence category, authorization to use restraints or dogs, and licence
+								photograph have a $20 fee. All major credit cards are accepted through our secure payment platform.
+							</p>
 						</form>
 					</div>
 				</div>

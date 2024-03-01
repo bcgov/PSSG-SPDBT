@@ -73,6 +73,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Province/State</mat-label>
 									<input matInput formControlName="province" maxlength="100" />
 									<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('province')?.hasError('requiredValue')"
+										>This must be 'British Columbia'</mat-error
+									>
 								</mat-form-field>
 							</div>
 							<div class="col-md-6 col-sm-12">
@@ -80,6 +83,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-label>Country</mat-label>
 									<input matInput formControlName="country" maxlength="100" />
 									<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
+									<mat-error *ngIf="form.get('country')?.hasError('requiredValue')">This must be 'Canada'</mat-error>
 								</mat-form-field>
 							</div>
 						</div>

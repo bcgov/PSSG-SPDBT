@@ -86,7 +86,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
+		this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;
 	}
