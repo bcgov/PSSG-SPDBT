@@ -71,7 +71,7 @@ namespace Spd.Presentation.Screening.Controllers
             var payBcSearchInvoiceUrl = _configuration.GetValue<string>("PayBcSearchInvoiceUrl", string.Empty);
             return await Task.FromResult(new ConfigurationResponse()
             {
-                BciedConfiguration = oidcResp,
+                BceidConfiguration = oidcResp,
                 BcscConfiguration = bcscConfig,
                 IdirConfiguration = idirConfig,
                 RecaptchaConfiguration = recaptchaResp,
@@ -83,7 +83,7 @@ namespace Spd.Presentation.Screening.Controllers
 
     public record ConfigurationResponse
     {
-        public OidcConfiguration BciedConfiguration { get; set; } = null!;
+        public OidcConfiguration BceidConfiguration { get; set; } = null!;
         public OidcConfiguration BcscConfiguration { get; set; } = null!;
         public OidcConfiguration IdirConfiguration { get; set; } = null!;
         public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;

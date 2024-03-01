@@ -51,7 +51,7 @@ export class ConfigService {
   }
 
   private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
-    const resp = this.configs?.bciedConfiguration!;
+    const resp = this.configs?.bceidConfiguration!;
     const bceIdConfig: AuthConfig = {
       issuer: resp.issuer!,
       clientId: resp.clientId!,
