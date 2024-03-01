@@ -37,7 +37,7 @@ export class StepBusinessLicenceBcBusinessAddressComponent implements LicenceChi
 
 	isFormValid(): boolean {
 		console.log('bcBusinessAddressFormGroup', this.form.value);
-		// this.form.markAllAsTouched();
+		this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;
 	}
