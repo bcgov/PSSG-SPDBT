@@ -213,6 +213,23 @@ export abstract class BusinessApplicationHelper {
 		branches: this.formBuilder.array([]),
 	});
 
+	branchInBcFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressLine2: new FormControl(''),
+		city: new FormControl('', [FormControlValidators.required]),
+		postalCode: new FormControl('', [FormControlValidators.required]),
+		province: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.requiredValue('British Columbia'),
+		]),
+		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
+		managerName: new FormControl(''),
+		managerSwlNumber: new FormControl(''),
+		managerPhoneNumber: new FormControl(''),
+		managerEmail: new FormControl(''),
+	});
+
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
