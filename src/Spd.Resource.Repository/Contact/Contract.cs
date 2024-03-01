@@ -36,13 +36,25 @@ namespace Spd.Resource.Repository.Contact
         public Guid Id { get; set; }
         public DateTime? LastestScreeningLogin { get; set; }
         public DateTimeOffset? LicensingTermAgreedDateTime { get; set; }
+        public IEnumerable<LicenceInfo> LicenceInfos { get; set; } = [];
     }
-
+    public record LicenceInfo
+    {
+        public Guid Id { get; set; }
+        public string? LicenceNumber { get; set; }
+        public DateOnly ExpiryDate { get; set; }
+    }
     public record ContactQry
     {
         public Guid? IdentityId { get; set; }
         public string? UserEmail { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public DateOnly? BirthDate { get; set; }
         public bool IncludeInactive { get; set; }
+        public bool ReturnLicenceInfo { get; set; }
     };
 
     public abstract record ContactCmd : Contact;
