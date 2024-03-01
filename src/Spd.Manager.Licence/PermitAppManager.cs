@@ -9,6 +9,7 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Net;
 
 namespace Spd.Manager.Licence;
@@ -356,16 +357,16 @@ internal class PermitAppManager :
 
     private bool ChangeInEmployerInfo(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
     {
-        if (!String.Equals(SanitizeNull(originalApp.EmployerName), SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.SupervisorName), SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.SupervisorEmailAddress), SanitizeNull(newRequest.SupervisorEmailAddress), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.SupervisorPhoneNumber), SanitizeNull(newRequest.SupervisorPhoneNumber), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine1), SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine1), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine2), SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine2), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.City), SanitizeNull(newRequest.EmployerPrimaryAddress?.City), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.Country), SanitizeNull(newRequest.EmployerPrimaryAddress?.Country), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.PostalCode), SanitizeNull(newRequest.EmployerPrimaryAddress?.PostalCode), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(SanitizeNull(originalApp.EmployerPrimaryAddress?.Province), SanitizeNull(newRequest.EmployerPrimaryAddress?.Province), StringComparison.OrdinalIgnoreCase))
+        if (!String.Equals(StringHelper.SanitizeNull(originalApp.EmployerName), StringHelper.SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorName), StringHelper.SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorEmailAddress), StringHelper.SanitizeNull(newRequest.SupervisorEmailAddress), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorPhoneNumber), StringHelper.SanitizeNull(newRequest.SupervisorPhoneNumber), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine1), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine1), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine2), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine2), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.City), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.City), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.Country), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Country), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.PostalCode), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.PostalCode), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.Province), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Province), StringComparison.OrdinalIgnoreCase))
         {
             return true;
         }
@@ -390,8 +391,7 @@ internal class PermitAppManager :
         return purposes;
     }
 
-    private string SanitizeNull(string? text)
-    {  return text ?? string.Empty; }
+    
 
     private sealed record ChangeSpec
     {
