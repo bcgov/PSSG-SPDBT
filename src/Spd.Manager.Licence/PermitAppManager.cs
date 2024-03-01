@@ -210,7 +210,8 @@ internal class PermitAppManager :
         // Purpose or rationale changed, create a task for Licensing RA team
         if (changes.PurposeChanged || changes.RationaleChanged)
         {
-            IEnumerable<string> fileNames = newFileInfos.Select(d => d.FileName);
+            IEnumerable<string> fileNames = newFileInfos.Where(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || 
+                f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale).Select(f => f.FileName);
             changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Permit holder have requested to update the below provided rationale: \n" +
