@@ -11,6 +11,7 @@ namespace Spd.Manager.Licence
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
+        IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -40,7 +41,7 @@ namespace Spd.Manager.Licence
 
         public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
         {
-            ContactResp contactResp = null;
+            ContactResp? contactResp = null;
             var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
 
             if (result == null || !result.Items.Any()) //first time to use system
@@ -70,7 +71,6 @@ namespace Spd.Manager.Licence
                     contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
                 }
             }
-
             return _mapper.Map<ApplicantLoginResponse>(contactResp);
         }
 
@@ -78,6 +78,23 @@ namespace Spd.Manager.Licence
         {
             await _contactRepository.ManageAsync(new TermAgreementCmd(cmd.ApplicantId), ct);
             return default;
+        }
+
+        public async Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct)
+        {
+            var results = await _contactRepository.QueryAsync(new ContactQry
+            {
+                FirstName = cmd.BcscIdentityInfo.FirstName,
+                LastName = cmd.BcscIdentityInfo.LastName,
+                MiddleName1 = cmd.BcscIdentityInfo.MiddleName1,
+                MiddleName2 = cmd.BcscIdentityInfo.MiddleName2,
+                BirthDate = cmd.BcscIdentityInfo.BirthDate,
+                IncludeInactive = false,
+                ReturnLicenceInfo = true,
+                IdentityId = Guid.Empty, //mean no identity connected with the contact
+            }, ct);
+
+            return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items.Where(i => i.LicenceInfos.Any())); //if no licence, no return
         }
     }
 }

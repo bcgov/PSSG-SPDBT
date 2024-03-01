@@ -10,11 +10,13 @@ namespace Spd.Manager.Licence
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery query, CancellationToken ct);
         public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct); //used for applicant portal
         public Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct);
+        public Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct);
     }
 
     public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
     public record ApplicantLoginCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantLoginResponse>;
     public record ApplicantTermAgreeCommand(Guid ApplicantId) : IRequest<Unit>;
+    public record ApplicantSearchCommand(BcscIdentityInfo BcscIdentityInfo, bool hasIdentity = false) : IRequest<IEnumerable<ApplicantListResponse>>;
     public record Applicant
     {
         public string? FirstName { get; set; }
@@ -41,7 +43,17 @@ namespace Spd.Manager.Licence
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
         public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     }
-
+    public record ApplicantListResponse
+    {
+        public Guid ApplicantId { get; set; } //which is contact id in db
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public DateOnly BirthDate { get; set; }
+        public string? LicenceNumber { get; set; }
+        public DateOnly? LicenceExpiryDate { get; set; }
+    }
     public record ApplicantLoginResponse
     {
         public Guid ApplicantId { get; set; } //which is contact id in db
