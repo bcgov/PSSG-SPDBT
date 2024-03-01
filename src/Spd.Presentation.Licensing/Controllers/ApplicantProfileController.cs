@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
-using Spd.Manager.Payment;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Security.Principal;
