@@ -48,6 +48,7 @@ internal abstract class LicenceAppManagerBase
         Guid? contactId,
         Guid? peaceOfficerStatusChangeTaskId,
         Guid? mentalHealthStatusChangeTaskId,
+        Guid? purposeChangeTaskId,
         CancellationToken ct)
     {
         if (newFileInfos != null && newFileInfos.Any())
@@ -63,6 +64,10 @@ internal abstract class LicenceAppManagerBase
                 else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
                 {
                     fileCmd.TaskId = mentalHealthStatusChangeTaskId;
+                }
+                else if (licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || licAppFile.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale)
+                {
+                    fileCmd.TaskId = purposeChangeTaskId;
                 }
                 fileCmd.ApplicantId = contactId;
                 fileCmd.ApplicationId = licenceAppId;
