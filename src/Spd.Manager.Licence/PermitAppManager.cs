@@ -56,7 +56,7 @@ internal class PermitAppManager :
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, cancellationToken);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -89,6 +89,7 @@ internal class PermitAppManager :
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
+                null,
                 null,
                 null,
                 cancellationToken);
@@ -125,7 +126,7 @@ internal class PermitAppManager :
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
-        await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
+        ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value))
@@ -148,6 +149,7 @@ internal class PermitAppManager :
             originalApp.ContactId,
             null,
             null,
+            changes.PurposeChangeTaskId,
             cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
     }
@@ -396,7 +398,6 @@ internal class PermitAppManager :
         public bool PurposeChanged { get; set; } //task
         public Guid? PurposeChangeTaskId { get; set; }
         public bool RationaleChanged { get; set; } //task
-        public Guid? RationaleChangeTaskId { get; set; }
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
     }
