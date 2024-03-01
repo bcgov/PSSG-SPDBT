@@ -17,6 +17,8 @@ import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/
 import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
 import { UserLoginProfileComponent } from './components/authenticated/user-login-profile.component';
 import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
+import { WorkerLicenceFirstTimeUserSelectionComponent } from './components/authenticated/worker-licence-first-time-user-selection.component';
+import { WorkerLicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/worker-licence-first-time-user-terms-of-use.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
@@ -58,6 +60,8 @@ export class LicenceApplicationRoutes {
 	public static USER_BUSINESS_APPLICATIONS = 'applications';
 	public static BUSINESS_RENEW = 'business-renew';
 
+	public static LICENCE_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
+	public static LICENCE_FIRST_TIME_USER_SELECTION = 'user-selection';
 	public static LICENCE_LINK = 'licence-link';
 	public static LOGIN_USER_PROFILE = 'user-profile';
 
@@ -228,10 +232,18 @@ const routes: Routes = [
 				],
 			},
 			{
-				// SWL - NEW - AUTHORIZED
+				// SWL - AUTHORIZED
 				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
 				component: WorkerLicenceApplicationBaseAuthenticatedComponent,
 				children: [
+					{
+						path: LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS,
+						component: WorkerLicenceFirstTimeUserTermsOfUseComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_SELECTION,
+						component: WorkerLicenceFirstTimeUserSelectionComponent,
+					},
 					{
 						path: LicenceApplicationRoutes.LICENCE_LINK,
 						component: StepWorkerLicenceAccessCodeAuthorizedComponent,

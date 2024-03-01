@@ -105,10 +105,27 @@ export class FormControlValidators {
 
 	/**
 	 * @description
+	 * Checks the form control must have a specific value.
+	 */
+	public static requiredValue(matchValue: string): ValidatorFn {
+		return (control: AbstractControl): ValidationErrors | null => {
+			if (!control.value) {
+				return null;
+			}
+			if (!matchValue) {
+				return null;
+			}
+			const valid = control.valid && control.value === matchValue;
+			return valid ? null : { requiredValue: true };
+		};
+	}
+
+	/**
+	 * @description
 	 * Checks a form control is within a valid length,
 	 * if there is no maxLength, it will be assumed to be the same as minLength.
 	 */
-	public static requiredLength(minLength: number, maxLength?: number): ValidatorFn {
+	public static requiredLength(minLength: number, maxLength?: number): ValidationErrors | null {
 		return (control: AbstractControl): ValidationErrors | null => {
 			if (!control.value) {
 				return null;

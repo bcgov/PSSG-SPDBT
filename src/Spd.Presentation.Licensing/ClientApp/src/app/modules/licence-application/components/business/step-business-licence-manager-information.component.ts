@@ -96,7 +96,7 @@ export class StepBusinessLicenceManagerInformationComponent implements LicenceCh
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
+		this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;
 	}

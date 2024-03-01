@@ -37,7 +37,7 @@ export class StepBusinessLicenceMailingAddressComponent implements LicenceChildS
 
 	isFormValid(): boolean {
 		console.log('mailingAddressFormGroup', this.form.value);
-		// this.form.markAllAsTouched();
+		this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;
 	}

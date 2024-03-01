@@ -55,13 +55,13 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
-				<!-- <app-steps-permit-contact
+				<app-steps-business-licence-controlling-members-new
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-contact> -->
+				></app-steps-business-licence-controlling-members-new>
 			</mat-step>
 
 			<mat-step completed="false">
