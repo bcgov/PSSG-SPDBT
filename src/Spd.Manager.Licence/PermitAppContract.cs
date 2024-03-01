@@ -41,8 +41,9 @@ public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
     public EmployerPrimaryAddress? EmployerPrimaryAddress { get; set; }
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
-    public IEnumerable<BodyArmourPermitReasonCode>? BodyArmourPermitReasonCodes { get; set; } //for body armour
-    public IEnumerable<ArmouredVehiclePermitReasonCode>? ArmouredVehiclePermitReasonCodes { get; set; } // for armour vehicle
+    public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
+    public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
+    public string? CriminalChargeDescription { get; set; }
 }
 
 public record PermitAppCommandResponse : LicenceAppUpsertResponse
@@ -65,8 +66,8 @@ public record PermitLicenceAppResponse : PersonalLicenceAppBase
     public EmployerPrimaryAddress? EmployerPrimaryAddress { get; set; }
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
-    public IEnumerable<BodyArmourPermitReasonCode>? BodyArmourPermitReasonCodes { get; set; } //for body armour
-    public IEnumerable<ArmouredVehiclePermitReasonCode>? ArmouredVehiclePermitReasonCodes { get; set; } // for armour vehicle
+    public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
+    public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
 }
 
 public enum BodyArmourPermitReasonCode
