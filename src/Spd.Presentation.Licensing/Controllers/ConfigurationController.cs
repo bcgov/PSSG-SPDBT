@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser.Configurations;
@@ -15,18 +16,20 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IOptions<BcscAuthenticationConfiguration> _bcscOption;
         private readonly IConfiguration _configuration;
         private readonly IOptions<GoogleReCaptchaConfiguration> _captchaOption;
+        private readonly IMediator _mediator;
 
         public ConfigurationController(IOptions<BCeIDAuthenticationConfiguration> bceidConfiguration,
             IOptions<GoogleReCaptchaConfiguration> captchaOption,
             IOptions<BcscAuthenticationConfiguration> bcscConfiguration,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMediator mediator)
         {
             _bceidOption = bceidConfiguration;
             _captchaOption = captchaOption;
             _bcscOption = bcscConfiguration;
             _configuration = configuration;
+            _mediator = mediator;
         }
-
 
         [Route("api/configuration")]
         [HttpGet]
@@ -54,10 +57,13 @@ namespace Spd.Presentation.Licensing.Controllers
             if (invalidCategoryMatrix == null)
                 throw new ApiException(HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
+            var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(null));
+
             return await Task.FromResult(new ConfigurationResponse(oidcResp,
                 recaptchaResp,
                 bcscConfig,
-                invalidCategoryMatrix));
+                invalidCategoryMatrix,
+                (List<LicenceFeeResponse>)licenceFeesResponse.LicenceFees));
         }
     }
 
@@ -65,7 +71,8 @@ namespace Spd.Presentation.Licensing.Controllers
         OidcConfiguration OidcConfiguration,
         RecaptchaConfiguration RecaptchaConfiguration,
         BcscConfiguration BcscConfiguration,
-        Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration
+        Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration,
+        List<LicenceFeeResponse> LicenceFees
     );
 
     public record OidcConfiguration
