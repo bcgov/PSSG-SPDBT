@@ -33,7 +33,6 @@ export { ApplicationPortalStatusCode } from './models/application-portal-status-
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
 export { ApplicationTypeCode } from './models/application-type-code';
-export { BcscConfiguration } from './models/bcsc-configuration';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { BulkAppsCreateResponse } from './models/bulk-apps-create-response';
 export { BulkAppsCreateResultCode } from './models/bulk-apps-create-result-code';
