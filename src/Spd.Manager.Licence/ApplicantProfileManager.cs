@@ -42,8 +42,8 @@ namespace Spd.Manager.Licence
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
             
             var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
-            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument));    //Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument)
-            return result;  
+            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument));
+            return result;
         }
 
         public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
