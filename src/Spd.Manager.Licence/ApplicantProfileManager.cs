@@ -5,7 +5,6 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Registration;
-using System.Threading;
 
 namespace Spd.Manager.Licence
 {
