@@ -1,9 +1,10 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
-import { LoginService } from '@app/api/services';
+import { ApplicantListResponse, ApplicationTypeCode } from '@app/api/models';
+import { ApplicantProfileService, LoginService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { CommonTermsComponent } from '../shared/step-components/common-terms.component';
@@ -11,7 +12,7 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 @Component({
 	selector: 'app-worker-licence-first-time-user-selection',
 	template: `
-		<section class="step-section">
+		<section class="step-section" *ngIf="options">
 			<div class="step">
 				<app-step-title title="First Time User Selection"></app-step-title>
 
@@ -25,21 +26,21 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 									<div
 										tabindex="0"
 										class="user-option px-3 pb-3"
-										(click)="onDataChange(option.id)"
-										(keydown)="onKeyDown($event, option.id)"
-										[ngClass]="{ 'active-selection-border': userOption === option.id }"
+										(click)="onDataChange(option.applicantId!)"
+										(keydown)="onKeyDown($event, option.applicantId!)"
+										[ngClass]="{ 'active-selection-border': selectedApplicantId === option.applicantId }"
 									>
 										<div class="text-label d-block text-muted mt-0">Name</div>
-										<div class="summary-text-data">{{ option.name }}</div>
+										<div class="summary-text-data">{{ getFullName(option) }}</div>
 										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
-											{{ option.dateOfBirth | formatDate : constants.date.formalDateFormat }}
+											{{ option.birthDate | formatDate : constants.date.formalDateFormat }}
 										</div>
 										<div class="text-label d-block text-muted">Licence Number</div>
 										<div class="summary-text-data">{{ option.licenceNumber }}</div>
 										<div class="text-label d-block text-muted">Expiry Date</div>
 										<div class="summary-text-data">
-											{{ option.expiryDate | formatDate : constants.date.formalDateFormat }}
+											{{ option.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 										</div>
 									</div>
 								</div>
@@ -73,34 +74,12 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 		`,
 	],
 })
-export class WorkerLicenceFirstTimeUserSelectionComponent implements LicenceChildStepperStepComponent {
+export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
-	userOption: string | null = null;
+	selectedApplicantId: string | null = null;
 	showValidationError = false;
 
-	options: Array<any> = [
-		{
-			id: '1',
-			name: 'Joanna Anne Smith',
-			dateOfBirth: '1991-08-15',
-			licenceNumber: 'E1139967',
-			expiryDate: '2015-08-15',
-		},
-		{
-			id: '2',
-			name: 'Joanna Rachel Smith',
-			dateOfBirth: '1991-08-15',
-			licenceNumber: 'E2239967',
-			expiryDate: '2026-04-22',
-		},
-		{
-			id: '3',
-			name: 'Joanna Smith',
-			dateOfBirth: '1991-08-15',
-			licenceNumber: 'E4439967',
-			expiryDate: '2030-11-05',
-		},
-	];
+	options: Array<ApplicantListResponse> | null = null;
 
 	@ViewChild(CommonTermsComponent) commonTermsComponent!: CommonTermsComponent;
 
@@ -110,44 +89,78 @@ export class WorkerLicenceFirstTimeUserSelectionComponent implements LicenceChil
 
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
 		private loginService: LoginService,
-		private authUserBcscService: AuthUserBcscService
+		private authUserBcscService: AuthUserBcscService,
+		private applicantProfileService: ApplicantProfileService
 	) {}
 
+	ngOnInit(): void {
+		// do not allow the user to navigate here (eg. back button)
+		// if they have already finished with the user selection
+		if (!this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			return;
+		}
+
+		if (this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin)
+			this.applicantProfileService
+				.apiApplicantSearchGet()
+				.pipe()
+				.subscribe((resp: Array<ApplicantListResponse>) => {
+					if (!resp || resp.length === 0) {
+						this.markAsTermAgreement(this.authUserBcscService.applicantLoginProfile?.applicantId!);
+						return;
+					}
+
+					this.options = resp;
+				});
+	}
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();
 	}
 
 	onContinue(): void {
 		this.showValidationError = false;
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		this.markAsTermAgreement(this.authUserBcscService.applicantLoginProfile?.applicantId!);
 	}
 
 	onLinkAndContinue(): void {
-		if (!this.userOption) {
+		if (!this.selectedApplicantId) {
 			this.showValidationError = true;
 			return;
 		}
 
 		this.showValidationError = false;
 
-		this.loginService
-			.apiApplicantApplicantIdTermAgreeGet({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			})
-			.pipe()
-			.subscribe((_resp: any) => {
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-			});
+		this.markAsTermAgreement(this.selectedApplicantId);
 	}
 
 	onDataChange(_val: string) {
-		this.userOption = _val;
+		this.selectedApplicantId = _val;
 	}
 
 	onKeyDown(event: KeyboardEvent, _val: string) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onDataChange(_val);
+	}
+
+	getFullName(_val: ApplicantListResponse): string {
+		return this.utilService.getFullNameWithMiddle(_val.firstName, _val.middleName1, _val.middleName2, _val.lastName);
+	}
+
+	private markAsTermAgreement(applicantId: string): void {
+		this.loginService
+			.apiApplicantApplicantIdTermAgreeGet({
+				applicantId: applicantId,
+			})
+			.pipe()
+			.subscribe((_resp: any) => {
+				if (this.authUserBcscService.applicantLoginProfile) {
+					this.authUserBcscService.applicantLoginProfile.isFirstTimeLogin = false;
+				}
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			});
 	}
 }

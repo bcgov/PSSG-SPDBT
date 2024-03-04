@@ -22,6 +22,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 						"
 						>This is required</mat-error
 					>
+
+					<!-- TODO add criminalChargeDescription -->
 				</div>
 			</div>
 		</form>
