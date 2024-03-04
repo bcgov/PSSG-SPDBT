@@ -234,7 +234,7 @@ import { Subscription } from 'rxjs';
 												<div class="text-minor-heading">Restraints Authorization</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Request to use restraints?</div>
+														<div class="text-label d-block text-muted">Request to Use Restraints</div>
 														<div class="summary-text-data">
 															{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 														</div>
@@ -257,7 +257,7 @@ import { Subscription } from 'rxjs';
 												<div class="text-minor-heading">Dogs Authorization</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Request to use dogs?</div>
+														<div class="text-label d-block text-muted">Request to Use Dogs</div>
 														<div class="summary-text-data">{{ useDogs }}</div>
 													</div>
 													<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
@@ -337,7 +337,7 @@ import { Subscription } from 'rxjs';
 											<div class="text-minor-heading">Mental Health Conditions</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Mental Health Conditions?</div>
+													<div class="text-label d-block text-muted">Mental Health Conditions</div>
 													<div class="summary-text-data">{{ isTreatedForMHC }}</div>
 												</div>
 												<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
@@ -354,10 +354,12 @@ import { Subscription } from 'rxjs';
 											<div class="text-minor-heading">Criminal History</div>
 											<div class="row mt-0">
 												<div class="col-12">
-													<div class="text-label d-block text-muted">
-														Have you previously been charged or convicted of a crime?
-													</div>
+													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
 													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+												</div>
+												<div class="col-12" *ngIf="criminalChargeDescription">
+													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
+													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
 												</div>
 											</div>
 											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
@@ -426,7 +428,7 @@ import { Subscription } from 'rxjs';
 												<div class="text-minor-heading">Aliases</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Do you have any previous names or aliases?</div>
+														<div class="text-label d-block text-muted">Previous Names or Aliases</div>
 														<div class="summary-text-data">{{ previousNameFlag }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12">
@@ -452,7 +454,7 @@ import { Subscription } from 'rxjs';
 												<div class="text-minor-heading">Identification</div>
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
+														<div class="text-label d-block text-muted">Canadian Citizen?</div>
 														<div class="summary-text-data">{{ isCanadianCitizen }}</div>
 													</div>
 													<div class="col-lg-6 col-md-12">
@@ -828,7 +830,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		}
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
-		const feeItem = this.commonApplicationService
+		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				this.applicationTypeCode,
@@ -836,7 +838,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 				originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
-		return feeItem?.amount ?? null;
+		return fee ? fee.amount ?? null : null;
 	}
 
 	// get hasExpiredLicence(): string {
@@ -923,8 +925,23 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		return this.licenceModelData.mentalHealthConditionsData.attachments ?? [];
 	}
 
+	get criminalHistoryLabel(): string {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			return 'New Criminal Charges or Convictions';
+		} else {
+			return 'Previously been Charged or Convicted of a Crime';
+		}
+	}
 	get hasCriminalHistory(): string {
 		return this.licenceModelData.criminalHistoryData.hasCriminalHistory ?? '';
+	}
+	get criminalChargeDescription(): string {
+		return this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory === BooleanTypeCode.Yes
+			? this.licenceModelData.criminalHistoryData.criminalChargeDescription
+			: '';
 	}
 
 	get proofOfFingerprintAttachments(): File[] {

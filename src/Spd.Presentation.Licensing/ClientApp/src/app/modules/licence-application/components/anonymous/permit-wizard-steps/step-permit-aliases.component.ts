@@ -15,7 +15,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 					></app-common-update-renewal-alert>
 				</ng-container>
 
-				<app-step-title title="Do you have any previous names?"></app-step-title>
+				<app-step-title title="Do you have any previous names or aliases?"></app-step-title>
 
 				<app-common-aliases [form]="form"></app-common-aliases>
 			</div>

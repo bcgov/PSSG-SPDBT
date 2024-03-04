@@ -26,12 +26,12 @@ export class WorkerLicenceApplicationBaseAuthenticatedComponent implements OnIni
 		this.authProcessService.logoutBceid();
 		await this.authProcessService.initializeLicencingBCSC();
 
-		// if (this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS
-			)
-		);
-		// }
+		if (this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+					LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS
+				)
+			);
+		}
 	}
 }

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -56,7 +55,7 @@ export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
 	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private domSanitizer: DomSanitizer) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(
