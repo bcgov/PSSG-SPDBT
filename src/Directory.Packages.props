@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="Alba" Version="7.4.1" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
-    <PackageVersion Include="AWSSDK.S3" Version="3.7.305.28" />
+    <PackageVersion Include="AWSSDK.S3" Version="3.7.305.30" />
     <PackageVersion Include="coverlet.collector" Version="6.0.1" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="Flurl" Version="4.0.0" />
