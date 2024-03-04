@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-common-criminal-history',
@@ -24,12 +27,44 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 					>
 				</div>
 			</div>
+
+			<div class="row mt-4" *ngIf="isYesAndUpdate" @showHideTriggerSlideAnimation>
+				<div class="offset-md-2 col-md-8 col-sm-12">
+					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+					<div class="text-minor-heading mb-2">Brief description of the new charges or convictions</div>
+					<mat-form-field>
+						<textarea
+							matInput
+							formControlName="criminalChargeDescription"
+							style="min-height: 200px"
+							maxlength="1000"
+							[errorStateMatcher]="matcher"
+						></textarea>
+						<mat-hint>Maximum 1000 characters</mat-hint>
+						<mat-error *ngIf="form.get('criminalChargeDescription')?.hasError('required')">
+							This is required
+						</mat-error>
+					</mat-form-field>
+				</div>
+			</div>
 		</form>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonCriminalHistoryComponent {
+	matcher = new FormErrorStateMatcher();
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Input() form!: FormGroup;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	get isYesAndUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory.value === BooleanTypeCode.Yes
+		);
+	}
+	get hasCriminalHistory(): FormControl {
+		return this.form.get('hasCriminalHistory') as FormControl;
+	}
 }
