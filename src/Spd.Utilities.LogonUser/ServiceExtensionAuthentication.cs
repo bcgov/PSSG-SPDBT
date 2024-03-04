@@ -144,7 +144,7 @@ namespace Spd.Utilities.LogonUser
 
                         //request userinfo claims through the backchannel
                         var response = await ctx.Options.Backchannel.GetUserInfoAsync(userInfoRequest, CancellationToken.None);
-                        if (response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
+                        if (!response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
                         {
                             //handle encrypted userinfo response...
                             if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/jwt")
@@ -155,6 +155,15 @@ namespace Spd.Utilities.LogonUser
                                     handler.ValidateToken(response.Raw, validationParameters, out var token);
                                     var jwe = token as JwtSecurityToken;
                                     MapClaimsToPrincipalClaims(ctx.Principal, jwe.Claims);
+                                }
+                            }
+                            else if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/json")
+                            {
+                                var claims = JsonSerializer.Deserialize<Dictionary<string, object>>(response.Raw);
+                                foreach (var claim in claims)
+                                {
+                                    string str = claim.Value.ToString();
+                                    ctx.Principal.AddUpdateClaim(claim.Key, str);
                                 }
                             }
                             else
