@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Registration;
 
@@ -18,25 +19,30 @@ namespace Spd.Manager.Licence
         private readonly IContactRepository _contactRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<IApplicantProfileManager> _logger;
+        private readonly IDocumentRepository _documentRepository;
 
         public ApplicantProfileManager(
             IIdentityRepository idRepository,
             IContactRepository contactRepository,
             IMapper mapper,
-            ILogger<IApplicantProfileManager> logger)
+            ILogger<IApplicantProfileManager> logger,
+            IDocumentRepository documentRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
             _logger = logger;
             _contactRepository = contactRepository;
+            _documentRepository = documentRepository;
         }
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
         {
-            var result = await _contactRepository.GetAsync(request.ApplicantId, ct);
-            //todo: add read document here.
-            //only get document for mental health and police officer.
-            return _mapper.Map<ApplicantProfileResponse>(result);
+            var response = await _contactRepository.GetAsync(request.ApplicantId, ct);
+            ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
+            
+            var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
+            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument));
+            return result;
         }
 
         public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
