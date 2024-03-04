@@ -25,6 +25,7 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 			<mat-step>
 				<app-step-permit-consent-and-declaration
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-consent-and-declaration>
 
 				<div class="row wizard-button-row">

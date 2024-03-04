@@ -185,9 +185,22 @@ export abstract class PermitApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required]),
 	});
 
-	criminalHistoryFormGroup: FormGroup = this.formBuilder.group({
-		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
-	});
+	criminalHistoryFormGroup: FormGroup = this.formBuilder.group(
+		{
+			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
+			criminalChargeDescription: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'criminalChargeDescription',
+					(_form) =>
+						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
+				),
+			],
+		}
+	);
 
 	printPermitFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -363,6 +376,9 @@ export abstract class PermitApplicationHelper {
 	);
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
+		check1: new FormControl(null, [Validators.requiredTrue]),
+		check2: new FormControl(null, [Validators.requiredTrue]),
+		check3: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 		captchaFormGroup: new FormGroup(
@@ -593,6 +609,13 @@ export abstract class PermitApplicationHelper {
 			};
 		}
 
+		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
+		const criminalChargeDescription =
+			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
+			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+				? criminalHistoryData.criminalChargeDescription
+				: '';
+
 		const body = {
 			licenceAppId,
 			originalApplicationId,
@@ -627,13 +650,9 @@ export abstract class PermitApplicationHelper {
 			//-----------------------------------
 			...personalInformationData,
 			//-----------------------------------
-			hasCriminalHistory: this.utilService.booleanTypeToBoolean(
-				permitModelFormValue.criminalHistoryData.hasCriminalHistory
-			),
-			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(
-				permitModelFormValue.criminalHistoryData.hasCriminalHistory
-			), // used by the backend for an Update or Renewal
-			criminalChargeDescription: permitModelFormValue.criminalHistoryData.criminalChargeDescription,
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
+			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
+			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			reprint: this.utilService.booleanTypeToBoolean(printPermitData.isPrintPermit),
 			//-----------------------------------
