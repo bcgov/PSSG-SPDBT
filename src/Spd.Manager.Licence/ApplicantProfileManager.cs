@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -5,6 +6,8 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Registration;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Licence
 {
@@ -13,6 +16,7 @@ namespace Spd.Manager.Licence
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
         IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
+        IRequestHandler<ApplicantUpdateCommand, ApplicantResponse>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -101,6 +105,15 @@ namespace Spd.Manager.Licence
             }, ct);
 
             return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items.Where(i => i.LicenceInfos.Any())); //if no licence, no return
+        }
+
+        public async Task<ApplicantResponse> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
+        {
+            var response = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
+
+            
+
+            return null;
         }
     }
 }
