@@ -38,6 +38,19 @@ namespace Spd.Presentation.Licensing.Controllers
         //todo: add update endpoint here.
 
         /// <summary>
+        /// Submit applicant update
+        /// </summary>
+        /// <param name="request">ApplicantUpdateRequest request</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/applicant/{id}")]
+        [HttpPut]
+        public async Task<ApplicantResponse> UpdateApplicant(ApplicantUpdateRequest request, CancellationToken ct)
+        {
+
+        }
+
+        /// <summary>
         /// Get applicants who has the same name and birthday as login person
         /// </summary>
         /// <returns></returns>
