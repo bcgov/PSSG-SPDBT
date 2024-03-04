@@ -22,6 +22,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 					title="Upload a photograph of yourself"
 					subtitle="I accept using this BC Services Card photo on my permit."
 				></app-step-title>
+
 				<app-step-title
 					class="fs-7"
 					*ngIf="isCalledFromModal"

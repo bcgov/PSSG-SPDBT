@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { take, tap } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -189,6 +191,7 @@ export class LoginSelectionComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService,
@@ -245,17 +248,30 @@ export class LoginSelectionComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				this.permitApplicationService
-					.createNewPermitAnonymous(workerLicenceTypeCode)
-					.pipe(
-						tap((_resp: any) => {
-							this.router.navigateByUrl(
-								LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS)
-							);
-						}),
-						take(1)
-					)
-					.subscribe();
+				const data: DialogOptions = {
+					icon: 'video_call',
+					title: 'Pending Video Call',
+					message:
+						'Somebody from our team will reach out to complete a video call with you to verify your identity before your application can be processed.',
+					actionText: 'Continue',
+				};
+
+				this.dialog
+					.open(DialogComponent, { data })
+					.afterClosed()
+					.subscribe((_response: boolean) => {
+						this.permitApplicationService
+							.createNewPermitAnonymous(workerLicenceTypeCode)
+							.pipe(
+								tap((_resp: any) => {
+									this.router.navigateByUrl(
+										LicenceApplicationRoutes.pathPermitAnonymous(LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS)
+									);
+								}),
+								take(1)
+							)
+							.subscribe();
+					});
 
 				break;
 			}

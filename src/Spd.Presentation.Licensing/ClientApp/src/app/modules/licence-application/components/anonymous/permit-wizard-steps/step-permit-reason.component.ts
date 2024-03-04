@@ -78,7 +78,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<textarea
 									matInput
 									formControlName="otherReason"
-									style="min-height: 100px"
+									style="min-height: 150px"
 									maxlength="500"
 									[errorStateMatcher]="matcher"
 								></textarea>
