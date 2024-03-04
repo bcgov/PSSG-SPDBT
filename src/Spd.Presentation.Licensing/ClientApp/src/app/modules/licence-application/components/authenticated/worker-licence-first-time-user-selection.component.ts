@@ -18,8 +18,8 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="fs-5 lh-base">We found existing records in our system with your name and date of birth.</div>
-						<div class="mt-3 lh-base">If any one of these are you, select it to link it to your portal account:</div>
+						<div class="fs-5 lh-base">We found {{ infoLine1 }} in our system with your name and date of birth.</div>
+						<div class="mt-3 lh-base">If {{ infoLine2 }}, select it to link it to your portal account:</div>
 						<div class="row">
 							<ng-container *ngFor="let option of options; let i = index">
 								<div class="col-lg-4 col-md-6 col-sm-12 my-3">
@@ -50,7 +50,7 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 						<div class="row mt-4">
 							<div class="col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mb-2">
 								<button mat-stroked-button color="primary" class="large" (click)="onContinue()">
-									None of these are me
+									{{ noneButtonLabel }}
 								</button>
 							</div>
 							<div class="offset-xxl-4 col-xxl-4 offset-xl-4 col-xl-4 offset-lg-2 col-lg-5 col-md-6 col-sm-12 mb-2">
@@ -78,6 +78,10 @@ export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, Lic
 	constants = SPD_CONSTANTS;
 	selectedApplicantId: string | null = null;
 	showValidationError = false;
+
+	infoLine1 = '';
+	infoLine2 = '';
+	noneButtonLabel = '';
 
 	options: Array<ApplicantListResponse> | null = null;
 
@@ -111,6 +115,14 @@ export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, Lic
 					if (!resp || resp.length === 0) {
 						this.markAsTermAgreement(this.authUserBcscService.applicantLoginProfile?.applicantId!);
 						return;
+					} else if (resp.length === 1) {
+						this.infoLine1 = 'an existing record';
+						this.infoLine2 = 'this is you';
+						this.noneButtonLabel = 'This is not me';
+					} else {
+						this.infoLine1 = 'existing records';
+						this.infoLine2 = 'any one of these are you';
+						this.noneButtonLabel = 'None of these are me';
 					}
 
 					this.options = resp;

@@ -433,8 +433,11 @@ export abstract class LicenceApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
 					(form) =>
-						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
-						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							(form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
+								form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit))
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'governmentIssuedPhotoTypeCode',
