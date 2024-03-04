@@ -402,10 +402,8 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	}
 
 	get showTermsOfUse(): boolean {
-		// authenticated: only need to agree once for New/Renewal, and not again until/unless terms change
 		// authenticated: agree everytime for Update
 		// anonymous: agree everytime for all
-		// TODO update to show Terms of Use for first time user
 		return (this.isLoggedIn && this.applicationTypeCode === ApplicationTypeCode.Update) || !this.isLoggedIn;
 	}
 }
