@@ -60,6 +60,8 @@ internal class Mappings : Profile
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.LicensingTermAgreedDateTime == null));
 
+        CreateMap<ContactResp, ApplicantUpdateRequestResponse>();
+
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
@@ -79,6 +81,8 @@ internal class Mappings : Profile
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.Aliases));
+
+        CreateMap<ApplicantUpdateRequest, UpdateContactCmd>();
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
 
