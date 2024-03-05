@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Contact
@@ -28,8 +27,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
             .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
-            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
-            ;
+            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal));
 
             _ = CreateMap<ContactCmd, contact>()
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => s.FirstName))
@@ -39,6 +37,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+            .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine1))
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine2))
             .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.City))
@@ -59,8 +58,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
             .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
-            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
-            ;
+            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore());
 
             _ = CreateMap<CreateContactCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
