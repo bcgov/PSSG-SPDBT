@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
@@ -30,7 +30,7 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 	`,
 	styles: [],
 })
-export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements LicenceChildStepperStepComponent {
+export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
@@ -49,6 +49,15 @@ export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements LicenceChi
 		private authUserBcscService: AuthUserBcscService
 	) {}
 
+	ngOnInit(): void {
+		// do not allow the user to navigate here (eg. back button)
+		// if they have already agreed to the terms
+		if (!this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			return;
+		}
+	}
+
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();
 	}
@@ -63,7 +72,6 @@ export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements LicenceChi
 			})
 			.pipe()
 			.subscribe((_resp: any) => {
-				// this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 				this.router.navigateByUrl(
 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 						LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_SELECTION

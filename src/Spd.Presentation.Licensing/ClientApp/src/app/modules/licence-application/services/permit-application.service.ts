@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SecurityContext } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import {
 	Alias,
 	ApplicationTypeCode,
@@ -21,13 +22,16 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import * as moment from 'moment';
 import {
 	BehaviorSubject,
 	Observable,
 	Subscription,
+	catchError,
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
+	map,
 	of,
 	switchMap,
 	take,
@@ -54,6 +58,8 @@ export class PermitDocumentsToSave {
 export class PermitApplicationService extends PermitApplicationHelper {
 	initialized = false;
 	hasValueChanged = false;
+
+	photographOfYourself: string | null = null;
 
 	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -110,7 +116,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private permitService: PermitService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: CommonApplicationService,
+		private domSanitizer: DomSanitizer
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService);
 
@@ -180,7 +187,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<WorkerLicenceResponse> {
-		return this.getPermitOfType(applicationTypeCode!).pipe(
+		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
 				this.permitModelFormGroup.patchValue(
 					{
@@ -208,27 +215,43 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private getPermitOfType(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+	private getPermitOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadPermitRenewal().pipe(
-					tap((resp: any) => {
-						console.debug('[getPermitOfType] Renewal', applicationTypeCode, resp);
+				return forkJoin([this.loadPermitRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
 						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
 					})
 				);
 			}
 			default: {
-				// case ApplicationTypeCode.Update: {
-				return this.loadPermitUpdate().pipe(
-					tap((resp: any) => {
-						console.debug('[getPermitOfType] Update', applicationTypeCode, resp);
+				// Must be ApplicationTypeCode.Update: there is no replacement for Permits
+				return forkJoin([this.loadPermitUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
 						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
 					})
 				);
 			}
-			// Replacement does not exist for Permits
 		}
+	}
+
+	private setPhotographOfYourself(image: Blob | null): void {
+		if (!image || image.size == 0) {
+			this.photographOfYourself = null;
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(image);
+		this.photographOfYourself = this.domSanitizer.sanitize(
+			SecurityContext.RESOURCE_URL,
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+		);
 	}
 
 	/**
@@ -259,21 +282,33 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const licenceTermData = {
 					licenceTermCode: LicenceTermCode.FiveYears,
 				};
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
 
-				// TODO remove hardcoded
-				// const employerData = {
-				// 	employerName: 'aaa',
-				// 	supervisorName: 'ccc',
-				// 	supervisorEmailAddress: 'bbb@bbb.com',
-				// 	supervisorPhoneNumber: '5554448787',
-				// 	addressSelected: true,
-				// 	addressLine1: 'bbb1',
-				// 	addressLine2: 'bbb2',
-				// 	city: 'bbb3',
-				// 	postalCode: 'V9A6D4',
-				// 	province: 'bbb4',
-				// 	country: 'bbb5',
-				// };
+				let originalPhotoOfYourselfLastUpload = null;
+				const photoOfYourselfDocs = resp.documentInfos?.find(
+					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
+				);
+				if (photoOfYourselfDocs) {
+					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
+				}
+
+				// We require a new photo every 5 years. Please provide a new photo for your licence
+				const yearsDiff = moment()
+					.startOf('day')
+					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+				let photographOfYourselfData = {};
+				if (originalPhotoOfYourselfExpired) {
+					// clear out data to force user to upload a new photo
+					photographOfYourselfData = {
+						useBcServicesCardPhoto: BooleanTypeCode.No,
+						attachments: [],
+					};
+				}
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -283,7 +318,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						// employerData,
+						criminalHistoryData,
+						photographOfYourselfData,
 					},
 					{
 						emitEvent: false,
@@ -310,21 +346,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const licenceTermData = {
 					licenceTermCode: LicenceTermCode.FiveYears,
 				};
-
-				// TODO remove hardcoded
-				// const employerData = {
-				// 	employerName: 'aaa',
-				// 	supervisorName: 'ccc',
-				// 	supervisorEmailAddress: 'bbb@bbb.com',
-				// 	supervisorPhoneNumber: '5554448787',
-				// 	addressSelected: true,
-				// 	addressLine1: 'bbb1',
-				// 	addressLine2: 'bbb2',
-				// 	city: 'bbb3',
-				// 	postalCode: 'V9A6D4',
-				// 	province: 'bbb4',
-				// 	country: 'bbb5',
-				// };
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
 
 				this.permitModelFormGroup.patchValue(
 					{
@@ -334,7 +359,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						applicationTypeData,
 						permitRequirementData,
 						licenceTermData,
-						// employerData,
+						criminalHistoryData,
 					},
 					{
 						emitEvent: false,
@@ -392,39 +417,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
 
-		// TODO remove hardcoded
-		// const employerData = {
-		// 	employerName: 'aaa',
-		// 	supervisorName: 'ccc',
-		// 	supervisorEmailAddress: 'bbb@bbb.com',
-		// 	supervisorPhoneNumber: '5554448787',
-		// 	addressSelected: true,
-		// 	addressLine1: 'bbb1',
-		// 	addressLine2: 'bbb2',
-		// 	city: 'bbb3',
-		// 	postalCode: 'V9A6D4',
-		// 	province: 'bbb4',
-		// 	country: 'bbb5',
-		// };
-
-		// const characteristicsData = {
-		// 	eyeColourCode: 'Blue',
-		// 	hairColourCode: 'Brown',
-		// 	height: '33',
-		// 	heightInches: null,
-		// 	heightUnitCode: 'Centimeters',
-		// 	weight: '44',
-		// 	weightUnitCode: 'Kilograms',
-		// };
-
 		this.permitModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
 				permitRequirementData,
 				photographOfYourselfData,
 				licenceTermData,
-				// employerData,
-				// characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -819,6 +817,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	reset(): void {
 		this.initialized = false;
 		this.hasValueChanged = false;
+		this.photographOfYourself = null;
 
 		this.accessCodeFormGroup.reset();
 		this.consentAndDeclarationFormGroup.reset();
@@ -880,13 +879,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepPurposeAndRationaleComplete(): boolean {
-		console.debug(
-			'isStepPurposeAndRationaleComplete',
-			this.permitRequirementFormGroup.valid,
-			this.employerInformationFormGroup.valid,
-			this.permitRationaleFormGroup.valid
-		);
-
 		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
 
 		let showEmployerInformation = false;
@@ -903,6 +895,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 			showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 		}
+
+		console.debug(
+			'isStepPurposeAndRationaleComplete',
+			this.permitRequirementFormGroup.valid,
+			!showEmployerInformation || (showEmployerInformation && this.employerInformationFormGroup.valid),
+			this.permitRationaleFormGroup.valid
+		);
 
 		return (
 			this.permitRequirementFormGroup.valid &&

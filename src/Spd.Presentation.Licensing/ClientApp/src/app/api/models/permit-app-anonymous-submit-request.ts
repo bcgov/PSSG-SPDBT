@@ -26,6 +26,7 @@ export interface PermitAppAnonymousSubmitRequest {
   businessTypeCode?: BusinessTypeCode;
   contactEmailAddress?: null | string;
   contactPhoneNumber?: null | string;
+  criminalChargeDescription?: null | string;
   dateOfBirth?: null | string;
   documentExpiredInfos?: null | Array<DocumentExpiredInfo>;
   documentKeyCodes?: null | Array<string>;
