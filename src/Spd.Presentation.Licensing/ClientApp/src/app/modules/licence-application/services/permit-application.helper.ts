@@ -377,7 +377,7 @@ export abstract class PermitApplicationHelper {
 		captchaFormGroup: new FormGroup(
 			{
 				displayCaptcha: new FormControl(false),
-				token: new FormControl('', FormControlValidators.required),
+				token: new FormControl(''),
 			},
 			{
 				validators: [

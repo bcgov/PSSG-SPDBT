@@ -521,6 +521,20 @@ export abstract class LicenceApplicationHelper {
 			postalCode: new FormControl(''),
 			province: new FormControl(''),
 			country: new FormControl(''),
+			captchaFormGroup: new FormGroup(
+				{
+					displayCaptcha: new FormControl(false),
+					token: new FormControl(''),
+				},
+				{
+					validators: [
+						FormGroupValidators.conditionalRequiredValidator(
+							'token',
+							(form) => form.get('displayCaptcha')?.value == true
+						),
+					],
+				}
+			),
 		},
 		{
 			validators: [
@@ -563,7 +577,7 @@ export abstract class LicenceApplicationHelper {
 		captchaFormGroup: new FormGroup(
 			{
 				displayCaptcha: new FormControl(false),
-				token: new FormControl('', FormControlValidators.required),
+				token: new FormControl(''),
 			},
 			{
 				validators: [

@@ -1022,8 +1022,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
 		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
 		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
+		console.debug('[submitPermitAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		if (newDocumentsExist) {
