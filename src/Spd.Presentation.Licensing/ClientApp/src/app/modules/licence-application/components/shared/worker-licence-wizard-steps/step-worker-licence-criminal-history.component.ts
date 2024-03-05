@@ -34,18 +34,19 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 					</div>
 
-					<div class="row mt-4" *ngIf="showCriminalHistory" @showHideTriggerSlideAnimation>
+					<div class="row mt-4" *ngIf="isYesAndUpdate" @showHideTriggerSlideAnimation>
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-							<div class="text-minor-heading mb-2">Brief description of new charges or convictions</div>
+							<div class="text-minor-heading mb-2">Brief description of the new charges or convictions</div>
 							<mat-form-field>
 								<textarea
 									matInput
 									formControlName="criminalChargeDescription"
-									style="min-height: 100px"
+									style="min-height: 200px"
 									maxlength="1000"
 									[errorStateMatcher]="matcher"
 								></textarea>
+								<mat-hint>Maximum 1000 characters</mat-hint>
 								<mat-error *ngIf="form.get('criminalChargeDescription')?.hasError('required')">
 									This is required
 								</mat-error>
@@ -61,7 +62,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 })
 export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
-	showCriminalHistory = false;
 	booleanTypeCodes = BooleanTypeCode;
 
 	matcher = new FormErrorStateMatcher();
@@ -81,13 +81,6 @@ export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, Licenc
 		} else {
 			this.title = 'Have you previously been charged or convicted of a crime?';
 		}
-
-		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			// During an Update, if the value changes to Yes, show a textarea
-			this.hasCriminalHistory.valueChanges.subscribe((code: BooleanTypeCode): void => {
-				this.showCriminalHistory = code === BooleanTypeCode.Yes;
-			});
-		}
 	}
 
 	isFormValid(): boolean {
@@ -98,8 +91,12 @@ export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, Licenc
 	get hasCriminalHistory(): FormControl {
 		return this.form.get('hasCriminalHistory') as FormControl;
 	}
-
 	get criminalChargeDescription(): FormControl {
 		return this.form.get('criminalChargeDescription') as FormControl;
+	}
+	get isYesAndUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory.value === BooleanTypeCode.Yes
+		);
 	}
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -13,80 +13,119 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Consent and Declaration"></app-step-title>
+
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 conditions px-3 mb-3">
-							<ng-container *ngIf="isArmouredVehiclePermit; else bodyArmour">
-								<div class="mt-2 fw-bold">I HEREBY AUTHORIZE:</div>
-								<ul>
-									<li>
-										The Registrar, Security Services, to conduct a criminal record check through any city, municipal or
-										provincial police department or public body including the police information check and correctional
-										service information check, to determine whether I have a record for any provincial and/or federal
-										charges, convictions, peace bonds or restraining orders, etc. This consent will remain in effect for
-										the duration of the period for which my permit is valid.
-									</li>
-									<li>
-										Where the results of this check indicated that a criminal record or outstanding charge may exist, I
-										agree to provide my fingerprints to verify any such criminal record.
-									</li>
-									<li>
-										I further authorize the RCMP, or designated authority, to provide a copy of my record to the
-										Registrar, Security Services.
-									</li>
-								</ul>
-
-								<div class="fw-bold">I UNDERSTAND THAT:</div>
-								<div class="mb-3">
-									As a result of the checks, the Registrar may require further information from me including copies of
-									all criminal proceedings or information to assess good character and to assist in determining needs
-									for operating an armoured vehicle.
+						<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 conditions mx-auto px-3 mb-3">
+							<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else newOrRenewal">
+								<div class="my-3">
+									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
+										I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
+										check, police information check and correctional service information check (Prescribed Checks) on me
+										pursuant to the <i>{{ collectionNoticeActName }}</i
+										>.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check1')?.dirty || form.get('check1')?.touched) &&
+											form.get('check1')?.invalid &&
+											form.get('check1')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
 								</div>
-
-								<div class="fw-bold">I HEREBY CERTIFY THAT:</div>
-								<div class="mb-3">
-									I have read and understand all portions of this application form and the information set out by me in
-									this application is true and correct to the best of my knowledge and belief. I have read and
-									understand the Armoured Vehicle and After-Market Compartment Control Act and Regulations; and I am
-									aware of and understand the conditions that will be placed on me as an operator of an armoured
-									vehicle.
+								<div class="my-3">
+									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+										I hereby consent to a check of available law enforcement systems for these purposes, including any
+										local police records, and I hereby consent to the disclosure to the Registrar of any documents in
+										the custody of the police, corrections, the courts, and crown counsel relating to these Prescribed
+										Checks.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+											form.get('check2')?.invalid &&
+											form.get('check2')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
+										I understand that in addition to any information provided to the Registrar as a result of the
+										Prescribed Checks, the Registrar may require from me any further information the Registrar considers
+										relevant to assist in the demonstration of my need for {{ check3Name }}.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check3')?.dirty || form.get('check3')?.touched) &&
+											form.get('check3')?.invalid &&
+											form.get('check3')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
 								</div>
 							</ng-container>
 
-							<ng-template #bodyArmour>
-								<div class="mt-2 fw-bold">I HEREBY AUTHORIZE:</div>
-								<ul>
-									<li>
-										The Registrar, Security Services, to conduct a criminal record check through any city, municipal or
-										provincial police department or public body including the police information check and correctional
-										service information check, to determine whether I have a record for any provincial and/or federal
-										charges, convictions, peace bonds or restraining orders, etc. This consent will remain in effect for
-										the duration of the period for which my permit is valid.
-									</li>
-									<li>
-										Where the results of this check indicated that a criminal record or outstanding charge may exist, I
-										agree to provide my fingerprints to verify any such criminal record.
-									</li>
-									<li>
-										I further authorize the RCMP, or designated authority, to provide a copy of my record to the
-										Registrar, Security Services.
-									</li>
-								</ul>
-
-								<div class="fw-bold">I UNDERSTAND THAT:</div>
-								<div class="mb-3">
-									As a result of the checks, the Registrar may require further information from me including copies of
-									all criminal proceedings or information to assess good character and to assist in determining needs
-									for operating an Body Armour.
+							<ng-template #newOrRenewal>
+								<div class="my-3">
+									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
+										I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
+										check, police information check and correctional service information check (Prescribed Checks) on me
+										pursuant to the <i>{{ collectionNoticeActName }}</i
+										>.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check1')?.dirty || form.get('check1')?.touched) &&
+											form.get('check1')?.invalid &&
+											form.get('check1')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
 								</div>
-
-								<div class="fw-bold">I HEREBY CERTIFY THAT:</div>
-								<div class="mb-3">
-									I have read and understand all portions of this application form and the information set out by me in
-									this application is true and correct to the best of my knowledge and belief. I have read and
-									understand the Body Armour and After-Market Compartment Control Act and Regulations; and I am aware of
-									and understand the conditions that will be placed on me as an operator of an Body Armour.
+								<div class="my-3">
+									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+										I hereby consent to a check of available law enforcement systems for these purposes, including any
+										local police records, and I hereby consent to the disclosure to the Registrar of any documents in
+										the custody of the police, corrections, the courts, and crown counsel relating to these Prescribed
+										Checks.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+											form.get('check2')?.invalid &&
+											form.get('check2')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
+										I understand that in addition to any information provided to the Registrar as a result of the
+										Prescribed Checks, the Registrar may require from me any further information the Registrar considers
+										relevant to assist in the demonstration of my need for {{ check3Name }}.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check3')?.dirty || form.get('check3')?.touched) &&
+											form.get('check3')?.invalid &&
+											form.get('check3')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
 								</div>
 							</ng-template>
+
+							<div class="my-3">
+								This consent is valid from the date signed and will remain in effect for the duration of the period for
+								which the permit issued is valid.
+							</div>
 						</div>
 					</div>
 
@@ -155,9 +194,14 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';
+	check3Name = '';
+
 	form: FormGroup = this.permitApplicationService.consentAndDeclarationFormGroup;
 
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	applicationTypeCodes = ApplicationTypeCode;
 
 	constructor(
 		private utilService: UtilService,
@@ -167,9 +211,11 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		if (this.isArmouredVehiclePermit) {
-			this.collectionNoticeActName = 'Armoured Vehicle and After Market Compartment Control Act';
+			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act (AVAMCCA)';
+			this.check3Name = 'operating an armoured vehicle';
 		} else {
 			this.collectionNoticeActName = 'Body Armour Control Act';
+			this.check3Name = 'possessing body armour';
 		}
 
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {

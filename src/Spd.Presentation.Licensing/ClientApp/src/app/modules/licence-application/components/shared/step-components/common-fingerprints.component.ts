@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FingerprintTearOffModalComponent } from '../../../../../shared/components/fingerprint-tear-off-modal.component';
+import { FingerprintTearOffModalComponent } from '@app/shared/components/fingerprint-tear-off-modal.component';
 
 @Component({
 	selector: 'app-common-fingerprints',
