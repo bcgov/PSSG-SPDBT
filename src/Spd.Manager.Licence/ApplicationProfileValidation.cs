@@ -7,12 +7,10 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
     {
         RuleFor(r => r.FirstName).NotEmpty();
         RuleFor(r => r.LastName).NotEmpty();
-        RuleFor(r => r.MiddleName1).NotEmpty();
-        RuleFor(r => r.MiddleName2).NotEmpty();
         RuleFor(r => r.BirthDate).NotEmpty();
-        RuleFor(r => r.Gender).NotEmpty();
-        RuleFor(r => r.ContactPhoneNumber).MaximumLength(15).NotEmpty();
-        RuleFor(r => r.ContactEmailAddress).MaximumLength(75).When(r => r.ContactEmailAddress != null);
+        RuleFor(r => r.Gender).IsInEnum();
+        RuleFor(r => r.PhoneNumber).MaximumLength(15).NotEmpty();
+        RuleFor(r => r.EmailAddress).MaximumLength(75).NotEmpty();
         RuleFor(r => r.MailingAddress.AddressLine1)
             .NotEmpty()
             .MaximumLength(100)
