@@ -39,6 +39,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+            .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine1))
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine2))
             .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.City))
