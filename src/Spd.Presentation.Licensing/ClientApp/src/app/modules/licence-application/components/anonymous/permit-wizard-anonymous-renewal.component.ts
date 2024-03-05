@@ -2,7 +2,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -11,7 +10,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
-import { StepsPermitDetailsUpdateComponent } from './permit-wizard-steps/steps-permit-details-update.component';
+import { StepsPermitDetailsRenewalComponent } from './permit-wizard-steps/steps-permit-details.component-renewal';
 import { StepsPermitIdentificationAnonymousComponent } from './permit-wizard-steps/steps-permit-identification-anonymous.component';
 import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
@@ -104,8 +103,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 
 	newLicenceAppId: string | null = null;
 
-	@ViewChild(StepsPermitDetailsUpdateComponent)
-	stepsPermitDetailsComponent!: StepsPermitDetailsUpdateComponent;
+	@ViewChild(StepsPermitDetailsRenewalComponent)
+	stepsPermitDetailsComponent!: StepsPermitDetailsRenewalComponent;
 
 	@ViewChild(StepsPermitPurposeComponent)
 	stepsPermitPurposeComponent!: StepsPermitPurposeComponent;
@@ -121,7 +120,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService

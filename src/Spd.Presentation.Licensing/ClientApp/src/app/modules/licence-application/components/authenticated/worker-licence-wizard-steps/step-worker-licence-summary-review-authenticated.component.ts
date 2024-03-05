@@ -348,10 +348,12 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 											<div class="text-minor-heading">Criminal History</div>
 											<div class="row mt-0">
 												<div class="col-12">
-													<div class="text-label d-block text-muted">
-														Have you previously been charged or convicted of a crime?
-													</div>
+													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
 													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+												</div>
+												<div class="col-12" *ngIf="criminalChargeDescription">
+													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
+													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
 												</div>
 											</div>
 											<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -639,7 +641,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		}
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
-		const feeItem = this.commonApplicationService
+		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				applicationTypeCode,
@@ -647,7 +649,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 				originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
-		return feeItem?.amount ?? null;
+		return fee ? fee.amount ?? null : null;
 	}
 
 	// get hasExpiredLicence(): string {
@@ -708,8 +710,23 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.licenceModelData.mentalHealthConditionsData.attachments ?? [];
 	}
 
+	get criminalHistoryLabel(): string {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			return 'Do you have any new criminal charges or convictions?';
+		} else {
+			return 'Have you previously been charged or convicted of a crime?';
+		}
+	}
 	get hasCriminalHistory(): string {
 		return this.licenceModelData.criminalHistoryData.hasCriminalHistory ?? '';
+	}
+	get criminalChargeDescription(): string {
+		return this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory === BooleanTypeCode.Yes
+			? this.licenceModelData.criminalHistoryData.criminalChargeDescription
+			: '';
 	}
 
 	get proofOfFingerprintAttachments(): File[] {

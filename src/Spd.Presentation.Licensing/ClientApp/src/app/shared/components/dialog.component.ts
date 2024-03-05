@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface DialogOptions {
 	icon?: string | null;
@@ -23,7 +23,7 @@ export enum DialogCloseCode {
 	template: `
 		<h2 mat-dialog-title class="mt-4" *ngIf="data.icon || data.title">
 			<mat-icon *ngIf="data.icon" [color]="data.type">{{ data.icon }}</mat-icon>
-			<strong *ngIf="data.title" style="position: relative; top: -10px;">
+			<strong *ngIf="data.title" style="position: relative; top: -7px;">
 				{{ data.title }}
 			</strong>
 		</h2>

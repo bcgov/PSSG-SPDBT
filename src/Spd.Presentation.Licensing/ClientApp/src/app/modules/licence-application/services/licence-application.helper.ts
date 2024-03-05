@@ -433,8 +433,11 @@ export abstract class LicenceApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
 					(form) =>
-						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
-						form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							(form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
+								form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit))
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'governmentIssuedPhotoTypeCode',
@@ -1120,6 +1123,13 @@ export abstract class LicenceApplicationHelper {
 			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 			: null;
 
+		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
+		const criminalChargeDescription =
+			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
+			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+				? criminalHistoryData.criminalChargeDescription
+				: '';
+
 		const body = {
 			licenceAppId,
 			originalApplicationId,
@@ -1157,13 +1167,9 @@ export abstract class LicenceApplicationHelper {
 			//-----------------------------------
 			...personalInformationData,
 			//-----------------------------------
-			hasCriminalHistory: this.utilService.booleanTypeToBoolean(
-				licenceModelFormValue.criminalHistoryData.hasCriminalHistory
-			),
-			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(
-				licenceModelFormValue.criminalHistoryData.hasCriminalHistory
-			), // used by the backend for an Update or Renewal
-			criminalChargeDescription: licenceModelFormValue.criminalHistoryData.criminalChargeDescription,
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
+			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
+			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			reprint: this.utilService.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
