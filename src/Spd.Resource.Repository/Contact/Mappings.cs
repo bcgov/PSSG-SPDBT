@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Contact
@@ -28,8 +27,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
             .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
-            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
-            ;
+            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal));
 
             _ = CreateMap<ContactCmd, contact>()
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => s.FirstName))
@@ -60,8 +58,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
             .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
-            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
-            ;
+            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore());
 
             _ = CreateMap<CreateContactCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
