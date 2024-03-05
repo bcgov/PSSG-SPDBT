@@ -521,12 +521,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const photographOfYourselfData = { useBcServicesCardPhoto: BooleanTypeCode.No };
 
 		this.licenceModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
-				photographOfYourselfData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
@@ -1128,7 +1126,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const photographOfYourselfData = {
-			useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 			attachments: photographOfYourselfAttachments,
 		};
 
@@ -1280,7 +1277,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				if (originalPhotoOfYourselfExpired) {
 					// clear out data to force user to upload a new photo
 					photographOfYourselfData = {
-						useBcServicesCardPhoto: BooleanTypeCode.No,
 						attachments: [],
 					};
 				}

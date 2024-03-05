@@ -305,7 +305,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				if (originalPhotoOfYourselfExpired) {
 					// clear out data to force user to upload a new photo
 					photographOfYourselfData = {
-						useBcServicesCardPhoto: BooleanTypeCode.No,
 						attachments: [],
 					};
 				}
@@ -407,9 +406,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const photographOfYourselfData = {
-			useBcServicesCardPhoto: BooleanTypeCode.No,
-		};
 		const permitRequirementData = {
 			workerLicenceTypeCode: workerLicenceTypeCode,
 		};
@@ -421,7 +417,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				workerLicenceTypeData,
 				permitRequirementData,
-				photographOfYourselfData,
 				licenceTermData,
 			},
 			{
@@ -731,7 +726,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		});
 
 		const photographOfYourselfData = {
-			useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 			attachments: photographOfYourselfAttachments,
 		};
 

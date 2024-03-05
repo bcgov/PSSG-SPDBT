@@ -1020,9 +1020,6 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		return this.licenceModelData.characteristicsData.weightUnitCode ?? '';
 	}
 
-	get useBcServicesCardPhoto(): string {
-		return this.licenceModelData.photographOfYourselfData.useBcServicesCardPhoto ?? '';
-	}
 	get photoOfYourselfAttachments(): File[] {
 		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
 	}

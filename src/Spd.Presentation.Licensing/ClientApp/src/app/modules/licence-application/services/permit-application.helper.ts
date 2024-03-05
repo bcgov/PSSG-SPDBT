@@ -219,8 +219,8 @@ export abstract class PermitApplicationHelper {
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
-			canadianCitizenProofTypeCode: new FormControl(''),
 			isCanadianResident: new FormControl(''),
+			canadianCitizenProofTypeCode: new FormControl(''),
 			proofOfResidentStatusCode: new FormControl(''),
 			proofOfCitizenshipCode: new FormControl(''),
 			expiryDate: new FormControl(''),
@@ -241,11 +241,15 @@ export abstract class PermitApplicationHelper {
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'proofOfResidentStatusCode',
-					(form) => form.get('isCanadianResident')?.value == BooleanTypeCode.Yes
+					(form) =>
+						form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+						form.get('isCanadianResident')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'proofOfCitizenshipCode',
-					(form) => form.get('isCanadianResident')?.value == BooleanTypeCode.No
+					(form) =>
+						form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+						form.get('isCanadianResident')?.value == BooleanTypeCode.No
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
@@ -300,20 +304,9 @@ export abstract class PermitApplicationHelper {
 		weightUnitCode: new FormControl('', [FormControlValidators.required]),
 	});
 
-	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
-		{
-			useBcServicesCardPhoto: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
-				),
-			],
-		}
-	);
+	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl('', [FormControlValidators.required]),
+	});
 
 	// profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
 	// 	isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
@@ -669,7 +662,7 @@ export abstract class PermitApplicationHelper {
 				? null
 				: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianResident),
 			//-----------------------------------
-			useBcServicesCardPhoto: this.utilService.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			useBcServicesCardPhoto: false, // TODO remove later
 			//-----------------------------------
 			rationale: permitRationaleData.rationale,
 			//-----------------------------------
