@@ -1,26 +1,34 @@
-
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
     public class ApplicantProfileController : SpdControllerBase
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<ApplicantProfileController> _logger;
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
+        private readonly IValidator<ApplicantUpdateRequest> _applicationUpdateRequestValidator;
 
-        public ApplicantProfileController(ILogger<LoginController> logger, IPrincipal currentUser, IMediator mediator)
+        public ApplicantProfileController(ILogger<ApplicantProfileController> logger, 
+            IPrincipal currentUser, 
+            IMediator mediator,
+            IValidator<ApplicantUpdateRequest> applicationUpdateRequestValidator)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
+            _applicationUpdateRequestValidator = applicationUpdateRequestValidator;
         }
 
         /// <summary>
@@ -43,11 +51,25 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="request">ApplicantUpdateRequest request</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/applicant/{id}")]
+        [Route("api/applicant/{applicantId}")]
         [HttpPut]
-        public async Task<ApplicantResponse> UpdateApplicant(ApplicantUpdateRequest request, CancellationToken ct)
+        public async Task<ApplicantUpdateRequestResponse> UpdateApplicant(string applicantId, ApplicantUpdateRequest request, CancellationToken ct)
         {
+            if (!Guid.TryParse(applicantId, out Guid applicantGuidId))
+                throw new ApiException(HttpStatusCode.BadRequest, $"{nameof(applicantId)} is not a valid guid.");
 
+            var validateResult = await _applicationUpdateRequestValidator.ValidateAsync(request, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            // TODO, get files...
+            // 
+            IEnumerable<LicAppFileInfo> newDocInfos = [];
+
+            ApplicantUpdateCommand command = new(applicantGuidId, request, newDocInfos);
+            ApplicantUpdateRequestResponse response = await _mediator.Send(command, ct);
+
+            return response;
         }
 
         /// <summary>
