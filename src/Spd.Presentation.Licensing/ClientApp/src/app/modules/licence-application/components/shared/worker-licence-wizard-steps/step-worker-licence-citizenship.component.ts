@@ -83,7 +83,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 										</mat-form-field>
 									</ng-template>
 								</div>
-								<div class="col-lg-5 col-md-12">
+								<div class="col-lg-5 col-md-12" *ngIf="showExpiryDate">
 									<mat-form-field>
 										<mat-label>Document Expiry Date</mat-label>
 										<input
@@ -265,6 +265,13 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get showExpiryDate(): boolean {
+		// Show expiry date when is Canadian Citizen and proof is Canadian Passport OR when NOT Canadian Citizen.
+		return this.isCanadianCitizen.value == BooleanTypeCode.Yes
+			? this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CanadianPassport
+			: true;
 	}
 
 	get showAdditionalGovIdData(): boolean {

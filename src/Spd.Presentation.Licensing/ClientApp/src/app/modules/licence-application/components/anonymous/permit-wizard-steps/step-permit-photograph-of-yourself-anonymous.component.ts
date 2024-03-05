@@ -22,6 +22,17 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 					subtitle="This will appear on your permit. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
 				></app-step-title>
 
+				<div class="row mb-3" *ngIf="isRenewalOrUpdate && photographOfYourself">
+					<div class="col-12 text-center">
+						<div class="fs-5 mb-2">Current licence photo:</div>
+						<img
+							[src]="photographOfYourself"
+							alt="Photograph of yourself"
+							style="max-height: 200px;max-width: 200px;"
+						/>
+					</div>
+				</div>
+
 				<app-common-photograph-of-yourself
 					[form]="form"
 					name="permit"
@@ -34,6 +45,8 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 	styles: [],
 })
 export class StepPermitPhotographOfYourselfAnonymousComponent implements LicenceChildStepperStepComponent {
+	photographOfYourself = this.permitApplicationService.photographOfYourself;
+
 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

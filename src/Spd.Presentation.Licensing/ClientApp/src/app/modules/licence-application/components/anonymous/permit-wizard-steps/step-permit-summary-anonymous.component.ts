@@ -74,6 +74,12 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 													</div>
 												</div>
+												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Print Permit</div>
+														<div class="summary-text-data">{{ isPrintPermit }}</div>
+													</div>
+												</ng-container>
 											</div>
 
 											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
@@ -251,71 +257,72 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											</div>
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Aliases</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Do you have any previous names or aliases?</div>
-													<div class="summary-text-data">{{ previousNameFlag }}</div>
+											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<div class="text-minor-heading">Aliases</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Previous Names or Aliases</div>
+														<div class="summary-text-data">{{ previousNameFlag }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
+															<div class="text-label d-block text-muted">Alias Name(s)</div>
+															<div class="summary-text-data">
+																<div
+																	*ngFor="let alias of aliases; let i = index; let first = first"
+																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
+																>
+																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
+																	{{ alias.surname }}
+																</div>
+															</div>
+														</ng-container>
+													</div>
 												</div>
-												<div class="col-lg-4 col-md-12">
-													<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-														<div class="text-label d-block text-muted">Alias Name(s)</div>
+												<mat-divider class="mt-3 mb-2"></mat-divider>
+
+												<div class="text-minor-heading">Citizenship</div>
+												<div class="row mt-0">
+													<div class="col-lg-6 col-md-12">
+														<div class="text-label d-block text-muted">Canadian Citizen</div>
+														<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+													</div>
+													<div class="col-lg-6 col-md-12" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
+														<div class="text-label d-block text-muted">Resident of Canada</div>
+														<div class="summary-text-data">{{ isCanadianResident }}</div>
+													</div>
+													<div class="col-lg-6 col-md-12">
+														<div class="text-label d-block text-muted">
+															<span *ngIf="canadianCitizenProofTypeCode">
+																{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+															</span>
+															<span *ngIf="proofOfResidentStatusCode">
+																{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
+															</span>
+															<span *ngIf="proofOfCitizenshipCode">
+																{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
+															</span>
+														</div>
 														<div class="summary-text-data">
-															<div
-																*ngFor="let alias of aliases; let i = index; let first = first"
-																[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-															>
-																{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																{{ alias.surname }}
+															<div *ngFor="let doc of attachments; let i = index">
+																{{ doc.name }}
 															</div>
 														</div>
-													</ng-container>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Citizenship</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
-													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
-													<div class="text-label d-block text-muted">Are you a resident of Canada?</div>
-													<div class="summary-text-data">{{ isCanadianResident }}</div>
-												</div>
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">
-														<span *ngIf="canadianCitizenProofTypeCode">
-															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-														</span>
-														<span *ngIf="proofOfResidentStatusCode">
-															{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
-														</span>
-														<span *ngIf="proofOfCitizenshipCode">
-															{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
-														</span>
 													</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of attachments; let i = index">
-															{{ doc.name }}
+
+													<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
+														<div class="text-label d-block text-muted">
+															{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+														</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+																{{ doc.name }}
+															</div>
 														</div>
 													</div>
 												</div>
-
-												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-													<div class="text-label d-block text-muted">
-														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-													</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
-											</div>
-
-											<mat-divider class="mt-3 mb-2"></mat-divider>
+												<mat-divider class="mt-3 mb-2"></mat-divider>
+											</ng-container>
 
 											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
@@ -328,50 +335,56 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													</div>
 												</div>
 
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">BC Driver's Licence</div>
-													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-												</div>
+												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+													<div class="col-lg-6 col-md-12">
+														<div class="text-label d-block text-muted">BC Driver's Licence</div>
+														<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+													</div>
+												</ng-container>
 											</div>
 
-											<div class="row mt-0">
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Height</div>
-													<div class="summary-text-data">
-														{{ height }}
-														{{ heightUnitCode | options : 'HeightUnitTypes' }}
-														{{ heightInches }}
+											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<div class="row mt-0">
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Height</div>
+														<div class="summary-text-data">
+															{{ height }}
+															{{ heightUnitCode | options : 'HeightUnitTypes' }}
+															{{ heightInches }}
+														</div>
+													</div>
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Weight</div>
+														<div class="summary-text-data">
+															{{ weight }}
+															{{ weightUnitCode | options : 'WeightUnitTypes' }}
+														</div>
+													</div>
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Hair Colour</div>
+														<div class="summary-text-data">
+															{{ hairColourCode | options : 'HairColourTypes' }}
+														</div>
+													</div>
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Eye Colour</div>
+														<div class="summary-text-data">
+															{{ eyeColourCode | options : 'EyeColourTypes' }}
+														</div>
 													</div>
 												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Weight</div>
-													<div class="summary-text-data">
-														{{ weight }}
-														{{ weightUnitCode | options : 'WeightUnitTypes' }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Hair Colour</div>
-													<div class="summary-text-data">
-														{{ hairColourCode | options : 'HairColourTypes' }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Eye Colour</div>
-													<div class="summary-text-data">
-														{{ eyeColourCode | options : 'EyeColourTypes' }}
-													</div>
-												</div>
-											</div>
+											</ng-container>
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Criminal History</div>
 											<div class="row mt-0">
 												<div class="col-12">
-													<div class="text-label d-block text-muted">
-														Have you previously been charged or convicted of a crime?
-													</div>
+													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
 													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+												</div>
+												<div class="col-12" *ngIf="criminalChargeDescription">
+													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
+													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
 												</div>
 											</div>
 										</div>
@@ -539,6 +552,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	showEmployerInformation = false;
 
 	constants = SPD_CONSTANTS;
+	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
@@ -581,13 +595,15 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BusinessTypeCode.None)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
-		return fee?.amount ? fee.amount : null;
+		return fee ? fee.amount ?? null : null;
 	}
 
 	get licenceTermCode(): string {
 		return this.permitModelData.licenceTermData.licenceTermCode ?? '';
 	}
-
+	get isPrintPermit(): string {
+		return this.permitModelData.printPermitData.isPrintPermit ?? '';
+	}
 	get hasExpiredLicence(): string {
 		return this.permitModelData.expiredLicenceData.hasExpiredLicence ?? '';
 	}
@@ -624,8 +640,23 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.aliasesData.aliases ?? [];
 	}
 
+	get criminalHistoryLabel(): string {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			return 'New Criminal Charges or Convictions';
+		} else {
+			return 'Previously been Charged or Convicted of a Crime';
+		}
+	}
 	get hasCriminalHistory(): string {
 		return this.permitModelData.criminalHistoryData.hasCriminalHistory ?? '';
+	}
+	get criminalChargeDescription(): string {
+		return this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory === BooleanTypeCode.Yes
+			? this.permitModelData.criminalHistoryData.criminalChargeDescription
+			: '';
 	}
 
 	get isCanadianCitizen(): string {
