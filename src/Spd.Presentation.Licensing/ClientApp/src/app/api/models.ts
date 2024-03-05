@@ -3,6 +3,7 @@ export { Address } from './models/address';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { Alias } from './models/alias';
+export { ApplicantListResponse } from './models/applicant-list-response';
 export { ApplicantLoginResponse } from './models/applicant-login-response';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';

@@ -2,7 +2,6 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { CommonTermsComponent } from '../../shared/step-components/common-terms.component';
 
 @Component({
@@ -31,7 +30,7 @@ export class StepPermitTermsOfUseComponent implements LicenceChildStepperStepCom
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private formBuilder: FormBuilder) {}
 
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();

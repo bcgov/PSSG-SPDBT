@@ -50,124 +50,6 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_ALIASES)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_ALIASES)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CITIZENSHIP)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-bc-driver-licence
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-bc-driver-licence>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showPhotographOfYourself">
-				<app-step-permit-photograph-of-yourself-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-photograph-of-yourself-anonymous>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
 				<app-step-permit-criminal-history
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-criminal-history>
@@ -178,12 +60,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onCriminalHistoryNextStep()">
 							Next
 						</button>
 					</div>
@@ -200,10 +77,102 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 				</div>
 			</mat-step>
 
-			<mat-step>
-				<app-step-permit-physical-characteristics
+			<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+				<mat-step>
+					<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
+
+					<div class="row wizard-button-row">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_ALIASES)">
+								Next
+							</button>
+						</div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large next-review-step mb-2"
+								(click)="onNextReview(STEP_ALIASES)"
+							>
+								Next: Review
+							</button>
+						</div>
+					</div>
+				</mat-step>
+
+				<mat-step>
+					<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
+
+					<div class="row wizard-button-row">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_CITIZENSHIP)"
+							>
+								Next
+							</button>
+						</div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large next-review-step mb-2"
+								(click)="onNextReview(STEP_CITIZENSHIP)"
+							>
+								Next: Review
+							</button>
+						</div>
+					</div>
+				</mat-step>
+
+				<mat-step>
+					<app-step-permit-bc-driver-licence
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-permit-bc-driver-licence>
+
+					<div class="row wizard-button-row">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+							>
+								Next
+							</button>
+						</div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large next-review-step mb-2"
+								(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+							>
+								Next: Review
+							</button>
+						</div>
+					</div>
+				</mat-step>
+			</ng-container>
+
+			<mat-step *ngIf="showPhotographOfYourself">
+				<app-step-permit-photograph-of-yourself-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-physical-characteristics>
+				></app-step-permit-photograph-of-yourself-anonymous>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
@@ -211,12 +180,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onPhotographOfYourselfNextStep()">
 							Next
 						</button>
 					</div>
@@ -225,13 +189,48 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 							mat-stroked-button
 							color="primary"
 							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
+							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
 						>
 							Next: Review
 						</button>
 					</div>
 				</div>
 			</mat-step>
+
+			<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+				<mat-step>
+					<app-step-permit-physical-characteristics
+						[applicationTypeCode]="applicationTypeCode"
+					></app-step-permit-physical-characteristics>
+
+					<div class="row wizard-button-row">
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
+							>
+								Next
+							</button>
+						</div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large next-review-step mb-2"
+								(click)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
+							>
+								Next: Review
+							</button>
+						</div>
+					</div>
+				</mat-step>
+			</ng-container>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -252,6 +251,7 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	isLoggedIn = false;
 	isFormValid = false;
 
+	applicationTypeCodes = ApplicationTypeCode;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
@@ -295,6 +295,22 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+	}
+
+	onCriminalHistoryNextStep(): void {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update && !this.showPhotographOfYourself) {
+			this.onStepNext(this.STEP_CRIMINAL_HISTORY);
+		} else {
+			this.onFormValidNextStep(this.STEP_CRIMINAL_HISTORY);
+		}
+	}
+
+	onPhotographOfYourselfNextStep(): void {
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.onStepNext(this.STEP_PHOTOGRAPH_OF_YOURSELF);
+		} else {
+			this.onFormValidNextStep(this.STEP_PHOTOGRAPH_OF_YOURSELF);
+		}
 	}
 
 	override dirtyForm(step: number): boolean {

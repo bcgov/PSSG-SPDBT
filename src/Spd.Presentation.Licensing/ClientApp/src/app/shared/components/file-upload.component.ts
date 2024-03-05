@@ -94,29 +94,27 @@ export class FileUploadHelper {
 				<ng-container *ngTemplateOutlet="infoText"></ng-container>
 			</ngx-dropzone-label>
 
-			<ng-container *ngIf="files">
-				<ng-container *ngIf="files.length > 0">
-					<div class="row">
-						<ng-container *ngFor="let file of files">
-							<div class="col-lg-6 col-md-12 col-sm-12">
-								<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-									<ngx-dropzone-label>
-										<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-										<span>{{ file.name }} </span>
-										<div class="image-preview-container" *ngIf="previewImage">
-											<img class="image-preview-container__image" [src]="getPreviewImage(file)" alt="Image preview" />
-										</div>
-										<!-- ({{ getFileSize(file.size) }} KB) -->
-									</ngx-dropzone-label>
-								</ngx-dropzone-preview>
-							</div>
-						</ng-container>
-
-						<div class="text-center w-100 mx-4 mb-2">
-							<ng-container *ngTemplateOutlet="infoText"></ng-container>
+			<ng-container *ngIf="files && files.length > 0">
+				<div class="row">
+					<ng-container *ngFor="let file of files">
+						<div class="col-lg-6 col-md-12 col-sm-12">
+							<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
+								<ngx-dropzone-label>
+									<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+									<span>{{ file.name }} </span>
+									<div class="image-preview-container" *ngIf="isPreviewImage(file)">
+										<img class="image-preview-container__image" [src]="getPreviewImage(file)" alt="Image preview" />
+									</div>
+									<!-- ({{ getFileSize(file.size) }} KB) -->
+								</ngx-dropzone-label>
+							</ngx-dropzone-preview>
 						</div>
+					</ng-container>
+
+					<div class="text-center w-100 mx-4 mb-2">
+						<ng-container *ngTemplateOutlet="infoText"></ng-container>
 					</div>
-				</ng-container>
+				</div>
 			</ng-container>
 		</ngx-dropzone>
 
@@ -277,6 +275,10 @@ export class FileUploadComponent implements OnInit {
 
 		if (size < 1) return 'Less than 1';
 		else return size;
+	}
+
+	isPreviewImage(_file: File): boolean {
+		return this.previewImage && _file.size > 0;
 	}
 
 	getPreviewImage(_file: File): string {

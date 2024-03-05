@@ -22,6 +22,12 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container *ngIf="isRenewalOrUpdate">
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
+				</ng-container>
+
 				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -207,7 +213,6 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 									<div class="row my-2">
 										<div class="col-lg-7 col-md-12">
 											<mat-form-field>
-												<mat-label>Type of Additional Photo ID</mat-label>
 												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
 													<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
 														{{ item.desc }}
@@ -369,5 +374,11 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 	}
 	get governmentIssuedAttachments(): FormControl {
 		return this.form.get('governmentIssuedAttachments') as FormControl;
+	}
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
