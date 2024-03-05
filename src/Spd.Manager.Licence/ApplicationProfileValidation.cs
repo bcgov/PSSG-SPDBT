@@ -1,10 +1,15 @@
 ﻿using FluentValidation;
 
 namespace Spd.Manager.Licence;
-public class ApplicantUpdateRequestValidator<T> : AbstractValidator<T> where T : ApplicantUpdateRequest
+public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdateRequest>
 {
-    public ApplicantUpdateRequestValidator() : base()
+    public ApplicantUpdateRequestValidator()
     {
+        RuleFor(r => r.FirstName).NotEmpty();
+        RuleFor(r => r.LastName).NotEmpty();
+        RuleFor(r => r.MiddleName1).NotEmpty();
+        RuleFor(r => r.MiddleName2).NotEmpty();
+        RuleFor(r => r.BirthDate).NotEmpty();
         RuleFor(r => r.Gender).NotEmpty();
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(15).NotEmpty();
         RuleFor(r => r.ContactEmailAddress).MaximumLength(75).When(r => r.ContactEmailAddress != null);
