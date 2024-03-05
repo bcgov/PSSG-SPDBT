@@ -16,7 +16,7 @@ namespace Spd.Manager.Licence
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
         IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
-        IRequestHandler<ApplicantUpdateCommand, ApplicantResponse>,
+        IRequestHandler<ApplicantUpdateCommand, ApplicantUpdateRequestResponse>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
