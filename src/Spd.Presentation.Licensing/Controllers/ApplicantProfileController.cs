@@ -35,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         IValidator<ApplicantUpdateRequest> applicationUpdateRequestValidator,
         IDistributedCache cache,
         IDataProtectionProvider dpProvider,
-        IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService)
+        IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _logger = logger;
             _currentUser = currentUser;
@@ -64,28 +64,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/applicant/files")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBcsc")]
+        //[Authorize(Policy = "OnlyBcsc")]
         [RequestSizeLimit(26214400)] //25M
         public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
-            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
-            if (fileUploadConfig == null)
-                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
+            await VerifyFiles(fileUploadRequest.Documents);
 
-            //validation files
-            foreach (IFormFile file in fileUploadRequest.Documents)
-            {
-                string? fileexe = FileHelper.GetFileExtension(file.FileName);
-                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
-                }
-                long fileSize = file.Length;
-                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
-                }
-            }
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
@@ -111,9 +95,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-            // TODO, get files...
-            // 
-            IEnumerable<LicAppFileInfo> newDocInfos = [];
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
 
             ApplicantUpdateCommand command = new(applicantGuidId, request, newDocInfos);
             ApplicantUpdateRequestResponse response = await _mediator.Send(command, ct);
