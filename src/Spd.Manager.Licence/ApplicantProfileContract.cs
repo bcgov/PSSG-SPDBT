@@ -42,6 +42,7 @@ namespace Spd.Manager.Licence
         public string? MiddleName2 { get; set; }
         public DateOnly BirthDate { get; set; }
         public GenderEnum? Gender { get; set; }
+        public string? PhoneNumber { get; set; }
         public Address? ResidentialAddress { get; set; }
         public Address? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
