@@ -10,7 +10,7 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.BirthDate).NotEmpty();
         RuleFor(r => r.Gender).IsInEnum();
         RuleFor(r => r.PhoneNumber).MaximumLength(15).NotEmpty();
-        RuleFor(r => r.EmailAddress).MaximumLength(75).NotEmpty();
+        RuleFor(r => r.EmailAddress).MaximumLength(75).NotEmpty().EmailAddress();
         RuleFor(r => r.MailingAddress.AddressLine1)
             .NotEmpty()
             .MaximumLength(100)
