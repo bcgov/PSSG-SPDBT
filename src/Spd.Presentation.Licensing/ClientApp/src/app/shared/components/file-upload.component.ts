@@ -96,14 +96,14 @@ export class FileUploadHelper {
 
 			<ng-container *ngIf="files && files.length > 0">
 				<div class="row">
-					<ng-container *ngFor="let file of files">
+					<ng-container *ngFor="let file of files; let i = index">
 						<div class="col-lg-6 col-md-12 col-sm-12">
 							<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
 								<ngx-dropzone-label>
 									<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
 									<span>{{ file.name }} </span>
-									<div class="image-preview-container" *ngIf="isPreviewImage(file)">
-										<img class="image-preview-container__image" [src]="getPreviewImage(file)" alt="Image preview" />
+									<div class="image-preview-container" *ngIf="getPreviewImage(i)">
+										<img class="image-preview-container__image" [src]="getPreviewImage(i)" alt="Image preview" />
 									</div>
 									<!-- ({{ getFileSize(file.size) }} KB) -->
 								</ngx-dropzone-label>
@@ -159,8 +159,6 @@ export class FileUploadHelper {
 			}
 
 			.image-preview-container {
-				// border: 1px solid var(--color-grey-lighter);
-
 				&__image {
 					max-height: 200px;
 					max-width: 200px;
@@ -189,6 +187,8 @@ export class FileUploadComponent implements OnInit {
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
+
+	imagePreviews: Array<string | null> = [];
 
 	constructor(private hotToastService: HotToastService, private domSanitizer: DomSanitizer) {}
 
@@ -245,21 +245,11 @@ export class FileUploadComponent implements OnInit {
 
 	onRemoveFile(evt: any) {
 		this.removeFailedFile(evt);
-		// const removeFileIndex = this.files.indexOf(evt);
-		// this.files.splice(removeFileIndex, 1);
-		// this.filesUpdated();
-
 		this.fileRemoved.emit();
 	}
 
 	onFileUploaded(addedFile: File): void {
 		this.fileUploaded.emit(addedFile);
-	}
-
-	removeFailedFile(file: File) {
-		const removeFileIndex = this.files.indexOf(file);
-		this.files.splice(removeFileIndex, 1);
-		this.filesUpdated();
 	}
 
 	getFileType(file: File): DocumentTypeCode {
@@ -270,25 +260,39 @@ export class FileUploadComponent implements OnInit {
 		return FileUploadHelper.getFileIcon(file);
 	}
 
-	getFileSize(size: number) {
-		size = size / 1000;
+	// getFileSize(size: number) {
+	// 	size = size / 1000;
 
-		if (size < 1) return 'Less than 1';
-		else return size;
-	}
+	// 	if (size < 1) return 'Less than 1';
+	// 	else return size;
+	// }
 
-	isPreviewImage(_file: File): boolean {
-		return this.previewImage && _file.size > 0;
-	}
+	getPreviewImage(index: number): string | null {
+		if (!this.previewImage) return null;
 
-	getPreviewImage(_file: File): string {
-		const objectUrl = URL.createObjectURL(_file);
+		if (this.imagePreviews[index]) {
+			return this.imagePreviews[index];
+		}
+
+		const file = this.files[index];
+		if (FileUploadHelper.getFileDocumentType(file) != DocumentTypeCode.Image || file.size === 0) return null;
+
+		const objectUrl = URL.createObjectURL(file);
 		const previewFile = this.domSanitizer.sanitize(
 			SecurityContext.RESOURCE_URL,
 			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 
-		return previewFile!;
+		this.imagePreviews[index] = previewFile;
+		return this.imagePreviews[index];
+	}
+
+	removeFailedFile(file: File) {
+		const removeFileIndex = this.files.indexOf(file);
+
+		this.imagePreviews.splice(removeFileIndex, 1);
+		this.files.splice(removeFileIndex, 1);
+		this.filesUpdated();
 	}
 
 	private filesUpdated(): void {
