@@ -117,7 +117,8 @@ namespace Spd.Manager.Licence
             updateContactCmd.Id = contact.Id;
             ContactResp contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
 
-            if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition || f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+            if ((cmd.applicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
+                (cmd.applicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
                 await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
                     null,
