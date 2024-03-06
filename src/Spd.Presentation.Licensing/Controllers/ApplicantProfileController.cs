@@ -1,11 +1,18 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Presentation.Licensing.Configurations;
+using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
-using Spd.Utilities.Shared;
+using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
@@ -49,7 +56,42 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetApplicantProfileQuery(id));
         }
 
-        //todo: add update endpoint here.
+        /// <summary>
+        /// Uploading file only save files in cache, the files are not connected to the application yet.
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/applicant/files")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        {
+            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+            if (fileUploadConfig == null)
+                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
+
+            //validation files
+            foreach (IFormFile file in fileUploadRequest.Documents)
+            {
+                string? fileexe = FileHelper.GetFileExtension(file.FileName);
+                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
+                }
+                long fileSize = file.Length;
+                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
+                }
+            }
+            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command, ct);
+            Guid fileKeyCode = Guid.NewGuid();
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            return fileKeyCode;
+        }
 
         /// <summary>
         /// Submit applicant update
@@ -59,6 +101,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/applicant/{applicantId}")]
         [HttpPut]
+        //[Authorize(Policy = "OnlyBcsc")]
         public async Task<ApplicantUpdateRequestResponse> UpdateApplicant(string applicantId, ApplicantUpdateRequest request, CancellationToken ct)
         {
             if (!Guid.TryParse(applicantId, out Guid applicantGuidId))
