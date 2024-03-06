@@ -188,7 +188,7 @@ export class FileUploadComponent implements OnInit {
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
 
-	imagePreviews!: Array<string | null>;
+	imagePreviews: Array<string | null> = [];
 
 	constructor(private hotToastService: HotToastService, private domSanitizer: DomSanitizer) {}
 
@@ -196,8 +196,6 @@ export class FileUploadComponent implements OnInit {
 		if (!this.files) {
 			this.files = []; // default to empty array;
 		}
-
-		this.imagePreviews = [null, null, null, null, null, null, null, null, null, null];
 
 		if (this.maxNumberOfFiles > SPD_CONSTANTS.document.maxNumberOfFiles) {
 			this.maxNumberOfFiles = SPD_CONSTANTS.document.maxNumberOfFiles;
@@ -291,8 +289,8 @@ export class FileUploadComponent implements OnInit {
 
 	removeFailedFile(file: File) {
 		const removeFileIndex = this.files.indexOf(file);
-		this.imagePreviews[removeFileIndex] = null;
 
+		this.imagePreviews.splice(removeFileIndex, 1);
 		this.files.splice(removeFileIndex, 1);
 		this.filesUpdated();
 	}

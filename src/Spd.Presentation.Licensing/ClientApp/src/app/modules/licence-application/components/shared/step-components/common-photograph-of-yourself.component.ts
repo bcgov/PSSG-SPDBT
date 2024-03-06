@@ -80,7 +80,6 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		console.log('**********************', this.form.valid);
 		return this.form.valid;
 	}
 
