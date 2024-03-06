@@ -24,7 +24,7 @@ internal abstract class LicenceAppManagerBase
         _licenceAppRepository = licenceAppRepository;
     }
 
-    protected async Task<decimal?> CommitApplicationAsync(PersonalLicenceAppBase request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    protected async Task<decimal?> CommitApplicationAsync(PersonalLicenceAppAnonymousBase request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -42,7 +42,7 @@ internal abstract class LicenceAppManagerBase
         return price.LicenceFees.FirstOrDefault()?.Amount;
     }
 
-    protected async Task UploadNewDocsAsync(PersonalLicenceAppBase request,
+    protected async Task UploadNewDocsAsync(PersonalLicenceAppAnonymousBase request,
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? licenceAppId,
         Guid? contactId,

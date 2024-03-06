@@ -41,7 +41,7 @@ public record AnonymousWorkerLicenceAppUpdateCommand(
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
-public record WorkerLicenceResponse : WorkerLicenceAppBase
+public record WorkerLicenceResponse : PersonalLicenceAppAnonymousBase
 {
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
@@ -60,8 +60,9 @@ public record WorkerLicenceAppListResponse
     public string CaseNumber { get; set; } = null!;
     public ApplicationPortalStatusCode ApplicationPortalStatusCode { get; set; }
 }
-
-public record WorkerLicenceAppBase : PersonalLicenceAppBase
+#region authenticated user
+//not include contact profile info
+public record WorkerLicenceAppUpsertRequest : PersonalLicenceAppBase
 {
     public bool? CarryAndUseRestraints { get; set; }
     public bool? UseDogs { get; set; }
@@ -69,18 +70,9 @@ public record WorkerLicenceAppBase : PersonalLicenceAppBase
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public bool? IsPoliceOrPeaceOfficer { get; set; }
-    public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
-    public string? OtherOfficerRole { get; set; }
-    public bool? IsTreatedForMHC { get; set; }
-    public bool? HasNewMentalHealthCondition { get; set; }
-}
-
-#region authenticated user
-public record WorkerLicenceAppUpsertRequest : WorkerLicenceAppBase
-{
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
+    public Guid? ApplicantId { get; set; }
 };
 
 public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
@@ -94,9 +86,19 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 #endregion
 
 #region anonymous user
-
-public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //for anonymous user
+public record WorkerLicenceAppAnonymousSubmitRequest : PersonalLicenceAppAnonymousBase //for anonymous user
 {
+    public bool? CarryAndUseRestraints { get; set; }
+    public bool? UseDogs { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public bool? IsPoliceOrPeaceOfficer { get; set; }
+    public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+    public string? OtherOfficerRole { get; set; }
+    public bool? IsTreatedForMHC { get; set; }
+    public bool? HasNewMentalHealthCondition { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 

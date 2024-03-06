@@ -222,7 +222,7 @@ internal class Mappings : Profile
             _ => null,
         };
     }
-    private static bool? GetIsTreatedForMHC(WorkerLicenceAppBase request)
+    private static bool? GetIsTreatedForMHC(WorkerLicenceAppAnonymousSubmitRequest request)
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {
@@ -231,7 +231,7 @@ internal class Mappings : Profile
         return request.IsTreatedForMHC;
     }
 
-    private static bool? GetHasCriminalHistory(PersonalLicenceAppBase request)
+    private static bool? GetHasCriminalHistory(PersonalLicenceAppAnonymousBase request)
     {
         if (request.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal || request.ApplicationTypeCode == Shared.ApplicationTypeCode.Update)
         {

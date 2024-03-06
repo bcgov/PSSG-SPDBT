@@ -26,7 +26,7 @@ public record AnonymousPermitAppUpdateCommand(
 
 public record GetPermitApplicationQuery(Guid LicenceApplicationId) : IRequest<PermitLicenceAppResponse>;
 
-public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppBase
+public record PermitAppAnonymousSubmitRequest : PersonalLicenceAppAnonymousBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
@@ -51,7 +51,7 @@ public record PermitAppCommandResponse : LicenceAppUpsertResponse
     public decimal? Cost { get; set; }
 };
 
-public record PermitLicenceAppResponse : PersonalLicenceAppBase
+public record PermitLicenceAppResponse : PersonalLicenceAppAnonymousBase
 {
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }

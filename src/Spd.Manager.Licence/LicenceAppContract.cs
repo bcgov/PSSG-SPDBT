@@ -7,20 +7,10 @@ public abstract record PersonalLicenceAppBase
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public BusinessTypeCode? BusinessTypeCode { get; set; }
-    public string? GivenName { get; set; }
-    public string? MiddleName1 { get; set; }
-    public string? MiddleName2 { get; set; }
-    public string? Surname { get; set; }
-    public DateOnly? DateOfBirth { get; set; }
-    public GenderCode? GenderCode { get; set; }
-    public bool? OneLegalName { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
     public Guid? ExpiredLicenceId { get; set; } //for new application type, for renew, replace, update, it should be null.
     public bool? HasExpiredLicence { get; set; }  //for new application type
     public LicenceTermCode? LicenceTermCode { get; set; }
-    public bool? HasCriminalHistory { get; set; }
-    public bool? HasPreviousName { get; set; }
-    public IEnumerable<Alias>? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public HairColourCode? HairColourCode { get; set; }
@@ -29,17 +19,31 @@ public abstract record PersonalLicenceAppBase
     public HeightUnitCode? HeightUnitCode { get; set; }
     public int? Weight { get; set; }
     public WeightUnitCode? WeightUnitCode { get; set; }
-    public string? ContactEmailAddress { get; set; }
-    public string? ContactPhoneNumber { get; set; }
-    public bool? IsMailingTheSameAsResidential { get; set; }
-    public ResidentialAddress? ResidentialAddressData { get; set; }
-    public MailingAddress? MailingAddressData { get; set; }
     public bool? UseBcServicesCardPhoto { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
     public bool? HasNewCriminalRecordCharge { get; set; }
+    public bool? HasCriminalHistory { get; set; }
+}
+
+public abstract record PersonalLicenceAppAnonymousBase : PersonalLicenceAppBase
+{
+    public string? GivenName { get; set; }
+    public string? MiddleName1 { get; set; }
+    public string? MiddleName2 { get; set; }
+    public string? Surname { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
+    public GenderCode? GenderCode { get; set; }
+    public bool? OneLegalName { get; set; }
+    public bool? HasPreviousName { get; set; }
+    public IEnumerable<Alias>? Aliases { get; set; }
+    public string? ContactEmailAddress { get; set; }
+    public string? ContactPhoneNumber { get; set; }
+    public bool? IsMailingTheSameAsResidential { get; set; }
+    public ResidentialAddress? ResidentialAddressData { get; set; }
+    public MailingAddress? MailingAddressData { get; set; }
 }
 
 public record ResidentialAddress : Address;
