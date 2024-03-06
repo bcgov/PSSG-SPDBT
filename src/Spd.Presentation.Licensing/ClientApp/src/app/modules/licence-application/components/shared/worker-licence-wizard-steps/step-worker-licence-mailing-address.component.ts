@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Address } from '@app/shared/components/address-autocomplete.component';
@@ -105,6 +106,19 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									any questions regarding the collection or use of this information, please contact
 									<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
 								</app-alert>
+
+								<div formGroupName="captchaFormGroup" *ngIf="displayCaptcha.value">
+									<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+											captchaFormGroup.get('token')?.invalid &&
+											captchaFormGroup.get('token')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
 							</ng-container>
 						</div>
 					</div>
@@ -129,17 +143,24 @@ export class StepWorkerLicenceMailingAddressComponent implements OnInit, Licence
 	readonly title_subtitle_new =
 		'Provide your mailing address, if different from your residential address. This cannot be a company address.';
 	readonly title_replacement = 'Review your mailing address';
-	// readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
+	readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private licenceApplicationService: LicenceApplicationService,
+		private authProcessService: AuthProcessService
+	) {}
 
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				this.title = this.title_replacement;
-				// this.subtitle = this.title_subtitle_replacement;
+				this.subtitle = this.title_subtitle_replacement;
+
+				this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+					this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
+				});
 				break;
 			}
 			default: {
@@ -185,5 +206,12 @@ export class StepWorkerLicenceMailingAddressComponent implements OnInit, Licence
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	get captchaFormGroup(): FormGroup {
+		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get displayCaptcha(): FormControl {
+		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 }
