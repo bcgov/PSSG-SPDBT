@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Contact
