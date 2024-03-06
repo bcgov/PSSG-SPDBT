@@ -13,21 +13,27 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class ApplicantProfileController : SpdControllerBase
+    public class ApplicantProfileController : SpdLicenceAnonymousControllerBase
     {
         private readonly ILogger<ApplicantProfileController> _logger;
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
         private readonly IValidator<ApplicantUpdateRequest> _applicationUpdateRequestValidator;
 
-        public ApplicantProfileController(ILogger<ApplicantProfileController> logger, 
-            IPrincipal currentUser, 
-            IMediator mediator,
-            IValidator<ApplicantUpdateRequest> applicationUpdateRequestValidator)
+        public ApplicantProfileController(ILogger<ApplicantProfileController> logger,
+        IPrincipal currentUser,
+        IMediator mediator,
+        IConfiguration configuration,
+        IValidator<ApplicantUpdateRequest> applicationUpdateRequestValidator,
+        IDistributedCache cache,
+        IDataProtectionProvider dpProvider,
+        IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
+            _configuration = configuration;
             _applicationUpdateRequestValidator = applicationUpdateRequestValidator;
         }
 
