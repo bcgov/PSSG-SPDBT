@@ -27,6 +27,22 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.MailingAddress.PostalCode).NotEmpty()
             .MaximumLength(20)
             .When(r => r.MailingAddress != null);
+        RuleFor(r => r.ResidentialAddress.AddressLine1)
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.City).NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Province).NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Country).NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.PostalCode).NotEmpty()
+            .MaximumLength(20)
+            .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.HasCriminalHistory).NotEmpty();
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
