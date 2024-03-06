@@ -1,17 +1,17 @@
-using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Registration;
-using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 
 namespace Spd.Manager.Licence
 {
     internal class ApplicantProfileManager :
+        LicenceAppManagerBase,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
@@ -30,7 +30,9 @@ namespace Spd.Manager.Licence
             IContactRepository contactRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
-            IDocumentRepository documentRepository)
+            IDocumentRepository documentRepository,
+            ILicenceFeeRepository feeRepository,
+            ILicenceApplicationRepository licenceAppRepository) : base(mapper, documentRepository, feeRepository, licenceAppRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
