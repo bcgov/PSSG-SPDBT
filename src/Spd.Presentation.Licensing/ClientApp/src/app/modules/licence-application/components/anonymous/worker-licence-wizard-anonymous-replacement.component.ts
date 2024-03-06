@@ -3,11 +3,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepWorkerLicenceMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
+import { StepWorkerLicenceMailingAddressComponent } from '../shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-replacement',
@@ -52,7 +52,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	newLicenceAppId: string | null = null;
 
 	@ViewChild(StepWorkerLicenceMailingAddressComponent)
-	stepMailingAddressComponent!: StepWorkerLicenceMailingAddressComponent;
+	stepAddressComponent!: StepWorkerLicenceMailingAddressComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -71,18 +71,14 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	}
 
 	onPay(): void {
-		const isFormValid = this.stepMailingAddressComponent.isFormValid();
-
-		// console.log('onPay', this.licenceApplicationService.licenceModelFormGroup.value);
-		// console.log('onPay valid', this.licenceApplicationService.licenceModelFormGroup.valid);
-
+		const isFormValid = this.stepAddressComponent.isFormValid();
 		if (isFormValid) {
 			if (this.newLicenceAppId) {
 				this.payNow(this.newLicenceAppId);
 			} else {
-				this.licenceApplicationService.submitLicenceAnonymous().subscribe({
+				this.licenceApplicationService.submitLicenceReplacementAnonymous().subscribe({
 					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-						console.debug('[onPay] submitLicenceAnonymous', resp.body);
+						console.debug('[onPay] submitLicenceReplacementAnonymous', resp.body);
 
 						// save this locally just in application payment fails
 						this.newLicenceAppId = resp.body.licenceAppId!;
