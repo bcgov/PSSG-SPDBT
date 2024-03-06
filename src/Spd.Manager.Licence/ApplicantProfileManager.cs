@@ -111,7 +111,7 @@ namespace Spd.Manager.Licence
         {
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct); //call contact.Update
             
-            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
+            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.applicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
             ContactResp contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
 
