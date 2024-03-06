@@ -45,7 +45,7 @@ namespace Spd.Manager.Licence
         {
             var response = await _contactRepository.GetAsync(request.ApplicantId, ct);
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
-            
+
             var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
             result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument));
             return result;
@@ -111,11 +111,21 @@ namespace Spd.Manager.Licence
 
         public async Task<ApplicantUpdateRequestResponse> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
-            ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct); //call contact.Update
-            
+            ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
+
             UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.applicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
             ContactResp contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+
+            if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition || f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+                await UploadNewDocsAsync(null,
+                    cmd.LicAppFileInfos,
+                    null,
+                    contact.Id,
+                    null,
+                    null,
+                    null,
+                    ct);
 
             return _mapper.Map<ApplicantUpdateRequestResponse>(contactResp);
         }
