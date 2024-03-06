@@ -27,7 +27,6 @@ namespace Spd.Manager.Licence
     public record ApplicantUpdateRequest : Applicant
     {
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-        public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
     }
 
     public record ApplicantUpdateRequestResponse : Applicant
