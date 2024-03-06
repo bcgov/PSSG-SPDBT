@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
@@ -42,7 +42,9 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-term></app-step-business-licence-term>
+				<app-step-business-licence-term
+					[isSoleProprietorRelated]="isSoleProprietorRelated"
+				></app-step-business-licence-term>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -76,6 +78,8 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
+
+	@Input() isSoleProprietorRelated!: boolean;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;
