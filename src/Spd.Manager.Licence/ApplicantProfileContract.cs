@@ -28,20 +28,6 @@ namespace Spd.Manager.Licence
     {
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
         public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
-        //public string? FirstName { get; set; }
-        //public string? LastName { get; set; }
-        //public string? MiddleName1 { get; set; }
-        //public string? MiddleName2 { get; set; }
-        //public DateOnly BirthDate { get; set; }
-        //public GenderEnum? Gender { get; set; }
-        //public string? EmailAddress { get; set; }
-        public string? PhoneNumber { get; set; }
-        //public Address? MailingAddress { get; set; }
-        //public bool? HasCriminalHistory { get; set; }
-        //public string? CriminalChargeDescription { get; set; }
-        //public bool? IsPoliceOrPeaceOfficer { get; set; }
-        //public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
-        //public bool? IsTreatedForMHC { get; set; }
     }
 
     public record ApplicantUpdateRequestResponse : Applicant
