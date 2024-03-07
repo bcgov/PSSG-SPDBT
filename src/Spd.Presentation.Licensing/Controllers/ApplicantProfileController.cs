@@ -82,7 +82,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/applicant/{applicantId}")]
         [HttpPut]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         public async Task<Guid> UpdateApplicant(string applicantId, ApplicantUpdateRequest request, CancellationToken ct)
         {
             if (!Guid.TryParse(applicantId, out Guid applicantGuidId))
