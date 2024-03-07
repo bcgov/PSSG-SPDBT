@@ -18,6 +18,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.telephone1))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
