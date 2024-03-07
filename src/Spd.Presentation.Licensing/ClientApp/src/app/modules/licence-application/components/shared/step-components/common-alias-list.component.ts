@@ -89,7 +89,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 })
 export class CommonAliasListComponent {
-	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
 	aliases: FormArray = this.formBuilder.array([]);

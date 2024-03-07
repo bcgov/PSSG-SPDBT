@@ -43,30 +43,30 @@ export class LicenceApplicationRoutes {
 	public static LOGIN_SELECTION = 'login-selection';
 
 	// AUTHENTICATED
-	public static USER_APPLICATIONS_AUTHENTICATED = 'applications';
-
-	public static APPLICATION_AUTHENTICATED = 'user';
-
-	public static WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
-	public static WORKER_LICENCE_RENEW_AUTHENTICATED = 'worker-licence-renew';
-	public static WORKER_LICENCE_UPDATE_AUTHENTICATED = 'worker-licence-update';
+	public static LICENCE_APPLICATION_AUTHENTICATED = 'user';
+	public static LICENCE_USER_APPLICATIONS_AUTHENTICATED = 'applications';
 
 	public static LICENCE_USER_PROFILE_AUTHENTICATED = 'licence-user-profile';
 	public static LICENCE_SELECTION_AUTHENTICATED = 'licence-selection';
 	public static LICENCE_APPLICATION_TYPE_AUTHENTICATED = 'licence-application-type';
 
-	public static BUSINESS_BASE = 'business-licence';
-	public static BUSINESS_NEW = 'business-new';
-	public static USER_BUSINESS_APPLICATIONS = 'applications';
-	public static BUSINESS_RENEW = 'business-renew';
-
 	public static LICENCE_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 	public static LICENCE_FIRST_TIME_USER_SELECTION = 'user-selection';
 	public static LICENCE_LINK = 'licence-link';
-	public static LOGIN_USER_PROFILE = 'user-profile';
+	public static LICENCE_LOGIN_USER_PROFILE = 'user-profile';
+
+	public static WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
+	public static WORKER_LICENCE_RENEW_AUTHENTICATED = 'worker-licence-renew';
+	public static WORKER_LICENCE_UPDATE_AUTHENTICATED = 'worker-licence-update';
+
+	public static BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
+	public static BUSINESS_BASE = 'business-licence';
+	public static BUSINESS_NEW = 'business-new';
+	public static BUSINESS_USER_APPLICATIONS = 'applications';
+	public static BUSINESS_RENEW = 'business-renew';
 
 	// ANONYMOUS
-	public static APPLICATION_ANONYMOUS = 'applications-anonymous';
+	public static LICENCE_APPLICATION_ANONYMOUS = 'applications-anonymous';
 	public static LICENCE_SELECTION_ANONYMOUS = 'licence-selection';
 	public static LICENCE_APPLICATION_TYPE_ANONYMOUS = 'licence-application-type';
 	public static LICENCE_ACCESS_CODE_ANONYMOUS = 'licence-access-code';
@@ -97,19 +97,19 @@ export class LicenceApplicationRoutes {
 	}
 
 	public static pathUserApplications(): string {
-		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_AUTHENTICATED}/${LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED}`;
+		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}/${LicenceApplicationRoutes.LICENCE_USER_APPLICATIONS_AUTHENTICATED}`;
 	}
 
 	public static pathSecurityWorkerLicenceAuthenticated(route: string | null = null): string {
 		return route
-			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_AUTHENTICATED}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_AUTHENTICATED}`;
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}`;
 	}
 
 	public static pathSecurityWorkerLicenceAnonymous(route: string | null = null): string {
 		return route
-			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.APPLICATION_ANONYMOUS}`;
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS}`;
 	}
 
 	public static pathPermitAnonymous(route: string | null = null): string {
@@ -136,7 +136,7 @@ const routes: Routes = [
 			},
 			{
 				// SECURITY WORKER LICENCE - ANONYMOUS
-				path: LicenceApplicationRoutes.APPLICATION_ANONYMOUS,
+				path: LicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
 				component: WorkerLicenceApplicationBaseAnonymousComponent,
 				children: [
 					{
@@ -214,7 +214,11 @@ const routes: Routes = [
 				component: BusinessLicenceApplicationBaseComponent,
 				children: [
 					{
-						path: LicenceApplicationRoutes.USER_BUSINESS_APPLICATIONS,
+						path: LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
+						component: WorkerLicenceFirstTimeUserTermsOfUseComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,
 						component: UserBusinessApplicationsComponent,
 					},
 					{
@@ -233,7 +237,7 @@ const routes: Routes = [
 			},
 			{
 				// SWL - AUTHORIZED
-				path: LicenceApplicationRoutes.APPLICATION_AUTHENTICATED,
+				path: LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED,
 				component: WorkerLicenceApplicationBaseAuthenticatedComponent,
 				children: [
 					{
@@ -249,11 +253,11 @@ const routes: Routes = [
 						component: StepWorkerLicenceAccessCodeAuthorizedComponent,
 					},
 					{
-						path: LicenceApplicationRoutes.USER_APPLICATIONS_AUTHENTICATED,
+						path: LicenceApplicationRoutes.LICENCE_USER_APPLICATIONS_AUTHENTICATED,
 						component: UserApplicationsAuthenticatedComponent,
 					},
 					{
-						path: LicenceApplicationRoutes.LOGIN_USER_PROFILE,
+						path: LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE,
 						component: UserLoginProfileComponent,
 					},
 					{

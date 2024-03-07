@@ -57,6 +57,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 })
 export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.companyBrandingFormGroup;
+
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	constructor(private businessApplicationService: BusinessApplicationService, private domSanitizer: DomSanitizer) {}

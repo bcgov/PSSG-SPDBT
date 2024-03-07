@@ -71,6 +71,10 @@ export abstract class BusinessApplicationHelper {
 		attachments: new FormControl(''),
 	});
 
+	liabilityFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl(''),
+	});
+
 	categoryFormGroup: FormGroup = this.formBuilder.group({
 		ArmouredCarGuard: new FormControl(false),
 		BodyArmourSales: new FormControl(false),
@@ -211,6 +215,20 @@ export abstract class BusinessApplicationHelper {
 	branchesInBcFormGroup: FormGroup = this.formBuilder.group({
 		hasBranchesInBc: new FormControl(''),
 		branches: this.formBuilder.array([]),
+	});
+
+	membersWithSwlFormGroup: FormGroup = this.formBuilder.group({
+		hasMembersWithSwl: new FormControl(''),
+		members: this.formBuilder.array([]),
+	});
+
+	membersWithoutSwlFormGroup: FormGroup = this.formBuilder.group({
+		hasMembersWithoutSwl: new FormControl(''),
+		members: this.formBuilder.array([]),
+	});
+
+	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
+		attachments: this.formBuilder.array([]),
 	});
 
 	branchInBcFormGroup: FormGroup = this.formBuilder.group({
