@@ -7,7 +7,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
-	BooleanTypeCode,
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorTrainingCode,
 } from 'src/app/core/code-types/model-desc.models';
@@ -225,7 +224,6 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	matcher = new FormErrorStateMatcher();
 	title = '';
 
-	booleanTypeCodes = BooleanTypeCode;
 	privateInvestigatorRequirementCodes = PrivateInvestigatorRequirementCode;
 	privateInvestigatorTrainingCodes = PrivateInvestigatorTrainingCode;
 

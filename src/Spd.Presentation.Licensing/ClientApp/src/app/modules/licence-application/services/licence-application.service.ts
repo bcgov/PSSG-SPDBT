@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
 	Alias,
+	ApplicantProfileResponse,
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
@@ -36,7 +37,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -139,6 +140,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
+		private applicantProfileService: ApplicantProfileService,
 		private domSanitizer: DomSanitizer
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService);
@@ -172,17 +174,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	loadUserProfile(): Observable<WorkerLicenceResponse> {
-		return this.createEmptyLicenceAuthenticated().pipe(
-			// TODO loadUserProfile
-			tap((_resp: any) => {
-				console.debug('loadUserProfile');
-
-				this.initialized = true;
-				console.debug('this.initialized', this.initialized);
-
-				this.commonApplicationService.setApplicationTitle();
-			})
-		);
+		return this.createNewLicenceAuthenticated();
 	}
 
 	/**
@@ -271,15 +263,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	createNewLicenceAuthenticated(): Observable<any> {
-		return this.createEmptyLicenceAuthenticated().pipe(
-			tap((resp: any) => {
-				console.debug('NEW LicenceApplicationService createNewLicenceAuthenticated', resp);
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((resp: ApplicantProfileResponse) => {
+					console.debug('createNewLicenceAuthenticated');
 
-				this.initialized = true;
+					return this.createEmptyLicenceAuthenticated(resp).pipe(
+						tap((resp: any) => {
+							console.debug('[createEmptyLicenceAuthenticated] resp', resp);
 
-				this.commonApplicationService.setApplicationTitle();
-			})
-		);
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle();
+						})
+					);
+				})
+			)
+			.pipe(take(1));
 	}
 
 	/**
@@ -521,12 +522,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const photographOfYourselfData = { useBcServicesCardPhoto: BooleanTypeCode.No };
 
 		this.licenceModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
-				photographOfYourselfData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
@@ -538,56 +537,75 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private createEmptyLicenceAuthenticated(): Observable<any> {
+	private createEmptyLicenceAuthenticated(
+		profile: ApplicantProfileResponse | undefined
+	): Observable<WorkerLicenceResponse> {
 		this.reset();
 
-		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;// TODO fix for authenticated
-		// if (bcscUserWhoamiProfile) {
-		// 	const personalInformationData = {
-		// 		givenName: bcscUserWhoamiProfile.firstName,
-		// 		middleName1: bcscUserWhoamiProfile.middleName1,
-		// 		middleName2: bcscUserWhoamiProfile.middleName2,
-		// 		surname: bcscUserWhoamiProfile.lastName,
-		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
-		// 		genderCode: bcscUserWhoamiProfile.gender,
-		// 	};
+		if (profile) {
+			const personalInformationData = {
+				givenName: profile.firstName,
+				middleName1: profile.middleName1,
+				middleName2: profile.middleName2,
+				surname: profile.lastName,
+				dateOfBirth: profile.birthDate,
+				genderCode: profile.gender,
+			};
 
-		// 	const residentialAddressData = {
-		// 		addressSelected: true,
-		// 		isMailingTheSameAsResidential: false,
-		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
-		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
-		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
-		// 	};
+			const contactInformationData = {
+				contactEmailAddress: profile.emailAddress,
+				// contactPhoneNumber: profile.phoneNumber // TODO missing phone number
+			};
 
-		// 	this.licenceModelFormGroup.patchValue(
-		// 		{
-		// 			personalInformationData: { ...personalInformationData },
-		// 			residentialAddressData: { ...residentialAddressData },
-		// 			aliasesData: { previousNameFlag: BooleanTypeCode.No },
-		// 		},
-		// 		{
-		// 			emitEvent: false,
-		// 		}
-		// 	);
-		// } else {
-		const residentialAddressData = {
-			isMailingTheSameAsResidential: false,
-		};
+			const residentialAddressData = {
+				addressSelected: true,
+				isMailingTheSameAsResidential: false,
+				addressLine1: profile.residentialAddress?.addressLine1,
+				addressLine2: profile.residentialAddress?.addressLine2,
+				city: profile.residentialAddress?.city,
+				country: profile.residentialAddress?.country,
+				postalCode: profile.residentialAddress?.postalCode,
+				province: profile.residentialAddress?.province,
+			};
 
-		this.licenceModelFormGroup.patchValue(
-			{
-				residentialAddressData: { ...residentialAddressData },
-				aliasesData: { previousNameFlag: BooleanTypeCode.No },
-			},
-			{
-				emitEvent: false,
-			}
-		);
-		// }
+			const mailingAddressData = {
+				addressSelected: true,
+				isMailingTheSameAsResidential: false,
+				addressLine1: profile.mailingAddress?.addressLine1,
+				addressLine2: profile.mailingAddress?.addressLine2,
+				city: profile.mailingAddress?.city,
+				country: profile.mailingAddress?.country,
+				postalCode: profile.mailingAddress?.postalCode,
+				province: profile.mailingAddress?.province,
+			};
+
+			this.licenceModelFormGroup.patchValue(
+				{
+					personalInformationData: { ...personalInformationData },
+					residentialAddressData: { ...residentialAddressData },
+					mailingAddressData: { ...mailingAddressData },
+					contactInformationData: { ...contactInformationData },
+					aliasesData: { previousNameFlag: BooleanTypeCode.No },
+				},
+				{
+					emitEvent: false,
+				}
+			);
+		} else {
+			const residentialAddressData = {
+				isMailingTheSameAsResidential: false,
+			};
+
+			this.licenceModelFormGroup.patchValue(
+				{
+					residentialAddressData: { ...residentialAddressData },
+					aliasesData: { previousNameFlag: BooleanTypeCode.No },
+				},
+				{
+					emitEvent: false,
+				}
+			);
+		}
 
 		return of(this.licenceModelFormGroup.value);
 	}
@@ -1128,7 +1146,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const photographOfYourselfData = {
-			useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 			attachments: photographOfYourselfAttachments,
 		};
 
@@ -1280,7 +1297,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				if (originalPhotoOfYourselfExpired) {
 					// clear out data to force user to upload a new photo
 					photographOfYourselfData = {
-						useBcServicesCardPhoto: BooleanTypeCode.No,
 						attachments: [],
 					};
 				}
@@ -1415,7 +1431,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Submit the licence data for renewal anonymous
+	 * Submit the licence data anonymous
 	 * @returns
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
@@ -1451,6 +1467,32 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		} else {
 			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 		}
+	}
+
+	/**
+	 * Submit the licence data for replacement anonymous
+	 * @returns
+	 */
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			}
+		});
+
+		delete body.documentInfos;
+
+		console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
+
+		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 	}
 
 	/**

@@ -1,14 +1,17 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { BusinessTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
+import { BusinessApplicationService } from '../../services/business-application.service';
 import { StepsBusinessLicenceContactInformationNewComponent } from './steps-business-licence-contact-information-new.component';
+import { StepsBusinessLicenceControllingMembersNewComponent } from './steps-business-licence-controlling-members-new.component';
 import { StepsBusinessLicenceInformationNewComponent } from './steps-business-licence-information-new.component';
+import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-licence-selection-new.component';
 
 @Component({
@@ -39,6 +42,7 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
+					[isSoleProprietorRelated]="isSoleProprietorRelated"
 				></app-steps-business-licence-selection-new>
 			</mat-step>
 
@@ -66,13 +70,13 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
-				<!-- <app-steps-permit-review-anonymous
-						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
-						(nextPayStep)="onNextPayStep()"
-						(scrollIntoView)="onScrollIntoView()"
-						(goToStep)="onGoToStep($event)"
-					></app-steps-permit-review-anonymous> -->
+				<app-steps-business-licence-review
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(nextPayStep)="onNextPayStep()"
+					(scrollIntoView)="onScrollIntoView()"
+					(goToStep)="onGoToStep($event)"
+				></app-steps-business-licence-review>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -82,7 +86,7 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 	`,
 	styles: [],
 })
-export class BusinessLicenceWizardNewComponent extends BaseWizardComponent implements OnInit {
+export class BusinessLicenceWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
 	readonly STEP_CONTACT_INFORMATION = 2;
@@ -94,20 +98,25 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	step3Complete = false;
 	step4Complete = false;
 
+	isSoleProprietorRelated = false;
+	private businessModelValueChangedSubscription!: Subscription;
+
 	@ViewChild(StepsBusinessLicenceInformationNewComponent)
 	stepsBusinessInformationComponent!: StepsBusinessLicenceInformationNewComponent;
-
 	@ViewChild(StepsBusinessLicenceSelectionNewComponent)
-	stepsBusinessSelectionNewComponent!: StepsBusinessLicenceSelectionNewComponent;
-
+	stepsBusinessSelectionComponent!: StepsBusinessLicenceSelectionNewComponent;
 	@ViewChild(StepsBusinessLicenceContactInformationNewComponent)
-	stepsBusinessContactInformationNewComponent!: StepsBusinessLicenceContactInformationNewComponent;
+	stepsContactInformationComponent!: StepsBusinessLicenceContactInformationNewComponent;
+	@ViewChild(StepsBusinessLicenceControllingMembersNewComponent)
+	stepsControllingMembersComponent!: StepsBusinessLicenceControllingMembersNewComponent;
+	@ViewChild(StepsBusinessLicenceReviewComponent)
+	stepsReviewAndConfirm!: StepsBusinessLicenceReviewComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private permitApplicationService: PermitApplicationService // private commonApplicationService: CommonApplicationService
+		private businessApplicationService: BusinessApplicationService // private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -118,7 +127,24 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
+		this.businessModelValueChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
+			(_resp: boolean) => {
+				// this.isFormValid = _resp;
+
+				const businessTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+					'businessTypeData.businessTypeCode'
+				)?.value;
+
+				this.isSoleProprietorRelated =
+					businessTypeCode === BusinessTypeCode.NonRegisteredSoleProprietor ||
+					businessTypeCode === BusinessTypeCode.RegisteredSoleProprietor;
+			}
+		);
 		// this.updateCompleteStatus();
+	}
+
+	ngOnDestroy() {
+		if (this.businessModelValueChangedSubscription) this.businessModelValueChangedSubscription.unsubscribe();
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
@@ -127,17 +153,17 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsBusinessInformationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepsBusinessSelectionNewComponent?.onGoToFirstStep();
+				this.stepsBusinessSelectionComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-				this.stepsBusinessContactInformationNewComponent?.onGoToFirstStep();
+				this.stepsContactInformationComponent?.onGoToFirstStep();
 				break;
-			// 		case this.STEP_CONTROLLING_MEMBERS:
-			// 			this.stepsPermitContactComponent?.onGoToFirstStep();
-			// 			break;
-			// 		case this.STEP_REVIEW_AND_CONFIRM:
-			// 			this.stepsPermitReviewComponent?.onGoToFirstStep();
-			// 			break;
+			case this.STEP_CONTROLLING_MEMBERS:
+				this.stepsControllingMembersComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepsReviewAndConfirm?.onGoToFirstStep();
+				break;
 		}
 
 		super.onStepSelectionChange(event);
@@ -151,14 +177,17 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsBusinessInformationComponent?.onGoToLastStep();
 				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepsBusinessSelectionNewComponent?.onGoToLastStep();
+				this.stepsBusinessSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-				this.stepsBusinessContactInformationNewComponent?.onGoToLastStep();
+				this.stepsContactInformationComponent?.onGoToLastStep();
 				break;
-			// 		case this.STEP_CONTROLLING_MEMBERS:
-			// 			this.stepsPermitContactComponent?.onGoToLastStep();
-			// 			break;
+			case this.STEP_CONTROLLING_MEMBERS:
+				this.stepsControllingMembersComponent?.onGoToLastStep();
+				break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepsReviewAndConfirm?.onGoToLastStep();
+				break;
 		}
 	}
 
@@ -186,11 +215,16 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		stepper.next();
 	}
 
+	onNextPayStep(): void {
+		// TODO empty function
+	}
+
 	onGoToStep(step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
-		this.stepsBusinessSelectionNewComponent?.onGoToFirstStep();
-		this.stepsBusinessContactInformationNewComponent?.onGoToFirstStep();
-		// 	this.stepsPermitContactComponent?.onGoToFirstStep();
+		this.stepsBusinessSelectionComponent?.onGoToFirstStep();
+		this.stepsContactInformationComponent?.onGoToFirstStep();
+		this.stepsControllingMembersComponent?.onGoToFirstStep();
+		this.stepsReviewAndConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -217,14 +251,17 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsBusinessInformationComponent?.onGoToNextStep();
 				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepsBusinessSelectionNewComponent?.onGoToNextStep();
+				this.stepsBusinessSelectionComponent?.onGoToNextStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-				this.stepsBusinessContactInformationNewComponent?.onGoToNextStep();
+				this.stepsContactInformationComponent?.onGoToNextStep();
 				break;
-			// 		case this.STEP_CONTROLLING_MEMBERS:
-			// 			this.stepsPermitContactComponent?.onGoToNextStep();
-			// 			break;
+			case this.STEP_CONTROLLING_MEMBERS:
+				this.stepsControllingMembersComponent?.onGoToNextStep();
+				break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepsReviewAndConfirm?.onGoToNextStep();
+				break;
 		}
 		this.updateCompleteStatus();
 	}
