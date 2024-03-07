@@ -11,7 +11,7 @@ namespace Spd.Manager.Licence
         public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct); //used for applicant portal
         public Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct);
         public Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct);
-        public Task<ApplicantUpdateRequestResponse> Handle(ApplicantUpdateCommand cmd, CancellationToken ct);
+        public Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct);
     }
 
     public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
@@ -22,7 +22,7 @@ namespace Spd.Manager.Licence
         Guid ApplicantId,
         ApplicantUpdateRequest applicantUpdateRequest,
         IEnumerable<LicAppFileInfo> LicAppFileInfos) 
-        : IRequest<ApplicantUpdateRequestResponse>;
+        : IRequest<Unit>;
 
     public record ApplicantUpdateRequest : Applicant
     {
