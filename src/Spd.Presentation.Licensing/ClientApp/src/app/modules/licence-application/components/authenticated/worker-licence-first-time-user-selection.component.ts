@@ -7,7 +7,7 @@ import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { CommonTermsComponent } from '../shared/step-components/common-terms.component';
+import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
 	selector: 'app-worker-licence-first-time-user-selection',
@@ -85,7 +85,7 @@ export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, Lic
 
 	options: Array<ApplicantListResponse> | null = null;
 
-	@ViewChild(CommonTermsComponent) commonTermsComponent!: CommonTermsComponent;
+	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
 	@Input() inWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

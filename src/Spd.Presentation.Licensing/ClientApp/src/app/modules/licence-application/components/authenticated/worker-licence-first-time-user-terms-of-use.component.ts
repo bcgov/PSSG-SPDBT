@@ -6,7 +6,7 @@ import { LoginService } from '@app/api/services';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { CommonTermsComponent } from '../shared/step-components/common-terms.component';
+import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
 	selector: 'app-worker-licence-first-time-user-terms-of-use',
@@ -18,7 +18,7 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 					subtitle="Read, download, and accept the Terms of Use to continue"
 				></app-step-title>
 
-				<app-common-terms [form]="form" [applicationTypeCode]="applicationTypeCodes.New"></app-common-terms>
+				<app-common-swl-permit-terms [form]="form" [applicationTypeCode]="applicationTypeCodes.New"></app-common-swl-permit-terms>
 
 				<div class="row">
 					<div class="offset-xxl-8 col-xxl-3 offset-xl-7 col-xl-4 offset-lg-7 col-lg-5 col-md-12 col-sm-12 mb-2">
@@ -36,7 +36,7 @@ export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements OnInit, Li
 		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
 	});
 
-	@ViewChild(CommonTermsComponent) commonTermsComponent!: CommonTermsComponent;
+	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
 	@Input() inWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

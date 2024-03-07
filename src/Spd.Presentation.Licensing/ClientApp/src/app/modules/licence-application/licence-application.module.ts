@@ -116,6 +116,7 @@ import { CommonAddressComponent } from './components/shared/step-components/comm
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
+import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
 import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
@@ -126,7 +127,7 @@ import { CommonPhotographOfYourselfComponent } from './components/shared/step-co
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/step-components/common-physical-characteristics.component';
 import { CommonReprintComponent } from './components/shared/step-components/common-reprint.component';
 import { CommonResidentialAddressComponent } from './components/shared/step-components/common-residential-address.component';
-import { CommonTermsComponent } from './components/shared/step-components/common-terms.component';
+import { CommonSwlPermitTermsComponent } from './components/shared/step-components/common-swl-permit-terms.component';
 import { CommonUpdateRenewalAlertComponent } from './components/shared/step-components/common-update-renewal-alert.component';
 import { CommonUserProfilePersonalInformationComponent } from './components/shared/step-components/common-user-profile-personal-information.component';
 import { CommonUserProfileComponent } from './components/shared/step-components/common-user-profile.component';
@@ -191,6 +192,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
+		CommonBusinessTermsComponent,
 		CommonContactInformationComponent,
 		CommonCriminalHistoryComponent,
 		CommonExpiredLicenceComponent,
@@ -201,7 +203,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonPhysicalCharacteristicsComponent,
 		CommonReprintComponent,
 		CommonResidentialAddressComponent,
-		CommonTermsComponent,
+		CommonSwlPermitTermsComponent,
 		CommonUpdateRenewalAlertComponent,
 		CommonUserProfileComponent,
 		CommonUserProfilePersonalInformationComponent,
