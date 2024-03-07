@@ -4,15 +4,19 @@ using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Registration;
 
 namespace Spd.Manager.Licence
 {
     internal class ApplicantProfileManager :
+        LicenceAppManagerBase,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
         IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
+        IRequestHandler<ApplicantUpdateCommand, Unit>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -26,7 +30,9 @@ namespace Spd.Manager.Licence
             IContactRepository contactRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
-            IDocumentRepository documentRepository)
+            IDocumentRepository documentRepository,
+            ILicenceFeeRepository feeRepository,
+            ILicenceApplicationRepository licenceAppRepository) : base(mapper, documentRepository, feeRepository, licenceAppRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
@@ -39,9 +45,20 @@ namespace Spd.Manager.Licence
         {
             var response = await _contactRepository.GetAsync(request.ApplicantId, ct);
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
-            
+
             var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
-            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument));
+            var mentalHealthDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).ToList();
+            var policeBackgroundDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
+            List<Document> documents = new();
+
+            if (mentalHealthDocuments.Count > 0)
+                documents.Add(mentalHealthDocuments[0]);
+
+            if (policeBackgroundDocuments.Count > 0)
+                documents.Add(policeBackgroundDocuments[0]);
+
+            result.DocumentInfos = documents;
+
             return result;
         }
 
@@ -102,6 +119,27 @@ namespace Spd.Manager.Licence
 
             return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items.Where(i => i.LicenceInfos.Any())); //if no licence, no return
         }
+
+        public async Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
+        {
+            ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
+
+            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.applicantUpdateRequest);
+            updateContactCmd.Id = contact.Id;
+            await _contactRepository.ManageAsync(updateContactCmd, ct);
+
+            if ((cmd.applicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
+                (cmd.applicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
+                await UploadNewDocsAsync(null,
+                    cmd.LicAppFileInfos,
+                    null,
+                    contact.Id,
+                    null,
+                    null,
+                    null,
+                    ct);
+
+            return default;
+        }
     }
 }
-
