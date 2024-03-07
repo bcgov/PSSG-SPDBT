@@ -122,14 +122,6 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		if (this.applicationTitleSubscription) this.applicationTitleSubscription.unsubscribe();
 	}
 
-	// onHome(): void {
-	// 	if (this.loggedInUserDisplay) {
-	// 		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-	// 	} else {
-	// 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
-	// 	}
-	// }
-
 	onLogout(): void {
 		this.authProcessService.logout();
 	}
@@ -138,7 +130,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		const loginType = this.authProcessService.identityProvider;
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			console.debug('bcscUserWhoamiProfile', this.authUserBcscService.applicantLoginProfile);
+			console.debug('applicantLoginProfile', this.authUserBcscService.applicantLoginProfile);
 
 			const name = this.utilService.getFullName(
 				this.authUserBcscService.applicantLoginProfile?.firstName,

@@ -74,6 +74,9 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 							</div>
 						</div>
 					</div>
+					<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
+						<mat-icon>add</mat-icon>Apply for a New Licence or Permit
+					</button>
 
 					<div class="mb-3" *ngIf="inProgressDataSource.data.length > 0">
 						<div class="section-title fs-5 py-3">In-Progress Licences/Permits</div>

@@ -17,11 +17,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
 				// Handling 401 that can occur when you are logged into the wrong identity authority
-				// if (
-				// 	errorResponse.status == 401 &&
-				// 	(errorResponse.url?.includes(UserProfileService.ApiSecurityWorkerWhoamiGetPath) || // TODO fix for authorized
-				// 		errorResponse.url?.includes(UserProfileService.ApiBizLicenceWhoamiGetPath))
-				// ) {
+				// if (errorResponse.status == 401 && errorResponse.url?.includes(LoginService.ApiApplicantLoginGetPath)) {
 				// 	console.debug(`ErrorInterceptor Access Denied- ${errorResponse.status} and ${errorResponse.url}`);
 				// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				// 	return throwError(() => new Error('Access denied'));

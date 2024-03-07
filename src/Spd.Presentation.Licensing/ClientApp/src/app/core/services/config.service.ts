@@ -35,6 +35,7 @@ export class ConfigService {
 
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
+			this.oauthService.setupAutomaticSilentRefresh();
 		});
 	}
 

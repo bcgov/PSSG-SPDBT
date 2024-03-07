@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitAliasesComponent } from './step-permit-aliases.component';
@@ -243,10 +242,8 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	readonly STEP_PHYSICAL_CHARACTERISTICS = 7;
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 8;
 
-	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	isLoggedIn = false;
 	isFormValid = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
@@ -264,10 +261,7 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(private permitApplicationService: PermitApplicationService) {
 		super();
 	}
 
@@ -282,16 +276,9 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 				)?.value;
 			}
 		);
-
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-			}
-		);
 	}
 
 	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
