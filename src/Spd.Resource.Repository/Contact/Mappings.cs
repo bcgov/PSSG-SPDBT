@@ -91,7 +91,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address2_line2;
             addr.City = contact.address2_city;
             addr.Country = contact.address2_country;
-            addr.Province = contact.address2_county;
+            addr.Province = contact.address1_stateorprovince;
             addr.PostalCode = contact.address2_postalcode;
             return addr;
         }
@@ -104,7 +104,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address1_line2;
             addr.City = contact.address1_city;
             addr.Country = contact.address1_country;
-            addr.Province = contact.address1_county;
+            addr.Province = contact.address1_stateorprovince;
             addr.PostalCode = contact.address1_postalcode;
             return addr;
         }
