@@ -83,7 +83,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/applicant/{applicantId}")]
         [HttpPut]
         //[Authorize(Policy = "OnlyBcsc")]
-        public async Task<ApplicantUpdateRequestResponse> UpdateApplicant(string applicantId, ApplicantUpdateRequest request, CancellationToken ct)
+        public async Task<Guid> UpdateApplicant(string applicantId, ApplicantUpdateRequest request, CancellationToken ct)
         {
             if (!Guid.TryParse(applicantId, out Guid applicantGuidId))
                 throw new ApiException(HttpStatusCode.BadRequest, $"{nameof(applicantId)} is not a valid guid.");
@@ -95,9 +95,9 @@ namespace Spd.Presentation.Licensing.Controllers
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
 
             ApplicantUpdateCommand command = new(applicantGuidId, request, newDocInfos);
-            ApplicantUpdateRequestResponse response = await _mediator.Send(command, ct);
+            await _mediator.Send(command, ct);
 
-            return response;
+            return applicantGuidId;
         }
 
         /// <summary>

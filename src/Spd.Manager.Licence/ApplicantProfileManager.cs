@@ -16,7 +16,7 @@ namespace Spd.Manager.Licence
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
         IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
-        IRequestHandler<ApplicantUpdateCommand, ApplicantUpdateRequestResponse>,
+        IRequestHandler<ApplicantUpdateCommand, Unit>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -120,7 +120,7 @@ namespace Spd.Manager.Licence
             return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items.Where(i => i.LicenceInfos.Any())); //if no licence, no return
         }
 
-        public async Task Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
+        public async Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
@@ -138,6 +138,8 @@ namespace Spd.Manager.Licence
                     null,
                     null,
                     ct);
+
+            return default;
         }
     }
 }
