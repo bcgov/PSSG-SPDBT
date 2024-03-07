@@ -34,7 +34,6 @@ public abstract record PersonalLicenceAppBase
     public bool? IsMailingTheSameAsResidential { get; set; }
     public ResidentialAddress? ResidentialAddressData { get; set; }
     public MailingAddress? MailingAddressData { get; set; }
-    public bool? UseBcServicesCardPhoto { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
