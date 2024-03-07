@@ -120,13 +120,13 @@ namespace Spd.Manager.Licence
             return _mapper.Map<IEnumerable<ApplicantListResponse>>(results.Items.Where(i => i.LicenceInfos.Any())); //if no licence, no return
         }
 
-        public async Task<ApplicantUpdateRequestResponse> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
+        public async Task Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
             UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.applicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
-            ContactResp contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+            await _contactRepository.ManageAsync(updateContactCmd, ct);
 
             if ((cmd.applicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
                 (cmd.applicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
@@ -138,22 +138,6 @@ namespace Spd.Manager.Licence
                     null,
                     null,
                     ct);
-
-            ApplicantUpdateRequestResponse respose = _mapper.Map<ApplicantUpdateRequestResponse>(contactResp);
-            var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
-            var mentalHealthDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).ToList();
-            var policeBackgroundDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
-            List<Document> documents = new();
-
-            if (mentalHealthDocuments.Count > 0)
-                documents.Add(mentalHealthDocuments[0]);
-
-            if (policeBackgroundDocuments.Count > 0)
-                documents.Add(policeBackgroundDocuments[0]);
-
-            respose.DocumentInfos = documents;
-
-            return respose;
         }
     }
 }
