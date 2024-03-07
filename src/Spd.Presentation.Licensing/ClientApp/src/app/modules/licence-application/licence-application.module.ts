@@ -52,6 +52,11 @@ import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
 import { UserLoginProfileComponent } from './components/authenticated/user-login-profile.component';
+import { CommonUserProfilePersonalInformationComponent } from './components/authenticated/user-profile/common-user-profile-personal-information.component';
+import { CommonUserProfileComponent } from './components/authenticated/user-profile/common-user-profile.component';
+import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile/common-user-profile-licence-criminal-history.component';
+import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
+import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile/common-user-profile-licence-police-background.component';
 import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
 import { WorkerLicenceFirstTimeUserSelectionComponent } from './components/authenticated/worker-licence-first-time-user-selection.component';
 import { WorkerLicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/worker-licence-first-time-user-terms-of-use.component';
@@ -121,8 +126,6 @@ import { CommonReprintComponent } from './components/shared/step-components/comm
 import { CommonResidentialAddressComponent } from './components/shared/step-components/common-residential-address.component';
 import { CommonTermsComponent } from './components/shared/step-components/common-terms.component';
 import { CommonUpdateRenewalAlertComponent } from './components/shared/step-components/common-update-renewal-alert.component';
-import { CommonUserProfilePersonalInformationComponent } from './components/shared/step-components/common-user-profile-personal-information.component';
-import { CommonUserProfileComponent } from './components/shared/step-components/common-user-profile.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './components/shared/worker-licence-wizard-steps/licence-category-armoured-car-guard.component';
 import { LicenceCategoryBodyArmourSalesComponent } from './components/shared/worker-licence-wizard-steps/licence-category-body-armour-sales.component';
 import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from './components/shared/worker-licence-wizard-steps/licence-category-closed-circuit-television-installer.component';
@@ -216,10 +219,13 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicenceCategorySecurityConsultantComponent,
 		LicenceCategorySecurityGuardComponent,
 		LicenceCategorySecurityGuardSupComponent,
+		CommonUserProfileLicenceCriminalHistoryComponent,
+		CommonUserProfileLicenceMentalHealthConditionsComponent,
 		LicencePaymentCancelComponent,
 		LicencePaymentErrorComponent,
 		LicencePaymentFailComponent,
 		LicencePaymentSuccessComponent,
+		CommonUserProfileLicencePoliceBackgroundComponent,
 		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
 		PermitApplicationBaseAnonymousComponent,
