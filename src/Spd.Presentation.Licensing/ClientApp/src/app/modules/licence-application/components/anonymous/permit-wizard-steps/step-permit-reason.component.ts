@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -11,13 +10,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title [title]="title"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit">
@@ -95,8 +88,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 })
 export class StepPermitReasonComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
+	subtitle = '';
 	matcher = new FormErrorStateMatcher();
-	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.permitApplicationService.permitRequirementFormGroup;
 
@@ -111,6 +104,9 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 		const name =
 			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
 		this.title = `Why do you require a permit for ${name}?`;
+		this.subtitle = this.isRenewalOrUpdate
+			? `If the purpose for possessing ${name} has changed from your previous application, update your selection`
+			: '';
 	}
 
 	isFormValid(): boolean {

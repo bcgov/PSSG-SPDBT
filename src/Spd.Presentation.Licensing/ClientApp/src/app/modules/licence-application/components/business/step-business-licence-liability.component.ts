@@ -52,7 +52,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	styles: [],
 })
 export class StepBusinessLicenceLiabilityComponent implements LicenceChildStepperStepComponent {
-	form = this.businessApplicationService.companyBrandingFormGroup;
+	form = this.businessApplicationService.liabilityFormGroup;
 
 	constructor(private businessApplicationService: BusinessApplicationService, private domSanitizer: DomSanitizer) {}
 

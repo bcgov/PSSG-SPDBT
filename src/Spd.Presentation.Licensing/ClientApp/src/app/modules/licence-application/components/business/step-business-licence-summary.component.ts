@@ -17,7 +17,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
-	selector: 'app-step-permit-summary-anonymous',
+	selector: 'app-step-business-licence-summary',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -547,7 +547,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 		`,
 	],
 })
-export class StepPermitSummaryAnonymousComponent implements OnInit {
+export class StepBusinessLicenceSummaryComponent implements OnInit {
 	permitModelData: any = {};
 	showEmployerInformation = false;
 
