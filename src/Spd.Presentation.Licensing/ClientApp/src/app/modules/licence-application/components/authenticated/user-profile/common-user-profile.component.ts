@@ -3,37 +3,21 @@ import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { CommonAddressComponent } from './common-address.component';
-import { CommonAliasListComponent } from './common-alias-list.component';
-import { CommonContactInformationComponent } from './common-contact-information.component';
+import { CommonAddressComponent } from '../../shared/step-components/common-address.component';
+import { CommonAliasListComponent } from '../../shared/step-components/common-alias-list.component';
+import { CommonContactInformationComponent } from '../../shared/step-components/common-contact-information.component';
 
 @Component({
 	selector: 'app-common-user-profile',
 	template: `
-		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
 		<app-common-user-profile-personal-information
 			[isReadOnly]="isReadOnly"
 		></app-common-user-profile-personal-information>
 
-		<!-- <div class="text-minor-heading pt-2 pb-3">Contact Information</div> -->
-		<!-- <app-common-contact-information
-			[form]="contactInformationFormGroup"
-			[isWizardStep]="false"
-			[isReadOnly]="isReadOnly"
-		></app-common-contact-information> -->
-
 		<mat-divider class="mat-divider-main"></mat-divider>
 		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
 		<app-common-alias-list [form]="aliasesFormGroup" [isReadOnly]="isReadOnly"></app-common-alias-list>
-
-		<!-- <mat-divider class="mat-divider-main mt-3"></mat-divider>
-		<div class="text-minor-heading pt-2 pb-3">Contact Information</div>
-		<app-common-contact-information
-			[form]="contactInformationFormGroup"
-			[isWizardStep]="false"
-			[isReadOnly]="isReadOnly"
-		></app-common-contact-information> -->
 
 		<div class="row mt-3">
 			<div class="col-lg-6 col-md-12">
@@ -77,20 +61,6 @@ import { CommonContactInformationComponent } from './common-contact-information.
 						[isReadOnly]="isReadOnly"
 					></app-common-address>
 				</ng-template>
-			</div>
-
-			<div class="col-12 mt-3">
-				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="mt-3">
-					<app-alert type="info" icon="" [showBorder]="false">
-						<div class="mb-2">COLLECTION NOTICE</div>
-						All information regarding this application is collected under the <i>Security Services Act</i> and its
-						Regulation and will be used for that purpose. The use of this information will comply with the
-						<i>Freedom of Information</i> and <i>Privacy Act</i> and the federal <i>Privacy Act</i>. If you have any
-						questions regarding the collection or use of this information, please contact
-						<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
-					</app-alert>
-				</div>
 			</div>
 		</div>
 	`,

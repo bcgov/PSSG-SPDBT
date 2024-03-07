@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonUserProfileComponent } from '@app/modules/licence-application/components/shared/step-components/common-user-profile.component';
+import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '../../services/licence-application.service';
@@ -17,6 +17,17 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 					<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
 
 					<app-common-user-profile></app-common-user-profile>
+
+					<div class="mt-3">
+						<app-alert type="info" icon="" [showBorder]="false">
+							<div class="mb-2">COLLECTION NOTICE</div>
+							All information regarding this application is collected under the <i>Security Services Act</i> and its
+							Regulation and will be used for that purpose. The use of this information will comply with the
+							<i>Freedom of Information</i> and <i>Privacy Act</i> and the federal <i>Privacy Act</i>. If you have any
+							questions regarding the collection or use of this information, please contact
+							<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
+						</app-alert>
+					</div>
 				</div>
 			</div>
 		</section>
