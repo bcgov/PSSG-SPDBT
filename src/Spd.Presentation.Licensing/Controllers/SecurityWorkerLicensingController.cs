@@ -38,7 +38,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider,
-            IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService)
+            IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _logger = logger;
             _currentUser = currentUser;
@@ -200,32 +200,8 @@ namespace Spd.Presentation.Licensing.Controllers
         [RequestSizeLimit(26214400)] //25M
         public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
-            string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
-            //validate keyCode
-            LicenceAppDocumentsCache? existingFileInfo = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
-            if (existingFileInfo == null)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-            }
-
-            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
-            if (fileUploadConfig == null)
-                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
-
-            //validation files
-            foreach (IFormFile file in fileUploadRequest.Documents)
-            {
-                string? fileexe = FileHelper.GetFileExtension(file.FileName);
-                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
-                }
-                long fileSize = file.Length;
-                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
-                }
-            }
+            await VerifyKeyCode();
+            VerifyFiles(fileUploadRequest.Documents);
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
