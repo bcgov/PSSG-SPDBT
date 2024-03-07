@@ -48,6 +48,18 @@ public record WorkerLicenceResponse : PersonalLicenceAppAnonymousBase
     public string? CaseNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
+    public bool? CarryAndUseRestraints { get; set; }
+    public bool? UseDogs { get; set; }
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
+    public bool? IsPoliceOrPeaceOfficer { get; set; }
+    public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+    public string? OtherOfficerRole { get; set; }
+    public bool? IsTreatedForMHC { get; set; }
+    public bool? HasNewMentalHealthCondition { get; set; }
+    public string? CriminalChargeDescription { get; set; }
 }
 
 public record WorkerLicenceAppListResponse
