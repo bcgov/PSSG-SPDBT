@@ -707,7 +707,9 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LOGIN_USER_PROFILE)
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE
+						)
 					);
 				}),
 				take(1)
