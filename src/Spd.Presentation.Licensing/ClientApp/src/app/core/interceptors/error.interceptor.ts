@@ -2,9 +2,10 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AppRoutes } from '@app/app-routing.module';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { SecurityWorkerLicensingService } from 'src/app/api/services';
+import { LoginService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 
 @Injectable()
@@ -17,15 +18,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
 				// Handling 401 that can occur when you are logged into the wrong identity authority
-				// if (
-				// 	errorResponse.status == 401 &&
-				// 	(errorResponse.url?.includes(UserProfileService.ApiSecurityWorkerWhoamiGetPath) || // TODO fix for authorized
-				// 		errorResponse.url?.includes(UserProfileService.ApiBizLicenceWhoamiGetPath))
-				// ) {
-				// 	console.debug(`ErrorInterceptor Access Denied- ${errorResponse.status} and ${errorResponse.url}`);
-				// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
-				// 	return throwError(() => new Error('Access denied'));
-				// }
+				if (errorResponse.status == 401 && errorResponse.url?.includes(LoginService.ApiApplicantLoginGetPath)) {
+					console.debug(`ErrorInterceptor Access Denied- ${errorResponse.status} and ${errorResponse.url}`);
+					this.router.navigate([AppRoutes.ACCESS_DENIED]);
+					return throwError(() => new Error('Access denied'));
+				}
 
 				// Certain 404s will be handled in the component
 				if (

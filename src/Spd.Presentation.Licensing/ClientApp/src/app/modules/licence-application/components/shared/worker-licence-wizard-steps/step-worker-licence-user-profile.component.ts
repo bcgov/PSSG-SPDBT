@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/shared/step-components/common-user-profile.component';
@@ -15,12 +15,21 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-alert type="warning" icon="warning"
-							>Make sure your profile information is up-to-date before renewing or updating your licence or permit, or
+						<app-alert type="warning" icon="warning">
+							Make sure your profile information is up-to-date before renewing or updating your licence or permit, or
 							starting a new application
 						</app-alert>
 
 						<app-common-user-profile></app-common-user-profile>
+						<mat-divider class="mat-divider-main mt-3"></mat-divider>
+
+						<app-step-worker-licence-police-background></app-step-worker-licence-police-background>
+						<mat-divider class="mat-divider-main mt-3"></mat-divider>
+
+						<app-step-worker-licence-mental-health-conditions></app-step-worker-licence-mental-health-conditions>
+						<mat-divider class="mat-divider-main mt-3"></mat-divider>
+
+						<app-step-worker-licence-criminal-history></app-step-worker-licence-criminal-history>
 
 						<form [formGroup]="form" novalidate>
 							<div>
@@ -57,12 +66,18 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		}
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());

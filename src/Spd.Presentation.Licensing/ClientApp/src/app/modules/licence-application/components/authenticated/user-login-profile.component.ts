@@ -1,8 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonUserProfileComponent } from '@app/modules/licence-application/components/shared/step-components/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { CommonUserProfileComponent } from '@app/modules/licence-application/components/shared/step-components/common-user-profile.component';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
 	selector: 'app-user-login-profile',
@@ -33,10 +34,16 @@ import { CommonUserProfileComponent } from '@app/modules/licence-application/com
 	`,
 	styles: [],
 })
-export class UserLoginProfileComponent implements LicenceChildStepperStepComponent {
+export class UserLoginProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		}
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());

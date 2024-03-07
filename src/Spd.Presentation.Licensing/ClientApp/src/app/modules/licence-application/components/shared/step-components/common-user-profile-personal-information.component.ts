@@ -1,13 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { Subscription } from 'rxjs';
-import { GenderTypes } from '@app/core/code-types/model-desc.models';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-common-user-profile-personal-information',
@@ -55,65 +53,54 @@ import { UtilService } from '@app/core/services/util.service';
 				</div>
 			</div>
 		</form>
+
+		<form [formGroup]="formContact" novalidate>
+			<div class="row">
+				<div class="col-lg-4 col-md-6 col-sm-12">
+					<mat-form-field>
+						<mat-label>Email Address</mat-label>
+						<input
+							matInput
+							formControlName="contactEmailAddress"
+							[errorStateMatcher]="matcher"
+							placeholder="name@domain.com"
+							maxlength="75"
+						/>
+						<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('required')"> This is required </mat-error>
+						<mat-error *ngIf="form.get('contactEmailAddress')?.hasError('email')">
+							Must be a valid email address
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-12">
+					<mat-form-field>
+						<mat-label>Phone Number</mat-label>
+						<input matInput formControlName="contactPhoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+						<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
+						<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
 	`,
 	styles: [],
 })
-export class CommonUserProfilePersonalInformationComponent implements OnInit, OnDestroy, LicenceChildStepperStepComponent {
+export class CommonUserProfilePersonalInformationComponent implements LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	readonly title_confirm = 'Confirm your personal information';
-	readonly subtitle_auth_new =
+	title = 'Confirm your personal information';
+	subtitle =
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 
-	maxBirthDate = this.utilService.getBirthDateMax();
-	isLoggedIn = false;
-
-	title = '';
-	subtitle = '';
-
-	authenticationSubscription!: Subscription;
 	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	formContact: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
 
 	@Input() isReadOnly = false;
 
-	constructor(
-		private utilService: UtilService,
-		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
-
-	ngOnInit(): void {
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-				if (isLoggedIn) {
-					this.title = this.title_confirm;
-					this.subtitle = this.subtitle_auth_new;
-
-					this.surname.disable({ emitEvent: false });
-					this.givenName.disable({ emitEvent: false });
-					this.middleName1.disable({ emitEvent: false });
-					this.middleName2.disable({ emitEvent: false });
-					this.dateOfBirth.disable({ emitEvent: false });
-				} else {
-					this.title = this.title_confirm;
-					this.subtitle = '';
-
-					this.surname.enable();
-					this.givenName.enable();
-					this.middleName1.enable();
-					this.middleName2.enable();
-					this.dateOfBirth.enable();
-				}
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	}
+	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -122,29 +109,25 @@ export class CommonUserProfilePersonalInformationComponent implements OnInit, On
 
 	get fullname(): string {
 		return this.utilService.getFullNameWithMiddle(
-			this.givenName?.value,
+			this.firstName?.value,
 			this.middleName1?.value,
 			this.middleName2?.value,
-			this.surname?.value
+			this.lastName?.value
 		);
 	}
 
-	get surname(): FormControl {
-		return this.form.get('surname') as FormControl;
+	get lastName(): FormControl {
+		return this.form.get('lastName') as FormControl;
 	}
-
-	get givenName(): FormControl {
-		return this.form.get('givenName') as FormControl;
+	get firstName(): FormControl {
+		return this.form.get('firstName') as FormControl;
 	}
-
 	get middleName1(): FormControl {
 		return this.form.get('middleName1') as FormControl;
 	}
-
 	get middleName2(): FormControl {
 		return this.form.get('middleName2') as FormControl;
 	}
-
 	get dateOfBirth(): FormControl {
 		return this.form.get('dateOfBirth') as FormControl;
 	}
