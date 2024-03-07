@@ -64,7 +64,6 @@ export interface WorkerLicenceAppAnonymousSubmitRequest {
   reprint?: null | boolean;
   residentialAddressData?: ResidentialAddress;
   surname?: null | string;
-  useBcServicesCardPhoto?: null | boolean;
   useDogs?: null | boolean;
   weight?: null | number;
   weightUnitCode?: WeightUnitCode;

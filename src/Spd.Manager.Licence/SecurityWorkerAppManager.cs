@@ -507,11 +507,6 @@ internal partial class SecurityWorkerAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
 
-        if (request.UseBcServicesCardPhoto == false && !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
-        }
-
         foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
         {
             if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
@@ -583,13 +578,6 @@ internal partial class SecurityWorkerAppManager :
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
-        }
-
-        if ((request.UseBcServicesCardPhoto == false || request.UseBcServicesCardPhoto == null)
-            && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself)
-            && !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
         }
 
         foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
