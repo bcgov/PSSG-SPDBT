@@ -1,9 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicantListResponse, ApplicationTypeCode } from '@app/api/models';
-import { ApplicantProfileService, LoginService } from '@app/api/services';
+import { ApplicantProfileService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -26,9 +25,9 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 									<div
 										tabindex="0"
 										class="user-option px-3 pb-3"
-										(click)="onDataChange(option.applicantId!)"
-										(keydown)="onKeyDown($event, option.applicantId!)"
-										[ngClass]="{ 'active-selection-border': selectedApplicantId === option.applicantId }"
+										(click)="onDataChange(option.licenceNumber!)"
+										(keydown)="onKeyDown($event, option.licenceNumber!)"
+										[ngClass]="{ 'active-selection-border': selectedLicenceNumber === option.licenceNumber }"
 									>
 										<div class="text-label d-block text-muted mt-0">Name</div>
 										<div class="summary-text-data">{{ getFullName(option) }}</div>
@@ -76,7 +75,7 @@ import { CommonTermsComponent } from '../shared/step-components/common-terms.com
 })
 export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
-	selectedApplicantId: string | null = null;
+	selectedLicenceNumber: string | null = null;
 	showValidationError = false;
 
 	infoLine1 = '';
@@ -94,62 +93,54 @@ export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, Lic
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private loginService: LoginService,
-		private authUserBcscService: AuthUserBcscService,
 		private applicantProfileService: ApplicantProfileService
 	) {}
 
 	ngOnInit(): void {
-		// do not allow the user to navigate here (eg. back button)
-		// if they have already finished with the user selection
-		if (!this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-			return;
-		}
+		this.applicantProfileService
+			.apiApplicantSearchGet()
+			.pipe()
+			.subscribe((resp: Array<ApplicantListResponse>) => {
+				if (!resp || resp.length === 0) {
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+					return;
+				} else if (resp.length === 1) {
+					this.infoLine1 = 'an existing record';
+					this.infoLine2 = 'this is you';
+					this.noneButtonLabel = 'This is not me';
+				} else {
+					this.infoLine1 = 'existing records';
+					this.infoLine2 = 'any one of these are you';
+					this.noneButtonLabel = 'None of these are me';
+				}
 
-		if (this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin)
-			this.applicantProfileService
-				.apiApplicantSearchGet()
-				.pipe()
-				.subscribe((resp: Array<ApplicantListResponse>) => {
-					if (!resp || resp.length === 0) {
-						this.markAsTermAgreement(this.authUserBcscService.applicantLoginProfile?.applicantId!);
-						return;
-					} else if (resp.length === 1) {
-						this.infoLine1 = 'an existing record';
-						this.infoLine2 = 'this is you';
-						this.noneButtonLabel = 'This is not me';
-					} else {
-						this.infoLine1 = 'existing records';
-						this.infoLine2 = 'any one of these are you';
-						this.noneButtonLabel = 'None of these are me';
-					}
-
-					this.options = resp;
-				});
+				this.options = resp;
+			});
 	}
+
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();
 	}
 
 	onContinue(): void {
 		this.showValidationError = false;
-		this.markAsTermAgreement(this.authUserBcscService.applicantLoginProfile?.applicantId!);
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 	}
 
 	onLinkAndContinue(): void {
-		if (!this.selectedApplicantId) {
-			this.showValidationError = true;
+		this.showValidationError = !this.selectedLicenceNumber;
+		if (this.showValidationError) {
 			return;
 		}
 
-		this.showValidationError = false;
-
-		this.markAsTermAgreement(this.selectedApplicantId);
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LICENCE_LINK),
+			{ state: { licenceNumber: this.selectedLicenceNumber } }
+		);
 	}
 
 	onDataChange(_val: string) {
-		this.selectedApplicantId = _val;
+		this.selectedLicenceNumber = _val;
 	}
 
 	onKeyDown(event: KeyboardEvent, _val: string) {
@@ -160,19 +151,5 @@ export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, Lic
 
 	getFullName(_val: ApplicantListResponse): string {
 		return this.utilService.getFullNameWithMiddle(_val.firstName, _val.middleName1, _val.middleName2, _val.lastName);
-	}
-
-	private markAsTermAgreement(applicantId: string): void {
-		this.loginService
-			.apiApplicantApplicantIdTermAgreeGet({
-				applicantId: applicantId,
-			})
-			.pipe()
-			.subscribe((_resp: any) => {
-				if (this.authUserBcscService.applicantLoginProfile) {
-					this.authUserBcscService.applicantLoginProfile.isFirstTimeLogin = false;
-				}
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-			});
 	}
 }

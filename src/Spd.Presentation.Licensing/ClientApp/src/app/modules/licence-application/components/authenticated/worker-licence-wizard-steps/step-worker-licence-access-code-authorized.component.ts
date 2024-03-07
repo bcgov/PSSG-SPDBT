@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -83,12 +83,20 @@ export class StepWorkerLicenceAccessCodeAuthorizedComponent implements LicenceCh
 
 	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
 
+	licenceNumber: string | null = null;
+
 	constructor(
-		private formBuilder: FormBuilder,
 		private router: Router,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
-	) {}
+	) {
+		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.licenceNumber = state && state['licenceNumber'] ? state['licenceNumber'] : null;
+		if (this.licenceNumber) {
+			this.form.patchValue({ licenceNumber: this.licenceNumber });
+		}
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

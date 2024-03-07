@@ -72,6 +72,10 @@ export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements OnInit, Li
 			})
 			.pipe()
 			.subscribe((_resp: any) => {
+				if (this.authUserBcscService.applicantLoginProfile) {
+					this.authUserBcscService.applicantLoginProfile.isFirstTimeLogin = false;
+				}
+
 				this.router.navigateByUrl(
 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 						LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_SELECTION
