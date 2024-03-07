@@ -77,15 +77,4 @@ namespace Spd.Manager.Licence
         public string? MiddleName2 { get; set; }
         public bool? IsFirstTimeLogin { get; set; } = false;
     }
-    public record ApplicantResponse
-    {
-        public Guid ApplicantId { get; set; } //which is contact id in db
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? MiddleName1 { get; set; }
-        public string? MiddleName2 { get; set; }
-        public DateOnly BirthDate { get; set; }
-        public string? LicenceNumber { get; set; }
-        public DateOnly? LicenceExpiryDate { get; set; }
-    }
 }
