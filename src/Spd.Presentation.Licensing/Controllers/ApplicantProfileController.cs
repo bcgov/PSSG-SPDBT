@@ -61,7 +61,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/applicant/files")]
         [HttpPost]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [RequestSizeLimit(26214400)] //25M
         public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
