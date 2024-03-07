@@ -16,7 +16,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 			<div class="step">
 				<app-step-title
 					title="Provide your access code"
-					info="	<p>
+					info="<p>
 						You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
 						provided following your initial security worker application or in your renewal letter from the Registrar,
 						Security Services. Enter the two numbers below then click 'Next' to continue.

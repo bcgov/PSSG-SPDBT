@@ -340,7 +340,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 						</div>
 					</div>
 
-					<div class="my-4">
+					<!-- <div class="my-4">
 						<app-alert type="info" [showBorder]="false" icon="">
 							Do you have a security licence but it's not showing here?
 
@@ -353,7 +353,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 							>
 							account
 						</app-alert>
-					</div>
+					</div> -->
 
 					<!-- <div class="summary-card-section my-4 px-4 py-3" *ngIf="isNoActiveOrExpiredLicences">
 						<div class="row">
@@ -702,7 +702,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// 	.pipe(
 		// 		tap((_resp: any) => {
 		// 			this.router.navigateByUrl(
-		// 				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LOGIN_USER_PROFILE)
+		// 				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE)
 		// 			);
 		// 		}),
 		// 		take(1)

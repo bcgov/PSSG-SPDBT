@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 
 @Component({
@@ -56,7 +55,6 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	@Input() form!: FormGroup;

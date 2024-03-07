@@ -1,6 +1,6 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BusinessTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
@@ -174,6 +174,8 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
+
+	@Input() businessTypeCode: BusinessTypeCode | null = null;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
 	@ViewChild(StepBusinessLicenceTypeComponent) stepTypeComponent!: StepBusinessLicenceTypeComponent;
