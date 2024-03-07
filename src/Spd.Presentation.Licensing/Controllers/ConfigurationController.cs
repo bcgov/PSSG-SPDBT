@@ -41,16 +41,20 @@ namespace Spd.Presentation.Licensing.Controllers
                 ClientId = _bceidOption.Value.ClientId,
                 ResponseType = _bceidOption.Value.ResponseType,
                 Scope = _bceidOption.Value.Scope,
-                PostLogoutRedirectUri = _bceidOption.Value.PostLogoutRedirectUri
+                PostLogoutRedirectUri = _bceidOption.Value.PostLogoutRedirectUri,
+                IdentityProvider = _bceidOption.Value.IdentityProvider
             };
 
-            BcscConfiguration bcscConfig = new BcscConfiguration
+            OidcConfiguration bcscConfig = new OidcConfiguration
             {
                 Issuer = _bcscOption.Value.Issuer,
                 ClientId = _bcscOption.Value.ClientId,
                 ResponseType = _bcscOption.Value.ResponseType,
                 Scope = _bcscOption.Value.Scope,
+                PostLogoutRedirectUri = _bcscOption.Value.PostLogoutRedirectUri,
+                IdentityProvider = _bcscOption.Value.IdentityProvider
             };
+
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
 
             var invalidCategoryMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
@@ -70,7 +74,7 @@ namespace Spd.Presentation.Licensing.Controllers
     public record ConfigurationResponse(
         OidcConfiguration OidcConfiguration,
         RecaptchaConfiguration RecaptchaConfiguration,
-        BcscConfiguration BcscConfiguration,
+        OidcConfiguration BcscConfiguration,
         Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration,
         List<LicenceFeeResponse> LicenceFees
     );
@@ -82,7 +86,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public string? ResponseType { get; set; }
         public string? Scope { get; set; }
         public Uri? PostLogoutRedirectUri { get; set; }
+        public string? IdentityProvider { get; set; }
     }
-    public record BcscConfiguration : OidcConfiguration;
     public record RecaptchaConfiguration(string Key);
 }
