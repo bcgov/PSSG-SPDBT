@@ -7,7 +7,6 @@ using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Registration;
-using System.Threading;
 
 namespace Spd.Manager.Licence
 {
@@ -48,7 +47,18 @@ namespace Spd.Manager.Licence
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
 
             var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
-            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items.Where(d => d.DocumentType == DocumentTypeEnum.PoliceOfficerDocument || d.DocumentType == DocumentTypeEnum.MentalHealthDocument));
+            var mentalHealthDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).ToList();
+            var policeBackgroundDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
+            List<Document> documents = new();
+
+            if (mentalHealthDocuments.Count > 0)
+                documents.Add(mentalHealthDocuments[0]);
+
+            if (policeBackgroundDocuments.Count > 0)
+                documents.Add(policeBackgroundDocuments[0]);
+
+            result.DocumentInfos = documents;
+
             return result;
         }
 
