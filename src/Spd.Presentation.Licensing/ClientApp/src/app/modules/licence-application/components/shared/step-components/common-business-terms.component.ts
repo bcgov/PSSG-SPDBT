@@ -5,32 +5,75 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-terms',
+	selector: 'app-common-business-terms',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 					<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
-						<div class="fs-5 mt-2 mb-3">
-							<ng-container *ngIf="isNewOrRenewal; else isUpdate">
-								Terms of Use for Submitting a New or Renewal Security Worker Licence or Permit Application Online,
-								including Related Prescribed Checks
-							</ng-container>
-							<ng-template #isUpdate>
-								Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
-								Permit Application Online, including Related Prescribed Checks
-							</ng-template>
-						</div>
-						<p>
-							In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic Security
-							Services Portal (the "Site") on their own behalf to submit a new or renewal online application for a
-							security worker licence, armoured vehicle permit, or body armour permit. Your new or renewal licence or
-							permit application includes authorizations for the British Columbia Registrar of Security Services
-							(Registrar) to carry out a criminal record check, police information check and a correctional service
-							information check on you (Prescribed Checks). These Terms of Use apply to the online application process,
-							including your request to submit to Prescribed Checks administered by the Registrar. You will be directed
-							to a separate page for specific consent language as it relates to the conduct of Prescribed Checks.
-						</p>
+						<ng-container *ngIf="isNewOrRenewal; else isUpdate">
+							<div class="fs-5 mt-2 mb-3">
+								Terms of Use for Submitting a New or Renewal Security Business Licence Application, including Related
+								Prescribed Checks for Controlling Members
+							</div>
+							<p>
+								In these Terms of Use, "you" or "your" includes the person using or accessing the Electronic Security
+								Services Portal (the "Site") on behalf of a security business to submit a new or renewal online
+								application for a security business licence. As part of a new or renewal security business licence
+								application, each individual who controls or is able to control the security business (Controlling
+								Member) must authorize the British Columbia Registrar of Security Services (Registrar) to carry out a
+								criminal record check, police information check and a correctional information check (Prescribed
+								Checks). A Controlling Member who currently holds a security worker licence will have submitted to
+								Prescribed Checks as part of their individual security worker licence application. A Controlling Member
+								who currently does not hold a security worker licence will be directed to a separate page for specific
+								consent language as it relates to the conduct of Prescribed Checks, including authorizations to collect
+								and use personal information for those purposes. These Terms of Use apply to the online new or renewal
+								security business licence application process, including as applicable a Controlling Member’s request to
+								submit to Prescribed Checks administered by the Registrar.
+							</p>
+						</ng-container>
+						<ng-template #isUpdate>
+							<div class="fs-5 mt-2 mb-3">
+								Terms of Use for Submitting an update to, or requesting a Replacement of, a Security Business Licence,
+								including Related Prescribed Checks for the Licensee or Controlling Members
+							</div>
+							<p>
+								In these Terms of Use, "you" or "your" includes the person using or accessing the Electronic Security
+								Services Portal (the "Site") on behalf of a security business to submit an update to, or request a
+								replacement of, a security business licence online.
+							</p>
+							<p>
+								Depending on the nature of the submitted update to the security business licence, the British Columbia
+								Registrar of Security Services (Registrar) may decide to carry out a criminal record check, police
+								information check and a correctional information check (Prescribed Checks) on (i) the security business
+								licensee; (ii) any current or newly added individual who controls or is able to control the security
+								business (Controlling Member); or (iii) any individual engaged or employed by the security business
+								licensee for security work.
+							</p>
+							<p>
+								A security business licensee will have authorized the Registrar to carry out Prescribed Checks as part
+								of their new or renewal security business licence application, with their authorization to remain in
+								place for the duration of the security business licence term. Similarly, a Controlling Member who
+								currently holds a security worker licence, or any other individual engaged or employed by the security
+								business for security work, will have authorized the Registrar to carry out Prescribed Checks as part of
+								their new or renewal individual security worker licence application, with their authorization to remain
+								in place for the duration of their licence term. Accordingly, and as applicable, the Registrar will not,
+								in those instances, seek a new authorization to carry out Prescribed Checks in conjunction with the
+								submission of updates to the security business licence.
+							</p>
+							<p>
+								As part of an update to the security business licence, a newly added Controlling Member who currently
+								does not hold a security worker licence must authorize the Registrar to carry out Prescribed Checks, and
+								will be directed to a separate page for specific consent language as it relates to the conduct of
+								Prescribed Checks, including authorizations to collect and use personal information for those purposes.
+							</p>
+							<p>
+								These Terms of Use apply to the online security business licence update or replacement processes,
+								including as applicable a security business licensee or Controlling Member’s submission, or request to
+								submit, to Prescribed Checks administered by the Registrar.
+							</p>
+						</ng-template>
+
 						<p>
 							These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of
 							British Columbia, represented by the Minister of Public Safety and Solicitor General (the "Province") and
@@ -112,14 +155,15 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
 								used, you may be required to follow a link to an external site, including the
+								<a href="https://www.bceid.ca/directories/bluepages/" target="_blank">BCeID Site</a> or
 								<a href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card" target="_blank"
 									>BC Services Card Site</a
 								>, following which you will be returned to, and allowed to access the application portions of, the Site.
 							</li>
 							<div class="fs-5 terms-subtitle">Payment:</div>
 							<li>
-								You may be required to access an external payment processing site (“Payment Site” or, as the context
-								requires, “Associated Service” ) in order to pay the required licence or permit fee.
+								You will be required to access an external payment processing site (“Payment Site” or, as the context
+								requires, “Associated Service”) in order to pay the required business licence fee.
 							</li>
 							<div class="fs-5 terms-subtitle">Additional Terms and Personal Information Collection:</div>
 							<li>
@@ -295,7 +339,7 @@ import { UtilService } from '@app/core/services/util.service';
 		`,
 	],
 })
-export class CommonTermsComponent implements OnInit {
+export class CommonBusinessTermsComponent implements OnInit {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 

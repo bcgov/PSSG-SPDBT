@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { LicenceFeeResponse } from '@app/api/models';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -13,6 +13,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 				<app-step-title
 					title="Select your licence term"
 					subtitle="The licence term will apply to all licence categories"
+					[info]="infoText"
 				></app-step-title>
 			</div>
 
@@ -48,6 +49,8 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;
 
+	@Input() isSoleProprietorRelated!: boolean;
+
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -82,5 +85,11 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 			applicationTypeCode,
 			businessTypeCode
 		);
+	}
+
+	get infoText(): string {
+		return this.isSoleProprietorRelated
+			? 'If you select a term that is longer than your security worker licence, we will automatically extend your worker licence to match the expiry date of this business licence. You will then be able to renew them together in the future.'
+			: '';
 	}
 }
