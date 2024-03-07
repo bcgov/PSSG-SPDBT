@@ -1,26 +1,44 @@
-
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
-using Spd.Utilities.Shared;
+using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class ApplicantProfileController : SpdControllerBase
+    public class ApplicantProfileController : SpdLicenceAnonymousControllerBase
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<ApplicantProfileController> _logger;
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
+        private readonly IValidator<ApplicantUpdateRequest> _applicationUpdateRequestValidator;
 
-        public ApplicantProfileController(ILogger<LoginController> logger, IPrincipal currentUser, IMediator mediator)
+        public ApplicantProfileController(ILogger<ApplicantProfileController> logger,
+        IPrincipal currentUser,
+        IMediator mediator,
+        IConfiguration configuration,
+        IValidator<ApplicantUpdateRequest> applicationUpdateRequestValidator,
+        IDistributedCache cache,
+        IDataProtectionProvider dpProvider,
+        IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _logger = logger;
             _currentUser = currentUser;
             _mediator = mediator;
+            _configuration = configuration;
+            _applicationUpdateRequestValidator = applicationUpdateRequestValidator;
         }
 
         /// <summary>
@@ -35,7 +53,52 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetApplicantProfileQuery(id));
         }
 
-        //todo: add update endpoint here.
+        /// <summary>
+        /// Uploading file only save files in cache, the files are not connected to the application yet.
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/applicant/files")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+
+            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command, ct);
+            Guid fileKeyCode = Guid.NewGuid();
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            return fileKeyCode;
+        }
+
+        /// <summary>
+        /// Submit applicant update
+        /// </summary>
+        /// <param name="request">ApplicantUpdateRequest request</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/applicant/{applicantId}")]
+        [HttpPut]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<Guid> UpdateApplicant(string applicantId, ApplicantUpdateRequest request, CancellationToken ct)
+        {
+            if (!Guid.TryParse(applicantId, out Guid applicantGuidId))
+                throw new ApiException(HttpStatusCode.BadRequest, $"{nameof(applicantId)} is not a valid guid.");
+
+            var validateResult = await _applicationUpdateRequestValidator.ValidateAsync(request, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
+
+            ApplicantUpdateCommand command = new(applicantGuidId, request, newDocInfos);
+            await _mediator.Send(command, ct);
+
+            return applicantGuidId;
+        }
 
         /// <summary>
         /// Get applicants who has the same name and birthday as login person

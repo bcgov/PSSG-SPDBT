@@ -11,12 +11,24 @@ namespace Spd.Manager.Licence
         public Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct); //used for applicant portal
         public Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct);
         public Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct);
+        public Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct);
     }
 
     public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
     public record ApplicantLoginCommand(BcscIdentityInfo BcscIdentityInfo) : IRequest<ApplicantLoginResponse>;
     public record ApplicantTermAgreeCommand(Guid ApplicantId) : IRequest<Unit>;
     public record ApplicantSearchCommand(BcscIdentityInfo BcscIdentityInfo, bool hasIdentity = false) : IRequest<IEnumerable<ApplicantListResponse>>;
+    public record ApplicantUpdateCommand(
+        Guid ApplicantId,
+        ApplicantUpdateRequest applicantUpdateRequest,
+        IEnumerable<LicAppFileInfo> LicAppFileInfos) 
+        : IRequest<Unit>;
+
+    public record ApplicantUpdateRequest : Applicant
+    {
+        public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    }
+
     public record Applicant
     {
         public string? FirstName { get; set; }
@@ -26,6 +38,7 @@ namespace Spd.Manager.Licence
         public string? MiddleName2 { get; set; }
         public DateOnly BirthDate { get; set; }
         public GenderEnum? Gender { get; set; }
+        public string? PhoneNumber { get; set; }
         public Address? ResidentialAddress { get; set; }
         public Address? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
