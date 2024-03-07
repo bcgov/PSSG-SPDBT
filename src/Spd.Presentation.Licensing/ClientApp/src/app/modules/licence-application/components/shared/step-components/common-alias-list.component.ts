@@ -110,8 +110,9 @@ export class CommonAliasListComponent {
 	}
 
 	onAddRow() {
-		const control = this.form.get('aliases') as FormArray;
-		control.push(this.newAliasRow());
+		const aliasesArray = this.form.get('aliases') as FormArray;
+		aliasesArray.push(this.newAliasRow());
+		this.form.setControl('aliases', aliasesArray);
 	}
 
 	onDeleteRow(index: number) {

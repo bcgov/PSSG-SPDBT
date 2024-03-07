@@ -863,8 +863,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			captchaFormGroup.reset();
 		}
 
-		console.debug('isStepPermitDetailsComplete', this.expiredLicenceFormGroup.valid, this.expiredLicenceFormGroup);
-
 		return this.expiredLicenceFormGroup.valid;
 	}
 
@@ -909,6 +907,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
+		console.debug('isStepIdentificationComplete aliases', this.aliasesFormGroup.value, this.aliasesFormGroup.valid);
 		console.debug(
 			'isStepIdentificationComplete',
 			this.personalInformationFormGroup.valid,
