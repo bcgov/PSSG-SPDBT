@@ -521,12 +521,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const photographOfYourselfData = { useBcServicesCardPhoto: BooleanTypeCode.No };
 
 		this.licenceModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,
-				photographOfYourselfData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
@@ -1128,7 +1126,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const photographOfYourselfData = {
-			useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 			attachments: photographOfYourselfAttachments,
 		};
 
@@ -1280,7 +1277,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				if (originalPhotoOfYourselfExpired) {
 					// clear out data to force user to upload a new photo
 					photographOfYourselfData = {
-						useBcServicesCardPhoto: BooleanTypeCode.No,
 						attachments: [],
 					};
 				}
@@ -1415,7 +1411,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Submit the licence data for renewal anonymous
+	 * Submit the licence data anonymous
 	 * @returns
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
@@ -1451,6 +1447,32 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		} else {
 			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 		}
+	}
+
+	/**
+	 * Submit the licence data for replacement anonymous
+	 * @returns
+	 */
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			}
+		});
+
+		delete body.documentInfos;
+
+		console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
+
+		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 	}
 
 	/**

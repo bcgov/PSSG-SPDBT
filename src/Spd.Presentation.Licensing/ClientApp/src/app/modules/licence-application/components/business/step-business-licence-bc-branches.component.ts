@@ -307,7 +307,6 @@ export class StepBusinessLicenceBcBranchesComponent implements OnInit, AfterView
 			})
 			.afterClosed()
 			.subscribe((resp) => {
-				console.log('resp', resp);
 				if (resp) {
 					if (isCreate) {
 						this.branchList.push(resp.data);

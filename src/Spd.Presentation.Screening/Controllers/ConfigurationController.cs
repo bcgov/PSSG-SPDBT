@@ -53,6 +53,7 @@ namespace Spd.Presentation.Screening.Controllers
                 ClientId = _bcscOption.Value.ClientId,
                 ResponseType = _bcscOption.Value.ResponseType,
                 Scope = _bcscOption.Value.Scope,
+                PostLogoutRedirectUri = _bcscOption.Value.PostLogoutRedirectUri,
                 IdentityProvider = _bcscOption.Value.IdentityProvider
             };
 

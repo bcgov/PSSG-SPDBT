@@ -740,9 +740,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.characteristicsData.weightUnitCode ?? '';
 	}
 
-	get useBcServicesCardPhoto(): string {
-		return this.permitModelData.photographOfYourselfData.useBcServicesCardPhoto ?? '';
-	}
 	get photoOfYourselfAttachments(): File[] {
 		return this.permitModelData.photographOfYourselfData.attachments ?? [];
 	}

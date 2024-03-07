@@ -474,20 +474,9 @@ export abstract class LicenceApplicationHelper {
 		weightUnitCode: new FormControl('', [FormControlValidators.required]),
 	});
 
-	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
-		{
-			useBcServicesCardPhoto: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
-				),
-			],
-		}
-	);
+	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl('', [FormControlValidators.required]),
+	});
 
 	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -532,6 +521,20 @@ export abstract class LicenceApplicationHelper {
 			postalCode: new FormControl(''),
 			province: new FormControl(''),
 			country: new FormControl(''),
+			captchaFormGroup: new FormGroup(
+				{
+					displayCaptcha: new FormControl(false),
+					token: new FormControl(''),
+				},
+				{
+					validators: [
+						FormGroupValidators.conditionalRequiredValidator(
+							'token',
+							(form) => form.get('displayCaptcha')?.value == true
+						),
+					],
+				}
+			),
 		},
 		{
 			validators: [
@@ -574,7 +577,7 @@ export abstract class LicenceApplicationHelper {
 		captchaFormGroup: new FormGroup(
 			{
 				displayCaptcha: new FormControl(false),
-				token: new FormControl('', FormControlValidators.required),
+				token: new FormControl(''),
 			},
 			{
 				validators: [
@@ -1183,7 +1186,7 @@ export abstract class LicenceApplicationHelper {
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
-			useBcServicesCardPhoto: this.utilService.booleanTypeToBoolean(photographOfYourselfData.useBcServicesCardPhoto),
+			useBcServicesCardPhoto: false, // TODO remove later
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
 			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal

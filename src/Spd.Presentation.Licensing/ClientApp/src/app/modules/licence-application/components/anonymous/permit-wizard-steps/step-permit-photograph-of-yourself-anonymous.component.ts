@@ -24,7 +24,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 
 				<div class="row mb-3" *ngIf="isRenewalOrUpdate && photographOfYourself">
 					<div class="col-12 text-center">
-						<div class="fs-5 mb-2">Current licence photo:</div>
+						<div class="fs-5 mb-2">Current permit photo:</div>
 						<img
 							[src]="photographOfYourself"
 							alt="Photograph of yourself"

@@ -57,7 +57,8 @@ export class ConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			customQueryParams: { kc_idp_hint: 'bceidbusiness' },
+			customQueryParams: { kc_idp_hint: resp.identityProvider },
+			useSilentRefresh: true,
 		};
 		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
 		return bceIdConfig;
@@ -66,7 +67,6 @@ export class ConfigService {
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.bcscConfiguration!;
 		const bcscConfig = {
-			requestAccessToken: true,
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
 			redirectUri,
@@ -74,6 +74,8 @@ export class ConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			strictDiscoveryDocumentValidation: false,
+			customQueryParams: { kc_idp_hint: resp.identityProvider },
+			useSilentRefresh: true,
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;

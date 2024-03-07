@@ -167,37 +167,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 						</div>
 					</div>
 				</mat-step>
-			</ng-container>
 
-			<mat-step *ngIf="showPhotographOfYourself">
-				<app-step-permit-photograph-of-yourself-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-photograph-of-yourself-anonymous>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPhotographOfYourselfNextStep()">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<mat-step>
 					<app-step-permit-physical-characteristics
 						[applicationTypeCode]="applicationTypeCode"
@@ -209,12 +179,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 						</div>
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button
-								mat-flat-button
-								color="primary"
-								class="large mb-2"
-								(click)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
-							>
+							<button mat-flat-button color="primary" class="large mb-2" (click)="onPhysicalCharacteristicsNextStep()">
 								Next
 							</button>
 						</div>
@@ -231,6 +196,39 @@ import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physic
 					</div>
 				</mat-step>
 			</ng-container>
+
+			<mat-step *ngIf="showPhotographOfYourself">
+				<app-step-permit-photograph-of-yourself-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-photograph-of-yourself-anonymous>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
+						>
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -302,6 +300,14 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 			this.onStepNext(this.STEP_CRIMINAL_HISTORY);
 		} else {
 			this.onFormValidNextStep(this.STEP_CRIMINAL_HISTORY);
+		}
+	}
+
+	onPhysicalCharacteristicsNextStep(): void {
+		if (!this.showPhotographOfYourself) {
+			this.onStepNext(this.STEP_PHYSICAL_CHARACTERISTICS);
+		} else {
+			this.onFormValidNextStep(this.STEP_PHYSICAL_CHARACTERISTICS);
 		}
 	}
 

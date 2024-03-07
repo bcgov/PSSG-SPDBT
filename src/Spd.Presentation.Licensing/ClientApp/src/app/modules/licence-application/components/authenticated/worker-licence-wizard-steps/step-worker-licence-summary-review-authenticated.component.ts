@@ -206,22 +206,22 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 												</div>
 											</ng-container>
 
-											<!-- <ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-													<mat-divider class="mt-3 mb-2"></mat-divider>
-													<div class="text-minor-heading">Expired Licence</div>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12">
-															<div class="text-label d-block text-muted">Expired Licence Number</div>
-															<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12">
-															<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
-															<div class="summary-text-data">
-																{{ expiredLicenceExpiryDate | formatDate | default }}
-															</div>
+											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+												<mat-divider class="mt-3 mb-2"></mat-divider>
+												<div class="text-minor-heading">Expired Licence</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Expired Licence Number</div>
+														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
+														<div class="summary-text-data">
+															{{ expiredLicenceExpiryDate | formatDate | default }}
 														</div>
 													</div>
-												</ng-container> -->
+												</div>
+											</ng-container>
 
 											<ng-container *ngIf="showDogsAndRestraints">
 												<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -652,15 +652,15 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return fee ? fee.amount ?? null : null;
 	}
 
-	// get hasExpiredLicence(): string {
-	// 	return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
-	// }
-	// get expiredLicenceNumber(): string {
-	// 	return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
-	// }
-	// get expiredLicenceExpiryDate(): string {
-	// 	return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
-	// }
+	get hasExpiredLicence(): string {
+		return this.licenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	get expiredLicenceNumber(): string {
+		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	get expiredLicenceExpiryDate(): string {
+		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+	}
 
 	get carryAndUseRestraints(): string {
 		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
@@ -802,9 +802,6 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.licenceModelData.characteristicsData.weightUnitCode ?? '';
 	}
 
-	get useBcServicesCardPhoto(): string {
-		return this.licenceModelData.photographOfYourselfData.useBcServicesCardPhoto ?? '';
-	}
 	get photoOfYourselfAttachments(): File[] {
 		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
 	}
