@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
+using System.Configuration;
 using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
@@ -13,11 +16,17 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
     private readonly ITimeLimitedDataProtector _dataProtector;
     private readonly IDistributedCache _cache;
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
-    protected SpdLicenceAnonymousControllerBase(IDistributedCache cache, IDataProtectionProvider dpProvider, IRecaptchaVerificationService recaptchaVerificationService)
+    private readonly IConfiguration _configuration;
+
+    protected SpdLicenceAnonymousControllerBase(IDistributedCache cache, 
+        IDataProtectionProvider dpProvider, 
+        IRecaptchaVerificationService recaptchaVerificationService,
+        IConfiguration configuration)
     {
         _cache = cache;
         _dataProtector = dpProvider.CreateProtector(SessionConstants.AnonymousRequestDataProtectorName).ToTimeLimitedDataProtector();
         _recaptchaVerificationService = recaptchaVerificationService;
+        _configuration = configuration;
     }
 
     protected IDistributedCache Cache { get { return _cache; } }
@@ -77,5 +86,38 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
             }
         }
         return results;
+    }
+
+    protected async Task VerifyKeyCode()
+    {
+        string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
+        //validate keyCode
+        LicenceAppDocumentsCache? keyCodeValue = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+        if (keyCodeValue == null)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+        }
+    }
+
+    protected void VerifyFiles(IList<IFormFile> documents)
+    {
+        UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+        if (fileUploadConfig == null)
+            throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
+
+        //validation files
+        foreach (IFormFile file in documents)
+        {
+            string? fileexe = FileHelper.GetFileExtension(file.FileName);
+            if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
+            }
+            long fileSize = file.Length;
+            if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
+            }
+        }
     }
 }
