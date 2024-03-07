@@ -68,7 +68,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [RequestSizeLimit(26214400)] //25M
         public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
-            await VerifyFiles(fileUploadRequest.Documents);
+            VerifyFiles(fileUploadRequest.Documents);
 
             CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
