@@ -118,7 +118,6 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 	matcher = new FormErrorStateMatcher();
 
 	maxBirthDate = this.utilService.getBirthDateMax();
-	isLoggedIn = false;
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
