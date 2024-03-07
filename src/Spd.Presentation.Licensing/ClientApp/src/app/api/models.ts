@@ -9,7 +9,6 @@ export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationTypeCode } from './models/application-type-code';
 export { ArmouredVehiclePermitReasonCode } from './models/armoured-vehicle-permit-reason-code';
-export { BcscConfiguration } from './models/bcsc-configuration';
 export { BodyArmourPermitReasonCode } from './models/body-armour-permit-reason-code';
 export { BusinessTypeCode } from './models/business-type-code';
 export { ConfigurationResponse } from './models/configuration-response';

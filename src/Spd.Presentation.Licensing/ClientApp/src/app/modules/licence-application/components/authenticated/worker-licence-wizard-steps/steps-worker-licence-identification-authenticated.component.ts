@@ -172,7 +172,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				console.log('licenceModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 			}
 		);

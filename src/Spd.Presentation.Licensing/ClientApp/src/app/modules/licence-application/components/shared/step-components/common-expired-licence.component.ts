@@ -147,7 +147,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 				const isExpired = isFound ? !this.utilService.getIsTodayOrFutureDate(resp?.expiryDate) : false;
 				const isInRenewalPeriod = isExpired ? false : this.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
 
-				this.handleLookupResult(resp, isFound, isExpired, isInRenewalPeriod);
+				this.handleLookupResult(resp, isFound, isExpired, isInRenewalPeriod, recaptchaCode);
 			});
 	}
 
@@ -155,7 +155,8 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		resp: LicenceResponse,
 		isFound: boolean,
 		isExpired: boolean,
-		isInRenewalPeriod: boolean
+		isInRenewalPeriod: boolean,
+		recaptchaCode: string
 	): void {
 		this.messageInfo = '';
 		this.messageWarn = '';
@@ -168,7 +169,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 				this.messageError = `This ${this.label} is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
 				if (isExpired) {
-					this.handleValidExpiredLicence(resp);
+					this.handleValidExpiredLicence(resp, recaptchaCode);
 				} else {
 					if (isInRenewalPeriod) {
 						this.messageWarn = `Your ${this.label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${this.label}</a>.`;
@@ -184,7 +185,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		this.resetRecaptcha.next();
 	}
 
-	private handleValidExpiredLicence(resp: LicenceResponse): void {
+	private handleValidExpiredLicence(resp: LicenceResponse, recaptchaCode: string): void {
 		const name = this.utilService.getFullName(resp.licenceHolderFirstName, resp.licenceHolderLastName);
 
 		const formattedExpiryDate = this.formatDatePipe.transform(resp.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
@@ -205,6 +206,11 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.form.patchValue({
+						expiredLicenceId: resp.licenceId,
+						expiryDate: resp.expiryDate,
+						captchaFormGroup: { token: recaptchaCode },
+					});
 					this.validExpiredLicenceData.emit();
 				}
 			});

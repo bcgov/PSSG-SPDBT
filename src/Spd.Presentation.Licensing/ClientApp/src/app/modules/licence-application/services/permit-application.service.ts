@@ -305,7 +305,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				if (originalPhotoOfYourselfExpired) {
 					// clear out data to force user to upload a new photo
 					photographOfYourselfData = {
-						useBcServicesCardPhoto: BooleanTypeCode.No,
 						attachments: [],
 					};
 				}
@@ -407,9 +406,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const photographOfYourselfData = {
-			useBcServicesCardPhoto: BooleanTypeCode.No,
-		};
 		const permitRequirementData = {
 			workerLicenceTypeCode: workerLicenceTypeCode,
 		};
@@ -421,7 +417,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				workerLicenceTypeData,
 				permitRequirementData,
-				photographOfYourselfData,
 				licenceTermData,
 			},
 			{
@@ -731,7 +726,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		});
 
 		const photographOfYourselfData = {
-			useBcServicesCardPhoto: this.utilService.booleanToBooleanType(resp.useBcServicesCardPhoto),
 			attachments: photographOfYourselfAttachments,
 		};
 
@@ -869,8 +863,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			captchaFormGroup.reset();
 		}
 
-		console.debug('isStepPermitDetailsComplete', this.expiredLicenceFormGroup.valid, this.expiredLicenceFormGroup);
-
 		return this.expiredLicenceFormGroup.valid;
 	}
 
@@ -915,6 +907,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
+		console.debug('isStepIdentificationComplete aliases', this.aliasesFormGroup.value, this.aliasesFormGroup.valid);
 		console.debug(
 			'isStepIdentificationComplete',
 			this.personalInformationFormGroup.valid,
@@ -1028,8 +1021,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
 		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
 		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
+		console.debug('[submitPermitAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		if (newDocumentsExist) {

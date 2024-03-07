@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { CommonTermsComponent } from '../../shared/step-components/common-terms.component';
+import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
 	selector: 'app-step-permit-terms-of-use',
@@ -14,7 +14,7 @@ import { CommonTermsComponent } from '../../shared/step-components/common-terms.
 					subtitle="Read, download, and accept the Terms of Use to continue"
 				></app-step-title>
 
-				<app-common-terms [form]="form" [applicationTypeCode]="applicationTypeCode"></app-common-terms>
+				<app-common-swl-permit-terms [form]="form" [applicationTypeCode]="applicationTypeCode"></app-common-swl-permit-terms>
 			</div>
 		</section>
 	`,
@@ -26,7 +26,7 @@ export class StepPermitTermsOfUseComponent implements LicenceChildStepperStepCom
 		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
 	});
 
-	@ViewChild(CommonTermsComponent) commonTermsComponent!: CommonTermsComponent;
+	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 

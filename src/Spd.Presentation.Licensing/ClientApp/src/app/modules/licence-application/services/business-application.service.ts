@@ -76,6 +76,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				console.debug('[createNewBusinessAnonymous] resp', resp);
 
 				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					WorkerLicenceTypeCode.SecurityBusinessLicence,
+					ApplicationTypeCode.New
+				);
 			})
 		);
 	}
@@ -106,11 +111,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			{
 				emitEvent: false,
 			}
-		);
-
-		this.commonApplicationService.setApplicationTitle(
-			WorkerLicenceTypeCode.SecurityBusinessLicence,
-			ApplicationTypeCode.New
 		);
 
 		return of(this.businessModelFormGroup.value);
