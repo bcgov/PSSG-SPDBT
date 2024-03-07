@@ -88,7 +88,18 @@ public abstract class SpdLicenceAnonymousControllerBase : SpdControllerBase
         return results;
     }
 
-    protected async Task VerifyFiles(IList<IFormFile> documents)
+    protected async Task VerifyKeyCode()
+    {
+        string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
+        //validate keyCode
+        LicenceAppDocumentsCache? keyCodeValue = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+        if (keyCodeValue == null)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
+        }
+    }
+
+    protected void VerifyFiles(IList<IFormFile> documents)
     {
         UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
         if (fileUploadConfig == null)
