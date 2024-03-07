@@ -29,11 +29,6 @@ namespace Spd.Manager.Licence
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     }
 
-    public record ApplicantUpdateRequestResponse : Applicant
-    {
-        public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
-    }
-
     public record Applicant
     {
         public string? FirstName { get; set; }
