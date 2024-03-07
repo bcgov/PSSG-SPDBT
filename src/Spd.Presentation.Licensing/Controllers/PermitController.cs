@@ -113,13 +113,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
         {
-            string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
-            //validate keyCode
-            LicenceAppDocumentsCache? keyCodeValue = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
-            if (keyCodeValue == null)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");
-            }
+            await VerifyKeyCode();
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
