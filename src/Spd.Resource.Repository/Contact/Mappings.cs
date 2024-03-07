@@ -18,6 +18,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.telephone1))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
@@ -92,7 +93,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address2_line2;
             addr.City = contact.address2_city;
             addr.Country = contact.address2_country;
-            addr.Province = contact.address2_county;
+            addr.Province = contact.address1_stateorprovince;
             addr.PostalCode = contact.address2_postalcode;
             return addr;
         }
@@ -105,7 +106,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address1_line2;
             addr.City = contact.address1_city;
             addr.Country = contact.address1_country;
-            addr.Province = contact.address1_county;
+            addr.Province = contact.address1_stateorprovince;
             addr.PostalCode = contact.address1_postalcode;
             return addr;
         }
