@@ -62,7 +62,6 @@ export class ConfigService {
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
-			useSilentRefresh: true,
 		};
 		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
 		return bceIdConfig;
@@ -79,7 +78,6 @@ export class ConfigService {
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
-			useSilentRefresh: true,
 		};
 		console.debug('[ConfigService] getIdirConfig', idirConfig, 'redirectUri', redirectUri);
 		return idirConfig;

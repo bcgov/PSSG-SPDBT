@@ -21,7 +21,8 @@ namespace Spd.Presentation.Licensing.Controllers
             IMediator mediator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDataProtectionProvider dpProvider,
-            IDistributedCache cache) : base(cache, dpProvider, recaptchaVerificationService)
+            IDistributedCache cache,
+            IConfiguration configuration) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _mediator = mediator;
         }
