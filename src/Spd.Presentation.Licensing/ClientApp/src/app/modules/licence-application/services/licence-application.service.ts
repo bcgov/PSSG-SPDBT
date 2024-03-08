@@ -21,6 +21,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FileUtilService } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import * as moment from 'moment';
 import {
@@ -135,6 +136,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
+		fileUtilService: FileUtilService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
@@ -143,7 +145,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private applicantProfileService: ApplicantProfileService,
 		private domSanitizer: DomSanitizer
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService);
+		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
 		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -173,7 +175,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Load a user profile
 	 * @returns
 	 */
-	loadUserProfile(): Observable<WorkerLicenceResponse> {
+	loadUserProfile(): Observable<any> {
 		return this.createNewLicenceAuthenticated();
 	}
 
@@ -267,12 +269,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((resp: ApplicantProfileResponse) => {
-					console.debug('createNewLicenceAuthenticated');
-
 					return this.createEmptyLicenceAuthenticated(resp).pipe(
-						tap((resp: any) => {
-							console.debug('[createEmptyLicenceAuthenticated] resp', resp);
-
+						tap((_resp: any) => {
 							this.initialized = true;
 
 							this.commonApplicationService.setApplicationTitle();
@@ -537,9 +535,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private createEmptyLicenceAuthenticated(
-		profile: ApplicantProfileResponse | undefined
-	): Observable<WorkerLicenceResponse> {
+	private createEmptyLicenceAuthenticated(profile: ApplicantProfileResponse | undefined): Observable<any> {
 		this.reset();
 
 		if (profile) {
@@ -916,7 +912,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
 					// Additional Government ID: GovernmentIssuedPhotoIdTypes
 
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					governmentIssuedAttachments.push(aFile);
 
 					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
@@ -938,7 +934,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					// Is Canadian:  ProofOfCanadianCitizenshipTypes
 					// Is Not Canadian: ProofOfAbilityToWorkInCanadaTypes
 
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					citizenshipDataAttachments.push(aFile);
 
 					citizenshipData.isCanadianCitizen = this.utilService.booleanToBooleanType(resp.isCanadianCitizen);
@@ -955,7 +951,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						SPD_CONSTANTS.date.backendDateFormat
 					);
 
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsArmouredCarGuard.push(aFile);
 
 					categoryArmouredCarGuardFormGroup = {
@@ -966,7 +962,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments1FireInvestigator.push(aFile);
 
 					categoryFireInvestigatorFormGroup.isInclude = true;
@@ -974,7 +970,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments2FireInvestigator.push(aFile);
 
 					categoryFireInvestigatorFormGroup.isInclude = true;
@@ -985,7 +981,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CategoryLocksmithCertificateOfQualification:
 				case LicenceDocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship:
 				case LicenceDocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsLocksmith.push(aFile);
 
 					categoryLocksmithFormGroup = {
@@ -999,7 +995,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses:
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining:
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments1PrivateInvestigator.push(aFile);
 
 					categoryPrivateInvestigatorFormGroup.isInclude = true;
@@ -1009,7 +1005,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingRecognizedCourse:
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorTrainingOtherCoursesOrKnowledge: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments2PrivateInvestigator.push(aFile);
 
 					categoryPrivateInvestigatorFormGroup.isInclude = true;
@@ -1019,7 +1015,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion:
 				case LicenceDocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments1PrivateInvestigatorUnderSupervision.push(aFile);
 
 					categoryPrivateInvestigatorSupFormGroup = {
@@ -1032,7 +1028,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate:
 				case LicenceDocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsSecurityAlarmInstaller.push(aFile);
 
 					categorySecurityAlarmInstallerFormGroup = {
@@ -1044,7 +1040,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.CategorySecurityConsultantExperienceLetters:
 				case LicenceDocumentTypeCode.CategorySecurityConsultantRecommendationLetters: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments2SecurityConsultant.push(aFile);
 
 					categorySecurityConsultantFormGroup.isInclude = true;
@@ -1054,7 +1050,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.CategorySecurityConsultantResume: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments1SecurityConsultant.push(aFile);
 
 					categorySecurityConsultantFormGroup.isInclude = true;
@@ -1065,7 +1061,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate:
 				case LicenceDocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining:
 				case LicenceDocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsSecurityGuard.push(aFile);
 
 					categorySecurityGuardFormGroup = {
@@ -1077,7 +1073,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsDogs.push(aFile);
 
 					dogsAuthorizationData = {
@@ -1095,7 +1091,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate:
 				case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter:
 				case LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					attachmentsRestraints.push(aFile);
 
 					restraintsAuthorizationData = {
@@ -1107,22 +1103,22 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.MentalHealthCondition: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					mentalHealthConditionsDataAttachments.push(aFile);
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					photographOfYourselfAttachments.push(aFile);
 					break;
 				}
 				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					policeBackgroundDataAttachments.push(aFile);
 					break;
 				}
 				case LicenceDocumentTypeCode.ProofOfFingerprint: {
-					const aFile = this.utilService.dummyFile(doc);
+					const aFile = this.fileUtilService.dummyFile(doc);
 					fingerprintProofDataAttachments.push(aFile);
 					break;
 				}

@@ -5,14 +5,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationPortalStatusCode, WorkerLicenceAppListResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { SecurityWorkerLicensingService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import * as moment from 'moment';
 import { Subscription, take, tap } from 'rxjs';
-import { SecurityWorkerLicensingService } from 'src/app/api/services';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { PermitApplicationService } from '../../services/permit-application.service';
 
 export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 	isWarningMessage: boolean;
@@ -26,7 +27,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 }
 
 @Component({
-	selector: 'app-user-applications-authenticated',
+	selector: 'app-licence-user-applications',
 	template: `
 		<section class="step-section">
 			<div class="row">
@@ -62,7 +63,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 					</app-alert> 
 					-->
 
-					<div class="summary-card-section my-4 px-4 py-3" *ngIf="isNoActiveOrExpiredLicences">
+					<!-- <div class="summary-card-section my-4 px-4 py-3" *ngIf="isNoActiveOrExpiredLicences">
 						<div class="row">
 							<div class="col-lg-6">
 								<div class="text-data">You don't have an active licence</div>
@@ -73,10 +74,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 								</button>
 							</div>
 						</div>
-					</div>
-					<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
-						<mat-icon>add</mat-icon>Apply for a New Licence or Permit
-					</button>
+					</div> -->
 
 					<div class="mb-3" *ngIf="inProgressDataSource.data.length > 0">
 						<div class="section-title fs-5 py-3">In-Progress Licences/Permits</div>
@@ -198,7 +196,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">1 Year</div>
+											<div class="text-data">---</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Type</div>
@@ -206,7 +204,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Case Id</div>
-											<div class="text-data">CAS-2023-P1F3S11005</div>
+											<div class="text-data">---</div>
 											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
 													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
 													<span class="appl-chip-option-item ms-2 fs-5">Active</span>
@@ -224,9 +222,9 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 											<div class="text-data">
 												<ul class="m-0">
-													<li>Armoured Car Guard</li>
-													<li>Security Guard</li>
-													<li>Security Alarm Installer - Under Supervision</li>
+													<li>---</li>
+													<li>---</li>
+													<li>---</li>
 												</ul>
 											</div>
 										</div>
@@ -250,8 +248,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 
 									<div class="row mb-2">
 										<div class="col-lg-9">
-											The following updates have a $20 licence reprint fee:
-											<!-- TODO hardcoded payment cost -->
+											The following updates have a $xx licence reprint fee:
 											<ul class="m-0">
 												<li>changes to licence category</li>
 												<li>requests for authorization for dogs or restraints</li>
@@ -262,7 +259,6 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 										<div class="col-lg-3 text-end">
 											<button mat-flat-button color="primary" class="large w-auto" (click)="onUpdate(appl)">
 												<mat-icon>play_arrow</mat-icon>Update
-												<!--{{ appl.action }}-->
 											</button>
 										</div>
 									</div>
@@ -373,9 +369,36 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 						</app-alert>
 					</div>
 
-					<div class="text-center" *ngIf="isAllowCreateNew">
-						<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
-							<mat-icon>add</mat-icon>Apply for a New Licence or Permit
+					<div class="my-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onCreateNewSecurityWorkerLicence()"
+						>
+							<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
+						</button>
+					</div>
+
+					<div class="my-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onCreateNewBodyArmourPermit()"
+						>
+							<mat-icon>add</mat-icon>Apply for a New Body Armour Permit
+						</button>
+					</div>
+
+					<div class="my-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onCreateNewArmouredVehiclePermit()"
+						>
+							<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 						</button>
 					</div>
 				</div>
@@ -434,11 +457,11 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 		`,
 	],
 })
-export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy {
+export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 
 	isNoActiveOrExpiredLicences = false;
-	isAllowCreateNew = false;
+	// isAllowCreateNew = true;
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
@@ -465,101 +488,61 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	constructor(
 		private router: Router,
 		private dialog: MatDialog,
-		private authProcessService: AuthProcessService,
+		private authUserBcscService: AuthUserBcscService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				if (isLoggedIn) {
-					// this.securityWorkerLicensingService
-					// 	.apiWorkerLicenceApplicationsGet()
-					// 	.pipe()
-					// 	.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
-					// 		const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
-					// 		const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
-					// 		const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
-					// 		// TODO remove when backend updated...
-					// 		// If 30 days or more have passed since the last save, the application does not appear in this list
-					// 		const inProgressResults = resp.filter(
-					// 			(item: WorkerLicenceAppListResponse) =>
-					// 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
-					// 				// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
-					// 				(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-					// 					moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
-					// 		);
-					// 		const activeResults = resp.filter(
-					// 			(item: WorkerLicenceAppListResponse) =>
-					// 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
-					// 		);
-					// 		const expiredResults = resp.filter(
-					// 			(item: WorkerLicenceAppListResponse) =>
-					// 				item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress
-					// 		);
-					// 		this.isNoActiveOrExpiredLicences = resp.length === 0;
-					// 		this.isAllowCreateNew = true;
-					// 		// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
-					// 		inProgressResults.map((item: any) => {
-					// 			if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
-					// 				item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
-					// 				item.isWarningMessage = false;
-					// 				item.isErrorMessage = false;
-					// 				if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
-					// 					item.isErrorMessage = true;
-					// 				} else if (
-					// 					moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))
-					// 				) {
-					// 					item.isWarningMessage = true;
-					// 				}
-					// 			}
-					// 		});
-					// 		this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
-					// 		this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
-					// 		this.inProgressDataSource = new MatTableDataSource(
-					// 			(inProgressResults as Array<WorkerLicenceInProgress>) ?? []
-					// 		);
-					// 	});
-				}
-			}
-		);
-
-		// this.activeApplications = [
-		// 	{
-		// 		id: '1',
-		// 		licenceAppId: 'TEST-NWQ3X7A',
-		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-		// 		applicationTypeCode: ApplicationTypeCode.New,
-		// 		action: ApplicationTypeCode.Update,
-		// 		expiresOn: '2025-02-13T19:43:25+00:00',
-		// 		isRenewalPeriod: false,
-		// 		isWithin14Days: false,
-		// 	},
-		// 	{
-		// 		id: '2',
-		// 		licenceAppId: 'TEST-NWQ3X7B',
-		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-		// 		applicationTypeCode: ApplicationTypeCode.New,
-		// 		action: ApplicationTypeCode.Renewal,
-		// 		expiresOn: '2024-09-26T19:43:25+00:00',
-		// 		isRenewalPeriod: true,
-		// 		isWithin14Days: true,
-		// 	},
-		// ];
-
-		// this.expiredApplications = [
-		// 	{
-		// 		id: '1',
-		// 		licenceAppId: 'TEST-NWQ3AB7Y',
-		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
-		// 		applicationTypeCode: ApplicationTypeCode.New,
-		// 		expiresOn: '2022-09-26T19:43:25+00:00',
-		// 		isRenewalPeriod: false,
-		// 		isWithin14Days: false,
-		// 	},
-		// ];
+		this.securityWorkerLicensingService
+			.apiApplicantsApplicantIdWorkerLicenceApplicationsGet({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			})
+			.pipe()
+			.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
+				const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
+				const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
+				const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
+				// TODO remove when backend updated...
+				// If 30 days or more have passed since the last save, the application does not appear in this list
+				const inProgressResults = resp.filter(
+					(item: WorkerLicenceAppListResponse) =>
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+						// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+						(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+							moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
+				);
+				// const activeResults = resp.filter(
+				// 	(item: WorkerLicenceAppListResponse) =>
+				// 		item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+				// );
+				// const expiredResults = resp.filter(
+				// 	(item: WorkerLicenceAppListResponse) =>
+				// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress &&
+				// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.Draft
+				// );
+				this.isNoActiveOrExpiredLicences = resp.length === 0;
+				// this.isAllowCreateNew = true;
+				// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
+				inProgressResults.map((item: any) => {
+					if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
+						item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
+						item.isWarningMessage = false;
+						item.isErrorMessage = false;
+						if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
+							item.isErrorMessage = true;
+						} else if (
+							moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))
+						) {
+							item.isWarningMessage = true;
+						}
+					}
+				});
+				// this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
+				// this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
+				this.inProgressDataSource = new MatTableDataSource((inProgressResults as Array<WorkerLicenceInProgress>) ?? []);
+			});
 	}
 
 	ngOnDestroy() {
@@ -685,15 +668,43 @@ export class UserApplicationsAuthenticatedComponent implements OnInit, OnDestroy
 	// 		.subscribe();
 	// }
 
-	onCreateNew(): void {
+	onCreateNewSecurityWorkerLicence(): void {
 		this.licenceApplicationService
 			.createNewLicenceAuthenticated()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
 						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onCreateNewBodyArmourPermit(): void {
+		this.permitApplicationService
+			.createNewPermitAuthenticated(WorkerLicenceTypeCode.BodyArmourPermit)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onCreateNewArmouredVehiclePermit(): void {
+		this.permitApplicationService
+			.createNewPermitAuthenticated(WorkerLicenceTypeCode.ArmouredVehiclePermit)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED)
 					);
 				}),
 				take(1)

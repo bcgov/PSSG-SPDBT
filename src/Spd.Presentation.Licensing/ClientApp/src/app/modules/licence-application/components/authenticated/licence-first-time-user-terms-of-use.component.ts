@@ -9,7 +9,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
-	selector: 'app-worker-licence-first-time-user-terms-of-use',
+	selector: 'app-licence-first-time-user-terms-of-use',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -30,7 +30,7 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/
 	`,
 	styles: [],
 })
-export class WorkerLicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),

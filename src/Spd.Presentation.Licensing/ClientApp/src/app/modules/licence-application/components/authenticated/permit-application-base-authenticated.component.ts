@@ -3,11 +3,10 @@ import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../services/licence-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 
 @Component({
-	selector: 'app-worker-licence-application-base-authenticated',
+	selector: 'app-permit-application-base-authenticated',
 	template: `
 		<ng-container *ngIf="isAuthenticated$ | async">
 			<router-outlet></router-outlet>
@@ -15,14 +14,13 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 	`,
 	styles: [],
 })
-export class WorkerLicenceApplicationBaseAuthenticatedComponent implements OnInit {
+export class PermitApplicationBaseAuthenticatedComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
 		private authUserBcscService: AuthUserBcscService,
-		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
 
@@ -38,12 +36,7 @@ export class WorkerLicenceApplicationBaseAuthenticatedComponent implements OnIni
 			);
 		}
 
-		console.log(
-			'WorkerLicenceApplicationBaseAuthenticatedComponent',
-			this.licenceApplicationService.initialized,
-			this.permitApplicationService.initialized
-		);
-		if (!this.licenceApplicationService.initialized && !this.permitApplicationService.initialized) {
+		if (!this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			return;
 		}

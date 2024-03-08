@@ -12,7 +12,7 @@ import {
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { ConfigService } from '@app/core/services/config.service';
-import { UtilService } from '@app/core/services/util.service';
+import { FileUtilService } from '@app/core/services/file-util.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class CommonApplicationService {
 	]);
 
 	constructor(
-		private utilService: UtilService,
+		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
 		private paymentService: PaymentService
 	) {}
@@ -142,7 +142,7 @@ export class CommonApplicationService {
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
-				this.utilService.downloadFile(resp.headers, resp.body);
+				this.fileUtilService.downloadFile(resp.headers, resp.body);
 			});
 	}
 }

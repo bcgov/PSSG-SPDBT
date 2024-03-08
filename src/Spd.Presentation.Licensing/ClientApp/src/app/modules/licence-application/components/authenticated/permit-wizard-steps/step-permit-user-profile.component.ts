@@ -6,13 +6,13 @@ import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { CommonUserProfileLicenceCriminalHistoryComponent } from '../../authenticated/user-profile/common-user-profile-licence-criminal-history.component';
-import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '../../authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
-import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authenticated/user-profile/common-user-profile-licence-police-background.component';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profile/common-user-profile-licence-criminal-history.component';
+import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '../user-profile/common-user-profile-licence-mental-health-conditions.component';
+import { CommonUserProfileLicencePoliceBackgroundComponent } from '../user-profile/common-user-profile-licence-police-background.component';
 
 @Component({
-	selector: 'app-step-worker-licence-user-profile',
+	selector: 'app-step-permit-user-profile',
 	template: `
 		<div class="step-section">
 			<div class="step">
@@ -113,10 +113,10 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
 
-	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
+	form: FormGroup = this.permitApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
@@ -130,29 +130,25 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private licenceApplicationService: LicenceApplicationService
+		private permitApplicationService: PermitApplicationService
 	) {}
 
 	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
+		if (!this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 		}
 
-		this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
 		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Replacement: {
-				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit';
-				break;
-			}
 			case ApplicationTypeCode.Renewal: {
-				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before renewing your permit';
 				break;
 			}
 			case ApplicationTypeCode.Update: {
-				this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before updating your permit';
 				break;
 			}
 			default: {

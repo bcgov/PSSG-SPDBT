@@ -6,6 +6,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { CommonAddressComponent } from '../../shared/step-components/common-address.component';
 import { CommonAliasListComponent } from '../../shared/step-components/common-alias-list.component';
 import { CommonContactInformationComponent } from '../../shared/step-components/common-contact-information.component';
+import { CommonUserProfilePersonalInformationComponent } from './common-user-profile-personal-information.component';
 
 @Component({
 	selector: 'app-common-user-profile',
@@ -58,7 +59,7 @@ import { CommonContactInformationComponent } from '../../shared/step-components/
 					<app-common-address
 						[form]="mailingAddressFormGroup"
 						[isWizardStep]="false"
-						[isReadOnly]="isReadOnly"
+						[isReadOnly]="false"
 					></app-common-address>
 				</ng-template>
 			</div>
@@ -69,11 +70,12 @@ import { CommonContactInformationComponent } from '../../shared/step-components/
 export class CommonUserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 
-	contactInformationFormGroup: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
 	aliasesFormGroup: FormGroup = this.licenceApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
 
+	@ViewChild(CommonUserProfilePersonalInformationComponent)
+	personalComponent!: CommonUserProfilePersonalInformationComponent;
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
 	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
 	@ViewChild(CommonAddressComponent) mailingAddressComponent!: CommonAddressComponent;
@@ -85,17 +87,11 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const contactIsValid = this.isContactInformationFormGroupFormValid();
-		const aliasesIsValid = this.isAliasesFormGroupFormValid();
-		const mailingIsValid = this.isMailingTheSameAsResidential ? true : this.isMailingAddressFormGroupValid();
+		const valid1 = this.personalComponent.isFormValid();
+		const valid2 = this.isAliasesFormGroupFormValid();
+		const valid3 = this.isMailingTheSameAsResidential ? true : this.isMailingAddressFormGroupValid();
 
-		console.log('UserProfileComponent', contactIsValid, aliasesIsValid, mailingIsValid);
-		return contactIsValid && aliasesIsValid && mailingIsValid;
-	}
-
-	isContactInformationFormGroupFormValid(): boolean {
-		this.contactInformationFormGroup.markAllAsTouched();
-		return this.contactInformationFormGroup.valid;
+		return valid1 && valid2 && valid3;
 	}
 
 	isAliasesFormGroupFormValid(): boolean {

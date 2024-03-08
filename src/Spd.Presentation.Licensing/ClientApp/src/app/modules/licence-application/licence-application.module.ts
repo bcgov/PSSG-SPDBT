@@ -50,16 +50,19 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/a
 import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-type-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
-import { UserApplicationsAuthenticatedComponent } from './components/authenticated/user-applications-authenticated.component';
-import { UserLoginProfileComponent } from './components/authenticated/user-login-profile.component';
-import { CommonUserProfilePersonalInformationComponent } from './components/authenticated/user-profile/common-user-profile-personal-information.component';
-import { CommonUserProfileComponent } from './components/authenticated/user-profile/common-user-profile.component';
+import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated/licence-access-code-authorized.component';
+import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
+import { LicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/licence-first-time-user-terms-of-use.component';
+import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
+import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
+import { PermitApplicationBaseAuthenticatedComponent } from './components/authenticated/permit-application-base-authenticated.component';
+import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile/common-user-profile-licence-police-background.component';
+import { CommonUserProfilePersonalInformationComponent } from './components/authenticated/user-profile/common-user-profile-personal-information.component';
+import { CommonUserProfileComponent } from './components/authenticated/user-profile/common-user-profile.component';
 import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
-import { WorkerLicenceFirstTimeUserSelectionComponent } from './components/authenticated/worker-licence-first-time-user-selection.component';
-import { WorkerLicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/worker-licence-first-time-user-terms-of-use.component';
 import { StepWorkerLicenceAllUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-all-updates-authenticated.component';
 import { StepWorkerLicenceConfirmUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-confirm-updates-authenticated.component';
 import { StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-mailing-address-update-authenticated.component';
@@ -71,7 +74,6 @@ import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './comp
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepWorkerLicenceAccessCodeAuthorizedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-access-code-authorized.component';
 import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-summary-review-authenticated.component';
 import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
@@ -187,6 +189,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 
 @NgModule({
 	declarations: [
+		PermitApplicationBaseAuthenticatedComponent,
+		StepPermitUserProfileComponent,
 		BcBranchEditModalComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
@@ -288,7 +292,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitSummaryAnonymousComponent,
 		StepPermitTermsOfUseComponent,
 		StepPermitTypeAnonymousComponent,
-		StepWorkerLicenceAccessCodeAuthorizedComponent,
+		LicenceAccessCodeAuthorizedComponent,
 		StepWorkerLicenceAccessCodeComponent,
 		StepWorkerLicenceAliasesComponent,
 		StepWorkerLicenceAllUpdatesAuthenticatedComponent,
@@ -347,15 +351,15 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsWorkerLicenceReviewAnonymousComponent,
 		StepsWorkerLicenceReviewAuthenticatedComponent,
 		StepsWorkerLicenceSelectionComponent,
-		UserApplicationsAuthenticatedComponent,
+		LicenceUserApplicationsComponent,
 		UserBusinessApplicationsComponent,
-		UserLoginProfileComponent,
+		LoginUserProfileComponent,
 		WorkerLicenceApplicationBaseAnonymousComponent,
 		WorkerLicenceApplicationBaseAuthenticatedComponent,
 		WorkerLicenceCategoryUpdateAuthenticatedModalComponent,
 		WorkerLicenceDogsUpdateAuthenticatedModalComponent,
-		WorkerLicenceFirstTimeUserSelectionComponent,
-		WorkerLicenceFirstTimeUserTermsOfUseComponent,
+		LicenceFirstTimeUserSelectionComponent,
+		LicenceFirstTimeUserTermsOfUseComponent,
 		WorkerLicenceNameChangeUpdateAuthenticatedModalComponent,
 		WorkerLicencePhotoUpdateAuthenticatedModalComponent,
 		WorkerLicenceRestraintsUpdateAuthenticatedModalComponent,

@@ -95,6 +95,7 @@ export class CommonUserProfilePersonalInformationComponent implements LicenceChi
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		this.formContact.markAllAsTouched();
+
 		return this.form.valid && this.formContact.valid;
 	}
 

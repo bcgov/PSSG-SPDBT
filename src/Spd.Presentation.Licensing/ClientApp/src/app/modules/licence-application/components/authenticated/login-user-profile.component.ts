@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
+import { UtilService } from '@app/core/services/util.service';
+import { CommonUserProfileComponent } from './user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '../../services/licence-application.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
-	selector: 'app-user-login-profile',
+	selector: 'app-login-user-profile',
 	template: `
 		<section class="step-section">
 			<div class="row">
@@ -45,10 +45,14 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 	`,
 	styles: [],
 })
-export class UserLoginProfileComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LoginUserProfileComponent implements OnInit {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private router: Router,
+		private utilService: UtilService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
@@ -61,10 +65,11 @@ export class UserLoginProfileComponent implements OnInit, LicenceChildStepperSte
 	}
 
 	onSave(): void {
-		//TODO save info
-	}
+		const isValid = this.userProfileComponent.isFormValid();
 
-	isFormValid(): boolean {
-		return this.userProfileComponent.isFormValid();
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+		}
+		//TODO save user profile
 	}
 }

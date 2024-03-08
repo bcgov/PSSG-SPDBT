@@ -180,7 +180,7 @@ export class StepWorkerLicenceTypeAuthenticatedComponent implements OnInit, Lice
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
 			)
 		);
 	}
@@ -189,7 +189,7 @@ export class StepWorkerLicenceTypeAuthenticatedComponent implements OnInit, Lice
 		if (this.isFormValid()) {
 			this.router.navigateByUrl(
 				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED
+					LicenceApplicationRoutes.WORKER_LICENCE_APPLICATION_TYPE_AUTHENTICATED
 				)
 			);
 		}

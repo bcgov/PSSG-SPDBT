@@ -9,7 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
-	selector: 'app-step-worker-licence-access-code-authorized',
+	selector: 'app-licence-access-code-authorized',
 	template: `
 		<section class="step-section">
 			<div class="row">
@@ -77,7 +77,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceAccessCodeAuthorizedComponent implements LicenceChildStepperStepComponent {
+export class LicenceAccessCodeAuthorizedComponent implements LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 

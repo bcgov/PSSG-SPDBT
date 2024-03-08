@@ -12,6 +12,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FileUtilService } from '@app/core/services/file-util.service';
 import { SpdFile, UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -308,9 +309,9 @@ export abstract class PermitApplicationHelper {
 		attachments: new FormControl('', [FormControlValidators.required]),
 	});
 
-	// profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
-	// 	isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
-	// });
+	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
+		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
+	});
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
 		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
@@ -394,7 +395,8 @@ export abstract class PermitApplicationHelper {
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
 		protected formatDatePipe: FormatDatePipe,
-		protected utilService: UtilService
+		protected utilService: UtilService,
+		protected fileUtilService: FileUtilService
 	) {}
 
 	getSaveBodyAnonymous(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
