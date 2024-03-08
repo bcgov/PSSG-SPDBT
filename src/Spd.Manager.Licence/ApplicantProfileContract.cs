@@ -27,6 +27,9 @@ namespace Spd.Manager.Licence
     public record ApplicantUpdateRequest : Applicant
     {
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+        public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
+        public bool? HasNewMentalHealthCondition { get; set; }
+        public bool? HasNewCriminalRecordCharge { get; set; }
     }
 
     public record Applicant
