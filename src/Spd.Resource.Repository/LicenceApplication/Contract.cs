@@ -52,7 +52,6 @@ public record LicenceApplication
     public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
-    public bool? UseBcServicesCardPhoto { get; set; }
     public bool? CarryAndUseRestraints { get; set; }
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
