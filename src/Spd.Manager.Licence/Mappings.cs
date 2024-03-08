@@ -106,7 +106,7 @@ internal class Mappings : Profile
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
 
-        CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+        CreateMap<LicenceApplicationResp, WorkerLicenceAppResponse>();
 
         CreateMap<LicenceResp, LicenceResponse>();
 
