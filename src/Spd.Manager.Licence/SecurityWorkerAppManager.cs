@@ -580,6 +580,12 @@ internal partial class SecurityWorkerAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
 
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself)
+            && !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
+        }
+
         foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
         {
             if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
