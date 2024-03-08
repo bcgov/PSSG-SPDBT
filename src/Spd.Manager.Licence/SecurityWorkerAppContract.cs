@@ -6,7 +6,7 @@ public interface ISecurityWorkerAppManager
 {
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
-    public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
+    public Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
@@ -38,10 +38,10 @@ public record AnonymousWorkerLicenceAppUpdateCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
-public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
+public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
 public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
 
-public record WorkerLicenceResponse : WorkerLicenceAppBase
+public record WorkerLicenceAppResponse : WorkerLicenceAppBase
 {
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
