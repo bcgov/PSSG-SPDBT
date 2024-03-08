@@ -65,7 +65,6 @@ export interface PermitAppAnonymousSubmitRequest {
   supervisorName?: null | string;
   supervisorPhoneNumber?: null | string;
   surname?: null | string;
-  useBcServicesCardPhoto?: null | boolean;
   weight?: null | number;
   weightUnitCode?: WeightUnitCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
