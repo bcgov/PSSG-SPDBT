@@ -15,10 +15,10 @@ import { LicenceAppDocumentResponse } from '../models/licence-app-document-respo
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { WorkerLicenceAppAnonymousSubmitRequest } from '../models/worker-licence-app-anonymous-submit-request';
 import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
+import { WorkerLicenceAppResponse } from '../models/worker-licence-app-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
 import { WorkerLicenceCommandResponse } from '../models/worker-licence-command-response';
-import { WorkerLicenceResponse } from '../models/worker-licence-response';
 
 @Injectable({
   providedIn: 'root',
@@ -112,7 +112,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdGetPath, 'get');
     if (params) {
@@ -126,7 +126,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceResponse>;
+        return r as StrictHttpResponse<WorkerLicenceAppResponse>;
       })
     );
   }
@@ -146,10 +146,10 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceResponse> {
+): Observable<WorkerLicenceAppResponse> {
 
     return this.apiWorkerLicenceApplicationsLicenceAppIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceResponse>) => r.body as WorkerLicenceResponse)
+      map((r: StrictHttpResponse<WorkerLicenceAppResponse>) => r.body as WorkerLicenceAppResponse)
     );
   }
 
@@ -364,7 +364,7 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<WorkerLicenceResponse>> {
+): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationGetPath, 'get');
     if (params) {
@@ -377,7 +377,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<WorkerLicenceResponse>;
+        return r as StrictHttpResponse<WorkerLicenceAppResponse>;
       })
     );
   }
@@ -396,10 +396,10 @@ export class SecurityWorkerLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<WorkerLicenceResponse> {
+): Observable<WorkerLicenceAppResponse> {
 
     return this.apiWorkerLicenceApplicationGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<WorkerLicenceResponse>) => r.body as WorkerLicenceResponse)
+      map((r: StrictHttpResponse<WorkerLicenceAppResponse>) => r.body as WorkerLicenceAppResponse)
     );
   }
 

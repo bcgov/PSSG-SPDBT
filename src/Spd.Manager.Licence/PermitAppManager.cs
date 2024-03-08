@@ -184,7 +184,7 @@ internal class PermitAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing citizen proof file because you are canadian.");
         }
 
-        if (request.UseBcServicesCardPhoto == false && !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
+        if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
         }

@@ -25,7 +25,6 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.IsMailingTheSameAsResidential).NotEmpty();
         RuleFor(r => r.ContactPhoneNumber).MaximumLength(15).NotEmpty();
         RuleFor(r => r.ContactEmailAddress).MaximumLength(75).When(r => r.ContactEmailAddress != null);
-        RuleFor(r => r.UseBcServicesCardPhoto).NotEmpty();
         RuleFor(r => r.IsCanadianCitizen).NotEmpty();
         //residential address
         RuleFor(r => r.ResidentialAddressData).NotEmpty().WithMessage("ResidentialAddress cannot be empty");
