@@ -17,7 +17,7 @@ import { ResidentialAddress } from './residential-address';
 import { WeightUnitCode } from './weight-unit-code';
 import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
-export interface WorkerLicenceResponse {
+export interface WorkerLicenceAppResponse {
   agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
   applicationPortalStatus?: ApplicationPortalStatusCode;
