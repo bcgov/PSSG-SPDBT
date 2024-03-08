@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Repository.Contact
 {
@@ -17,6 +18,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.telephone1))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
             .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
@@ -30,13 +32,13 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal));
 
             _ = CreateMap<ContactCmd, contact>()
-            .ForMember(d => d.firstname, opt => opt.MapFrom(s => s.FirstName))
-            .ForMember(d => d.lastname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))
+            .ForMember(d => d.lastname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.LastName)))
             .ForMember(d => d.birthdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.BirthDate)))
             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.Gender)))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
-            .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+            .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName1)))
+            .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine1))
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine2))
@@ -91,7 +93,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address2_line2;
             addr.City = contact.address2_city;
             addr.Country = contact.address2_country;
-            addr.Province = contact.address2_county;
+            addr.Province = contact.address1_stateorprovince;
             addr.PostalCode = contact.address2_postalcode;
             return addr;
         }
@@ -104,7 +106,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address1_line2;
             addr.City = contact.address1_city;
             addr.Country = contact.address1_country;
-            addr.Province = contact.address1_county;
+            addr.Province = contact.address1_stateorprovince;
             addr.PostalCode = contact.address1_postalcode;
             return addr;
         }
