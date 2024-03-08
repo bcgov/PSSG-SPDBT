@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdateRequest>
@@ -47,11 +48,12 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
             .MaximumLength(20)
             .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.HasCriminalHistory).NotEmpty();
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
+        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
+        RuleFor(r => r.HasNewMentalHealthCondition).NotNull();
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)
-            .When(r => r.HasCriminalHistory == true);
-        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
-        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
+            .When(r => r.HasNewCriminalRecordCharge == true);
     }
 }
