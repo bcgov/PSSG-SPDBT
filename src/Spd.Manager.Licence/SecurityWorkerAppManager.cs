@@ -22,7 +22,7 @@ internal partial class SecurityWorkerAppManager :
         LicenceAppManagerBase,
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
-        IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
+        IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
         IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
@@ -133,10 +133,10 @@ internal partial class SecurityWorkerAppManager :
 
     #endregion
 
-    public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken cancellationToken)
+    public async Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken cancellationToken)
     {
         var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
-        WorkerLicenceResponse result = _mapper.Map<WorkerLicenceResponse>(response);
+        WorkerLicenceAppResponse result = _mapper.Map<WorkerLicenceAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList(); // Exclude licence document type code that are not defined in the related dictionary
         return result;
