@@ -72,7 +72,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/{licenceAppId}")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
+        public async Task<WorkerLicenceAppResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
             return await _mediator.Send(new GetWorkerLicenceQuery(licenceAppId));
         }
@@ -154,7 +154,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/worker-licence-application")]
         [HttpGet]
-        public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplicationAnonymous()
+        public async Task<WorkerLicenceAppResponse> GetSecurityWorkerLicenceApplicationAnonymous()
         {
             string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
             string? licenceAppId;

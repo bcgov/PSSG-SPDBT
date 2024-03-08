@@ -17,7 +17,7 @@ import {
 	PermitAppAnonymousSubmitRequest,
 	PermitAppCommandResponse,
 	PermitLicenceAppResponse,
-	WorkerLicenceResponse,
+	WorkerLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -169,7 +169,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load an existing permit application
 	 * @returns
 	 */
-	getPermitNew(): Observable<WorkerLicenceResponse> {
+	getPermitNew(): Observable<WorkerLicenceAppResponse> {
 		return this.loadPermitNew().pipe(
 			tap((resp: any) => {
 				console.debug('LOAD loadPermitNew', resp);
@@ -186,7 +186,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	getPermitWithAccessCodeData(
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
+	): Observable<WorkerLicenceAppResponse> {
 		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
 				this.permitModelFormGroup.patchValue(
@@ -215,7 +215,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private getPermitOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+	private getPermitOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceAppResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return forkJoin([this.loadPermitRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
@@ -258,7 +258,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load an existing draft permit application
 	 * @returns
 	 */
-	private loadPermitNew(): Observable<WorkerLicenceResponse> {
+	private loadPermitNew(): Observable<WorkerLicenceAppResponse> {
 		return this.loadSpecificPermit().pipe(
 			tap((resp: PermitLicenceAppResponse) => {
 				console.debug('[loadPermitNew] resp', resp);
@@ -272,7 +272,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load an existing permit application for renewal
 	 * @returns
 	 */
-	private loadPermitRenewal(): Observable<WorkerLicenceResponse> {
+	private loadPermitRenewal(): Observable<WorkerLicenceAppResponse> {
 		return this.loadSpecificPermit().pipe(
 			tap((resp: PermitLicenceAppResponse) => {
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
@@ -335,7 +335,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private loadPermitUpdate(): Observable<WorkerLicenceResponse> {
+	private loadPermitUpdate(): Observable<WorkerLicenceAppResponse> {
 		return this.loadSpecificPermit().pipe(
 			tap((resp: PermitLicenceAppResponse) => {
 				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };

@@ -48,12 +48,6 @@ public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseVali
         //    .Must(c => c == LicenceDocumentTypeCode.ProofOfFingerprint)
         //    .When(r => r.FingerprintProofDocument != null);
 
-        //photo
-        //RuleFor(r => r.IdPhotoDocument).NotEmpty().When(r => r.UseBcServicesCardPhoto != null && r.UseBcServicesCardPhoto == false);
-        //RuleFor(r => r.IdPhotoDocument.LicenceDocumentTypeCode)
-        //    .Must(c => c == LicenceDocumentTypeCode.PhotoOfYourself)
-        //    .When(r => r.UseBcServicesCardPhoto == false && r.IdPhotoDocument != null);
-
         //category
         //RuleFor(r => r.CategoryData).NotEmpty().Must(d => d.Count() > 0 && d.Count() < 7);
         //var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
@@ -187,11 +181,6 @@ public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseVali
 //        RuleFor(r => r.UploadFileRequests)
 //            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
 //            .WithMessage("Missing ProofOfFingerprint file.");
-
-//        RuleFor(r => r.UploadFileRequests)
-//          .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
-//          .When(r => r.LicenceAnonymousRequest.UseBcServicesCardPhoto != null && !r.LicenceAnonymousRequest.UseBcServicesCardPhoto.Value)
-//          .WithMessage("Missing PhotoOfYourself file.");
 
 //        RuleFor(r => r).Custom((request, context) =>
 //        {
