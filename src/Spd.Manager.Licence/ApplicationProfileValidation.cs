@@ -5,10 +5,10 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
 {
     public ApplicantUpdateRequestValidator()
     {
-        RuleFor(r => r.FirstName).NotEmpty();
-        RuleFor(r => r.LastName).NotEmpty();
-        RuleFor(r => r.BirthDate).NotEmpty();
-        RuleFor(r => r.Gender).IsInEnum();
+        RuleFor(r => r.GivenName).NotEmpty();
+        RuleFor(r => r.Surname).NotEmpty();
+        RuleFor(r => r.DateOfBirth).NotEmpty();
+        RuleFor(r => r.GenderCode).IsInEnum();
         RuleFor(r => r.PhoneNumber).MaximumLength(15).NotEmpty();
         RuleFor(r => r.EmailAddress).MaximumLength(75).NotEmpty().EmailAddress();
         RuleFor(r => r.DocumentKeyCodes)

@@ -31,13 +31,13 @@ namespace Spd.Manager.Licence
 
     public record Applicant
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
-        public DateOnly BirthDate { get; set; }
-        public GenderEnum? Gender { get; set; }
+        public DateOnly DateOfBirth { get; set; }
+        public GenderEnum? GenderCode { get; set; }
         public string? PhoneNumber { get; set; }
         public Address? ResidentialAddress { get; set; }
         public Address? MailingAddress { get; set; }

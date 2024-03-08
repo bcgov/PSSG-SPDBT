@@ -45,7 +45,11 @@ internal class Mappings : Profile
         CreateMap<ApplicantLoginCommand, UpdateContactCmd>()
             .IncludeBase<ApplicantLoginCommand, Contact>();
 
-        CreateMap<Contact, Applicant>();
+        CreateMap<Contact, Applicant>()
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.FirstName))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => s.BirthDate))
+            .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => s.Gender));
 
         CreateMap<ContactResp, ApplicantProfileResponse>()
             .IncludeBase<Contact, Applicant>()
@@ -83,6 +87,10 @@ internal class Mappings : Profile
             .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ContactPhoneNumber));
 
         _ = CreateMap<ApplicantUpdateRequest, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
