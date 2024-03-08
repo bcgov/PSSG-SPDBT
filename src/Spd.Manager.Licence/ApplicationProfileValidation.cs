@@ -50,6 +50,7 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
         RuleFor(r => r.IsTreatedForMHC).NotEmpty();
         RuleFor(r => r.HasNewMentalHealthCondition).NotNull();
+        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull();
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)
