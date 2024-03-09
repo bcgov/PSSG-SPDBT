@@ -124,12 +124,12 @@ namespace Spd.Manager.Licence
         {
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
-            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.applicantUpdateRequest);
+            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ApplicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
             await _contactRepository.ManageAsync(updateContactCmd, ct);
 
-            if ((cmd.applicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
-                (cmd.applicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
+            if ((cmd.ApplicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
+                (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
                 await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
                     null,
