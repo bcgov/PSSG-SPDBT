@@ -46,9 +46,9 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.ResidentialAddress.PostalCode).NotEmpty()
             .MaximumLength(20)
             .When(r => r.ResidentialAddress != null);
-        RuleFor(r => r.HasCriminalHistory).NotEmpty();
-        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
-        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
+        RuleFor(r => r.HasCriminalHistory).NotNull();
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull();
+        RuleFor(r => r.IsTreatedForMHC).NotNull();
         RuleFor(r => r.HasNewMentalHealthCondition).NotNull();
         RuleFor(r => r.HasNewCriminalRecordCharge).NotNull();
         RuleFor(r => r.CriminalChargeDescription)
