@@ -20,7 +20,7 @@ namespace Spd.Manager.Licence
     public record ApplicantSearchCommand(BcscIdentityInfo BcscIdentityInfo, bool hasIdentity = false) : IRequest<IEnumerable<ApplicantListResponse>>;
     public record ApplicantUpdateCommand(
         Guid ApplicantId,
-        ApplicantUpdateRequest applicantUpdateRequest,
+        ApplicantUpdateRequest ApplicantUpdateRequest,
         IEnumerable<LicAppFileInfo> LicAppFileInfos) 
         : IRequest<Unit>;
 
