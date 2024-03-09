@@ -191,7 +191,7 @@ internal class DocumentRepository : IDocumentRepository
         if (documenturl == null) { return null; }
         documenturl.statecode = DynamicsConstants.StateCode_Inactive;
         documenturl.statuscode = DynamicsConstants.StatusCode_Inactive;
-        await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, (Guid)(documenturl._spd_applicationid_value), ct);
+        await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, documenturl._spd_applicationid_value, documenturl._spd_submittedbyid_value, ct);
         _context.UpdateObject(documenturl);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
@@ -306,11 +306,11 @@ internal class DocumentRepository : IDocumentRepository
         }
     }
 
-    private async Task DeleteFileAsync(Guid docUrlId, Guid applicationId, CancellationToken ct)
+    private async Task DeleteFileAsync(Guid docUrlId, Guid? applicationId, Guid? contactId, CancellationToken ct)
     {
         await _transientFileStorageService.HandleDeleteCommand(new StorageDeleteCommand(
             Key: ((Guid)docUrlId).ToString(),
-            Folder: $"spd_application/{applicationId}"), ct);
+            Folder: applicationId == null ? $"contact/{contactId}" : $"spd_application/{applicationId}"), ct);
 
     }
 
