@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdateRequest>
 {
     public ApplicantUpdateRequestValidator()
     {
+        RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.GivenName).NotEmpty();
         RuleFor(r => r.Surname).NotEmpty();
         RuleFor(r => r.DateOfBirth).NotEmpty();
@@ -50,7 +52,9 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull();
         RuleFor(r => r.IsTreatedForMHC).NotNull();
         RuleFor(r => r.HasNewMentalHealthCondition).NotNull();
-        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull();
+        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
+            .When(r => r.LicenceId != null && 
+            (r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update));
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)
