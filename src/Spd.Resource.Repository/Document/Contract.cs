@@ -60,6 +60,7 @@ namespace Spd.Resource.Repository.Document
     public record UpdateDocumentCmd(Guid DocumentUrlId, DateOnly? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
     //copy the sourceDocument to the new application
     public record CopyDocumentCmd(Guid SourceDocumentUrlId, Guid DestApplicationId, Guid? SubmittedByApplicantId) : DocumentCmd;
+    public record DeactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public enum DocumentTypeEnum
     {
         AdditionalGovIdDocument,
