@@ -6,7 +6,7 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
 {
     public ApplicantUpdateRequestValidator()
     {
-        RuleFor(r => r.ApplicationTypeCode).NotEmpty();
+        RuleFor(r => r.ApplicationTypeCode).NotEmpty().IsInEnum();
         RuleFor(r => r.GivenName).NotEmpty();
         RuleFor(r => r.Surname).NotEmpty();
         RuleFor(r => r.DateOfBirth).NotEmpty();
