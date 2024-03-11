@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="Alba" Version="7.4.1" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
-    <PackageVersion Include="AWSSDK.S3" Version="3.7.305.30" />
+    <PackageVersion Include="AWSSDK.S3" Version="3.7.305.31" />
     <PackageVersion Include="coverlet.collector" Version="6.0.1" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="Flurl" Version="4.0.0" />
@@ -37,7 +37,7 @@
     <PackageVersion Include="Microsoft.OData.Edm" Version="7.20.0" />
     <PackageVersion Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
     <PackageVersion Include="Microsoft.Spatial" Version="7.20.0" />
-    <PackageVersion Include="Polly" Version="8.3.0" />
+    <PackageVersion Include="Polly" Version="8.3.1" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageVersion Include="Serilog.Enrichers.ClientInfo" Version="2.0.3" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />

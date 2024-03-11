@@ -16,8 +16,8 @@ import {
 	LicenceResponse,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequest,
+	WorkerLicenceAppResponse,
 	WorkerLicenceCommandResponse,
-	WorkerLicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -429,7 +429,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
 		console.debug('getLicenceToResume', licenceAppId);
 
 		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
@@ -603,7 +603,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode);
 	}
 
-	private loadExistingLicenceWithIdAuthenticated(licenceAppId: string): Observable<WorkerLicenceResponse> {
+	private loadExistingLicenceWithIdAuthenticated(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
 		this.reset();
 
 		return forkJoin([
@@ -626,7 +626,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private applyLicenceAndProfileIntoModel(
-		workerLicence: WorkerLicenceResponse,
+		workerLicence: WorkerLicenceAppResponse,
 		profile: ApplicantProfileResponse
 	): Observable<any> {
 		return this.applyLicenceProfileIntoModel(profile, workerLicence.applicationTypeCode).pipe(
@@ -667,7 +667,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	getLicenceWithAccessCodeDataAnonymous(
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
+	): Observable<WorkerLicenceAppResponse> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
 				this.licenceModelFormGroup.patchValue(
@@ -733,7 +733,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private getLicenceOfTypeUsingAccessCodeAnonymous(
 		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
+	): Observable<WorkerLicenceAppResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return forkJoin([this.loadLicenceRenewalAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
@@ -757,7 +757,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 			default: {
 				return this.loadLicenceReplacementAnonymous().pipe(
-					tap((_resp: WorkerLicenceResponse) => {
+					tap((_resp: WorkerLicenceAppResponse) => {
 						this.initialized = true;
 					})
 				);
@@ -769,9 +769,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Load an existing licence application for renewal
 	 * @returns
 	 */
-	private loadLicenceRenewalAnonymous(): Observable<WorkerLicenceResponse> {
+	private loadLicenceRenewalAnonymous(): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceAnonymous().pipe(
-			tap((_resp: WorkerLicenceResponse) => {
+			tap((_resp: WorkerLicenceAppResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 				// Remove data that should be re-prompted for
@@ -888,9 +888,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Load an existing licence application for update
 	 * @returns
 	 */
-	private loadLicenceUpdateAnonymous(): Observable<WorkerLicenceResponse> {
+	private loadLicenceUpdateAnonymous(): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceAnonymous().pipe(
-			tap((_resp: WorkerLicenceResponse) => {
+			tap((_resp: WorkerLicenceAppResponse) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
 				const mentalHealthConditionsData = {
@@ -925,7 +925,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Load an existing licence application for replacement
 	 * @returns
 	 */
-	private loadLicenceReplacementAnonymous(): Observable<WorkerLicenceResponse> {
+	private loadLicenceReplacementAnonymous(): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceAnonymous().pipe(
 			tap((_resp: any) => {
 				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
@@ -951,11 +951,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 	}
 
-	private loadExistingLicenceAnonymous(): Observable<WorkerLicenceResponse> {
+	private loadExistingLicenceAnonymous(): Observable<WorkerLicenceAppResponse> {
 		this.reset();
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
-			tap((resp: WorkerLicenceResponse) => {
+			tap((resp: WorkerLicenceAppResponse) => {
 				this.applyLicenceIntoModel(resp);
 			})
 		);
@@ -1123,7 +1123,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	/*************************************************************/
 
 	private applyLicenceProfileIntoModel(
-		profile: ApplicantProfileResponse | WorkerLicenceResponse,
+		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -1238,7 +1238,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private applyLicenceIntoModel(resp: WorkerLicenceResponse): void {
+	private applyLicenceIntoModel(resp: WorkerLicenceAppResponse): void {
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 		const soleProprietorData = {
