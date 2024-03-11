@@ -7,7 +7,7 @@ public interface ISecurityWorkerAppManager
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
-    public Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
+    public Task<IEnumerable<LicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand command, CancellationToken ct);
@@ -39,7 +39,7 @@ public record AnonymousWorkerLicenceAppUpdateCommand(
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
-public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<WorkerLicenceAppListResponse>>;
+public record GetWorkerLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceAppListResponse>>;
 
 public record WorkerLicenceAppResponse : WorkerLicenceAppBase
 {
@@ -50,7 +50,7 @@ public record WorkerLicenceAppResponse : WorkerLicenceAppBase
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
 }
 
-public record WorkerLicenceAppListResponse
+public record LicenceAppListResponse
 {
     public Guid LicenceAppId { get; set; }
     public WorkerLicenceTypeCode ServiceTypeCode { get; set; }
