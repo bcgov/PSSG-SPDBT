@@ -29,11 +29,12 @@ namespace Spd.Manager.Licence
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
         public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
         public bool? HasNewMentalHealthCondition { get; set; }
-        public bool? HasNewCriminalRecordCharge { get; set; }
     }
 
     public record Applicant
     {
+        public Guid? LicenceId { get; set; }
+        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
         public string? GivenName { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
@@ -51,6 +52,7 @@ namespace Spd.Manager.Licence
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
         public string? CriminalChargeDescription { get; set; }
+        public bool? HasNewCriminalRecordCharge { get; set; }
     }
     public record ApplicantProfileResponse : Applicant
     {
