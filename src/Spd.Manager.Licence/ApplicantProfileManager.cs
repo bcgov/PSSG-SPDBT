@@ -139,7 +139,7 @@ namespace Spd.Manager.Licence
                 .ToList();
             
             foreach (var documentUrlId in documentsToRemove)
-                await _documentRepository.ManageAsync(new RemoveDocumentCmd(documentUrlId), ct);
+                await _documentRepository.ManageAsync(new DeactivateDocumentCmd(documentUrlId), ct);
 
             return default;
         }
