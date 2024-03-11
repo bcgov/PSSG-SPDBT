@@ -133,7 +133,10 @@ namespace Spd.Manager.Licence
             // Remove documents that are not in previous document ids
             DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
             List<Guid> previousDocumentIds = (List<Guid>)cmd.ApplicantUpdateRequest?.PreviousDocumentIds ?? [];
-            List<Guid> documentsToRemove = docListResps.Items.Where(d => !previousDocumentIds.Contains(d.DocumentUrlId)).Select(d => d.DocumentUrlId).ToList();
+            List<Guid> documentsToRemove = docListResps.Items
+                .Where(d => !previousDocumentIds.Contains(d.DocumentUrlId) && (d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm || d.DocumentType == DocumentTypeEnum.LetterOfNoConflict))
+                .Select(d => d.DocumentUrlId)
+                .ToList();
             
             foreach (var documentUrlId in documentsToRemove)
                 await _documentRepository.ManageAsync(new RemoveDocumentCmd(documentUrlId), ct);
