@@ -67,6 +67,7 @@ internal class DocumentRepository : IDocumentRepository
             ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
             UpdateDocumentCmd c => await DocumentUpdateAsync(c, ct),
             CopyDocumentCmd c => await DocumentCopyAsync(c, ct),
+            DeactivateDocumentCmd c => await DocumentDeactivateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -314,6 +315,16 @@ internal class DocumentRepository : IDocumentRepository
 
     }
 
+    private async Task<DocumentResp> DocumentDeactivateAsync(DeactivateDocumentCmd cmd, CancellationToken ct)
+    {
+        bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
+        if (documenturl == null) { return null; }
+        documenturl.statecode = DynamicsConstants.StateCode_Inactive;
+        documenturl.statuscode = DynamicsConstants.StatusCode_Inactive;
+        _context.UpdateObject(documenturl);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<DocumentResp>(documenturl);
+    }
 }
 
 
