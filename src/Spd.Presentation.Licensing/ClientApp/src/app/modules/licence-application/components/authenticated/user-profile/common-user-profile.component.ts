@@ -45,6 +45,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					[form]="residentialAddressFormGroup"
 					[isWizardStep]="false"
 					[isReadOnly]="true"
+					[isCheckboxReadOnly]="false"
 				></app-common-residential-address>
 			</div>
 
@@ -52,7 +53,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 				<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
 					<div class="mb-3">
 						<mat-icon style="vertical-align: bottom;">label_important</mat-icon> My mailing address is the same as my
-						business address
+						residential address
 					</div>
 				</ng-container>
 				<ng-template #mailingIsDifferentThanResidential>

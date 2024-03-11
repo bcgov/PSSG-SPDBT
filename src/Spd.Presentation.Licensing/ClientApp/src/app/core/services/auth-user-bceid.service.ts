@@ -12,7 +12,7 @@ export class AuthUserBceidService {
 	async whoAmIAsync(): Promise<boolean> {
 		this.clearUserData();
 
-		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet()); // TODO correct? apiBizLicenceWhoamiGet());
+		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet());
 		if (resp) {
 			this.bceidUserProfile = resp;
 			return Promise.resolve(true);

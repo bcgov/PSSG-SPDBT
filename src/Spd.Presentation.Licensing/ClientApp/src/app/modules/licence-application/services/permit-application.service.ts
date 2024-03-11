@@ -460,39 +460,39 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		if (profile) {
 			const personalInformationData = {
-				givenName: profile.firstName,
+				givenName: profile.givenName,
 				middleName1: profile.middleName1,
 				middleName2: profile.middleName2,
-				surname: profile.lastName,
-				dateOfBirth: profile.birthDate,
-				genderCode: profile.gender,
+				surname: profile.surname,
+				dateOfBirth: profile.dateOfBirth,
+				genderCode: profile.genderCode,
 			};
 
 			const contactInformationData = {
-				contactEmailAddress: profile.emailAddress,
-				contactPhoneNumber: profile.phoneNumber,
+				contactEmailAddress: profile.contactEmailAddress,
+				contactPhoneNumber: profile.contactPhoneNumber,
 			};
 
 			const residentialAddressData = {
 				addressSelected: true,
 				isMailingTheSameAsResidential: false,
-				addressLine1: profile.residentialAddress?.addressLine1,
-				addressLine2: profile.residentialAddress?.addressLine2,
-				city: profile.residentialAddress?.city,
-				country: profile.residentialAddress?.country,
-				postalCode: profile.residentialAddress?.postalCode,
-				province: profile.residentialAddress?.province,
+				addressLine1: profile.residentialAddressData?.addressLine1,
+				addressLine2: profile.residentialAddressData?.addressLine2,
+				city: profile.residentialAddressData?.city,
+				country: profile.residentialAddressData?.country,
+				postalCode: profile.residentialAddressData?.postalCode,
+				province: profile.residentialAddressData?.province,
 			};
 
 			const mailingAddressData = {
 				addressSelected: true,
 				isMailingTheSameAsResidential: false,
-				addressLine1: profile.mailingAddress?.addressLine1,
-				addressLine2: profile.mailingAddress?.addressLine2,
-				city: profile.mailingAddress?.city,
-				country: profile.mailingAddress?.country,
-				postalCode: profile.mailingAddress?.postalCode,
-				province: profile.mailingAddress?.province,
+				addressLine1: profile.mailingAddressData?.addressLine1,
+				addressLine2: profile.mailingAddressData?.addressLine2,
+				city: profile.mailingAddressData?.city,
+				country: profile.mailingAddressData?.country,
+				postalCode: profile.mailingAddressData?.postalCode,
+				province: profile.mailingAddressData?.province,
 			};
 
 			this.permitModelFormGroup.patchValue(

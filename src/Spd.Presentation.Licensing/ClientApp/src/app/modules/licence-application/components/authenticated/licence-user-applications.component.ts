@@ -10,9 +10,7 @@ import {
 	WorkerLicenceAppListResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { SecurityWorkerLicensingService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -406,6 +404,17 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 							<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 						</button>
 					</div>
+
+					<div class="my-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onRenewSecurityWorkerLicence()"
+						>
+							<mat-icon>add</mat-icon>Renew a New Security Worker Licence
+						</button>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -493,61 +502,52 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	constructor(
 		private router: Router,
 		private dialog: MatDialog,
-		private authUserBcscService: AuthUserBcscService,
-		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.securityWorkerLicensingService
-			.apiApplicantsApplicantIdWorkerLicenceApplicationsGet({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			})
-			.pipe()
-			.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
-				const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
-				const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
-				const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
-				// TODO remove when backend updated...
-				// If 30 days or more have passed since the last save, the application does not appear in this list
-				const inProgressResults = resp.filter(
-					(item: WorkerLicenceAppListResponse) =>
-						item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
-						// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
-						(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-							moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
-				);
-				// const activeResults = resp.filter(
-				// 	(item: WorkerLicenceAppListResponse) =>
-				// 		item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
-				// );
-				// const expiredResults = resp.filter(
-				// 	(item: WorkerLicenceAppListResponse) =>
-				// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress &&
-				// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.Draft
-				// );
-				this.isNoActiveOrExpiredLicences = resp.length === 0;
-				// this.isAllowCreateNew = true;
-				// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
-				inProgressResults.map((item: any) => {
-					if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
-						item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
-						item.isWarningMessage = false;
-						item.isErrorMessage = false;
-						if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
-							item.isErrorMessage = true;
-						} else if (
-							moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))
-						) {
-							item.isWarningMessage = true;
-						}
+		this.licenceApplicationService.userApplicationsList().subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
+			const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
+			const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
+			const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
+			// TODO remove when backend updated...
+			// If 30 days or more have passed since the last save, the application does not appear in this list
+			const inProgressResults = resp.filter(
+				(item: WorkerLicenceAppListResponse) =>
+					item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+					// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+					(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+						moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
+			);
+			// const activeResults = resp.filter(
+			// 	(item: WorkerLicenceAppListResponse) =>
+			// 		item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+			// );
+			// const expiredResults = resp.filter(
+			// 	(item: WorkerLicenceAppListResponse) =>
+			// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress &&
+			// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.Draft
+			// );
+			this.isNoActiveOrExpiredLicences = resp.length === 0;
+			// this.isAllowCreateNew = true;
+			// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
+			inProgressResults.map((item: any) => {
+				if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
+					item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
+					item.isWarningMessage = false;
+					item.isErrorMessage = false;
+					if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
+						item.isErrorMessage = true;
+					} else if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))) {
+						item.isWarningMessage = true;
 					}
-				});
-				// this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
-				// this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
-				this.inProgressDataSource = new MatTableDataSource((inProgressResults as Array<WorkerLicenceInProgress>) ?? []);
+				}
 			});
+			// this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
+			// this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
+			this.inProgressDataSource = new MatTableDataSource((inProgressResults as Array<WorkerLicenceInProgress>) ?? []);
+		});
 	}
 
 	ngOnDestroy() {
@@ -672,6 +672,23 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	// 		)
 	// 		.subscribe();
 	// }
+
+	onRenewSecurityWorkerLicence(): void {
+		this.licenceApplicationService
+			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Renewal)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
 
 	onCreateNewSecurityWorkerLicence(): void {
 		this.licenceApplicationService

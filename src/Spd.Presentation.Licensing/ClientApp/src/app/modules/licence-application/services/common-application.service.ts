@@ -68,6 +68,10 @@ export class CommonApplicationService {
 			);
 	}
 
+	setApplicationTitleText(title: string, mobileTitle?: string | null | undefined) {
+		this.applicationTitle$.next([title, mobileTitle ? mobileTitle : title]);
+	}
+
 	setApplicationTitle(
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined = undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,

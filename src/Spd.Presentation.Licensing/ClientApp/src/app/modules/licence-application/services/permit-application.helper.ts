@@ -664,8 +664,6 @@ export abstract class PermitApplicationHelper {
 				? null
 				: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianResident),
 			//-----------------------------------
-			useBcServicesCardPhoto: false, // TODO remove later
-			//-----------------------------------
 			rationale: permitRationaleData.rationale,
 			//-----------------------------------
 			...employerData,

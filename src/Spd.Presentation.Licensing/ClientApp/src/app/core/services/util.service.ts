@@ -40,7 +40,8 @@ export class UtilService {
 
 	//------------------------------------
 	// Generic
-	getFullName(firstName: string | null | undefined, lastName: string | null | undefined): string {
+	getFullName(firstName: string | null | undefined, lastName: string | null | undefined): string | null {
+		if (!firstName && !lastName) return null;
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 

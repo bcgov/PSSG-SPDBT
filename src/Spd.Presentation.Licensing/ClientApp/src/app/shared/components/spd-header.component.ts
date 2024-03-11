@@ -130,8 +130,6 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		const loginType = this.authProcessService.identityProvider;
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			console.debug('applicantLoginProfile', this.authUserBcscService.applicantLoginProfile);
-
 			const name = this.utilService.getFullName(
 				this.authUserBcscService.applicantLoginProfile?.firstName,
 				this.authUserBcscService.applicantLoginProfile?.lastName

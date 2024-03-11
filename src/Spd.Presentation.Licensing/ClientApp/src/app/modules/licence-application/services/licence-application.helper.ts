@@ -686,14 +686,14 @@ export abstract class LicenceApplicationHelper {
 */
 
 		const requestbody: ApplicantUpdateRequest = {
-			firstName: personalInformationData.givenName,
-			lastName: personalInformationData.surname,
+			givenName: personalInformationData.givenName,
+			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
 			middleName2: personalInformationData.middleName2,
-			birthDate: personalInformationData.dateOfBirth,
-			emailAddress: contactInformationData.contactEmailAddress,
-			phoneNumber: contactInformationData.contactPhoneNumber,
-			gender: personalInformationData.genderCode,
+			dateOfBirth: personalInformationData.dateOfBirth,
+			contactEmailAddress: contactInformationData.contactEmailAddress,
+			contactPhoneNumber: contactInformationData.contactPhoneNumber,
+			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			aliases:
 				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
@@ -713,10 +713,10 @@ export abstract class LicenceApplicationHelper {
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			// isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
-			mailingAddress: residentialAddressData.isMailingTheSameAsResidential
+			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
 				? residentialAddressData
 				: mailingAddressData,
-			residentialAddress: residentialAddressData,
+			residentialAddressData: residentialAddressData,
 		};
 
 		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
@@ -1312,8 +1312,6 @@ export abstract class LicenceApplicationHelper {
 			residentialAddressData,
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
-			//-----------------------------------
-			useBcServicesCardPhoto: false, // TODO remove later
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
 			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal

@@ -22,9 +22,10 @@ export class CommonResidentialAddressComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadOnly = false;
+	@Input() isCheckboxReadOnly = false;
 
 	ngOnInit(): void {
-		if (this.isReadOnly) {
+		if (this.isCheckboxReadOnly) {
 			this.isMailingTheSameAsResidential.disable({ emitEvent: false });
 		} else {
 			this.isMailingTheSameAsResidential.enable();

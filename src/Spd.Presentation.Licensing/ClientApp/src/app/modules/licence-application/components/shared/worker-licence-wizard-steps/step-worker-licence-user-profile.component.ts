@@ -103,10 +103,15 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 			</div>
 		</div>
 
-		<div class="row wizard-button-row">
-			<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 mx-auto">
+		<div class="row mt-3">
+			<div class="offset-xl-6 offset-lg-5 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
+					<i class="fa fa-times mr-2"></i>Cancel
+				</button>
+			</div>
+			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">
-					Continue to Application
+					Save & Continue to Application
 				</button>
 			</div>
 		</div>

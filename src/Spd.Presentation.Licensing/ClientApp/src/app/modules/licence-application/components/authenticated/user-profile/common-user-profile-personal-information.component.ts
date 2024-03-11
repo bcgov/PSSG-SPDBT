@@ -101,18 +101,18 @@ export class CommonUserProfilePersonalInformationComponent implements LicenceChi
 
 	get fullname(): string {
 		return this.utilService.getFullNameWithMiddle(
-			this.firstName?.value,
+			this.givenName?.value,
 			this.middleName1?.value,
 			this.middleName2?.value,
-			this.lastName?.value
+			this.surname?.value
 		);
 	}
 
-	get lastName(): FormControl {
-		return this.form.get('lastName') as FormControl;
+	get surname(): FormControl {
+		return this.form.get('surname') as FormControl;
 	}
-	get firstName(): FormControl {
-		return this.form.get('firstName') as FormControl;
+	get givenName(): FormControl {
+		return this.form.get('givenName') as FormControl;
 	}
 	get middleName1(): FormControl {
 		return this.form.get('middleName1') as FormControl;

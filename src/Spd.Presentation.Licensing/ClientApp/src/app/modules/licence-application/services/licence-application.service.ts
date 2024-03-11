@@ -16,6 +16,7 @@ import {
 	LicenceResponse,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppAnonymousSubmitRequest,
+	WorkerLicenceAppListResponse,
 	WorkerLicenceAppResponse,
 	WorkerLicenceCommandResponse,
 	WorkerLicenceTypeCode,
@@ -384,6 +385,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	// AUTHENTICATED
 	/*************************************************************/
 
+	userApplicationsList(): Observable<Array<WorkerLicenceAppListResponse>> {
+		return this.securityWorkerLicensingService
+			.apiApplicantsApplicantIdWorkerLicenceApplicationsGet({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			})
+			.pipe(
+				tap((_resp: any) => {
+					this.commonApplicationService.setApplicationTitle();
+				})
+			);
+	}
+
 	/**
 	 * Load a user profile
 	 * @returns
@@ -458,7 +471,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 							this.initialized = true;
 
-							this.commonApplicationService.setApplicationTitle();
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityWorkerLicence,
+								ApplicationTypeCode.New
+							);
 						})
 					);
 				})
@@ -636,6 +652,84 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.applyLicenceIntoModel(workerLicence);
 			})
 		);
+	}
+
+	/**
+	 * Load an existing licence application with an access code
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithSelectionAuthenticated(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceAppResponse> {
+		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!).pipe(
+			tap((_resp: any) => {
+				// this.licenceModelFormGroup.patchValue(
+				// 	{
+				// 		originalApplicationId: accessCodeData.linkedLicenceAppId,
+				// 		originalLicenceId: accessCodeData.linkedLicenceId,
+				// 		originalLicenceNumber: accessCodeData.licenceNumber,
+				// 		originalExpiryDate: accessCodeData.linkedExpiryDate,
+				// 	},
+				// 	{ emitEvent: false }
+				// );
+
+				// this.commonApplicationService.setApplicationTitle(
+				// 	_resp.workerLicenceTypeCode,
+				// 	applicationTypeCode,
+				// 	accessCodeData.licenceNumber
+				// );
+
+				console.debug('[getLicenceWithSelectionAuthenticated] licenceFormGroup', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with a certain type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getLicenceOfTypeAuthenticated(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceAppResponse> {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return forkJoin([
+					this.loadExistingLicenceWithIdAuthenticated(licenceAppId),
+					this.licenceService.apiLicencesLicencePhotoGet(),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			case ApplicationTypeCode.Update: {
+				return forkJoin([
+					this.loadExistingLicenceWithIdAuthenticated(licenceAppId),
+					this.licenceService.apiLicencesLicencePhotoGet(),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			default: {
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+					tap((_resp: WorkerLicenceAppResponse) => {
+						this.initialized = true;
+					})
+				);
+			}
+		}
 	}
 
 	/*************************************************************/
@@ -1129,39 +1223,39 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const personalInformationData = {
-			givenName: profile.firstName,
+			givenName: profile.givenName,
 			middleName1: profile.middleName1,
 			middleName2: profile.middleName2,
-			surname: profile.lastName,
-			dateOfBirth: profile.birthDate,
-			genderCode: profile.gender,
+			surname: profile.surname,
+			dateOfBirth: profile.dateOfBirth,
+			genderCode: profile.genderCode,
 		};
 
 		const contactInformationData = {
-			contactEmailAddress: profile.emailAddress,
-			contactPhoneNumber: profile.phoneNumber,
+			contactEmailAddress: profile.contactEmailAddress,
+			contactPhoneNumber: profile.contactPhoneNumber,
 		};
 
 		const residentialAddressData = {
 			addressSelected: true,
 			isMailingTheSameAsResidential: false,
-			addressLine1: profile.residentialAddress?.addressLine1,
-			addressLine2: profile.residentialAddress?.addressLine2,
-			city: profile.residentialAddress?.city,
-			country: profile.residentialAddress?.country,
-			postalCode: profile.residentialAddress?.postalCode,
-			province: profile.residentialAddress?.province,
+			addressLine1: profile.residentialAddressData?.addressLine1,
+			addressLine2: profile.residentialAddressData?.addressLine2,
+			city: profile.residentialAddressData?.city,
+			country: profile.residentialAddressData?.country,
+			postalCode: profile.residentialAddressData?.postalCode,
+			province: profile.residentialAddressData?.province,
 		};
 
 		const mailingAddressData = {
 			addressSelected: true,
 			isMailingTheSameAsResidential: false,
-			addressLine1: profile.mailingAddress?.addressLine1,
-			addressLine2: profile.mailingAddress?.addressLine2,
-			city: profile.mailingAddress?.city,
-			country: profile.mailingAddress?.country,
-			postalCode: profile.mailingAddress?.postalCode,
-			province: profile.mailingAddress?.province,
+			addressLine1: profile.mailingAddressData?.addressLine1,
+			addressLine2: profile.mailingAddressData?.addressLine2,
+			city: profile.mailingAddressData?.city,
+			country: profile.mailingAddressData?.country,
+			postalCode: profile.mailingAddressData?.postalCode,
+			province: profile.mailingAddressData?.province,
 		};
 
 		const policeBackgroundDataAttachments: Array<File> = [];
