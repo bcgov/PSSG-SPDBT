@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import {
 	Alias,
 	ApplicantProfileResponse,
+	ApplicantUpdateRequest,
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
@@ -121,14 +122,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 	});
 
-	// licenceUserModelFormGroup: FormGroup = this.formBuilder.group({
-	// 	personalInformationData: this.personalInformationFormGroup,
-	// 	aliasesData: this.aliasesFormGroup,
-	// 	residentialAddressData: this.residentialAddressFormGroup,
-	// 	mailingAddressData: this.mailingAddressFormGroup,
-	// 	contactInformationData: this.contactInformationFormGroup,
-	// });
-
 	licenceModelChangedSubscription!: Subscription;
 
 	constructor(
@@ -172,116 +165,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Load a user profile
-	 * @returns
-	 */
-	loadUserProfile(): Observable<any> {
-		return this.createNewLicenceAuthenticated();
-	}
-
-	/**
-	 * Search for an existing licence using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getLicenceWithAccessCode(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponse> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(take(1));
-	}
-
-	/**
-	 * Load an existing licence application
-	 * @param licenceAppId
-	 * @returns
-	 */
-	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		console.debug('getLicenceToResume', licenceAppId);
-
-		return this.loadLicenceToResume(licenceAppId).pipe(
-			tap((resp: any) => {
-				console.debug('getLicenceToResume', resp);
-				this.initialized = true;
-			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application with an access code
-	 * @param licenceAppId
-	 * @returns
-	 */
-	getLicenceWithAccessCodeData(
-		accessCodeData: any,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceResponse> {
-		return this.getLicenceOfTypeUsingAccessCode(applicationTypeCode!).pipe(
-			tap((_resp: any) => {
-				this.licenceModelFormGroup.patchValue(
-					{
-						originalApplicationId: accessCodeData.linkedLicenceAppId,
-						originalLicenceId: accessCodeData.linkedLicenceId,
-						originalLicenceNumber: accessCodeData.licenceNumber,
-						originalExpiryDate: accessCodeData.linkedExpiryDate,
-					},
-					{ emitEvent: false }
-				);
-
-				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeCode,
-					applicationTypeCode,
-					accessCodeData.licenceNumber
-				);
-
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
-			})
-		);
-	}
-
-	/**
-	 * Create an empty anonymous licence
-	 * @returns
-	 */
-	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.createEmptyLicenceAnonymous(workerLicenceTypeCode).pipe(
-			tap((resp: any) => {
-				console.debug('[createNewLicenceAnonymous] resp', resp);
-
-				this.initialized = true;
-
-				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
-			})
-		);
-	}
-
-	/**
-	 * Create an empty authenticated licence
-	 * @returns
-	 */
-	createNewLicenceAuthenticated(): Observable<any> {
-		return this.applicantProfileService
-			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
-			.pipe(
-				switchMap((resp: ApplicantProfileResponse) => {
-					return this.createEmptyLicenceAuthenticated(resp).pipe(
-						tap((_resp: any) => {
-							this.initialized = true;
-
-							this.commonApplicationService.setApplicationTitle();
-						})
-					);
-				})
-			)
-			.pipe(take(1));
-	}
-
-	/**
 	 * Reset the licence data
 	 * @returns
 	 */
@@ -299,7 +182,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		while (aliasesArray.length) {
 			aliasesArray.removeAt(0);
 		}
-		this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
 
 		console.debug('reset.initialized', this.initialized, this.licenceModelFormGroup.value);
 	}
@@ -498,11 +380,37 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return shouldSaveStep;
 	}
 
+	/*************************************************************/
+	// AUTHENTICATED
+	/*************************************************************/
+
+	/**
+	 * Load a user profile
+	 * @returns
+	 */
+	loadUserProfile(): Observable<any> {
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((resp: ApplicantProfileResponse) => {
+					return this.createEmptyLicenceAuthenticated(resp, undefined).pipe(
+						tap((_resp: any) => {
+							console.debug('[createNewLicenceAuthenticated] resp', _resp);
+
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle();
+						})
+					);
+				})
+			);
+	}
+
 	/**
 	 * Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	saveLicenceStep(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
@@ -516,7 +424,290 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 	}
 
-	private createEmptyLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		console.debug('getLicenceToResume', licenceAppId);
+
+		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+			tap((resp: any) => {
+				console.debug('[getLicenceToResume] licenceModelFormGroup', resp);
+
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle();
+			})
+		);
+	}
+
+	/**
+	 * Create an empty authenticated licence
+	 * @returns
+	 */
+	createNewLicenceAuthenticated(): Observable<any> {
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((resp: ApplicantProfileResponse) => {
+					return this.createEmptyLicenceAuthenticated(resp, ApplicationTypeCode.New).pipe(
+						tap((_resp: any) => {
+							console.debug('[createNewLicenceAuthenticated] resp', _resp);
+
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle();
+						})
+					);
+				})
+			);
+	}
+
+	/**
+	 * Save the login user profile
+	 * @returns
+	 */
+	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
+		const documentsToSave = this.getProfileDocsToSaveAnonymousBlobs(licenceModelFormValue);
+
+		// // Get the keyCode for the existing documents to save.
+		// const existingDocumentIds: Array<string> = [];
+		// let newDocumentsExist = false;
+		// body.documentInfos?.forEach((doc: Document) => {
+		// 	if (doc.documentUrlId) {
+		// 		existingDocumentIds.push(doc.documentUrlId);
+		// 	} else {
+		// 		newDocumentsExist = true;
+		// 	}
+		// });
+
+		// delete body.documentInfos;
+
+		// // Get the keyCode for the existing documents to save.
+		// const existingDocumentIds: Array<string> = [];
+		// let newDocumentsExist = false;
+		// body.documentInfos?.forEach((doc: Document) => {
+		// 	if (doc.documentUrlId) {
+		// 		existingDocumentIds.push(doc.documentUrlId);
+		// 	} else {
+		// 		newDocumentsExist = true;
+		// 	}
+		// });
+
+		// delete body.documentInfos;
+
+		/*
+		const documentKeyCodes: null | Array<string> = []; xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentKeyCodes.push(doc.documentUrlId);
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentKeyCodes.push(doc.documentUrlId);
+		});
+
+		
+
+		const documentInfos: Array<Document> = [];
+
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+			});
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+			});
+		});
+
+
+
+
+
+
+		
+
+		const documents: Array<LicenceDocumentsToSave> = [];
+		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
+
+		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+		}
+
+
+*/
+
+		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[submitLicenceAnonymous] getProfileSaveBody', body);
+		console.debug('[submitLicenceAnonymous] getProfileDocsToSaveAnonymousBlobs', documentsToSave);
+		// console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		// console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
+
+		// const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		// if (newDocumentsExist) {
+		// 	return this.postLicenceAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
+		// } else {
+		// 	return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
+		// }
+
+		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			body,
+		});
+	}
+
+	/**
+	 * Submit the licence data
+	 * @returns
+	 */
+	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// delete body.documentExpiredInfos;
+
+		console.debug('submitLicenceAuthenticated body', body);
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+	}
+
+	private createEmptyLicenceAuthenticated(
+		profile: ApplicantProfileResponse,
+		applicationTypeCode: ApplicationTypeCode | undefined
+	): Observable<any> {
+		this.reset();
+
+		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode);
+	}
+
+	private loadExistingLicenceWithIdAuthenticated(licenceAppId: string): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return forkJoin([
+			this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		]).pipe(
+			switchMap((resps: any[]) => {
+				const workerLicenceResponse = resps[0];
+				const profile = resps[1];
+
+				return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profile).pipe(
+					tap((_resp: any) => {
+						console.debug('[loadExistingLicenceWithIdAuthenticated] resp', _resp);
+					})
+				);
+			})
+		);
+	}
+
+	private applyLicenceAndProfileIntoModel(
+		workerLicence: WorkerLicenceResponse,
+		profile: ApplicantProfileResponse
+	): Observable<any> {
+		return this.applyLicenceProfileIntoModel(profile, workerLicence.applicationTypeCode).pipe(
+			tap((resp: any) => {
+				console.debug('[populateProfileLicenceAuthenticated] resp', resp);
+
+				this.applyLicenceIntoModel(workerLicence);
+			})
+		);
+	}
+
+	/*************************************************************/
+	// ANONYMOUS
+	/*************************************************************/
+
+	/**
+	 * Search for an existing licence using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @param recaptchaCode
+	 * @returns
+	 */
+	getLicenceWithAccessCodeAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceResponse> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(take(1));
+	}
+
+	/**
+	 * Load an existing licence application with an access code
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithAccessCodeDataAnonymous(
+		accessCodeData: any,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
+		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!).pipe(
+			tap((_resp: any) => {
+				this.licenceModelFormGroup.patchValue(
+					{
+						originalApplicationId: accessCodeData.linkedLicenceAppId,
+						originalLicenceId: accessCodeData.linkedLicenceId,
+						originalLicenceNumber: accessCodeData.licenceNumber,
+						originalExpiryDate: accessCodeData.linkedExpiryDate,
+					},
+					{ emitEvent: false }
+				);
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeCode,
+					applicationTypeCode,
+					accessCodeData.licenceNumber
+				);
+
+				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Create an empty anonymous licence
+	 * @returns
+	 */
+	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+		return this.getLicenceEmptyAnonymous(workerLicenceTypeCode).pipe(
+			tap((resp: any) => {
+				console.debug('[createNewLicenceAnonymous] resp', resp);
+
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
+			})
+		);
+	}
+
+	private getLicenceEmptyAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
@@ -535,86 +726,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private createEmptyLicenceAuthenticated(profile: ApplicantProfileResponse | undefined): Observable<any> {
-		this.reset();
-
-		if (profile) {
-			const personalInformationData = {
-				givenName: profile.firstName,
-				middleName1: profile.middleName1,
-				middleName2: profile.middleName2,
-				surname: profile.lastName,
-				dateOfBirth: profile.birthDate,
-				genderCode: profile.gender,
-			};
-
-			const contactInformationData = {
-				contactEmailAddress: profile.emailAddress,
-				// contactPhoneNumber: profile.phoneNumber // TODO missing phone number
-			};
-
-			const residentialAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: false,
-				addressLine1: profile.residentialAddress?.addressLine1,
-				addressLine2: profile.residentialAddress?.addressLine2,
-				city: profile.residentialAddress?.city,
-				country: profile.residentialAddress?.country,
-				postalCode: profile.residentialAddress?.postalCode,
-				province: profile.residentialAddress?.province,
-			};
-
-			const mailingAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: false,
-				addressLine1: profile.mailingAddress?.addressLine1,
-				addressLine2: profile.mailingAddress?.addressLine2,
-				city: profile.mailingAddress?.city,
-				country: profile.mailingAddress?.country,
-				postalCode: profile.mailingAddress?.postalCode,
-				province: profile.mailingAddress?.province,
-			};
-
-			this.licenceModelFormGroup.patchValue(
-				{
-					personalInformationData: { ...personalInformationData },
-					residentialAddressData: { ...residentialAddressData },
-					mailingAddressData: { ...mailingAddressData },
-					contactInformationData: { ...contactInformationData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		} else {
-			const residentialAddressData = {
-				isMailingTheSameAsResidential: false,
-			};
-
-			this.licenceModelFormGroup.patchValue(
-				{
-					residentialAddressData: { ...residentialAddressData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		}
-
-		return of(this.licenceModelFormGroup.value);
-	}
-
 	/**
 	 * Load an existing licence application with a certain type
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private getLicenceOfTypeUsingAccessCode(applicationTypeCode: ApplicationTypeCode): Observable<WorkerLicenceResponse> {
+	private getLicenceOfTypeUsingAccessCodeAnonymous(
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadLicenceRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([this.loadLicenceRenewalAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
 					map((resps: any[]) => {
 						this.initialized = true;
@@ -624,7 +746,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return forkJoin([this.loadLicenceUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([this.loadLicenceUpdateAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
 					map((resps: any[]) => {
 						this.initialized = true;
@@ -634,13 +756,209 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 			}
 			default: {
-				return this.loadLicenceReplacement().pipe(
+				return this.loadLicenceReplacementAnonymous().pipe(
 					tap((_resp: WorkerLicenceResponse) => {
 						this.initialized = true;
 					})
 				);
 			}
 		}
+	}
+
+	/**
+	 * Load an existing licence application for renewal
+	 * @returns
+	 */
+	private loadLicenceRenewalAnonymous(): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicenceAnonymous().pipe(
+			tap((_resp: WorkerLicenceResponse) => {
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+
+				// Remove data that should be re-prompted for
+				const soleProprietorData = {
+					isSoleProprietor: null,
+					businessTypeCode: null,
+				};
+				const fingerprintProofData = {
+					attachments: [],
+				};
+				const licenceTermData = {
+					licenceTermCode: null,
+				};
+				// const aliasesData = { previousNameFlag: null, aliases: [] };
+				const bcDriversLicenceData = {
+					hasBcDriversLicence: null,
+					bcDriversLicenceNumber: null,
+				};
+
+				// If they do not have canadian citizenship, they have to show proof for renewal
+				let citizenshipData = {};
+				if (!_resp.isCanadianCitizen) {
+					citizenshipData = {
+						isCanadianCitizen: BooleanTypeCode.No,
+						canadianCitizenProofTypeCode: null,
+						notCanadianCitizenProofTypeCode: null,
+						expiryDate: null,
+						attachments: [],
+						governmentIssuedPhotoTypeCode: null,
+						governmentIssuedExpiryDate: null,
+						governmentIssuedAttachments: [],
+					};
+				}
+
+				const mentalHealthConditionsData = {
+					isTreatedForMHC: null,
+					attachments: [],
+					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
+				};
+
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
+
+				let originalPhotoOfYourselfLastUpload = null;
+				const photoOfYourselfDocs = _resp.documentInfos?.find(
+					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
+				);
+				if (photoOfYourselfDocs) {
+					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
+				}
+
+				// We require a new photo every 5 years. Please provide a new photo for your licence
+				const yearsDiff = moment()
+					.startOf('day')
+					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+				let photographOfYourselfData = {};
+				if (originalPhotoOfYourselfExpired) {
+					// clear out data to force user to upload a new photo
+					photographOfYourselfData = {
+						attachments: [],
+					};
+				}
+
+				// If applicant is renewing a licence where they already had authorization to use dogs,
+				// clear attachments to force user to upload a new proof of qualification.
+				const originalDogAuthorizationExists = _resp.useDogs;
+				let dogsAuthorizationData = {};
+				if (originalDogAuthorizationExists) {
+					dogsAuthorizationData = {
+						useDogs: this.utilService.booleanToBooleanType(_resp.useDogs),
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
+							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
+							isDogsPurposeProtection: _resp.isDogsPurposeProtection,
+						},
+						attachments: [],
+					};
+				}
+
+				this.licenceModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						applicationTypeData,
+						originalLicenceTermCode: _resp.licenceTermCode,
+						originalPhotoOfYourselfExpired,
+						originalDogAuthorizationExists,
+
+						soleProprietorData,
+						licenceTermData,
+						fingerprintProofData,
+						bcDriversLicenceData,
+						// aliasesData,
+						photographOfYourselfData,
+						citizenshipData,
+						dogsAuthorizationData,
+						mentalHealthConditionsData,
+						criminalHistoryData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				console.debug('[loadLicenceRenewal] licenceModel', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application for update
+	 * @returns
+	 */
+	private loadLicenceUpdateAnonymous(): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicenceAnonymous().pipe(
+			tap((_resp: WorkerLicenceResponse) => {
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+
+				const mentalHealthConditionsData = {
+					isTreatedForMHC: null,
+					attachments: [],
+					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
+				};
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
+
+				this.licenceModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						applicationTypeData,
+						originalLicenceTermCode: _resp.licenceTermCode,
+						mentalHealthConditionsData,
+						criminalHistoryData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				console.debug('[loadLicenceUpdate] licenceModel', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application for replacement
+	 * @returns
+	 */
+	private loadLicenceReplacementAnonymous(): Observable<WorkerLicenceResponse> {
+		return this.loadExistingLicenceAnonymous().pipe(
+			tap((_resp: any) => {
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
+
+				const residentialAddressData = {
+					isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
+				};
+
+				this.licenceModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						applicationTypeData,
+						originalLicenceTermCode: _resp.licenceTermCode,
+						residentialAddressData: { ...residentialAddressData },
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				console.debug('[loadLicenceReplacement] licenceModel', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	private loadExistingLicenceAnonymous(): Observable<WorkerLicenceResponse> {
+		this.reset();
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
+			tap((resp: WorkerLicenceResponse) => {
+				this.applyLicenceIntoModel(resp);
+			})
+		);
 	}
 
 	private setPhotographOfYourself(image: Blob | null): void {
@@ -656,29 +974,271 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 	}
 
-	private loadExistingLicence(): Observable<WorkerLicenceResponse> {
-		this.reset();
+	/**
+	 * Submit the licence data anonymous
+	 * @returns
+	 */
+	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
-			tap((resp: WorkerLicenceResponse) => {
-				this.loadSpecificLicenceIntoModel(resp);
-			})
-		);
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		let newDocumentsExist = false;
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			} else {
+				newDocumentsExist = true;
+			}
+		});
+
+		delete body.documentInfos;
+
+		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
+		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
+		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
+
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		if (newDocumentsExist) {
+			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
+		} else {
+			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
+		}
 	}
 
-	private loadExistingLicenceWithId(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		this.reset();
+	/**
+	 * Submit the licence data for replacement anonymous
+	 * @returns
+	 */
+	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
-			tap((resp: WorkerLicenceResponse) => {
-				this.loadSpecificLicenceIntoModel(resp);
-			})
-		);
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		body.documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			}
+		});
+
+		delete body.documentInfos;
+
+		console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
+
+		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
 	}
 
-	private loadSpecificLicenceIntoModel(resp: WorkerLicenceResponse): void {
-		// const bcscUserWhoamiProfile = this.authUserBcscService.bcscUserWhoamiProfile;
+	/**
+	 * Post licence anonymous. This licence must not have any new documents (for example: with an update or replacement)
+	 * @returns
+	 */
+	private postLicenceAnonymousNoNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
+		body: WorkerLicenceAppAnonymousSubmitRequest
+	) {
+		return this.securityWorkerLicensingService
+			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((_resp: IActionResult) => {
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
+	}
+
+	/**
+	 * Post licence anonymous. This licence has new documents (for example: with new or renew)
+	 * @returns
+	 */
+	private postLicenceAnonymousNewDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		existingDocumentIds: Array<string>,
+		documentsToSave: Array<LicenceDocumentsToSave>,
+		body: WorkerLicenceAppAnonymousSubmitRequest
+	) {
+		return this.securityWorkerLicensingService
+			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((_resp: IActionResult) => {
+					const documentsToSaveApis: Observable<string>[] = [];
+					documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+						// Only pass new documents and get a keyCode for each of those.
+						const newDocumentsOnly: Array<Blob> = [];
+						docBody.documents.forEach((doc: any) => {
+							if (!doc.documentUrlId) {
+								newDocumentsOnly.push(doc);
+							}
+						});
+
+						// should always be at least one new document
+						if (newDocumentsOnly.length > 0) {
+							documentsToSaveApis.push(
+								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
+									body: {
+										Documents: newDocumentsOnly,
+										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+									},
+								})
+							);
+						}
+					});
+
+					return forkJoin(documentsToSaveApis);
+				}),
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
+
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
+	}
+
+	/*************************************************************/
+	// COMMON
+	/*************************************************************/
+
+	private applyLicenceProfileIntoModel(
+		profile: ApplicantProfileResponse | WorkerLicenceResponse,
+		applicationTypeCode: ApplicationTypeCode | undefined
+	): Observable<any> {
+		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+
+		const personalInformationData = {
+			givenName: profile.firstName,
+			middleName1: profile.middleName1,
+			middleName2: profile.middleName2,
+			surname: profile.lastName,
+			dateOfBirth: profile.birthDate,
+			genderCode: profile.gender,
+		};
+
+		const contactInformationData = {
+			contactEmailAddress: profile.emailAddress,
+			contactPhoneNumber: profile.phoneNumber,
+		};
+
+		const residentialAddressData = {
+			addressSelected: true,
+			isMailingTheSameAsResidential: false,
+			addressLine1: profile.residentialAddress?.addressLine1,
+			addressLine2: profile.residentialAddress?.addressLine2,
+			city: profile.residentialAddress?.city,
+			country: profile.residentialAddress?.country,
+			postalCode: profile.residentialAddress?.postalCode,
+			province: profile.residentialAddress?.province,
+		};
+
+		const mailingAddressData = {
+			addressSelected: true,
+			isMailingTheSameAsResidential: false,
+			addressLine1: profile.mailingAddress?.addressLine1,
+			addressLine2: profile.mailingAddress?.addressLine2,
+			city: profile.mailingAddress?.city,
+			country: profile.mailingAddress?.country,
+			postalCode: profile.mailingAddress?.postalCode,
+			province: profile.mailingAddress?.province,
+		};
+
+		const policeBackgroundDataAttachments: Array<File> = [];
+		const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+		profile.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.MentalHealthCondition: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					mentalHealthConditionsDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					policeBackgroundDataAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const criminalHistoryData = {
+			hasCriminalHistory: this.utilService.booleanToBooleanType(profile.hasCriminalHistory),
+			criminalChargeDescription: '',
+		};
+
+		if ('criminalChargeDescription' in profile) {
+			criminalHistoryData.criminalChargeDescription = profile.criminalChargeDescription ?? '';
+		}
+
+		const policeBackgroundData = {
+			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profile.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: profile.policeOfficerRoleCode,
+			otherOfficerRole: profile.otherOfficerRole,
+			attachments: policeBackgroundDataAttachments,
+		};
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: this.utilService.booleanToBooleanType(profile.isTreatedForMHC),
+			attachments: mentalHealthConditionsDataAttachments,
+		};
+
+		this.licenceModelFormGroup.patchValue(
+			{
+				applicationTypeData,
+				personalInformationData: { ...personalInformationData },
+				residentialAddressData: { ...residentialAddressData },
+				mailingAddressData: { ...mailingAddressData },
+				contactInformationData: { ...contactInformationData },
+				aliasesData: {
+					previousNameFlag: this.utilService.booleanToBooleanType(profile.aliases && profile.aliases.length > 0),
+					aliases: [],
+				},
+				criminalHistoryData,
+				policeBackgroundData,
+				mentalHealthConditionsData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
+		profile.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		return of(this.licenceModelFormGroup.value);
+	}
+
+	private applyLicenceIntoModel(resp: WorkerLicenceResponse): void {
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 		const soleProprietorData = {
@@ -702,49 +1262,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 		};
 
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(resp.hasCriminalHistory),
-		};
-
-		const aliasesData = {
-			previousNameFlag: resp.hasPreviousName
-				? this.utilService.booleanToBooleanType(resp.hasPreviousName)
-				: BooleanTypeCode.No,
-		};
-
-		let personalInformationData = {};
-		// if (bcscUserWhoamiProfile) {// TODO fix for authenticated
-		// 	personalInformationData = {
-		// 		givenName: bcscUserWhoamiProfile.firstName,
-		// 		middleName1: bcscUserWhoamiProfile.middleName1,
-		// 		middleName2: bcscUserWhoamiProfile.middleName2,
-		// 		surname: bcscUserWhoamiProfile.lastName,
-		// 		genderCode: bcscUserWhoamiProfile.gender,
-		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
-		// 		origGivenName: bcscUserWhoamiProfile.firstName,
-		// 		origMiddleName1: bcscUserWhoamiProfile.middleName1,
-		// 		origMiddleName2: bcscUserWhoamiProfile.middleName2,
-		// 		origSurname: bcscUserWhoamiProfile.lastName,
-		// 		origGenderCode: bcscUserWhoamiProfile.gender,
-		// 		origDateOfBirth: bcscUserWhoamiProfile.birthDate,
-		// 	};
-		// } else {
-		personalInformationData = {
-			givenName: resp.givenName,
-			middleName1: resp.middleName1,
-			middleName2: resp.middleName2,
-			surname: resp.surname,
-			genderCode: resp.genderCode,
-			dateOfBirth: resp.dateOfBirth,
-			origGivenName: resp.givenName,
-			origMiddleName1: resp.middleName1,
-			origMiddleName2: resp.middleName2,
-			origSurname: resp.surname,
-			origGenderCode: resp.genderCode,
-			origDateOfBirth: resp.dateOfBirth,
-		};
-		// }
-
 		let height = resp.height ? resp.height + '' : null;
 		let heightInches = '';
 		if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
@@ -761,40 +1278,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			weight: resp.weight ? resp.weight + '' : null,
 			weightUnitCode: resp.weightUnitCode,
 		};
-
-		const contactInformationData = {
-			contactEmailAddress: resp.contactEmailAddress,
-			contactPhoneNumber: resp.contactPhoneNumber,
-		};
-
-		let residentialAddressData = {};
-		const isMailingTheSameAsResidential = resp.isMailingTheSameAsResidential ?? false;
-		// if (bcscUserWhoamiProfile) {// TODO fix for authenticated
-		// 	residentialAddressData = {
-		// 		addressSelected: true,
-		// 		isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
-		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
-		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
-		// 	};
-		// } else {
-		residentialAddressData = {
-			...resp.residentialAddressData,
-			isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-			addressSelected: !!resp.residentialAddressData?.addressLine1,
-		};
-		// }
-
-		let mailingAddressData = {};
-		// if (!isMailingTheSameAsResidential) {
-		mailingAddressData = {
-			...resp.mailingAddressData,
-			addressSelected: !!resp.mailingAddressData?.addressLine1,
-		};
-		// }
 
 		let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
 		let categoryClosedCircuitTelevisionInstallerFormGroup: any = { isInclude: false };
@@ -859,9 +1342,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		const policeBackgroundDataAttachments: Array<File> = [];
 		const fingerprintProofDataAttachments: Array<File> = [];
-		const mentalHealthConditionsDataAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
 		const governmentIssuedAttachments: Array<File> = [];
 
@@ -1102,19 +1583,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 					break;
 				}
-				case LicenceDocumentTypeCode.MentalHealthCondition: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					mentalHealthConditionsDataAttachments.push(aFile);
-					break;
-				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					photographOfYourselfAttachments.push(aFile);
-					break;
-				}
-				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					policeBackgroundDataAttachments.push(aFile);
 					break;
 				}
 				case LicenceDocumentTypeCode.ProofOfFingerprint: {
@@ -1125,20 +1596,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		const policeBackgroundData = {
-			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(resp.isPoliceOrPeaceOfficer),
-			policeOfficerRoleCode: resp.policeOfficerRoleCode,
-			otherOfficerRole: resp.otherOfficerRole,
-			attachments: policeBackgroundDataAttachments,
-		};
-
 		const fingerprintProofData = {
 			attachments: fingerprintProofDataAttachments,
-		};
-
-		const mentalHealthConditionsData = {
-			isTreatedForMHC: this.utilService.booleanToBooleanType(resp.isTreatedForMHC),
-			attachments: mentalHealthConditionsDataAttachments,
 		};
 
 		const photographOfYourselfData = {
@@ -1156,20 +1615,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				soleProprietorData,
 				expiredLicenceData,
 				licenceTermData,
-				policeBackgroundData,
 				bcDriversLicenceData,
-				mentalHealthConditionsData,
 				fingerprintProofData,
-				criminalHistoryData,
-				aliasesData,
-				personalInformationData,
 				characteristicsData,
 				citizenshipData,
 				photographOfYourselfData,
-				contactInformationData,
-				profileConfirmationData: { isProfileUpToDate: true },
-				residentialAddressData: { ...residentialAddressData },
-				mailingAddressData: { ...mailingAddressData },
+				// profileConfirmationData: { isProfileUpToDate: true },
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
 				categoryClosedCircuitTelevisionInstallerFormGroup,
@@ -1195,378 +1646,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
-		resp.aliases?.forEach((alias: Alias) => {
-			aliasesArray.push(
-				new FormGroup({
-					givenName: new FormControl(alias.givenName),
-					middleName1: new FormControl(alias.middleName1),
-					middleName2: new FormControl(alias.middleName2),
-					surname: new FormControl(alias.surname, [FormControlValidators.required]),
-				})
-			);
-		});
-
-		this.licenceModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
-
-		console.debug('[loadSpecificLicence] licenceModelFormGroup', this.licenceModelFormGroup.value);
-	}
-
-	/**
-	 * Load an existing draft licence application
-	 * @param licenceAppId
-	 * @returns
-	 */
-	private loadLicenceToResume(licenceAppId: string): Observable<WorkerLicenceResponse> {
-		return this.loadExistingLicenceWithId(licenceAppId).pipe(
-			tap((resp: any) => {
-				console.debug('loadLicenceToResume', resp);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application for renewal
-	 * @returns
-	 */
-	private loadLicenceRenewal(): Observable<WorkerLicenceResponse> {
-		return this.loadExistingLicence().pipe(
-			tap((_resp: WorkerLicenceResponse) => {
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-
-				// Remove data that should be re-prompted for
-				const soleProprietorData = {
-					isSoleProprietor: null,
-					businessTypeCode: null,
-				};
-				const fingerprintProofData = {
-					attachments: [],
-				};
-				const licenceTermData = {
-					licenceTermCode: null,
-				};
-				const aliasesData = { previousNameFlag: null, aliases: [] };
-				const bcDriversLicenceData = {
-					hasBcDriversLicence: null,
-					bcDriversLicenceNumber: null,
-				};
-
-				// If they do not have canadian citizenship, they have to show proof for renewal
-				let citizenshipData = {};
-				if (!_resp.isCanadianCitizen) {
-					citizenshipData = {
-						isCanadianCitizen: BooleanTypeCode.No,
-						canadianCitizenProofTypeCode: null,
-						notCanadianCitizenProofTypeCode: null,
-						expiryDate: null,
-						attachments: [],
-						governmentIssuedPhotoTypeCode: null,
-						governmentIssuedExpiryDate: null,
-						governmentIssuedAttachments: [],
-					};
-				}
-				const mentalHealthConditionsData = {
-					isTreatedForMHC: null,
-					attachments: [],
-					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
-				};
-				const criminalHistoryData = {
-					hasCriminalHistory: null,
-					criminalChargeDescription: null,
-				};
-
-				let originalPhotoOfYourselfLastUpload = null;
-				const photoOfYourselfDocs = _resp.documentInfos?.find(
-					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
-				);
-				if (photoOfYourselfDocs) {
-					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
-				}
-
-				// We require a new photo every 5 years. Please provide a new photo for your licence
-				const yearsDiff = moment()
-					.startOf('day')
-					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
-
-				let photographOfYourselfData = {};
-				if (originalPhotoOfYourselfExpired) {
-					// clear out data to force user to upload a new photo
-					photographOfYourselfData = {
-						attachments: [],
-					};
-				}
-
-				// If applicant is renewing a licence where they already had authorization to use dogs,
-				// clear attachments to force user to upload a new proof of qualification.
-				const originalDogAuthorizationExists = _resp.useDogs;
-				let dogsAuthorizationData = {};
-				if (originalDogAuthorizationExists) {
-					dogsAuthorizationData = {
-						useDogs: this.utilService.booleanToBooleanType(_resp.useDogs),
-						dogsPurposeFormGroup: {
-							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
-							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
-							isDogsPurposeProtection: _resp.isDogsPurposeProtection,
-						},
-						attachments: [],
-					};
-				}
-
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						applicationTypeData,
-						originalLicenceTermCode: _resp.licenceTermCode,
-						originalPhotoOfYourselfExpired,
-						originalDogAuthorizationExists,
-
-						soleProprietorData,
-						licenceTermData,
-						fingerprintProofData,
-						bcDriversLicenceData,
-						aliasesData,
-						photographOfYourselfData,
-						citizenshipData,
-						dogsAuthorizationData,
-						mentalHealthConditionsData,
-						criminalHistoryData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				console.debug('[loadLicenceRenewal] licenceModel', this.licenceModelFormGroup.value);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application for update
-	 * @returns
-	 */
-	private loadLicenceUpdate(): Observable<WorkerLicenceResponse> {
-		return this.loadExistingLicence().pipe(
-			tap((_resp: WorkerLicenceResponse) => {
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-
-				const mentalHealthConditionsData = {
-					isTreatedForMHC: null,
-					attachments: [],
-					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
-				};
-				const criminalHistoryData = {
-					hasCriminalHistory: null,
-					criminalChargeDescription: null,
-				};
-
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						applicationTypeData,
-						originalLicenceTermCode: _resp.licenceTermCode,
-						mentalHealthConditionsData,
-						criminalHistoryData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				console.debug('[loadLicenceUpdate] licenceModel', this.licenceModelFormGroup.value);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application for replacement
-	 * @returns
-	 */
-	private loadLicenceReplacement(): Observable<WorkerLicenceResponse> {
-		return this.loadExistingLicence().pipe(
-			tap((_resp: any) => {
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
-
-				const residentialAddressData = {
-					isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
-				};
-
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						applicationTypeData,
-						originalLicenceTermCode: _resp.licenceTermCode,
-						residentialAddressData: { ...residentialAddressData },
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				console.debug('[loadLicenceReplacement] licenceModel', this.licenceModelFormGroup.value);
-			})
-		);
-	}
-
-	/**
-	 * Submit the licence data
-	 * @returns
-	 */
-	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		// delete body.documentExpiredInfos;
-
-		console.debug('submitLicenceAuthenticated body', body);
-
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
-	}
-
-	/**
-	 * Submit the licence data anonymous
-	 * @returns
-	 */
-	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		let newDocumentsExist = false;
-		body.documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			} else {
-				newDocumentsExist = true;
-			}
-		});
-
-		delete body.documentInfos;
-
-		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
-		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
-
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		if (newDocumentsExist) {
-			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
-		} else {
-			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
-		}
-	}
-
-	/**
-	 * Submit the licence data for replacement anonymous
-	 * @returns
-	 */
-	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
-		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
-
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		body.documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			}
-		});
-
-		delete body.documentInfos;
-
-		console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
-
-		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
-		return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
-	}
-
-	/**
-	 * Post licence anonymous. This licence must not have any new documents (for example: with an update or replacement)
-	 * @returns
-	 */
-	private postLicenceAnonymousNoNewDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		existingDocumentIds: Array<string>,
-		body: WorkerLicenceAppAnonymousSubmitRequest
-	) {
-		return this.securityWorkerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((_resp: IActionResult) => {
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
-	}
-
-	/**
-	 * Post licence anonymous. This licence has new documents (for example: with new or renew)
-	 * @returns
-	 */
-	private postLicenceAnonymousNewDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		existingDocumentIds: Array<string>,
-		documentsToSave: Array<LicenceDocumentsToSave>,
-		body: WorkerLicenceAppAnonymousSubmitRequest
-	) {
-		return this.securityWorkerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((_resp: IActionResult) => {
-					const documentsToSaveApis: Observable<string>[] = [];
-					documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-						// Only pass new documents and get a keyCode for each of those.
-						const newDocumentsOnly: Array<Blob> = [];
-						docBody.documents.forEach((doc: any) => {
-							if (!doc.documentUrlId) {
-								newDocumentsOnly.push(doc);
-							}
-						});
-
-						// should always be at least one new document
-						if (newDocumentsOnly.length > 0) {
-							documentsToSaveApis.push(
-								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
-									body: {
-										Documents: newDocumentsOnly,
-										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-									},
-								})
-							);
-						}
-					});
-
-					return forkJoin(documentsToSaveApis);
-				}),
-				switchMap((resps: string[]) => {
-					// pass in the list of document key codes
-					body.documentKeyCodes = [...resps];
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
+		console.debug('[applyLicenceIntoModel] licenceModelFormGroup', this.licenceModelFormGroup.value);
 	}
 }

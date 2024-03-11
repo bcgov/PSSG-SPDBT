@@ -131,16 +131,10 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		private router: Router,
 		private utilService: UtilService,
 		private licenceApplicationService: LicenceApplicationService
-	) {}
-
-	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-		}
-
-		this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-			'applicationTypeData.applicationTypeCode'
-		)?.value;
+	) {
+		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.applicationTypeCode = state && state['applicationTypeCode'];
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
@@ -160,6 +154,35 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 				break;
 			}
 		}
+	}
+
+	ngOnInit(): void {
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		}
+
+		// this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		// 	'applicationTypeData.applicationTypeCode'
+		// )?.value;
+
+		// switch (this.applicationTypeCode) {
+		// 	case ApplicationTypeCode.Replacement: {
+		// 		this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit';
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Renewal: {
+		// 		this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit';
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Update: {
+		// 		this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit';
+		// 		break;
+		// 	}
+		// 	default: {
+		// 		this.alertText = 'Fill out your profile information';
+		// 		break;
+		// 	}
+		// }
 	}
 
 	onCancel(): void {
@@ -192,7 +215,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		if (this.isFormValid()) {
 			this.router.navigateByUrl(
 				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-					LicenceApplicationRoutes.WORKER_LICENCE_APPLICATION_TYPE_AUTHENTICATED
+					LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
 				)
 			);
 		}

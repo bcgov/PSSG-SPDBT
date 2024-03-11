@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicantUpdateRequest,
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
@@ -377,7 +378,7 @@ export abstract class LicenceApplicationHelper {
 		{
 			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
 			attachments: new FormControl(''),
-			hasPreviousMhcFormUpload: new FormControl(''), // used to detarmine label to display
+			hasPreviousMhcFormUpload: new FormControl(''), // used to determine label to display
 		},
 		{
 			validators: [
@@ -610,6 +611,123 @@ export abstract class LicenceApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
+	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
+		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
+		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
+		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
+		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
+		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
+
+		const criminalChargeDescription =
+			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
+			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+				? criminalHistoryData.criminalChargeDescription
+				: '';
+
+		/*
+		const documentKeyCodes: null | Array<string> = []; xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentKeyCodes.push(doc.documentUrlId);
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentKeyCodes.push(doc.documentUrlId);
+		});
+
+		
+
+		const documentInfos: Array<Document> = [];
+
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+			});
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+			});
+		});
+
+
+
+
+
+
+		
+
+		const documents: Array<LicenceDocumentsToSave> = [];
+		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
+
+		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+		}
+
+
+*/
+
+		const requestbody: ApplicantUpdateRequest = {
+			firstName: personalInformationData.givenName,
+			lastName: personalInformationData.surname,
+			middleName1: personalInformationData.middleName1,
+			middleName2: personalInformationData.middleName2,
+			birthDate: personalInformationData.dateOfBirth,
+			emailAddress: contactInformationData.contactEmailAddress,
+			phoneNumber: contactInformationData.contactPhoneNumber,
+			gender: personalInformationData.genderCode,
+			//-----------------------------------
+			aliases:
+				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? licenceModelFormValue.aliasesData.aliases
+					: [],
+			//-----------------------------------
+			// documentKeyCodes,
+			//-----------------------------------
+			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			// hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			//-----------------------------------
+			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
+			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			//-----------------------------------
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
+			criminalChargeDescription, // populated only for Update and new charges is Yes
+			//-----------------------------------
+			// isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
+			mailingAddress: residentialAddressData.isMailingTheSameAsResidential
+				? residentialAddressData
+				: mailingAddressData,
+			residentialAddress: residentialAddressData,
+		};
+
+		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[getProfileSaveBody] requestbody', requestbody);
+		return requestbody;
+	}
+
+	/**
+	 * Get the form group data into the correct structure
+	 * @returns
+	 */
 	getSaveBodyAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
 		const requestbody = this.getSaveBodyBase(licenceModelFormValue);
 
@@ -618,14 +736,10 @@ export abstract class LicenceApplicationHelper {
 	}
 
 	getDocsToSaveAnonymousBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
-		console.debug('getDocsToSaveAnonymousBlobs', licenceModelFormValue);
-
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
-		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
-		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
@@ -805,25 +919,6 @@ export abstract class LicenceApplicationHelper {
 			});
 		}
 
-		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
-
-		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-		}
-
 		if (fingerprintProofData.attachments) {
 			const docs: Array<Blob> = [];
 			fingerprintProofData.attachments.forEach((doc: SpdFile) => {
@@ -867,6 +962,36 @@ export abstract class LicenceApplicationHelper {
 		}
 
 		console.debug('getDocsToSaveAnonymousBlobs documentsToSave', documents);
+
+		return documents;
+	}
+
+	getProfileDocsToSaveAnonymousBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
+
+		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
+
+		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
+
+		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+		}
+
+		console.debug('getProfileDocsToSaveAnonymousBlobs documentsToSave', documents);
 
 		return documents;
 	}

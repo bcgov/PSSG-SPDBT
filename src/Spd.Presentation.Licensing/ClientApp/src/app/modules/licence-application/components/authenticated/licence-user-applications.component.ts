@@ -4,7 +4,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationPortalStatusCode, WorkerLicenceAppListResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import {
+	ApplicationPortalStatusCode,
+	ApplicationTypeCode,
+	WorkerLicenceAppListResponse,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
 import { SecurityWorkerLicensingService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
@@ -676,7 +681,8 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 					this.router.navigateByUrl(
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						)
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
 					);
 				}),
 				take(1)
@@ -690,7 +696,10 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED)
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
 					);
 				}),
 				take(1)
@@ -704,7 +713,10 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED)
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
 					);
 				}),
 				take(1)

@@ -2,21 +2,17 @@
 /* eslint-disable */
 import { Address } from './address';
 import { Alias } from './alias';
-import { Document } from './document';
 import { GenderEnum } from './gender-enum';
-import { IdentityProviderTypeCode } from './identity-provider-type-code';
 import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
-export interface ApplicantProfileResponse {
+export interface ApplicantUpdateRequest {
   aliases?: null | Array<Alias>;
-  applicantId?: string;
   birthDate?: string;
   criminalChargeDescription?: null | string;
-  documentInfos?: null | Array<Document>;
+  documentKeyCodes?: null | Array<string>;
   emailAddress?: null | string;
   firstName?: null | string;
   gender?: GenderEnum;
   hasCriminalHistory?: null | boolean;
-  identityProviderTypeCode?: IdentityProviderTypeCode;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
   lastName?: null | string;
@@ -27,5 +23,4 @@ export interface ApplicantProfileResponse {
   phoneNumber?: null | string;
   policeOfficerRoleCode?: PoliceOfficerRoleEnum;
   residentialAddress?: Address;
-  sub?: null | string;
 }

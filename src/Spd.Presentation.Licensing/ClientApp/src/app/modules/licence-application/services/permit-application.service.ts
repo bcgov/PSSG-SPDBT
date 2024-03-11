@@ -468,7 +468,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 			const contactInformationData = {
 				contactEmailAddress: profile.emailAddress,
-				// contactPhoneNumber: profile.phoneNumber // TODO missing phone number
+				contactPhoneNumber: profile.phoneNumber,
 			};
 
 			const residentialAddressData = {
@@ -833,7 +833,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			);
 		});
 
-		this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
+		// this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
 
 		console.debug('[loadSpecificPermitIntoModel] licenceModelFormGroup', this.permitModelFormGroup.value);
 	}
@@ -855,7 +855,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		while (aliasesArray.length) {
 			aliasesArray.removeAt(0);
 		}
-		this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
+		// this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
 
 		console.debug('reset.initialized', this.initialized, this.permitModelFormGroup.value);
 	}
@@ -1001,7 +1001,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the permit data
 	 * @returns
 	 */
-	saveLicenceStep(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
 		// TODO Permit service is reference swl service - fix
 		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(

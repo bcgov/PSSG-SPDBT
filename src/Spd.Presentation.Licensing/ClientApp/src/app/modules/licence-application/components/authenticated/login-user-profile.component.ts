@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
-import { CommonUserProfileComponent } from './user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { HotToastService } from '@ngneat/hot-toast';
+import { CommonUserProfileComponent } from './user-profile/common-user-profile.component';
 
 @Component({
 	selector: 'app-login-user-profile',
@@ -51,12 +52,13 @@ export class LoginUserProfileComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
+		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 		}
 	}
 
@@ -69,7 +71,18 @@ export class LoginUserProfileComponent implements OnInit {
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
+			return;
 		}
-		//TODO save user profile
+
+		this.licenceApplicationService.saveLoginUserProfile().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your profile has been successfully updated');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
 	}
 }

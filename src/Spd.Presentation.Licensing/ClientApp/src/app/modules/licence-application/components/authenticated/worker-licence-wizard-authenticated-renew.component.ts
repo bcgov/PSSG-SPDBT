@@ -180,7 +180,7 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 
@@ -227,7 +227,7 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 			return;
 		}
 
-		this.licenceApplicationService.saveLicenceStep().subscribe({
+		this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
 
@@ -264,7 +264,7 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 
 	onGoToReview() {
 		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					this.updateCompleteStatus();
@@ -291,7 +291,7 @@ export class WorkerLicenceWizardAuthenticatedRenewComponent
 
 	onChildNextStep() {
 		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					this.hotToastService.success('Licence information has been saved');

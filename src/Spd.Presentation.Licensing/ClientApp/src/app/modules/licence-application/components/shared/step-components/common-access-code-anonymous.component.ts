@@ -136,7 +136,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		switch (this.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithAccessCode(licenceNumber, accessCode, recaptchaCode)
+					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceResponse) => {
 							this.handleLookupResponse(resp);
