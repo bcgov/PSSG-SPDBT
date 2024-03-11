@@ -5,7 +5,7 @@ namespace Spd.Manager.Licence;
 
 public interface ILicenceManager
 {
-    public Task<LicenceResponse> Handle(LicenceQuery query, CancellationToken ct);
+    public Task<IEnumerable<LicenceResponse>> Handle(LicenceQuery query, CancellationToken ct);
     public Task<FileResponse> Handle(LicencePhotoQuery query, CancellationToken ct);
 }
 
@@ -21,5 +21,5 @@ public record LicenceResponse
     public string? LicenceHolderLastName { get; set; }
 };
 
-public record LicenceQuery(string LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
+public record LicenceQuery(string? LicenceNumber, string? AccessCode, Guid? applicantId = null) : IRequest<IEnumerable<LicenceResponse>>;
 public record LicencePhotoQuery(Guid LicenceId) : IRequest<FileResponse>;

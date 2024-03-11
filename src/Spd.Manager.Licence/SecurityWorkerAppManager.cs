@@ -23,7 +23,7 @@ internal partial class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
-        IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<WorkerLicenceAppListResponse>>,
+        IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceCommandResponse>,
@@ -104,7 +104,7 @@ internal partial class SecurityWorkerAppManager :
 
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
-    public async Task<IEnumerable<WorkerLicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken cancellationToken)
     {
         LicenceAppQuery q = new LicenceAppQuery
         (
@@ -128,7 +128,7 @@ internal partial class SecurityWorkerAppManager :
             }
         );
         var response = await _licenceAppRepository.QueryAsync(q, cancellationToken);
-        return _mapper.Map<IEnumerable<WorkerLicenceAppListResponse>>(response);
+        return _mapper.Map<IEnumerable<LicenceAppListResponse>>(response);
     }
 
     #endregion
