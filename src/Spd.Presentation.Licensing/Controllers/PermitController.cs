@@ -38,6 +38,8 @@ namespace Spd.Presentation.Licensing.Controllers
             _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
         }
 
+        #region authenticated
+        #endregion
         #region anonymous 
 
         /// <summary>

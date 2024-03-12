@@ -131,20 +131,6 @@ namespace Spd.Presentation.Licensing.Controllers
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest, info.Sub));
         }
-
-
-        /// <summary>
-        /// Get List of draft or InProgress Security Worker Licence Application or Permit Application
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicants/{applicantId}/licence-applications")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpGet]
-        public async Task<IEnumerable<LicenceAppListResponse>> GetLicenceApplications(Guid applicantId, CancellationToken ct)
-        {
-            //todo: Ruben implement this query
-            return await _mediator.Send(new GetWorkerLicenceAppListQuery(applicantId), ct);
-        }
         #endregion
 
         #region anonymous 

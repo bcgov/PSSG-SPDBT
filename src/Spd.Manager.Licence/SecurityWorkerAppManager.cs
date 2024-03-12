@@ -23,7 +23,7 @@ internal partial class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
-        IRequestHandler<GetWorkerLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
+        IRequestHandler<GetLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceCommandResponse>,
@@ -84,8 +84,7 @@ internal partial class SecurityWorkerAppManager :
         saveCmd.BcscGuid = cmd.BcscGuid;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
 
-        //await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, ct);
-        //await RemoveDeletedDocumentsAsync(cmd.LicenceUpsertRequest, ct);
+        await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
 
@@ -104,7 +103,7 @@ internal partial class SecurityWorkerAppManager :
 
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
-    public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetWorkerLicenceAppListQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken cancellationToken)
     {
         LicenceAppQuery q = new LicenceAppQuery
         (
