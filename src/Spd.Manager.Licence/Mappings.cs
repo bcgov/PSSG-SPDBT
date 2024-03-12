@@ -96,7 +96,11 @@ internal class Mappings : Profile
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
 
-        CreateMap<LicenceApplicationResp, WorkerLicenceAppResponse>();
+        CreateMap<LicenceApplicationResp, WorkerLicenceAppResponse>()
+             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
+             .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
+             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
+             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData));
 
         CreateMap<LicenceResp, LicenceResponse>();
 
