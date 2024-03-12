@@ -25,7 +25,6 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
 }
 
-
 #region authenticated user
 public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest, string? BcscGuid = null) : IRequest<PermitCommandResponse>;
 public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest, string? BcscGuid = null)
@@ -43,8 +42,6 @@ public record PermitCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }
 };
-
-
 #endregion
 
 #region anonymous user

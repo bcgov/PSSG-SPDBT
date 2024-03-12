@@ -26,7 +26,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger = logger;
         }
 
-
         /// <summary>
         /// Get List of draft or InProgress Security Worker Licence Application or Permit Application
         /// </summary>
@@ -39,6 +38,4 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetLicenceAppListQuery(applicantId), ct);
         }
     }
-
-
 }
