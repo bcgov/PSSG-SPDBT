@@ -35,7 +35,7 @@ internal class LicenceManager :
         _fileStorageService = fileStorageService;
     }
 
-    public async Task<IEnumerable<LicenceResponse>?> Handle(LicenceQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceResponse>> Handle(LicenceQuery query, CancellationToken cancellationToken)
     {
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
