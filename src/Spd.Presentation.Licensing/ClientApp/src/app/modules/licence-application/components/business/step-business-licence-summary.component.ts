@@ -413,12 +413,12 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Email Address</div>
-													<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
+													<div class="summary-text-data">{{ emailAddress | default }}</div>
 												</div>
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ contactPhoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | mask : constants.phone.displayMask }}
 													</div>
 												</div>
 											</div>
@@ -744,11 +744,11 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		return this.permitModelData.photographOfYourselfData.attachments ?? [];
 	}
 
-	get contactEmailAddress(): string {
-		return this.permitModelData.contactInformationData?.contactEmailAddress ?? '';
+	get emailAddress(): string {
+		return this.permitModelData.contactInformationData?.emailAddress ?? '';
 	}
-	get contactPhoneNumber(): string {
-		return this.permitModelData.contactInformationData?.contactPhoneNumber ?? '';
+	get phoneNumber(): string {
+		return this.permitModelData.contactInformationData?.phoneNumber ?? '';
 	}
 
 	get reasonForRequirement(): string {
@@ -887,43 +887,43 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	get residentialAddressLine1(): string {
-		return this.permitModelData.residentialAddressData?.addressLine1 ?? '';
+		return this.permitModelData.residentialAddress?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.permitModelData.residentialAddressData?.addressLine2 ?? '';
+		return this.permitModelData.residentialAddress?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.permitModelData.residentialAddressData?.city ?? '';
+		return this.permitModelData.residentialAddress?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.permitModelData.residentialAddressData?.postalCode ?? '';
+		return this.permitModelData.residentialAddress?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.permitModelData.residentialAddressData?.province ?? '';
+		return this.permitModelData.residentialAddress?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.permitModelData.residentialAddressData?.country ?? '';
+		return this.permitModelData.residentialAddress?.country ?? '';
 	}
 	get isMailingTheSameAsResidential(): string {
-		return this.permitModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
+		return this.permitModelData.residentialAddress?.isMailingTheSameAsResidential ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.permitModelData.mailingAddressData?.addressLine1 ?? '';
+		return this.permitModelData.mailingAddress?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.permitModelData.mailingAddressData?.addressLine2 ?? '';
+		return this.permitModelData.mailingAddress?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.permitModelData.mailingAddressData?.city ?? '';
+		return this.permitModelData.mailingAddress?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.permitModelData.mailingAddressData?.postalCode ?? '';
+		return this.permitModelData.mailingAddress?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.permitModelData.mailingAddressData?.province ?? '';
+		return this.permitModelData.mailingAddress?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.permitModelData.mailingAddressData?.country ?? '';
+		return this.permitModelData.mailingAddress?.country ?? '';
 	}
 }

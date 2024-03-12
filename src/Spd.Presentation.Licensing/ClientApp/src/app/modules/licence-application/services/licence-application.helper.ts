@@ -501,8 +501,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	});
 
 	// contactInformationFormGroup: FormGroup = this.formBuilder.group({
-	// 	contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-	// 	contactPhoneNumber: new FormControl('', [Validators.required]),
+	// 	emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+	// 	phoneNumber: new FormControl('', [Validators.required]),
 	// });
 
 	// residentialAddressFormGroup: FormGroup = this.formBuilder.group({
@@ -618,8 +618,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
 		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
 		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
-		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
+		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
+		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
@@ -695,8 +695,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			middleName1: personalInformationData.middleName1,
 			middleName2: personalInformationData.middleName2,
 			dateOfBirth: personalInformationData.dateOfBirth,
-			contactEmailAddress: contactInformationData.contactEmailAddress,
-			contactPhoneNumber: contactInformationData.contactPhoneNumber,
+			emailAddress: contactInformationData.emailAddress,
+			phoneNumber: contactInformationData.phoneNumber,
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			aliases:
@@ -716,11 +716,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			// isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
-			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
-				? residentialAddressData
-				: mailingAddressData,
-			residentialAddressData: residentialAddressData,
+			// isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
+			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			residentialAddress: residentialAddress,
 		};
 
 		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
@@ -1031,8 +1029,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
 		const expiredLicenceData = { ...licenceModelFormValue.expiredLicenceData };
 		const characteristicsData = { ...licenceModelFormValue.characteristicsData };
-		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
+		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
+		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
@@ -1041,7 +1039,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
 		// default the flag
-		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
+		residentialAddress.isMailingTheSameAsResidential = !!residentialAddress.isMailingTheSameAsResidential;
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		let dogsAuthorizationData = {};
@@ -1309,11 +1307,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
-			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
-				? residentialAddressData
-				: mailingAddressData,
-			residentialAddressData,
+			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
+			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			residentialAddress,
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------

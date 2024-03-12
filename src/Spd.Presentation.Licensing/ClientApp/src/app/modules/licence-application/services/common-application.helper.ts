@@ -54,8 +54,8 @@ export abstract class CommonApplicationHelper {
 	// );
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
-		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		contactPhoneNumber: new FormControl('', [Validators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
 	});
 
 	residentialAddressFormGroup: FormGroup = this.formBuilder.group({

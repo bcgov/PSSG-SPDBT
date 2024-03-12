@@ -315,8 +315,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	});
 
 	// contactInformationFormGroup: FormGroup = this.formBuilder.group({
-	// 	contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-	// 	contactPhoneNumber: new FormControl('', [Validators.required]),
+	// 	emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+	// 	phoneNumber: new FormControl('', [Validators.required]),
 	// });
 
 	// residentialAddressFormGroup: FormGroup = this.formBuilder.group({
@@ -434,8 +434,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const contactInformationData = { ...permitModelFormValue.contactInformationData };
 		const expiredLicenceData = { ...permitModelFormValue.expiredLicenceData };
 		const characteristicsData = { ...permitModelFormValue.characteristicsData };
-		const residentialAddressData = { ...permitModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...permitModelFormValue.mailingAddressData };
+		const residentialAddress = { ...permitModelFormValue.residentialAddress };
+		const mailingAddress = { ...permitModelFormValue.mailingAddress };
 		const citizenshipData = { ...permitModelFormValue.citizenshipData };
 		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
@@ -447,7 +447,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		let employerPrimaryAddress = {};
 
 		// default the flags
-		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
+		residentialAddress.isMailingTheSameAsResidential = !!residentialAddress.isMailingTheSameAsResidential;
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
@@ -656,11 +656,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			licenceTermCode: permitModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
-			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
-				? residentialAddressData
-				: mailingAddressData,
-			residentialAddressData,
+			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
+			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			residentialAddress,
 			//-----------------------------------
 			isCanadianCitizen,
 			isCanadianResident: isCanadianCitizen

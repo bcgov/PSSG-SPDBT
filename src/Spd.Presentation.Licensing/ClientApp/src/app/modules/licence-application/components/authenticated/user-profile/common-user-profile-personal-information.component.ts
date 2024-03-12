@@ -51,15 +51,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<mat-label>Email Address</mat-label>
 					<input
 						matInput
-						formControlName="contactEmailAddress"
+						formControlName="emailAddress"
 						[errorStateMatcher]="matcher"
 						placeholder="name@domain.com"
 						maxlength="75"
 					/>
-					<mat-error *ngIf="contactFormGroup.get('contactEmailAddress')?.hasError('required')">
-						This is required
-					</mat-error>
-					<mat-error *ngIf="contactFormGroup.get('contactEmailAddress')?.hasError('email')">
+					<mat-error *ngIf="contactFormGroup.get('emailAddress')?.hasError('required')"> This is required </mat-error>
+					<mat-error *ngIf="contactFormGroup.get('emailAddress')?.hasError('email')">
 						Must be a valid email address
 					</mat-error>
 				</mat-form-field>
@@ -67,13 +65,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<div [formGroup]="contactFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<mat-form-field>
 					<mat-label>Phone Number</mat-label>
-					<input matInput formControlName="contactPhoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
-					<mat-error *ngIf="contactFormGroup.get('contactPhoneNumber')?.hasError('required')"
-						>This is required</mat-error
-					>
-					<mat-error *ngIf="contactFormGroup.get('contactPhoneNumber')?.hasError('mask')">
-						This must be 10 digits
-					</mat-error>
+					<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
 				</mat-form-field>
 			</div>
 		</div>
