@@ -1,17 +1,16 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.Cache;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
@@ -19,8 +18,9 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class PermitController : SpdLicenceAnonymousControllerBase
+    public class PermitController : SpdApplicantLicenceControllerBase
     {
+        private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<PermitAppAnonymousSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
@@ -33,13 +33,42 @@ namespace Spd.Presentation.Licensing.Controllers
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
+            _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
             _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
         }
 
         #region authenticated
+        /// <summary>
+        /// Create Security Worker Licence Application
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<PermitCommandResponse> SavePermitLicenceApplication([FromBody][Required] PermitAppUpsertRequest licenceCreateRequest)
+        {
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest, info.Sub));
+        }
+
+        /// <summary>
+        /// Get Security Worker Licence Application
+        /// </summary>
+        /// <param name="licenceAppId"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications/{licenceAppId}")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpGet]
+        public async Task<PermitLicenceAppResponse> GetPermitLicenceApplication([FromRoute][Required] Guid licenceAppId)
+        {
+            return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));
+        }
+
         #endregion
+
         #region anonymous 
 
         /// <summary>

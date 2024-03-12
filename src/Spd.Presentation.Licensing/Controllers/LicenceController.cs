@@ -13,7 +13,7 @@ using System.Net;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class LicenceController : SpdLicenceAnonymousControllerBase
+    public class LicenceController : SpdApplicantLicenceControllerBase
     {
         private readonly IMediator _mediator;
 

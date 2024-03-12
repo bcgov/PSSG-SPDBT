@@ -6,7 +6,10 @@ public interface IPermitAppManager
     public Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand command, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(AnonymousPermitAppRenewCommand command, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(AnonymousPermitAppUpdateCommand command, CancellationToken ct);
+    public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
 }
+
+
 
 public record PermitLicenceAppBase : PersonalLicenceAppBase
 {
@@ -24,6 +27,10 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
 
 
 #region authenticated user
+public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest, string? BcscGuid = null) : IRequest<PermitCommandResponse>;
+public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest, string? BcscGuid = null)
+    : PermitUpsertCommand(PermitUpsertRequest, BcscGuid), IRequest<PermitCommandResponse>;
+
 public record PermitAppUpsertRequest : PermitLicenceAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
