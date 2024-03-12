@@ -73,7 +73,6 @@ internal class Mappings : Profile
         CreateMap<PermitAppAnonymousSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
-            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode));
 
