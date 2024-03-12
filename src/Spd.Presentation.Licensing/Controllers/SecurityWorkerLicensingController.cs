@@ -21,7 +21,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class SecurityWorkerLicensingController : SpdLicenceAnonymousControllerBase
+    public class SecurityWorkerLicensingController : SpdApplicantLicenceControllerBase
     {
         private readonly ILogger<SecurityWorkerLicensingController> _logger;
         private readonly IPrincipal _currentUser;
@@ -130,19 +130,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest, info.Sub));
-        }
-
-
-        /// <summary>
-        /// Get List of draft or InProgress Security Worker Licence Application
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicants/{applicantId}/worker-licence-applications")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpGet]
-        public async Task<IEnumerable<WorkerLicenceAppListResponse>> GetLicenceApplications(Guid applicantId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetWorkerLicenceAppListQuery(applicantId), ct);
         }
         #endregion
 
