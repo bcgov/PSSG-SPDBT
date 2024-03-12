@@ -24,6 +24,69 @@ export class LicenceService extends BaseService {
   }
 
   /**
+   * Path part for operation apiApplicantsApplicantIdLicencesGet
+   */
+  static readonly ApiApplicantsApplicantIdLicencesGetPath = '/api/applicants/{applicantId}/licences';
+
+  /**
+   * Get licences for login user 
+   * Example: http://localhost:5114/api/applicants/xxxx/licences.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdLicencesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdLicencesGet$Response(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<LicenceResponse>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiApplicantsApplicantIdLicencesGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<LicenceResponse>>;
+      })
+    );
+  }
+
+  /**
+   * Get licences for login user 
+   * Example: http://localhost:5114/api/applicants/xxxx/licences.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdLicencesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdLicencesGet(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<Array<LicenceResponse>> {
+
+    return this.apiApplicantsApplicantIdLicencesGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceResponse>>) => r.body as Array<LicenceResponse>)
+    );
+  }
+
+  /**
    * Path part for operation apiLicenceLookupLicenceNumberGet
    */
   static readonly ApiLicenceLookupLicenceNumberGetPath = '/api/licence-lookup/{licenceNumber}';

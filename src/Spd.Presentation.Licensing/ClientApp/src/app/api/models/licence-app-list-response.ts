@@ -3,7 +3,7 @@
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
-export interface WorkerLicenceAppListResponse {
+export interface LicenceAppListResponse {
   applicationPortalStatusCode?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   caseNumber?: null | string;

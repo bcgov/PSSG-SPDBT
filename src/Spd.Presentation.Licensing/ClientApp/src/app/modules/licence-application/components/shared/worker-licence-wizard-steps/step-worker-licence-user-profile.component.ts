@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -130,7 +130,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	alertText = '';
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
-	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
@@ -155,7 +154,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state && state['applicationTypeCode'];
-		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
@@ -226,7 +224,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+						LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
 					)
 				);
 				break;

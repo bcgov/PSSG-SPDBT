@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
-	WorkerLicenceAppListResponse,
+	LicenceAppListResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -18,7 +18,7 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import * as moment from 'moment';
 import { Subscription, take, tap } from 'rxjs';
 
-export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
+export interface LicenceInProgress extends LicenceAppListResponse {
 	isWarningMessage: boolean;
 	isErrorMessage: boolean;
 	isRenewalPeriod: boolean;
@@ -72,7 +72,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 								<div class="text-data">You don't have an active licence</div>
 							</div>
 							<div class="col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
+								<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onNew()">
 									<mat-icon>add</mat-icon>Apply for a New Licence or Permit
 								</button>
 							</div>
@@ -378,7 +378,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 							mat-flat-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onCreateNewSecurityWorkerLicence()"
+							(click)="onNewSecurityWorkerLicence()"
 						>
 							<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
 						</button>
@@ -386,21 +386,45 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 
 					<div class="my-2">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onCreateNewBodyArmourPermit()"
+							(click)="onRenewSecurityWorkerLicence()"
 						>
-							<mat-icon>add</mat-icon>Apply for a New Body Armour Permit
+							Renew Security Worker Licence
 						</button>
 					</div>
+
+					<div class="my-2">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onUpdateSecurityWorkerLicence()"
+						>
+							Update Security Worker Licence
+						</button>
+					</div>
+
+					<div class="my-2">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onReplacmentSecurityWorkerLicence()"
+						>
+							Replace Security Worker Licence
+						</button>
+					</div>
+
+					<mat-divider class="my-3"></mat-divider>
 
 					<div class="my-2">
 						<button
 							mat-flat-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onCreateNewArmouredVehiclePermit()"
+							(click)="onNewArmouredVehiclePermit()"
 						>
 							<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 						</button>
@@ -408,34 +432,53 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 
 					<div class="my-2">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onRenewSecurityWorkerLicence()"
+							(click)="onRenewArmouredVehiclePermit()"
 						>
-							<mat-icon>add</mat-icon>Renew a New Security Worker Licence
+							Renew Armoured Vehicle Permit
 						</button>
 					</div>
 
 					<div class="my-2">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onUpdateSecurityWorkerLicence()"
+							(click)="onUpdateArmouredVehiclePermit()"
 						>
-							<mat-icon>add</mat-icon>Update a New Security Worker Licence
+							Update Armoured Vehicle Permit
+						</button>
+					</div>
+
+					<mat-divider class="my-3"></mat-divider>
+
+					<div class="my-2">
+						<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onNewBodyArmourPermit()">
+							<mat-icon>add</mat-icon>Apply for a New Body Armour Permit
 						</button>
 					</div>
 
 					<div class="my-2">
 						<button
-							mat-flat-button
+							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onReplacmentSecurityWorkerLicence()"
+							(click)="onRenewBodyArmourPermit()"
 						>
-							<mat-icon>add</mat-icon>Replace a New Security Worker Licence
+							Renew Body Armour Permit
+						</button>
+					</div>
+
+					<div class="my-2">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onUpdateBodyArmourPermit()"
+						>
+							Update Body Armour Permit
 						</button>
 					</div>
 				</div>
@@ -503,15 +546,13 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
-	activeApplications: Array<WorkerLicenceInProgress> = [];
-	expiredApplications: Array<WorkerLicenceInProgress> = [];
+	activeApplications: Array<LicenceInProgress> = [];
+	expiredApplications: Array<LicenceInProgress> = [];
 
 	authenticationSubscription!: Subscription;
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
-	inProgressDataSource: MatTableDataSource<WorkerLicenceInProgress> = new MatTableDataSource<WorkerLicenceInProgress>(
-		[]
-	);
+	inProgressDataSource: MatTableDataSource<LicenceInProgress> = new MatTableDataSource<LicenceInProgress>([]);
 	columns: string[] = [
 		'serviceTypeCode',
 		'createdOn',
@@ -530,25 +571,29 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.licenceApplicationService.userApplicationsList().subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
+		// this.licenceApplicationService.userLicencesList().subscribe((resp: Array<LicenceResponse>) => {
+		// 	console.debug('userLicencesList', resp);
+		// });
+
+		this.licenceApplicationService.userApplicationsList().subscribe((resp: Array<LicenceAppListResponse>) => {
 			const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
 			const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
 			const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
 			// TODO remove when backend updated...
 			// If 30 days or more have passed since the last save, the application does not appear in this list
 			const inProgressResults = resp.filter(
-				(item: WorkerLicenceAppListResponse) =>
+				(item: LicenceAppListResponse) =>
 					item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
 					// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 					(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
 						moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
 			);
 			// const activeResults = resp.filter(
-			// 	(item: WorkerLicenceAppListResponse) =>
+			// 	(item: LicenceAppListResponse) =>
 			// 		item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
 			// );
 			// const expiredResults = resp.filter(
-			// 	(item: WorkerLicenceAppListResponse) =>
+			// 	(item: LicenceAppListResponse) =>
 			// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress &&
 			// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.Draft
 			// );
@@ -567,9 +612,9 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 					}
 				}
 			});
-			// this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
-			// this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
-			this.inProgressDataSource = new MatTableDataSource((inProgressResults as Array<WorkerLicenceInProgress>) ?? []);
+			// this.activeApplications = activeResults as Array<LicenceInProgress>;
+			// this.expiredApplications = expiredResults as Array<LicenceInProgress>;
+			this.inProgressDataSource = new MatTableDataSource((inProgressResults as Array<LicenceInProgress>) ?? []);
 		});
 	}
 
@@ -616,7 +661,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		this.onUpdateAuthorization();
 	}
 
-	onResume(appl: WorkerLicenceAppListResponse): void {
+	onResume(appl: LicenceAppListResponse): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
 				.getLicenceToResume(appl.licenceAppId!)
@@ -648,7 +693,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onUpdate(_appl: WorkerLicenceInProgress): void {
+	onUpdate(_appl: LicenceInProgress): void {
 		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
@@ -680,7 +725,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		// }
 	}
 
-	// onReapply(appl: WorkerLicenceInProgress): void {
+	// onReapply(appl: LicenceInProgress): void {
 	// 	this.licenceApplicationService
 	// 		.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Renewal)
 	// 		.pipe(
@@ -707,7 +752,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 								applicationTypeCode: ApplicationTypeCode.Renewal,
 							},
 						}
@@ -729,7 +773,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 								applicationTypeCode: ApplicationTypeCode.Update,
 							},
 						}
@@ -751,7 +794,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 								applicationTypeCode: ApplicationTypeCode.Replacement,
 							},
 						}
@@ -762,7 +804,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
-	onCreateNewSecurityWorkerLicence(): void {
+	onNewSecurityWorkerLicence(): void {
 		this.licenceApplicationService
 			.createNewLicenceAuthenticated()
 			.pipe(
@@ -773,7 +815,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 								applicationTypeCode: ApplicationTypeCode.New,
 							},
 						}
@@ -784,7 +825,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
-	onCreateNewBodyArmourPermit(): void {
+	onNewBodyArmourPermit(): void {
 		this.permitApplicationService
 			.createNewPermitAuthenticated(WorkerLicenceTypeCode.BodyArmourPermit)
 			.pipe(
@@ -795,7 +836,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
 								applicationTypeCode: ApplicationTypeCode.New,
 							},
 						}
@@ -806,7 +846,49 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
-	onCreateNewArmouredVehiclePermit(): void {
+	onRenewBodyArmourPermit(): void {
+		this.permitApplicationService
+			.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{
+							state: {
+								applicationTypeCode: ApplicationTypeCode.Renewal,
+							},
+						}
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onUpdateBodyArmourPermit(): void {
+		this.permitApplicationService
+			.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Update)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{
+							state: {
+								applicationTypeCode: ApplicationTypeCode.Renewal,
+							},
+						}
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onNewArmouredVehiclePermit(): void {
 		this.permitApplicationService
 			.createNewPermitAuthenticated(WorkerLicenceTypeCode.ArmouredVehiclePermit)
 			.pipe(
@@ -817,8 +899,49 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
 								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onRenewArmouredVehiclePermit(): void {
+		this.permitApplicationService
+			.getPermitWithSelectionAuthenticated('d402df70-718a-4f84-b5ba-31f45383c1ad', ApplicationTypeCode.Renewal)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{
+							state: {
+								applicationTypeCode: ApplicationTypeCode.Renewal,
+							},
+						}
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onUpdateArmouredVehiclePermit(): void {
+		this.permitApplicationService
+			.getPermitWithSelectionAuthenticated('d402df70-718a-4f84-b5ba-31f45383c1ad', ApplicationTypeCode.Update)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{
+							state: {
+								applicationTypeCode: ApplicationTypeCode.Renewal,
 							},
 						}
 					);

@@ -19,7 +19,7 @@ import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 
 @Component({
-	selector: 'app-worker-licence-wizard-authenticated-new',
+	selector: 'app-worker-licence-wizard-authenticated-replacement',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -69,7 +69,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextPayStep)="onNextPayStep()"
+							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
 						></app-steps-worker-licence-review-authenticated>
@@ -84,7 +84,10 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, AfterViewInit {
+export class WorkerLicenceWizardAuthenticatedReplacementComponent
+	extends BaseWizardComponent
+	implements OnInit, AfterViewInit
+{
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -112,7 +115,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService // private commonApplicationService: CommonApplicationService
+		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -210,23 +213,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			stepper.next();
 		}
 	}
-
-	onNextPayStep(): void {
-		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
-	}
-
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNow(licenceAppId,  `Payment for Case ID: ${application.applicationNumber}`);
-	// }
 
 	onGoToStep(step: number) {
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
@@ -353,6 +339,9 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
+			// case this.STEP_LICENCE_SETUP:
+			// 	this.stepLicenceSetupAuthenticatedComponent?.onGoToNextStep();
+			// 	break;
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
 				break;

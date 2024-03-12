@@ -308,6 +308,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [FormControlValidators.required]),
+		uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
 	});
 
 	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({

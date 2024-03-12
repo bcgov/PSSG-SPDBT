@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { PermitApplicationService } from '../../services/permit-application.service';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
-	selector: 'app-permit-application-base-authenticated',
+	selector: 'app-licence-application-base-authenticated',
 	template: `
 		<ng-container *ngIf="isAuthenticated$ | async">
 			<router-outlet></router-outlet>
@@ -14,13 +15,14 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 	`,
 	styles: [],
 })
-export class PermitApplicationBaseAuthenticatedComponent implements OnInit {
+export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
 		private authUserBcscService: AuthUserBcscService,
+		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
 
@@ -36,7 +38,12 @@ export class PermitApplicationBaseAuthenticatedComponent implements OnInit {
 			);
 		}
 
-		if (!this.permitApplicationService.initialized) {
+		console.debug(
+			'WorkerLicenceApplicationBaseAuthenticatedComponent',
+			this.licenceApplicationService.initialized,
+			this.permitApplicationService.initialized
+		);
+		if (!this.licenceApplicationService.initialized && !this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			return;
 		}

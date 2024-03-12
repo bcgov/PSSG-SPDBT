@@ -34,7 +34,6 @@ import { StepsPermitDetailsNewComponent } from './components/anonymous/permit-wi
 import { StepsPermitDetailsUpdateComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-update.component';
 import { StepsPermitDetailsRenewalComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component-renewal';
 import { StepsPermitIdentificationAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification-anonymous.component';
-import { StepsPermitIdentificationAuthenticatedComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification-authenticated.component';
 import { StepsPermitPurposeComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitReviewAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-review-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
@@ -51,18 +50,22 @@ import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated/licence-access-code-authorized.component';
+import { LicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/licence-first-time-user-terms-of-use.component';
 import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
 import { LoginUserProfileComponent } from './components/authenticated/login-user-profile.component';
-import { PermitApplicationBaseAuthenticatedComponent } from './components/authenticated/permit-application-base-authenticated.component';
+import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
+import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
+import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
+import { StepsPermitIdentificationAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-identification-authenticated.component';
+import { StepsPermitReviewAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-review-authenticated.component';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile/common-user-profile-licence-police-background.component';
 import { CommonUserProfilePersonalInformationComponent } from './components/authenticated/user-profile/common-user-profile-personal-information.component';
 import { CommonUserProfileComponent } from './components/authenticated/user-profile/common-user-profile.component';
-import { WorkerLicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/worker-licence-application-base-authenticated.component';
 import { StepWorkerLicenceAllUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-all-updates-authenticated.component';
 import { StepWorkerLicenceConfirmUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-confirm-updates-authenticated.component';
 import { StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-mailing-address-update-authenticated.component';
@@ -72,7 +75,8 @@ import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './comp
 import { WorkerLicencePhotoUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-photo-update-authenticated-modal.component';
 import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-restraints-update-authenticated-modal.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
-import { WorkerLicenceWizardAuthenticatedRenewComponent } from './components/authenticated/worker-licence-wizard-authenticated-renew.component';
+import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
+import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
 import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-summary-review-authenticated.component';
@@ -189,7 +193,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 
 @NgModule({
 	declarations: [
-		PermitApplicationBaseAuthenticatedComponent,
 		StepPermitUserProfileComponent,
 		BcBranchEditModalComponent,
 		BusinessLicenceApplicationBaseComponent,
@@ -245,6 +248,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
 		PermitWizardAnonymousUpdateComponent,
+		PermitWizardAuthenticatedNewComponent,
+		PermitWizardAuthenticatedRenewalComponent,
+		PermitWizardAuthenticatedUpdateComponent,
 		StepBusinessLicenceApplicationOnHoldComponent,
 		StepBusinessLicenceBcBusinessAddressComponent,
 		StepBusinessLicenceBcBranchesComponent,
@@ -344,6 +350,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsPermitIdentificationAuthenticatedComponent,
 		StepsPermitPurposeComponent,
 		StepsPermitReviewAnonymousComponent,
+		StepsPermitReviewAuthenticatedComponent,
 		StepsWorkerLicenceBackgroundComponent,
 		StepsWorkerLicenceBackgroundRenewAndUpdateComponent,
 		StepsWorkerLicenceIdentificationAnonymousComponent,
@@ -355,7 +362,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		UserBusinessApplicationsComponent,
 		LoginUserProfileComponent,
 		WorkerLicenceApplicationBaseAnonymousComponent,
-		WorkerLicenceApplicationBaseAuthenticatedComponent,
+		LicenceApplicationBaseAuthenticatedComponent,
 		WorkerLicenceCategoryUpdateAuthenticatedModalComponent,
 		WorkerLicenceDogsUpdateAuthenticatedModalComponent,
 		LicenceFirstTimeUserSelectionComponent,
@@ -368,7 +375,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		WorkerLicenceWizardAnonymousReplacementComponent,
 		WorkerLicenceWizardAnonymousUpdateComponent,
 		WorkerLicenceWizardAuthenticatedNewComponent,
-		WorkerLicenceWizardAuthenticatedRenewComponent,
+		WorkerLicenceWizardAuthenticatedRenewalComponent,
+		WorkerLicenceWizardAuthenticatedReplacementComponent,
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
 		BusinessCategoryAmouredCarGuardComponent,
 		BusinessCategoryPrivateInvestigatorComponent,
