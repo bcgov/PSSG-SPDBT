@@ -82,4 +82,16 @@ internal abstract class LicenceAppManagerBase
             }
         }
     }
+
+    protected async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
+    {
+        //todo: implement following logic
+        foreach (DocumentExpiredInfo expiredInfo in request.DocumentExpiredInfos)
+        {
+           //update document expired date in documentRepository, the same type file.
+        }
+
+        //for all files under this application, if it is not in request.DocumentInfos, deactivate it.
+    }
 }
+
