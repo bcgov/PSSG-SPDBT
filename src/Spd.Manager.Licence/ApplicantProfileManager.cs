@@ -47,17 +47,8 @@ namespace Spd.Manager.Licence
             ApplicantProfileResponse result = _mapper.Map<ApplicantProfileResponse>(response);
 
             var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: request.ApplicantId), ct);
-            var mentalHealthDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).ToList();
-            var policeBackgroundDocuments = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
-            List<Document> documents = new();
-
-            if (mentalHealthDocuments.Count > 0)
-                documents.Add(mentalHealthDocuments[0]);
-
-            if (policeBackgroundDocuments.Count > 0)
-                documents.Add(policeBackgroundDocuments[0]);
-
-            result.DocumentInfos = documents;
+            result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition ||
+                d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).ToList();
 
             return result;
         }
@@ -124,12 +115,12 @@ namespace Spd.Manager.Licence
         {
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
-            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.applicantUpdateRequest);
+            UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ApplicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
             await _contactRepository.ManageAsync(updateContactCmd, ct);
 
-            if ((cmd.applicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
-                (cmd.applicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
+            if ((cmd.ApplicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
+                (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
                 await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
                     null,
@@ -138,6 +129,17 @@ namespace Spd.Manager.Licence
                     null,
                     null,
                     ct);
+
+            // Remove documents that are not in previous document ids
+            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
+            List<Guid> previousDocumentIds = (List<Guid>)cmd.ApplicantUpdateRequest?.PreviousDocumentIds ?? [];
+            List<Guid> documentsToRemove = docListResps.Items
+                .Where(d => !previousDocumentIds.Contains(d.DocumentUrlId) && (d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm || d.DocumentType == DocumentTypeEnum.LetterOfNoConflict))
+                .Select(d => d.DocumentUrlId)
+                .ToList();
+            
+            foreach (var documentUrlId in documentsToRemove)
+                await _documentRepository.ManageAsync(new DeactivateDocumentCmd(documentUrlId), ct);
 
             return default;
         }
