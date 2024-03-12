@@ -1,15 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profile/common-user-profile-licence-criminal-history.component';
-import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '../user-profile/common-user-profile-licence-mental-health-conditions.component';
-import { CommonUserProfileLicencePoliceBackgroundComponent } from '../user-profile/common-user-profile-licence-police-background.component';
 
 @Component({
 	selector: 'app-step-permit-user-profile',
@@ -19,8 +17,8 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../user-profi
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-								<h2 class="fs-3 mb-3">Confirm your Profile</h2>
+							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+								<h2 class="fs-3">Confirm your Profile</h2>
 							</div>
 
 							<div class="col-xl-6 col-lg-4 col-md-12">
@@ -42,7 +40,13 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../user-profi
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
 						<section>
-							<app-common-user-profile></app-common-user-profile>
+							<app-common-user-profile
+								[personalInformationFormGroup]="personalInformationFormGroup"
+								[contactFormGroup]="contactFormGroup"
+								[aliasesFormGroup]="aliasesFormGroup"
+								[residentialAddressFormGroup]="residentialAddressFormGroup"
+								[mailingAddressFormGroup]="mailingAddressFormGroup"
+							></app-common-user-profile>
 						</section>
 
 						<mat-divider class="mat-divider-main mt-3"></mat-divider>
@@ -50,20 +54,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../user-profi
 							<app-common-user-profile-licence-criminal-history
 								[applicationTypeCode]="applicationTypeCode"
 							></app-common-user-profile-licence-criminal-history>
-						</section>
-
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<section>
-							<app-common-user-profile-licence-police-background
-								[applicationTypeCode]="applicationTypeCode"
-							></app-common-user-profile-licence-police-background>
-						</section>
-
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<section>
-							<app-common-user-profile-licence-mental-health-conditions
-								[applicationTypeCode]="applicationTypeCode"
-							></app-common-user-profile-licence-mental-health-conditions>
 						</section>
 
 						<section>
@@ -122,30 +112,34 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	alertText = '';
 
 	form: FormGroup = this.permitApplicationService.profileConfirmationFormGroup;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 	@ViewChild(CommonUserProfileLicenceCriminalHistoryComponent)
 	criminalHistoryComponent!: CommonUserProfileLicenceCriminalHistoryComponent;
-	@ViewChild(CommonUserProfileLicencePoliceBackgroundComponent)
-	policeBackgroundComponent!: CommonUserProfileLicencePoliceBackgroundComponent;
-	@ViewChild(CommonUserProfileLicenceMentalHealthConditionsComponent)
-	mentalHealthComponent!: CommonUserProfileLicenceMentalHealthConditionsComponent;
+
+	personalInformationFormGroup = this.permitApplicationService.personalInformationFormGroup;
+	contactFormGroup = this.permitApplicationService.contactInformationFormGroup;
+	aliasesFormGroup = this.permitApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup = this.permitApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup = this.permitApplicationService.mailingAddressFormGroup;
 
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
 		private permitApplicationService: PermitApplicationService
-	) {}
+	) {
+		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.applicationTypeCode = state && state['applicationTypeCode'];
+		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
+	}
 
 	ngOnInit(): void {
 		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
 		}
-
-		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'applicationTypeData.applicationTypeCode'
-		)?.value;
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
@@ -173,10 +167,8 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
 		const isValid3 = this.criminalHistoryComponent.isFormValid();
-		const isValid4 = this.policeBackgroundComponent.isFormValid();
-		const isValid5 = this.mentalHealthComponent.isFormValid();
 
-		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+		const isValid = isValid1 && isValid2 && isValid3;
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
@@ -186,15 +178,23 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	}
 
 	onStepPrevious(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
 	}
 
 	onContinue(): void {
-		if (this.isFormValid()) {
+		if (!this.isFormValid()) {
+			return;
+		}
+
+		// TODO save user profile first.
+
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
 			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-					LicenceApplicationRoutes.WORKER_LICENCE_APPLICATION_TYPE_AUTHENTICATED
-				)
+				LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_APPLICATION_TYPE_AUTHENTICATED)
+			);
+		} else if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+			this.router.navigateByUrl(
+				LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_APPLICATION_TYPE_AUTHENTICATED)
 			);
 		}
 	}

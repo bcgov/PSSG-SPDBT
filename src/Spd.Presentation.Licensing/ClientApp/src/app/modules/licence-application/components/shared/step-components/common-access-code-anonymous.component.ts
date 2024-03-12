@@ -149,7 +149,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
-					.getPermitWithAccessCode(licenceNumber, accessCode, recaptchaCode)
+					.getPermitWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceResponse) => {
 							this.handleLookupResponse(resp);

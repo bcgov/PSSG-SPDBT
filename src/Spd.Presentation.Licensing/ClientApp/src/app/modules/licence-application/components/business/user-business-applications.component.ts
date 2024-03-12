@@ -30,8 +30,8 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
-						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-							<h2 class="fs-3 mb-3">Business Licences</h2>
+						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<h2 class="fs-3">Business Licences</h2>
 						</div>
 
 						<!-- <div class="col-xl-6 col-lg-4 col-md-12">

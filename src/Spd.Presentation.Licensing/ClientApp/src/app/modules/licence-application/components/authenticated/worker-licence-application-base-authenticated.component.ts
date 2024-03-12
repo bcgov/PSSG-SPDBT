@@ -38,7 +38,7 @@ export class WorkerLicenceApplicationBaseAuthenticatedComponent implements OnIni
 			);
 		}
 
-		console.log(
+		console.debug(
 			'WorkerLicenceApplicationBaseAuthenticatedComponent',
 			this.licenceApplicationService.initialized,
 			this.permitApplicationService.initialized

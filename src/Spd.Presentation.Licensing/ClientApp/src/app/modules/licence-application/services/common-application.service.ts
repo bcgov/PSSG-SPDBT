@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
@@ -11,24 +12,43 @@ import {
 } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { BehaviorSubject } from 'rxjs';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CommonApplicationService {
+	isLoggedIn = false;
+
 	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([
 		'Licensing Application',
 		'Licensing Application',
 	]);
 
 	constructor(
+		private router: Router,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
-		private paymentService: PaymentService
-	) {}
+		private paymentService: PaymentService,
+		private authProcessService: AuthProcessService
+	) {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.isLoggedIn = isLoggedIn;
+		});
+	}
+
+	public onGoToHome(): void {
+		if (this.isLoggedIn) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+			return;
+		}
+
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+	}
 
 	/**
 	 * Get the licence fees for the licence and application type and business type

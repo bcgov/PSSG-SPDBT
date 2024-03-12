@@ -17,7 +17,13 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 
 					<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
 
-					<app-common-user-profile></app-common-user-profile>
+					<app-common-user-profile
+						[personalInformationFormGroup]="personalInformationFormGroup"
+						[contactFormGroup]="contactFormGroup"
+						[aliasesFormGroup]="aliasesFormGroup"
+						[residentialAddressFormGroup]="residentialAddressFormGroup"
+						[mailingAddressFormGroup]="mailingAddressFormGroup"
+					></app-common-user-profile>
 
 					<div class="mt-3">
 						<app-alert type="info" icon="" [showBorder]="false">
@@ -48,6 +54,12 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 })
 export class LoginUserProfileComponent implements OnInit {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
+
+	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	contactFormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
 
 	constructor(
 		private router: Router,

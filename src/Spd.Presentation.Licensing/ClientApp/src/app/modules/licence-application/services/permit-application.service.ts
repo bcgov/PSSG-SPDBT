@@ -158,689 +158,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Search for an existing permit using access code
-	 * @param licenceNumber
-	 * @param accessCode
-	 * @param recaptchaCode
-	 * @returns
-	 */
-	getPermitWithAccessCode(
-		licenceNumber: string,
-		accessCode: string,
-		recaptchaCode: string
-	): Observable<LicenceResponse> {
-		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
-			.pipe(take(1));
-	}
-
-	/**
-	 * Load an existing permit application
-	 * @returns
-	 */
-	getPermitNew(): Observable<WorkerLicenceAppResponse> {
-		return this.loadPermitNew().pipe(
-			tap((resp: any) => {
-				console.debug('LOAD loadPermitNew', resp);
-				this.initialized = true;
-			})
-		);
-	}
-
-	/**
-	 * Load an existing permit application
-	 * @param licenceAppId
-	 * @returns
-	 */
-	getPermitWithAccessCodeData(
-		accessCodeData: any,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceAppResponse> {
-		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
-			tap((_resp: any) => {
-				this.permitModelFormGroup.patchValue(
-					{
-						originalApplicationId: accessCodeData.linkedLicenceAppId,
-						originalLicenceId: accessCodeData.linkedLicenceId,
-						originalLicenceNumber: accessCodeData.licenceNumber,
-						originalExpiryDate: accessCodeData.linkedExpiryDate,
-					},
-					{ emitEvent: false }
-				);
-
-				console.debug('[getPermitWithAccessCodeData] permitModelFormGroup', this.permitModelFormGroup.value);
-
-				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeCode,
-					applicationTypeCode,
-					accessCodeData.licenceNumber
-				);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing permit application
-	 * @param licenceAppId
-	 * @returns
-	 */
-	private getPermitOfTypeUsingAccessCode(
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceAppResponse> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadPermitRenewal(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.initialized = true;
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					})
-				);
-			}
-			default: {
-				// Must be ApplicationTypeCode.Update: there is no replacement for Permits
-				return forkJoin([this.loadPermitUpdate(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.initialized = true;
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					})
-				);
-			}
-		}
-	}
-
-	private setPhotographOfYourself(image: Blob | null): void {
-		if (!image || image.size == 0) {
-			this.photographOfYourself = null;
-			return;
-		}
-
-		const objectUrl = URL.createObjectURL(image);
-		this.photographOfYourself = this.domSanitizer.sanitize(
-			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
-		);
-	}
-
-	/**
-	 * Load an existing draft permit application
-	 * @returns
-	 */
-	private loadPermitNew(): Observable<WorkerLicenceAppResponse> {
-		return this.loadSpecificPermit().pipe(
-			tap((resp: PermitLicenceAppResponse) => {
-				console.debug('[loadPermitNew] resp', resp);
-
-				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing permit application for renewal
-	 * @returns
-	 */
-	private loadPermitRenewal(): Observable<WorkerLicenceAppResponse> {
-		return this.loadSpecificPermit().pipe(
-			tap((resp: PermitLicenceAppResponse) => {
-				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-
-				const licenceTermData = {
-					licenceTermCode: LicenceTermCode.FiveYears,
-				};
-				const criminalHistoryData = {
-					hasCriminalHistory: null,
-					criminalChargeDescription: null,
-				};
-
-				let originalPhotoOfYourselfLastUpload = null;
-				const photoOfYourselfDocs = resp.documentInfos?.find(
-					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
-				);
-				if (photoOfYourselfDocs) {
-					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
-				}
-
-				// We require a new photo every 5 years. Please provide a new photo for your licence
-				const yearsDiff = moment()
-					.startOf('day')
-					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
-
-				let photographOfYourselfData = {};
-				if (originalPhotoOfYourselfExpired) {
-					// clear out data to force user to upload a new photo
-					photographOfYourselfData = {
-						attachments: [],
-					};
-				}
-
-				this.permitModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						originalApplicationId: resp.licenceAppId,
-						workerLicenceTypeData,
-						applicationTypeData,
-						permitRequirementData,
-						licenceTermData,
-						criminalHistoryData,
-						photographOfYourselfData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				console.debug('[loadPermitRenewal] resp', resp);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing permit application for update
-	 * @param licenceAppId
-	 * @returns
-	 */
-	private loadPermitUpdate(): Observable<WorkerLicenceAppResponse> {
-		return this.loadSpecificPermit().pipe(
-			tap((resp: PermitLicenceAppResponse) => {
-				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-
-				const licenceTermData = {
-					licenceTermCode: LicenceTermCode.FiveYears,
-				};
-				const criminalHistoryData = {
-					hasCriminalHistory: null,
-					criminalChargeDescription: null,
-				};
-
-				this.permitModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						originalApplicationId: resp.licenceAppId,
-						workerLicenceTypeData,
-						applicationTypeData,
-						permitRequirementData,
-						licenceTermData,
-						criminalHistoryData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
-
-				console.debug('[loadPermitUpdate] resp', resp);
-			})
-		);
-	}
-
-	/**
-	 * Create an empty permit
-	 * @returns
-	 */
-	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
-			tap((resp: any) => {
-				console.debug('[createNewPermitAnonymous] resp', resp);
-
-				this.initialized = true;
-
-				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
-			})
-		);
-	}
-
-	/**
-	 * Create an empty permit
-	 * @returns
-	 */
-	createNewPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.applicantProfileService
-			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
-			.pipe(
-				switchMap((resp: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(workerLicenceTypeCode, resp).pipe(
-						tap((_resp: any) => {
-							this.initialized = true;
-
-							this.commonApplicationService.setApplicationTitle();
-						})
-					);
-				})
-			)
-			.pipe(take(1));
-	}
-
-	private createEmptyPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		this.reset();
-
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const permitRequirementData = {
-			workerLicenceTypeCode: workerLicenceTypeCode,
-		};
-		const licenceTermData = {
-			licenceTermCode: LicenceTermCode.FiveYears,
-		};
-
-		this.permitModelFormGroup.patchValue(
-			{
-				workerLicenceTypeData,
-				permitRequirementData,
-				licenceTermData,
-			},
-			{
-				emitEvent: false,
-			}
-		);
-
-		console.debug('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
-
-		return of(this.permitModelFormGroup.value);
-	}
-
-	private createEmptyPermitAuthenticated(
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		profile: ApplicantProfileResponse | undefined
-	): Observable<any> {
-		this.reset();
-
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const permitRequirementData = { workerLicenceTypeCode: workerLicenceTypeCode };
-
-		const licenceTermData = {
-			licenceTermCode: LicenceTermCode.FiveYears,
-		};
-
-		if (profile) {
-			const personalInformationData = {
-				givenName: profile.givenName,
-				middleName1: profile.middleName1,
-				middleName2: profile.middleName2,
-				surname: profile.surname,
-				dateOfBirth: profile.dateOfBirth,
-				genderCode: profile.genderCode,
-			};
-
-			const contactInformationData = {
-				contactEmailAddress: profile.contactEmailAddress,
-				contactPhoneNumber: profile.contactPhoneNumber,
-			};
-
-			const residentialAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: false,
-				addressLine1: profile.residentialAddressData?.addressLine1,
-				addressLine2: profile.residentialAddressData?.addressLine2,
-				city: profile.residentialAddressData?.city,
-				country: profile.residentialAddressData?.country,
-				postalCode: profile.residentialAddressData?.postalCode,
-				province: profile.residentialAddressData?.province,
-			};
-
-			const mailingAddressData = {
-				addressSelected: true,
-				isMailingTheSameAsResidential: false,
-				addressLine1: profile.mailingAddressData?.addressLine1,
-				addressLine2: profile.mailingAddressData?.addressLine2,
-				city: profile.mailingAddressData?.city,
-				country: profile.mailingAddressData?.country,
-				postalCode: profile.mailingAddressData?.postalCode,
-				province: profile.mailingAddressData?.province,
-			};
-
-			this.permitModelFormGroup.patchValue(
-				{
-					personalInformationData: { ...personalInformationData },
-					residentialAddressData: { ...residentialAddressData },
-					mailingAddressData: { ...mailingAddressData },
-					contactInformationData: { ...contactInformationData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-					workerLicenceTypeData,
-					permitRequirementData,
-					licenceTermData,
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		} else {
-			const residentialAddressData = {
-				isMailingTheSameAsResidential: false,
-			};
-
-			this.permitModelFormGroup.patchValue(
-				{
-					residentialAddressData: { ...residentialAddressData },
-					aliasesData: { previousNameFlag: BooleanTypeCode.No },
-					workerLicenceTypeData,
-					permitRequirementData,
-					licenceTermData,
-				},
-				{
-					emitEvent: false,
-				}
-			);
-		}
-
-		console.debug('[createPermitAuthenticated] permitModelFormGroup', this.permitModelFormGroup.value);
-
-		return of(this.permitModelFormGroup.value);
-	}
-
-	private loadSpecificPermit(): Observable<PermitLicenceAppResponse> {
-		this.reset();
-
-		return this.permitService.apiPermitApplicationGet().pipe(
-			tap((resp: PermitLicenceAppResponse) => {
-				this.loadSpecificPermitIntoModel(resp);
-			})
-		);
-	}
-
-	private loadSpecificPermitIntoModel(resp: PermitLicenceAppResponse): void {
-		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
-
-		const expiredLicenceData = {
-			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
-			expiredLicenceNumber: resp.expiredLicenceNumber,
-			expiryDate: resp.expiryDate,
-			expiredLicenceId: resp.expiredLicenceId,
-		};
-
-		const licenceTermData = {
-			licenceTermCode: resp.licenceTermCode,
-		};
-
-		const bcDriversLicenceData = {
-			hasBcDriversLicence: this.utilService.booleanToBooleanType(resp.hasBcDriversLicence),
-			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
-		};
-
-		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(resp.hasCriminalHistory),
-		};
-
-		const aliasesData = {
-			previousNameFlag: resp.hasPreviousName
-				? this.utilService.booleanToBooleanType(resp.hasPreviousName)
-				: BooleanTypeCode.No,
-		};
-
-		let personalInformationData = {};
-		// if (bcscUserWhoamiProfile) { // TODO fix for authenticated
-		// 	personalInformationData = {
-		// 		givenName: bcscUserWhoamiProfile.firstName,
-		// 		middleName1: bcscUserWhoamiProfile.middleName1,
-		// 		middleName2: bcscUserWhoamiProfile.middleName2,
-		// 		surname: bcscUserWhoamiProfile.lastName,
-		// 		genderCode: bcscUserWhoamiProfile.gender,
-		// 		dateOfBirth: bcscUserWhoamiProfile.birthDate,
-		// 		origGivenName: bcscUserWhoamiProfile.firstName,
-		// 		origMiddleName1: bcscUserWhoamiProfile.middleName1,
-		// 		origMiddleName2: bcscUserWhoamiProfile.middleName2,
-		// 		origSurname: bcscUserWhoamiProfile.lastName,
-		// 		origGenderCode: bcscUserWhoamiProfile.gender,
-		// 		origDateOfBirth: bcscUserWhoamiProfile.birthDate,
-		// 	};
-		// } else {
-		personalInformationData = {
-			givenName: resp.givenName,
-			middleName1: resp.middleName1,
-			middleName2: resp.middleName2,
-			surname: resp.surname,
-			genderCode: resp.genderCode,
-			dateOfBirth: resp.dateOfBirth,
-			origGivenName: resp.givenName,
-			origMiddleName1: resp.middleName1,
-			origMiddleName2: resp.middleName2,
-			origSurname: resp.surname,
-			origGenderCode: resp.genderCode,
-			origDateOfBirth: resp.dateOfBirth,
-		};
-		// }
-
-		const bodyArmourRequirementFormGroup = {
-			isOutdoorRecreation: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.OutdoorRecreation),
-			isPersonalProtection: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.PersonalProtection),
-			isMyEmployment: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.MyEmployment),
-			isTravelForConflict: resp.bodyArmourPermitReasonCodes?.includes(
-				BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict
-			),
-			isOther: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.Other),
-		};
-
-		const armouredVehicleRequirementFormGroup = {
-			isPersonalProtection: resp.armouredVehiclePermitReasonCodes?.includes(
-				ArmouredVehiclePermitReasonCode.PersonalProtection
-			),
-			isMyEmployment: resp.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.MyEmployment),
-			isProtectionOfAnotherPerson: resp.armouredVehiclePermitReasonCodes?.includes(
-				ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson
-			),
-			isProtectionOfPersonalProperty: resp.armouredVehiclePermitReasonCodes?.includes(
-				ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty
-			),
-			isProtectionOfOthersProperty: resp.armouredVehiclePermitReasonCodes?.includes(
-				ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty
-			),
-			isOther: resp.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.Other),
-		};
-
-		const permitRequirementData = {
-			workerLicenceTypeCode: resp.workerLicenceTypeCode,
-			bodyArmourRequirementFormGroup: bodyArmourRequirementFormGroup,
-			armouredVehicleRequirementFormGroup: armouredVehicleRequirementFormGroup,
-			otherReason: resp.permitOtherRequiredReason,
-		};
-
-		const employerData = {
-			employerName: resp.employerName,
-			supervisorName: resp.supervisorName,
-			supervisorEmailAddress: resp.supervisorEmailAddress,
-			supervisorPhoneNumber: resp.supervisorPhoneNumber,
-			addressSelected: resp.employerPrimaryAddress?.addressLine1 ? true : resp.employerPrimaryAddress?.addressLine1,
-			addressLine1: resp.employerPrimaryAddress?.addressLine1,
-			addressLine2: resp.employerPrimaryAddress?.addressLine2,
-			city: resp.employerPrimaryAddress?.city,
-			postalCode: resp.employerPrimaryAddress?.postalCode,
-			province: resp.employerPrimaryAddress?.province,
-			country: resp.employerPrimaryAddress?.country,
-		};
-
-		let height = resp.height ? resp.height + '' : null;
-		let heightInches = '';
-		if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
-			height = Math.trunc(resp.height / 12) + '';
-			heightInches = (resp.height % 12) + '';
-		}
-
-		const characteristicsData = {
-			hairColourCode: resp.hairColourCode,
-			eyeColourCode: resp.eyeColourCode,
-			height,
-			heightUnitCode: resp.heightUnitCode,
-			heightInches,
-			weight: resp.weight ? resp.weight + '' : null,
-			weightUnitCode: resp.weightUnitCode,
-		};
-
-		const contactInformationData = {
-			contactEmailAddress: resp.contactEmailAddress,
-			contactPhoneNumber: resp.contactPhoneNumber,
-		};
-
-		const citizenshipData: {
-			isCanadianCitizen: BooleanTypeCode | null;
-			isCanadianResident: BooleanTypeCode | null;
-			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
-			proofOfResidentStatusCode: LicenceDocumentTypeCode | null;
-			proofOfCitizenshipCode: LicenceDocumentTypeCode | null;
-			expiryDate: string | null;
-			attachments: File[];
-			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
-			governmentIssuedExpiryDate: string | null;
-			governmentIssuedAttachments: File[];
-		} = {
-			isCanadianCitizen: this.utilService.booleanToBooleanType(resp.isCanadianCitizen),
-			isCanadianResident: this.utilService.booleanToBooleanType(resp.isCanadianResident),
-			canadianCitizenProofTypeCode: null,
-			proofOfResidentStatusCode: null,
-			proofOfCitizenshipCode: null,
-			expiryDate: null,
-			attachments: [],
-			governmentIssuedPhotoTypeCode: null,
-			governmentIssuedExpiryDate: null,
-			governmentIssuedAttachments: [],
-		};
-
-		const rationaleAttachments: Array<File> = [];
-		const photographOfYourselfAttachments: Array<File> = [];
-		const citizenshipDataAttachments: Array<File> = [];
-		const governmentIssuedAttachments: Array<File> = [];
-
-		resp.documentInfos?.forEach((doc: Document) => {
-			switch (doc.licenceDocumentTypeCode) {
-				case LicenceDocumentTypeCode.DriversLicenceAdditional:
-				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
-				case LicenceDocumentTypeCode.Bcid:
-				case LicenceDocumentTypeCode.BcServicesCard:
-				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
-				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
-				case LicenceDocumentTypeCode.NonCanadianPassport: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					governmentIssuedAttachments.push(aFile);
-
-					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
-					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
-					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
-					break;
-				}
-				case LicenceDocumentTypeCode.BirthCertificate: //ProofOfCanadianCitizenshipTypes
-				case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
-				case LicenceDocumentTypeCode.CanadianPassport:
-				case LicenceDocumentTypeCode.CanadianCitizenship:
-				case LicenceDocumentTypeCode.DriversLicence: //PermitProofOfCitizenshipTypes
-				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId:
-				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument: //PermitProofOfResidenceStatusTypes
-				case LicenceDocumentTypeCode.PermanentResidentCard:
-				case LicenceDocumentTypeCode.RecordOfLandingDocument:
-				case LicenceDocumentTypeCode.StudyPermit:
-				case LicenceDocumentTypeCode.WorkPermit: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					citizenshipDataAttachments.push(aFile);
-
-					citizenshipData.canadianCitizenProofTypeCode = resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
-					citizenshipData.proofOfResidentStatusCode =
-						!resp.isCanadianCitizen && resp.isCanadianResident ? doc.licenceDocumentTypeCode : null;
-					citizenshipData.proofOfCitizenshipCode =
-						!resp.isCanadianCitizen && !resp.isCanadianResident ? doc.licenceDocumentTypeCode : null;
-					citizenshipData.expiryDate = doc.expiryDate ?? null;
-					citizenshipData.attachments = citizenshipDataAttachments;
-					break;
-				}
-				case LicenceDocumentTypeCode.PhotoOfYourself: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					photographOfYourselfAttachments.push(aFile);
-					break;
-				}
-				case LicenceDocumentTypeCode.ArmouredVehicleRationale:
-				case LicenceDocumentTypeCode.BodyArmourRationale: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					rationaleAttachments.push(aFile);
-					break;
-				}
-			}
-		});
-
-		const photographOfYourselfData = {
-			attachments: photographOfYourselfAttachments,
-		};
-
-		const permitRationaleData = {
-			rationale: resp.rationale,
-			attachments: rationaleAttachments,
-		};
-
-		let residentialAddressData = {};
-		const isMailingTheSameAsResidential = resp.isMailingTheSameAsResidential ?? false;
-		// if (bcscUserWhoamiProfile) {// TODO fix for authenticated
-		// 	residentialAddressData = {
-		// 		addressSelected: true,
-		// 		isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-		// 		addressLine1: bcscUserWhoamiProfile.residentialAddress?.addressLine1,
-		// 		addressLine2: bcscUserWhoamiProfile.residentialAddress?.addressLine2,
-		// 		city: bcscUserWhoamiProfile.residentialAddress?.city,
-		// 		country: bcscUserWhoamiProfile.residentialAddress?.country,
-		// 		postalCode: bcscUserWhoamiProfile.residentialAddress?.postalCode,
-		// 		province: bcscUserWhoamiProfile.residentialAddress?.province,
-		// 	};
-		// } else {
-		residentialAddressData = {
-			...resp.residentialAddressData,
-			isMailingTheSameAsResidential: isMailingTheSameAsResidential,
-			addressSelected: !!resp.residentialAddressData?.addressLine1,
-		};
-		// }
-
-		const mailingAddressData = {
-			...resp.mailingAddressData,
-			addressSelected: !!resp.mailingAddressData?.addressLine1,
-		};
-
-		this.permitModelFormGroup.patchValue(
-			{
-				licenceAppId: resp.licenceAppId,
-				applicationPortalStatus: resp.applicationPortalStatus,
-				workerLicenceTypeData,
-				permitRequirementData,
-				permitRationaleData,
-				employerData,
-				applicationTypeData,
-				expiredLicenceData,
-				licenceTermData,
-				bcDriversLicenceData,
-				criminalHistoryData,
-				aliasesData,
-				personalInformationData,
-				characteristicsData,
-				citizenshipData,
-				photographOfYourselfData,
-				contactInformationData,
-				profileConfirmationData: { isProfileUpToDate: true },
-				residentialAddressData: { ...residentialAddressData },
-				mailingAddressData: { ...mailingAddressData },
-			},
-			{
-				emitEvent: false,
-			}
-		);
-
-		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
-		resp.aliases?.forEach((alias: Alias) => {
-			aliasesArray.push(
-				new FormGroup({
-					givenName: new FormControl(alias.givenName),
-					middleName1: new FormControl(alias.middleName1),
-					middleName2: new FormControl(alias.middleName2),
-					surname: new FormControl(alias.surname, [FormControlValidators.required]),
-				})
-			);
-		});
-
-		// this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
-
-		console.debug('[loadSpecificPermitIntoModel] licenceModelFormGroup', this.permitModelFormGroup.value);
-	}
-
-	/**
 	 * Reset the permit data
 	 */
 	reset(): void {
@@ -1017,6 +334,40 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
+	/*************************************************************/
+	// AUTHENTICATED
+	/*************************************************************/
+
+	/**
+	 * Create an empty permit
+	 * @returns
+	 */
+	createNewPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((profile: ApplicantProfileResponse) => {
+					return this.createEmptyPermitAuthenticated(profile, workerLicenceTypeCode, ApplicationTypeCode.New).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode, ApplicationTypeCode.New);
+						})
+					);
+				})
+			);
+	}
+
+	private createEmptyPermitAuthenticated(
+		profile: ApplicantProfileResponse,
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode | undefined
+	): Observable<any> {
+		this.reset();
+
+		return this.applyPermitProfileIntoModel(profile, workerLicenceTypeCode, applicationTypeCode);
+	}
+
 	/**
 	 * Submit the permit data
 	 * @returns
@@ -1026,6 +377,256 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('submitLicenceAuthenticated body', body);
 
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
+	}
+
+	/*************************************************************/
+	// ANONYMOUS
+	/*************************************************************/
+
+	/**
+	 * Search for an existing permit using access code
+	 * @param licenceNumber
+	 * @param accessCode
+	 * @param recaptchaCode
+	 * @returns
+	 */
+	getPermitWithAccessCodeAnonymous(
+		licenceNumber: string,
+		accessCode: string,
+		recaptchaCode: string
+	): Observable<LicenceResponse> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, accessCode, body: { recaptchaCode } })
+			.pipe(take(1));
+	}
+
+	/**
+	 * Load an existing permit application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitWithAccessCodeData(
+		accessCodeData: any,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceAppResponse> {
+		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
+			tap((_resp: any) => {
+				this.permitModelFormGroup.patchValue(
+					{
+						originalApplicationId: accessCodeData.linkedLicenceAppId,
+						originalLicenceId: accessCodeData.linkedLicenceId,
+						originalLicenceNumber: accessCodeData.licenceNumber,
+						originalExpiryDate: accessCodeData.linkedExpiryDate,
+					},
+					{ emitEvent: false }
+				);
+
+				console.debug('[getPermitWithAccessCodeData] permitModelFormGroup', this.permitModelFormGroup.value);
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeCode,
+					applicationTypeCode,
+					accessCodeData.licenceNumber
+				);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing permit application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private getPermitOfTypeUsingAccessCode(
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceAppResponse> {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				return forkJoin([this.loadPermitRenewalAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+			default: {
+				// Must be ApplicationTypeCode.Update: there is no replacement for Permits
+				return forkJoin([this.loadPermitUpdateAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.initialized = true;
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					})
+				);
+			}
+		}
+	}
+
+	private setPhotographOfYourself(image: Blob | null): void {
+		if (!image || image.size == 0) {
+			this.photographOfYourself = null;
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(image);
+		this.photographOfYourself = this.domSanitizer.sanitize(
+			SecurityContext.RESOURCE_URL,
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+		);
+	}
+
+	/**
+	 * Load an existing permit application for renewal
+	 * @returns
+	 */
+	private loadPermitRenewalAnonymous(): Observable<WorkerLicenceAppResponse> {
+		return this.loadExistingPermitAnonymous().pipe(
+			tap((resp: PermitLicenceAppResponse) => {
+				this.applyRenewalDataUpdatesToModel();
+				/*
+				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+
+				const licenceTermData = {
+					licenceTermCode: LicenceTermCode.FiveYears,
+				};
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
+
+				let originalPhotoOfYourselfLastUpload = null;
+				const photoOfYourselfDocs = resp.documentInfos?.find(
+					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
+				);
+				if (photoOfYourselfDocs) {
+					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
+				}
+
+				// We require a new photo every 5 years. Please provide a new photo for your licence
+				const yearsDiff = moment()
+					.startOf('day')
+					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+				let photographOfYourselfData = {};
+				if (originalPhotoOfYourselfExpired) {
+					// clear out data to force user to upload a new photo
+					photographOfYourselfData = {
+						attachments: [],
+					};
+				}
+
+				this.permitModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						originalApplicationId: resp.licenceAppId,
+						workerLicenceTypeData,
+						applicationTypeData,
+						permitRequirementData,
+						licenceTermData,
+						criminalHistoryData,
+						photographOfYourselfData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+				*/
+
+				console.debug('[loadPermitRenewal] resp', resp);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing permit application for update
+	 * @param licenceAppId
+	 * @returns
+	 */
+	private loadPermitUpdateAnonymous(): Observable<WorkerLicenceAppResponse> {
+		return this.loadExistingPermitAnonymous().pipe(
+			tap((resp: PermitLicenceAppResponse) => {
+				this.applyUpdateDataUpdatesToModel();
+				/*
+				const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+				const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+
+				const licenceTermData = {
+					licenceTermCode: LicenceTermCode.FiveYears,
+				};
+				const criminalHistoryData = {
+					hasCriminalHistory: null,
+					criminalChargeDescription: null,
+				};
+
+				this.permitModelFormGroup.patchValue(
+					{
+						licenceAppId: null,
+						originalApplicationId: resp.licenceAppId,
+						workerLicenceTypeData,
+						applicationTypeData,
+						permitRequirementData,
+						licenceTermData,
+						criminalHistoryData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+				*/
+
+				console.debug('[loadPermitUpdate] resp', resp);
+			})
+		);
+	}
+
+	/**
+	 * Create an empty permit
+	 * @returns
+	 */
+	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
+			tap((resp: any) => {
+				console.debug('[createNewPermitAnonymous] resp', resp);
+
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
+			})
+		);
+	}
+
+	private createEmptyPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+		this.reset();
+
+		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		const permitRequirementData = {
+			workerLicenceTypeCode: workerLicenceTypeCode,
+		};
+		const licenceTermData = {
+			licenceTermCode: LicenceTermCode.FiveYears,
+		};
+
+		this.permitModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData,
+				permitRequirementData,
+				licenceTermData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
+
+		return of(this.permitModelFormGroup.value);
 	}
 
 	/**
@@ -1144,5 +745,398 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				})
 			)
 			.pipe(take(1));
+	}
+
+	/*************************************************************/
+	// COMMON
+	/*************************************************************/
+
+	private applyPermitProfileIntoModel(
+		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode | undefined
+	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+
+		const personalInformationData = {
+			givenName: profile.givenName,
+			middleName1: profile.middleName1,
+			middleName2: profile.middleName2,
+			surname: profile.surname,
+			dateOfBirth: profile.dateOfBirth,
+			genderCode: profile.genderCode,
+		};
+
+		const contactInformationData = {
+			contactEmailAddress: profile.contactEmailAddress,
+			contactPhoneNumber: profile.contactPhoneNumber,
+		};
+
+		const residentialAddressData = {
+			addressSelected: true,
+			isMailingTheSameAsResidential: false,
+			addressLine1: profile.residentialAddressData?.addressLine1,
+			addressLine2: profile.residentialAddressData?.addressLine2,
+			city: profile.residentialAddressData?.city,
+			country: profile.residentialAddressData?.country,
+			postalCode: profile.residentialAddressData?.postalCode,
+			province: profile.residentialAddressData?.province,
+		};
+
+		const mailingAddressData = {
+			addressSelected: true,
+			isMailingTheSameAsResidential: false,
+			addressLine1: profile.mailingAddressData?.addressLine1,
+			addressLine2: profile.mailingAddressData?.addressLine2,
+			city: profile.mailingAddressData?.city,
+			country: profile.mailingAddressData?.country,
+			postalCode: profile.mailingAddressData?.postalCode,
+			province: profile.mailingAddressData?.province,
+		};
+
+		const criminalHistoryData = {
+			hasCriminalHistory: this.utilService.booleanToBooleanType(profile.hasCriminalHistory),
+			criminalChargeDescription: '',
+		};
+
+		if ('criminalChargeDescription' in profile) {
+			criminalHistoryData.criminalChargeDescription = profile.criminalChargeDescription ?? '';
+		}
+
+		this.permitModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData,
+				applicationTypeData,
+				personalInformationData: { ...personalInformationData },
+				residentialAddressData: { ...residentialAddressData },
+				mailingAddressData: { ...mailingAddressData },
+				contactInformationData: { ...contactInformationData },
+				aliasesData: {
+					previousNameFlag: this.utilService.booleanToBooleanType(profile.aliases && profile.aliases.length > 0),
+					aliases: [],
+				},
+				criminalHistoryData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
+		profile.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		console.debug('[applyLicenceProfileIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
+		return of(this.permitModelFormGroup.value);
+	}
+
+	private applyPermitIntoModel(resp: PermitLicenceAppResponse): void {
+		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
+
+		const expiredLicenceData = {
+			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
+			expiredLicenceNumber: resp.expiredLicenceNumber,
+			expiryDate: resp.expiryDate,
+			expiredLicenceId: resp.expiredLicenceId,
+		};
+
+		const licenceTermData = {
+			licenceTermCode: resp.licenceTermCode,
+		};
+
+		const bcDriversLicenceData = {
+			hasBcDriversLicence: this.utilService.booleanToBooleanType(resp.hasBcDriversLicence),
+			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
+		};
+
+		const bodyArmourRequirementFormGroup = {
+			isOutdoorRecreation: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.OutdoorRecreation),
+			isPersonalProtection: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.PersonalProtection),
+			isMyEmployment: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.MyEmployment),
+			isTravelForConflict: resp.bodyArmourPermitReasonCodes?.includes(
+				BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict
+			),
+			isOther: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.Other),
+		};
+
+		const armouredVehicleRequirementFormGroup = {
+			isPersonalProtection: resp.armouredVehiclePermitReasonCodes?.includes(
+				ArmouredVehiclePermitReasonCode.PersonalProtection
+			),
+			isMyEmployment: resp.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.MyEmployment),
+			isProtectionOfAnotherPerson: resp.armouredVehiclePermitReasonCodes?.includes(
+				ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson
+			),
+			isProtectionOfPersonalProperty: resp.armouredVehiclePermitReasonCodes?.includes(
+				ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty
+			),
+			isProtectionOfOthersProperty: resp.armouredVehiclePermitReasonCodes?.includes(
+				ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty
+			),
+			isOther: resp.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.Other),
+		};
+
+		const permitRequirementData = {
+			workerLicenceTypeCode: resp.workerLicenceTypeCode,
+			bodyArmourRequirementFormGroup: bodyArmourRequirementFormGroup,
+			armouredVehicleRequirementFormGroup: armouredVehicleRequirementFormGroup,
+			otherReason: resp.permitOtherRequiredReason,
+		};
+
+		const employerData = {
+			employerName: resp.employerName,
+			supervisorName: resp.supervisorName,
+			supervisorEmailAddress: resp.supervisorEmailAddress,
+			supervisorPhoneNumber: resp.supervisorPhoneNumber,
+			addressSelected: resp.employerPrimaryAddress?.addressLine1 ? true : resp.employerPrimaryAddress?.addressLine1,
+			addressLine1: resp.employerPrimaryAddress?.addressLine1,
+			addressLine2: resp.employerPrimaryAddress?.addressLine2,
+			city: resp.employerPrimaryAddress?.city,
+			postalCode: resp.employerPrimaryAddress?.postalCode,
+			province: resp.employerPrimaryAddress?.province,
+			country: resp.employerPrimaryAddress?.country,
+		};
+
+		let height = resp.height ? resp.height + '' : null;
+		let heightInches = '';
+		if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
+			height = Math.trunc(resp.height / 12) + '';
+			heightInches = (resp.height % 12) + '';
+		}
+
+		const characteristicsData = {
+			hairColourCode: resp.hairColourCode,
+			eyeColourCode: resp.eyeColourCode,
+			height,
+			heightUnitCode: resp.heightUnitCode,
+			heightInches,
+			weight: resp.weight ? resp.weight + '' : null,
+			weightUnitCode: resp.weightUnitCode,
+		};
+
+		const citizenshipData: {
+			isCanadianCitizen: BooleanTypeCode | null;
+			isCanadianResident: BooleanTypeCode | null;
+			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			proofOfResidentStatusCode: LicenceDocumentTypeCode | null;
+			proofOfCitizenshipCode: LicenceDocumentTypeCode | null;
+			expiryDate: string | null;
+			attachments: File[];
+			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
+			governmentIssuedExpiryDate: string | null;
+			governmentIssuedAttachments: File[];
+		} = {
+			isCanadianCitizen: this.utilService.booleanToBooleanType(resp.isCanadianCitizen),
+			isCanadianResident: this.utilService.booleanToBooleanType(resp.isCanadianResident),
+			canadianCitizenProofTypeCode: null,
+			proofOfResidentStatusCode: null,
+			proofOfCitizenshipCode: null,
+			expiryDate: null,
+			attachments: [],
+			governmentIssuedPhotoTypeCode: null,
+			governmentIssuedExpiryDate: null,
+			governmentIssuedAttachments: [],
+		};
+
+		const rationaleAttachments: Array<File> = [];
+		const photographOfYourselfAttachments: Array<File> = [];
+		const citizenshipDataAttachments: Array<File> = [];
+		const governmentIssuedAttachments: Array<File> = [];
+
+		resp.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
+				case LicenceDocumentTypeCode.Bcid:
+				case LicenceDocumentTypeCode.BcServicesCard:
+				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
+				case LicenceDocumentTypeCode.NonCanadianPassport: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					governmentIssuedAttachments.push(aFile);
+
+					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
+					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+					break;
+				}
+				case LicenceDocumentTypeCode.BirthCertificate: //ProofOfCanadianCitizenshipTypes
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
+				case LicenceDocumentTypeCode.CanadianPassport:
+				case LicenceDocumentTypeCode.CanadianCitizenship:
+				case LicenceDocumentTypeCode.DriversLicence: //PermitProofOfCitizenshipTypes
+				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId:
+				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument: //PermitProofOfResidenceStatusTypes
+				case LicenceDocumentTypeCode.PermanentResidentCard:
+				case LicenceDocumentTypeCode.RecordOfLandingDocument:
+				case LicenceDocumentTypeCode.StudyPermit:
+				case LicenceDocumentTypeCode.WorkPermit: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					citizenshipDataAttachments.push(aFile);
+
+					citizenshipData.canadianCitizenProofTypeCode = resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
+					citizenshipData.proofOfResidentStatusCode =
+						!resp.isCanadianCitizen && resp.isCanadianResident ? doc.licenceDocumentTypeCode : null;
+					citizenshipData.proofOfCitizenshipCode =
+						!resp.isCanadianCitizen && !resp.isCanadianResident ? doc.licenceDocumentTypeCode : null;
+					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.attachments = citizenshipDataAttachments;
+					break;
+				}
+				case LicenceDocumentTypeCode.PhotoOfYourself: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					photographOfYourselfAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.ArmouredVehicleRationale:
+				case LicenceDocumentTypeCode.BodyArmourRationale: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					rationaleAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const photographOfYourselfData = {
+			attachments: photographOfYourselfAttachments,
+		};
+
+		const permitRationaleData = {
+			rationale: resp.rationale,
+			attachments: rationaleAttachments,
+		};
+
+		this.permitModelFormGroup.patchValue(
+			{
+				licenceAppId: resp.licenceAppId,
+				applicationPortalStatus: resp.applicationPortalStatus,
+				workerLicenceTypeData,
+				permitRequirementData,
+				permitRationaleData,
+				employerData,
+				applicationTypeData,
+				expiredLicenceData,
+				licenceTermData,
+				bcDriversLicenceData,
+				characteristicsData,
+				citizenshipData,
+				photographOfYourselfData,
+				profileConfirmationData: { isProfileUpToDate: true },
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
+		resp.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		console.debug('[loadSpecificPermitIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
+	}
+
+	private applyRenewalDataUpdatesToModel() {
+		const permitModel = this.permitModelFormGroup.value;
+
+		const workerLicenceTypeData = { workerLicenceTypeCode: permitModel.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+		const permitRequirementData = { workerLicenceTypeCode: permitModel.workerLicenceTypeCode };
+
+		const licenceTermData = {
+			licenceTermCode: LicenceTermCode.FiveYears,
+		};
+		const criminalHistoryData = {
+			hasCriminalHistory: null,
+			criminalChargeDescription: null,
+		};
+
+		const originalPhotoOfYourselfLastUpload = permitModel.photographOfYourselfData.uploadedDateTime;
+
+		// We require a new photo every 5 years. Please provide a new photo for your licence
+		const yearsDiff = moment().startOf('day').diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+		let photographOfYourselfData = {};
+		if (originalPhotoOfYourselfExpired) {
+			// clear out data to force user to upload a new photo
+			photographOfYourselfData = {
+				attachments: [],
+			};
+		}
+
+		this.permitModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				originalApplicationId: permitModel.licenceAppId,
+				workerLicenceTypeData,
+				applicationTypeData,
+				permitRequirementData,
+				licenceTermData,
+				criminalHistoryData,
+				photographOfYourselfData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+	}
+
+	private applyUpdateDataUpdatesToModel() {
+		const permitModel = this.permitModelFormGroup.value;
+
+		const workerLicenceTypeData = { workerLicenceTypeCode: permitModel.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+		const permitRequirementData = { workerLicenceTypeCode: permitModel.workerLicenceTypeCode };
+
+		const licenceTermData = {
+			licenceTermCode: LicenceTermCode.FiveYears,
+		};
+		const criminalHistoryData = {
+			hasCriminalHistory: null,
+			criminalChargeDescription: null,
+		};
+
+		this.permitModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				originalApplicationId: permitModel.licenceAppId,
+				workerLicenceTypeData,
+				applicationTypeData,
+				permitRequirementData,
+				licenceTermData,
+				criminalHistoryData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+	}
+
+	private loadExistingPermitAnonymous(): Observable<PermitLicenceAppResponse> {
+		this.reset();
+
+		return this.permitService.apiPermitApplicationGet().pipe(
+			tap((resp: PermitLicenceAppResponse) => {
+				this.applyPermitIntoModel(resp);
+			})
+		);
 	}
 }

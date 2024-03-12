@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -19,8 +19,8 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-								<h2 class="fs-3 mb-3">Confirm your Profile</h2>
+							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+								<h2 class="fs-3">Confirm your Profile</h2>
 							</div>
 
 							<div class="col-xl-6 col-lg-4 col-md-12">
@@ -42,29 +42,37 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
 						<section>
-							<app-common-user-profile></app-common-user-profile>
+							<app-common-user-profile
+								[personalInformationFormGroup]="personalInformationFormGroup"
+								[contactFormGroup]="contactFormGroup"
+								[aliasesFormGroup]="aliasesFormGroup"
+								[residentialAddressFormGroup]="residentialAddressFormGroup"
+								[mailingAddressFormGroup]="mailingAddressFormGroup"
+							></app-common-user-profile>
 						</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<section>
-							<app-common-user-profile-licence-criminal-history
-								[applicationTypeCode]="applicationTypeCode"
-							></app-common-user-profile-licence-criminal-history>
-						</section>
+						<ng-container *ngIf="isNotReplacment">
+							<mat-divider class="mat-divider-main mt-3"></mat-divider>
+							<section>
+								<app-common-user-profile-licence-criminal-history
+									[applicationTypeCode]="applicationTypeCode"
+								></app-common-user-profile-licence-criminal-history>
+							</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<section>
-							<app-common-user-profile-licence-police-background
-								[applicationTypeCode]="applicationTypeCode"
-							></app-common-user-profile-licence-police-background>
-						</section>
+							<mat-divider class="mat-divider-main mt-3"></mat-divider>
+							<section>
+								<app-common-user-profile-licence-police-background
+									[applicationTypeCode]="applicationTypeCode"
+								></app-common-user-profile-licence-police-background>
+							</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<section>
-							<app-common-user-profile-licence-mental-health-conditions
-								[applicationTypeCode]="applicationTypeCode"
-							></app-common-user-profile-licence-mental-health-conditions>
-						</section>
+							<mat-divider class="mat-divider-main mt-3"></mat-divider>
+							<section>
+								<app-common-user-profile-licence-mental-health-conditions
+									[applicationTypeCode]="applicationTypeCode"
+								></app-common-user-profile-licence-mental-health-conditions>
+							</section>
+						</ng-container>
 
 						<section>
 							<form [formGroup]="form" novalidate>
@@ -122,6 +130,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	alertText = '';
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
@@ -132,6 +141,12 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	@ViewChild(CommonUserProfileLicenceMentalHealthConditionsComponent)
 	mentalHealthComponent!: CommonUserProfileLicenceMentalHealthConditionsComponent;
 
+	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	contactFormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
@@ -140,6 +155,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state && state['applicationTypeCode'];
+		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
@@ -165,29 +181,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 		}
-
-		// this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-		// 	'applicationTypeData.applicationTypeCode'
-		// )?.value;
-
-		// switch (this.applicationTypeCode) {
-		// 	case ApplicationTypeCode.Replacement: {
-		// 		this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit';
-		// 		break;
-		// 	}
-		// 	case ApplicationTypeCode.Renewal: {
-		// 		this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit';
-		// 		break;
-		// 	}
-		// 	case ApplicationTypeCode.Update: {
-		// 		this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit';
-		// 		break;
-		// 	}
-		// 	default: {
-		// 		this.alertText = 'Fill out your profile information';
-		// 		break;
-		// 	}
-		// }
 	}
 
 	onCancel(): void {
@@ -217,16 +210,51 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	}
 
 	onContinue(): void {
-		if (this.isFormValid()) {
-			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-					LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-				)
-			);
+		if (!this.isFormValid()) {
+			return;
+		}
+
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				// this.router.navigateByUrl(
+				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				// 		LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+				// 	)
+				// );
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			default: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+					)
+				);
+				break;
+			}
 		}
 	}
 
 	onBack(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+	}
+
+	get isNotReplacment(): boolean {
+		return this.applicationTypeCode != ApplicationTypeCode.Replacement;
 	}
 }

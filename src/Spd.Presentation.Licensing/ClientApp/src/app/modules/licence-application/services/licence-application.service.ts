@@ -355,7 +355,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	isSaveStep(): boolean {
-		// console.log('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
+		// console.debug('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
 		// const shouldSaveStep =
 		// 	this.hasValueChanged &&
@@ -408,7 +408,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				switchMap((resp: ApplicantProfileResponse) => {
 					return this.createEmptyLicenceAuthenticated(resp, undefined).pipe(
 						tap((_resp: any) => {
-							console.debug('[createNewLicenceAuthenticated] resp', _resp);
+							console.debug('[createEmptyLicenceAuthenticated] resp', _resp);
 
 							this.initialized = true;
 
@@ -665,10 +665,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<WorkerLicenceAppResponse> {
 		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!).pipe(
 			tap((_resp: any) => {
-				// this.licenceModelFormGroup.patchValue(
+				// this.licenceModelFormGroup.patchValue( // TODO do I need to supply this ??
 				// 	{
-				// 		originalApplicationId: accessCodeData.linkedLicenceAppId,
-				// 		originalLicenceId: accessCodeData.linkedLicenceId,
+				// 		originalApplicationId: accessCodeData.linkedLicenceAppId,  // TODO do I need to supply this ??
+				// 		originalLicenceId: accessCodeData.linkedLicenceId, // TODO do I need to supply this ??
 				// 		originalLicenceNumber: accessCodeData.licenceNumber,
 				// 		originalExpiryDate: accessCodeData.linkedExpiryDate,
 				// 	},
@@ -697,35 +697,50 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<WorkerLicenceAppResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return forkJoin([
-					this.loadExistingLicenceWithIdAuthenticated(licenceAppId),
-					this.licenceService.apiLicencesLicencePhotoGet(),
-				]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+					tap((_resp: any) => {
+						this.applyRenewalDataUpdatesToModel();
+
+						// this.licenceModelFormGroup.patchValue(
+						// 	{
+						// 		originalApplicationId: accessCodeData.linkedLicenceAppId,  // TODO do I need to supply this ??
+						// 		originalLicenceId: accessCodeData.linkedLicenceId, // TODO do I need to supply this ??
+						// 		originalLicenceNumber: accessCodeData.licenceNumber,
+						// 		originalExpiryDate: accessCodeData.linkedExpiryDate,
+						// 	},
+						// 	{ emitEvent: false }
+						// );
+
 						this.initialized = true;
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
+						return _resp;
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadExistingLicenceWithIdAuthenticated(licenceAppId),
-					this.licenceService.apiLicencesLicencePhotoGet(),
-				]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+					tap((_resp: any) => {
+						this.applyUpdateDataUpdatesToModel();
+
 						this.initialized = true;
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
+						return _resp;
+					})
+				);
+			}
+			case ApplicationTypeCode.Replacement: {
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+					tap((_resp: any) => {
+						this.applyReplacementDataUpdatesToModel();
+
+						this.initialized = true;
+						return _resp;
 					})
 				);
 			}
 			default: {
 				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
-					tap((_resp: WorkerLicenceAppResponse) => {
+					tap((_resp: any) => {
 						this.initialized = true;
+						return _resp;
 					})
 				);
 			}
@@ -866,112 +881,113 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadLicenceRenewalAnonymous(): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceAnonymous().pipe(
 			tap((_resp: WorkerLicenceAppResponse) => {
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+				this.applyRenewalDataUpdatesToModel();
+				// const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
-				// Remove data that should be re-prompted for
-				const soleProprietorData = {
-					isSoleProprietor: null,
-					businessTypeCode: null,
-				};
-				const fingerprintProofData = {
-					attachments: [],
-				};
-				const licenceTermData = {
-					licenceTermCode: null,
-				};
-				// const aliasesData = { previousNameFlag: null, aliases: [] };
-				const bcDriversLicenceData = {
-					hasBcDriversLicence: null,
-					bcDriversLicenceNumber: null,
-				};
+				// // Remove data that should be re-prompted for
+				// const soleProprietorData = {
+				// 	isSoleProprietor: null,
+				// 	businessTypeCode: null,
+				// };
+				// const fingerprintProofData = {
+				// 	attachments: [],
+				// };
+				// const licenceTermData = {
+				// 	licenceTermCode: null,
+				// };
+				// // const aliasesData = { previousNameFlag: null, aliases: [] };
+				// const bcDriversLicenceData = {
+				// 	hasBcDriversLicence: null,
+				// 	bcDriversLicenceNumber: null,
+				// };
 
-				// If they do not have canadian citizenship, they have to show proof for renewal
-				let citizenshipData = {};
-				if (!_resp.isCanadianCitizen) {
-					citizenshipData = {
-						isCanadianCitizen: BooleanTypeCode.No,
-						canadianCitizenProofTypeCode: null,
-						notCanadianCitizenProofTypeCode: null,
-						expiryDate: null,
-						attachments: [],
-						governmentIssuedPhotoTypeCode: null,
-						governmentIssuedExpiryDate: null,
-						governmentIssuedAttachments: [],
-					};
-				}
+				// // If they do not have canadian citizenship, they have to show proof for renewal
+				// let citizenshipData = {};
+				// if (!_resp.isCanadianCitizen) {
+				// 	citizenshipData = {
+				// 		isCanadianCitizen: BooleanTypeCode.No,
+				// 		canadianCitizenProofTypeCode: null,
+				// 		notCanadianCitizenProofTypeCode: null,
+				// 		expiryDate: null,
+				// 		attachments: [],
+				// 		governmentIssuedPhotoTypeCode: null,
+				// 		governmentIssuedExpiryDate: null,
+				// 		governmentIssuedAttachments: [],
+				// 	};
+				// }
 
-				const mentalHealthConditionsData = {
-					isTreatedForMHC: null,
-					attachments: [],
-					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
-				};
+				// const mentalHealthConditionsData = {
+				// 	isTreatedForMHC: null,
+				// 	attachments: [],
+				// 	hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
+				// };
 
-				const criminalHistoryData = {
-					hasCriminalHistory: null,
-					criminalChargeDescription: null,
-				};
+				// const criminalHistoryData = {
+				// 	hasCriminalHistory: null,
+				// 	criminalChargeDescription: null,
+				// };
 
-				let originalPhotoOfYourselfLastUpload = null;
-				const photoOfYourselfDocs = _resp.documentInfos?.find(
-					(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
-				);
-				if (photoOfYourselfDocs) {
-					originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
-				}
+				// let originalPhotoOfYourselfLastUpload = null;
+				// const photoOfYourselfDocs = _resp.documentInfos?.find(
+				// 	(item) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.PhotoOfYourself
+				// );
+				// if (photoOfYourselfDocs) {
+				// 	originalPhotoOfYourselfLastUpload = photoOfYourselfDocs.uploadedDateTime;
+				// }
 
-				// We require a new photo every 5 years. Please provide a new photo for your licence
-				const yearsDiff = moment()
-					.startOf('day')
-					.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-				const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+				// // We require a new photo every 5 years. Please provide a new photo for your licence
+				// const yearsDiff = moment()
+				// 	.startOf('day')
+				// 	.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+				// const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
-				let photographOfYourselfData = {};
-				if (originalPhotoOfYourselfExpired) {
-					// clear out data to force user to upload a new photo
-					photographOfYourselfData = {
-						attachments: [],
-					};
-				}
+				// let photographOfYourselfData = {};
+				// if (originalPhotoOfYourselfExpired) {
+				// 	// clear out data to force user to upload a new photo
+				// 	photographOfYourselfData = {
+				// 		attachments: [],
+				// 	};
+				// }
 
-				// If applicant is renewing a licence where they already had authorization to use dogs,
-				// clear attachments to force user to upload a new proof of qualification.
-				const originalDogAuthorizationExists = _resp.useDogs;
-				let dogsAuthorizationData = {};
-				if (originalDogAuthorizationExists) {
-					dogsAuthorizationData = {
-						useDogs: this.utilService.booleanToBooleanType(_resp.useDogs),
-						dogsPurposeFormGroup: {
-							isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
-							isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
-							isDogsPurposeProtection: _resp.isDogsPurposeProtection,
-						},
-						attachments: [],
-					};
-				}
+				// // If applicant is renewing a licence where they already had authorization to use dogs,
+				// // clear attachments to force user to upload a new proof of qualification.
+				// const originalDogAuthorizationExists = _resp.useDogs;
+				// let dogsAuthorizationData = {};
+				// if (originalDogAuthorizationExists) {
+				// 	dogsAuthorizationData = {
+				// 		useDogs: this.utilService.booleanToBooleanType(_resp.useDogs),
+				// 		dogsPurposeFormGroup: {
+				// 			isDogsPurposeDetectionDrugs: _resp.isDogsPurposeDetectionDrugs,
+				// 			isDogsPurposeDetectionExplosives: _resp.isDogsPurposeDetectionExplosives,
+				// 			isDogsPurposeProtection: _resp.isDogsPurposeProtection,
+				// 		},
+				// 		attachments: [],
+				// 	};
+				// }
 
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						applicationTypeData,
-						originalLicenceTermCode: _resp.licenceTermCode,
-						originalPhotoOfYourselfExpired,
-						originalDogAuthorizationExists,
+				// this.licenceModelFormGroup.patchValue(
+				// 	{
+				// 		licenceAppId: null,
+				// 		applicationTypeData,
+				// 		originalLicenceTermCode: _resp.licenceTermCode,
+				// 		originalPhotoOfYourselfExpired,
+				// 		originalDogAuthorizationExists,
 
-						soleProprietorData,
-						licenceTermData,
-						fingerprintProofData,
-						bcDriversLicenceData,
-						// aliasesData,
-						photographOfYourselfData,
-						citizenshipData,
-						dogsAuthorizationData,
-						mentalHealthConditionsData,
-						criminalHistoryData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
+				// 		soleProprietorData,
+				// 		licenceTermData,
+				// 		fingerprintProofData,
+				// 		bcDriversLicenceData,
+				// 		// aliasesData,
+				// 		photographOfYourselfData,
+				// 		citizenshipData,
+				// 		dogsAuthorizationData,
+				// 		mentalHealthConditionsData,
+				// 		criminalHistoryData,
+				// 	},
+				// 	{
+				// 		emitEvent: false,
+				// 	}
+				// );
 
 				console.debug('[loadLicenceRenewal] licenceModel', this.licenceModelFormGroup.value);
 			})
@@ -985,32 +1001,33 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadLicenceUpdateAnonymous(): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceAnonymous().pipe(
 			tap((_resp: WorkerLicenceAppResponse) => {
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+				this.applyUpdateDataUpdatesToModel();
+				// const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
-				const mentalHealthConditionsData = {
-					isTreatedForMHC: null,
-					attachments: [],
-					hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
-				};
-				const criminalHistoryData = {
-					hasCriminalHistory: null,
-					criminalChargeDescription: null,
-				};
+				// const mentalHealthConditionsData = {
+				// 	isTreatedForMHC: null,
+				// 	attachments: [],
+				// 	hasPreviousMhcFormUpload: !!_resp.isTreatedForMHC,
+				// };
+				// const criminalHistoryData = {
+				// 	hasCriminalHistory: null,
+				// 	criminalChargeDescription: null,
+				// };
 
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						applicationTypeData,
-						originalLicenceTermCode: _resp.licenceTermCode,
-						mentalHealthConditionsData,
-						criminalHistoryData,
-					},
-					{
-						emitEvent: false,
-					}
-				);
+				// this.licenceModelFormGroup.patchValue(
+				// 	{
+				// 		licenceAppId: null,
+				// 		applicationTypeData,
+				// 		originalLicenceTermCode: _resp.licenceTermCode,
+				// 		mentalHealthConditionsData,
+				// 		criminalHistoryData,
+				// 	},
+				// 	{
+				// 		emitEvent: false,
+				// 	}
+				// );
 
-				console.debug('[loadLicenceUpdate] licenceModel', this.licenceModelFormGroup.value);
+				console.debug('[loadLicenceUpdateAnonymous] licenceModel', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -1022,25 +1039,26 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadLicenceReplacementAnonymous(): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceAnonymous().pipe(
 			tap((_resp: any) => {
-				const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
+				this.applyReplacementDataUpdatesToModel();
+				// const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
-				const residentialAddressData = {
-					isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
-				};
+				// const residentialAddressData = {
+				// 	isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
+				// };
 
-				this.licenceModelFormGroup.patchValue(
-					{
-						licenceAppId: null,
-						applicationTypeData,
-						originalLicenceTermCode: _resp.licenceTermCode,
-						residentialAddressData: { ...residentialAddressData },
-					},
-					{
-						emitEvent: false,
-					}
-				);
+				// this.licenceModelFormGroup.patchValue(
+				// 	{
+				// 		licenceAppId: null,
+				// 		applicationTypeData,
+				// 		originalLicenceTermCode: _resp.licenceTermCode,
+				// 		residentialAddressData: { ...residentialAddressData },
+				// 	},
+				// 	{
+				// 		emitEvent: false,
+				// 	}
+				// );
 
-				console.debug('[loadLicenceReplacement] licenceModel', this.licenceModelFormGroup.value);
+				console.debug('[loadLicenceReplacementAnonymous] licenceModel', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -1329,6 +1347,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			);
 		});
 
+		console.debug('[applyLicenceProfileIntoModel] licenceModelFormGroup', this.licenceModelFormGroup.value);
 		return of(this.licenceModelFormGroup.value);
 	}
 
@@ -1461,6 +1480,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const photographOfYourselfAttachments: Array<File> = [];
+		let photographOfYourselfLastUploadedDateTime = '';
 
 		const attachments1FireInvestigator: Array<File> = [];
 		const attachments2FireInvestigator: Array<File> = [];
@@ -1678,6 +1698,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					break;
 				}
 				case LicenceDocumentTypeCode.PhotoOfYourself: {
+					photographOfYourselfLastUploadedDateTime = doc.uploadedDateTime ?? '';
 					const aFile = this.fileUtilService.dummyFile(doc);
 					photographOfYourselfAttachments.push(aFile);
 					break;
@@ -1696,6 +1717,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,
+			uploadedDateTime: photographOfYourselfLastUploadedDateTime,
 		};
 
 		this.licenceModelFormGroup.patchValue(
@@ -1741,5 +1763,161 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 
 		console.debug('[applyLicenceIntoModel] licenceModelFormGroup', this.licenceModelFormGroup.value);
+	}
+
+	private applyRenewalDataUpdatesToModel() {
+		const licenceModel = this.licenceModelFormGroup.value;
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
+
+		// Remove data that should be re-prompted for
+		const soleProprietorData = {
+			isSoleProprietor: null,
+			businessTypeCode: null,
+		};
+		const fingerprintProofData = {
+			attachments: [],
+		};
+		const licenceTermData = {
+			licenceTermCode: null,
+		};
+		// const aliasesData = { previousNameFlag: null, aliases: [] };
+		const bcDriversLicenceData = {
+			hasBcDriversLicence: null,
+			bcDriversLicenceNumber: null,
+		};
+
+		// If they do not have canadian citizenship, they have to show proof for renewal
+		let citizenshipData = {};
+		if (!licenceModel.citizenshipData.isCanadianCitizen) {
+			citizenshipData = {
+				isCanadianCitizen: BooleanTypeCode.No,
+				canadianCitizenProofTypeCode: null,
+				notCanadianCitizenProofTypeCode: null,
+				expiryDate: null,
+				attachments: [],
+				governmentIssuedPhotoTypeCode: null,
+				governmentIssuedExpiryDate: null,
+				governmentIssuedAttachments: [],
+			};
+		}
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: null,
+			attachments: [],
+			hasPreviousMhcFormUpload: licenceModel.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
+		};
+
+		const criminalHistoryData = {
+			hasCriminalHistory: null,
+			criminalChargeDescription: null,
+		};
+
+		const originalPhotoOfYourselfLastUpload = licenceModel.photographOfYourselfData.uploadedDateTime;
+
+		// We require a new photo every 5 years. Please provide a new photo for your licence
+		const yearsDiff = moment().startOf('day').diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+
+		let photographOfYourselfData = {};
+		if (originalPhotoOfYourselfExpired) {
+			// clear out data to force user to upload a new photo
+			photographOfYourselfData = {
+				attachments: [],
+			};
+		}
+
+		// If applicant is renewing a licence where they already had authorization to use dogs,
+		// clear attachments to force user to upload a new proof of qualification.
+		const originalDogAuthorizationExists = licenceModel.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		let dogsAuthorizationData = {};
+		if (originalDogAuthorizationExists) {
+			dogsAuthorizationData = {
+				useDogs: licenceModel.dogsAuthorizationData.useDogs,
+				dogsPurposeFormGroup: {
+					isDogsPurposeDetectionDrugs: licenceModel.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
+					isDogsPurposeDetectionExplosives: licenceModel.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
+					isDogsPurposeProtection: licenceModel.dogsAuthorizationData.isDogsPurposeProtection,
+				},
+				attachments: [],
+			};
+		}
+
+		this.licenceModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				applicationTypeData,
+				originalLicenceTermCode: licenceModel.licenceTermData.licenceTermCode,
+				originalPhotoOfYourselfExpired,
+				originalDogAuthorizationExists,
+
+				soleProprietorData,
+				licenceTermData,
+				fingerprintProofData,
+				bcDriversLicenceData,
+				photographOfYourselfData,
+				citizenshipData,
+				dogsAuthorizationData,
+				mentalHealthConditionsData,
+				criminalHistoryData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
+	}
+
+	private applyUpdateDataUpdatesToModel() {
+		const licenceModel = this.licenceModelFormGroup.value;
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: null,
+			attachments: [],
+			hasPreviousMhcFormUpload: licenceModel.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
+		};
+		const criminalHistoryData = {
+			hasCriminalHistory: null,
+			criminalChargeDescription: null,
+		};
+
+		this.licenceModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				applicationTypeData,
+				originalLicenceTermCode: licenceModel.licenceTermData.licenceTermCode,
+				mentalHealthConditionsData,
+				criminalHistoryData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
+	}
+
+	private applyReplacementDataUpdatesToModel() {
+		const licenceModel = this.licenceModelFormGroup.value;
+		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
+
+		const residentialAddressData = {
+			isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
+		};
+
+		this.licenceModelFormGroup.patchValue(
+			{
+				licenceAppId: null,
+				applicationTypeData,
+				originalLicenceTermCode: licenceModel.licenceTermData.licenceTermCode,
+				residentialAddressData: { ...residentialAddressData },
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
 	}
 }

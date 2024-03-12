@@ -46,7 +46,7 @@ export class StepBusinessLicenceBusinessAddressComponent implements LicenceChild
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
-		console.log('businessAddressFormGroup', this.form.value);
+		console.debug('businessAddressFormGroup', this.form.value);
 		this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;

@@ -36,8 +36,8 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
-						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-							<h2 class="fs-3 mb-3">Security Licences & Permits</h2>
+						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<h2 class="fs-3">Security Licences & Permits</h2>
 						</div>
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
@@ -372,6 +372,7 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 						</app-alert>
 					</div>
 
+					<div class="fw-bold">Temp buttons for testing:</div>
 					<div class="my-2">
 						<button
 							mat-flat-button
@@ -413,6 +414,28 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 							(click)="onRenewSecurityWorkerLicence()"
 						>
 							<mat-icon>add</mat-icon>Renew a New Security Worker Licence
+						</button>
+					</div>
+
+					<div class="my-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onUpdateSecurityWorkerLicence()"
+						>
+							<mat-icon>add</mat-icon>Update a New Security Worker Licence
+						</button>
+					</div>
+
+					<div class="my-2">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large w-auto mt-2 mt-lg-0"
+							(click)="onReplacmentSecurityWorkerLicence()"
+						>
+							<mat-icon>add</mat-icon>Replace a New Security Worker Licence
 						</button>
 					</div>
 				</div>
@@ -682,7 +705,56 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+								applicationTypeCode: ApplicationTypeCode.Renewal,
+							},
+						}
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onUpdateSecurityWorkerLicence(): void {
+		this.licenceApplicationService
+			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Update)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+								applicationTypeCode: ApplicationTypeCode.Update,
+							},
+						}
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onReplacmentSecurityWorkerLicence(): void {
+		this.licenceApplicationService
+			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Replacement)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+								applicationTypeCode: ApplicationTypeCode.Replacement,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -699,7 +771,12 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -716,7 +793,12 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						LicenceApplicationRoutes.pathPermitAuthenticated(
 							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
+								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -733,7 +815,12 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						LicenceApplicationRoutes.pathPermitAuthenticated(
 							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
+								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)

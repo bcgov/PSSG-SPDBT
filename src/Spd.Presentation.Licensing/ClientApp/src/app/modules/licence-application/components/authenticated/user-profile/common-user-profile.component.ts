@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { CommonAddressComponent } from '../../shared/step-components/common-address.component';
 import { CommonAliasListComponent } from '../../shared/step-components/common-alias-list.component';
 import { CommonContactInformationComponent } from '../../shared/step-components/common-contact-information.component';
@@ -13,11 +12,13 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 	template: `
 		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
 		<app-common-user-profile-personal-information
+			[personalInformationFormGroup]="personalInformationFormGroup"
+			[contactFormGroup]="contactFormGroup"
 			[isReadOnly]="isReadOnly"
 		></app-common-user-profile-personal-information>
 
-		<mat-divider class="mat-divider-main"></mat-divider>
-		<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
+		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
+		<div class="text-minor-heading pb-3">Aliases or Previous Names</div>
 		<app-common-alias-list [form]="aliasesFormGroup" [isReadOnly]="isReadOnly"></app-common-alias-list>
 
 		<div class="row mt-3">
@@ -30,17 +31,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information on your
 					BC Services Card. Any changes you make will then be updated here.
 				</app-alert>
-			</div>
 
-			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
-				<app-alert type="info" icon="" [showBorder]="false">
-					Provide your mailing address, if different from your residential address. This cannot be a company address.
-				</app-alert>
-			</div>
-
-			<div class="col-lg-6 col-md-12">
 				<app-common-residential-address
 					[form]="residentialAddressFormGroup"
 					[isWizardStep]="false"
@@ -50,6 +41,12 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 			</div>
 
 			<div class="col-lg-6 col-md-12">
+				<mat-divider class="mat-divider-main"></mat-divider>
+				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
+				<app-alert type="info" icon="" [showBorder]="false">
+					Provide your mailing address, if different from your residential address. This cannot be a company address.
+				</app-alert>
+
 				<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
 					<div class="mb-3">
 						<mat-icon style="vertical-align: bottom;">label_important</mat-icon> My mailing address is the same as my
@@ -71,10 +68,6 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 export class CommonUserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 
-	aliasesFormGroup: FormGroup = this.licenceApplicationService.aliasesFormGroup;
-	residentialAddressFormGroup: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
-	mailingAddressFormGroup: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
-
 	@ViewChild(CommonUserProfilePersonalInformationComponent)
 	personalComponent!: CommonUserProfilePersonalInformationComponent;
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
@@ -83,9 +76,13 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 
 	isReadOnly = true;
 
-	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
+	@Input() personalInformationFormGroup!: FormGroup;
+	@Input() contactFormGroup!: FormGroup;
+	@Input() aliasesFormGroup!: FormGroup;
+	@Input() residentialAddressFormGroup!: FormGroup;
+	@Input() mailingAddressFormGroup!: FormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	isFormValid(): boolean {
 		const valid1 = this.personalComponent.isFormValid();

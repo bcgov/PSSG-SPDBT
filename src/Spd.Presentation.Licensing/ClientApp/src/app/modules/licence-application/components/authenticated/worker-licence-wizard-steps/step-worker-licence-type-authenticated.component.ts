@@ -148,17 +148,17 @@ export class StepWorkerLicenceTypeAuthenticatedComponent implements OnInit, Lice
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		// console.log('onLicenceTypeChange', _val);
+		// console.debug('onLicenceTypeChange', _val);
 		this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
-		// console.log('onLicenceTypeChange', this.form.value);
-		// console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
-		// console.log(
+		// console.debug('onLicenceTypeChange', this.form.value);
+		// console.debug('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
+		// console.debug(
 		// 	'onLicenceTypeChange licenceModelFormGroupAnonymous',
 		// 	this.licenceApplicationService.licenceModelFormGroupAnonymous.value
 		// );
-		// console.log(
+		// console.debug(
 		// 	'onLicenceTypeChange licenceModelFormGroup',
 		// 	this.licenceApplicationService.licenceModelFormGroup.value
 		// );
