@@ -13,7 +13,7 @@ using System.Net;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class LicenceController : SpdLicenceAnonymousControllerBase
+    public class LicenceController : SpdApplicantLicenceControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -27,6 +27,22 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
         }
 
+        /// <summary> 
+        /// Get licences for login user 
+        /// Example: http://localhost:5114/api/applicants/xxxx/licences 
+        /// </summary> 
+        /// <param name="licenceNumber"></param> 
+        /// <param name="accessCode"></param> 
+        /// <returns></returns> 
+        [Route("api/applicants/{applicantId}/licences")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceResponse>> GetLicences([FromRoute][Required] Guid applicantId)
+        {
+            //todo: Ruben to implement following query. only return active and Expired ones. 
+            return await _mediator.Send(new LicenceQuery(null, null, applicantId));
+        }
+
         /// <summary>
         /// Get licence by licence number
         /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
@@ -37,9 +53,10 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<LicenceResponse> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string accessCode = null)
+        public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string accessCode = null)
         {
-            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            IEnumerable<LicenceResponse> results = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            return results?.First();
         }
 
         /// <summary>
@@ -58,14 +75,16 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
-            var response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            var results = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
 
-            if (response != null)
+            if (results != null && results.Any())
             {
+                LicenceResponse response = results.First();
                 string str = $"{response.LicenceId}*{response.LicenceAppId}";
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
+                return response;
             }
-            return response;
+            return null;
         }
 
         /// <summary>
