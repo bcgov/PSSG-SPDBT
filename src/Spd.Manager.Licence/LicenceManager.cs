@@ -11,8 +11,9 @@ using System.Net;
 namespace Spd.Manager.Licence;
 
 internal class LicenceManager :
-        IRequestHandler<LicenceQuery, IEnumerable<LicenceResponse>>,
+        IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
+        IRequestHandler<ApplicantLicenceListQuery, IEnumerable<LicenceResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -35,13 +36,13 @@ internal class LicenceManager :
         _fileStorageService = fileStorageService;
     }
 
-    public async Task<IEnumerable<LicenceResponse>> Handle(LicenceQuery query, CancellationToken cancellationToken)
+    public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken cancellationToken)
     {
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
             {
                 LicenceNumber = query.LicenceNumber,
-                AccessCode = query.AccessCode
+                AccessCode = query.AccessCode,
             }, cancellationToken);
 
         if (!response.Items.Any())
@@ -50,8 +51,26 @@ internal class LicenceManager :
             return null;
         }
 
-        List<LicenceResponse> result = _mapper.Map<List<LicenceResponse>>(response.Items);
-        return result;
+        return _mapper.Map<LicenceResponse>(response.Items.First());
+    }
+
+    public async Task<IEnumerable<LicenceResponse>> Handle(ApplicantLicenceListQuery query, CancellationToken cancellationToken)
+    {
+        var response = await _licenceRepository.QueryAsync(
+            new LicenceQry
+            {
+                ContactId = query.ApplicantId,
+                IncludeInactive = true
+            }, cancellationToken);
+
+        if (!response.Items.Any())
+        {
+            _logger.LogDebug("No licence found.");
+            return Array.Empty<LicenceResponse>();
+        }
+
+        //only return expired and active ones
+        return _mapper.Map<IEnumerable<LicenceResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired));
     }
 
     public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)

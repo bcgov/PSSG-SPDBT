@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Licence
 {
@@ -17,7 +18,15 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value)))
              .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
              .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.firstname))
-             .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.lastname));
+             .ForMember(d => d.LicenceStatusCode, opt => opt.MapFrom(s => GetLicenceStatusEnum(s.statuscode)))
+             .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.lastname))
+             .ForMember(d => d.NameOnCard, opt => opt.MapFrom(s => s.spd_nameonlicence));
+        }
+
+        internal static LicenceStatusEnum? GetLicenceStatusEnum(int? optionset)
+        {
+            if (optionset == null) return null;
+            return Enum.Parse<LicenceStatusEnum>(Enum.GetName(typeof(LicenceStatusOptionSet), optionset));
         }
     }
 }
