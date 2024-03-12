@@ -67,6 +67,7 @@ internal class DocumentRepository : IDocumentRepository
             ReactivateDocumentCmd c => await DocumentReactivateAsync(c, ct),
             UpdateDocumentCmd c => await DocumentUpdateAsync(c, ct),
             CopyDocumentCmd c => await DocumentCopyAsync(c, ct),
+            DeactivateDocumentCmd c => await DocumentDeactivateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -191,7 +192,7 @@ internal class DocumentRepository : IDocumentRepository
         if (documenturl == null) { return null; }
         documenturl.statecode = DynamicsConstants.StateCode_Inactive;
         documenturl.statuscode = DynamicsConstants.StatusCode_Inactive;
-        await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, (Guid)(documenturl._spd_applicationid_value), ct);
+        await DeleteFileAsync((Guid)documenturl.bcgov_documenturlid, (Guid)documenturl._spd_applicationid_value, ct);
         _context.UpdateObject(documenturl);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
@@ -311,9 +312,18 @@ internal class DocumentRepository : IDocumentRepository
         await _transientFileStorageService.HandleDeleteCommand(new StorageDeleteCommand(
             Key: ((Guid)docUrlId).ToString(),
             Folder: $"spd_application/{applicationId}"), ct);
-
     }
 
+    private async Task<DocumentResp> DocumentDeactivateAsync(DeactivateDocumentCmd cmd, CancellationToken ct)
+    {
+        bcgov_documenturl? documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
+        if (documenturl == null) { return null; }
+        documenturl.statecode = DynamicsConstants.StateCode_Inactive;
+        documenturl.statuscode = DynamicsConstants.StatusCode_Inactive;
+        _context.UpdateObject(documenturl);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<DocumentResp>(documenturl);
+    }
 }
 
 
