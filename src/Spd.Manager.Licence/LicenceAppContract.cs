@@ -29,11 +29,11 @@ public abstract record PersonalLicenceAppBase
     public HeightUnitCode? HeightUnitCode { get; set; }
     public int? Weight { get; set; }
     public WeightUnitCode? WeightUnitCode { get; set; }
-    public string? ContactEmailAddress { get; set; }
-    public string? ContactPhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
+    public string? PhoneNumber { get; set; }
     public bool? IsMailingTheSameAsResidential { get; set; }
-    public ResidentialAddress? ResidentialAddressData { get; set; }
-    public MailingAddress? MailingAddressData { get; set; }
+    public ResidentialAddress? ResidentialAddress { get; set; }
+    public MailingAddress? MailingAddress { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
