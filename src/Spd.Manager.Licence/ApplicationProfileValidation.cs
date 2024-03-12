@@ -1,14 +1,16 @@
 ﻿using FluentValidation;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdateRequest>
 {
     public ApplicantUpdateRequestValidator()
     {
-        RuleFor(r => r.FirstName).NotEmpty();
-        RuleFor(r => r.LastName).NotEmpty();
-        RuleFor(r => r.BirthDate).NotEmpty();
-        RuleFor(r => r.Gender).IsInEnum();
+        RuleFor(r => r.ApplicationTypeCode).NotEmpty().IsInEnum();
+        RuleFor(r => r.GivenName).NotEmpty();
+        RuleFor(r => r.Surname).NotEmpty();
+        RuleFor(r => r.DateOfBirth).NotEmpty();
+        RuleFor(r => r.GenderCode).NotEmpty().IsInEnum();
         RuleFor(r => r.PhoneNumber).MaximumLength(15).NotEmpty();
         RuleFor(r => r.EmailAddress).MaximumLength(75).NotEmpty().EmailAddress();
         RuleFor(r => r.DocumentKeyCodes)
@@ -46,12 +48,16 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
         RuleFor(r => r.ResidentialAddress.PostalCode).NotEmpty()
             .MaximumLength(20)
             .When(r => r.ResidentialAddress != null);
-        RuleFor(r => r.HasCriminalHistory).NotEmpty();
+        RuleFor(r => r.HasCriminalHistory).NotNull();
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull();
+        RuleFor(r => r.IsTreatedForMHC).NotNull();
+        RuleFor(r => r.HasNewMentalHealthCondition).NotNull();
+        RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
+            .When(r => r.LicenceId != null && 
+            (r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update));
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)
-            .When(r => r.HasCriminalHistory == true);
-        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotEmpty();
-        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
+            .When(r => r.HasNewCriminalRecordCharge == true);
     }
 }
