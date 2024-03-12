@@ -28,19 +28,17 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary> 
-        /// Get licences for login user 
+        /// Get licences for login user , only return active and Expired ones. 
         /// Example: http://localhost:5114/api/applicants/xxxx/licences 
         /// </summary> 
-        /// <param name="licenceNumber"></param> 
-        /// <param name="accessCode"></param> 
+        /// <param name="applicantId"></param> 
         /// <returns></returns> 
         [Route("api/applicants/{applicantId}/licences")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceResponse>> GetLicences([FromRoute][Required] Guid applicantId)
         {
-            //todo: Ruben to implement following query. only return active and Expired ones. 
-            return await _mediator.Send(new LicenceQuery(null, null, applicantId));
+            return await _mediator.Send(new ApplicantLicenceListQuery(applicantId));
         }
 
         /// <summary>
@@ -53,10 +51,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string accessCode = null)
+        public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string? accessCode = null)
         {
-            IEnumerable<LicenceResponse> results = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
-            return results?.First();
+            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
         }
 
         /// <summary>
@@ -75,16 +72,14 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
-            var results = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            LicenceResponse response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
 
-            if (results != null && results.Any())
+            if (response != null)
             {
-                LicenceResponse response = results.First();
                 string str = $"{response.LicenceId}*{response.LicenceAppId}";
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
-                return response;
             }
-            return null;
+            return response;
         }
 
         /// <summary>
