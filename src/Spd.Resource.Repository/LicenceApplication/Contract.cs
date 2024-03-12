@@ -75,7 +75,7 @@ public record LicenceApplication
 public record SaveLicenceApplicationCmd() : LicenceApplication
 {
     public Guid? LicenceAppId { get; set; }
-    public string? BcscGuid { get; set; }
+    public Guid ApplicantId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 };
 

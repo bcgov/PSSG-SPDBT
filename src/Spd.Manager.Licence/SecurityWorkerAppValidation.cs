@@ -9,74 +9,7 @@ public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseVali
 {
     public WorkerLicenceAppSubmitRequestValidator(IConfiguration configuration)
     {
-        RuleFor(r => r.LicenceAppId).NotEmpty();
-        //RuleFor(r => r.PoliceOfficerDocument).NotEmpty().When(r => r.IsPoliceOrPeaceOfficer == true);
-        //RuleFor(r => r.PoliceOfficerDocument.LicenceDocumentTypeCode)
-        //    .Must(c => c == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)
-        //    .When(r => r.IsPoliceOrPeaceOfficer != null && r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerDocument != null);
-
-        ////mental health
-        //RuleFor(r => r.MentalHealthDocument).NotEmpty().When(r => r.IsTreatedForMHC == true);
-        //RuleFor(r => r.MentalHealthDocument.LicenceDocumentTypeCode)
-        //    .Must(c => c == LicenceDocumentTypeCode.MentalHealthCondition)
-        //    .When(r => r.IsTreatedForMHC == true && r.MentalHealthDocument != null);
-
-        //citizenship
-        //RuleFor(r => r.CitizenshipDocument).NotEmpty();
-        //RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode)
-        //    .Must(c => PersonalLicenceAppManager.WorkProofCodes.Contains(c))
-        //    .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen != null && r.IsCanadianCitizen == false);
-        //RuleFor(r => r.CitizenshipDocument.LicenceDocumentTypeCode)
-        //    .Must(c => PersonalLicenceAppManager.CitizenshipProofCodes.Contains(c))
-        //    .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen != null && r.IsCanadianCitizen == true);
-        //RuleFor(r => r.CitizenshipDocument.ExpiryDate)
-        //    .NotEmpty()
-        //    .Must(d => d > DateOnly.FromDateTime(DateTime.Now))
-        //    .When(r => r.CitizenshipDocument != null && r.IsCanadianCitizen == false && (r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit || r.CitizenshipDocument.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit));
-
-        ////additional gov id
-        //RuleFor(r => r.AdditionalGovIdDocument)
-        //    .NotEmpty()
-        //    .When(r => r.CitizenshipDocument != null && (r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CanadianPassport && r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.PermanentResidentCard));
-        //RuleFor(r => r.AdditionalGovIdDocument)
-        //    .Must(c => PersonalLicenceAppManager.GetDocumentType1Enum(c.LicenceDocumentTypeCode) == DocumentTypeEnum.AdditionalGovIdDocument)
-        //    .When(r => r.AdditionalGovIdDocument != null && r.CitizenshipDocument != null && (r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CanadianPassport && r.CitizenshipDocument.LicenceDocumentTypeCode != LicenceDocumentTypeCode.PermanentResidentCard));
-
-        //fingerprint
-        //RuleFor(r => r.FingerprintProofDocument).NotEmpty();
-        //RuleFor(r => r.FingerprintProofDocument.LicenceDocumentTypeCode)
-        //    .Must(c => c == LicenceDocumentTypeCode.ProofOfFingerprint)
-        //    .When(r => r.FingerprintProofDocument != null);
-
-        //category
-        //RuleFor(r => r.CategoryData).NotEmpty().Must(d => d.Count() > 0 && d.Count() < 7);
-        //var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
-        //if (invalidCategoryMatrix == null)
-        //    throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
-
-        //RuleForEach(r => r.CategoryData).SetValidator(new WorkerLicenceAppCategoryDataValidator());
-        //RuleFor(r => r.CategoryData).Must(c =>
-        //{
-        //    foreach (var catData in c)
-        //    {
-        //        var invalidCodes = invalidCategoryMatrix.GetValueOrDefault(catData.WorkerCategoryTypeCode);
-        //        if (invalidCodes != null)
-        //        {
-        //            foreach (var cat in c)
-        //            {
-        //                if (cat.WorkerCategoryTypeCode != catData.WorkerCategoryTypeCode)
-        //                {
-        //                    if (invalidCodes.Contains(cat.WorkerCategoryTypeCode))
-        //                    {
-        //                        return false;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return true;
-        //})
-        //.When(c => c.CategoryData != null);
+        RuleFor(r => r.ApplicantId).NotEmpty();
     }
 }
 //public class WorkerLicenceAppCategoryDataValidator : AbstractValidator<WorkerLicenceAppCategoryData>

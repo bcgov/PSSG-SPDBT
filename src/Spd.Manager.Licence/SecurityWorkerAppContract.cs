@@ -14,9 +14,9 @@ public interface ISecurityWorkerAppManager
     public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand command, CancellationToken ct);
 }
 
-public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceCommandResponse>;
-public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest, string? BcscGuid = null)
-    : WorkerLicenceUpsertCommand(LicenceUpsertRequest, BcscGuid), IRequest<WorkerLicenceCommandResponse>;
+public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest) : IRequest<WorkerLicenceCommandResponse>;
+public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest)
+    : WorkerLicenceUpsertCommand(LicenceUpsertRequest), IRequest<WorkerLicenceCommandResponse>;
 
 public record AnonymousWorkerLicenceAppNewCommand(
     WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
@@ -81,6 +81,7 @@ public record WorkerLicenceAppUpsertRequest : WorkerLicenceAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
+    public Guid ApplicantId { get; set; }
 };
 
 public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
