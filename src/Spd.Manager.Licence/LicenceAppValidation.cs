@@ -23,16 +23,16 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.Weight).NotEmpty();
         RuleFor(r => r.WeightUnitCode).NotEmpty();
         RuleFor(r => r.IsMailingTheSameAsResidential).NotEmpty();
-        RuleFor(r => r.ContactPhoneNumber).MaximumLength(15).NotEmpty();
-        RuleFor(r => r.ContactEmailAddress).MaximumLength(75).When(r => r.ContactEmailAddress != null);
+        RuleFor(r => r.PhoneNumber).MaximumLength(15).NotEmpty();
+        RuleFor(r => r.EmailAddress).MaximumLength(75).When(r => r.EmailAddress != null);
         RuleFor(r => r.IsCanadianCitizen).NotEmpty();
         //residential address
-        RuleFor(r => r.ResidentialAddressData).NotEmpty().WithMessage("ResidentialAddress cannot be empty");
-        RuleFor(r => r.ResidentialAddressData.Province).NotEmpty().When(r => r.ResidentialAddressData != null);
-        RuleFor(r => r.ResidentialAddressData.City).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddressData != null);
-        RuleFor(r => r.ResidentialAddressData.AddressLine1).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddressData != null);
-        RuleFor(r => r.ResidentialAddressData.Country).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddressData != null);
-        RuleFor(r => r.ResidentialAddressData.PostalCode).NotEmpty().MaximumLength(20).When(r => r.ResidentialAddressData != null);
+        RuleFor(r => r.ResidentialAddress).NotEmpty().WithMessage("ResidentialAddress cannot be empty");
+        RuleFor(r => r.ResidentialAddress.Province).NotEmpty().When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.City).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.AddressLine1).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Country).NotEmpty().MaximumLength(100).When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.PostalCode).NotEmpty().MaximumLength(20).When(r => r.ResidentialAddress != null);
         RuleFor(r => r.HasNewCriminalRecordCharge).NotNull()
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
     }

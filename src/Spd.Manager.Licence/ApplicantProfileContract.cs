@@ -26,6 +26,8 @@ namespace Spd.Manager.Licence
 
     public record ApplicantUpdateRequest : Applicant
     {
+        public Guid? LicenceId { get; set; }
+        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
         public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
         public bool? HasNewMentalHealthCondition { get; set; }
@@ -33,8 +35,6 @@ namespace Spd.Manager.Licence
 
     public record Applicant
     {
-        public Guid? LicenceId { get; set; }
-        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
         public string? GivenName { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
