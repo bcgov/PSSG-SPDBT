@@ -280,6 +280,14 @@ namespace Spd.Utilities.Dynamics
         BodyArmourPermit = 100000002
     }
 
+    public enum LicenceStatusOptionSet
+    {
+        Active = 1,
+        Inactive = 2,
+        Expired = 100000000,
+        Suspended = 100000001
+    }
+
     public enum HairColorOptionSet
     {
         Black = 100000000,

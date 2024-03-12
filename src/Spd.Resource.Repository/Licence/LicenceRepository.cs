@@ -50,8 +50,8 @@ internal class LicenceRepository : ILicenceRepository
         }
         if (qry.IsExpired != null)
         {
-            lics = (bool)qry.IsExpired ? lics.Where(l => l.spd_expirydate <= DateTimeOffset.UtcNow) :
-                lics.Where(l => l.spd_expirydate > DateTimeOffset.UtcNow);
+            lics = (bool)qry.IsExpired ? lics.Where(l => l.statuscode == (int)LicenceStatusOptionSet.Expired) :
+                lics.Where(l => l.statuscode != (int)LicenceStatusOptionSet.Expired);
         }
         if (qry.AccessCode != null)
         {
