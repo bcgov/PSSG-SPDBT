@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -55,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<WorkerLicenceCommandResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
         {
@@ -90,7 +91,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/{licenceAppId}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
         {
             VerifyFiles(fileUploadRequest.Documents);
@@ -106,7 +107,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceSubmitRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/submit")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppSubmitRequest licenceSubmitRequest, CancellationToken ct)
         {
@@ -128,18 +129,16 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<WorkerLicenceAppResponse> GetSecurityWorkerLicenceApplicationAnonymous()
         {
-            //temp
-            //string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
-            //string? licenceAppId;
-            //try
-            //{
-            //    licenceAppId = licenceIdsStr.Split("*")[1];
-            //}
-            //catch
-            //{
-            //    throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
-            //}
-            string licenceAppId = "976bc3b0-410b-4c3b-b2a5-9cccb8154013";
+            string licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+            string? licenceAppId;
+            try
+            {
+                licenceAppId = licenceIdsStr.Split("*")[1];
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
+            }
             return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(licenceAppId)));
         }
 
