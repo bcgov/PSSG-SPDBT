@@ -21,16 +21,18 @@ namespace Spd.Manager.Licence
     public record ApplicantUpdateCommand(
         Guid ApplicantId,
         ApplicantUpdateRequest ApplicantUpdateRequest,
-        IEnumerable<LicAppFileInfo> LicAppFileInfos) 
+        IEnumerable<LicAppFileInfo> LicAppFileInfos)
         : IRequest<Unit>;
 
     public record ApplicantUpdateRequest : Applicant
     {
-        public Guid? LicenceId { get; set; }
-        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+        public Guid? LicenceId { get; set; } //used when user is in update, renew or replace flow.
+        public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
         public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
         public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
         public bool? HasNewMentalHealthCondition { get; set; }
+        public string? CriminalChargeDescription { get; set; }
+        public bool? HasNewCriminalRecordCharge { get; set; }
     }
 
     public record Applicant
@@ -51,8 +53,6 @@ namespace Spd.Manager.Licence
         public string? OtherOfficerRole { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
-        public string? CriminalChargeDescription { get; set; }
-        public bool? HasNewCriminalRecordCharge { get; set; }
     }
     public record ApplicantProfileResponse : Applicant
     {
