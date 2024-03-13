@@ -22,7 +22,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FileUtilService } from '@app/core/services/file-util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import * as moment from 'moment';
 import {
@@ -39,12 +39,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import {
-	ApplicantLicenceAppService,
-	ApplicantProfileService,
-	LicenceService,
-	SecurityWorkerLicensingService,
-} from 'src/app/api/services';
+import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -136,7 +131,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
-		private applicantLicenceAppService: ApplicantLicenceAppService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
@@ -502,109 +496,68 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-		const documentsToSave = this.getProfileDocsToSaveAnonymousBlobs(licenceModelFormValue);
+		const documentsToSave = this.getProfileDocsToSaveBlobs(licenceModelFormValue);
 
-		// // Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
-		// let newDocumentsExist = false;
-		// body.documentInfos?.forEach((doc: Document) => {
-		// 	if (doc.documentUrlId) {
-		// 		existingDocumentIds.push(doc.documentUrlId);
-		// 	} else {
-		// 		newDocumentsExist = true;
-		// 	}
-		// });
+		// Get the keyCode for the existing documents to save.
+		const documentsToSaveApis: Observable<string>[] = [];
 
-		// delete body.documentInfos;
+		const existingDocumentIds: Array<string> = [];
 
-		// // Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
-		// let newDocumentsExist = false;
-		// body.documentInfos?.forEach((doc: Document) => {
-		// 	if (doc.documentUrlId) {
-		// 		existingDocumentIds.push(doc.documentUrlId);
-		// 	} else {
-		// 		newDocumentsExist = true;
-		// 	}
-		// });
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+			const newDocumentsOnly: Array<Blob> = [];
 
-		// delete body.documentInfos;
+			doc.documents.forEach((item: Blob) => {
+				const spdFile: SpdFile = item as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(item);
+				}
+			});
 
-		/*
-		const documentKeyCodes: null | Array<string> = []; xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-		policeBackgroundData.attachments?.forEach((doc: any) => {
-			documentKeyCodes.push(doc.documentUrlId);
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.applicantProfileService.apiApplicantFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
 		});
-
-		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-			documentKeyCodes.push(doc.documentUrlId);
-		});
-
-		
-
-		const documentInfos: Array<Document> = [];
-
-		policeBackgroundData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-			});
-		});
-
-		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
-			});
-		});
-
-
-
-
-
-
-		
-
-		const documents: Array<LicenceDocumentsToSave> = [];
-		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
-
-		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-		}
-
-
-*/
 
 		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[submitLicenceAnonymous] getProfileSaveBody', body);
-		console.debug('[submitLicenceAnonymous] getProfileDocsToSaveAnonymousBlobs', documentsToSave);
-		// console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		// console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
+		console.debug('[submitLicenceAnonymous] getProfileDocsToSaveBlobs', documentsToSave);
+		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
 
-		// const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		// if (newDocumentsExist) {
-		// 	return this.postLicenceAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
-		// } else {
-		// 	return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
-		// }
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
-		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			body,
-		});
+					return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+						applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+						body,
+					});
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = [...existingDocumentIds];
+
+			return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+				body,
+			});
+		}
 	}
 
 	/**

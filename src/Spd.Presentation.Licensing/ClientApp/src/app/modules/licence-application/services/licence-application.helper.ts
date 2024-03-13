@@ -973,33 +973,32 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		return documents;
 	}
 
-	getProfileDocsToSaveAnonymousBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
+	getProfileDocsToSaveBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 
 		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
+			const policeDocs: Array<Blob> = [];
 			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
+				policeDocs.push(doc);
 			});
 			documents.push({
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
+				documents: policeDocs,
 			});
 		}
 
 		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
+			const mhcDocs: Array<Blob> = [];
 			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
+				mhcDocs.push(doc);
 			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: mhcDocs });
 		}
 
-		console.debug('getProfileDocsToSaveAnonymousBlobs documentsToSave', documents);
-
+		console.debug('getProfileDocsToSaveBlobs documentsToSave', documents);
 		return documents;
 	}
 
