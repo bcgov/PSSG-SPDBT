@@ -103,6 +103,7 @@ public record LicenceAppListResp
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? SubmittedOn { get; set; }
+    public DateTimeOffset? UpdatedOn { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public string CaseNumber { get; set; }
     public ApplicationPortalStatusEnum ApplicationPortalStatusCode { get; set; }

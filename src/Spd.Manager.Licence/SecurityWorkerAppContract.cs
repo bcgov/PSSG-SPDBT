@@ -56,6 +56,7 @@ public record LicenceAppListResponse
     public WorkerLicenceTypeCode ServiceTypeCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? SubmittedOn { get; set; }
+    public DateTimeOffset? UpdatedOn { get; set; }
     public ApplicationTypeCode ApplicationTypeCode { get; set; }
     public string CaseNumber { get; set; } = null!;
     public ApplicationPortalStatusCode ApplicationPortalStatusCode { get; set; }
