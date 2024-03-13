@@ -629,8 +629,10 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
 			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
 				? criminalHistoryData.criminalChargeDescription
-				: '';
+				: null;
 
+		const documentKeyCodes: null | Array<string> = [];
+		const previousDocumentIds: null | Array<string> = [];
 		/*
 		const documentKeyCodes: null | Array<string> = []; xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 		policeBackgroundData.attachments?.forEach((doc: any) => {
@@ -690,6 +692,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 */
 
 		const requestbody: ApplicantUpdateRequest = {
+			licenceId: undefined,
+			applicationTypeCode: undefined,
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
@@ -704,19 +708,20 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 					? licenceModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
-			// documentKeyCodes,
+			documentKeyCodes,
+			previousDocumentIds,
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			// hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			hasNewMentalHealthCondition: false, // TODO remove null, // this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
 			//-----------------------------------
 			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
 			otherOfficerRole: policeBackgroundData.otherOfficerRole,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
+			hasNewCriminalRecordCharge: false, // TODO remove null, // TODO
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			// isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
 			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
 			residentialAddress: residentialAddress,
 		};

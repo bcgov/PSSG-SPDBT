@@ -182,16 +182,16 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			return;
 		}
 
-		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.replacementPeriodPreventionDays;
-		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.updatePeriodPreventionDays;
+		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
+		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
 
 		const daysBetween = moment(resp.expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
-		let renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
+		let renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 		if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
-			renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDaysNinetyDayTerm;
+			renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
 		}
 
 		if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {

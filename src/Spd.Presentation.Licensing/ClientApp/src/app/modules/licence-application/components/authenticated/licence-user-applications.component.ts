@@ -1,7 +1,6 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
@@ -14,20 +13,14 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import * as moment from 'moment';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { Subscription, take, tap } from 'rxjs';
-
-export interface LicenceInProgress extends LicenceAppListResponse {
-	isWarningMessage: boolean;
-	isErrorMessage: boolean;
-	isRenewalPeriod: boolean;
-	isWithin14Days: boolean;
-	expiresOn?: null | string;
-	// 	isRenewalPeriod: boolean;
-	// 	isWithin14Days: boolean;
-	action?: null | string;
-}
+import {
+	CommonApplicationService,
+	UserApplicationResponse,
+	UserLicenceResponse,
+} from '../../services/common-application.service';
 
 @Component({
 	selector: 'app-licence-user-applications',
@@ -44,21 +37,23 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto mb-3" (click)="onUserProfile()">
 									<mat-icon>person</mat-icon>
-									Your Profile
+									Your Profile <span *ngIf="applicationIsInProgress"> (Readonly)</span>
 								</button>
 							</div>
 						</div>
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+					<ng-container *ngFor="let msg of warningMessages; let i = index">
+						<app-alert type="warning" icon="warning">
+							{{ msg }}
+						</app-alert>
+					</ng-container>
+
 					<!-- 
 					<app-alert type="info" icon="info">
 						We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
 						fee?
-					</app-alert>
-
-					<app-alert type="warning" icon="warning">
-						Your armoured vehicle permit is expiring in 71 days. Please renew by <strong>December 15, 2023</strong>.
 					</app-alert>
 
 					<app-alert type="danger" icon="error">
@@ -79,12 +74,16 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 						</div>
 					</div> -->
 
-					<div class="mb-3" *ngIf="inProgressDataSource.data.length > 0">
-						<div class="section-title fs-5 py-3">In-Progress Licences/Permits</div>
+					<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
+						<div class="section-title fs-5 py-3">Applications</div>
 
 						<div class="row summary-card-section summary-card-section__orange m-0">
 							<div class="col-12" class="draft-table">
-								<mat-table [dataSource]="inProgressDataSource" class="draft-table pb-3" [multiTemplateDataRows]="true">
+								<mat-table
+									[dataSource]="applicationsDataSource"
+									class="draft-table pb-3"
+									[multiTemplateDataRows]="true"
+								>
 									<ng-container matColumnDef="serviceTypeCode">
 										<mat-header-cell *matHeaderCellDef>Licence Type</mat-header-cell>
 										<mat-cell *matCellDef="let application">
@@ -145,7 +144,7 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 											<button
 												mat-flat-button
 												color="primary"
-												class="large my-3 w-auto"
+												class="large my-2"
 												(click)="onResume(application)"
 												*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
 											>
@@ -155,24 +154,24 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 									</ng-container>
 
 									<ng-container matColumnDef="expandedDetail">
-										<mat-cell *matCellDef="let application" [attr.colspan]="columns.length" class="px-0">
-											<ng-container *ngIf="application.isErrorMessage || application.isWarningMessage">
+										<mat-cell *matCellDef="let application" [attr.colspan]="applicationColumns.length" class="px-0">
+											<ng-container *ngIf="application.isExpiryWarning || application.isExpiryError">
 												<div
 													class="alert d-flex d-inline-flex align-items-center w-100"
-													[ngClass]="application.isWarningMessage ? 'draft-warning-message' : 'draft-error-message'"
+													[ngClass]="application.isExpiryWarning ? 'draft-warning-message' : 'draft-error-message'"
 													role="alert"
 												>
 													<div class="my-1 px-2">
 														You haven't submitted this licence application yet. It will expire on
-														{{ application.expiresOn | formatDate : constants.date.formalDateFormat }}.
+														{{ application.applicationExpiryDate | formatDate : constants.date.formalDateFormat }}.
 													</div>
 												</div>
 											</ng-container>
 										</mat-cell>
 									</ng-container>
 
-									<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-									<mat-row *matRowDef="let row; columns: columns"></mat-row>
+									<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
+									<mat-row *matRowDef="let row; columns: applicationColumns"></mat-row>
 									<mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expanded-detail-row"></mat-row>
 								</mat-table>
 							</div>
@@ -188,30 +187,28 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="fs-5" style="color: var(--color-primary);">
-										{{ appl.serviceTypeCode | options : 'WorkerLicenceTypes' }}
+										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-10">
 									<div class="row">
 										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Id</div>
-											<div class="text-data">{{ appl.licenceAppId }}</div>
+											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
+											<div class="text-data">{{ appl.licenceNumber }}</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">---</div>
-										</div>
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Type</div>
-											<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
+											<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Case Id</div>
-											<div class="text-data">---</div>
-											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
-													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
-													<span class="appl-chip-option-item ms-2 fs-5">Active</span>
-												</mat-chip-option> -->
+											<div class="text-data">{{ appl.caseNumber }}</div>
+										</div>
+										<div class="col-lg-3 text-end">
+											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+												<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
+												<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+											</mat-chip-option>
 										</div>
 										<mat-divider class="my-2"></mat-divider>
 									</div>
@@ -219,31 +216,28 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 									<div class="row mb-2">
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-											<div class="text-data">{{ appl.expiresOn | formatDate : constants.date.formalDateFormat }}</div>
+											<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
+												{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+											</div>
 										</div>
 										<div class="col-lg-4">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 											<div class="text-data">
 												<ul class="m-0">
-													<li>---</li>
-													<li>---</li>
-													<li>---</li>
+													<ng-container *ngFor="let catCode of appl.categoryCodes; let i = index">
+														<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
+													</ng-container>
 												</ul>
 											</div>
 										</div>
-										<div class="col-lg-5">
+										<div class="col-lg-5" *ngIf="appl.dogAuthorization">
 											<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
-											<div class="text-data">Authorization to use dogs</div>
-											<div>Expires on Nov 23, 2023</div>
-											<div>
-												<a
-													class="large"
-													tabindex="0"
-													(click)="onUpdateAuthorization()"
-													(keydown)="onKeydownUpdateAuthorization($event)"
-												>
-													Update Authorization
-												</a>
+											<div class="text-data">{{ appl.dogAuthorization | options : 'DogDocumentTypes' }}</div>
+										</div>
+										<div class="col-lg-5" *ngIf="appl.restraintAuthorization">
+											<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
+											<div class="text-data">
+												{{ appl.restraintAuthorization | options : 'RestraintDocumentTypes' }}
 											</div>
 										</div>
 										<mat-divider class="my-2"></mat-divider>
@@ -251,7 +245,8 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 
 									<div class="row mb-2">
 										<div class="col-lg-9">
-											The following updates have a $xx licence reprint fee:
+											The following updates have a
+											{{ appl.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
 											<ul class="m-0">
 												<li>changes to licence category</li>
 												<li>requests for authorization for dogs or restraints</li>
@@ -260,8 +255,23 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 											</ul>
 										</div>
 										<div class="col-lg-3 text-end">
-											<button mat-flat-button color="primary" class="large w-auto" (click)="onUpdate(appl)">
-												<mat-icon>play_arrow</mat-icon>Update
+											<button
+												mat-flat-button
+												color="primary"
+												*ngIf="appl.isRenewalPeriod"
+												class="large my-2"
+												(click)="onRenew(appl)"
+											>
+												<mat-icon>restore</mat-icon>Renew
+											</button>
+											<button
+												mat-flat-button
+												color="primary"
+												*ngIf="appl.isUpdatePeriod"
+												class="large my-2"
+												(click)="onUpdate(appl)"
+											>
+												<mat-icon>update</mat-icon>Update
 											</button>
 										</div>
 									</div>
@@ -269,17 +279,9 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 
 								<div class="row">
 									<ng-container
-										*ngIf="appl.serviceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else IsPermit"
+										*ngIf="appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else IsPermit"
 									>
-										<ng-container *ngIf="appl.isRenewalPeriod && appl.isWithin14Days; else IsNotWithin14Days">
-											<div class="col-12">
-												<mat-divider class="my-2"></mat-divider>
-												<span class="fw-semibold">Lost your licence? </span>
-												<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
-												for a digital copy of your current licence before it expires.
-											</div>
-										</ng-container>
-										<ng-template #IsNotWithin14Days>
+										<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
 											<div class="col-12">
 												<mat-divider class="my-2"></mat-divider>
 												<span class="fw-semibold">Lost your licence? </span>
@@ -288,19 +290,19 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 												>
 												and we'll send you a new licence in xx-xx business days.
 											</div>
+										</ng-container>
+										<ng-template #IsNotReplacementPeriod>
+											<div class="col-12">
+												<mat-divider class="my-2"></mat-divider>
+												<span class="fw-semibold">Lost your licence? </span>
+												<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
+												for a digital copy of your current licence before it expires.
+											</div>
 										</ng-template>
 									</ng-container>
 
 									<ng-template #IsPermit>
-										<ng-container *ngIf="appl.isRenewalPeriod && appl.isWithin14Days; else IsNotWithin14Days">
-											<div class="col-12">
-												<mat-divider class="my-2"></mat-divider>
-												<span class="fw-semibold">Lost or stolen permit? </span>
-												<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
-												for a digital copy of your current permit before it expires.
-											</div>
-										</ng-container>
-										<ng-template #IsNotWithin14Days>
+										<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
 											<div class="col-12">
 												<mat-divider class="my-2"></mat-divider>
 												<span class="fw-semibold">Lost or stolen permit? </span>
@@ -309,6 +311,14 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 												>
 												and we'll send you one in xx-xx business days.
 											</div>
+										</ng-container>
+										<ng-template #IsNotReplacementPeriod>
+											<div class="col-12">
+												<mat-divider class="my-2"></mat-divider>
+												<span class="fw-semibold">Lost or stolen permit? </span>
+												<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
+												for a digital copy of your current permit before it expires.
+											</div>
 										</ng-template>
 									</ng-template>
 								</div>
@@ -316,23 +326,23 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 						</div>
 					</div>
 
-					<div class="mb-3" *ngIf="expiredApplications.length > 0">
+					<div class="mb-3" *ngIf="expiredLicences.length > 0">
 						<div class="section-title fs-5 py-3">Expired Licences/Permits</div>
 						<div
 							class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
-							*ngFor="let appl of expiredApplications; let i = index"
+							*ngFor="let appl of expiredLicences; let i = index"
 						>
 							<div class="row">
 								<div class="col-lg-3">
 									<div class="fs-5" style="color: var(--color-primary);">
-										{{ appl.serviceTypeCode | options : 'WorkerLicenceTypes' }}
+										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-9">
 									<div class="row">
 										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Id</div>
-											<div class="text-data">{{ appl.licenceAppId }}</div>
+											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
+											<div class="text-data">{{ appl.licenceNumber }}</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
@@ -340,16 +350,15 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-											<div class="text-data">{{ appl.expiresOn | formatDate : constants.date.formalDateFormat }}</div>
+											<div class="text-data">
+												{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+											</div>
 										</div>
 										<div class="col-lg-3 text-end">
-											<!-- <button mat-flat-button color="primary" class="large w-auto" (click)="onReapply(appl)">
-												<mat-icon>play_arrow</mat-icon>Reapply
-											</button> -->
-											<!-- <mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
-													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
-													<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
-												</mat-chip-option> -->
+											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
+												<mat-icon class="appl-chip-option-item">cancel</mat-icon>
+												<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
+											</mat-chip-option>
 										</div>
 									</div>
 								</div>
@@ -371,6 +380,8 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 							account
 						</app-alert>
 					</div>
+
+					<br /><br /><br />
 
 					<div class="fw-bold">Temp buttons for testing:</div>
 					<div class="my-2">
@@ -489,7 +500,6 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 		`
 			.appl-chip-option {
 				height: 35px;
-				width: 125px;
 			}
 
 			.appl-chip-option-item {
@@ -534,26 +544,35 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 				border-radius: 0;
 				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
 			}
+
+			.error-color {
+				font-weight: 600;
+				color: var(--color-red-dark);
+			}
 		`,
 	],
 })
 export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 
-	isNoActiveOrExpiredLicences = false;
-	// isAllowCreateNew = true;
+	applicationIsInProgress = false;
+
+	warningMessages: Array<string> = [];
+	// errorMessages: Array<string> = [];
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
-	activeApplications: Array<LicenceInProgress> = [];
-	expiredApplications: Array<LicenceInProgress> = [];
+	activeApplications: Array<UserLicenceResponse> = [];
+	expiredLicences: Array<UserLicenceResponse> = [];
 
 	authenticationSubscription!: Subscription;
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
-	inProgressDataSource: MatTableDataSource<LicenceInProgress> = new MatTableDataSource<LicenceInProgress>([]);
-	columns: string[] = [
+	applicationsDataSource: MatTableDataSource<UserApplicationResponse> = new MatTableDataSource<UserApplicationResponse>(
+		[]
+	);
+	applicationColumns: string[] = [
 		'serviceTypeCode',
 		'createdOn',
 		'submittedOn',
@@ -565,61 +584,55 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private router: Router,
-		private dialog: MatDialog,
+		private optionsPipe: OptionsPipe,
+		private formatDatePipe: FormatDatePipe,
+		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		// this.licenceApplicationService.userLicencesList().subscribe((resp: Array<LicenceResponse>) => {
-		// 	console.debug('userLicencesList', resp);
-		// });
+		this.commonApplicationService.userLicencesList().subscribe((resp: Array<UserLicenceResponse>) => {
+			this.activeApplications = resp.filter((item: UserLicenceResponse) => !item.isExpired);
+			this.expiredLicences = resp.filter((item: UserLicenceResponse) => item.isExpired);
 
-		this.licenceApplicationService.userApplicationsList().subscribe((resp: Array<LicenceAppListResponse>) => {
-			const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
-			const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
-			const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
-			// TODO remove when backend updated...
-			// If 30 days or more have passed since the last save, the application does not appear in this list
-			const inProgressResults = resp.filter(
-				(item: LicenceAppListResponse) =>
-					item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
-					// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
-					(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-						moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
-			);
-			// const activeResults = resp.filter(
-			// 	(item: LicenceAppListResponse) =>
-			// 		item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
-			// );
-			// const expiredResults = resp.filter(
-			// 	(item: LicenceAppListResponse) =>
-			// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress &&
-			// 	item.applicationPortalStatusCode !== ApplicationPortalStatusCode.Draft
-			// );
-			this.isNoActiveOrExpiredLicences = resp.length === 0;
-			// this.isAllowCreateNew = true;
-			// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
-			inProgressResults.map((item: any) => {
-				if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
-					item.expiresOn = moment(item.createdOn).add(notSubmittedLicenceHide, 'days');
-					item.isWarningMessage = false;
-					item.isErrorMessage = false;
-					if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceErrorDays, 'days'))) {
-						item.isErrorMessage = true;
-					} else if (moment().isSameOrAfter(moment(item.expiresOn).subtract(notSubmittedLicenceWarningDays, 'days'))) {
-						item.isWarningMessage = true;
-					}
-				}
+			const renewals = this.activeApplications.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
+			renewals.forEach((item: UserLicenceResponse) => {
+				const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
+				const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+				this.warningMessages.push(
+					`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by ${itemExpiry}.`
+				);
 			});
-			// this.activeApplications = activeResults as Array<LicenceInProgress>;
-			// this.expiredApplications = expiredResults as Array<LicenceInProgress>;
-			this.inProgressDataSource = new MatTableDataSource((inProgressResults as Array<LicenceInProgress>) ?? []);
+		});
+
+		this.commonApplicationService.userApplicationsList().subscribe((resp: Array<UserApplicationResponse>) => {
+			this.applicationsDataSource = new MatTableDataSource(resp ?? []);
+			this.applicationIsInProgress = !!resp.find(
+				(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+			);
 		});
 	}
 
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+	}
+
+	onUserProfile(): void {
+		// TODO  When a user has started an application but has not submitted it yet, the user can view their Profile page in read-only mode – they can't edit this info while the application is in progress
+		this.licenceApplicationService
+			.loadUserProfile()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE
+						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
@@ -636,30 +649,30 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onUpdateAuthorization(): void {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'UpdateAuthorization',
-			message: 'UpdateAuthorization',
-			actionText: 'Save',
-			cancelText: 'Cancel',
-		};
+	// onUpdateAuthorization(): void {
+	// 	const data: DialogOptions = {
+	// 		icon: 'warning',
+	// 		title: 'UpdateAuthorization',
+	// 		message: 'UpdateAuthorization',
+	// 		actionText: 'Save',
+	// 		cancelText: 'Cancel',
+	// 	};
 
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					// TODO handle response
-				}
-			});
-	}
+	// 	this.dialog
+	// 		.open(DialogComponent, { data })
+	// 		.afterClosed()
+	// 		.subscribe((response: boolean) => {
+	// 			if (response) {
+	// 				// TODO handle response
+	// 			}
+	// 		});
+	// }
 
-	onKeydownUpdateAuthorization(event: KeyboardEvent) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+	// onKeydownUpdateAuthorization(event: KeyboardEvent) {
+	// 	if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onUpdateAuthorization();
-	}
+	// 	this.onUpdateAuthorization();
+	// }
 
 	onResume(appl: LicenceAppListResponse): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
@@ -678,7 +691,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 				.subscribe();
 			// } else {
 			// 	this.permitApplicationService
-			// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
+			// 		.getPermitToResume(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
 			// 		.pipe(
 			// 			tap((_resp: any) => {
 			// 				this.router.navigateByUrl(
@@ -693,39 +706,67 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onUpdate(_appl: LicenceInProgress): void {
-		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-		// 	this.licenceApplicationService
-		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-		// 					)
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else {
-		// 	this.permitApplicationService
-		// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
-		// 					)
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// }
+	onUpdate(appl: UserLicenceResponse): void {
+		if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			this.licenceApplicationService
+				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+							),
+							{
+								state: {
+									applicationTypeCode: ApplicationTypeCode.Update,
+								},
+							}
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+			// } else {
+			// 	this.permitApplicationService
+			// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
+			// 		.pipe(
+			// 			tap((_resp: any) => {
+			// 				this.router.navigateByUrl(
+			// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+			// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
+			// 					)
+			// 				);
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
+		}
 	}
 
-	// onReapply(appl: LicenceInProgress): void {
+	onRenew(appl: UserLicenceResponse): void {
+		if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			this.licenceApplicationService
+				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+							),
+							{
+								state: {
+									applicationTypeCode: ApplicationTypeCode.Renewal,
+								},
+							}
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+		}
+	}
+
+	// onReapply(appl: UserLicenceResponse): void {
 	// 	this.licenceApplicationService
 	// 		.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Renewal)
 	// 		.pipe(
@@ -741,6 +782,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	// 		.subscribe();
 	// }
 
+	// TEMP
 	onRenewSecurityWorkerLicence(): void {
 		this.licenceApplicationService
 			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Renewal)
@@ -762,6 +804,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onUpdateSecurityWorkerLicence(): void {
 		this.licenceApplicationService
 			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Update)
@@ -783,6 +826,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onReplacmentSecurityWorkerLicence(): void {
 		this.licenceApplicationService
 			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Replacement)
@@ -804,6 +848,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onNewSecurityWorkerLicence(): void {
 		this.licenceApplicationService
 			.createNewLicenceAuthenticated()
@@ -825,6 +870,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onNewBodyArmourPermit(): void {
 		this.permitApplicationService
 			.createNewPermitAuthenticated(WorkerLicenceTypeCode.BodyArmourPermit)
@@ -846,6 +892,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onRenewBodyArmourPermit(): void {
 		this.permitApplicationService
 			.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal)
@@ -867,6 +914,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onUpdateBodyArmourPermit(): void {
 		this.permitApplicationService
 			.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Update)
@@ -888,6 +936,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onNewArmouredVehiclePermit(): void {
 		this.permitApplicationService
 			.createNewPermitAuthenticated(WorkerLicenceTypeCode.ArmouredVehiclePermit)
@@ -909,6 +958,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onRenewArmouredVehiclePermit(): void {
 		this.permitApplicationService
 			.getPermitWithSelectionAuthenticated('d402df70-718a-4f84-b5ba-31f45383c1ad', ApplicationTypeCode.Renewal)
@@ -930,6 +980,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
+	// TEMP
 	onUpdateArmouredVehiclePermit(): void {
 		this.permitApplicationService
 			.getPermitWithSelectionAuthenticated('d402df70-718a-4f84-b5ba-31f45383c1ad', ApplicationTypeCode.Update)
@@ -944,22 +995,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 								applicationTypeCode: ApplicationTypeCode.Renewal,
 							},
 						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	onUserProfile(): void {
-		this.licenceApplicationService
-			.loadUserProfile()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE
-						)
 					);
 				}),
 				take(1)

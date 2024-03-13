@@ -12,7 +12,6 @@ import {
 	HeightUnitCode,
 	IActionResult,
 	LicenceAppDocumentResponse,
-	LicenceAppListResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	WorkerCategoryTypeCode,
@@ -158,13 +157,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					// console.debug(
-					// 	'licenceModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
-					// 	this.licenceModelFormGroup.getRawValue()
-					// );
+					console.debug(
+						'licenceModelFormGroup CHANGED',
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						this.licenceModelFormGroup.getRawValue()
+					);
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -190,7 +189,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			aliasesArray.removeAt(0);
 		}
 
-		console.debug('reset.initialized', this.initialized, this.licenceModelFormGroup.value);
+		console.debug('RESET', this.initialized, this.licenceModelFormGroup.value);
 	}
 
 	/**
@@ -391,30 +390,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	// AUTHENTICATED
 	/*************************************************************/
 
-	userApplicationsList(): Observable<Array<LicenceAppListResponse>> {
-		return this.applicantLicenceAppService
-			.apiApplicantsApplicantIdLicenceApplicationsGet({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			})
-			.pipe(
-				tap((_resp: Array<LicenceAppListResponse>) => {
-					this.commonApplicationService.setApplicationTitle();
-				})
-			);
-	}
-
-	userLicencesList(): Observable<Array<LicenceResponse>> {
-		return this.licenceService
-			.apiApplicantsApplicantIdLicencesGet({
-				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			})
-			.pipe(
-				tap((_resp: Array<LicenceResponse>) => {
-					// this.commonApplicationService.setApplicationTitle();
-				})
-			);
-	}
-
 	/**
 	 * Load a user profile
 	 * @returns
@@ -426,8 +401,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				switchMap((resp: ApplicantProfileResponse) => {
 					return this.createEmptyLicenceAuthenticated(resp, undefined).pipe(
 						tap((_resp: any) => {
-							console.debug('[createEmptyLicenceAuthenticated] resp', _resp);
-
 							this.initialized = true;
 
 							this.commonApplicationService.setApplicationTitle();
@@ -461,15 +434,40 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
-		console.debug('getLicenceToResume', licenceAppId);
-
 		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
-			tap((resp: any) => {
-				console.debug('[getLicenceToResume] licenceModelFormGroup', resp);
+			tap((_resp: any) => {
+				console.debug('[getLicenceToResume] _resp', _resp);
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with an id for the provided application type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getLicenceWithSelectionAuthenticated(
+		licenceAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<WorkerLicenceAppResponse> {
+		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!).pipe(
+			tap((_resp: any) => {
+				this.licenceModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
 
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle();
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+
+				console.debug('[getLicenceWithSelectionAuthenticated] licenceFormGroup', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -485,8 +483,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				switchMap((resp: ApplicantProfileResponse) => {
 					return this.createEmptyLicenceAuthenticated(resp, ApplicationTypeCode.New).pipe(
 						tap((_resp: any) => {
-							console.debug('[createNewLicenceAuthenticated] resp', _resp);
-
 							this.initialized = true;
 
 							this.commonApplicationService.setApplicationTitle(
@@ -655,17 +651,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		);
 	}
 
-	// private applyLicenceAndProfileIntoModel(
-	// 	workerLicence: WorkerLicenceAppResponse,
-	// 	profile: ApplicantProfileResponse
-	// ): Observable<any> {
-	// 	return this.applyLicenceProfileIntoModel(profile, workerLicence.applicationTypeCode).pipe(
-	// 		switchMap((_resp: any) => {
-	// 			return this.applyLicenceIntoModel(workerLicence);
-	// 		})
-	// 	);
-	// }
-
 	private applyLicenceAndProfileIntoModel(
 		workerLicence: WorkerLicenceAppResponse,
 		profile: ApplicantProfileResponse | null | undefined
@@ -678,31 +663,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Load an existing licence application with an id for the provided application type
-	 * @param licenceAppId
-	 * @returns
-	 */
-	getLicenceWithSelectionAuthenticated(
-		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceAppResponse> {
-		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!).pipe(
-			tap((_resp: any) => {
-				this.licenceModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
-
-				this.initialized = true;
-
-				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
-					_resp.applicationTypeData.applicationTypeCode
-				);
-
-				console.debug('[getLicenceWithSelectionAuthenticated] licenceFormGroup', this.licenceModelFormGroup.value);
-			})
-		);
-	}
-
-	/**
 	 * Load an existing licence application with a certain type
 	 * @param licenceAppId
 	 * @returns
@@ -710,7 +670,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceOfTypeAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode
-	): Observable<WorkerLicenceAppResponse> {
+	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
@@ -771,7 +731,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
-				console.log('*****************_resp', _resp);
 				this.licenceModelFormGroup.patchValue(
 					{
 						originalApplicationId: accessCodeData.linkedLicenceAppId,
@@ -838,92 +797,47 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode: ApplicationTypeCode): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadLicenceRenewalAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([this.loadExistingLicenceAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
 					map((resps: any[]) => {
 						this.setPhotographOfYourself(resps[1]);
 						return resps[0];
+					}),
+					switchMap((_resp: any) => {
+						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return forkJoin([this.loadLicenceUpdateAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([this.loadExistingLicenceAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
 					map((resps: any[]) => {
 						this.setPhotographOfYourself(resps[1]);
 						return resps[0];
+					}),
+					switchMap((_resp: any) => {
+						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			default: {
-				return this.loadLicenceReplacementAnonymous();
+				return this.loadExistingLicenceAnonymous().pipe(
+					switchMap((_resp: any) => {
+						return this.applyReplacementDataUpdatesToModel(_resp);
+					})
+				);
 			}
 		}
 	}
 
-	/**
-	 * Load an existing licence application for renewal
-	 * @returns
-	 */
-	private loadLicenceRenewalAnonymous(): Observable<any> {
-		return this.loadExistingLicenceAnonymous().pipe(
-			switchMap((_resp: any) => {
-				return this.applyRenewalDataUpdatesToModel(_resp);
-			})
-		);
-
-		// return this.applyLicenceProfileIntoModel(profile, workerLicence.applicationTypeCode).pipe(
-		// 	switchMap((_resp: any) => {
-		// 		return this.applyLicenceIntoModel(workerLicence);
-		// 	})
-		// );
-	}
-
-	/**
-	 * Load an existing licence application for update
-	 * @returns
-	 */
-	private loadLicenceUpdateAnonymous(): Observable<WorkerLicenceAppResponse> {
-		return this.loadExistingLicenceAnonymous().pipe(
-			switchMap((_resp: any) => {
-				return this.applyUpdateDataUpdatesToModel(_resp);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing licence application for replacement
-	 * @returns
-	 */
-	private loadLicenceReplacementAnonymous(): Observable<WorkerLicenceAppResponse> {
-		return this.loadExistingLicenceAnonymous().pipe(
-			switchMap((_resp: any) => {
-				return this.applyReplacementDataUpdatesToModel(_resp);
-			})
-		);
-	}
-
 	private loadExistingLicenceAnonymous(): Observable<any> {
 		this.reset();
-
-		// return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
-		// 	switchMap((resp: WorkerLicenceAppResponse) => {
-		// 		return this.applyLicenceIntoModel(resp);
-		// 	})
-		// );
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
 			switchMap((resp: WorkerLicenceAppResponse) => {
 				return this.applyLicenceAndProfileIntoModel(resp, null);
 			})
 		);
-
-		// return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profile);
-		// return this.applyLicenceProfileIntoModel(profile, workerLicence.applicationTypeCode).pipe(
-		// 	switchMap((_resp: any) => {
-		// 		return this.applyLicenceIntoModel(workerLicence);
-		// 	})
-		// );
 	}
 
 	private setPhotographOfYourself(image: Blob | null): void {
@@ -1100,6 +1014,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			surname: profile.surname,
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
+			origGivenName: profile.givenName,
+			origMiddleName1: profile.middleName1,
+			origMiddleName2: profile.middleName2,
+			origSurname: profile.surname,
+			origDateOfBirth: profile.dateOfBirth,
+			origGenderCode: profile.genderCode,
 		};
 
 		const contactInformationData = {

@@ -74,12 +74,12 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 													</div>
 												</div>
-												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<!-- <ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 													<div class="col-lg-3 col-md-12">
 														<div class="text-label d-block text-muted">Print Permit</div>
 														<div class="summary-text-data">{{ isPrintPermit }}</div>
 													</div>
-												</ng-container>
+												</ng-container> -->
 											</div>
 
 											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">

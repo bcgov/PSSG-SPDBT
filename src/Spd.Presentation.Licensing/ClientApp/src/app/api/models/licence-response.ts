@@ -10,5 +10,6 @@ export interface LicenceResponse {
   licenceId?: null | string;
   licenceNumber?: null | string;
   licenceTermCode?: LicenceTermCode;
+  nameOnCard?: null | string;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

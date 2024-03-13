@@ -103,14 +103,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		// profileConfirmationData: this.profileConfirmationFormGroup,
 	});
 
-	// licenceUserModelFormGroup: FormGroup = this.formBuilder.group({
-	// 	personalInformationData: this.personalInformationFormGroup,
-	// 	aliasesData: this.aliasesFormGroup,
-	// 	residentialAddress: this.residentialAddressFormGroup,
-	// 	mailingAddress: this.mailingAddressFormGroup,
-	// 	contactInformationData: this.contactInformationFormGroup,
-	// });
-
 	permitModelChangedSubscription!: Subscription;
 
 	constructor(
@@ -173,9 +165,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		while (aliasesArray.length) {
 			aliasesArray.removeAt(0);
 		}
-		// this.permitModelFormGroup.setControl('aliasesData.aliases', aliasesArray);
 
-		console.debug('reset.initialized', this.initialized, this.permitModelFormGroup.value);
+		console.debug('RESET', this.initialized, this.permitModelFormGroup.value);
 	}
 
 	/**
@@ -239,12 +230,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 		}
 
-		console.debug(
-			'isStepPurposeAndRationaleComplete',
-			this.permitRequirementFormGroup.valid,
-			!showEmployerInformation || (showEmployerInformation && this.employerInformationFormGroup.valid),
-			this.permitRationaleFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepPurposeAndRationaleComplete',
+		// 	this.permitRequirementFormGroup.valid,
+		// 	!showEmployerInformation || (showEmployerInformation && this.employerInformationFormGroup.valid),
+		// 	this.permitRationaleFormGroup.valid
+		// );
 
 		return (
 			this.permitRequirementFormGroup.valid &&
@@ -291,12 +282,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	isStepContactComplete(): boolean {
-		console.debug(
-			'isStepContactComplete',
-			this.residentialAddressFormGroup.valid &&
-				this.mailingAddressFormGroup.valid &&
-				this.contactInformationFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepContactComplete',
+		// 	this.residentialAddressFormGroup.valid &&
+		// 		this.mailingAddressFormGroup.valid &&
+		// 		this.contactInformationFormGroup.valid
+		// );
 
 		return (
 			this.residentialAddressFormGroup.valid &&
@@ -383,6 +374,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
+	 * Submit the permit data
+	 * @returns
+	 */
+	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
+		console.debug('[submitLicenceAuthenticated] body', body);
+
+		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
+	}
+
+	/**
 	 * Load an existing licence application with a certain type
 	 * @param licenceAppId
 	 * @returns
@@ -395,35 +397,27 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			case ApplicationTypeCode.Renewal: {
 				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
 					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp).pipe(
-							tap((_resp: any) => {
-								console.debug('[getPermitOfTypeAuthenticated] Renewal resp', _resp);
-							})
-						);
+						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
 				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
 					switchMap((_resp: any) => {
-						return this.applyUpdateDataUpdatesToModel(_resp).pipe(
-							tap((_resp: any) => {
-								console.debug('[getPermitOfTypeAuthenticated] Update resp', _resp);
-							})
-						);
+						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
-					tap((_resp: any) => {
-						console.debug('[getPermitOfTypeAuthenticated] New resp', _resp);
-					})
-				);
+				return this.loadExistingPermitWithIdAuthenticated(licenceAppId);
 			}
 		}
 	}
 
+	/**
+	 * Load a permit using an ID
+	 * @returns
+	 */
 	private loadExistingPermitWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
@@ -442,6 +436,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 	}
 
+	/**
+	 * Create an empty permit just containing profile data
+	 * @returns
+	 */
 	private createEmptyPermitAuthenticated(
 		profile: ApplicantProfileResponse,
 		workerLicenceTypeCode: WorkerLicenceTypeCode,
@@ -450,17 +448,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.reset();
 
 		return this.applyPermitProfileIntoModel(profile, workerLicenceTypeCode, applicationTypeCode);
-	}
-
-	/**
-	 * Submit the permit data
-	 * @returns
-	 */
-	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
-		console.debug('[submitLicenceAuthenticated] body', body);
-
-		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
 	}
 
 	/*************************************************************/
@@ -517,6 +504,22 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
+	 * Create an empty permit
+	 * @returns
+	 */
+	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
+			tap((resp: any) => {
+				console.debug('[createNewPermitAnonymous] resp', resp);
+
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
+			})
+		);
+	}
+
+	/**
 	 * Load an existing permit application
 	 * @param licenceAppId
 	 * @returns
@@ -547,6 +550,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 	}
 
+	/**
+	 * Set the current photo of yourself
+	 * @returns
+	 */
 	private setPhotographOfYourself(image: Blob | null): void {
 		if (!image || image.size == 0) {
 			this.photographOfYourself = null;
@@ -586,21 +593,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Create an empty permit
+	 * Create an empty anonymous permit
 	 * @returns
 	 */
-	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
-			tap((resp: any) => {
-				console.debug('[createNewPermitAnonymous] resp', resp);
-
-				this.initialized = true;
-
-				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
-			})
-		);
-	}
-
 	private createEmptyPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
@@ -746,6 +741,20 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			.pipe(take(1));
 	}
 
+	/**
+	 * Load an existing permit related to an access code search
+	 * @returns
+	 */
+	private loadExistingPermitAnonymous(): Observable<PermitLicenceAppResponse> {
+		this.reset();
+
+		return this.permitService.apiPermitApplicationGet().pipe(
+			switchMap((resp: PermitLicenceAppResponse) => {
+				return this.applyPermitIntoModel(resp);
+			})
+		);
+	}
+
 	/*************************************************************/
 	// COMMON
 	/*************************************************************/
@@ -780,6 +789,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			surname: profile.surname,
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
+			origGivenName: profile.givenName,
+			origMiddleName1: profile.middleName1,
+			origMiddleName2: profile.middleName2,
+			origSurname: profile.surname,
+			origDateOfBirth: profile.dateOfBirth,
+			origGenderCode: profile.genderCode,
 		};
 
 		const contactInformationData = {
@@ -1143,15 +1158,5 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		);
 		return of(this.permitModelFormGroup.value);
-	}
-
-	private loadExistingPermitAnonymous(): Observable<PermitLicenceAppResponse> {
-		this.reset();
-
-		return this.permitService.apiPermitApplicationGet().pipe(
-			switchMap((resp: PermitLicenceAppResponse) => {
-				return this.applyPermitIntoModel(resp);
-			})
-		);
 	}
 }

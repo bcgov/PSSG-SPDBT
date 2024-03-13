@@ -143,6 +143,7 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 		if (this.hasLegalNameChanged.value) {
 			this.enableData();
 		} else {
+			this.restoreData();
 			this.disableData(true);
 		}
 	}
@@ -163,6 +164,17 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 	}
 
 	private disableData(isAllData: boolean | undefined = false): void {
+		this.surname.disable({ emitEvent: false });
+		this.givenName.disable({ emitEvent: false });
+		this.middleName1.disable({ emitEvent: false });
+		this.middleName2.disable({ emitEvent: false });
+		this.dateOfBirth.disable({ emitEvent: false });
+		if (isAllData) {
+			this.genderCode.disable({ emitEvent: false });
+		}
+	}
+
+	private restoreData(): void {
 		this.form.patchValue(
 			{
 				givenName: this.origGivenName.value,
@@ -174,16 +186,6 @@ export class CommonPersonalInformationRenewAnonymousComponent implements OnInit 
 			},
 			{ emitEvent: false }
 		);
-
-		this.surname.disable({ emitEvent: false });
-		this.givenName.disable({ emitEvent: false });
-		this.middleName1.disable({ emitEvent: false });
-		this.middleName2.disable({ emitEvent: false });
-		this.dateOfBirth.disable({ emitEvent: false });
-
-		if (isAllData) {
-			this.genderCode.disable({ emitEvent: false });
-		}
 	}
 
 	get surname(): FormControl {

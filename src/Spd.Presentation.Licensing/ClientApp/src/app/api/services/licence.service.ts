@@ -29,7 +29,7 @@ export class LicenceService extends BaseService {
   static readonly ApiApplicantsApplicantIdLicencesGetPath = '/api/applicants/{applicantId}/licences';
 
   /**
-   * Get licences for login user 
+   * Get licences for login user , only return active and Expired ones. 
    * Example: http://localhost:5114/api/applicants/xxxx/licences.
    *
    *
@@ -64,7 +64,7 @@ export class LicenceService extends BaseService {
   }
 
   /**
-   * Get licences for login user 
+   * Get licences for login user , only return active and Expired ones. 
    * Example: http://localhost:5114/api/applicants/xxxx/licences.
    *
    *
