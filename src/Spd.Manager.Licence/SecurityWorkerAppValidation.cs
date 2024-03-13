@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository.Document;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
@@ -18,126 +19,98 @@ public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseVali
     public WorkerLicenceAppSubmitRequestValidator(IConfiguration configuration)
     {
         RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
+        //category
+        RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7);
+        var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
+        if (invalidCategoryMatrix == null)
+            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
+
+        RuleFor(r => r.CategoryCodes).Must(c =>
+        {
+            foreach (var code in c)
+            {
+                var invalidCodes = invalidCategoryMatrix.GetValueOrDefault(code);
+                if (invalidCodes != null)
+                {
+                    foreach (var cat in c)
+                    {
+                        if (cat != code)
+                        {
+                            if (invalidCodes.Contains(cat))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        })
+        .When(c => c.CategoryCodes != null)
+        .WithMessage("Some category cannot be in the same licence request.");
+
+        RuleFor(r => r.DocumentInfos)
+            .Must(r => r.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+            .When(r => r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
+            .WithMessage("Missing proven file because you are not canadian.");
+
+        RuleFor(r => r.DocumentInfos)
+           .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+           .When(r => r.IsCanadianCitizen != null && r.IsCanadianCitizen.Value)
+           .WithMessage("Missing citizen proof file because you are canadian.");
+
+        RuleFor(r => r.DocumentInfos)
+            .Must(r => r.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+            .WithMessage("Missing ProofOfFingerprint file.");
+
+        RuleFor(r => r).Custom((request, context) =>
+        {
+            foreach (WorkerCategoryTypeCode code in request.CategoryCodes)
+            {
+                if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
+                {
+                    if (!request.DocumentInfos.Any(f => Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
+                    {
+                        context.AddFailure($"Missing file for {code}");
+                    }
+                }
+            }
+        });
+
+        RuleFor(c => c.DocumentInfos).Must(d => d.Count() >= 1
+            && d.Count(doc =>
+                Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityGuard) <= 10)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) >= 1)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.SecurityAlarmInstaller) >= 1)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityAlarmInstaller));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.Locksmith) >= 1)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.Locksmith));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.PrivateInvestigatorUnderSupervision) >= 1)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.PrivateInvestigator) >= 2)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.FireInvestigator) >= 2)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.FireInvestigator));
+
+        RuleFor(c => c.DocumentInfos)
+            .Must(d => d.Count(doc => Mappings.GetDocumentType2Enum(doc.LicenceDocumentTypeCode.Value) == DocumentTypeEnum.SecurityConsultant) >= 2)
+            .When(c => c.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityConsultant));
     }
 }
-//public class WorkerLicenceAppCategoryDataValidator : AbstractValidator<WorkerLicenceAppCategoryData>
-//{
-//    public WorkerLicenceAppCategoryDataValidator()
-//    {
-//        //RuleFor(c => c.Documents).Must(d => d.Count() >= 1
-//        //    && d.Any(doc =>
-//        //        PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == Resource.Applicants.Document.DocumentTypeEnum.SecurityGuard
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityGuard);
-
-//        //RuleFor(c => c.Documents).Must(d => d == null || d.Count() == 0)
-//        //    .When(c => PersonalLicenceAppManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(c.WorkerCategoryTypeCode));
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 1
-//        //    && d.Any(doc => (doc.LicenceDocumentTypeCode == LicenceDocumentTypeCode.CategoryArmouredCarGuard_AuthorizationToCarryCertificate) && doc.DocumentResponses.Count() > 0 && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.ArmouredCarGuard);
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 1
-//        //    && d.Any(doc =>
-//        //        PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityAlarmInstaller
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityAlarmInstaller);
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 1
-//        //    && d.Any(doc =>
-//        //        PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.Locksmith
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.Locksmith);
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 1
-//        //    && d.Any(
-//        //        doc => PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.PrivateInvestigatorUnderSupervision
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 2
-//        //    && d.Any(doc =>
-//        //        PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.PrivateInvestigator
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.PrivateInvestigator);
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 2
-//        //    && d.Any(doc =>
-//        //        PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.FireInvestigator
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.FireInvestigator);
-
-//        //RuleFor(c => c.Documents).Must(d => d.Count() == 2
-//        //    && d.Any(doc =>
-//        //        PersonalLicenceAppManager.GetDocumentType1Enum(doc.LicenceDocumentTypeCode) == DocumentTypeEnum.SecurityConsultant
-//        //        && doc.DocumentResponses.Count() > 0
-//        //        && doc.DocumentResponses.Count() <= 10))
-//        //    .When(c => c.WorkerCategoryTypeCode == WorkerCategoryTypeCode.SecurityConsultant);
-//    }
-//}
-
-//public class AnonymousWorkerLicenceSubmitCommandValidator : AbstractValidator<AnonymousWorkerLicenceSubmitCommand>
-//{
-//    public AnonymousWorkerLicenceSubmitCommandValidator(IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousWslSubmitValidator)
-//    {
-//        RuleFor(r => r.LicenceAnonymousRequest)
-//            .Custom((request, context) =>
-//            {
-//                var result = anonymousWslSubmitValidator.Validate(request);
-//                if (!(result.IsValid))
-//                {
-//                    foreach (var error in result.Errors)
-//                    {
-//                        context.AddFailure(error);
-//                    }
-//                }
-//            });
-
-//        RuleFor(r => r.UploadFileRequests)
-//            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
-//            .When(r => r.LicenceAnonymousRequest.IsPoliceOrPeaceOfficer != null && r.LicenceAnonymousRequest.IsPoliceOrPeaceOfficer.Value)
-//            .WithMessage("Missing PoliceBackgroundLetterOfNoConflict file.");
-
-//        RuleFor(r => r.UploadFileRequests)
-//            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
-//            .When(r => r.LicenceAnonymousRequest.IsTreatedForMHC != null && r.LicenceAnonymousRequest.IsTreatedForMHC.Value)
-//            .WithMessage("Missing MentalHealthCondition file.");
-
-//        RuleFor(r => r.UploadFileRequests)
-//            .Must(r => r.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.FileTypeCode)))
-//            .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && !r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
-//            .WithMessage("Missing proven file because you are not canadian.");
-
-//        RuleFor(r => r.UploadFileRequests)
-//           .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.FileTypeCode)))
-//           .When(r => r.LicenceAnonymousRequest.IsCanadianCitizen != null && r.LicenceAnonymousRequest.IsCanadianCitizen.Value)
-//           .WithMessage("Missing citizen proof file because you are canadian.");
-
-//        RuleFor(r => r.UploadFileRequests)
-//            .Must(r => r.Any(f => f.FileTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
-//            .WithMessage("Missing ProofOfFingerprint file.");
-
-//        RuleFor(r => r).Custom((request, context) =>
-//        {
-//            foreach (WorkerCategoryTypeCode code in request.LicenceAnonymousRequest.CategoryCodes)
-//            {
-//                if (!LicenceAppDocumentManager.WorkerCategoryTypeCode_NoNeedDocument.Contains(code))
-//                {
-//                    if (!request.UploadFileRequests.Any(f => Mappings.GetDocumentType1Enum(f.FileTypeCode) == Enum.Parse<DocumentTypeEnum>(code.ToString())))
-//                    {
-//                        context.AddFailure($"Missing file for {code}");
-//                    }
-//                }
-//            }
-//        });
-//    }
-//}
 
 public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseValidator<WorkerLicenceAppAnonymousSubmitRequest>
 {
