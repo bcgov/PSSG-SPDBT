@@ -5,11 +5,19 @@ using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
 
+public class WorkerLicenceAppUpsertRequestValidator : AbstractValidator<WorkerLicenceAppUpsertRequest>
+{
+    public WorkerLicenceAppUpsertRequestValidator(IConfiguration configuration)
+    {
+        RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
+    }
+}
+
 public class WorkerLicenceAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<WorkerLicenceAppSubmitRequest>
 {
     public WorkerLicenceAppSubmitRequestValidator(IConfiguration configuration)
     {
-        RuleFor(r => r.ApplicantId).NotEmpty();
+        RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
     }
 }
 //public class WorkerLicenceAppCategoryDataValidator : AbstractValidator<WorkerLicenceAppCategoryData>

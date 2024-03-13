@@ -24,6 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
+        private readonly IValidator<WorkerLicenceAppUpsertRequest> _wslUpsertValidator;
         private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequest> _anonymousLicenceAppSubmitRequestValidator;
 
         public SecurityWorkerLicensingController(ILogger<SecurityWorkerLicensingController> logger,
@@ -31,6 +32,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IMediator mediator,
             IConfiguration configuration,
             IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
+            IValidator<WorkerLicenceAppUpsertRequest> wslUpsertValidator,
             IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider,
@@ -41,6 +43,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _configuration = configuration;
             _wslSubmitValidator = wslSubmitValidator;
+            _wslUpsertValidator = wslUpsertValidator;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
 
@@ -57,6 +60,9 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<WorkerLicenceCommandResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get WorkerLicenceAppUpsertRequest");
+            var validateResult = await _wslUpsertValidator.ValidateAsync(licenceCreateRequest);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
         }
 
