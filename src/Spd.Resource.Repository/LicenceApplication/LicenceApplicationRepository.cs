@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.IdentityModel.Tokens;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -18,6 +17,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         _mapper = mapper;
     }
 
+    //for unauth, create contact and application
     public async Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct)
     {
         spd_application app = _mapper.Map<spd_application>(cmd);
@@ -69,6 +69,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
     }
 
+    //for unauth, set applcation status to submitted.
     public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct)
     {
         spd_application? app = await _context.GetApplicationById(applicationId, ct);
@@ -90,6 +91,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
     }
 
+    //for auth, do not need to create contact.
     public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? app;
@@ -107,26 +109,22 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         else
         {
             app = _mapper.Map<spd_application>(cmd);
-            app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+            app.statuscode = (int)ApplicationStatusOptionSet.Draft;
             _context.AddTospd_applications(app);
+            var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
+            if (contact != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+            }
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
-        contact contact = _mapper.Map<contact>(cmd);
-        if (cmd.BcscGuid != null)
-        {
-            contact = ProcessContactWithBcscApplicant(cmd);
-        }
-        else
-        {
-            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
-        }
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         ProcessCategories(cmd.CategoryCodes, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid ?? Guid.NewGuid());
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
     public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
@@ -206,127 +204,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
         }
-    }
-
-    private contact ProcessContactWithBcscApplicant(SaveLicenceApplicationCmd createApplicationCmd)
-    {
-        var identity = _context.spd_identities
-               .Expand(i => i.spd_ContactId)
-               .Where(i => i.spd_userguid == createApplicationCmd.BcscGuid)
-               .Where(i => i.spd_type == (int)IdentityTypeOptionSet.BcServicesCard)
-               .FirstOrDefault();
-        if (identity == null)
-        {
-            identity = new spd_identity
-            {
-                spd_identityid = Guid.NewGuid(),
-                spd_userguid = createApplicationCmd.BcscGuid,
-                spd_type = (int)IdentityTypeOptionSet.BcServicesCard
-            };
-            _context.AddTospd_identities(identity);
-            var contact = AddContact(createApplicationCmd);
-            _context.SetLink(identity, nameof(identity.spd_ContactId), contact);
-            return contact;
-        }
-        else
-        {
-            if (identity.spd_ContactId != null) //existing identity already connected with a contact
-            {
-                //if the same name
-                var existingContact = identity.spd_ContactId;
-                if (!(string.Equals(existingContact.firstname, createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase)
-                    && string.Equals(existingContact.lastname, createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    //if the contact first name and lastname is different. make existing one to be alias and add the new one.
-                    Alias newAlias = new Alias
-                    {
-                        Surname = existingContact.lastname,
-                        GivenName = existingContact.firstname,
-                    };
-                    AddAlias(newAlias, existingContact);
-                }
-                _mapper.Map<SaveLicenceApplicationCmd, contact>(createApplicationCmd, existingContact);
-                _context.UpdateObject(existingContact);
-                return existingContact;
-            }
-            else
-            {
-                var contact = AddContact(createApplicationCmd);
-                _context.SetLink(identity, nameof(identity.spd_ContactId), contact);
-                return contact;
-            }
-        }
-    }
-
-    private contact AddContact(SaveLicenceApplicationCmd createApplicationCmd)
-    {
-        var contact = GetContact(createApplicationCmd);
-        // if not found, create new contact
-        if (contact == null)
-        {
-            contact = _mapper.Map<contact>(createApplicationCmd);
-            contact.contactid = Guid.NewGuid();
-            _context.AddTocontacts(contact);
-        }
-        else
-        {
-            //update existing one
-            _mapper.Map<SaveLicenceApplicationCmd, contact>(createApplicationCmd, contact);
-            _context.UpdateObject(contact);
-        }
-        return contact;
-    }
-
-    private void AddAlias(Alias createAliasCmd, contact contact)
-    {
-        spd_alias? matchingAlias = CheckAlias(createAliasCmd, contact);
-        // if not found, create new alias
-        if (matchingAlias == null)
-        {
-            spd_alias alias = _mapper.Map<spd_alias>(createAliasCmd);
-            _context.AddTospd_aliases(alias);
-            // associate alias to contact
-            _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
-        }
-    }
-
-    private contact? GetContact(SaveLicenceApplicationCmd createApplicationCmd)
-    {
-        if (createApplicationCmd.DateOfBirth == null)
-            throw new ArgumentException("dateofBirth cannot be null");
-
-        var contacts = _context.contacts
-            .Where(o =>
-            o.firstname == createApplicationCmd.GivenName &&
-            o.lastname == createApplicationCmd.Surname &&
-            o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
-            o.statecode != DynamicsConstants.StateCode_Inactive);
-
-        var list = contacts.ToList();
-        if (createApplicationCmd.BcDriversLicenceNumber == null || createApplicationCmd.BcDriversLicenceNumber.IsNullOrEmpty())
-        {
-            return contacts.FirstOrDefault();
-        }
-        else
-        {
-            contacts = contacts
-            .Where(o => o.spd_bcdriverslicense == null || o.spd_bcdriverslicense == createApplicationCmd.BcDriversLicenceNumber);
-            return contacts.FirstOrDefault();
-        }
-    }
-
-    private spd_alias? CheckAlias(Alias aliasCreateCmd, contact contact)
-    {
-        var matchingAlias = _context.spd_aliases.Where(o =>
-           o.spd_firstname == aliasCreateCmd.GivenName &&
-           o.spd_middlename1 == aliasCreateCmd.MiddleName1 &&
-           o.spd_middlename2 == aliasCreateCmd.MiddleName2 &&
-           o.spd_surname == aliasCreateCmd.Surname &&
-           o.statecode != DynamicsConstants.StateCode_Inactive &&
-           o._spd_contactid_value == contact.contactid &&
-           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
-       ).FirstOrDefault();
-        return matchingAlias;
     }
 
     private List<spd_alias>? GetAliases(Guid contactId)

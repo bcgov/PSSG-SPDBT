@@ -13,8 +13,8 @@ internal abstract class LicenceAppManagerBase
     protected readonly ILicenceFeeRepository _feeRepository;
     protected readonly ILicenceApplicationRepository _licenceAppRepository;
 
-    public LicenceAppManagerBase(IMapper mapper, 
-        IDocumentRepository documentRepository, 
+    public LicenceAppManagerBase(IMapper mapper,
+        IDocumentRepository documentRepository,
         ILicenceFeeRepository feeRepository,
         ILicenceApplicationRepository licenceAppRepository)
     {
@@ -42,6 +42,7 @@ internal abstract class LicenceAppManagerBase
         return price.LicenceFees.FirstOrDefault()?.Amount;
     }
 
+    //upload file from cache to main bucket
     protected async Task UploadNewDocsAsync(PersonalLicenceAppBase request,
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? licenceAppId,
@@ -83,15 +84,27 @@ internal abstract class LicenceAppManagerBase
         }
     }
 
+    //for auth, update doc expired date and remove old files
     protected async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
     {
-        //todo: implement following logic
-        foreach (DocumentExpiredInfo expiredInfo in request.DocumentExpiredInfos)
-        {
-           //update document expired date in documentRepository, the same type file.
-        }
-
         //for all files under this application, if it is not in request.DocumentInfos, deactivate it.
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
+        foreach (DocumentResp existingDoc in existingDocs.Items)
+        {
+            if (!request.DocumentInfos.Any(d => d.DocumentUrlId == existingDoc.DocumentUrlId))
+            {
+                //remove existingDoc and delete it from s3 bucket.
+                await _documentRepository.ManageAsync(new RemoveDocumentCmd(existingDoc.DocumentUrlId), ct);
+            }
+            else
+            {
+                //update expiredDate
+                LicenceDocumentTypeCode? docCode = Mappings.GetLicenceDocumentTypeCode(existingDoc.DocumentType, existingDoc.DocumentType2);
+                DateOnly? expiredDate = request.DocumentExpiredInfos.FirstOrDefault(i => i.LicenceDocumentTypeCode == docCode)?.ExpiryDate;
+                if (expiredDate != null)
+                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, expiredDate), ct);
+            }
+        }
     }
 }
 
