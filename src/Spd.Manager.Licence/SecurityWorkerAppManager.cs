@@ -64,26 +64,17 @@ internal partial class SecurityWorkerAppManager :
     //authenticated save
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken cancellationToken)
     {
-        _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
-        var identityResult = await _identityRepository.Query(new IdentityQry(cmd.BcscGuid, null, Resource.Repository.Registration.IdentityProviderTypeEnum.BcServicesCard), cancellationToken);
-        if (identityResult.Items.Any())
+        bool hasDuplicate = await HasDuplicates(cmd.LicenceUpsertRequest.ApplicantId,
+            Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            cmd.LicenceUpsertRequest.LicenceAppId,
+            cancellationToken);
+        if (hasDuplicate)
         {
-            Guid contactId = (Guid)identityResult.Items.First().ContactId;
-            _logger.LogInformation("find the contact, do duplicate check.");
-            bool hasDuplicate = await HasDuplicates(contactId,
-                Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
-                cmd.LicenceUpsertRequest.LicenceAppId,
-                cancellationToken);
-            if (hasDuplicate)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
-            }
+            throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
-        saveCmd.BcscGuid = cmd.BcscGuid;
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
-
         await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
@@ -306,7 +297,7 @@ internal partial class SecurityWorkerAppManager :
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false);           
+            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false);
         }
         else
         {
