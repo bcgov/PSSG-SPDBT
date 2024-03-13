@@ -55,6 +55,7 @@ namespace Spd.Resource.Repository.Document
     public record CreateStreamDocumentCmd : CreateDocumentCmd
     { }
 
+    //this is to deactivate documentUrl record and remove it from transient bucket.
     public record RemoveDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record ReactivateDocumentCmd(Guid DocumentUrlId) : DocumentCmd;
     public record UpdateDocumentCmd(Guid DocumentUrlId, DateOnly? ExpiryDate = null, DocumentTypeEnum? Tag1 = null, DocumentTypeEnum? Tag2 = null) : DocumentCmd;
