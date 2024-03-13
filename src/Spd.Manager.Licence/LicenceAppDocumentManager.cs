@@ -8,7 +8,7 @@ using Spd.Utilities.TempFileStorage;
 namespace Spd.Manager.Licence;
 internal partial class LicenceAppDocumentManager :
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
-        IRequestHandler<CreateLicenceAppDocumentCommand, IEnumerable<LicenceAppDocumentResponse>>,
+        IRequestHandler<CreateDocumentInTransientStoreCommand, IEnumerable<LicenceAppDocumentResponse>>,
         ILicenceAppDocumentManager
 {
     private readonly ILicenceApplicationRepository _licenceAppRepository;
@@ -28,7 +28,7 @@ internal partial class LicenceAppDocumentManager :
         _documentRepository = documentUrlRepository;
     }
 
-    public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateLicenceAppDocumentCommand command, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateDocumentInTransientStoreCommand command, CancellationToken cancellationToken)
     {
         DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
         DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
@@ -60,6 +60,7 @@ internal partial class LicenceAppDocumentManager :
                 DocumentType2 = docType2,
                 SubmittedByApplicantId = contactId,
                 ApplicantId = contactId,
+                ToTransientBucket = true,
             }, cancellationToken);
             docResps.Add(docResp);
         }
