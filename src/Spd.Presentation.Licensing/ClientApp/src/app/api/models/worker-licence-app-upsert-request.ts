@@ -19,6 +19,7 @@ import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceAppUpsertRequest {
   agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
+  applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
   businessTypeCode?: BusinessTypeCode;

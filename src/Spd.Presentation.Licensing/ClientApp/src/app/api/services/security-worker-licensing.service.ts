@@ -36,7 +36,8 @@ export class SecurityWorkerLicensingService extends BaseService {
   static readonly ApiWorkerLicenceApplicationsPostPath = '/api/worker-licence-applications';
 
   /**
-   * Create Security Worker Licence Application.
+   * Create Security Worker Licence Application, the DocumentInfos under WorkerLicenceAppUpsertRequest should contain all documents this application needs. If the document
+   * is not needed for this application, then remove it from documentInfos.
    *
    *
    *
@@ -70,7 +71,8 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
-   * Create Security Worker Licence Application.
+   * Create Security Worker Licence Application, the DocumentInfos under WorkerLicenceAppUpsertRequest should contain all documents this application needs. If the document
+   * is not needed for this application, then remove it from documentInfos.
    *
    *
    *

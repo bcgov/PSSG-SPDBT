@@ -1072,10 +1072,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			criminalChargeDescription: '',
 		};
 
-		if ('criminalChargeDescription' in profile) {
-			criminalHistoryData.criminalChargeDescription = profile.criminalChargeDescription ?? '';
-		}
-
 		const policeBackgroundData = {
 			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profile.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: profile.policeOfficerRoleCode,

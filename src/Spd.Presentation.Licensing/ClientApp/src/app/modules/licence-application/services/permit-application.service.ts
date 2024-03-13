@@ -829,10 +829,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			criminalChargeDescription: '',
 		};
 
-		if ('criminalChargeDescription' in profile) {
-			criminalHistoryData.criminalChargeDescription = profile.criminalChargeDescription ?? '';
-		}
-
 		this.permitModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData,

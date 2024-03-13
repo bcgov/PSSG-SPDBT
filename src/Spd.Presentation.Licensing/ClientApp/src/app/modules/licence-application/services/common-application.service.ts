@@ -151,7 +151,7 @@ export class CommonApplicationService {
 						item.isExpiryError = false;
 
 						if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
-							const applicationExpiryDate = moment(item.createdOn).add(applicationNotSubmittedValidDays, 'days');
+							const applicationExpiryDate = moment(item.updatedOn).add(applicationNotSubmittedValidDays, 'days');
 							item.applicationExpiryDate = applicationExpiryDate.toString();
 							if (
 								moment().isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))

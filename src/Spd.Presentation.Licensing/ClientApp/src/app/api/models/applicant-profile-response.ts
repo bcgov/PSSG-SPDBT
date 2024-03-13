@@ -9,14 +9,12 @@ import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
 export interface ApplicantProfileResponse {
   aliases?: null | Array<Alias>;
   applicantId?: string;
-  criminalChargeDescription?: null | string;
   dateOfBirth?: string;
   documentInfos?: null | Array<Document>;
   emailAddress?: null | string;
   genderCode?: GenderEnum;
   givenName?: null | string;
   hasCriminalHistory?: null | boolean;
-  hasNewCriminalRecordCharge?: null | boolean;
   identityProviderTypeCode?: IdentityProviderTypeCode;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;

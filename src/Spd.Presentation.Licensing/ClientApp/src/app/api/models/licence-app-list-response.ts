@@ -11,4 +11,5 @@ export interface LicenceAppListResponse {
   licenceAppId?: string;
   serviceTypeCode?: WorkerLicenceTypeCode;
   submittedOn?: null | string;
+  updatedOn?: null | string;
 }
