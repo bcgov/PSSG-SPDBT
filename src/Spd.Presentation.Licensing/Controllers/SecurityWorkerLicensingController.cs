@@ -98,7 +98,6 @@ namespace Spd.Presentation.Licensing.Controllers
             var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
             return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
-            //return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, "A5VOX7AS6AULXIV2QPMY7R4JLOFHUTFW", licenceAppId), ct);
         }
 
         /// <summary>
