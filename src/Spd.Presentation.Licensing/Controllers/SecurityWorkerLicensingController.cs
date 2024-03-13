@@ -114,7 +114,6 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
-            var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest));
         }
         #endregion
