@@ -476,7 +476,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getPermitWithAccessCodeData(
+	getPermitWithAccessCodeDataAnonymous(
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<PermitLicenceAppResponse> {
@@ -496,9 +496,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
-					applicationTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
 					accessCodeData.licenceNumber
 				);
+
+				console.debug('[getPermitWithAccessCodeDataAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
 			})
 		);
 	}
@@ -529,21 +531,27 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	): Observable<PermitLicenceAppResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadPermitRenewalAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([this.loadExistingPermitAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
 					map((resps: any[]) => {
 						this.setPhotographOfYourself(resps[1]);
 						return resps[0];
+					}),
+					switchMap((_resp: any) => {
+						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			default: {
 				// Must be ApplicationTypeCode.Update: there is no replacement for Permits
-				return forkJoin([this.loadPermitUpdateAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([this.loadExistingPermitAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
 					map((resps: any[]) => {
 						this.setPhotographOfYourself(resps[1]);
 						return resps[0];
+					}),
+					switchMap((_resp: any) => {
+						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
 			}
@@ -564,31 +572,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.photographOfYourself = this.domSanitizer.sanitize(
 			SecurityContext.RESOURCE_URL,
 			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
-		);
-	}
-
-	/**
-	 * Load an existing permit application for renewal
-	 * @returns
-	 */
-	private loadPermitRenewalAnonymous(): Observable<PermitLicenceAppResponse> {
-		return this.loadExistingPermitAnonymous().pipe(
-			switchMap((_resp: PermitLicenceAppResponse) => {
-				return this.applyRenewalDataUpdatesToModel(_resp);
-			})
-		);
-	}
-
-	/**
-	 * Load an existing permit application for update
-	 * @param licenceAppId
-	 * @returns
-	 */
-	private loadPermitUpdateAnonymous(): Observable<PermitLicenceAppResponse> {
-		return this.loadExistingPermitAnonymous().pipe(
-			switchMap((_resp: PermitLicenceAppResponse) => {
-				return this.applyUpdateDataUpdatesToModel(_resp);
-			})
 		);
 	}
 
@@ -750,7 +733,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return this.permitService.apiPermitApplicationGet().pipe(
 			switchMap((resp: PermitLicenceAppResponse) => {
-				return this.applyPermitIntoModel(resp);
+				return this.applyPermitAndProfileIntoModel(resp, null);
 			})
 		);
 	}
@@ -760,16 +743,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	/*************************************************************/
 
 	private applyPermitAndProfileIntoModel(
-		workerLicence: PermitLicenceAppResponse,
-		profile: ApplicantProfileResponse
+		permitLicenceApp: PermitLicenceAppResponse,
+		profile: ApplicantProfileResponse | null | undefined
 	): Observable<any> {
 		return this.applyPermitProfileIntoModel(
-			profile,
-			workerLicence.workerLicenceTypeCode!,
-			workerLicence.applicationTypeCode
+			profile ?? permitLicenceApp,
+			permitLicenceApp.workerLicenceTypeCode!,
+			permitLicenceApp.applicationTypeCode
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyPermitIntoModel(workerLicence);
+				return this.applyPermitIntoModel(permitLicenceApp);
 			})
 		);
 	}
@@ -1078,7 +1061,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			);
 		});
 
-		console.debug('[loadSpecificPermitIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
+		console.debug('[applyPermitIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
 		return of(this.permitModelFormGroup.value);
 	}
 
