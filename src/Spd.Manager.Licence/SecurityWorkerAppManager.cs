@@ -83,17 +83,15 @@ internal partial class SecurityWorkerAppManager :
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken cancellationToken)
     {
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
-        //check if payment is done
-        //todo
-
-        //set status to submitted
-        //await _licenceAppRepository.SubmitLicenceApplicationAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, ct);
 
         //move the file from temp file repo to formal file repo.
         //todo
 
+        //set status to PaymentPending
+        await _licenceAppRepository.CommitLicenceApplicationAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, ApplicationStatusEnum.PaymentPending, cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
+
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken cancellationToken)
     {
         LicenceAppQuery q = new LicenceAppQuery
