@@ -43,58 +43,7 @@ export interface LicenceDocument {
 	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
 }
 
-interface IWorkerLicenceSubmit extends WorkerLicenceAppSubmitRequest, WorkerLicenceAppAnonymousSubmitRequest {}
-
 export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
-	booleanTypeCodes = BooleanTypeCode;
-
-	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
-		workerLicenceTypeCode: new FormControl('', [Validators.required]),
-	});
-
-	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
-		applicationTypeCode: new FormControl('', [Validators.required]),
-	});
-
-	accessCodeFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumber: new FormControl('', [FormControlValidators.required]),
-		accessCode: new FormControl('', [FormControlValidators.required]),
-		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
-		linkedLicenceAppId: new FormControl(null),
-		linkedExpiryDate: new FormControl(null),
-		captchaFormGroup: new FormGroup({
-			token: new FormControl('', FormControlValidators.required),
-		}),
-	});
-
-	// personalInformationFormGroup = this.formBuilder.group(
-	// 	{
-	// 		givenName: new FormControl(''),
-	// 		middleName1: new FormControl(''),
-	// 		middleName2: new FormControl(''),
-	// 		surname: new FormControl('', [FormControlValidators.required]),
-	// 		genderCode: new FormControl('', [FormControlValidators.required]),
-	// 		dateOfBirth: new FormControl('', [Validators.required]),
-	// 		hasLegalNameChanged: new FormControl(false),
-	// 		origGivenName: new FormControl(''),
-	// 		origMiddleName1: new FormControl(''),
-	// 		origMiddleName2: new FormControl(''),
-	// 		origSurname: new FormControl(''),
-	// 		origGenderCode: new FormControl(''),
-	// 		origDateOfBirth: new FormControl(''),
-	// 		hasGenderChanged: new FormControl(false),
-	// 		attachments: new FormControl([]),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'attachments',
-	// 				(form) => !!form.get('hasLegalNameChanged')?.value
-	// 			),
-	// 		],
-	// 	}
-	// );
-
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),
@@ -109,47 +58,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			],
 		}
 	);
-
-	expiredLicenceFormGroup = this.formBuilder.group(
-		{
-			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceNumber: new FormControl(),
-			expiredLicenceId: new FormControl(),
-			expiryDate: new FormControl(),
-			captchaFormGroup: new FormGroup({
-				token: new FormControl(''),
-			}),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'captchaFormGroup.token',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
-
-	licenceTermFormGroup: FormGroup = this.formBuilder.group({
-		licenceTermCode: new FormControl('', [FormControlValidators.required]),
-	});
-
-	// aliasesFormGroup: FormGroup = this.formBuilder.group({
-	// 	previousNameFlag: new FormControl(null, [FormControlValidators.required]),
-	// 	aliases: this.formBuilder.array([]),
-	// });
 
 	categoryBodyArmourSalesFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
@@ -391,23 +299,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 	);
 
-	criminalHistoryFormGroup: FormGroup = this.formBuilder.group(
-		{
-			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
-			criminalChargeDescription: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'criminalChargeDescription',
-					(_form) =>
-						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
-						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
-				),
-			],
-		}
-	);
-
 	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
 	});
@@ -462,26 +353,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 	);
 
-	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
-		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
-		bcDriversLicenceNumber: new FormControl(),
-	});
-
-	characteristicsFormGroup: FormGroup = this.formBuilder.group({
-		hairColourCode: new FormControl('', [FormControlValidators.required]),
-		eyeColourCode: new FormControl('', [FormControlValidators.required]),
-		height: new FormControl('', [FormControlValidators.required]),
-		heightUnitCode: new FormControl('', [FormControlValidators.required]),
-		heightInches: new FormControl(''),
-		weight: new FormControl('', [FormControlValidators.required]),
-		weightUnitCode: new FormControl('', [FormControlValidators.required]),
-	});
-
-	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
-		uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
-		attachments: new FormControl('', [FormControlValidators.required]),
-	});
-
 	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
 		{
 			reprintLicence: new FormControl(''),
@@ -495,80 +366,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			],
 		}
 	);
-
-	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
-	});
-
-	// contactInformationFormGroup: FormGroup = this.formBuilder.group({
-	// 	emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-	// 	phoneNumber: new FormControl('', [Validators.required]),
-	// });
-
-	// residentialAddressFormGroup: FormGroup = this.formBuilder.group({
-	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
-	// 	addressLine1: new FormControl('', [FormControlValidators.required]),
-	// 	addressLine2: new FormControl(''),
-	// 	city: new FormControl('', [FormControlValidators.required]),
-	// 	postalCode: new FormControl('', [FormControlValidators.required]),
-	// 	province: new FormControl('', [FormControlValidators.required]),
-	// 	country: new FormControl('', [FormControlValidators.required]),
-	// 	isMailingTheSameAsResidential: new FormControl(false),
-	// });
-
-	// mailingAddressFormGroup: FormGroup = this.formBuilder.group(
-	// 	{
-	// 		addressSelected: new FormControl(false),
-	// 		addressLine1: new FormControl(''),
-	// 		addressLine2: new FormControl(''),
-	// 		city: new FormControl(''),
-	// 		postalCode: new FormControl(''),
-	// 		province: new FormControl(''),
-	// 		country: new FormControl(''),
-	// 		captchaFormGroup: new FormGroup(
-	// 			{
-	// 				displayCaptcha: new FormControl(false),
-	// 				token: new FormControl(''),
-	// 			},
-	// 			{
-	// 				validators: [
-	// 					FormGroupValidators.conditionalRequiredValidator(
-	// 						'token',
-	// 						(form) => form.get('displayCaptcha')?.value == true
-	// 					),
-	// 				],
-	// 			}
-	// 		),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalDefaultRequiredTrueValidator(
-	// 				'addressSelected',
-	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-	// 			),
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'addressLine1',
-	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-	// 			),
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'city',
-	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-	// 			),
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'postalCode',
-	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-	// 			),
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'province',
-	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-	// 			),
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'country',
-	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-	// 			),
-	// 		],
-	// 	}
-	// );
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
@@ -604,13 +401,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		super(formBuilder);
 	}
 
-	getSaveBodyAnonymous(licenceModelFormValue: any): any {
-		const requestbody = this.getSaveBodyBase(licenceModelFormValue);
-
-		console.debug('[getSaveBodyAnonymous] requestbody', requestbody);
-		return requestbody;
-	}
-
 	/**
 	 * Get the form group data into the correct structure
 	 * @returns
@@ -633,63 +423,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		const documentKeyCodes: null | Array<string> = [];
 		const previousDocumentIds: null | Array<string> = [];
-		/*
-		const documentKeyCodes: null | Array<string> = []; xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-		policeBackgroundData.attachments?.forEach((doc: any) => {
-			documentKeyCodes.push(doc.documentUrlId);
-		});
-
-		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-			documentKeyCodes.push(doc.documentUrlId);
-		});
-
-		
-
-		const documentInfos: Array<Document> = [];
-
-		policeBackgroundData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-			});
-		});
-
-		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
-			});
-		});
-
-
-
-
-
-
-		
-
-		const documents: Array<LicenceDocumentsToSave> = [];
-		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
-
-		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-		}
-
-
-*/
 
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
@@ -731,17 +464,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		return requestbody;
 	}
 
-	/**
-	 * Get the form group data into the correct structure
-	 * @returns
-	 */
-	getSaveBodyAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
-		const requestbody = this.getSaveBodyBase(licenceModelFormValue);
-
-		console.debug('[getSaveBodyAuthenticated] requestbody', requestbody);
-		return requestbody;
-	}
-
 	getDocsToSaveAnonymousBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
@@ -749,6 +471,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 
 		if (licenceModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			const docs: Array<Blob> = [];
@@ -934,6 +658,25 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
 		}
 
+		if (policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
+
+		if (mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+		}
+
 		if (citizenshipData.attachments) {
 			const docs: Array<Blob> = [];
 			citizenshipData.attachments.forEach((doc: SpdFile) => {
@@ -968,7 +711,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
 		}
 
-		console.debug('getDocsToSaveAnonymousBlobs documentsToSave', documents);
+		console.debug('[getDocsToSaveAnonymousBlobs] documentsToSave', documents);
 
 		return documents;
 	}
@@ -980,25 +723,25 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 
 		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
-			const policeDocs: Array<Blob> = [];
+			const docs: Array<Blob> = [];
 			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				policeDocs.push(doc);
+				docs.push(doc);
 			});
 			documents.push({
 				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: policeDocs,
+				documents: docs,
 			});
 		}
 
 		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
-			const mhcDocs: Array<Blob> = [];
+			const docs: Array<Blob> = [];
 			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				mhcDocs.push(doc);
+				docs.push(doc);
 			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: mhcDocs });
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
 		}
 
-		console.debug('getProfileDocsToSaveBlobs documentsToSave', documents);
+		console.debug('[getProfileDocsToSaveBlobs] documentsToSave', documents);
 		return documents;
 	}
 
@@ -1022,7 +765,36 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(licenceModelFormValue: any): IWorkerLicenceSubmit {
+
+	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
+		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
+
+		const baseData = this.getSaveBodyBase(licenceModelFormValue);
+		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
+
+		// applicantId
+		// documentInfos
+
+		return baseData;
+	}
+
+	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppAnonymousSubmitRequest, Array<Document>] {
+		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
+
+		const baseData = this.getSaveBodyBase(licenceModelFormValue);
+		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
+
+		// documentKeyCodes
+		// criminalChargeDescription
+		// originalApplicationId
+		// originalLicenceId
+		// previousDocumentIds
+		// reprint
+
+		return [baseData, baseData.documentInfos];
+	}
+
+	private getSaveBodyBase(licenceModelFormValue: any): any {
 		const licenceAppId = licenceModelFormValue.licenceAppId;
 		const originalApplicationId = licenceModelFormValue.originalApplicationId;
 		const originalLicenceId = licenceModelFormValue.originalLicenceId;

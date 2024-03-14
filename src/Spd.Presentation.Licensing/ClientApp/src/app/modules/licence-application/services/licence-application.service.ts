@@ -67,6 +67,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		applicantId: new FormControl(null), // when authenticated, the applicant id
 		caseNumber: new FormControl(null), // placeholder to save info for display purposes
 
 		originalApplicationId: new FormControl(null),
@@ -151,13 +152,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					console.debug(
-						'licenceModelFormGroup CHANGED',
-						step1Complete,
-						step2Complete,
-						step3Complete,
-						this.licenceModelFormGroup.getRawValue()
-					);
+					// console.debug(
+					// 	'licenceModelFormGroup CHANGED',
+					// 	step1Complete,
+					// 	step2Complete,
+					// 	step3Complete,
+					// 	this.licenceModelFormGroup.getRawValue()
+					// );
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -409,7 +410,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
 	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
@@ -565,7 +567,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const body = this.getSaveBodyAuthenticated(this.licenceModelFormGroup.getRawValue());
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -812,7 +815,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+		const [body, documentInfos] = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
 		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -821,7 +824,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
 		let newDocumentsExist = false;
-		body.documentInfos?.forEach((doc: Document) => {
+		documentInfos?.forEach((doc: Document) => {
 			if (doc.documentUrlId) {
 				existingDocumentIds.push(doc.documentUrlId);
 			} else {
@@ -829,10 +832,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		delete body.documentInfos;
-
 		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceAnonymous] saveBodyAnonymous', body);
+		console.debug('[submitLicenceAnonymous] body', body);
 		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
 		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
@@ -851,18 +852,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(licenceModelFormValue);
+		const [body, documentInfos] = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
 		const mailingAddress = this.mailingAddressFormGroup.getRawValue();
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
-		body.documentInfos?.forEach((doc: Document) => {
+		documentInfos?.forEach((doc: Document) => {
 			if (doc.documentUrlId) {
 				existingDocumentIds.push(doc.documentUrlId);
 			}
 		});
-
-		delete body.documentInfos;
 
 		console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
@@ -1039,6 +1038,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		this.licenceModelFormGroup.patchValue(
 			{
+				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				applicationTypeData,
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },
@@ -1502,11 +1502,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceTermData = {
 			licenceTermCode: null,
 		};
-		// const aliasesData = { previousNameFlag: null, aliases: [] };
-		const bcDriversLicenceData = {
-			hasBcDriversLicence: null,
-			bcDriversLicenceNumber: null,
-		};
+		// const bcDriversLicenceData = {
+		// 	hasBcDriversLicence: null,
+		// 	bcDriversLicenceNumber: null,
+		// };
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
@@ -1551,14 +1550,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// If applicant is renewing a licence where they already had authorization to use dogs,
 		// clear attachments to force user to upload a new proof of qualification.
 		const originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
 		let dogsAuthorizationData = {};
 		if (originalDogAuthorizationExists) {
 			dogsAuthorizationData = {
 				useDogs: resp.dogsAuthorizationData.useDogs,
 				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: resp.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
-					isDogsPurposeDetectionExplosives: resp.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
-					isDogsPurposeProtection: resp.dogsAuthorizationData.isDogsPurposeProtection,
+					isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs,
+					isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives,
+					isDogsPurposeProtection: dogsPurposeFormGroup.isDogsPurposeProtection,
 				},
 				attachments: [],
 			};
@@ -1575,7 +1575,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				soleProprietorData,
 				licenceTermData,
 				fingerprintProofData,
-				bcDriversLicenceData,
+				// bcDriversLicenceData,
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
