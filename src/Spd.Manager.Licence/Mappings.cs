@@ -163,6 +163,10 @@ internal class Mappings : Profile
         CreateMap<LicAppFileInfo, SpdTempFile>();
 
         CreateMap<LicenceApplicationResp, PermitLicenceAppResponse>()
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
+            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData))
             .ForPath(d => d.EmployerPrimaryAddress.AddressLine1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine1))
             .ForPath(d => d.EmployerPrimaryAddress.AddressLine2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.AddressLine2))
             .ForPath(d => d.EmployerPrimaryAddress.Province, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.Province))
