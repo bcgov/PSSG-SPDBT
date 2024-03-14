@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationPortalStatusCode, WorkerLicenceAppListResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationPortalStatusCode, LicenceAppListResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { Subscription, take, tap } from 'rxjs';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -12,7 +12,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 
-export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
+export interface LicenceInProgress extends LicenceAppListResponse {
 	isWarningMessage: boolean;
 	isErrorMessage: boolean;
 	isRenewalPeriod: boolean;
@@ -30,8 +30,8 @@ export interface WorkerLicenceInProgress extends WorkerLicenceAppListResponse {
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
-						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6">
-							<h2 class="fs-3 mb-3">Business Licences</h2>
+						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<h2 class="fs-3">Business Licences</h2>
 						</div>
 
 						<!-- <div class="col-xl-6 col-lg-4 col-md-12">
@@ -438,15 +438,13 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
-	activeApplications: Array<WorkerLicenceInProgress> = [];
-	expiredApplications: Array<WorkerLicenceInProgress> = [];
+	activeApplications: Array<LicenceInProgress> = [];
+	expiredApplications: Array<LicenceInProgress> = [];
 
 	authenticationSubscription!: Subscription;
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
-	inProgressDataSource: MatTableDataSource<WorkerLicenceInProgress> = new MatTableDataSource<WorkerLicenceInProgress>(
-		[]
-	);
+	inProgressDataSource: MatTableDataSource<LicenceInProgress> = new MatTableDataSource<LicenceInProgress>([]);
 	columns: string[] = [
 		'serviceTypeCode',
 		'createdOn',
@@ -471,25 +469,25 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// 			this.securityWorkerLicensingService
 		// 				.apiWorkerLicenceApplicationsGet()
 		// 				.pipe()
-		// 				.subscribe((resp: Array<WorkerLicenceAppListResponse>) => {
+		// 				.subscribe((resp: Array<LicenceAppListResponse>) => {
 		// 					const notSubmittedLicenceErrorDays = SPD_CONSTANTS.periods.notSubmittedLicenceErrorDays;
 		// 					const notSubmittedLicenceWarningDays = SPD_CONSTANTS.periods.notSubmittedLicenceWarningDays;
 		// 					const notSubmittedLicenceHide = SPD_CONSTANTS.periods.notSubmittedLicenceHide;
 		// 					// TODO remove when backend updated...
 		// 					// If 30 days or more have passed since the last save, the application does not appear in this list
 		// 					const inProgressResults = resp.filter(
-		// 						(item: WorkerLicenceAppListResponse) =>
+		// 						(item: LicenceAppListResponse) =>
 		// 							item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
 		// 							// item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 		// 							(item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
 		// 								moment().isSameOrBefore(moment(item.createdOn).add(notSubmittedLicenceHide, 'days')))
 		// 					);
 		// 					const activeResults = resp.filter(
-		// 						(item: WorkerLicenceAppListResponse) =>
+		// 						(item: LicenceAppListResponse) =>
 		// 							item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
 		// 					);
 		// 					const expiredResults = resp.filter(
-		// 						(item: WorkerLicenceAppListResponse) =>
+		// 						(item: LicenceAppListResponse) =>
 		// 							item.applicationPortalStatusCode !== ApplicationPortalStatusCode.InProgress
 		// 					);
 		// 					this.isNoActiveOrExpiredLicences = resp.length === 0;
@@ -509,10 +507,10 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// 							}
 		// 						}
 		// 					});
-		// 					this.activeApplications = activeResults as Array<WorkerLicenceInProgress>;
-		// 					this.expiredApplications = expiredResults as Array<WorkerLicenceInProgress>;
+		// 					this.activeApplications = activeResults as Array<LicenceInProgress>;
+		// 					this.expiredApplications = expiredResults as Array<LicenceInProgress>;
 		// 					this.inProgressDataSource = new MatTableDataSource(
-		// 						(inProgressResults as Array<WorkerLicenceInProgress>) ?? []
+		// 						(inProgressResults as Array<LicenceInProgress>) ?? []
 		// 					);
 		// 				});
 		// 		}
@@ -602,7 +600,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		this.onUpdateAuthorization();
 	}
 
-	onResume(_appl: WorkerLicenceAppListResponse): void {
+	onResume(_appl: LicenceAppListResponse): void {
 		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceNew(appl.licenceAppId!)
@@ -634,7 +632,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// }
 	}
 
-	onUpdate(_appl: WorkerLicenceInProgress): void {
+	onUpdate(_appl: LicenceInProgress): void {
 		// if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
@@ -666,7 +664,7 @@ export class UserBusinessApplicationsComponent implements OnInit, OnDestroy {
 		// }
 	}
 
-	// onReapply(appl: WorkerLicenceInProgress): void {
+	// onReapply(appl: LicenceInProgress): void {
 	// 	this.licenceApplicationService
 	// 		.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Renewal)
 	// 		.pipe(

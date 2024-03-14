@@ -337,7 +337,7 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 		// 	this.categoryPrivateInvestigatorFormGroup.valid &&
 		// 	this.categorySecurityGuardFormGroup.valid;
 
-		// // console.log(
+		// // console.debug(
 		// // 	this.categoryArmouredCarGuardFormGroup.valid,
 		// // 	this.categoryPrivateInvestigatorFormGroup.valid,
 		// // 	this.categorySecurityGuardFormGroup.valid,

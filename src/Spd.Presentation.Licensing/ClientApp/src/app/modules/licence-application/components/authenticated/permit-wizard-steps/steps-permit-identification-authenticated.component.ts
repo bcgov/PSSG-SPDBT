@@ -4,13 +4,13 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
-import { StepPermitAliasesComponent } from './step-permit-aliases.component';
-import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
-import { StepPermitCitizenshipComponent } from './step-permit-citizenship.component';
-import { StepPermitCriminalHistoryComponent } from './step-permit-criminal-history.component';
-import { StepPermitPersonalInformationComponent } from './step-permit-personal-information.component';
-import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
-import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physical-characteristics.component';
+import { StepPermitAliasesComponent } from '../../anonymous/permit-wizard-steps/step-permit-aliases.component';
+import { StepPermitBcDriverLicenceComponent } from '../../anonymous/permit-wizard-steps/step-permit-bc-driver-licence.component';
+import { StepPermitCitizenshipComponent } from '../../anonymous/permit-wizard-steps/step-permit-citizenship.component';
+import { StepPermitCriminalHistoryComponent } from '../../anonymous/permit-wizard-steps/step-permit-criminal-history.component';
+import { StepPermitPersonalInformationComponent } from '../../anonymous/permit-wizard-steps/step-permit-personal-information.component';
+import { StepPermitPhotographOfYourselfAnonymousComponent } from '../../anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
+import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
 
 @Component({
 	selector: 'app-steps-permit-identification-authenticated',

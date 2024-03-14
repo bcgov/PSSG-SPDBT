@@ -13,13 +13,13 @@ export const SPD_CONSTANTS = {
 		backendDateFormat: 'YYYY-MM-DD',
 	},
 	periods: {
-		notSubmittedLicenceWarningDays: 14, // show warning 14 days before the 30 day mark
-		notSubmittedLicenceErrorDays: 7, // show error 7 days before the 30 day mark
-		notSubmittedLicenceHide: 30, // do not show licence 30 days after created
-		replacementPeriodPreventionDays: 14, // cannot replace within 14 days of expiry
-		updatePeriodPreventionDays: 14, // cannot update within 14 days of expiry
-		renewPeriodDays: 90, // can only renew only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less
-		renewPeriodDaysNinetyDayTerm: 60, // can only renew only if current licence term is 90 days and expiry date is in 60 days or less
+		applicationNotSubmittedWarningDays: 14, // show warning 14 days before the 30 day mark
+		applicationNotSubmittedErrorDays: 7, // show error 7 days before the 30 day mark
+		applicationNotSubmittedValidDays: 30, // user has 30 days to submit the application, otherwise dynamics deletes it
+		licenceReplacementPeriodPreventionDays: 14, // cannot replace within 14 days of expiry
+		licenceUpdatePeriodPreventionDays: 14, // cannot update within 14 days of expiry
+		licenceRenewPeriodDays: 90, // can only renew only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less
+		licenceRenewPeriodDaysNinetyDayTerm: 60, // can only renew only if current licence term is 90 days and expiry date is in 60 days or less
 	},
 	phone: {
 		spdPhoneNumber: '1-855-587-0185',

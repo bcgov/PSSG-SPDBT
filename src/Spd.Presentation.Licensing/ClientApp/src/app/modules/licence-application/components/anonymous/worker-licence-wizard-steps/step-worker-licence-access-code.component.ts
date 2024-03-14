@@ -97,7 +97,7 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 		const accessCodeData = this.form.value;
 
 		this.licenceApplicationService
-			.getLicenceWithAccessCodeData(accessCodeData, this.applicationTypeCode!)
+			.getLicenceWithAccessCodeDataAnonymous(accessCodeData, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.workerLicenceTypeCode) {
 					case WorkerLicenceTypeCode.SecurityWorkerLicence: {

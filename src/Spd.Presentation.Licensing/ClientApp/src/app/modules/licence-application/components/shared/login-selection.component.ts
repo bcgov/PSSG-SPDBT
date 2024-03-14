@@ -204,7 +204,7 @@ export class LoginSelectionComponent implements OnInit {
 	}
 
 	async onRegisterWithBceid(): Promise<void> {
-		this.businessApplicationService
+		this.businessApplicationService // TODO hookup login with bceid
 			.createNewBusinessLicence()
 			.pipe(
 				tap((_resp: any) => {

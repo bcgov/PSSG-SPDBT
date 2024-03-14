@@ -1401,7 +1401,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			this.categorySecurityGuardFormGroup.valid &&
 			this.categorySecurityGuardSupFormGroup.valid;
 
-		// console.log(
+		// console.debug(
 		// 	this.categoryArmouredCarGuardFormGroup.valid,
 		// 	this.categoryBodyArmourSalesFormGroup.valid,
 		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,

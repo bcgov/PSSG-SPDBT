@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
+import { ApplicantLicenceAppService } from './services/applicant-licence-app.service';
 import { ApplicantProfileService } from './services/applicant-profile.service';
 import { ConfigurationService } from './services/configuration.service';
 import { LicenceService } from './services/licence.service';
@@ -23,6 +24,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
   declarations: [],
   providers: [
     AddressAutoCompleteService,
+    ApplicantLicenceAppService,
     ApplicantProfileService,
     ConfigurationService,
     LicenceService,

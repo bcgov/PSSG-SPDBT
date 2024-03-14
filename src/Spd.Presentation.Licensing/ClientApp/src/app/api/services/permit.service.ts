@@ -14,6 +14,8 @@ import { IActionResult } from '../models/i-action-result';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { PermitAppAnonymousSubmitRequest } from '../models/permit-app-anonymous-submit-request';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
+import { PermitAppUpsertRequest } from '../models/permit-app-upsert-request';
+import { PermitCommandResponse } from '../models/permit-command-response';
 import { PermitLicenceAppResponse } from '../models/permit-licence-app-response';
 
 @Injectable({
@@ -25,6 +27,128 @@ export class PermitService extends BaseService {
     http: HttpClient
   ) {
     super(config, http);
+  }
+
+  /**
+   * Path part for operation apiPermitApplicationsPost
+   */
+  static readonly ApiPermitApplicationsPostPath = '/api/permit-applications';
+
+  /**
+   * Create Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiPermitApplicationsPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiPermitApplicationsPost$Response(params: {
+    body: PermitAppUpsertRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PermitCommandResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PermitCommandResponse>;
+      })
+    );
+  }
+
+  /**
+   * Create Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiPermitApplicationsPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiPermitApplicationsPost(params: {
+    body: PermitAppUpsertRequest
+  },
+  context?: HttpContext
+
+): Observable<PermitCommandResponse> {
+
+    return this.apiPermitApplicationsPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PermitCommandResponse>) => r.body as PermitCommandResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiPermitApplicationsLicenceAppIdGet
+   */
+  static readonly ApiPermitApplicationsLicenceAppIdGetPath = '/api/permit-applications/{licenceAppId}';
+
+  /**
+   * Get Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiPermitApplicationsLicenceAppIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiPermitApplicationsLicenceAppIdGet$Response(params: {
+    licenceAppId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PermitLicenceAppResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsLicenceAppIdGetPath, 'get');
+    if (params) {
+      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PermitLicenceAppResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiPermitApplicationsLicenceAppIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiPermitApplicationsLicenceAppIdGet(params: {
+    licenceAppId: string;
+  },
+  context?: HttpContext
+
+): Observable<PermitLicenceAppResponse> {
+
+    return this.apiPermitApplicationsLicenceAppIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PermitLicenceAppResponse>) => r.body as PermitLicenceAppResponse)
+    );
   }
 
   /**

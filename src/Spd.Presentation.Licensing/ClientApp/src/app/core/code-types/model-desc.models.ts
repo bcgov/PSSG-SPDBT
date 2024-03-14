@@ -213,6 +213,13 @@ export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '5 Years', code: LicenceTermCode.FiveYears },
 ];
 
+export const DogDocumentTypes: SelectOptions[] = [
+	{
+		desc: 'Security Dog Validation Certificate',
+		code: LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate,
+	},
+];
+
 export const RestraintDocumentTypes: SelectOptions[] = [
 	{
 		desc: 'Advanced security training (AST) certificate',

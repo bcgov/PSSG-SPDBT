@@ -8,7 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'offset-lg-2 col-lg-8' : ''">
+				<div class="col-md-12 col-sm-12 mb-3" [ngClass]="isWizardStep ? 'offset-lg-2 col-lg-8' : ''">
 					<mat-checkbox formControlName="isMailingTheSameAsResidential">
 						My residential address and mailing address are the same
 					</mat-checkbox>
@@ -22,9 +22,10 @@ export class CommonResidentialAddressComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadOnly = false;
+	@Input() isCheckboxReadOnly = false;
 
 	ngOnInit(): void {
-		if (this.isReadOnly) {
+		if (this.isCheckboxReadOnly) {
 			this.isMailingTheSameAsResidential.disable({ emitEvent: false });
 		} else {
 			this.isMailingTheSameAsResidential.enable();
