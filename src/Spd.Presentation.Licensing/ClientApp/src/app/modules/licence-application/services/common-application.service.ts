@@ -286,11 +286,6 @@ export class CommonApplicationService {
 									? hasRestraintAuthorization.licenceDocumentTypeCode
 									: null;
 
-								// If the licence holder has a SWL, they can add a new Body Armour and/or Armoured Vehicle permit
-								// If the licence holder has a Body Armour permit, they can add a new Armoured Vehicle permit and/or a security worker licence
-								// If the licence holder has an Armoured vehicle permit, they can add a new Body Armour permit and/or a security worker licence
-								// If the licence holder has all 3 (either valid or expired), hide "Apply for a new licence/permit" button
-
 								// If the expiry date is within 90 days, applicant sees "renew" option next to the licence
 								// At top of page when renew option is available, add yellow alert: "Your licence is expiring in 71 days. Please renew your licence by July 30, 2023."
 								// After day 0, hide Renew button Licence is no longer in the Valid licences & permit section Licence will show in the Expired licences & permit section

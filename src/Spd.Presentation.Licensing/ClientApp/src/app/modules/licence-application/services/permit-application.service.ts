@@ -311,7 +311,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
+		const body = this.getSaveBodyBaseAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
 		// TODO Permit service is reference swl service - fix
 		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
@@ -378,7 +378,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
+		const body = this.getSaveBodyBaseAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
 		console.debug('[submitLicenceAuthenticated] body', body);
 
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
@@ -629,7 +629,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitAnonymous(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyAnonymous(permitModelFormValue);
+		const body = this.getSaveBodyBaseAnonymous(permitModelFormValue);
 		const documentsToSave = this.getDocsToSaveAnonymousBlobs(permitModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -11,7 +11,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-user-profile-licence-criminal-history',
 	template: `
 		<div class="text-minor-heading pt-2">Criminal History</div>
-		<div class="py-2">Have you previously been charged or convicted of a crime?</div>
+		<div class="py-2">{{ title }}</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -58,7 +58,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonUserProfileLicenceCriminalHistoryComponent implements LicenceChildStepperStepComponent {
+export class CommonUserProfileLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
 	booleanTypeCodes = BooleanTypeCode;
 
 	matcher = new FormErrorStateMatcher();
@@ -68,6 +69,17 @@ export class CommonUserProfileLicenceCriminalHistoryComponent implements Licence
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			this.title = 'Do you have any new criminal charges or convictions?';
+		} else {
+			this.title = 'Have you previously been charged or convicted of a crime?';
+		}
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
