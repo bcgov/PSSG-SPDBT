@@ -1550,14 +1550,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// If applicant is renewing a licence where they already had authorization to use dogs,
 		// clear attachments to force user to upload a new proof of qualification.
 		const originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
 		let dogsAuthorizationData = {};
 		if (originalDogAuthorizationExists) {
 			dogsAuthorizationData = {
 				useDogs: resp.dogsAuthorizationData.useDogs,
 				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: resp.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
-					isDogsPurposeDetectionExplosives: resp.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
-					isDogsPurposeProtection: resp.dogsAuthorizationData.isDogsPurposeProtection,
+					isDogsPurposeDetectionDrugs: dogsPurposeFormGroup.isDogsPurposeDetectionDrugs,
+					isDogsPurposeDetectionExplosives: dogsPurposeFormGroup.isDogsPurposeDetectionExplosives,
+					isDogsPurposeProtection: dogsPurposeFormGroup.isDogsPurposeProtection,
 				},
 				attachments: [],
 			};
