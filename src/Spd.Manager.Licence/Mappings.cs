@@ -15,18 +15,32 @@ internal class Mappings : Profile
     public Mappings()
     {
         CreateMap<WorkerLicenceAppUpsertRequest, SaveLicenceApplicationCmd>()
-            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
+            .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
+            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetIsTreatedForMHC(s)))
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
-            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
+            .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
+            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            ;
 
         CreateMap<PermitAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.Ignore())
-            .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)));
+            .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s)))
+            .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
+            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            ;
 
         CreateMap<ApplicantLoginCommand, Contact>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.BcscIdentityInfo.FirstName))
