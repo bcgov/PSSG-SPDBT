@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 
 @Component({
 	selector: 'app-common-payment-cancel',
@@ -67,7 +66,7 @@ export class CommonPaymentCancelComponent {
 	@Output() payNow: EventEmitter<any> = new EventEmitter();
 	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
-	constructor(private router: Router) {}
+	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	onDownloadManualPaymentForm(): void {
 		this.downloadManualPaymentForm.emit();
@@ -84,6 +83,6 @@ export class CommonPaymentCancelComponent {
 	}
 
 	onBackToHome(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+		this.commonApplicationService.onGoToHome();
 	}
 }

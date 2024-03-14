@@ -78,7 +78,7 @@ export class StepPermitChecklistUpdateComponent implements LicenceChildStepperSt
 	// 		'workerLicenceTypeData.workerLicenceTypeCode'
 	// 	)?.value;
 
-	// 	console.log('workerLicenceTypeCode', workerLicenceTypeCode);
+	// 	console.debug('workerLicenceTypeCode', workerLicenceTypeCode);
 
 	// switch (workerLicenceTypeCode) {
 	// 	case WorkerLicenceTypeCode.ArmouredVehiclePermit: {

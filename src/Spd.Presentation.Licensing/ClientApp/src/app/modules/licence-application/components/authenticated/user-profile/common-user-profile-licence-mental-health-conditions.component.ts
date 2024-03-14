@@ -1,13 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-common-user-profile-licence-mental-health-conditions',
@@ -54,7 +52,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 						<div class="col-12">
 							<div class="text-minor-heading mb-2">Upload your mental health condition form</div>
 							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
 								(fileRemoved)="onFileRemoved()"
 								[control]="attachments"
 								[maxNumberOfFiles]="1"
@@ -78,7 +75,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonUserProfileLicenceMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
+export class CommonUserProfileLicenceMentalHealthConditionsComponent
+	implements OnInit, LicenceChildStepperStepComponent
+{
 	labelText = '';
 	subLabelText = '';
 	booleanTypeCodes = BooleanTypeCode;
@@ -89,11 +88,7 @@ export class CommonUserProfileLicenceMentalHealthConditionsComponent implements 
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		if (
@@ -112,22 +107,6 @@ export class CommonUserProfileLicenceMentalHealthConditionsComponent implements 
 			this.labelText = 'Have you been treated for any mental health conditions?';
 			this.subLabelText =
 				'An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment';
-		}
-	}
-
-	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
 		}
 	}
 

@@ -368,7 +368,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	ngOnInit(): void {
 		// default it
 		this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
-			'residentialAddressData.isMailingTheSameAsResidential'
+			'residentialAddress.isMailingTheSameAsResidential'
 		)?.value;
 
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
@@ -381,7 +381,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 				)?.value;
 
 				this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
-					'residentialAddressData.isMailingTheSameAsResidential'
+					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
 			}
 		);

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
@@ -89,13 +89,17 @@ export class CommonUpdateReceivedSuccessComponent implements OnInit {
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private router: Router) {}
+	constructor(
+		private licenceApplicationService: LicenceApplicationService,
+		private router: Router,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
 
 		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+			this.commonApplicationService.onGoToHome();
 		}
 	}
 
@@ -104,7 +108,7 @@ export class CommonUpdateReceivedSuccessComponent implements OnInit {
 	}
 
 	onBackToHome(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+		this.commonApplicationService.onGoToHome();
 	}
 
 	get licenceTermCode(): string {

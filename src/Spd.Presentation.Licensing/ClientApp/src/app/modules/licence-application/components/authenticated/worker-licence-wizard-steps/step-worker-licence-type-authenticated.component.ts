@@ -148,17 +148,17 @@ export class StepWorkerLicenceTypeAuthenticatedComponent implements OnInit, Lice
 	}
 
 	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
-		// console.log('onLicenceTypeChange', _val);
+		// console.debug('onLicenceTypeChange', _val);
 		this.form.patchValue({ workerLicenceTypeCode: _val });
 		this.workerLicenceTypeCode = _val;
 
-		// console.log('onLicenceTypeChange', this.form.value);
-		// console.log('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
-		// console.log(
+		// console.debug('onLicenceTypeChange', this.form.value);
+		// console.debug('onLicenceTypeChange', this.licenceApplicationService.workerLicenceTypeFormGroup.value);
+		// console.debug(
 		// 	'onLicenceTypeChange licenceModelFormGroupAnonymous',
 		// 	this.licenceApplicationService.licenceModelFormGroupAnonymous.value
 		// );
-		// console.log(
+		// console.debug(
 		// 	'onLicenceTypeChange licenceModelFormGroup',
 		// 	this.licenceApplicationService.licenceModelFormGroup.value
 		// );
@@ -180,7 +180,7 @@ export class StepWorkerLicenceTypeAuthenticatedComponent implements OnInit, Lice
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				LicenceApplicationRoutes.LICENCE_USER_PROFILE_AUTHENTICATED
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
 			)
 		);
 	}
@@ -189,7 +189,7 @@ export class StepWorkerLicenceTypeAuthenticatedComponent implements OnInit, Lice
 		if (this.isFormValid()) {
 			this.router.navigateByUrl(
 				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-					LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_AUTHENTICATED
+					LicenceApplicationRoutes.WORKER_LICENCE_APPLICATION_TYPE_AUTHENTICATED
 				)
 			);
 		}

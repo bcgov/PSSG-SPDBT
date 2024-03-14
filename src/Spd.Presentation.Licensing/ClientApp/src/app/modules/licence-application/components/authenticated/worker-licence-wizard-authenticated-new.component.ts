@@ -66,7 +66,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step completed="false">
-						<ng-template matStepLabel>Review and Confirm</ng-template>
+						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
@@ -112,9 +112,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
-	) // private commonApplicationService: CommonApplicationService
-	{
+		private licenceApplicationService: LicenceApplicationService // private commonApplicationService: CommonApplicationService
+	) {
 		super(breakpointObserver);
 	}
 
@@ -178,7 +177,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 
@@ -242,7 +241,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			return;
 		}
 
-		this.licenceApplicationService.saveLicenceStep().subscribe({
+		this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
 
@@ -279,7 +278,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	onGoToReview() {
 		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					this.updateCompleteStatus();
@@ -306,7 +305,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	onChildNextStep() {
 		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStep().subscribe({
+			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
 					this.hotToastService.success('Licence information has been saved');

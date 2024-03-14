@@ -165,7 +165,7 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 	ngOnInit(): void {
 		// default it
 		this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
-			'residentialAddressData.isMailingTheSameAsResidential'
+			'residentialAddress.isMailingTheSameAsResidential'
 		)?.value;
 
 		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
@@ -178,7 +178,7 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 				)?.value;
 
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
-					'residentialAddressData.isMailingTheSameAsResidential'
+					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
 			}
 		);

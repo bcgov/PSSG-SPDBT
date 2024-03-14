@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicantUpdateRequest,
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
@@ -13,12 +14,14 @@ import {
 	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FileUtilService } from '@app/core/services/file-util.service';
 import { SpdFile, UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { CommonApplicationHelper } from './common-application.helper';
 import { LicenceDocumentsToSave } from './licence-application.service';
 
 export interface LicenceStepperStepComponent {
@@ -42,7 +45,7 @@ export interface LicenceDocument {
 
 interface IWorkerLicenceSubmit extends WorkerLicenceAppSubmitRequest, WorkerLicenceAppAnonymousSubmitRequest {}
 
-export abstract class LicenceApplicationHelper {
+export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	booleanTypeCodes = BooleanTypeCode;
 
 	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
@@ -64,33 +67,33 @@ export abstract class LicenceApplicationHelper {
 		}),
 	});
 
-	personalInformationFormGroup = this.formBuilder.group(
-		{
-			givenName: new FormControl(''),
-			middleName1: new FormControl(''),
-			middleName2: new FormControl(''),
-			surname: new FormControl('', [FormControlValidators.required]),
-			genderCode: new FormControl('', [FormControlValidators.required]),
-			dateOfBirth: new FormControl('', [Validators.required]),
-			hasLegalNameChanged: new FormControl(false),
-			origGivenName: new FormControl(''),
-			origMiddleName1: new FormControl(''),
-			origMiddleName2: new FormControl(''),
-			origSurname: new FormControl(''),
-			origGenderCode: new FormControl(''),
-			origDateOfBirth: new FormControl(''),
-			hasGenderChanged: new FormControl(false),
-			attachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => !!form.get('hasLegalNameChanged')?.value
-				),
-			],
-		}
-	);
+	// personalInformationFormGroup = this.formBuilder.group(
+	// 	{
+	// 		givenName: new FormControl(''),
+	// 		middleName1: new FormControl(''),
+	// 		middleName2: new FormControl(''),
+	// 		surname: new FormControl('', [FormControlValidators.required]),
+	// 		genderCode: new FormControl('', [FormControlValidators.required]),
+	// 		dateOfBirth: new FormControl('', [Validators.required]),
+	// 		hasLegalNameChanged: new FormControl(false),
+	// 		origGivenName: new FormControl(''),
+	// 		origMiddleName1: new FormControl(''),
+	// 		origMiddleName2: new FormControl(''),
+	// 		origSurname: new FormControl(''),
+	// 		origGenderCode: new FormControl(''),
+	// 		origDateOfBirth: new FormControl(''),
+	// 		hasGenderChanged: new FormControl(false),
+	// 		attachments: new FormControl([]),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'attachments',
+	// 				(form) => !!form.get('hasLegalNameChanged')?.value
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
@@ -143,10 +146,10 @@ export abstract class LicenceApplicationHelper {
 		licenceTermCode: new FormControl('', [FormControlValidators.required]),
 	});
 
-	aliasesFormGroup: FormGroup = this.formBuilder.group({
-		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
-		aliases: this.formBuilder.array([]),
-	});
+	// aliasesFormGroup: FormGroup = this.formBuilder.group({
+	// 	previousNameFlag: new FormControl(null, [FormControlValidators.required]),
+	// 	aliases: this.formBuilder.array([]),
+	// });
 
 	categoryBodyArmourSalesFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
@@ -376,7 +379,7 @@ export abstract class LicenceApplicationHelper {
 		{
 			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
 			attachments: new FormControl(''),
-			hasPreviousMhcFormUpload: new FormControl(''), // used to detarmine label to display
+			hasPreviousMhcFormUpload: new FormControl(''), // used to determine label to display
 		},
 		{
 			validators: [
@@ -475,6 +478,7 @@ export abstract class LicenceApplicationHelper {
 	});
 
 	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
+		uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
 		attachments: new FormControl('', [FormControlValidators.required]),
 	});
 
@@ -496,75 +500,75 @@ export abstract class LicenceApplicationHelper {
 		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
 	});
 
-	contactInformationFormGroup: FormGroup = this.formBuilder.group({
-		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		contactPhoneNumber: new FormControl('', [Validators.required]),
-	});
+	// contactInformationFormGroup: FormGroup = this.formBuilder.group({
+	// 	emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+	// 	phoneNumber: new FormControl('', [Validators.required]),
+	// });
 
-	residentialAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
-		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(false),
-	});
+	// residentialAddressFormGroup: FormGroup = this.formBuilder.group({
+	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
+	// 	addressLine1: new FormControl('', [FormControlValidators.required]),
+	// 	addressLine2: new FormControl(''),
+	// 	city: new FormControl('', [FormControlValidators.required]),
+	// 	postalCode: new FormControl('', [FormControlValidators.required]),
+	// 	province: new FormControl('', [FormControlValidators.required]),
+	// 	country: new FormControl('', [FormControlValidators.required]),
+	// 	isMailingTheSameAsResidential: new FormControl(false),
+	// });
 
-	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
-		{
-			addressSelected: new FormControl(false),
-			addressLine1: new FormControl(''),
-			addressLine2: new FormControl(''),
-			city: new FormControl(''),
-			postalCode: new FormControl(''),
-			province: new FormControl(''),
-			country: new FormControl(''),
-			captchaFormGroup: new FormGroup(
-				{
-					displayCaptcha: new FormControl(false),
-					token: new FormControl(''),
-				},
-				{
-					validators: [
-						FormGroupValidators.conditionalRequiredValidator(
-							'token',
-							(form) => form.get('displayCaptcha')?.value == true
-						),
-					],
-				}
-			),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
-					'addressSelected',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'addressLine1',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'city',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'postalCode',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'province',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'country',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
-				),
-			],
-		}
-	);
+	// mailingAddressFormGroup: FormGroup = this.formBuilder.group(
+	// 	{
+	// 		addressSelected: new FormControl(false),
+	// 		addressLine1: new FormControl(''),
+	// 		addressLine2: new FormControl(''),
+	// 		city: new FormControl(''),
+	// 		postalCode: new FormControl(''),
+	// 		province: new FormControl(''),
+	// 		country: new FormControl(''),
+	// 		captchaFormGroup: new FormGroup(
+	// 			{
+	// 				displayCaptcha: new FormControl(false),
+	// 				token: new FormControl(''),
+	// 			},
+	// 			{
+	// 				validators: [
+	// 					FormGroupValidators.conditionalRequiredValidator(
+	// 						'token',
+	// 						(form) => form.get('displayCaptcha')?.value == true
+	// 					),
+	// 				],
+	// 			}
+	// 		),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredTrueValidator(
+	// 				'addressSelected',
+	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+	// 			),
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'addressLine1',
+	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+	// 			),
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'city',
+	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+	// 			),
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'postalCode',
+	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+	// 			),
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'province',
+	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+	// 			),
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'country',
+	// 				(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
@@ -591,16 +595,139 @@ export abstract class LicenceApplicationHelper {
 	});
 
 	constructor(
-		protected formBuilder: FormBuilder,
+		formBuilder: FormBuilder,
 		protected configService: ConfigService,
 		protected formatDatePipe: FormatDatePipe,
-		protected utilService: UtilService
-	) {}
+		protected utilService: UtilService,
+		protected fileUtilService: FileUtilService
+	) {
+		super(formBuilder);
+	}
 
 	getSaveBodyAnonymous(licenceModelFormValue: any): any {
 		const requestbody = this.getSaveBodyBase(licenceModelFormValue);
 
 		console.debug('[getSaveBodyAnonymous] requestbody', requestbody);
+		return requestbody;
+	}
+
+	/**
+	 * Get the form group data into the correct structure
+	 * @returns
+	 */
+	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
+		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
+		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
+		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
+		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
+		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
+
+		const criminalChargeDescription =
+			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
+			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+				? criminalHistoryData.criminalChargeDescription
+				: null;
+
+		const documentKeyCodes: null | Array<string> = [];
+		const previousDocumentIds: null | Array<string> = [];
+		/*
+		const documentKeyCodes: null | Array<string> = []; xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentKeyCodes.push(doc.documentUrlId);
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentKeyCodes.push(doc.documentUrlId);
+		});
+
+		
+
+		const documentInfos: Array<Document> = [];
+
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+			});
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+			});
+		});
+
+
+
+
+
+
+		
+
+		const documents: Array<LicenceDocumentsToSave> = [];
+		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
+
+		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+		}
+
+
+*/
+
+		const requestbody: ApplicantUpdateRequest = {
+			licenceId: undefined,
+			applicationTypeCode: undefined,
+			givenName: personalInformationData.givenName,
+			surname: personalInformationData.surname,
+			middleName1: personalInformationData.middleName1,
+			middleName2: personalInformationData.middleName2,
+			dateOfBirth: personalInformationData.dateOfBirth,
+			emailAddress: contactInformationData.emailAddress,
+			phoneNumber: contactInformationData.phoneNumber,
+			genderCode: personalInformationData.genderCode,
+			//-----------------------------------
+			aliases:
+				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? licenceModelFormValue.aliasesData.aliases
+					: [],
+			//-----------------------------------
+			documentKeyCodes,
+			previousDocumentIds,
+			//-----------------------------------
+			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			hasNewMentalHealthCondition: false, // TODO remove null, // this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			//-----------------------------------
+			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
+			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			//-----------------------------------
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
+			hasNewCriminalRecordCharge: false, // TODO remove null, // TODO
+			criminalChargeDescription, // populated only for Update and new charges is Yes
+			//-----------------------------------
+			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			residentialAddress: residentialAddress,
+		};
+
+		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[getProfileSaveBody] requestbody', requestbody);
 		return requestbody;
 	}
 
@@ -616,14 +743,10 @@ export abstract class LicenceApplicationHelper {
 	}
 
 	getDocsToSaveAnonymousBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
-		console.debug('getDocsToSaveAnonymousBlobs', licenceModelFormValue);
-
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
-		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
-		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
@@ -803,25 +926,6 @@ export abstract class LicenceApplicationHelper {
 			});
 		}
 
-		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
-
-		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
-		}
-
 		if (fingerprintProofData.attachments) {
 			const docs: Array<Blob> = [];
 			fingerprintProofData.attachments.forEach((doc: SpdFile) => {
@@ -869,6 +973,35 @@ export abstract class LicenceApplicationHelper {
 		return documents;
 	}
 
+	getProfileDocsToSaveBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
+
+		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
+
+		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+			const policeDocs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				policeDocs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: policeDocs,
+			});
+		}
+
+		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+			const mhcDocs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				mhcDocs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: mhcDocs });
+		}
+
+		console.debug('getProfileDocsToSaveBlobs documentsToSave', documents);
+		return documents;
+	}
+
 	/**
 	 * Get the valid list of categories based upon the current selections
 	 * @param categoryList
@@ -900,8 +1033,8 @@ export abstract class LicenceApplicationHelper {
 		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
 		const expiredLicenceData = { ...licenceModelFormValue.expiredLicenceData };
 		const characteristicsData = { ...licenceModelFormValue.characteristicsData };
-		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
+		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
+		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
@@ -910,7 +1043,7 @@ export abstract class LicenceApplicationHelper {
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
 		// default the flag
-		residentialAddressData.isMailingTheSameAsResidential = !!residentialAddressData.isMailingTheSameAsResidential;
+		residentialAddress.isMailingTheSameAsResidential = !!residentialAddress.isMailingTheSameAsResidential;
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		let dogsAuthorizationData = {};
@@ -1178,15 +1311,11 @@ export abstract class LicenceApplicationHelper {
 			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
-			mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
-				? residentialAddressData
-				: mailingAddressData,
-			residentialAddressData,
+			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
+			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			residentialAddress,
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
-			//-----------------------------------
-			useBcServicesCardPhoto: false, // TODO remove later
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
 			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal

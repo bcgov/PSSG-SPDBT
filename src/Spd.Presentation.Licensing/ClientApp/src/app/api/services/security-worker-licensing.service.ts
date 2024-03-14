@@ -14,7 +14,6 @@ import { IActionResult } from '../models/i-action-result';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { WorkerLicenceAppAnonymousSubmitRequest } from '../models/worker-licence-app-anonymous-submit-request';
-import { WorkerLicenceAppListResponse } from '../models/worker-licence-app-list-response';
 import { WorkerLicenceAppResponse } from '../models/worker-licence-app-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
@@ -37,7 +36,8 @@ export class SecurityWorkerLicensingService extends BaseService {
   static readonly ApiWorkerLicenceApplicationsPostPath = '/api/worker-licence-applications';
 
   /**
-   * Create Security Worker Licence Application.
+   * Create Security Worker Licence Application, the DocumentInfos under WorkerLicenceAppUpsertRequest should contain all documents this application needs. If the document
+   * is not needed for this application, then remove it from documentInfos.
    *
    *
    *
@@ -71,7 +71,8 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
-   * Create Security Worker Licence Application.
+   * Create Security Worker Licence Application, the DocumentInfos under WorkerLicenceAppUpsertRequest should contain all documents this application needs. If the document
+   * is not needed for this application, then remove it from documentInfos.
    *
    *
    *
@@ -281,67 +282,6 @@ export class SecurityWorkerLicensingService extends BaseService {
 
     return this.apiWorkerLicenceApplicationsSubmitPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiApplicantsApplicantIdWorkerLicenceApplicationsGet
-   */
-  static readonly ApiApplicantsApplicantIdWorkerLicenceApplicationsGetPath = '/api/applicants/{applicantId}/worker-licence-applications';
-
-  /**
-   * Get List of draft or InProgress Security Worker Licence Application.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsApplicantIdWorkerLicenceApplicationsGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdWorkerLicenceApplicationsGet$Response(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<WorkerLicenceAppListResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiApplicantsApplicantIdWorkerLicenceApplicationsGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {"style":"simple"});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<WorkerLicenceAppListResponse>>;
-      })
-    );
-  }
-
-  /**
-   * Get List of draft or InProgress Security Worker Licence Application.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsApplicantIdWorkerLicenceApplicationsGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdWorkerLicenceApplicationsGet(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<Array<WorkerLicenceAppListResponse>> {
-
-    return this.apiApplicantsApplicantIdWorkerLicenceApplicationsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<WorkerLicenceAppListResponse>>) => r.body as Array<WorkerLicenceAppListResponse>)
     );
   }
 

@@ -228,9 +228,9 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
-		let renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDays;
+		let renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 		if (licenceTermCode === LicenceTermCode.NinetyDays) {
-			renewPeriodDays = SPD_CONSTANTS.periods.renewPeriodDaysNinetyDayTerm;
+			renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
 		}
 
 		return daysBetween > renewPeriodDays ? false : true;
