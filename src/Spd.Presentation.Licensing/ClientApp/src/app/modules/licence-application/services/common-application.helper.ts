@@ -1,8 +1,104 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 
 export abstract class CommonApplicationHelper {
+	booleanTypeCodes = BooleanTypeCode;
+
+	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
+		workerLicenceTypeCode: new FormControl('', [Validators.required]),
+	});
+
+	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
+		applicationTypeCode: new FormControl('', [Validators.required]),
+	});
+
+	accessCodeFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumber: new FormControl('', [FormControlValidators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
+		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
+		linkedLicenceAppId: new FormControl(null),
+		linkedExpiryDate: new FormControl(null),
+		captchaFormGroup: new FormGroup({
+			token: new FormControl('', FormControlValidators.required),
+		}),
+	});
+
+	expiredLicenceFormGroup = this.formBuilder.group(
+		{
+			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
+			expiredLicenceNumber: new FormControl(),
+			expiredLicenceId: new FormControl(),
+			expiryDate: new FormControl(),
+			captchaFormGroup: new FormGroup({
+				token: new FormControl(''),
+			}),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'captchaFormGroup.token',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'expiredLicenceNumber',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'expiredLicenceId',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'expiryDate',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+			],
+		}
+	);
+
+	licenceTermFormGroup: FormGroup = this.formBuilder.group({
+		licenceTermCode: new FormControl('', [FormControlValidators.required]),
+	});
+
+	criminalHistoryFormGroup: FormGroup = this.formBuilder.group(
+		{
+			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
+			criminalChargeDescription: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'criminalChargeDescription',
+					(_form) =>
+						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
+				),
+			],
+		}
+	);
+
+	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
+		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
+		bcDriversLicenceNumber: new FormControl(),
+	});
+
+	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
+		uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
+		attachments: new FormControl('', [FormControlValidators.required]),
+	});
+
+	characteristicsFormGroup: FormGroup = this.formBuilder.group({
+		hairColourCode: new FormControl('', [FormControlValidators.required]),
+		eyeColourCode: new FormControl('', [FormControlValidators.required]),
+		height: new FormControl('', [FormControlValidators.required]),
+		heightUnitCode: new FormControl('', [FormControlValidators.required]),
+		heightInches: new FormControl(''),
+		weight: new FormControl('', [FormControlValidators.required]),
+		weightUnitCode: new FormControl('', [FormControlValidators.required]),
+	});
+
 	personalInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
 			givenName: new FormControl(''),
@@ -35,23 +131,6 @@ export abstract class CommonApplicationHelper {
 		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
 		aliases: this.formBuilder.array([]),
 	});
-
-	// criminalHistoryFormGroup: FormGroup = this.formBuilder.group(
-	// 	{
-	// 		hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
-	// 		criminalChargeDescription: new FormControl(''),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'criminalChargeDescription',
-	// 				(_form) =>
-	// 					_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
-	// 					this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
-	// 			),
-	// 		],
-	// 	}
-	// );
 
 	contactInformationFormGroup: FormGroup = this.formBuilder.group({
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
@@ -122,6 +201,10 @@ export abstract class CommonApplicationHelper {
 			],
 		}
 	);
+
+	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
+		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
+	});
 
 	constructor(protected formBuilder: FormBuilder) {}
 }
