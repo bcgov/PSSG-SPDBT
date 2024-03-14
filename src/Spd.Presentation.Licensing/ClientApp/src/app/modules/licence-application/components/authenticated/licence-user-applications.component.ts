@@ -805,9 +805,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	// }
 
 	onRequestReplacement(appl: UserLicenceResponse): void {
-		console.log('onRequestReplacement', appl);
 		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			console.log('licenceAppId', appl.licenceAppId!);
 			this.licenceApplicationService
 				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement)
 				.pipe(

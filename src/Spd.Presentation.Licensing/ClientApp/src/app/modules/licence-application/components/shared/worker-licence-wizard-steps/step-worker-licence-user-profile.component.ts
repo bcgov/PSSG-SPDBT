@@ -190,9 +190,12 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
-		const isValid3 = this.criminalHistoryComponent.isFormValid();
-		const isValid4 = this.policeBackgroundComponent.isFormValid();
-		const isValid5 = this.mentalHealthComponent.isFormValid();
+		const isValid3 =
+			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.criminalHistoryComponent.isFormValid() : true;
+		const isValid4 =
+			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.policeBackgroundComponent.isFormValid() : true;
+		const isValid5 =
+			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.mentalHealthComponent.isFormValid() : true;
 
 		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
 
