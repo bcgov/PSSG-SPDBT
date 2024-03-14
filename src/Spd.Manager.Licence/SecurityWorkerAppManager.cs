@@ -83,10 +83,7 @@ internal partial class SecurityWorkerAppManager :
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken cancellationToken)
     {
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
-
-        //move the file from temp file repo to formal file repo.
-        //todo
-
+        //dynamics will call an endpoint in dynamicsHelper to move files from transient bucket to main bucket when app status changed to Submitted.
         decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
