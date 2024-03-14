@@ -266,9 +266,9 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 											<div class="col-12">
 												<mat-divider class="my-2"></mat-divider>
 												<span class="fw-semibold">Lost your licence? </span>
-												<a class="large" [href]="constants.urls.requestReplacementUrl" target="_blank"
+												<!-- <a class="large" [href]="constants.urls.requestReplacementUrl" target="_blank"
 													>Request a replacement</a
-												>
+												> -->
 												and we'll send you a new licence in xx-xx business days.
 											</div>
 										</ng-template>
@@ -287,9 +287,9 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 											<div class="col-12">
 												<mat-divider class="my-2"></mat-divider>
 												<span class="fw-semibold">Lost or stolen permit? </span>
-												<a class="large" [href]="constants.urls.requestReplacementUrl" target="_blank"
+												<!-- <a class="large" [href]="constants.urls.requestReplacementUrl" target="_blank"
 													>Request a replacement</a
-												>
+												> -->
 												and we'll send you one in xx-xx business days.
 											</div>
 										</ng-template>
