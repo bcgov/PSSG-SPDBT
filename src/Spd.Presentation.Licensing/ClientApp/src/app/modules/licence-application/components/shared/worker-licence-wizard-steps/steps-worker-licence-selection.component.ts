@@ -147,12 +147,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormCategoryValidNextStep()">
 							Next
 						</button>
 					</div>
@@ -217,9 +212,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_DOGS)">
-							Next
-						</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormDogsValidNextStep()">Next</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
@@ -344,6 +337,30 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 		);
 	}
 
+	onFormDogsValidNextStep() {
+		const isValid = this.dirtyForm(this.STEP_DOGS);
+		if (!isValid) return;
+
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+
+		this.childstepper.next();
+	}
+
+	onFormCategoryValidNextStep() {
+		const isValid = this.dirtyForm(this.STEP_LICENCE_CATEGORY);
+		if (!isValid) return;
+
+		if (this.applicationTypeCode === ApplicationTypeCode.Update && !this.showStepDogsAndRestraints) {
+			this.nextStepperStep.emit(true);
+			return;
+		}
+
+		this.childstepper.next();
+	}
+
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
@@ -359,22 +376,6 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	onValidExpiredLicence(): void {
 		this.childNextStep.emit(true);
-	}
-
-	override onGoToNextStep() {
-		console.debug('onGoToNextStep', this.childstepper.selectedIndex);
-
-		// If step ordering changes, crucial to update this
-		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			if (
-				(this.childstepper.selectedIndex === 3 && !this.showStepDogsAndRestraints) ||
-				(this.childstepper.selectedIndex === 4 && this.showStepDogsAndRestraints)
-			) {
-				this.nextStepperStep.emit(true);
-				return;
-			}
-		}
-		this.childstepper.next();
 	}
 
 	override dirtyForm(step: number): boolean {
