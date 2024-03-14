@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, PaymentResponse } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 
 @Component({
 	selector: 'app-common-payment-success',
@@ -162,13 +162,13 @@ export class CommonPaymentSuccessComponent {
 
 	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private commonApplicationService: CommonApplicationService) {}
 
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();
 	}
 
 	onBackToHome(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+		this.commonApplicationService.onGoToHome();
 	}
 }

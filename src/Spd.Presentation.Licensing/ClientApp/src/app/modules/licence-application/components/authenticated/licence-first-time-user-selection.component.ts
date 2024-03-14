@@ -9,7 +9,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
-	selector: 'app-worker-licence-first-time-user-selection',
+	selector: 'app-licence-first-time-user-selection',
 	template: `
 		<section class="step-section" *ngIf="options">
 			<div class="step">
@@ -73,7 +73,7 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/
 		`,
 	],
 })
-export class WorkerLicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
+export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
 	selectedLicenceNumber: string | null = null;
 	showValidationError = false;

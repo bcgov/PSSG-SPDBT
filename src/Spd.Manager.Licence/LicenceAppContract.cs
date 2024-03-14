@@ -1,4 +1,4 @@
-﻿using Spd.Manager.Shared;
+using Spd.Manager.Shared;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
 namespace Spd.Manager.Licence;

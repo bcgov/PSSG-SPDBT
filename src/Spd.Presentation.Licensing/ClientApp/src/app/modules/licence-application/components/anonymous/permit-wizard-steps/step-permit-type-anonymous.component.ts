@@ -137,8 +137,8 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 		)?.value;
 		const applicationTypeCode = this.applicationTypeCode.value;
 
-		// console.log('workerLicenceTypeCode', workerLicenceTypeCode);
-		// console.log('applicationTypeCode', applicationTypeCode);
+		// console.debug('workerLicenceTypeCode', workerLicenceTypeCode);
+		// console.debug('applicationTypeCode', applicationTypeCode);
 
 		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode, applicationTypeCode);
 

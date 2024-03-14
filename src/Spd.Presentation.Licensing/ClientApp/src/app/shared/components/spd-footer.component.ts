@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 
 @Component({
 	selector: 'app-spd-footer',
@@ -55,10 +54,10 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 	],
 })
 export class SpdFooterComponent {
-	constructor(private router: Router) {}
+	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	goHome(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+		this.commonApplicationService.onGoToHome();
 	}
 
 	onKeydownGoHome(event: KeyboardEvent) {

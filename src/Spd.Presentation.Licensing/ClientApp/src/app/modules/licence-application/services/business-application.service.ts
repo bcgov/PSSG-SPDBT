@@ -27,7 +27,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		categoryPrivateInvestigatorData: this.categoryPrivateInvestigatorFormGroup,
 		categorySecurityGuardData: this.categorySecurityGuardFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
-		mailingAddressData: this.mailingAddressFormGroup,
+		mailingAddress: this.mailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
 		branchesInBcData: this.branchesInBcFormGroup,
 	});

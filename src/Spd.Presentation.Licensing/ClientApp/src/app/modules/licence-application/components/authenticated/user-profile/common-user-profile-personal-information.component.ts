@@ -4,7 +4,6 @@ import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -20,7 +19,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			to update this information on your BC Services Card. Any changes you make will then be updated here.
 		</app-alert>
 
-		<div [formGroup]="form" class="row">
+		<div [formGroup]="personalInformationFormGroup" class="row">
 			<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
 				<div class="fs-6 text-muted">Full Name</div>
 				<div class="fs-5 summary-text-data">{{ fullname }}</div>
@@ -33,7 +32,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		</div>
 
 		<div class="row mt-3 mb-2">
-			<div [formGroup]="form" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+			<div [formGroup]="personalInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<mat-form-field>
 					<mat-label>Sex</mat-label>
 					<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
@@ -41,34 +40,34 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							{{ gdr.desc }}
 						</mat-option>
 					</mat-select>
-					<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
+					<mat-error *ngIf="personalInformationFormGroup.get('genderCode')?.hasError('required')"
+						>This is required</mat-error
+					>
 				</mat-form-field>
 			</div>
 
-			<div [formGroup]="formContact" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+			<div [formGroup]="contactFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<mat-form-field>
 					<mat-label>Email Address</mat-label>
 					<input
 						matInput
-						formControlName="contactEmailAddress"
+						formControlName="emailAddress"
 						[errorStateMatcher]="matcher"
 						placeholder="name@domain.com"
 						maxlength="75"
 					/>
-					<mat-error *ngIf="formContact.get('contactEmailAddress')?.hasError('required')"> This is required </mat-error>
-					<mat-error *ngIf="formContact.get('contactEmailAddress')?.hasError('email')">
+					<mat-error *ngIf="contactFormGroup.get('emailAddress')?.hasError('required')"> This is required </mat-error>
+					<mat-error *ngIf="contactFormGroup.get('emailAddress')?.hasError('email')">
 						Must be a valid email address
 					</mat-error>
 				</mat-form-field>
 			</div>
-			<div [formGroup]="formContact" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+			<div [formGroup]="contactFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<mat-form-field>
 					<mat-label>Phone Number</mat-label>
-					<input matInput formControlName="contactPhoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
-					<mat-error *ngIf="formContact.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
-					<mat-error *ngIf="formContact.get('contactPhoneNumber')?.hasError('mask')">
-						This must be 10 digits
-					</mat-error>
+					<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
 				</mat-form-field>
 			</div>
 		</div>
@@ -85,41 +84,42 @@ export class CommonUserProfilePersonalInformationComponent implements LicenceChi
 	subtitle =
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 
-	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
-	formContact: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
-
 	@Input() isReadOnly = false;
 
-	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
+	@Input() personalInformationFormGroup!: FormGroup;
+	@Input() contactFormGroup!: FormGroup;
+
+	constructor(private utilService: UtilService) {}
 
 	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		this.formContact.markAllAsTouched();
-		return this.form.valid && this.formContact.valid;
+		this.personalInformationFormGroup.markAllAsTouched();
+		this.contactFormGroup.markAllAsTouched();
+
+		return this.personalInformationFormGroup.valid && this.contactFormGroup.valid;
 	}
 
 	get fullname(): string {
 		return this.utilService.getFullNameWithMiddle(
-			this.firstName?.value,
+			this.givenName?.value,
 			this.middleName1?.value,
 			this.middleName2?.value,
-			this.lastName?.value
+			this.surname?.value
 		);
 	}
 
-	get lastName(): FormControl {
-		return this.form.get('lastName') as FormControl;
+	get surname(): FormControl {
+		return this.personalInformationFormGroup.get('surname') as FormControl;
 	}
-	get firstName(): FormControl {
-		return this.form.get('firstName') as FormControl;
+	get givenName(): FormControl {
+		return this.personalInformationFormGroup.get('givenName') as FormControl;
 	}
 	get middleName1(): FormControl {
-		return this.form.get('middleName1') as FormControl;
+		return this.personalInformationFormGroup.get('middleName1') as FormControl;
 	}
 	get middleName2(): FormControl {
-		return this.form.get('middleName2') as FormControl;
+		return this.personalInformationFormGroup.get('middleName2') as FormControl;
 	}
 	get dateOfBirth(): FormControl {
-		return this.form.get('dateOfBirth') as FormControl;
+		return this.personalInformationFormGroup.get('dateOfBirth') as FormControl;
 	}
 }

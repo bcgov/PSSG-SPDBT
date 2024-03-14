@@ -35,7 +35,7 @@ export class BaseWizardComponent {
 		const stepIndex = this.stepper.selectedIndex;
 		const stepId = this.stepper._getStepLabelId(stepIndex);
 		const stepElement = document.getElementById(stepId);
-		// console.log('scrollIntoView', 'stepIndex', stepIndex, 'stepId', stepId, 'stepElement', stepElement);
+		// console.debug('scrollIntoView', 'stepIndex', stepIndex, 'stepId', stepId, 'stepElement', stepElement);
 
 		if (stepElement) {
 			setTimeout(() => {
