@@ -2,58 +2,99 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
+import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { CommonUserProfileLicenceCriminalHistoryComponent } from '../../authenticated/user-profile/common-user-profile-licence-criminal-history.component';
+import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '../../authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
+import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authenticated/user-profile/common-user-profile-licence-police-background.component';
 
 @Component({
 	selector: 'app-step-worker-licence-user-profile',
 	template: `
-		<section class="step-section">
+		<div class="step-section">
 			<div class="step">
-				<app-step-title title="Confirm your profile"></app-step-title>
-
 				<div class="row">
 					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="row">
+							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+								<h2 class="fs-3">Confirm your Profile</h2>
+							</div>
+
+							<div class="col-xl-6 col-lg-4 col-md-12">
+								<div class="d-flex justify-content-end">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large w-auto mb-3"
+										aria-label="Back"
+										(click)="onBack()"
+									>
+										<mat-icon>arrow_back</mat-icon>Back
+									</button>
+								</div>
+							</div>
+						</div>
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
+
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
-						<app-common-user-profile></app-common-user-profile>
+						<section>
+							<app-common-user-profile
+								[personalInformationFormGroup]="personalInformationFormGroup"
+								[contactFormGroup]="contactFormGroup"
+								[aliasesFormGroup]="aliasesFormGroup"
+								[residentialAddressFormGroup]="residentialAddressFormGroup"
+								[mailingAddressFormGroup]="mailingAddressFormGroup"
+							></app-common-user-profile>
+						</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<app-common-user-profile-licence-criminal-history
-							[applicationTypeCode]="applicationTypeCode"
-						></app-common-user-profile-licence-criminal-history>
+						<ng-container *ngIf="isNotReplacment">
+							<mat-divider class="mat-divider-main mt-3"></mat-divider>
+							<section>
+								<app-common-user-profile-licence-criminal-history
+									[applicationTypeCode]="applicationTypeCode"
+								></app-common-user-profile-licence-criminal-history>
+							</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<app-common-user-profile-licence-police-background
-							[applicationTypeCode]="applicationTypeCode"
-						></app-common-user-profile-licence-police-background>
+							<mat-divider class="mat-divider-main mt-3"></mat-divider>
+							<section>
+								<app-common-user-profile-licence-police-background
+									[applicationTypeCode]="applicationTypeCode"
+								></app-common-user-profile-licence-police-background>
+							</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<app-common-user-profile-licence-mental-health-conditions
-							[applicationTypeCode]="applicationTypeCode"
-						></app-common-user-profile-licence-mental-health-conditions>
+							<mat-divider class="mat-divider-main mt-3"></mat-divider>
+							<section>
+								<app-common-user-profile-licence-mental-health-conditions
+									[applicationTypeCode]="applicationTypeCode"
+								></app-common-user-profile-licence-mental-health-conditions>
+							</section>
+						</ng-container>
 
-						<form [formGroup]="form" novalidate>
-							<div>
-								<mat-divider class="mat-divider-main mt-2"></mat-divider>
-								<div class="text-minor-heading py-2">Confirmation</div>
-								<mat-checkbox formControlName="isProfileUpToDate">
-									I confirm that this information is up-to-date
-								</mat-checkbox>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-										form.get('isProfileUpToDate')?.invalid &&
-										form.get('isProfileUpToDate')?.hasError('required')
-									"
-								>
-									This is required
-								</mat-error>
-							</div>
-						</form>
+						<section>
+							<form [formGroup]="form" novalidate>
+								<div>
+									<mat-divider class="mat-divider-main mt-2"></mat-divider>
+									<div class="text-minor-heading py-2">Confirmation</div>
+									<mat-checkbox formControlName="isProfileUpToDate">
+										I confirm that this information is up-to-date
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+											form.get('isProfileUpToDate')?.invalid &&
+											form.get('isProfileUpToDate')?.hasError('required')
+										"
+									>
+										This is required
+									</mat-error>
+								</div>
+							</form>
+						</section>
 
 						<div class="mt-3">
 							<app-alert type="info" icon="" [showBorder]="false">
@@ -68,37 +109,51 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
 
-		<div class="row wizard-button-row">
-			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-				<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+		<div class="row mt-3">
+			<div class="offset-xl-6 offset-lg-5 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
+					<i class="fa fa-times mr-2"></i>Cancel
+				</button>
 			</div>
-			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-				<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">
+					Save & Continue to Application
+				</button>
 			</div>
 		</div>
 	`,
 	styles: [],
 })
 export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
-	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
-
 	alertText = '';
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
+	@ViewChild(CommonUserProfileLicenceCriminalHistoryComponent)
+	criminalHistoryComponent!: CommonUserProfileLicenceCriminalHistoryComponent;
+	@ViewChild(CommonUserProfileLicencePoliceBackgroundComponent)
+	policeBackgroundComponent!: CommonUserProfileLicencePoliceBackgroundComponent;
+	@ViewChild(CommonUserProfileLicenceMentalHealthConditionsComponent)
+	mentalHealthComponent!: CommonUserProfileLicenceMentalHealthConditionsComponent;
 
-	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-		}
+	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	contactFormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
 
-		this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-			'applicationTypeData.applicationTypeCode'
-		)?.value;
+	constructor(
+		private router: Router,
+		private utilService: UtilService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.applicationTypeCode = state && state['applicationTypeCode'];
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
@@ -120,6 +175,12 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		}
 	}
 
+	ngOnInit(): void {
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
+		}
+	}
+
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
@@ -127,23 +188,71 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 
-		const isValid = this.form.valid;
-		const isProfileValid = this.userProfileComponent.isFormValid();
+		const isValid1 = this.form.valid;
+		const isValid2 = this.userProfileComponent.isFormValid();
+		const isValid3 = this.criminalHistoryComponent.isFormValid();
+		const isValid4 = this.policeBackgroundComponent.isFormValid();
+		const isValid5 = this.mentalHealthComponent.isFormValid();
 
-		return isValid && isProfileValid;
+		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+		}
+
+		return isValid;
 	}
 
 	onStepPrevious(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 	}
 
-	onStepNext(): void {
-		if (this.isFormValid()) {
-			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-					LicenceApplicationRoutes.LICENCE_SELECTION_AUTHENTICATED
-				)
-			);
+	onContinue(): void {
+		if (!this.isFormValid()) {
+			return;
 		}
+
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				// this.router.navigateByUrl(
+				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				// 		LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
+				// 	)
+				// );
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			default: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+					)
+				);
+				break;
+			}
+		}
+	}
+
+	onBack(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+	}
+
+	get isNotReplacment(): boolean {
+		return this.applicationTypeCode != ApplicationTypeCode.Replacement;
 	}
 }

@@ -9,22 +9,22 @@ import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
 export interface ApplicantProfileResponse {
   aliases?: null | Array<Alias>;
   applicantId?: string;
-  birthDate?: string;
-  criminalChargeDescription?: null | string;
+  dateOfBirth?: string;
   documentInfos?: null | Array<Document>;
   emailAddress?: null | string;
-  firstName?: null | string;
-  gender?: GenderEnum;
+  genderCode?: GenderEnum;
+  givenName?: null | string;
   hasCriminalHistory?: null | boolean;
   identityProviderTypeCode?: IdentityProviderTypeCode;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
-  lastName?: null | string;
   mailingAddress?: Address;
   middleName1?: null | string;
   middleName2?: null | string;
   otherOfficerRole?: null | string;
+  phoneNumber?: null | string;
   policeOfficerRoleCode?: PoliceOfficerRoleEnum;
   residentialAddress?: Address;
   sub?: null | string;
+  surname?: null | string;
 }

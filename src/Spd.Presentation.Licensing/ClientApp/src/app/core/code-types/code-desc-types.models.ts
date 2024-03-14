@@ -6,6 +6,7 @@ export {
 	BooleanTypes,
 	BusinessTypes,
 	CountryTypes,
+	DogDocumentTypes,
 	EyeColourTypes,
 	GenderTypes,
 	GovernmentIssuedPhotoIdTypes,

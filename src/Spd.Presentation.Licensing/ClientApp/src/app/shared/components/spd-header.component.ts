@@ -22,7 +22,7 @@ import { Subscription } from 'rxjs';
 
 			<div *ngIf="loggedInUserDisplay">
 				<button mat-button [matMenuTriggerFor]="menu" class="login-user-menu-button w-auto" style="font-size: inherit;">
-					<mat-icon>more_vert</mat-icon> {{ loggedInUserDisplay }}
+					<mat-icon>more_vert</mat-icon> <span class="d-none d-sm-block">{{ loggedInUserDisplay }}</span>
 				</button>
 				<mat-menu #menu="matMenu">
 					<button mat-menu-item (click)="onLogout()">Logout</button>
@@ -130,8 +130,6 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		const loginType = this.authProcessService.identityProvider;
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			console.debug('applicantLoginProfile', this.authUserBcscService.applicantLoginProfile);
-
 			const name = this.utilService.getFullName(
 				this.authUserBcscService.applicantLoginProfile?.firstName,
 				this.authUserBcscService.applicantLoginProfile?.lastName

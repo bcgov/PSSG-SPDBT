@@ -557,12 +557,12 @@ import { Subscription } from 'rxjs';
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Email Address</div>
-													<div class="summary-text-data">{{ contactEmailAddress | default }}</div>
+													<div class="summary-text-data">{{ emailAddress | default }}</div>
 												</div>
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ contactPhoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | mask : constants.phone.displayMask }}
 													</div>
 												</div>
 											</div>
@@ -1024,52 +1024,52 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
 	}
 
-	get contactEmailAddress(): string {
-		return this.licenceModelData.contactInformationData?.contactEmailAddress ?? '';
+	get emailAddress(): string {
+		return this.licenceModelData.contactInformationData?.emailAddress ?? '';
 	}
-	get contactPhoneNumber(): string {
-		return this.licenceModelData.contactInformationData?.contactPhoneNumber ?? '';
+	get phoneNumber(): string {
+		return this.licenceModelData.contactInformationData?.phoneNumber ?? '';
 	}
 
 	get residentialAddressLine1(): string {
-		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
+		return this.licenceModelData.residentialAddress?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
+		return this.licenceModelData.residentialAddress?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.licenceModelData.residentialAddressData?.city ?? '';
+		return this.licenceModelData.residentialAddress?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
+		return this.licenceModelData.residentialAddress?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.licenceModelData.residentialAddressData?.province ?? '';
+		return this.licenceModelData.residentialAddress?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.licenceModelData.residentialAddressData?.country ?? '';
+		return this.licenceModelData.residentialAddress?.country ?? '';
 	}
 	get isMailingTheSameAsResidential(): string {
-		return this.licenceModelData.residentialAddressData?.isMailingTheSameAsResidential ?? '';
+		return this.licenceModelData.residentialAddress?.isMailingTheSameAsResidential ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
+		return this.licenceModelData.mailingAddress?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
+		return this.licenceModelData.mailingAddress?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.licenceModelData.mailingAddressData?.city ?? '';
+		return this.licenceModelData.mailingAddress?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
+		return this.licenceModelData.mailingAddress?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.licenceModelData.mailingAddressData?.province ?? '';
+		return this.licenceModelData.mailingAddress?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.licenceModelData.mailingAddressData?.country ?? '';
+		return this.licenceModelData.mailingAddress?.country ?? '';
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {

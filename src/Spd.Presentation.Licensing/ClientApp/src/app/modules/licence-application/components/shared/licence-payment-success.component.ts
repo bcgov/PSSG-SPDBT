@@ -4,7 +4,7 @@ import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
-import { UtilService } from '@app/core/services/util.service';
+import { FileUtilService } from '@app/core/services/file-util.service';
 
 @Component({
 	selector: 'app-licence-payment-success',
@@ -25,7 +25,7 @@ export class LicencePaymentSuccessComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private paymentService: PaymentService,
-		private utilService: UtilService
+		private fileUtilService: FileUtilService
 	) {}
 
 	ngOnInit(): void {
@@ -49,7 +49,7 @@ export class LicencePaymentSuccessComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
-				this.utilService.downloadFile(resp.headers, resp.body);
+				this.fileUtilService.downloadFile(resp.headers, resp.body);
 			});
 	}
 }

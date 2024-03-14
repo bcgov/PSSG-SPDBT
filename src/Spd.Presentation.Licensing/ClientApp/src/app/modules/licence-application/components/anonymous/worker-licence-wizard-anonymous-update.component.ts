@@ -59,7 +59,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Review and Confirm</ng-template>
+				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 					[licenceCost]="newLicenceCost"

@@ -93,12 +93,12 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	// }
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		// console.log('previous', stepper);
+		// console.debug('previous', stepper);
 		stepper.previous();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		// console.log('next', stepper);
+		// console.debug('next', stepper);
 		stepper.next();
 	}
 

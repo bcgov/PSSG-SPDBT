@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -95,12 +96,22 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceApplicationTypeAuthenticatedComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceApplicationTypeAuthenticatedComponent
+	implements OnInit, LicenceChildStepperStepComponent
+{
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
+
+	ngOnInit() {
+		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityWorkerLicence);
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -110,7 +121,7 @@ export class StepWorkerLicenceApplicationTypeAuthenticatedComponent implements L
 	onStepPrevious(): void {
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				LicenceApplicationRoutes.LICENCE_SELECTION_AUTHENTICATED
+				LicenceApplicationRoutes.WORKER_LICENCE_SELECTION_AUTHENTICATED
 			)
 		);
 	}
