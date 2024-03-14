@@ -87,9 +87,8 @@ internal partial class SecurityWorkerAppManager :
         //move the file from temp file repo to formal file repo.
         //todo
 
-        //set status to PaymentPending
-        await _licenceAppRepository.CommitLicenceApplicationAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, ApplicationStatusEnum.PaymentPending, cancellationToken);
-        return _mapper.Map<WorkerLicenceCommandResponse>(response);
+        decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken cancellationToken)
