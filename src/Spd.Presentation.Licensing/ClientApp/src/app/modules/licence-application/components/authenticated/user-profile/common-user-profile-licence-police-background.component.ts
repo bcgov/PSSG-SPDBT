@@ -13,6 +13,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		<div class="text-minor-heading pt-2">Police Background</div>
 		<div class="py-2">Are you currently a Police Officer or Peace Officer?</div>
 
+		<ng-container *ngIf="isRenewalOrUpdate">
+			<app-alert type="info" icon="" [showBorder]="false">
+				Update any information that has changed since your last application
+			</app-alert>
+		</ng-container>
+
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
@@ -138,12 +144,16 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements Licenc
 	get isPoliceOrPeaceOfficer(): FormControl {
 		return this.form.get('isPoliceOrPeaceOfficer') as FormControl;
 	}
-
 	get policeOfficerRoleCode(): FormControl {
 		return this.form.get('policeOfficerRoleCode') as FormControl;
 	}
-
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
