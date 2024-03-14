@@ -178,21 +178,273 @@ import {
 						</div>
 					</div>
 
-					<div class="mb-3">
-						<div class="section-title fs-5 py-3">Active Licences/Permits</div>
+					<ng-container *ngIf="areLicencesLoaded">
+						<div class="mb-3">
+							<div class="section-title fs-5 py-3">Active Licences/Permits</div>
 
-						<ng-container *ngIf="activeApplications.length > 0">
+							<ng-container *ngIf="activeApplications.length > 0">
+								<div
+									class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
+									*ngFor="let appl of activeApplications; let i = index"
+								>
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="fs-5" style="color: var(--color-primary);">
+												{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+											</div>
+										</div>
+										<div class="col-lg-10">
+											<div class="row">
+												<div class="col-lg-3">
+													<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
+													<div class="text-data">{{ appl.licenceNumber }}</div>
+												</div>
+												<div class="col-lg-3">
+													<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
+													<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												</div>
+												<div class="col-lg-3">
+													<div class="d-block text-muted mt-2 mt-md-0">Case Id</div>
+													<div class="text-data">{{ appl.caseNumber }}</div>
+												</div>
+												<div class="col-lg-3 text-end">
+													<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
+														<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
+														<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+													</mat-chip-option>
+												</div>
+												<mat-divider class="my-2"></mat-divider>
+											</div>
+
+											<ng-container
+												*ngIf="
+													appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
+													else isPermit
+												"
+											>
+												<div class="row mb-2">
+													<div class="col-lg-3">
+														<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+														<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
+															{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+														</div>
+													</div>
+													<div class="col-lg-4">
+														<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
+														<div class="text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let catCode of appl.categoryCodes; let i = index">
+																	<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
+																</ng-container>
+															</ul>
+														</div>
+													</div>
+													<div class="col-lg-5" *ngIf="appl.dogAuthorization">
+														<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
+														<div class="text-data">{{ appl.dogAuthorization | options : 'DogDocumentTypes' }}</div>
+													</div>
+													<div class="col-lg-5" *ngIf="appl.restraintAuthorization">
+														<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
+														<div class="text-data">
+															{{ appl.restraintAuthorization | options : 'RestraintDocumentTypes' }}
+														</div>
+													</div>
+												</div>
+												<mat-divider class="my-2"></mat-divider>
+												<div class="row mb-2">
+													<div class="col-lg-9">
+														The following updates have a
+														{{ appl.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint
+														fee:
+														<ul class="m-0">
+															<li>changes to licence category</li>
+															<li>requests for authorization for dogs or restraints</li>
+															<li>changing your name</li>
+															<li>replacing your photo</li>
+														</ul>
+													</div>
+													<div class="col-lg-3 text-end">
+														<button
+															mat-flat-button
+															color="primary"
+															*ngIf="appl.isRenewalPeriod"
+															class="large my-2"
+															(click)="onRenew(appl)"
+														>
+															<mat-icon>restore</mat-icon>Renew
+														</button>
+														<button
+															mat-flat-button
+															color="primary"
+															*ngIf="appl.isUpdatePeriod"
+															class="large my-2"
+															(click)="onUpdate(appl)"
+														>
+															<mat-icon>update</mat-icon>Update
+														</button>
+													</div>
+												</div>
+											</ng-container>
+											<ng-template #isPermit>
+												<div class="row mb-2">
+													<div class="col-lg-9">
+														<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+														<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
+															{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+														</div>
+													</div>
+													<div class="col-lg-3 text-end">
+														<button
+															mat-flat-button
+															color="primary"
+															*ngIf="appl.isRenewalPeriod"
+															class="large my-2"
+															(click)="onRenew(appl)"
+														>
+															<mat-icon>restore</mat-icon>Renew
+														</button>
+														<button
+															mat-flat-button
+															color="primary"
+															*ngIf="appl.isUpdatePeriod"
+															class="large my-2"
+															(click)="onUpdate(appl)"
+														>
+															<mat-icon>update</mat-icon>Update
+														</button>
+													</div>
+												</div>
+											</ng-template>
+										</div>
+
+										<div class="row">
+											<ng-container
+												*ngIf="
+													appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
+													else IsPermit
+												"
+											>
+												<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
+													<div class="col-12">
+														<mat-divider class="my-2"></mat-divider>
+														<span class="fw-semibold">Lost your licence? </span>
+														<a
+															class="large"
+															tabindex="0"
+															(click)="onRequestReplacement(appl)"
+															(keydown)="onKeydownRequestReplacement($event, appl)"
+															>Request a replacement</a
+														>
+														and we'll send you a new licence in xx-xx business days.
+													</div>
+												</ng-container>
+												<ng-template #IsNotReplacementPeriod>
+													<div class="col-12">
+														<mat-divider class="my-2"></mat-divider>
+														<span class="fw-semibold">Lost your licence? </span>
+														<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
+														for a digital copy of your current licence before it expires.
+													</div>
+												</ng-template>
+											</ng-container>
+
+											<ng-template #IsPermit>
+												<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
+													<div class="col-12">
+														<mat-divider class="my-2"></mat-divider>
+														<span class="fw-semibold">Lost or stolen permit? </span>
+														<a
+															class="large"
+															tabindex="0"
+															(click)="onRequestReplacement(appl)"
+															(keydown)="onKeydownRequestReplacement($event, appl)"
+															>Request a replacement</a
+														>
+														and we'll send you one in xx-xx business days.
+													</div>
+												</ng-container>
+												<ng-template #IsNotReplacementPeriod>
+													<div class="col-12">
+														<mat-divider class="my-2"></mat-divider>
+														<span class="fw-semibold">Lost or stolen permit? </span>
+														<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
+														for a digital copy of your current permit before it expires.
+													</div>
+												</ng-template>
+											</ng-template>
+										</div>
+									</div>
+								</div>
+							</ng-container>
+
+							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicencesExist">
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="text-data">You don't have an active licence</div>
+									</div>
+									<div class="col-lg-6 text-end">
+										<button
+											mat-flat-button
+											color="primary"
+											class="large w-auto mt-2 mt-lg-0"
+											(click)="onNewSecurityWorkerLicence()"
+										>
+											<mat-icon>add</mat-icon>Apply for a new Licence
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeBaPermitsExist">
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="text-data">You don't have an active Body Armour permit</div>
+									</div>
+									<div class="col-lg-6 text-end">
+										<button
+											mat-flat-button
+											color="primary"
+											class="large w-auto mt-2 mt-lg-0"
+											(click)="onNewSecurityWorkerLicence()"
+										>
+											<mat-icon>add</mat-icon>Apply for a new Body Amour Permit
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeAvPermitsExist">
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="text-data">You don't have an active Armoured Vehicle permit</div>
+									</div>
+									<div class="col-lg-6 text-end">
+										<button
+											mat-flat-button
+											color="primary"
+											class="large w-auto mt-2 mt-lg-0"
+											(click)="onNewSecurityWorkerLicence()"
+										>
+											<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-3" *ngIf="expiredLicences.length > 0">
+							<div class="section-title fs-5 py-3">Expired Licences/Permits</div>
 							<div
-								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-								*ngFor="let appl of activeApplications; let i = index"
+								class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
+								*ngFor="let appl of expiredLicences; let i = index"
 							>
 								<div class="row">
-									<div class="col-lg-2">
+									<div class="col-lg-3">
 										<div class="fs-5" style="color: var(--color-primary);">
 											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 										</div>
 									</div>
-									<div class="col-lg-10">
+									<div class="col-lg-9">
 										<div class="row">
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
@@ -200,261 +452,26 @@ import {
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-												<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												<div class="text-data">5 Years</div>
 											</div>
 											<div class="col-lg-3">
-												<div class="d-block text-muted mt-2 mt-md-0">Case Id</div>
-												<div class="text-data">{{ appl.caseNumber }}</div>
+												<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+												<div class="text-data">
+													{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+												</div>
 											</div>
 											<div class="col-lg-3 text-end">
-												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
-													<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
-													<span class="appl-chip-option-item mx-2 fs-5">Active</span>
+												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
+													<mat-icon class="appl-chip-option-item">cancel</mat-icon>
+													<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
 												</mat-chip-option>
 											</div>
-											<mat-divider class="my-2"></mat-divider>
-										</div>
-
-										<ng-container
-											*ngIf="appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else isPermit"
-										>
-											<div class="row mb-2">
-												<div class="col-lg-3">
-													<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-													<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
-														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-													</div>
-												</div>
-												<div class="col-lg-4">
-													<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
-													<div class="text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let catCode of appl.categoryCodes; let i = index">
-																<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-5" *ngIf="appl.dogAuthorization">
-													<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
-													<div class="text-data">{{ appl.dogAuthorization | options : 'DogDocumentTypes' }}</div>
-												</div>
-												<div class="col-lg-5" *ngIf="appl.restraintAuthorization">
-													<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
-													<div class="text-data">
-														{{ appl.restraintAuthorization | options : 'RestraintDocumentTypes' }}
-													</div>
-												</div>
-											</div>
-											<mat-divider class="my-2"></mat-divider>
-											<div class="row mb-2">
-												<div class="col-lg-9">
-													The following updates have a
-													{{ appl.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
-													<ul class="m-0">
-														<li>changes to licence category</li>
-														<li>requests for authorization for dogs or restraints</li>
-														<li>changing your name</li>
-														<li>replacing your photo</li>
-													</ul>
-												</div>
-												<div class="col-lg-3 text-end">
-													<button
-														mat-flat-button
-														color="primary"
-														*ngIf="appl.isRenewalPeriod"
-														class="large my-2"
-														(click)="onRenew(appl)"
-													>
-														<mat-icon>restore</mat-icon>Renew
-													</button>
-													<button
-														mat-flat-button
-														color="primary"
-														*ngIf="appl.isUpdatePeriod"
-														class="large my-2"
-														(click)="onUpdate(appl)"
-													>
-														<mat-icon>update</mat-icon>Update
-													</button>
-												</div>
-											</div>
-										</ng-container>
-										<ng-template #isPermit>
-											<div class="row mb-2">
-												<div class="col-lg-9">
-													<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-													<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
-														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-													</div>
-												</div>
-												<div class="col-lg-3 text-end">
-													<button
-														mat-flat-button
-														color="primary"
-														*ngIf="appl.isRenewalPeriod"
-														class="large my-2"
-														(click)="onRenew(appl)"
-													>
-														<mat-icon>restore</mat-icon>Renew
-													</button>
-													<button
-														mat-flat-button
-														color="primary"
-														*ngIf="appl.isUpdatePeriod"
-														class="large my-2"
-														(click)="onUpdate(appl)"
-													>
-														<mat-icon>update</mat-icon>Update
-													</button>
-												</div>
-											</div>
-										</ng-template>
-									</div>
-
-									<div class="row">
-										<ng-container
-											*ngIf="appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else IsPermit"
-										>
-											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
-												<div class="col-12">
-													<mat-divider class="my-2"></mat-divider>
-													<span class="fw-semibold">Lost your licence? </span>
-													<a class="large" [href]="constants.urls.requestReplacementUrl" target="_blank"
-														>Request a replacement</a
-													>
-													and we'll send you a new licence in xx-xx business days.
-												</div>
-											</ng-container>
-											<ng-template #IsNotReplacementPeriod>
-												<div class="col-12">
-													<mat-divider class="my-2"></mat-divider>
-													<span class="fw-semibold">Lost your licence? </span>
-													<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
-													for a digital copy of your current licence before it expires.
-												</div>
-											</ng-template>
-										</ng-container>
-
-										<ng-template #IsPermit>
-											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
-												<div class="col-12">
-													<mat-divider class="my-2"></mat-divider>
-													<span class="fw-semibold">Lost or stolen permit? </span>
-													<a class="large" [href]="constants.urls.requestReplacementUrl" target="_blank"
-														>Request a replacement</a
-													>
-													and we'll send you one in xx-xx business days.
-												</div>
-											</ng-container>
-											<ng-template #IsNotReplacementPeriod>
-												<div class="col-12">
-													<mat-divider class="my-2"></mat-divider>
-													<span class="fw-semibold">Lost or stolen permit? </span>
-													<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
-													for a digital copy of your current permit before it expires.
-												</div>
-											</ng-template>
-										</ng-template>
-									</div>
-								</div>
-							</div>
-						</ng-container>
-
-						<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicencesExist">
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="text-data">You don't have an active licence</div>
-								</div>
-								<div class="col-lg-6 text-end">
-									<button
-										mat-flat-button
-										color="primary"
-										class="large w-auto mt-2 mt-lg-0"
-										(click)="onNewSecurityWorkerLicence()"
-									>
-										<mat-icon>add</mat-icon>Apply for a new Licence
-									</button>
-								</div>
-							</div>
-						</div>
-
-						<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeBaPermitsExist">
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="text-data">You don't have an active Body Armour permit</div>
-								</div>
-								<div class="col-lg-6 text-end">
-									<button
-										mat-flat-button
-										color="primary"
-										class="large w-auto mt-2 mt-lg-0"
-										(click)="onNewSecurityWorkerLicence()"
-									>
-										<mat-icon>add</mat-icon>Apply for a new Body Amour Permit
-									</button>
-								</div>
-							</div>
-						</div>
-
-						<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeAvPermitsExist">
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="text-data">You don't have an active Armoured Vehicle permit</div>
-								</div>
-								<div class="col-lg-6 text-end">
-									<button
-										mat-flat-button
-										color="primary"
-										class="large w-auto mt-2 mt-lg-0"
-										(click)="onNewSecurityWorkerLicence()"
-									>
-										<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="mb-3" *ngIf="expiredLicences.length > 0">
-						<div class="section-title fs-5 py-3">Expired Licences/Permits</div>
-						<div
-							class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
-							*ngFor="let appl of expiredLicences; let i = index"
-						>
-							<div class="row">
-								<div class="col-lg-3">
-									<div class="fs-5" style="color: var(--color-primary);">
-										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-									</div>
-								</div>
-								<div class="col-lg-9">
-									<div class="row">
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
-											<div class="text-data">{{ appl.licenceNumber }}</div>
-										</div>
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">5 Years</div>
-										</div>
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-											<div class="text-data">
-												{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-											</div>
-										</div>
-										<div class="col-lg-3 text-end">
-											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
-												<mat-icon class="appl-chip-option-item">cancel</mat-icon>
-												<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
-											</mat-chip-option>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</ng-container>
 
 					<div class="mt-4">
 						<app-alert type="info" [showBorder]="false" icon="">
@@ -647,6 +664,8 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 
 	applicationIsInProgress = false;
 
+	areLicencesLoaded = false;
+
 	warningMessages: Array<string> = [];
 	// errorMessages: Array<string> = [];
 
@@ -713,6 +732,8 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 				this.activeApplications.findIndex(
 					(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 				) >= 0;
+
+			this.areLicencesLoaded = true;
 		});
 
 		this.commonApplicationService.userApplicationsList().subscribe((resp: Array<UserApplicationResponse>) => {
@@ -782,6 +803,37 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 
 	// 	this.onUpdateAuthorization();
 	// }
+
+	onRequestReplacement(appl: UserLicenceResponse): void {
+		console.log('onRequestReplacement', appl);
+		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			console.log('licenceAppId', appl.licenceAppId!);
+			this.licenceApplicationService
+				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+							),
+							{
+								state: {
+									applicationTypeCode: ApplicationTypeCode.Replacement,
+								},
+							}
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+		}
+	}
+
+	onKeydownRequestReplacement(event: KeyboardEvent, appl: UserLicenceResponse) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onRequestReplacement(appl);
+	}
 
 	onResume(appl: LicenceAppListResponse): void {
 		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {

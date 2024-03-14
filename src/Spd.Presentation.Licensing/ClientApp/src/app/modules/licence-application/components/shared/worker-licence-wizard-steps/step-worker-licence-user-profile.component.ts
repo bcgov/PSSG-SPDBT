@@ -214,11 +214,11 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				// this.router.navigateByUrl(
-				// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				// 		LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
-				// 	)
-				// );
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
+					)
+				);
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
