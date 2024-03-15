@@ -18,9 +18,11 @@ namespace Spd.Presentation.Dynamics.Controllers;
 public class FileStorageController : SpdControllerBase
 {
     private readonly IFileStorageService _storageService;
-    public FileStorageController(IFileStorageService storageService) : base()
+    private readonly ITransientFileStorageService _tranientFileStorageService;
+    public FileStorageController(IFileStorageService storageService, ITransientFileStorageService tranientFileStorageService) : base()
     {
         _storageService = storageService;
+        _tranientFileStorageService = tranientFileStorageService;
     }
 
     /// <summary>
@@ -197,6 +199,55 @@ public class FileStorageController : SpdControllerBase
         await _storageService.HandleCommand(
             new CopyFileCommand(copyFileRequest.SourceKey, null, copyFileRequest.DestKey, null),
             ct);
+
+        return StatusCode(StatusCodes.Status201Created);
+    }
+
+    /// <summary>
+    /// Move file from transient bucket to main bucket and delete file after file is copied.
+    /// </summary>
+    /// <param name="moveFileRequest"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("api/files/move-file")]
+    public async Task<IActionResult> MoveFileAsync(
+    [FromBody] MoveFileRequest moveFileRequest,
+    CancellationToken ct)
+    {
+        //check if file already exists
+        FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _tranientFileStorageService.HandleQuery(
+            new FileMetadataQuery { Key = moveFileRequest.SourceKey },
+            ct);
+        bool fileExists = queryResult != null;
+
+        if (!fileExists) { return NotFound(); }
+
+        //download file
+        FileQueryResult result = (FileQueryResult)await _tranientFileStorageService.HandleQuery(
+            new FileQuery { Key = moveFileRequest.SourceKey, Folder = null },
+            ct);
+
+        var content = new MemoryStream(result.File.Content);
+        var contentType = result.File.ContentType ?? "application/octet-stream";
+
+        //upload file
+        File file = new()
+        {
+            FileName = moveFileRequest.DestKey,
+            ContentType = contentType,
+            Content = content.ToArray()
+        };
+        FileTag fileTag = result.FileTag;
+        await _storageService.HandleCommand(
+            new UploadFileCommand(moveFileRequest.DestKey, null, file, fileTag),
+            ct);
+
+        //remove old file from transite bucket
+        await _tranientFileStorageService.HandleDeleteCommand(
+            new StorageDeleteCommand(moveFileRequest.SourceKey, null),
+            ct
+            );
 
         return StatusCode(StatusCodes.Status201Created);
     }
