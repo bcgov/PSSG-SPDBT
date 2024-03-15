@@ -157,19 +157,20 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit.';
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
-				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit.';
 				break;
 			}
 			case ApplicationTypeCode.Update: {
-				this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit.';
 				break;
 			}
 			default: {
-				this.alertText = 'Fill out your profile information';
+				this.alertText =
+					'Make sure your profile information is up-to-date before renewing or updating your licence, or starting a new application.';
 				break;
 			}
 		}

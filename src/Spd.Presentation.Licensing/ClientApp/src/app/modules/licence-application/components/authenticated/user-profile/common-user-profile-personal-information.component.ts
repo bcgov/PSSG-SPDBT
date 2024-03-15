@@ -31,6 +31,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</div>
 
+		We noticed you changed your name recently on your BC Services Card.<br />
+
+		Do you want a new licence printed with your new name for a $20 fee?<br />
+
 		<div class="row mt-3 mb-2">
 			<div [formGroup]="personalInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<mat-form-field>
