@@ -56,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications")]
-        [Authorize(Policy = "OnlyBcsc")]
+        // [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<WorkerLicenceCommandResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
         {

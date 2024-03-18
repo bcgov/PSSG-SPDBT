@@ -74,7 +74,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Screening", "Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Resource.Repository", "Spd.Resource.Repository\Spd.Resource.Repository.csproj", "{E69649CE-E31E-4719-A700-6BA2B5580697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Presentation.Dynamics.UnitTest", "Spd.Presentation.Dynamics.UnitTest\Spd.Presentation.Dynamics.UnitTest.csproj", "{6BFF44E3-3F3F-483D-879A-7A82ED17EED0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.UnitTest", "Spd.Presentation.Dynamics.UnitTest\Spd.Presentation.UnitTest.csproj", "{6BFF44E3-3F3F-483D-879A-7A82ED17EED0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
