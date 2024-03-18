@@ -93,7 +93,7 @@ namespace Spd.Resource.Repository.Contact
             addr.AddressLine2 = contact.address2_line2;
             addr.City = contact.address2_city;
             addr.Country = contact.address2_country;
-            addr.Province = contact.address1_stateorprovince;
+            addr.Province = contact.address2_stateorprovince;
             addr.PostalCode = contact.address2_postalcode;
             return addr;
         }
