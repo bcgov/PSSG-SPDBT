@@ -48,6 +48,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { CommonApplicationService } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
+import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 export class LicenceDocumentsToSave {
 	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
@@ -131,6 +133,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private router: Router,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
@@ -406,6 +409,59 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
+	 * Save the login user profile
+	 * @returns
+	 */
+	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
+		return this.saveUserProfile();
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
+		return this.saveUserProfile().pipe(
+			tap((_resp: StrictHttpResponse<string>) => {
+				switch (applicationTypeCode) {
+					case ApplicationTypeCode.Replacement: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
+							)
+						);
+						break;
+					}
+					case ApplicationTypeCode.Renewal: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
+							)
+						);
+						break;
+					}
+					case ApplicationTypeCode.Update: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+							)
+						);
+						break;
+					}
+					default: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+							)
+						);
+						break;
+					}
+				}
+			})
+		);
+	}
+
+	/**
 	 * Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
@@ -495,7 +551,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Save the login user profile
 	 * @returns
 	 */
-	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
+	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
 		const documentsToSave = this.getProfileDocsToSaveBlobs(licenceModelFormValue);

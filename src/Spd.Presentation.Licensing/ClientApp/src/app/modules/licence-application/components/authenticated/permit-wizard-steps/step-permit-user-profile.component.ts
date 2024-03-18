@@ -185,28 +185,9 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 			return;
 		}
 
-		// TODO save user profile first.
-
-		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_RENEWAL_AUTHENTICATED)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Update: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED)
-				);
-				break;
-			}
-			default: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED)
-				);
-				break;
-			}
-		}
+		// if (this.applicationTypeCode) {
+		// 	this.permitApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+		// }
 	}
 
 	onBack(): void {

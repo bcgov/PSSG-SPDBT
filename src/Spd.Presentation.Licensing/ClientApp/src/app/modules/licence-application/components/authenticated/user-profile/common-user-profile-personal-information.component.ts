@@ -9,17 +9,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-common-user-profile-personal-information',
 	template: `
-		<!-- <div class="text-minor-heading py-2">Personal Information</div> -->
-
-		<app-alert type="info" icon="" [showBorder]="false">
-			Have you changed your name?
-			<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
-				>Visit ICBC</a
-			>
-			to update this information on your BC Services Card. Any changes you make will then be updated here.
-		</app-alert>
-
-		<div [formGroup]="personalInformationFormGroup" class="row">
+		<div [formGroup]="personalInformationFormGroup" class="row mb-3">
 			<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
 				<div class="fs-6 text-muted">Full Name</div>
 				<div class="fs-5 summary-text-data">{{ fullname }}</div>
@@ -31,9 +21,22 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</div>
 
-		We noticed you changed your name recently on your BC Services Card.<br />
+		<ng-container *ngIf="hasNameChanged">
+			<app-alert type="info" icon="" [showBorder]="false">
+				Have you changed your name?
+				<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
+					>Visit ICBC</a
+				>
+				to update this information on your BC Services Card. Any changes you make will then be updated here.
+			</app-alert>
+		</ng-container>
 
-		Do you want a new licence printed with your new name for a $20 fee?<br />
+		<ng-container *ngIf="nameHasChanged">
+			<app-alert type="info" icon="" [showBorder]="false">
+				<div>We noticed you changed your name recently on your BC Services Card.</div>
+				<div>Do you want a new licence printed with your new name for a $20 fee?</div>
+			</app-alert>
+		</ng-container>
 
 		<div class="row mt-3 mb-2">
 			<div [formGroup]="personalInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
@@ -84,12 +87,14 @@ export class CommonUserProfilePersonalInformationComponent implements LicenceChi
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
+	hasNameChanged = true;
+	nameHasChanged = true;
+
 	title = 'Confirm your personal information';
 	subtitle =
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 
 	@Input() isReadOnly = false;
-
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 

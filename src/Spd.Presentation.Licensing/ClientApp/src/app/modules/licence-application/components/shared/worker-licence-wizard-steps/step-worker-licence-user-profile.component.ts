@@ -216,39 +216,8 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			return;
 		}
 
-		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Replacement: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
-					)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Renewal: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
-					)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Update: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-					)
-				);
-				break;
-			}
-			default: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-					)
-				);
-				break;
-			}
+		if (this.applicationTypeCode) {
+			this.licenceApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
 		}
 	}
 
