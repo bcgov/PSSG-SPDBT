@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Payment;
 using Spd.Manager.Shared;
@@ -107,12 +108,12 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get the payment result for application and payment
+        /// Get the payment failed times for an application
         /// </summary>
         /// <returns></returns>
         [Route("api/unauth-licence/{applicationId}/payment-attempts")]
         [HttpGet]
-        public async Task<int> GetApplicantFailedPaymentAttempts([FromRoute] Guid applicationId)
+        public async Task<int> GetFailedPaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
         }
@@ -140,6 +141,117 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/unauth-licence/{applicationId}/manual-payment-form")]
         [HttpGet]
         public async Task<FileStreamResult> LicenceDownloadManualPaymentFormAsync([FromRoute] Guid applicationId)
+        {
+            FileResponse response = await _mediator.Send(new ManualPaymentFormQuery(applicationId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
+        }
+        #endregion
+
+        #region auth-applicant-payment
+        /// <summary>
+        /// Return the direct pay payment link 
+        /// </summary>
+        /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
+        /// <returns></returns>
+        [Route("api/auth-licence/{applicationId}/payment-link")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentLinkResponse> GetApplicantLicencePaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string redirectUrl = $"{hostUrl}api/auth-licence/payment-result";
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+        }
+
+        /// <summary>
+        /// redirect url for paybc to redirect to
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/auth-licence/payment-result")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<ActionResult> ProcessApplicantLicencePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? successPath = _paymentsConfiguration.UnauthPersonalLicPaymentSuccessPath;
+            string? failPath = _paymentsConfiguration.UnauthPersonalLicPaymentFailPath;
+            string? cancelPath = _paymentsConfiguration.UnauthPersonalLicPaymentCancelPath;
+            string? errorPath = _paymentsConfiguration.UnauthPersonalLicPaymentErrorPath;
+
+            try
+            {
+                PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                {
+                    _logger.LogInformation("Payment is being cancelled.");
+                    return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
+                }
+
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                if (paybcPaymentResult.Success)
+                    return Redirect($"{hostUrl}{successPath}{paymentId}");
+
+                return Redirect($"{hostUrl}{failPath}{paymentId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Payment result processing has errors +{ex}");
+                return Redirect($"{hostUrl}{errorPath}");
+            }
+        }
+
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/auth-licence/payments/{paymentId}")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentResponse> GetApplicantLicencePaymentResult([FromRoute] Guid paymentId)
+        {
+            return await _mediator.Send(new PaymentQuery(paymentId));
+        }
+
+        /// <summary>
+        /// Get the failed payment times for an application
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/auth-licence/{applicationId}/payment-attempts")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<int> GetApplicantFailedPaymentAttempts([FromRoute] Guid applicationId)
+        {
+            return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
+        }
+
+        /// <summary>
+        /// download the receipt for successful payment
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/auth-licence/{applicationId}/payment-receipt")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<FileStreamResult> ApplicantLicenceDownloadReceiptAsync([FromRoute] Guid applicationId)
+        {
+            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(applicationId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
+        }
+
+        /// <summary>
+        /// download the manual payment form
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/auth-licence/{applicationId}/manual-payment-form")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<FileStreamResult> ApplicantLicenceDownloadManualPaymentFormAsync([FromRoute] Guid applicationId)
         {
             FileResponse response = await _mediator.Send(new ManualPaymentFormQuery(applicationId));
             var content = new MemoryStream(response.Content);
