@@ -6,10 +6,8 @@
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
-    public interface ITransientFileStorageService
+    public interface ITransientFileStorageService : IFileStorageService
     {
-        Task<string> HandleCommand(StorageCommand cmd, CancellationToken cancellationToken);
-        Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
         Task<string> HandleDeleteCommand(StorageDeleteCommand cmd, CancellationToken cancellationToken);
     }
 
