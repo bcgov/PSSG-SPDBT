@@ -13,7 +13,7 @@
     <PackageVersion Include="IdentityModel" Version="6.2.0" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
