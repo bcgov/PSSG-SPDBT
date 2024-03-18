@@ -34,13 +34,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							</mat-checkbox>
 							<p class="checklist-info">
 								You can upload a new passport-quality photo of your face looking straight at the camera against a plain,
-								white background. For further information on Passport Quality Photographs, please review the Government
-								of Canada’s
-								<a
-									href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html"
-									target="_blank"
-									>passport photograph requirements</a
-								>.
+								white background. 
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
