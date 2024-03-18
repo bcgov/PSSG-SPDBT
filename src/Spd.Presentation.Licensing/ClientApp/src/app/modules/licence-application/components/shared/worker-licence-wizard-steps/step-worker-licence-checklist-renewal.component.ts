@@ -21,7 +21,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								<span class="checklist-label">Proof of fingerprinting request</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								All applicants must submit a proof of fingerprinting request. Download the
+							You must submit a proof of fingerprinting request. Download the
 								<a
 									aria-label="Request for Fingerprinting form"
 									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
@@ -80,7 +80,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								You will need to upload a passport-quality photo of your face looking straight at the camera against a
 								plain, white background. Uploading a photo that does not meet the criteria will delay your application's
 								processing time. For further information on Passport Quality Photographs, please review the Government
-								of Canada’s passport photograph requirements.
+								of Canada’s <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html" target="_blank">passport photograph requirements</a>.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">

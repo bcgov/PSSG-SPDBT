@@ -68,21 +68,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 									>
 								</div>
 								<div class="my-3">
-									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
-										I hereby consent to my licence information (i.e. full name, licence number and licence status) being
-										available for viewing online.
-									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
-											form.get('check2')?.invalid &&
-											form.get('check2')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
-								</div>
-								<div class="my-3">
 									<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
 										I hereby consent to a check of available law enforcement systems for these purposes, including any
 										local police records, and I hereby consent to the disclosure to the Registrar of any documents in
@@ -132,6 +117,21 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 											(form.get('check4')?.dirty || form.get('check4')?.touched) &&
 											form.get('check4')?.invalid &&
 											form.get('check4')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+								<div class="my-3">
+									<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+										I hereby consent to my licence information (i.e. full name, licence number and licence status) being
+										available for viewing online.
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+											form.get('check2')?.invalid &&
+											form.get('check2')?.hasError('required')
 										"
 										>This is required</mat-error
 									>
