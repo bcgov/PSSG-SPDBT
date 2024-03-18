@@ -108,7 +108,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get the payment result for application and payment
+        /// Get the payment failed times for an application
         /// </summary>
         /// <returns></returns>
         [Route("api/unauth-licence/{applicationId}/payment-attempts")]
@@ -216,7 +216,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get the payment result for application and payment
+        /// Get the failed payment times for an application
         /// </summary>
         /// <returns></returns>
         [Route("api/auth-licence/{applicationId}/payment-attempts")]
