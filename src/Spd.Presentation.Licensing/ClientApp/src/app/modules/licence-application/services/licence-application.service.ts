@@ -469,6 +469,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		console.debug('[saveLicenceStepAuthenticated] body', body);
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
@@ -626,13 +629,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		// delete body.documentExpiredInfos;
-
 		console.debug('submitLicenceAuthenticated body', body);
-
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
@@ -1013,6 +1015,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const personalInformationData = {
@@ -1095,6 +1098,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.licenceModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
+				workerLicenceTypeData,
 				applicationTypeData,
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },

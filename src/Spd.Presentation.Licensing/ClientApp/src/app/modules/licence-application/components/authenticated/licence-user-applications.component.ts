@@ -379,14 +379,14 @@ import {
 
 							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicencesExist">
 								<div class="row">
-									<div class="col-lg-6">
+									<div class="col-xl-7 col-lg-6">
 										<div class="text-data">You don't have an active licence</div>
 									</div>
-									<div class="col-lg-6 text-end">
+									<div class="col-xl-5 col-lg-6 text-end">
 										<button
 											mat-flat-button
 											color="primary"
-											class="large w-auto mt-2 mt-lg-0"
+											class="large mt-2 mt-lg-0"
 											(click)="onNewSecurityWorkerLicence()"
 										>
 											<mat-icon>add</mat-icon>Apply for a new Licence
@@ -397,14 +397,14 @@ import {
 
 							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeBaPermitsExist">
 								<div class="row">
-									<div class="col-lg-6">
+									<div class="col-xl-7 col-lg-6">
 										<div class="text-data">You don't have an active Body Armour permit</div>
 									</div>
-									<div class="col-lg-6 text-end">
+									<div class="col-xl-5 col-lg-6 text-end">
 										<button
 											mat-flat-button
 											color="primary"
-											class="large w-auto mt-2 mt-lg-0"
+											class="large mt-2 mt-lg-0"
 											(click)="onNewSecurityWorkerLicence()"
 										>
 											<mat-icon>add</mat-icon>Apply for a new Body Amour Permit
@@ -415,14 +415,14 @@ import {
 
 							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeAvPermitsExist">
 								<div class="row">
-									<div class="col-lg-6">
+									<div class="col-xl-7 col-lg-6">
 										<div class="text-data">You don't have an active Armoured Vehicle permit</div>
 									</div>
-									<div class="col-lg-6 text-end">
+									<div class="col-xl-5 col-lg-6 text-end">
 										<button
 											mat-flat-button
 											color="primary"
-											class="large w-auto mt-2 mt-lg-0"
+											class="large mt-2 mt-lg-0"
 											(click)="onNewSecurityWorkerLicence()"
 										>
 											<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
@@ -710,6 +710,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 
 	async ngOnInit(): Promise<void> {
 		this.commonApplicationService.userLicencesList().subscribe((resp: Array<UserLicenceResponse>) => {
+			console.log('resp1', resp);
 			this.activeApplications = resp.filter((item: UserLicenceResponse) => !item.isExpired);
 			this.expiredLicences = resp.filter((item: UserLicenceResponse) => item.isExpired);
 			const renewals = this.activeApplications.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
@@ -737,6 +738,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		});
 
 		this.commonApplicationService.userApplicationsList().subscribe((resp: Array<UserApplicationResponse>) => {
+			console.log('resp2', resp);
 			this.applicationsDataSource = new MatTableDataSource(resp ?? []);
 			this.applicationIsInProgress = !!resp.find(
 				(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress

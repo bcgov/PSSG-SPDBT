@@ -33,7 +33,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					<mat-step [completed]="step1Complete">
 						<ng-template matStepLabel> Licence Selection </ng-template>
 						<app-steps-worker-licence-selection
-							(childNextStep)="onChildNextStep()"
+							(childNextStep)="onLicenceSelectionChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -224,10 +224,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		});
 	}
 
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNow(licenceAppId,  `Payment for Case ID: ${application.applicationNumber}`);
-	// }
-
 	onGoToStep(step: number) {
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepBackgroundComponent?.onGoToFirstStep();
@@ -301,6 +297,16 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			this.updateCompleteStatus();
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
+	}
+
+	onLicenceSelectionChildNextStep(): void {
+		const isStepToSave = this.stepLicenceSelectionComponent?.isStepToSave();
+		if (isStepToSave) {
+			this.onChildNextStep();
+			return;
+		}
+
+		this.goToChildNextStep();
 	}
 
 	onChildNextStep() {
