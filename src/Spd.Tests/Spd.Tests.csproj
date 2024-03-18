@@ -29,4 +29,8 @@
 		<ProjectReference Include="..\Spd.Utilities.Printing\Spd.Utilities.Printing.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Unit\Presentation\" />
+	</ItemGroup>
+
 </Project>
