@@ -7,6 +7,8 @@ using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Registration;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Licence
 {
@@ -113,13 +115,25 @@ namespace Spd.Manager.Licence
 
         public async Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
+            await ValidateFilesAsync(cmd, ct);
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
             UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ApplicantUpdateRequest);
             updateContactCmd.Id = contact.Id;
             await _contactRepository.ManageAsync(updateContactCmd, ct);
 
-            if ((cmd.ApplicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) || 
+            // Remove documents that are not in previous document ids
+            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
+            List<Guid> previousDocumentIds = (List<Guid>)cmd.ApplicantUpdateRequest?.PreviousDocumentIds ?? [];
+            List<Guid> documentsToRemove = docListResps.Items
+                .Where(d => !previousDocumentIds.Contains(d.DocumentUrlId) && (d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm || d.DocumentType == DocumentTypeEnum.LetterOfNoConflict))
+                .Select(d => d.DocumentUrlId)
+                .ToList();
+
+            foreach (var documentUrlId in documentsToRemove)
+                await _documentRepository.ManageAsync(new DeactivateDocumentCmd(documentUrlId), ct);
+
+            if ((cmd.ApplicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) ||
                 (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
                 await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
@@ -130,18 +144,41 @@ namespace Spd.Manager.Licence
                     null,
                     ct);
 
-            // Remove documents that are not in previous document ids
-            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
-            List<Guid> previousDocumentIds = (List<Guid>)cmd.ApplicantUpdateRequest?.PreviousDocumentIds ?? [];
-            List<Guid> documentsToRemove = docListResps.Items
-                .Where(d => !previousDocumentIds.Contains(d.DocumentUrlId) && (d.DocumentType == DocumentTypeEnum.MentalHealthConditionForm || d.DocumentType == DocumentTypeEnum.LetterOfNoConflict))
-                .Select(d => d.DocumentUrlId)
-                .ToList();
-            
-            foreach (var documentUrlId in documentsToRemove)
-                await _documentRepository.ManageAsync(new DeactivateDocumentCmd(documentUrlId), ct);
-
             return default;
+        }
+
+        private async Task ValidateFilesAsync(ApplicantUpdateCommand cmd, CancellationToken ct)
+        {
+            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(cmd.ApplicantId), ct);
+            IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+            if (cmd.ApplicantUpdateRequest.PreviousDocumentIds != null)
+            {
+                existingFileInfos = docListResps.Items.Where(d => cmd.ApplicantUpdateRequest.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
+                .Select(f => new LicAppFileInfo()
+                {
+                    FileName = f.FileName ?? String.Empty,
+                    LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
+                }).ToList();
+            }
+
+            if (cmd.ApplicantUpdateRequest.IsTreatedForMHC == true)
+            {
+                if (!cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition) &&
+                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
+                }
+            }
+
+            if (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer == true)
+            {
+                if (!cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) &&
+                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
+                }
+            }
         }
     }
 }
