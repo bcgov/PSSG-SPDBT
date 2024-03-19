@@ -23,7 +23,7 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<ApplicantUpdateRequest> _applicationUpdateRequestValidator;
+        private readonly IValidator<ApplicantUpdateRequest> _applicantUpdateRequestValidator;
 
         public ApplicantProfileController(ILogger<ApplicantProfileController> logger,
         IPrincipal currentUser,
@@ -38,7 +38,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
-            _applicationUpdateRequestValidator = applicationUpdateRequestValidator;
+            _applicantUpdateRequestValidator = applicationUpdateRequestValidator;
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!Guid.TryParse(applicantId, out Guid applicantGuidId))
                 throw new ApiException(HttpStatusCode.BadRequest, $"{nameof(applicantId)} is not a valid guid.");
 
-            var validateResult = await _applicationUpdateRequestValidator.ValidateAsync(request, ct);
+            var validateResult = await _applicantUpdateRequestValidator.ValidateAsync(request, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
