@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -81,7 +81,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonUserProfilePersonalInformationComponent implements LicenceChildStepperStepComponent {
+export class CommonUserProfilePersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
@@ -94,11 +94,18 @@ export class CommonUserProfilePersonalInformationComponent implements LicenceChi
 	subtitle =
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 
-	@Input() isReadOnly = false;
+	@Input() isReadonly = false;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 
 	constructor(private utilService: UtilService) {}
+
+	ngOnInit(): void {
+		if (this.isReadonly) {
+			this.utilService.disableInputs(this.personalInformationFormGroup);
+			this.utilService.disableInputs(this.contactFormGroup);
+		}
+	}
 
 	isFormValid(): boolean {
 		this.personalInformationFormGroup.markAllAsTouched();

@@ -37,7 +37,7 @@ import {
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto mb-3" (click)="onUserProfile()">
 									<mat-icon>person</mat-icon>
-									Your Profile <span *ngIf="applicationIsInProgress"> (Readonly)</span>
+									{{ yourProfileLabel }}
 								</button>
 							</div>
 						</div>
@@ -78,12 +78,8 @@ import {
 						<div class="section-title fs-5 py-3">Applications</div>
 
 						<div class="row summary-card-section summary-card-section__orange m-0">
-							<div class="col-12" class="draft-table">
-								<mat-table
-									[dataSource]="applicationsDataSource"
-									class="draft-table pb-3"
-									[multiTemplateDataRows]="true"
-								>
+							<div class="col-12">
+								<mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
 									<ng-container matColumnDef="serviceTypeCode">
 										<mat-header-cell *matHeaderCellDef>Licence Type</mat-header-cell>
 										<mat-cell *matCellDef="let application">
@@ -389,7 +385,7 @@ import {
 											class="large mt-2 mt-lg-0"
 											(click)="onNewSecurityWorkerLicence()"
 										>
-											<mat-icon>add</mat-icon>Apply for a new Licence
+											<mat-icon>add</mat-icon>Apply for a new Security Worker Licence
 										</button>
 									</div>
 								</div>
@@ -662,12 +658,12 @@ import {
 export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 
-	applicationIsInProgress = false;
+	applicationIsInProgress: boolean | null = null;
+	yourProfileLabel = '';
 
 	areLicencesLoaded = false;
 
 	warningMessages: Array<string> = [];
-	// errorMessages: Array<string> = [];
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
@@ -710,7 +706,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 
 	async ngOnInit(): Promise<void> {
 		this.commonApplicationService.userLicencesList().subscribe((resp: Array<UserLicenceResponse>) => {
-			console.log('resp1', resp);
 			this.activeApplications = resp.filter((item: UserLicenceResponse) => !item.isExpired);
 			this.expiredLicences = resp.filter((item: UserLicenceResponse) => item.isExpired);
 			const renewals = this.activeApplications.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
@@ -738,11 +733,11 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		});
 
 		this.commonApplicationService.userApplicationsList().subscribe((resp: Array<UserApplicationResponse>) => {
-			console.log('resp2', resp);
 			this.applicationsDataSource = new MatTableDataSource(resp ?? []);
 			this.applicationIsInProgress = !!resp.find(
 				(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
 			);
+			this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 		});
 	}
 
@@ -751,7 +746,9 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	}
 
 	onUserProfile(): void {
-		// TODO  When a user has started an application but has not submitted it yet, the user can view their Profile page in read-only mode – they can't edit this info while the application is in progress
+		// When a user has started an application but has not submitted it yet,
+		// the user can view their Profile page in read-only mode – they can't edit
+		// this info while the application is in progress
 		this.licenceApplicationService
 			.loadUserProfile()
 			.pipe(
@@ -759,7 +756,12 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 					this.router.navigateByUrl(
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 							LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE
-						)
+						),
+						{
+							state: {
+								isReadonly: this.applicationIsInProgress,
+							},
+						}
 					);
 				}),
 				take(1)

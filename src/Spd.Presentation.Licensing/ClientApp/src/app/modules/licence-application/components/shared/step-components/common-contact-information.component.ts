@@ -41,5 +41,5 @@ export class CommonContactInformationComponent {
 
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
-	@Input() isReadOnly = false;
+	@Input() isReadonly = false;
 }

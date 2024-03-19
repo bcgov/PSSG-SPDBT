@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse } from '@app/api/models';
 import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -8,7 +8,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-address',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row" *ngIf="!isReadOnly">
+			<div class="row" *ngIf="!isReadonly">
 				<div class="" [ngClass]="isWizardStep ? 'offset-lg-2 col-lg-8 col-md-12 col-sm-12' : 'col-12'">
 					<app-address-form-autocomplete
 						[isWizardStep]="isWizardStep"
@@ -34,7 +34,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<section *ngIf="form.get('addressSelected')?.value">
 						<div class="row">
 							<div class="col-12">
-								<mat-divider class="mat-divider-primary mb-3" *ngIf="!isReadOnly"></mat-divider>
+								<mat-divider class="mat-divider-primary mb-3" *ngIf="!isReadonly"></mat-divider>
 								<div class="text-minor-heading mb-2" *ngIf="isWizardStep">Address information</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
@@ -101,10 +101,10 @@ export class CommonAddressComponent implements OnInit {
 
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
-	@Input() isReadOnly = false;
+	@Input() isReadonly = false;
 
 	ngOnInit(): void {
-		if (this.isReadOnly) {
+		if (this.isReadonly) {
 			this.addressLine1.disable({ emitEvent: false });
 			this.addressLine2.disable({ emitEvent: false });
 			this.city.disable({ emitEvent: false });

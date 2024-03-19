@@ -380,8 +380,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	isStepToSave(): boolean {
 		const index = this.childstepper.selectedIndex;
-		console.log('isStepToSave', index);
-		return index >= 3;
+		return index >= 2;
 	}
 
 	override dirtyForm(step: number): boolean {
