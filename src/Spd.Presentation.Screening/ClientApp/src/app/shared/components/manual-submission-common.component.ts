@@ -559,7 +559,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private maskPipe: NgxMaskPipe,
 		private formatDatePipe: FormatDatePipe,
 		private dialog: MatDialog
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		if (!this.orgId) {
@@ -576,7 +576,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			if (this.isNotVolunteerOrg) {
 				this.showScreeningType = orgProfile
 					? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-					  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+					orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 					: false;
 			} else {
 				this.showScreeningType = false;
@@ -595,7 +595,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			this.showServiceType = true;
 			this.serviceTypeDefault = ServiceTypeCode.Psso;
 			this.serviceTypes = ServiceTypes.filter(
-				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
+				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs ||
+					item.code == ServiceTypeCode.Mcfd || item.code == ServiceTypeCode.PeCrc ||
+					item.code == ServiceTypeCode.PeCrcVs
 			);
 		}
 
@@ -651,7 +653,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				ApplicationCreateRequestJson: createRequest,
 			};
 
-			if (this.portal == PortalTypeCode.Psso && createRequest.serviceType != ServiceTypeCode.PssoVs) {
+
+			if (this.portal == PortalTypeCode.Psso &&
+				createRequest.serviceType != ServiceTypeCode.PssoVs &&
+				createRequest.serviceType != ServiceTypeCode.PeCrcVs) {
 				this.saveAndCheckDuplicates(body);
 			} else {
 				this.promptVulnerableSector(body);

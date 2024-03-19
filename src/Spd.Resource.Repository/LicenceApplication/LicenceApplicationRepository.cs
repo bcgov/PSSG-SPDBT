@@ -109,7 +109,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         else
         {
             app = _mapper.Map<spd_application>(cmd);
-            app.statuscode = (int)ApplicationStatusOptionSet.Draft;
             _context.AddTospd_applications(app);
             var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
             if (contact != null)

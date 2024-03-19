@@ -178,7 +178,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
-          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId))
+          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
           .IncludeBase<LicenceApplication, spd_application>();
 
         _ = CreateMap<SaveLicenceApplicationCmd, contact>()
