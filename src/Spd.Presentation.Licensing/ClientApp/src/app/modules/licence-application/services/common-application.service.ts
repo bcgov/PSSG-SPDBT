@@ -32,7 +32,7 @@ import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, forkJoin, map, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 export interface UserApplicationResponse extends LicenceAppListResponse {
@@ -181,6 +181,11 @@ export class CommonApplicationService {
 			.pipe(
 				switchMap((licenceResps: LicenceResponse[]) => {
 					const apis: Observable<any>[] = [];
+
+					if (licenceResps.length === 0) {
+						return of([]);
+					}
+
 					licenceResps.forEach((appl: LicenceResponse) => {
 						if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 							apis.push(

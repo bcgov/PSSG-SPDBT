@@ -141,15 +141,16 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				this.alertText = 'Make sure your profile information is up-to-date before renewing your permit';
+				this.alertText = 'Make sure your profile information is up-to-date before renewing your permit.';
 				break;
 			}
 			case ApplicationTypeCode.Update: {
-				this.alertText = 'Make sure your profile information is up-to-date before updating your permit';
+				this.alertText = 'Make sure your profile information is up-to-date before updating your permit.';
 				break;
 			}
 			default: {
-				this.alertText = 'Fill out your profile information';
+				this.alertText =
+					'Make sure your profile information is up-to-date before renewing or updating your permit, or starting a new application.';
 				break;
 			}
 		}
@@ -184,28 +185,9 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 			return;
 		}
 
-		// TODO save user profile first.
-
-		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_RENEWAL_AUTHENTICATED)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Update: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED)
-				);
-				break;
-			}
-			default: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED)
-				);
-				break;
-			}
-		}
+		// if (this.applicationTypeCode) {
+		// 	this.permitApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+		// }
 	}
 
 	onBack(): void {

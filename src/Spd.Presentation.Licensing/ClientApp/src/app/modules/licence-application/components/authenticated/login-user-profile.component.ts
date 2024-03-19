@@ -12,7 +12,25 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 		<section class="step-section">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<h2 class="fs-3 mb-3">Your Profile</h2>
+					<div class="row">
+						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<h2 class="fs-3">Confirm your Profile</h2>
+						</div>
+
+						<div class="col-xl-6 col-lg-4 col-md-12" *ngIf="isReadonly">
+							<div class="d-flex justify-content-end">
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large w-auto mb-3"
+									aria-label="Back"
+									(click)="onCancel()"
+								>
+									<mat-icon>arrow_back</mat-icon>Back
+								</button>
+							</div>
+						</div>
+					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
@@ -23,6 +41,7 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 						[aliasesFormGroup]="aliasesFormGroup"
 						[residentialAddressFormGroup]="residentialAddressFormGroup"
 						[mailingAddressFormGroup]="mailingAddressFormGroup"
+						[isReadonly]="isReadonly"
 					></app-common-user-profile>
 
 					<div class="mt-3">
@@ -39,7 +58,7 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 			</div>
 		</section>
 
-		<div class="row mt-3">
+		<div class="row mt-3" *ngIf="!isReadonly">
 			<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
 				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
 					<i class="fa fa-times mr-2"></i>Cancel
@@ -55,6 +74,8 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 export class LoginUserProfileComponent implements OnInit {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
+	isReadonly = true;
+
 	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
 	contactFormGroup = this.licenceApplicationService.contactInformationFormGroup;
 	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
@@ -66,7 +87,11 @@ export class LoginUserProfileComponent implements OnInit {
 		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
-	) {}
+	) {
+		// check if isReadonly was passed from 'LicenceUserApplicationsComponent'
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.isReadonly = state && state['isReadonly'];
+	}
 
 	ngOnInit(): void {
 		if (!this.licenceApplicationService.initialized) {

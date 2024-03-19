@@ -346,7 +346,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 			return;
 		}
 
-		this.childstepper.next();
+		this.childNextStep.emit(true);
 	}
 
 	onFormCategoryValidNextStep() {
@@ -358,7 +358,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 			return;
 		}
 
-		this.childstepper.next();
+		this.childNextStep.emit(true);
 	}
 
 	ngOnDestroy() {
@@ -376,6 +376,11 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	onValidExpiredLicence(): void {
 		this.childNextStep.emit(true);
+	}
+
+	isStepToSave(): boolean {
+		const index = this.childstepper.selectedIndex;
+		return index >= 2;
 	}
 
 	override dirtyForm(step: number): boolean {

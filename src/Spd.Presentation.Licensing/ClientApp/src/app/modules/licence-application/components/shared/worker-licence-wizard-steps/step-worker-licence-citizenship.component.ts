@@ -175,8 +175,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 										<div class="col-12">
 											<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
 											<app-file-upload
-												(fileUploaded)="onFileUploaded($event)"
-												(fileRemoved)="onFileRemoved()"
+												(fileUploaded)="onGovernmentIssuedFileUploaded($event)"
+												(fileRemoved)="onGovernmentIssuedFileRemoved()"
 												[maxNumberOfFiles]="10"
 												[control]="governmentIssuedAttachments"
 												[files]="governmentIssuedAttachments.value"
@@ -244,6 +244,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 				this.isCanadianCitizen.value == BooleanTypeCode.Yes
 					? this.canadianCitizenProofTypeCode.value
 					: this.notCanadianCitizenProofTypeCode.value;
+
 			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
@@ -259,6 +260,28 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
+	}
+
+	onGovernmentIssuedFileUploaded(file: File): void {
+		if (this.authenticationService.isLoggedIn()) {
+			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value ?? LicenceDocumentTypeCode.BcServicesCard; // default value (f nothing is selected)
+
+			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.governmentIssuedAttachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+		}
+	}
+
+	onGovernmentIssuedFileRemoved(): void {
 		this.licenceApplicationService.hasValueChanged = true;
 	}
 
