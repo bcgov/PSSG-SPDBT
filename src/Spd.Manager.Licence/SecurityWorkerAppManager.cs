@@ -59,6 +59,8 @@ internal class SecurityWorkerAppManager :
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        if (cmd.LicenceUpsertRequest.LicenceAppId == null)
+            cmd.LicenceUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
