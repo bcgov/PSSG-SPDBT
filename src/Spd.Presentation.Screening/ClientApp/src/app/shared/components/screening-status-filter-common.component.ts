@@ -113,13 +113,11 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 				.filter(
 					(item) =>
 						item.code != ApplicationPortalStatusCode.AwaitingPayment &&
-						item.code != ApplicationPortalStatusCode.ClosedJudicialReview &&
-						item.code != ApplicationPortalStatusCode.CancelledByApplicant
+						item.code != ApplicationPortalStatusCode.ClosedJudicialReview
 				);
 		} else {
 			this.applicationPortalStatusCodes = this.utilService
-				.getCodeDescSorted('ApplicationPortalStatusTypes')
-				.filter((item) => item.code != ApplicationPortalStatusCode.CancelledByApplicant);
+				.getCodeDescSorted('ApplicationPortalStatusTypes');
 		}
 	}
 
