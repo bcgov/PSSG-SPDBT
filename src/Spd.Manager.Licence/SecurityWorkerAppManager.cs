@@ -1,24 +1,20 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
-using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.TempFileStorage;
 using System.Net;
 
 namespace Spd.Manager.Licence;
-internal partial class SecurityWorkerAppManager :
+internal class SecurityWorkerAppManager :
         LicenceAppManagerBase,
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
@@ -31,31 +27,19 @@ internal partial class SecurityWorkerAppManager :
         ISecurityWorkerAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
-    private readonly ITempFileStorageService _tempFile;
-    private readonly IIdentityRepository _identityRepository;
-    private readonly ILogger<ISecurityWorkerAppManager> _logger;
     private readonly ITaskRepository _taskRepository;
     private readonly IContactRepository _contactRepository;
-    private readonly IDistributedCache _cache;
 
     public SecurityWorkerAppManager(
         ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
         IMapper mapper,
-        ITempFileStorageService tempFile,
-        IIdentityRepository identityRepository,
         IDocumentRepository documentUrlRepository,
-        ILogger<ISecurityWorkerAppManager> logger,
-        IDistributedCache cache,
         ITaskRepository taskRepository,
         ILicenceFeeRepository feeRepository,
         IContactRepository contactRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
     {
         _licenceRepository = licenceRepository;
-        _tempFile = tempFile;
-        _identityRepository = identityRepository;
-        _logger = logger;
-        _cache = cache;
         _taskRepository = taskRepository;
         _contactRepository = contactRepository;
     }
