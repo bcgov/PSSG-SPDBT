@@ -5,7 +5,15 @@ namespace Spd.Resource.Repository.Application;
 
 public partial interface IApplicationRepository
 {
-    public static readonly List<ServiceTypeEnum> ScreeningServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.PSSO, ServiceTypeEnum.CRRP_EMPLOYEE, ServiceTypeEnum.CRRP_VOLUNTEER, ServiceTypeEnum.PSSO_VS };
+    public static readonly List<ServiceTypeEnum> ScreeningServiceTypes = new List<ServiceTypeEnum>() {
+        ServiceTypeEnum.PSSO,
+        ServiceTypeEnum.CRRP_EMPLOYEE,
+        ServiceTypeEnum.CRRP_VOLUNTEER,
+        ServiceTypeEnum.PSSO_VS,
+        ServiceTypeEnum.MCFD,
+        ServiceTypeEnum.PE_CRC_VS,
+        ServiceTypeEnum.PE_CRC
+    };
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     public Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
