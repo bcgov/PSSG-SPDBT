@@ -401,7 +401,7 @@ import {
 											mat-flat-button
 											color="primary"
 											class="large mt-2 mt-lg-0"
-											(click)="onNewSecurityWorkerLicence()"
+											(click)="onNewBodyArmourPermit()"
 										>
 											<mat-icon>add</mat-icon>Apply for a new Body Amour Permit
 										</button>
@@ -419,7 +419,7 @@ import {
 											mat-flat-button
 											color="primary"
 											class="large mt-2 mt-lg-0"
-											(click)="onNewSecurityWorkerLicence()"
+											(click)="onNewArmouredVehiclePermit()"
 										>
 											<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
 										</button>
@@ -484,7 +484,7 @@ import {
 						</app-alert>
 					</div>
 
-					<br /><br /><br />
+					<!-- <br /><br /><br />
 
 					<div class="fw-bold">Temp buttons for testing:</div>
 					<div class="my-2">
@@ -594,7 +594,7 @@ import {
 						>
 							Update Body Armour Permit
 						</button>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</section>
@@ -787,11 +787,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 							LicenceApplicationRoutes.LICENCE_LOGIN_USER_PROFILE
 						),
-						{
-							state: {
-								isReadonly: this.applicationIsInProgress,
-							},
-						}
+						{ state: { isReadonly: this.applicationIsInProgress } }
 					);
 				}),
 				take(1)
@@ -811,6 +807,57 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 				return '';
 			}
 		}
+	}
+
+	onNewSecurityWorkerLicence(): void {
+		this.licenceApplicationService
+			.createNewLicenceAuthenticated()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onNewBodyArmourPermit(): void {
+		this.permitApplicationService
+			.createNewPermitAuthenticated(WorkerLicenceTypeCode.BodyArmourPermit)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onNewArmouredVehiclePermit(): void {
+		this.permitApplicationService
+			.createNewPermitAuthenticated(WorkerLicenceTypeCode.ArmouredVehiclePermit)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathPermitAuthenticated(
+							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	// onUpdateAuthorization(): void {
@@ -848,11 +895,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
 								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
 							),
-							{
-								state: {
-									applicationTypeCode: ApplicationTypeCode.Replacement,
-								},
-							}
+							{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
 						);
 					}),
 					take(1)
@@ -868,331 +911,108 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	}
 
 	onResume(appl: LicenceAppListResponse): void {
-		if (appl.serviceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceApplicationService
-				.getLicenceToResume(appl.licenceAppId!)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-							)
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
-			// } else {
-			// 	this.permitApplicationService
-			// 		.getPermitToResume(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
-			// 		.pipe(
-			// 			tap((_resp: any) => {
-			// 				this.router.navigateByUrl(
-			// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-			// 						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-			// 					)
-			// 				);
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
+		switch (appl.serviceTypeCode) {
+			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				this.licenceApplicationService
+					.getLicenceToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+									LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+								)
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				// TODO resume permit
+			}
 		}
 	}
 
 	onUpdate(appl: UserLicenceResponse): void {
-		if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceApplicationService
-				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-							),
-							{
-								state: {
-									applicationTypeCode: ApplicationTypeCode.Update,
-								},
-							}
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
-			// } else {
-			// 	this.permitApplicationService
-			// 		.loadPermit(appl.licenceAppId!, appl.serviceTypeCode!, appl.applicationTypeCode!)
-			// 		.pipe(
-			// 			tap((_resp: any) => {
-			// 				this.router.navigateByUrl(
-			// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-			// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
-			// 					)
-			// 				);
-			// 			}),
-			// 			take(1)
-			// 		)
-			// 		.subscribe();
+		switch (appl.workerLicenceTypeCode) {
+			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				this.licenceApplicationService
+					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				// TODO permit update
+				// this.permitApplicationService
+				// 		.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Update)
+				// 		.pipe(
+				// 			tap((_resp: any) => {
+				// 				this.router.navigateByUrl(
+				// 					LicenceApplicationRoutes.pathPermitAuthenticated(
+				// 						LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+				// 					),
+				//				{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+				// 				);
+				// 			}),
+				// 			take(1)
+				// 		)
+				// 		.subscribe();
+			}
 		}
 	}
 
 	onRenew(appl: UserLicenceResponse): void {
-		if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceApplicationService
-				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-							),
-							{
-								state: {
-									applicationTypeCode: ApplicationTypeCode.Renewal,
-								},
-							}
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
+		switch (appl.workerLicenceTypeCode) {
+			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				this.licenceApplicationService
+					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				// TODO permit renew
+				// this.permitApplicationService
+				// 	.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal) // TODO remove hard-coded
+				// 	.pipe(
+				// 		tap((_resp: any) => {
+				// 			this.router.navigateByUrl(
+				// 				LicenceApplicationRoutes.pathPermitAuthenticated(
+				// 					LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+				// 				),
+				//				{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+				// 			);
+				// 		}),
+				// 		take(1)
+				// 	)
+				// 	.subscribe();
+			}
 		}
-	}
-
-	// onReapply(appl: UserLicenceResponse): void {
-	// 	this.licenceApplicationService
-	// 		.loadLicence('468075a7-550e-4820-a7ca-00ea6dde3025', appl.serviceTypeCode!, ApplicationTypeCode.Renewal)
-	// 		.pipe(
-	// 			tap((_resp: any) => {
-	// 				this.router.navigateByUrl(
-	// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-	// 						LicenceApplicationRoutes.WORKER_LICENCE_RENEW_AUTHENTICATED
-	// 					)
-	// 				);
-	// 			}),
-	// 			take(1)
-	// 		)
-	// 		.subscribe();
-	// }
-
-	// TEMP
-	onRenewSecurityWorkerLicence(): void {
-		this.licenceApplicationService
-			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Renewal)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Renewal,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onUpdateSecurityWorkerLicence(): void {
-		this.licenceApplicationService
-			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Update)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Update,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onReplacmentSecurityWorkerLicence(): void {
-		this.licenceApplicationService
-			.getLicenceWithSelectionAuthenticated('34f01518-dc7d-451a-ae64-a7926e515c00', ApplicationTypeCode.Replacement)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Replacement,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onNewSecurityWorkerLicence(): void {
-		this.licenceApplicationService
-			.createNewLicenceAuthenticated()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.New,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onNewBodyArmourPermit(): void {
-		this.permitApplicationService
-			.createNewPermitAuthenticated(WorkerLicenceTypeCode.BodyArmourPermit)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(
-							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.New,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onRenewBodyArmourPermit(): void {
-		this.permitApplicationService
-			.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(
-							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Renewal,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onUpdateBodyArmourPermit(): void {
-		this.permitApplicationService
-			.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Update)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(
-							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Renewal,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onNewArmouredVehiclePermit(): void {
-		this.permitApplicationService
-			.createNewPermitAuthenticated(WorkerLicenceTypeCode.ArmouredVehiclePermit)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(
-							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.New,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onRenewArmouredVehiclePermit(): void {
-		this.permitApplicationService
-			.getPermitWithSelectionAuthenticated('d402df70-718a-4f84-b5ba-31f45383c1ad', ApplicationTypeCode.Renewal)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(
-							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Renewal,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	// TEMP
-	onUpdateArmouredVehiclePermit(): void {
-		this.permitApplicationService
-			.getPermitWithSelectionAuthenticated('d402df70-718a-4f84-b5ba-31f45383c1ad', ApplicationTypeCode.Update)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathPermitAuthenticated(
-							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-						),
-						{
-							state: {
-								applicationTypeCode: ApplicationTypeCode.Renewal,
-							},
-						}
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
 	}
 
 	onConnectToExpiredLicence(): void {

@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -42,18 +41,6 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Background</ng-template>
-						<app-steps-worker-licence-background
-							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-worker-licence-background>
-					</mat-step>
-
-					<mat-step [completed]="step3Complete">
 						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-worker-licence-identification-authenticated
 							(childNextStep)="onChildNextStep()"
@@ -86,19 +73,14 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 })
 export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, AfterViewInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_BACKGROUND = 1;
-	readonly STEP_IDENTIFICATION = 2;
-	readonly STEP_REVIEW = 3;
+	readonly STEP_IDENTIFICATION = 1;
+	readonly STEP_REVIEW = 2;
 
 	step1Complete = false;
 	step2Complete = false;
-	step3Complete = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent)
-	stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
@@ -112,7 +94,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService // private commonApplicationService: CommonApplicationService
+		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -131,12 +113,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	ngAfterViewInit(): void {
-		if (this.step3Complete) {
+		if (this.step2Complete) {
 			this.stepper.selectedIndex = this.STEP_REVIEW;
-		} else if (this.step2Complete) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
 		} else if (this.step1Complete) {
-			this.stepper.selectedIndex = this.STEP_BACKGROUND;
+			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
 		}
 	}
 
@@ -144,9 +124,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		switch (event.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToFirstStep();
@@ -165,9 +142,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		switch (stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
 				break;
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToLastStep();
@@ -189,9 +163,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 					switch (stepper.selectedIndex) {
 						case this.STEP_LICENCE_SELECTION:
 							this.stepLicenceSelectionComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_BACKGROUND:
-							this.stepBackgroundComponent?.onGoToFirstStep();
 							break;
 						case this.STEP_IDENTIFICATION:
 							this.stepIdentificationComponent?.onGoToFirstStep();
@@ -226,7 +197,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	onGoToStep(step: number) {
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepBackgroundComponent?.onGoToFirstStep();
 		this.stepIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
@@ -331,10 +301,9 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step2Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		// console.debug('iscomplete', this.step1Complete, this.step2Complete);
 	}
 
 	private handleDuplicateLicence(): void {
@@ -361,9 +330,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
 				break;
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToNextStep();

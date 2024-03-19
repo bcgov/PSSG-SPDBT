@@ -1,6 +1,7 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import {
 	Alias,
 	ApplicantProfileResponse,
@@ -46,10 +47,9 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { CommonApplicationService } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
-import { Router } from '@angular/router';
-import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
 export class LicenceDocumentsToSave {
 	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
@@ -294,12 +294,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	this.fingerprintProofFormGroup.valid
 		// );
 
-		return (
-			this.policeBackgroundFormGroup.valid &&
-			this.mentalHealthConditionsFormGroup.valid &&
-			this.criminalHistoryFormGroup.valid &&
-			this.fingerprintProofFormGroup.valid
-		);
+		if (this.authenticationService.isLoggedIn()) {
+			return true;
+		} else {
+			return (
+				this.policeBackgroundFormGroup.valid &&
+				this.mentalHealthConditionsFormGroup.valid &&
+				this.criminalHistoryFormGroup.valid &&
+				this.fingerprintProofFormGroup.valid
+			);
+		}
 	}
 
 	/**
@@ -319,6 +323,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				// 	this.photographOfYourselfFormGroup.valid,
 				// );
 				this.citizenshipFormGroup.valid &&
+				this.fingerprintProofFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
@@ -491,7 +496,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
-				console.debug('[getLicenceToResume] _resp', _resp);
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
