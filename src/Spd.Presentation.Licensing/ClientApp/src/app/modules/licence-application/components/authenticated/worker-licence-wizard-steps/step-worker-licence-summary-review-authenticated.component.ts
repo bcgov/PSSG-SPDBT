@@ -281,101 +281,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Background Information</div>
-													<button
-														mat-mini-fab
-														color="primary"
-														class="go-to-step-button"
-														matTooltip="Go to Step 2"
-														aria-label="Go to Step 2"
-														(click)="$event.stopPropagation(); onEditStep(1)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-												</mat-toolbar>
-											</mat-panel-title>
-										</mat-expansion-panel-header>
-										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Police Background</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
-													<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
-												</div>
-												<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Role</div>
-														<div class="summary-text-data">
-															<span
-																*ngIf="
-																	policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
-																	else otherPoliceOfficerRole
-																"
-																>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
-															>
-															<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
-														</div>
-													</div>
-													<div class="col-lg-4 col-md-12" *ngIf="letterOfNoConflictAttachments">
-														<div class="text-label d-block text-muted">Letter of No Conflict</div>
-														<div class="summary-text-data">
-															<div *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-														</div>
-													</div>
-												</ng-container>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Mental Health Conditions</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Mental Health Conditions?</div>
-													<div class="summary-text-data">{{ isTreatedForMHC }}</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
-													<div class="text-label d-block text-muted">Mental Health Condition Form</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Criminal History</div>
-											<div class="row mt-0">
-												<div class="col-12">
-													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-												</div>
-												<div class="col-12" *ngIf="criminalChargeDescription">
-													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Fingerprints</div>
-											<div class="row mt-0">
-												<div class="col-12">
-													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</mat-expansion-panel>
-
-									<mat-expansion-panel class="mb-2" [expanded]="true">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="review-panel-title">
-												<mat-toolbar class="d-flex justify-content-between">
 													<div class="panel-header">Identification</div>
 													<button
 														mat-mini-fab
@@ -425,6 +330,17 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">BC Driver's Licence</div>
 													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+												</div>
+											</div>
+
+											<div class="row mt-0">
+												<div class="col-12">
+													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
 												</div>
 											</div>
 

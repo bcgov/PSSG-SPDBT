@@ -772,7 +772,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const baseData = this.getSaveBodyBase(licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
-		// applicantId
 		// documentInfos
 
 		return baseData;

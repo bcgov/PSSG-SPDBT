@@ -22,20 +22,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
 								<h2 class="fs-3">Confirm your Profile</h2>
 							</div>
-
-							<div class="col-xl-6 col-lg-4 col-md-12">
-								<div class="d-flex justify-content-end">
-									<button
-										mat-stroked-button
-										color="primary"
-										class="large w-auto mb-3"
-										aria-label="Back"
-										(click)="onBack()"
-									>
-										<mat-icon>arrow_back</mat-icon>Back
-									</button>
-								</div>
-							</div>
 						</div>
 						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
@@ -48,6 +34,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
+								[isReadonly]="false"
 							></app-common-user-profile>
 						</section>
 
@@ -157,19 +144,20 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit.';
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
-				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit.';
 				break;
 			}
 			case ApplicationTypeCode.Update: {
-				this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit';
+				this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit.';
 				break;
 			}
 			default: {
-				this.alertText = 'Fill out your profile information';
+				this.alertText =
+					'Make sure your profile information is up-to-date before renewing or updating your licence, or starting a new application.';
 				break;
 			}
 		}
@@ -215,44 +203,9 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			return;
 		}
 
-		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Replacement: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
-					)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Renewal: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
-					)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Update: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-					)
-				);
-				break;
-			}
-			default: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-					)
-				);
-				break;
-			}
+		if (this.applicationTypeCode) {
+			this.licenceApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
 		}
-	}
-
-	onBack(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
 
 	get isNotReplacment(): boolean {
