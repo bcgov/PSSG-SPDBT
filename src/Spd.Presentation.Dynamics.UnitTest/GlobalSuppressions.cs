@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>", Scope = "member", Target = "~M:Spd.Presentation.Dynamics.UnitTest.Controller.FileStorageControllerTest.Post_UploadFileAsync_WhenModelStateIsValid_FileExist_Return_Ok")]
+[assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>", Scope = "member", Target = "~M:Spd.Presentation.Dynamics.UnitTest.Controller.FileStorageControllerTest.Post_UploadFileAsync_WhenModelStateIsValid_FileNotExist_Return_Created")]

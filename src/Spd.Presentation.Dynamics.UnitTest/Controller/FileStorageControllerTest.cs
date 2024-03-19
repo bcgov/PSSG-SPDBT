@@ -10,6 +10,8 @@ namespace Spd.Presentation.Dynamics.UnitTest.Controller;
 public class FileStorageControllerTest
 {
     private Mock<IFileStorageService> mockService = new Mock<IFileStorageService>();
+    private Mock<ITransientFileStorageService> mockTransientService = new Mock<ITransientFileStorageService>();
+    private FileStorageController sut;
     public FileStorageControllerTest()
     {
         mockService.Setup(s => s.HandleQuery(It.IsAny<FileMetadataQuery>(), CancellationToken.None))
@@ -17,6 +19,7 @@ public class FileStorageControllerTest
         mockService.Setup(s => s.HandleCommand(It.IsAny<UploadFileCommand>(),
             CancellationToken.None))
             .ReturnsAsync("key");
+        sut = new FileStorageController(mockService.Object, mockTransientService.Object);
     }
 
     [Fact]
@@ -27,7 +30,6 @@ public class FileStorageControllerTest
         string classification = "classification";
         string tags = "tag1=a,tag2=b";
         string folder = "folder";
-        var controller = new FileStorageController(mockService.Object);
         using var stream = new MemoryStream(Encoding.ASCII.GetBytes("samplefile"));
         var formFile = new FormFile(stream, 0, stream.Length, "sampleFile", "samplefile.txt")
         {
@@ -36,7 +38,7 @@ public class FileStorageControllerTest
         };
 
         //Act
-        var viewResult = await controller.UploadFileAsync(new UploadFileRequest() { File = formFile }, fileId, classification, tags, folder, CancellationToken.None);
+        var viewResult = await sut.UploadFileAsync(new UploadFileRequest() { File = formFile }, fileId, classification, tags, folder, CancellationToken.None);
 
         //Assert
         Assert.IsType<OkResult>(viewResult);
@@ -53,7 +55,6 @@ public class FileStorageControllerTest
         string folder = "folder";
         mockService.Setup(s => s.HandleQuery(It.IsAny<FileMetadataQuery>(), CancellationToken.None))
             .ReturnsAsync((FileMetadataQueryResult)null);
-        var controller = new FileStorageController(mockService.Object);
         using var stream = new MemoryStream(Encoding.ASCII.GetBytes("samplefile"));
         var formFile = new FormFile(stream, 0, stream.Length, "sampleFile", "samplefile.txt")
         {
@@ -62,7 +63,7 @@ public class FileStorageControllerTest
         };
 
         //Act
-        var viewResult = await controller.UploadFileAsync(new UploadFileRequest() { File = formFile }, fileId, classification, tags, folder, CancellationToken.None);
+        var viewResult = await sut.UploadFileAsync(new UploadFileRequest() { File = formFile }, fileId, classification, tags, folder, CancellationToken.None);
 
         //Assert
         Assert.IsType<StatusCodeResult>(viewResult);

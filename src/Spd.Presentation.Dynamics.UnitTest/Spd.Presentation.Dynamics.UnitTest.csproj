@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
@@ -24,16 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spd.Tests.Presentation.Dynamics\Spd.Tests.Presentation.Dynamics.csproj" />
+    <ProjectReference Include="..\Spd.Presentation.Dynamics\Spd.Presentation.Dynamics.csproj" />
     <ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Screening\" />
   </ItemGroup>
 
 </Project>
