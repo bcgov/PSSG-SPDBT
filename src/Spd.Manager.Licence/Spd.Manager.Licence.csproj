@@ -21,7 +21,7 @@
     <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<InternalsVisibleTo Include="Spd.Manager.Licence.UnitTest" />
-	</ItemGroup>
+  <ItemGroup>
+	<InternalsVisibleTo Include="Spd.Manager.Licence.UnitTest" />
+  </ItemGroup>
 </Project>
