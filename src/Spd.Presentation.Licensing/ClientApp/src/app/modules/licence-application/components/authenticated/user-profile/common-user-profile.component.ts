@@ -14,12 +14,12 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 		<app-common-user-profile-personal-information
 			[personalInformationFormGroup]="personalInformationFormGroup"
 			[contactFormGroup]="contactFormGroup"
-			[isReadOnly]="isReadOnly"
+			[isReadonly]="isReadonly"
 		></app-common-user-profile-personal-information>
 
 		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pb-3">Aliases or Previous Names</div>
-		<app-common-alias-list [form]="aliasesFormGroup" [isReadOnly]="isReadOnly"></app-common-alias-list>
+		<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonly"></app-common-alias-list>
 
 		<div class="row mt-3">
 			<div class="col-lg-6 col-md-12">
@@ -35,8 +35,8 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 				<app-common-residential-address
 					[form]="residentialAddressFormGroup"
 					[isWizardStep]="false"
-					[isReadOnly]="true"
-					[isCheckboxReadOnly]="false"
+					[isReadonly]="true"
+					[isCheckboxReadOnly]="isReadonly"
 				></app-common-residential-address>
 			</div>
 
@@ -57,7 +57,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					<app-common-address
 						[form]="mailingAddressFormGroup"
 						[isWizardStep]="false"
-						[isReadOnly]="false"
+						[isReadonly]="isReadonly"
 					></app-common-address>
 				</ng-template>
 			</div>
@@ -74,8 +74,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
 	@ViewChild(CommonAddressComponent) mailingAddressComponent!: CommonAddressComponent;
 
-	isReadOnly = true;
-
+	@Input() isReadonly!: boolean;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 	@Input() aliasesFormGroup!: FormGroup;
