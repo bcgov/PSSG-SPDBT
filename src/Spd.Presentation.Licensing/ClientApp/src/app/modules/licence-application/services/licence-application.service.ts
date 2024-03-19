@@ -1,6 +1,7 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import {
 	Alias,
 	ApplicantProfileResponse,
@@ -46,6 +47,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { CommonApplicationService } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
@@ -131,6 +133,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private router: Router,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
@@ -291,12 +294,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// 	this.fingerprintProofFormGroup.valid
 		// );
 
-		return (
-			this.policeBackgroundFormGroup.valid &&
-			this.mentalHealthConditionsFormGroup.valid &&
-			this.criminalHistoryFormGroup.valid &&
-			this.fingerprintProofFormGroup.valid
-		);
+		if (this.authenticationService.isLoggedIn()) {
+			return true;
+		} else {
+			return (
+				this.policeBackgroundFormGroup.valid &&
+				this.mentalHealthConditionsFormGroup.valid &&
+				this.criminalHistoryFormGroup.valid &&
+				this.fingerprintProofFormGroup.valid
+			);
+		}
 	}
 
 	/**
@@ -316,6 +323,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				// 	this.photographOfYourselfFormGroup.valid,
 				// );
 				this.citizenshipFormGroup.valid &&
+				this.fingerprintProofFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
 				this.photographOfYourselfFormGroup.valid
@@ -406,6 +414,59 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
+	 * Save the login user profile
+	 * @returns
+	 */
+	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
+		return this.saveUserProfile();
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
+		return this.saveUserProfile().pipe(
+			tap((_resp: StrictHttpResponse<string>) => {
+				switch (applicationTypeCode) {
+					case ApplicationTypeCode.Replacement: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
+							)
+						);
+						break;
+					}
+					case ApplicationTypeCode.Renewal: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
+							)
+						);
+						break;
+					}
+					case ApplicationTypeCode.Update: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+							)
+						);
+						break;
+					}
+					default: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+								LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+							)
+						);
+						break;
+					}
+				}
+			})
+		);
+	}
+
+	/**
 	 * Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
@@ -413,6 +474,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		console.debug('[saveLicenceStepAuthenticated] body', body);
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
@@ -432,7 +496,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
-				console.debug('[getLicenceToResume] _resp', _resp);
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
@@ -495,7 +558,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Save the login user profile
 	 * @returns
 	 */
-	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
+	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
 		const documentsToSave = this.getProfileDocsToSaveBlobs(licenceModelFormValue);
@@ -570,13 +633,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		// delete body.documentExpiredInfos;
-
 		console.debug('submitLicenceAuthenticated body', body);
-
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
@@ -957,6 +1019,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const personalInformationData = {
@@ -1039,6 +1102,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.licenceModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
+				workerLicenceTypeData,
 				applicationTypeData,
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },

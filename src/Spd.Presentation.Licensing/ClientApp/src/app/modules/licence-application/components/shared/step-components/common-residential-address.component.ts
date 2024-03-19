@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 @Component({
 	selector: 'app-common-residential-address',
 	template: `
-		<app-common-address [form]="form" [isWizardStep]="isWizardStep" [isReadOnly]="isReadOnly"></app-common-address>
+		<app-common-address [form]="form" [isWizardStep]="isWizardStep" [isReadonly]="isReadonly"></app-common-address>
 
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -21,7 +21,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class CommonResidentialAddressComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
-	@Input() isReadOnly = false;
+	@Input() isReadonly = false;
 	@Input() isCheckboxReadOnly = false;
 
 	ngOnInit(): void {

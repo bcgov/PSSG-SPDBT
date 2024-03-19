@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
 export interface SpdFile extends File {
 	name: string;
@@ -277,5 +278,21 @@ export class UtilService {
 			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
 			(!isCanadianCitizen && notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
 		);
+	}
+
+	//------------------------------------
+	// Form related
+
+	disableInputs(form: FormGroup) {
+		Object.keys(form.controls).forEach((control: string) => {
+			const typedControl: AbstractControl = form.controls[control];
+			typedControl.disable({ emitEvent: false });
+		});
+	}
+
+	disableFormArrayInputs(formArray: FormArray) {
+		formArray.controls.forEach((control) => {
+			control.disable({ emitEvent: false });
+		});
 	}
 }

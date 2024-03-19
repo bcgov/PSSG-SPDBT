@@ -18,23 +18,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 					></app-common-update-renewal-alert>
 				</ng-container>
 
-				<app-step-title
-					*ngIf="!isCalledFromModal"
-					title="Your ID photograph"
-					subtitle="I accept using this BC Services Card photo on my licence."
-				></app-step-title>
-				<app-step-title
-					class="fs-7"
-					*ngIf="isCalledFromModal"
-					title="Did you want to use your BC Services Card photo on your licence?"
-					subtitle="If not, you will be allowed upload a new photo."
-				></app-step-title>
-
-				<div class="row mb-2">
-					<div class="col-12 text-center">
-						<img src="/assets/sample-photo.svg" alt="Photograph of yourself" />
-					</div>
-				</div>
+				<app-step-title title="Upload a photo of yourself"></app-step-title>
 
 				<app-common-photograph-of-yourself
 					[form]="form"

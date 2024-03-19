@@ -175,7 +175,7 @@ export class FileUploadComponent implements OnInit {
 	@Input() message = '';
 	@Input() expandable = true;
 	@Input() disableClick = false;
-	@Input() isReadOnly = false;
+	@Input() isReadonly = false;
 	@Input() disabled = false;
 	@Input() previewImage = false;
 	@Input() files: Array<File> = [];

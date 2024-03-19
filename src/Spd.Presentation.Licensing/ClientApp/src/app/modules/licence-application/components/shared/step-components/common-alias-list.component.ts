@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -32,7 +33,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</mat-form-field>
 					</div>
 					<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-						<mat-form-field class="remove-row-space">
+						<mat-form-field [ngClass]="isReadonly ? '' : 'remove-row-space'">
 							<mat-label>Surname</mat-label>
 							<input
 								matInput
@@ -45,6 +46,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 						<button
+							*ngIf="!isReadonly"
 							mat-mini-fab
 							class="delete-row-button ms-1 mb-3"
 							matTooltip="Remove previous name"
@@ -88,16 +90,22 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 		`,
 	],
 })
-export class CommonAliasListComponent {
+export class CommonAliasListComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	aliases: FormArray = this.formBuilder.array([]);
 
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
-	@Input() isReadOnly = false;
+	@Input() isReadonly = false;
 
-	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
+	constructor(private formBuilder: FormBuilder, private utilService: UtilService, private dialog: MatDialog) {}
+
+	ngOnInit(): void {
+		if (this.isReadonly) {
+			this.utilService.disableFormArrayInputs(this.aliasesArray);
+		}
+	}
 
 	onPreviousNameFlagChange(): void {
 		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
@@ -154,7 +162,7 @@ export class CommonAliasListComponent {
 	}
 
 	get isAllowAliasAdd(): boolean {
-		return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
+		return !this.isReadonly && this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
 	}
 
 	get aliasesArray(): FormArray {

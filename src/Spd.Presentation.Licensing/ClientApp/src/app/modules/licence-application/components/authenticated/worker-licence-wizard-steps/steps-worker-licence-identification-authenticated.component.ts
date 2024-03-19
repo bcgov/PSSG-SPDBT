@@ -6,6 +6,7 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/lic
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
+import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-fingerprints.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-identification-authenticated',
@@ -34,6 +35,36 @@ import { Subscription } from 'rxjs';
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_CITIZENSHIP)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_FINGERPRINTS)">
+							Save and Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_FINGERPRINTS)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_FINGERPRINTS)"
 						>
 							Next: Review
 						</button>
@@ -147,10 +178,11 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	extends BaseWizardStepComponent
 	implements OnInit, OnDestroy
 {
-	readonly STEP_CITIZENSHIP = 2;
-	readonly STEP_BC_DRIVERS_LICENCE = 4;
-	readonly STEP_HEIGHT_AND_WEIGHT = 5;
-	readonly STEP_PHOTO = 6;
+	readonly STEP_CITIZENSHIP = 1;
+	readonly STEP_FINGERPRINTS = 2;
+	readonly STEP_BC_DRIVERS_LICENCE = 3;
+	readonly STEP_HEIGHT_AND_WEIGHT = 4;
+	readonly STEP_PHOTO = 5;
 
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -158,6 +190,7 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	isFormValid = false;
 
 	@ViewChild(StepWorkerLicenceCitizenshipComponent) citizenshipComponent!: StepWorkerLicenceCitizenshipComponent;
+	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent)
 	bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
 	@ViewChild(StepWorkerLicencePhysicalCharacteristicsComponent)
@@ -186,6 +219,8 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 		switch (step) {
 			case this.STEP_CITIZENSHIP:
 				return this.citizenshipComponent.isFormValid();
+			case this.STEP_FINGERPRINTS:
+				return this.fingerprintsComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:
 				return this.bcDriverLicenceComponent.isFormValid();
 			case this.STEP_HEIGHT_AND_WEIGHT:
