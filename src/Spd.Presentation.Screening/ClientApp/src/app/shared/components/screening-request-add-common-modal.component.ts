@@ -245,7 +245,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		private optionsService: OptionsService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: ScreeningRequestAddDialogData
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		this.portal = this.dialogData?.portal;
@@ -397,7 +397,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 		if (this.portal == PortalTypeCode.Psso) {
 			// see if any crcs have PSSO+VS
-			const pssoVs = control.filter((item) => item.serviceType == ServiceTypeCode.PssoVs);
+			const pssoVs = control.filter((item) => item.serviceType == ServiceTypeCode.PssoVs || item.serviceType == ServiceTypeCode.PeCrcVs);
 			if (pssoVs.length > 0) {
 				this.promptVulnerableSector(body);
 			} else {
@@ -555,7 +555,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		if (this.isNotVolunteerOrg) {
 			this.showScreeningType = orgProfile
 				? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-				  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+				orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 				: false;
 		} else {
 			this.showScreeningType = false;
@@ -584,7 +584,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.showScreeningType = false;
 		this.showServiceType = true;
 		this.serviceTypes = ServiceTypes.filter(
-			(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
+			(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs ||
+				item.code == ServiceTypeCode.Mcfd || item.code == ServiceTypeCode.PeCrc ||
+				item.code == ServiceTypeCode.PeCrcVs
 		);
 	}
 
