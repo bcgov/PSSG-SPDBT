@@ -59,7 +59,7 @@ namespace Spd.Manager.Screening
             if (request.IsPSSO)
             {
                 //psso, cannot use orgId to filter.
-                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
+                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS, ServiceTypeEnum.MCFD, ServiceTypeEnum.PE_CRC_VS, ServiceTypeEnum.PE_CRC };
                 if (request.IsPSA)
                 {
                     //return all psso invites
