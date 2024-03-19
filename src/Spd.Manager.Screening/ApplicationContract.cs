@@ -617,7 +617,11 @@ namespace Spd.Manager.Screening
                 .NotEmpty()
                 .EmailAddress()
                 .MaximumLength(75)
-                .When(r => r.ServiceType != ServiceTypeCode.PSSO && r.ServiceType != ServiceTypeCode.PSSO_VS);
+                .When(r => r.ServiceType != ServiceTypeCode.PSSO &&
+                    r.ServiceType != ServiceTypeCode.PSSO_VS &&
+                    r.ServiceType != ServiceTypeCode.MCFD &&
+                    r.ServiceType != ServiceTypeCode.PE_CRC &&
+                    r.ServiceType != ServiceTypeCode.PE_CRC_VS);
 
             RuleFor(r => r.EmailAddress)
                 .EmailAddress()
