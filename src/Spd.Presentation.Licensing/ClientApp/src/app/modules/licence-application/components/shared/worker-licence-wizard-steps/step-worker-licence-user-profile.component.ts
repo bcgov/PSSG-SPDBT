@@ -34,6 +34,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
+								[hasBcscNameChange]="hasBcscNameChange"
 								[isReadonly]="false"
 							></app-common-user-profile>
 						</section>
@@ -59,12 +60,12 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 									[applicationTypeCode]="applicationTypeCode"
 								></app-common-user-profile-licence-mental-health-conditions>
 							</section>
+							<mat-divider class="mat-divider-main mt-3" *ngIf="!showConfirmation"></mat-divider>
 						</ng-container>
 
-						<section>
+						<section *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
 								<div>
-									<mat-divider class="mat-divider-main mt-2"></mat-divider>
 									<div class="text-minor-heading py-2">Confirmation</div>
 									<mat-checkbox formControlName="isProfileUpToDate">
 										I confirm that this information is up-to-date
@@ -118,6 +119,8 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
+	hasBcscNameChange = false;
+	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 	@ViewChild(CommonUserProfileLicenceCriminalHistoryComponent)
@@ -144,15 +147,19 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence or permit.';
+				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence.';
+				this.showConfirmation = true;
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
-				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence or permit.';
+				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence.';
+				this.showConfirmation = true;
 				break;
 			}
 			case ApplicationTypeCode.Update: {
-				this.alertText = 'Make sure your profile information is up-to-date before updating your licence or permit.';
+				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
+				this.hasBcscNameChange = true;
+				this.showConfirmation = true;
 				break;
 			}
 			default: {

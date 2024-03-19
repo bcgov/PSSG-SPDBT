@@ -175,10 +175,10 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<ActionResult> ProcessApplicantLicencePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string? successPath = _paymentsConfiguration.UnauthPersonalLicPaymentSuccessPath;
-            string? failPath = _paymentsConfiguration.UnauthPersonalLicPaymentFailPath;
-            string? cancelPath = _paymentsConfiguration.UnauthPersonalLicPaymentCancelPath;
-            string? errorPath = _paymentsConfiguration.UnauthPersonalLicPaymentErrorPath;
+            string? successPath = _paymentsConfiguration.AuthPersonalLicPaymentSuccessPath;
+            string? failPath = _paymentsConfiguration.AuthPersonalLicPaymentFailPath;
+            string? cancelPath = _paymentsConfiguration.AuthPersonalLicPaymentCancelPath;
+            string? errorPath = _paymentsConfiguration.AuthPersonalLicPaymentErrorPath;
 
             try
             {

@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -84,10 +84,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAuthenticatedRenewalComponent
-	extends BaseWizardComponent
-	implements OnInit, AfterViewInit
-{
+export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -133,15 +130,15 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent
 		this.updateCompleteStatus();
 	}
 
-	ngAfterViewInit(): void {
-		if (this.step3Complete) {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		} else if (this.step2Complete) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		} else if (this.step1Complete) {
-			this.stepper.selectedIndex = this.STEP_BACKGROUND;
-		}
-	}
+	// ngAfterViewInit(): void {
+	// 	if (this.step3Complete) {
+	// 		this.stepper.selectedIndex = this.STEP_REVIEW;
+	// 	} else if (this.step2Complete) {
+	// 		this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
+	// 	} else if (this.step1Complete) {
+	// 		this.stepper.selectedIndex = this.STEP_BACKGROUND;
+	// 	}
+	// }
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {

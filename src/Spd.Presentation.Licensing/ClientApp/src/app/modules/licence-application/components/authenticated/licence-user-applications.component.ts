@@ -919,9 +919,15 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
 								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-									LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-								)
+									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
 							);
+							// this.router.navigateByUrl(
+							// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							// 		LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+							// 	)
+							// );
 						}),
 						take(1)
 					)
