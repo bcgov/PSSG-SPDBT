@@ -4,6 +4,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
 internal abstract class LicenceAppManagerBase
@@ -91,18 +92,29 @@ internal abstract class LicenceAppManagerBase
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
         foreach (DocumentResp existingDoc in existingDocs.Items)
         {
-            if (!request.DocumentInfos.Any(d => d.DocumentUrlId == existingDoc.DocumentUrlId))
+            var doc = request.DocumentInfos.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
+            if (doc == null)
             {
                 //remove existingDoc and delete it from s3 bucket.
                 await _documentRepository.ManageAsync(new RemoveDocumentCmd(existingDoc.DocumentUrlId), ct);
             }
             else
             {
-                //update expiredDate
-                LicenceDocumentTypeCode? docCode = Mappings.GetLicenceDocumentTypeCode(existingDoc.DocumentType, existingDoc.DocumentType2);
-                DateOnly? expiredDate = request.DocumentExpiredInfos.FirstOrDefault(i => i.LicenceDocumentTypeCode == docCode)?.ExpiryDate;
-                if (expiredDate != null)
-                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, expiredDate), ct);
+                //update expiredDate 
+                LicenceDocumentTypeCode? existDocType = Mappings.GetLicenceDocumentTypeCode(existingDoc.DocumentType, existingDoc.DocumentType2);
+                if (doc.LicenceDocumentTypeCode == null)
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "documentType cannot be null");
+                if (existDocType != doc.LicenceDocumentTypeCode) //doc type changed
+                {
+                    //update expiredDate  and doc type
+                    DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode);
+                    DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum((LicenceDocumentTypeCode)doc.LicenceDocumentTypeCode);
+                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, doc.ExpiryDate, docType1, docType2), ct);
+                }
+                else
+                {
+                    await _documentRepository.ManageAsync(new UpdateDocumentCmd(existingDoc.DocumentUrlId, doc.ExpiryDate), ct);
+                }
             }
         }
     }
