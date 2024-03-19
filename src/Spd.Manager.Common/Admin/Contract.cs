@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Common.Admin
 {
@@ -79,6 +80,7 @@ namespace Spd.Manager.Common.Admin
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public bool IsActive { get; set; }
+        public IEnumerable<ServiceTypeCode> ServiceTypeCodes { get; set; }
     }
 
 }
