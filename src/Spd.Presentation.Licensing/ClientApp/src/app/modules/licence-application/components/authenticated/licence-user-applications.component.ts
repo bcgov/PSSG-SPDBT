@@ -15,7 +15,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { Subscription, take, tap } from 'rxjs';
+import { Subscription, forkJoin, take, tap } from 'rxjs';
 import {
 	CommonApplicationService,
 	UserApplicationResponse,
@@ -373,7 +373,7 @@ import {
 								</div>
 							</ng-container>
 
-							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicencesExist">
+							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeSwlExist">
 								<div class="row">
 									<div class="col-xl-7 col-lg-6">
 										<div class="text-data">You don't have an active licence</div>
@@ -391,7 +391,7 @@ import {
 								</div>
 							</div>
 
-							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeBaPermitsExist">
+							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeBaPermitExist">
 								<div class="row">
 									<div class="col-xl-7 col-lg-6">
 										<div class="text-data">You don't have an active Body Armour permit</div>
@@ -409,7 +409,7 @@ import {
 								</div>
 							</div>
 
-							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeAvPermitsExist">
+							<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeAvPermitExist">
 								<div class="row">
 									<div class="col-xl-7 col-lg-6">
 										<div class="text-data">You don't have an active Armoured Vehicle permit</div>
@@ -673,9 +673,9 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	// If the licence holder has a SWL, they can add a new Body Armour and/or Armoured Vehicle permit
 	// If the licence holder has a Body Armour permit, they can add a new Armoured Vehicle permit and/or a security worker licence
 	// If the licence holder has an Armoured vehicle permit, they can add a new Body Armour permit and/or a security worker licence
-	activeLicencesExist = false;
-	activeAvPermitsExist = false;
-	activeBaPermitsExist = false;
+	activeSwlExist = false;
+	activeAvPermitExist = false;
+	activeBaPermitExist = false;
 
 	expiredLicences: Array<UserLicenceResponse> = [];
 
@@ -704,10 +704,17 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
-	async ngOnInit(): Promise<void> {
-		this.commonApplicationService.userLicencesList().subscribe((resp: Array<UserLicenceResponse>) => {
-			this.activeApplications = resp.filter((item: UserLicenceResponse) => !item.isExpired);
-			this.expiredLicences = resp.filter((item: UserLicenceResponse) => item.isExpired);
+	ngOnInit(): void {
+		forkJoin([
+			this.commonApplicationService.userLicencesList(),
+			this.commonApplicationService.userApplicationsList(),
+		]).subscribe((resps: Array<any>) => {
+			const userLicencesList: Array<UserLicenceResponse> = resps[0];
+			const userApplicationsList: Array<UserApplicationResponse> = resps[1];
+
+			// User Licences/Permits
+			this.activeApplications = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
+			this.expiredLicences = userLicencesList.filter((item: UserLicenceResponse) => item.isExpired);
 			const renewals = this.activeApplications.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
 			renewals.forEach((item: UserLicenceResponse) => {
 				const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
@@ -716,28 +723,51 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 					`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by ${itemExpiry}.`
 				);
 			});
-			this.activeLicencesExist =
+
+			// User Licence/Permit Applications
+			this.applicationsDataSource = new MatTableDataSource(userApplicationsList ?? []);
+			this.applicationIsInProgress = !!userApplicationsList.find(
+				(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+			);
+
+			// Set flags that determine if NEW licences/permits can be created
+			this.activeSwlExist =
 				this.activeApplications.findIndex(
 					(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 				) >= 0;
-			this.activeBaPermitsExist =
+
+			if (!this.activeSwlExist) {
+				this.activeSwlExist =
+					userApplicationsList.findIndex(
+						(item: UserApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
+					) >= 0;
+			}
+
+			this.activeBaPermitExist =
 				this.activeApplications.findIndex(
 					(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 				) >= 0;
-			this.activeAvPermitsExist =
+			if (!this.activeBaPermitExist) {
+				this.activeBaPermitExist =
+					userApplicationsList.findIndex(
+						(item: UserApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
+					) >= 0;
+			}
+
+			this.activeAvPermitExist =
 				this.activeApplications.findIndex(
 					(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 				) >= 0;
+			if (!this.activeBaPermitExist) {
+				this.activeAvPermitExist =
+					userApplicationsList.findIndex(
+						(item: UserApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+					) >= 0;
+			}
+
+			this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 
 			this.areLicencesLoaded = true;
-		});
-
-		this.commonApplicationService.userApplicationsList().subscribe((resp: Array<UserApplicationResponse>) => {
-			this.applicationsDataSource = new MatTableDataSource(resp ?? []);
-			this.applicationIsInProgress = !!resp.find(
-				(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
-			);
-			this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 		});
 	}
 
