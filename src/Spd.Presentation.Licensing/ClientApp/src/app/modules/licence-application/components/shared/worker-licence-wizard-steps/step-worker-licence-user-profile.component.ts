@@ -158,7 +158,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
-				this.hasBcscNameChange = true;
+				this.hasBcscNameChange = true; // TODO calculate if name has changed.
 				this.showConfirmation = true;
 				break;
 			}

@@ -860,31 +860,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
-	// onUpdateAuthorization(): void {
-	// 	const data: DialogOptions = {
-	// 		icon: 'warning',
-	// 		title: 'UpdateAuthorization',
-	// 		message: 'UpdateAuthorization',
-	// 		actionText: 'Save',
-	// 		cancelText: 'Cancel',
-	// 	};
-
-	// 	this.dialog
-	// 		.open(DialogComponent, { data })
-	// 		.afterClosed()
-	// 		.subscribe((response: boolean) => {
-	// 			if (response) {
-	// 				// TODO handle response
-	// 			}
-	// 		});
-	// }
-
-	// onKeydownUpdateAuthorization(event: KeyboardEvent) {
-	// 	if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
-
-	// 	this.onUpdateAuthorization();
-	// }
-
 	onRequestReplacement(appl: UserLicenceResponse): void {
 		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
@@ -1004,7 +979,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
 				// TODO permit renew
 				// this.permitApplicationService
-				// 	.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal) // TODO remove hard-coded
+				// 	.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal)
 				// 	.pipe(
 				// 		tap((_resp: any) => {
 				// 			this.router.navigateByUrl(
