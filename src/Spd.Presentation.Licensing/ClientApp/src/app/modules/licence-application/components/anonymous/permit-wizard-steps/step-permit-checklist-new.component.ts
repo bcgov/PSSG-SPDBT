@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
@@ -46,8 +47,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								Applicants without a BC Service Card must submit a proof of fingerprinting request. Download the
 								<a
 									aria-label="Request for Fingerprinting form"
-									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
-									target="_blank"
+									download="Request For Fingerprinting Form"
+									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
 								>, take it your local police department, and return to this application when you have this form
 								completed.
@@ -93,6 +94,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitChecklistNewComponent implements LicenceChildStepperStepComponent {
+	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
+
 	// subTitle = '';
 	// viewExemptionsLink = '';
 

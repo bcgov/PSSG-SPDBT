@@ -16,15 +16,13 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
-							<div class="fw-semibold fs-6">For all applicants:</div>
-
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of training and experience</span>
 							</mat-checkbox>
 							<p class="checklist-info">
 								If you are adding a new category to your licence, you may need to provide proof of training and/or
-								experience. <a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp; about
-								the types of documents we accept for each security worker category.
+								experience. <a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a> about the
+								types of documents we accept for each security worker category.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -34,7 +32,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							</mat-checkbox>
 							<p class="checklist-info">
 								You can upload a new passport-quality photo of your face looking straight at the camera against a plain,
-								white background. 
+								white background.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
