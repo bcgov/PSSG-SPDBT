@@ -21,7 +21,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</div>
 
-		<ng-container *ngIf="hasNameChanged">
+		<ng-container *ngIf="hasBcscNameChange; else hasNameChanged">
+			<app-alert type="info" icon="" [showBorder]="false">
+				<div>We noticed you changed your name recently on your BC Services Card.</div>
+				<div>Do you want a new licence printed with your new name for a $20 fee?</div>
+			</app-alert>
+		</ng-container>
+		<ng-template #hasNameChanged>
 			<app-alert type="info" icon="" [showBorder]="false">
 				Have you changed your name?
 				<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
@@ -29,14 +35,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				>
 				to update this information on your BC Services Card. Any changes you make will then be updated here.
 			</app-alert>
-		</ng-container>
-
-		<ng-container *ngIf="nameHasChanged">
-			<app-alert type="info" icon="" [showBorder]="false">
-				<div>We noticed you changed your name recently on your BC Services Card.</div>
-				<div>Do you want a new licence printed with your new name for a $20 fee?</div>
-			</app-alert>
-		</ng-container>
+		</ng-template>
 
 		<div class="row mt-3 mb-2">
 			<div [formGroup]="personalInformationFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
@@ -87,14 +86,12 @@ export class CommonUserProfilePersonalInformationComponent implements OnInit, Li
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	hasNameChanged = true;
-	nameHasChanged = true;
-
 	title = 'Confirm your personal information';
 	subtitle =
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 
 	@Input() isReadonly = false;
+	@Input() hasBcscNameChange = false;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 
