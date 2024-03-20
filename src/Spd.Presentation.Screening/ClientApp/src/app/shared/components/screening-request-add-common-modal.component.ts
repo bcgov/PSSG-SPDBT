@@ -20,7 +20,9 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { OptionsService } from 'src/app/core/services/options.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -241,7 +243,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialogRef: MatDialogRef<ScreeningRequestAddCommonModalComponent>,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserBceidService,
+		private authUserBceidService: AuthUserBceidService,
+		private authUserIdirService: AuthUserIdirService,
+		private utilService: UtilService,
 		private optionsService: OptionsService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: ScreeningRequestAddDialogData
@@ -266,7 +270,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			this.isAllowMultiple = false;
 			this.applicationService
 				.apiOrgsOrgIdClearancesExpiredClearanceIdGet({
-					orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+					orgId: this.authUserBceidService.bceidUserInfoProfile?.orgId!,
 					clearanceId,
 				})
 				.pipe()
@@ -549,7 +553,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.requestName = 'Criminal Record Check';
 
 		// using bceid
-		const orgProfile = this.authUserService.bceidUserOrgProfile;
+		const orgProfile = this.authUserBceidService.bceidUserOrgProfile;
 		this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 		if (this.isNotVolunteerOrg) {
@@ -583,11 +587,16 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.isNotVolunteerOrg = false;
 		this.showScreeningType = false;
 		this.showServiceType = true;
-		this.serviceTypes = ServiceTypes.filter(
-			(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs ||
-				item.code == ServiceTypeCode.Mcfd || item.code == ServiceTypeCode.PeCrc ||
-				item.code == ServiceTypeCode.PeCrcVs
-		);
+
+		// get the service types to show based upon the user's ministry
+		const userProfile = this.authUserIdirService.idirUserWhoamiProfile;
+		this.optionsService.getMinistries().subscribe((ministries: Array<MinistryResponse>) => {
+			const currentMinistry = ministries.find((item: MinistryResponse) => item.id === userProfile?.orgId);
+
+			const serviceTypes = currentMinistry?.serviceTypeCodes?.map((item: ServiceTypeCode) => ServiceTypes.find((option: SelectOptions) => option.code === item)!) ?? [];
+			serviceTypes.sort((a: SelectOptions, b: SelectOptions) => this.utilService.compareByStringUpper(a.desc ?? '', b.desc));
+			this.serviceTypes = serviceTypes;
+		});
 	}
 
 	get getFormControls() {

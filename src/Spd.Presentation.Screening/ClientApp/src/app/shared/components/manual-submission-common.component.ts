@@ -29,6 +29,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { FormatDatePipe } from '../pipes/format-date.pipe';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 
 export interface AliasCreateRequest {
 	givenName?: null | string;
@@ -552,7 +553,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private router: Router,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserBceidService,
+		private authUserBceidService: AuthUserBceidService,
+		private authUserIdirService: AuthUserIdirService,
 		private optionsService: OptionsService,
 		private utilService: UtilService,
 		private hotToast: HotToastService,
@@ -570,7 +572,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		if (this.portal == PortalTypeCode.Crrp) {
 			// using bceid
-			const orgProfile = this.authUserService.bceidUserOrgProfile;
+			const orgProfile = this.authUserBceidService.bceidUserOrgProfile;
 			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 			if (this.isNotVolunteerOrg) {
@@ -585,20 +587,22 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			this.showServiceType = false;
 			this.serviceTypeDefault = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
 		} else {
-			this.optionsService.getMinistries().subscribe((resp) => {
-				this.ministries = resp;
-			});
-
 			// using idir
 			this.isNotVolunteerOrg = true;
 			this.showScreeningType = false;
 			this.showServiceType = true;
 			this.serviceTypeDefault = ServiceTypeCode.Psso;
-			this.serviceTypes = ServiceTypes.filter(
-				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs ||
-					item.code == ServiceTypeCode.Mcfd || item.code == ServiceTypeCode.PeCrc ||
-					item.code == ServiceTypeCode.PeCrcVs
-			);
+
+			// get the service types to show based upon the user's ministry
+			const userProfile = this.authUserIdirService.idirUserWhoamiProfile;
+			this.optionsService.getMinistries().subscribe((ministries: Array<MinistryResponse>) => {
+				this.ministries = ministries;
+				const currentMinistry = ministries.find((item: MinistryResponse) => item.id === userProfile?.orgId);
+
+				const serviceTypes = currentMinistry?.serviceTypeCodes?.map((item: ServiceTypeCode) => ServiceTypes.find((option: SelectOptions) => option.code === item)!) ?? [];
+				serviceTypes.sort((a: SelectOptions, b: SelectOptions) => this.utilService.compareByStringUpper(a.desc ?? '', b.desc));
+				this.serviceTypes = serviceTypes;
+			});
 		}
 
 		this.resetForm();
