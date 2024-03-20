@@ -11,7 +11,8 @@ namespace Spd.Manager.Common.Admin
             CreateMap<AddressAutocompleteFindResponse, AddressFindResponse>();
             CreateMap<AddressAutocompleteRetrieveResponse, AddressRetrieveResponse>();
             CreateMap<OrgResult, MinistryResponse>()
-                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.OrganizationName));
+                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.OrganizationName))
+                .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => s.ServiceTypes));
         }
     }
 }
