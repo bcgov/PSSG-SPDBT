@@ -38,11 +38,23 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 			);
 		}
 
+		// If the user is navigating to a payment page, the service does not have to be initialized
+		const path = this.router.url;
+		if (
+			path.includes(LicenceApplicationRoutes.PAYMENT_SUCCESS) ||
+			path.includes(LicenceApplicationRoutes.PAYMENT_FAIL) ||
+			path.includes(LicenceApplicationRoutes.PAYMENT_CANCEL) ||
+			path.includes(LicenceApplicationRoutes.PAYMENT_ERROR)
+		) {
+			return;
+		}
+
 		console.debug(
 			'WorkerLicenceApplicationBaseAuthenticatedComponent',
 			this.licenceApplicationService.initialized,
 			this.permitApplicationService.initialized
 		);
+
 		if (!this.licenceApplicationService.initialized && !this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			return;

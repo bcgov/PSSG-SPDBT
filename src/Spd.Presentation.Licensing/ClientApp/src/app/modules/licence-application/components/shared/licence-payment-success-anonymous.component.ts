@@ -7,7 +7,7 @@ import { AppRoutes } from '@app/app-routing.module';
 import { FileUtilService } from '@app/core/services/file-util.service';
 
 @Component({
-	selector: 'app-licence-payment-success',
+	selector: 'app-licence-payment-success-anonymous',
 	template: `
 		<section class="step-section">
 			<app-common-payment-success
@@ -18,7 +18,7 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 	`,
 	styles: [],
 })
-export class LicencePaymentSuccessComponent implements OnInit {
+export class LicencePaymentSuccessAnonymousComponent implements OnInit {
 	payment: PaymentResponse | null = null;
 
 	constructor(
@@ -35,7 +35,7 @@ export class LicencePaymentSuccessComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 		this.paymentService
-			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
+			.apiUnauthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe()
 			.subscribe((resp: PaymentResponse) => {
 				this.payment = resp;
@@ -44,7 +44,7 @@ export class LicencePaymentSuccessComponent implements OnInit {
 
 	onDownloadReceipt(): void {
 		this.paymentService
-			.apiAuthLicenceApplicationIdPaymentReceiptGet$Response({
+			.apiUnauthLicenceApplicationIdPaymentReceiptGet$Response({
 				applicationId: this.payment?.applicationId!,
 			})
 			.pipe()

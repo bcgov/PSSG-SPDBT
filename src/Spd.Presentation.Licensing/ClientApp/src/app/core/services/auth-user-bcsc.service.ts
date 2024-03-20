@@ -14,7 +14,6 @@ export class AuthUserBcscService {
 
 		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet());
 		if (resp) {
-			// resp.isFirstTimeLogin = true; // TODO remove hardcoded
 			this.applicantLoginProfile = resp;
 			return Promise.resolve(true);
 		}

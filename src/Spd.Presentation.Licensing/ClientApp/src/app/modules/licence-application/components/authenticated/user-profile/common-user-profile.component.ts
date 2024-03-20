@@ -14,6 +14,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 		<app-common-user-profile-personal-information
 			[personalInformationFormGroup]="personalInformationFormGroup"
 			[contactFormGroup]="contactFormGroup"
+			[hasBcscNameChange]="hasBcscNameChange"
 			[isReadonly]="isReadonly"
 		></app-common-user-profile-personal-information>
 
@@ -75,6 +76,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@ViewChild(CommonAddressComponent) mailingAddressComponent!: CommonAddressComponent;
 
 	@Input() isReadonly!: boolean;
+	@Input() hasBcscNameChange!: boolean;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 	@Input() aliasesFormGroup!: FormGroup;
