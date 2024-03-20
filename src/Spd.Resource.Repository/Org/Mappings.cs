@@ -36,6 +36,7 @@ namespace Spd.Resource.Repository.Org
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
             .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => s._parentaccountid_value))
             .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
+            .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnums(s.spd_account_spd_servicetype)))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.HasInvoiceSupport, opt => opt.MapFrom(s => s.spd_eligibleforcreditpayment != null && s.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s._spd_organizationtypeid_value).Item1))
@@ -64,7 +65,7 @@ namespace Spd.Resource.Repository.Org
         {
             if (code == null) return null;
             string? enumName = Enum.GetName(typeof(WorksWithChildrenOptionSet), code);
-            if(enumName == null) return null;
+            if (enumName == null) return null;
             return Enum.Parse<EmployeeInteractionTypeCode>(enumName);
         }
 
@@ -72,6 +73,11 @@ namespace Spd.Resource.Repository.Org
         {
             if (code == null || code == EmployeeInteractionTypeCode.Neither) return null;
             return Enum.Parse<WorksWithChildrenOptionSet>(code.ToString());
+        }
+
+        private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
+        {
+            return servicetypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid))).ToArray();
         }
     }
 }
