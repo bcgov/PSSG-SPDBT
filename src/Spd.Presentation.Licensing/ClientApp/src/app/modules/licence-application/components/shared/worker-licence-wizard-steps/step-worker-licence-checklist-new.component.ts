@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
@@ -21,11 +22,11 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								<span class="checklist-label">Proof of fingerprinting request</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-							You must submit a proof of fingerprinting request. Download the
+								All applicants must submit a proof of fingerprinting request. Download the
 								<a
 									aria-label="Request for Fingerprinting form"
-									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
-									target="_blank"
+									download="Request For Fingerprinting Form"
+									[href]="downloadFilePath"
 									>Request for Fingerprinting form</a
 								>, take it your local police department, and return to this application when you have this form
 								completed.
@@ -35,8 +36,9 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								<span class="checklist-label">Proof of training and experience</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								Some categories of security workers, such as security guards, require proof of training or experience.
-								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>&nbsp;about the types of
+								Some categories of security workers, such as security guards, require proof of training and/or
+								experience.
+								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a> about the types of
 								documents we accept for each security worker category.
 							</p>
 
@@ -57,7 +59,12 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								You will need to upload a passport-quality photo of your face looking straight at the camera against a
 								plain, white background. Uploading a photo that does not meet the criteria will delay your application's
 								processing time. For further information on Passport Quality Photographs, please review the Government
-								of Canada’s <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html" target="_blank">passport photograph requirements</a>.
+								of Canada’s
+								<a
+									href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html"
+									target="_blank"
+									>passport photograph requirements</a
+								>.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -105,6 +112,8 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	styles: [],
 })
 export class StepWorkerLicenceChecklistNewComponent implements LicenceChildStepperStepComponent {
+	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
+
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});

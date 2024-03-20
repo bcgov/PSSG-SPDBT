@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FingerprintTearOffModalComponent } from '@app/shared/components/fingerprint-tear-off-modal.component';
 
@@ -14,9 +15,10 @@ import { FingerprintTearOffModalComponent } from '@app/shared/components/fingerp
 						<div>
 							Scan or take a photo of the tear-off section on page 2 of the
 							<a
-								href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-								target="_blank"
-								>Request for Fingerprinting</a
+								aria-label="Request for Fingerprinting form"
+								download="Request For Fingerprinting Form"
+								[href]="downloadFilePath"
+								>Request for Fingerprinting form</a
 							>
 							form.
 						</div>
@@ -55,9 +57,10 @@ import { FingerprintTearOffModalComponent } from '@app/shared/components/fingerp
 						>Your fingerprints must be taken to continue to verify your identity.<br /><br />
 						Download the
 						<a
-							href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-							target="_blank"
-							>Request for Fingerprinting</a
+							aria-label="Request for Fingerprinting form"
+							download="Request For Fingerprinting Form"
+							[href]="downloadFilePath"
+							>Request for Fingerprinting form</a
 						>
 						form, take it to a fingerprinting agency (such as your local police department), and complete this
 						application when you have documentation.
@@ -69,6 +72,8 @@ import { FingerprintTearOffModalComponent } from '@app/shared/components/fingerp
 	styles: [],
 })
 export class CommonFingerprintsComponent {
+	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
+
 	@Input() form!: FormGroup;
 
 	@Output() fileUploaded = new EventEmitter<File>();
