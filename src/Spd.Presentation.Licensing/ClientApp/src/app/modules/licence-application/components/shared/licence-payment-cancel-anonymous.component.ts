@@ -4,7 +4,7 @@ import { AppRoutes } from '@app/app-routing.module';
 import { CommonApplicationService } from '../../services/common-application.service';
 
 @Component({
-	selector: 'app-licence-payment-cancel',
+	selector: 'app-licence-payment-cancel-anonymous',
 	template: `
 		<section class="step-section">
 			<app-common-payment-cancel
@@ -15,7 +15,7 @@ import { CommonApplicationService } from '../../services/common-application.serv
 	`,
 	styles: [],
 })
-export class LicencePaymentCancelComponent implements OnInit {
+export class LicencePaymentCancelAnonymousComponent implements OnInit {
 	licenceAppId: string | null = null;
 
 	constructor(
@@ -27,16 +27,16 @@ export class LicencePaymentCancelComponent implements OnInit {
 	ngOnInit(): void {
 		this.licenceAppId = this.route.snapshot.paramMap.get('id');
 		if (!this.licenceAppId) {
-			console.debug('LicencePaymentCancelComponent - missing licenceAppId');
+			console.debug('LicencePaymentCancelAnonymousComponent - missing licenceAppId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowAuthenticated(this.licenceAppId!, 'Payment for Application');
+		this.commonApplicationService.payNowAnonymous(this.licenceAppId!, 'Payment for Application');
 	}
 
 	onDownloadManualPaymentForm(): void {
-		this.commonApplicationService.downloadManualPaymentFormAuthenticated(this.licenceAppId!);
+		this.commonApplicationService.downloadManualPaymentFormUnauthenticated(this.licenceAppId!);
 	}
 }

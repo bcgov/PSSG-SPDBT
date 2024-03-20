@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
@@ -11,6 +12,7 @@ import {
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -281,6 +283,113 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header">Profile Information</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 2"
+														aria-label="Go to Step 2"
+														(click)="$event.stopPropagation(); onEditProfile()"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Personal Information</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Applicant Name</div>
+													<div class="summary-text-data">
+														{{ givenName }} {{ middleName1 }} {{ middleName2 }}
+														{{ surname }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Date of Birth</div>
+													<div class="summary-text-data">
+														{{ dateOfBirth | formatDate | default }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Sex</div>
+													<div class="summary-text-data">
+														{{ genderCode | options : 'GenderTypes' | default }}
+													</div>
+												</div>
+											</div>
+
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+
+											<div class="text-minor-heading mt-4">Police Background</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Police Officer or Peace Officer Roles</div>
+													<div class="summary-text-data">{{ isPoliceOrPeaceOfficer }}</div>
+												</div>
+												<ng-container *ngIf="isPoliceOrPeaceOfficer === booleanTypeCodes.Yes">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Role</div>
+														<div class="summary-text-data">
+															<span
+																*ngIf="
+																	policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
+																	else otherPoliceOfficerRole
+																"
+																>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
+															>
+															<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12" *ngIf="letterOfNoConflictAttachments">
+														<div class="text-label d-block text-muted">Letter of No Conflict</div>
+														<div class="summary-text-data">
+															<div *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
+																{{ doc.name }}
+															</div>
+														</div>
+													</div>
+												</ng-container>
+											</div>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Mental Health Conditions</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Mental Health Conditions?</div>
+													<div class="summary-text-data">{{ isTreatedForMHC }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
+													<div class="text-label d-block text-muted">Mental Health Condition Form</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
+												</div>
+											</div>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">Criminal History</div>
+											<div class="row mt-0">
+												<div class="col-12">
+													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
+													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+												</div>
+												<div class="col-12" *ngIf="criminalChargeDescription">
+													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
+													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
+												</div>
+											</div>
+										</div>
+									</mat-expansion-panel>
+
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
 													<div class="panel-header">Identification</div>
 													<button
 														mat-mini-fab
@@ -288,7 +397,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 														class="go-to-step-button"
 														matTooltip="Go to Step 3"
 														aria-label="Go to Step 3"
-														(click)="$event.stopPropagation(); onEditStep(2)"
+														(click)="$event.stopPropagation(); onEditStep(1)"
 													>
 														<mat-icon>edit</mat-icon>
 													</button>
@@ -472,6 +581,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
+		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
 		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
@@ -483,6 +593,15 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 	onEditStep(stepNumber: number) {
 		this.editStep.emit(stepNumber);
+	}
+
+	onEditProfile() {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+			),
+			{ state: { applicationTypeCode: this.applicationTypeCode } }
+		);
 	}
 
 	onUpdateData(): void {
@@ -604,6 +723,25 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	}
 	get dogsPurposeAttachments(): File[] {
 		return this.licenceModelData.dogsAuthorizationData.attachments ?? [];
+	}
+
+	get givenName(): string {
+		return this.licenceModelData.personalInformationData.givenName ?? '';
+	}
+	get middleName1(): string {
+		return this.licenceModelData.personalInformationData.middleName1 ?? '';
+	}
+	get middleName2(): string {
+		return this.licenceModelData.personalInformationData.middleName2 ?? '';
+	}
+	get surname(): string {
+		return this.licenceModelData.personalInformationData.surname ?? '';
+	}
+	get genderCode(): string {
+		return this.licenceModelData.personalInformationData.genderCode ?? '';
+	}
+	get dateOfBirth(): string {
+		return this.licenceModelData.personalInformationData.dateOfBirth ?? '';
 	}
 
 	get isPoliceOrPeaceOfficer(): string {

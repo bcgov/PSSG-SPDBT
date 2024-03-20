@@ -426,6 +426,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
+		console.log('saveUserProfileAndContinue', applicationTypeCode);
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
 				switch (applicationTypeCode) {
@@ -1104,6 +1105,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },
 				mailingAddress: { ...mailingAddress },
@@ -1140,6 +1142,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private applyLicenceIntoModel(resp: WorkerLicenceAppResponse): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
+
 		const soleProprietorData = {
 			isSoleProprietor: resp.businessTypeCode === BusinessTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
 			businessTypeCode: resp.businessTypeCode,
@@ -1514,6 +1517,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicationPortalStatus: resp.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: true },
 				soleProprietorData,
 				expiredLicenceData,
 				licenceTermData,
@@ -1522,7 +1526,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				characteristicsData,
 				citizenshipData,
 				photographOfYourselfData,
-				// profileConfirmationData: { isProfileUpToDate: true },
 				categoryArmouredCarGuardFormGroup,
 				categoryBodyArmourSalesFormGroup,
 				categoryClosedCircuitTelevisionInstallerFormGroup,

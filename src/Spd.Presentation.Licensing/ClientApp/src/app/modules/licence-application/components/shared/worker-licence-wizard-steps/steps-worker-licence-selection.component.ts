@@ -45,7 +45,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					<app-step-worker-licence-checklist-update></app-step-worker-licence-checklist-update>
 				</ng-container>
 
-				<ng-container *ngIf="!isLoggedIn; else isLoggedInChecklistSteps">
+				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
 					<div class="row wizard-button-row">
 						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
@@ -57,8 +57,23 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
 					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
+								Previous
+							</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+							<button
+								mat-stroked-button
+								color="primary"
+								class="large next-review-step mb-2"
+								(click)="onNextReview(STEP_LICENCE_CATEGORY)"
+							>
+								Next: Review
+							</button>
 						</div>
 					</div>
 				</ng-template>
@@ -85,6 +100,16 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							Next
 						</button>
 					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
+						>
+							Next: Review
+						</button>
+					</div>
 				</div>
 			</mat-step>
 
@@ -107,6 +132,16 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							Next
 						</button>
 					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
+						>
+							Next: Review
+						</button>
+					</div>
 				</div>
 			</mat-step>
 
@@ -125,14 +160,14 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<!-- <button
+						<button
 							mat-stroked-button
 							color="primary"
 							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_EXPIRED)"
+							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
 						>
 							Next: Review
-						</button> -->
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -361,6 +396,15 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 		this.childNextStep.emit(true);
 	}
 
+	onGotoUserProfile(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+			),
+			{ state: { applicationTypeCode: this.applicationTypeCode } }
+		);
+	}
+
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
@@ -408,8 +452,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	}
 
 	get showTermsOfUse(): boolean {
-		// authenticated: agree everytime for Update
 		// anonymous: agree everytime for all
-		return (this.isLoggedIn && this.applicationTypeCode === ApplicationTypeCode.Update) || !this.isLoggedIn;
+		return !this.isLoggedIn;
 	}
 }
