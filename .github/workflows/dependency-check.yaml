@@ -1,4 +1,4 @@
-name: "owasp-depenency-check"
+name: "dependency-check"
 
 on:  
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 jobs:
   depcheck-dynamics:
     runs-on: ubuntu-latest
-    name: depecheck_dynamics
+    name: depcheck_dynamics
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -33,7 +33,7 @@ jobs:
 
   depcheck-screening:
     runs-on: ubuntu-latest
-    name: depecheck_screening
+    name: depcheck_screening
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -58,7 +58,7 @@ jobs:
 
   depcheck-licensing:
     runs-on: ubuntu-latest
-    name: depecheck_licensing
+    name: depcheck_licensing
     steps:
       - name: Checkout
         uses: actions/checkout@master
