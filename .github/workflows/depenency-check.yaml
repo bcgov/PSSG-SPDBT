@@ -1,0 +1,82 @@
+name: "owasp-depenency-check"
+
+on:  
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * Mon'
+
+jobs:
+  depcheck-dynamics:
+    runs-on: ubuntu-latest
+    name: depecheck_dynamics
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build
+        run: dotnet build src/Spd.Presentation.Dynamics
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'dynamics'
+          path: 'src/Spd.Presentation.Dynamics'
+          format: 'HTML'
+          out: 'reports' # this is the default, no need to specify unless you wish to override it
+          args: >
+            --failOnCVSS 7
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report - dynamics
+           path: ${{github.workspace}}/reports
+
+  depcheck-screening:
+    runs-on: ubuntu-latest
+    name: depecheck_screening
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build
+        run: dotnet build src/Spd.Presentation.Screening
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'screening'
+          path: 'src/Spd.Presentation.Screening'
+          format: 'HTML'
+          out: 'reports' # this is the default, no need to specify unless you wish to override it
+          args: >
+            --failOnCVSS 7
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report - screening
+           path: ${{github.workspace}}/reports
+
+  depcheck-licensing:
+    runs-on: ubuntu-latest
+    name: depecheck_licensing
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build
+        run: dotnet build src/Spd.Presentation.Licensing
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'licensing'
+          path: 'src/Spd.Presentation.Licensing'
+          format: 'HTML'
+          out: 'reports' # this is the default, no need to specify unless you wish to override it
+          args: >
+            --failOnCVSS 7
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report - licensing
+           path: ${{github.workspace}}/reports
