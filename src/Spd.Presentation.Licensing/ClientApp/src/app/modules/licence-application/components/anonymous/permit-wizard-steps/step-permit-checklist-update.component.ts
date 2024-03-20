@@ -36,7 +36,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								processing time. For further information on Passport Quality Photographs, please review the Government
 								of Canada’s
 								<a
-									aria-label="Request for Fingerprinting form"
+									aria-label="Passport photograph requirements"
 									href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html"
 									target="_blank"
 									>passport photograph requirements</a
