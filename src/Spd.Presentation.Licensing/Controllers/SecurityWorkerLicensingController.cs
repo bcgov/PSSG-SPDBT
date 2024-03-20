@@ -73,13 +73,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/{licenceAppId}")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<WorkerLicenceAppResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
             return await _mediator.Send(new GetWorkerLicenceQuery(licenceAppId));
         }
-
 
         /// <summary>
         /// Upload licence application files
