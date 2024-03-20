@@ -117,7 +117,30 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
+        /// Uploading file only save files in cache, the files are not connected to the application yet.
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/authenticated/files")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadLicenceAppFilesAuthenticated([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+
+            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command, ct);
+            Guid fileKeyCode = Guid.NewGuid();
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
+            return fileKeyCode;
+        }
+
+        /// <summary>
         /// Submit Security Worker Licence Application Json part for authenticated users
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
         /// <param name="ct"></param>
@@ -260,7 +283,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
         #endregion
-
 
     }
 }
