@@ -116,11 +116,15 @@ import { StepsBusinessLicenceInformationNewComponent } from './components/busine
 import { StepsBusinessLicenceReviewComponent } from './components/business/steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionNewComponent } from './components/business/steps-business-licence-selection-new.component';
 import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
+import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
+import { LicencePaymentErrorAnonymousComponent } from './components/shared/licence-payment-error-anonymous.component';
 import { LicencePaymentErrorComponent } from './components/shared/licence-payment-error.component';
+import { LicencePaymentFailAnonymousComponent } from './components/shared/licence-payment-fail-anonymous.component';
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
+import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
-import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
+import { LicenceUpdateReceivedSuccessAnonymousComponent } from './components/shared/licence-update-received-success-anonymous.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
 import { CommonAddressComponent } from './components/shared/step-components/common-address.component';
@@ -241,8 +245,12 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentErrorComponent,
 		LicencePaymentFailComponent,
 		LicencePaymentSuccessComponent,
+		LicencePaymentCancelAnonymousComponent,
+		LicencePaymentErrorAnonymousComponent,
+		LicencePaymentFailAnonymousComponent,
+		LicencePaymentSuccessAnonymousComponent,
+		LicenceUpdateReceivedSuccessAnonymousComponent,
 		CommonUserProfileLicencePoliceBackgroundComponent,
-		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitWizardAnonymousNewComponent,

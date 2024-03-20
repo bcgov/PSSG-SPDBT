@@ -250,6 +250,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for Security Worker Licence Update');
+		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence Update');
 	}
 }
