@@ -792,11 +792,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceEmptyAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-
 		this.licenceModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData,
+				workerLicenceTypeData: { workerLicenceTypeCode: workerLicenceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
@@ -1517,7 +1515,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicationPortalStatus: resp.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
-				profileConfirmationData: { isProfileUpToDate: true },
 				soleProprietorData,
 				expiredLicenceData,
 				licenceTermData,
@@ -1569,10 +1566,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceTermData = {
 			licenceTermCode: null,
 		};
-		// const bcDriversLicenceData = {
-		// 	hasBcDriversLicence: null,
-		// 	bcDriversLicenceNumber: null,
-		// };
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
@@ -1635,6 +1628,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				originalPhotoOfYourselfExpired,
 				originalDogAuthorizationExists,
@@ -1642,7 +1636,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				soleProprietorData,
 				licenceTermData,
 				fingerprintProofData,
-				// bcDriversLicenceData,
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
@@ -1675,6 +1668,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				mentalHealthConditionsData,
 				criminalHistoryData,
@@ -1699,6 +1693,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				residentialAddress: { ...residentialAddress },
 			},

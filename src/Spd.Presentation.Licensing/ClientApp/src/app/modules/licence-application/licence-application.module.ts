@@ -78,9 +78,7 @@ import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authe
 import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-summary-review-authenticated.component';
-import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { BcBranchEditModalComponent } from './components/business/bc-branch-edit-modal.component';
@@ -311,7 +309,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceAliasesComponent,
 		StepWorkerLicenceAllUpdatesAuthenticatedComponent,
 		StepWorkerLicenceApplicationTypeAnonymousComponent,
-		StepWorkerLicenceApplicationTypeAuthenticatedComponent,
 		StepWorkerLicenceBcDriverLicenceComponent,
 		StepWorkerLicenceCategoryComponent,
 		StepWorkerLicenceChecklistNewComponent,
@@ -343,7 +340,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceTermComponent,
 		StepWorkerLicenceTermsOfUseComponent,
 		StepWorkerLicenceTypeAnonymousComponent,
-		StepWorkerLicenceTypeAuthenticatedComponent,
 		StepWorkerLicenceUpdateFeeComponent,
 		StepWorkerLicenceUserProfileComponent,
 		StepsBusinessLicenceInformationNewComponent,

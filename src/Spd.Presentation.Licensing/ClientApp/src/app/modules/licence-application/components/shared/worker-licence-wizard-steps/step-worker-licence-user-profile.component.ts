@@ -60,27 +60,26 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 									[applicationTypeCode]="applicationTypeCode"
 								></app-common-user-profile-licence-mental-health-conditions>
 							</section>
-							<mat-divider class="mat-divider-main mt-3" *ngIf="!showConfirmation"></mat-divider>
 						</ng-container>
+
+						<mat-divider class="mat-divider-main mt-3"></mat-divider>
 
 						<section *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
-								<div>
-									<div class="text-minor-heading py-2">Confirmation</div>
-									<mat-checkbox formControlName="isProfileUpToDate">
-										I confirm that this information is up-to-date
-									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-											form.get('isProfileUpToDate')?.invalid &&
-											form.get('isProfileUpToDate')?.hasError('required')
-										"
-									>
-										This is required
-									</mat-error>
-								</div>
+								<div class="text-minor-heading py-2">Confirmation</div>
+								<mat-checkbox formControlName="isProfileUpToDate">
+									I confirm that this information is up-to-date
+								</mat-checkbox>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+										form.get('isProfileUpToDate')?.invalid &&
+										form.get('isProfileUpToDate')?.hasError('required')
+									"
+								>
+									This is required
+								</mat-error>
 							</form>
 						</section>
 
