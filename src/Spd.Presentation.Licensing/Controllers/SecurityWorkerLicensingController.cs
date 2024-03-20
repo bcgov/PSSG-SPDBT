@@ -115,6 +115,39 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest));
         }
+
+        /// <summary>
+        /// Submit Security Worker Licence Application Json part for authenticated users
+        /// </summary>
+        /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/authenticated/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAythenticated(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
+        {
+            WorkerLicenceCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
+            var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            return response;
+        }
+
         #endregion
 
         #region anonymous 
