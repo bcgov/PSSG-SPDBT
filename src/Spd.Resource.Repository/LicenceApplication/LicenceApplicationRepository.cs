@@ -55,9 +55,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             }
         }
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-        Guid teamGuid = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid);
-        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
-        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
+        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -86,6 +84,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
         }
+
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
@@ -118,6 +117,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -203,6 +203,13 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
         }
+    }
+
+    private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
+    {
+        Guid teamGuid = Guid.Parse(teamGuidStr);
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 
     private List<spd_alias>? GetAliases(Guid contactId)
