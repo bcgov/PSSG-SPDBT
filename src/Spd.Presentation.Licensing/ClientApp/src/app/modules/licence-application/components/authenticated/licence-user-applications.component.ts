@@ -484,26 +484,16 @@ import {
 						</app-alert>
 					</div>
 
-					<!-- <br /><br /><br />
+					<br /><br /><br />
 
 					<div class="fw-bold">Temp buttons for testing:</div>
-					<div class="my-2">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onNewSecurityWorkerLicence()"
-						>
-							<mat-icon>add</mat-icon>Apply for a new Security Worker Licence
-						</button>
-					</div>
 
 					<div class="my-2">
 						<button
 							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onRenewSecurityWorkerLicence()"
+							(click)="onTestRenewSecurityWorkerLicence()"
 						>
 							Renew Security Worker Licence
 						</button>
@@ -514,7 +504,7 @@ import {
 							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onUpdateSecurityWorkerLicence()"
+							(click)="onTestUpdateSecurityWorkerLicence()"
 						>
 							Update Security Worker Licence
 						</button>
@@ -525,12 +515,12 @@ import {
 							mat-stroked-button
 							color="primary"
 							class="large w-auto mt-2 mt-lg-0"
-							(click)="onReplacmentSecurityWorkerLicence()"
+							(click)="onTestReplacmentSecurityWorkerLicence()"
 						>
 							Replace Security Worker Licence
 						</button>
 					</div>
-
+					<!-- 
 					<mat-divider class="my-3"></mat-divider>
 
 					<div class="my-2">
@@ -1006,5 +996,54 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onConnectToExpiredLicence();
+	}
+
+	onTestRenewSecurityWorkerLicence() {
+		this.licenceApplicationService
+			.getLicenceWithSelectionAuthenticated('976bc3b0-410b-4c3b-b2a5-9cccb8154013', ApplicationTypeCode.Renewal)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+	onTestUpdateSecurityWorkerLicence() {
+		this.licenceApplicationService
+			.getLicenceWithSelectionAuthenticated('976bc3b0-410b-4c3b-b2a5-9cccb8154013', ApplicationTypeCode.Update)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+	onTestReplacmentSecurityWorkerLicence() {
+		this.licenceApplicationService
+			.getLicenceWithSelectionAuthenticated('976bc3b0-410b-4c3b-b2a5-9cccb8154013', ApplicationTypeCode.Replacement)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+						),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 }

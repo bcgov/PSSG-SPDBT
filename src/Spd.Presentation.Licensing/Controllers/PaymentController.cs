@@ -171,7 +171,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/auth-licence/payment-result")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
+       // [Authorize(Policy = "OnlyBcsc")]
         public async Task<ActionResult> ProcessApplicantLicencePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
