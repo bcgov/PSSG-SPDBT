@@ -73,5 +73,6 @@ export const SPD_CONSTANTS = {
 		securityServicesBusinessApplicantTerms: '/assets/files/Security Services Business Applicant Terms of Use .pdf',
 		securityServicesBusinessApplicantUpdateTerms:
 			'/assets/files/Security Services Business Applicant Update Terms of Use.pdf',
+		requestForFingerprintingForm: '/assets/files/SPD Request for Fingerprinting Form.pdf',
 	},
 };
