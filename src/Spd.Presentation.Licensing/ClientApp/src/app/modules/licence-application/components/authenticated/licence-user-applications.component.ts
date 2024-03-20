@@ -471,7 +471,7 @@ import {
 					</div>
 
 					<br /><br /><br />
-
+					<mat-divider class="mat-divider-main my-3"></mat-divider>
 					<div class="fw-bold">Temp buttons for testing:</div>
 
 					<div class="my-2">

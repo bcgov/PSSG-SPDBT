@@ -426,7 +426,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
-		console.log('saveUserProfileAndContinue', applicationTypeCode);
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
 				switch (applicationTypeCode) {
@@ -593,11 +592,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceAnonymous] getProfileSaveBody', body);
-		console.debug('[submitLicenceAnonymous] getProfileDocsToSaveBlobs', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
+		console.debug('[saveUserProfile] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[saveUserProfile] getProfileSaveBody', body);
+		console.debug('[saveUserProfile] getProfileDocsToSaveBlobs', documentsToSave);
+		console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
+		console.debug('[saveUserProfile] documentsToSaveApis', documentsToSaveApis);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(

@@ -21,7 +21,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 		</div>
 
-		<ng-container *ngIf="hasBcscNameChange; else hasNameChanged">
+		<ng-container *ngIf="hasBcscNameChanged; else hasNameChanged">
 			<app-alert type="info" icon="" [showBorder]="false">
 				<div>We noticed you changed your name recently on your BC Services Card.</div>
 				<div>Do you want a new licence printed with your new name for a $20 fee?</div>
@@ -46,9 +46,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							{{ gdr.desc }}
 						</mat-option>
 					</mat-select>
-					<mat-error *ngIf="personalInformationFormGroup.get('genderCode')?.hasError('required')"
-						>This is required</mat-error
-					>
+					<mat-error *ngIf="personalInformationFormGroup.get('genderCode')?.hasError('required')">
+						This is required
+					</mat-error>
 				</mat-form-field>
 			</div>
 
@@ -91,7 +91,7 @@ export class CommonUserProfilePersonalInformationComponent implements OnInit, Li
 		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 
 	@Input() isReadonly = false;
-	@Input() hasBcscNameChange = false;
+	@Input() hasBcscNameChanged = false;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 
@@ -101,14 +101,26 @@ export class CommonUserProfilePersonalInformationComponent implements OnInit, Li
 		if (this.isReadonly) {
 			this.utilService.disableInputs(this.personalInformationFormGroup);
 			this.utilService.disableInputs(this.contactFormGroup);
+		} else {
+			this.utilService.enableInputs(this.personalInformationFormGroup);
+			this.utilService.enableInputs(this.contactFormGroup);
 		}
 	}
 
 	isFormValid(): boolean {
+		if (this.isReadonly) {
+			return true;
+		}
+
 		this.personalInformationFormGroup.markAllAsTouched();
 		this.contactFormGroup.markAllAsTouched();
 
-		return this.personalInformationFormGroup.valid && this.contactFormGroup.valid;
+		const isValid1 = this.personalInformationFormGroup.valid;
+		const isValid2 = this.contactFormGroup.valid;
+
+		console.debug('[CommonUserProfilePersonalInformationComponent] isFormValid', isValid1, isValid2);
+
+		return isValid1 && isValid2;
 	}
 
 	get fullname(): string {

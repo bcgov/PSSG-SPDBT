@@ -34,8 +34,9 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
-								[hasBcscNameChange]="hasBcscNameChange"
-								[isReadonly]="false"
+								[hasBcscNameChanged]="hasBcscNameChanged"
+								[isReadonlyPersonalInfo]="isReadonlyPersonalInfo"
+								[isReadonlyMailingAddress]="false"
 							></app-common-user-profile>
 						</section>
 
@@ -118,7 +119,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	hasBcscNameChange = false;
+	hasBcscNameChanged = false;
 	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
@@ -135,6 +136,8 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
 
+	isReadonlyPersonalInfo = false;
+
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
@@ -146,8 +149,9 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence.';
+				this.alertText = 'Make sure your address information is up-to-date before replacing your licence.';
 				this.showConfirmation = true;
+				this.isReadonlyPersonalInfo = true;
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
@@ -157,7 +161,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
-				this.hasBcscNameChange = true; // TODO calculate if name has changed.
+				this.hasBcscNameChanged = true; // TODO calculate if name has changed hasBcscNameChanged.
 				this.showConfirmation = true;
 				break;
 			}
@@ -192,6 +196,15 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.mentalHealthComponent.isFormValid() : true;
 
 		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+
+		console.debug(
+			'[StepWorkerLicenceUserProfileComponent] isFormValid',
+			isValid1,
+			isValid2,
+			isValid3,
+			isValid4,
+			isValid5
+		);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();

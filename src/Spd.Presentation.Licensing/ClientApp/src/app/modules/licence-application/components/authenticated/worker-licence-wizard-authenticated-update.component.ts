@@ -29,8 +29,8 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						</div>
 					</mat-step>
 
-					<mat-step completed="true">
-						<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
+					<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
+					<!-- <mat-step completed="true">
 						<app-step-worker-licence-mailing-address-update-authenticated></app-step-worker-licence-mailing-address-update-authenticated>
 
 						<div class="row wizard-button-row">
@@ -41,11 +41,12 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
-					</mat-step>
+					</mat-step> -->
 
 					<mat-step completed="true">
 						<!-- <ng-template matStepLabel>Confirm Updates</ng-template> -->
-						<app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated>
+						<!-- <app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated> -->
+						<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 						<div class="row wizard-button-row">
 							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">

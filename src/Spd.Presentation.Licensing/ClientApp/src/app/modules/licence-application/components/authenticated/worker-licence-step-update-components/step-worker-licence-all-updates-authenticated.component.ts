@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { WorkerCategoryTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BusinessTypeCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceUpdateTypeCode } from '@app/core/code-types/model-desc.models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import {
@@ -29,10 +31,9 @@ export interface UpdateOptionListData {
 			<div class="step">
 				<app-step-title
 					title="Update your Licence or Permit"
-					subtitle="Making one or many of the following edits will incur a TOTAL $20 licence reprint fee"
+					[subtitle]="subtitle"
 					[showDivider]="true"
 				></app-step-title>
-				<!-- TODO hardcoded payment cost -->
 
 				<div class="row">
 					<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
@@ -156,15 +157,37 @@ export interface UpdateOptionListData {
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
+export class StepWorkerLicenceAllUpdatesAuthenticatedComponent implements OnInit {
 	updates: Array<UpdateOptionListData> = [];
+
+	subtitle = '';
 
 	addedUpdateName = false;
 	addedUpdatePhoto = false;
 	addedAuthorizationToUseRestraints = false;
 	addedAuthorizationToUseDogs = false;
 
-	constructor(private dialog: MatDialog, private optionsPipe: OptionsPipe) {}
+	constructor(
+		private dialog: MatDialog,
+		private currencyPipe: CurrencyPipe,
+		private optionsPipe: OptionsPipe,
+		private commonApplicationService: CommonApplicationService
+	) {}
+
+	ngOnInit(): void {
+		const fee = this.commonApplicationService
+			.getLicenceTermsAndFees(
+				WorkerLicenceTypeCode.SecurityWorkerLicence,
+				ApplicationTypeCode.Update,
+				BusinessTypeCode.None
+			)
+			.find((item) => item.applicationTypeCode === ApplicationTypeCode.Update);
+
+		const licenceFee = fee ? fee.amount ?? null : null;
+		const displayFee = this.currencyPipe.transform(licenceFee, 'CAD', 'symbol-narrow', '1.0');
+
+		this.subtitle = `Making one or many of the following edits will incur a TOTAL ${displayFee} licence reprint fee`;
+	}
 
 	onEdit(row: UpdateOptionListData) {
 		switch (row.updateTypeCode) {

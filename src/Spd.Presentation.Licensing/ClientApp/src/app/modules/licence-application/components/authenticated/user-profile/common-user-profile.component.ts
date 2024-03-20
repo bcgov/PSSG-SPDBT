@@ -14,13 +14,12 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 		<app-common-user-profile-personal-information
 			[personalInformationFormGroup]="personalInformationFormGroup"
 			[contactFormGroup]="contactFormGroup"
-			[hasBcscNameChange]="hasBcscNameChange"
-			[isReadonly]="isReadonly"
+			[hasBcscNameChanged]="hasBcscNameChanged"
+			[isReadonly]="isReadonlyPersonalInfo"
 		></app-common-user-profile-personal-information>
 
-		<!-- <mat-divider class="mat-divider-main"></mat-divider> -->
 		<div class="text-minor-heading pb-3">Aliases or Previous Names</div>
-		<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonly"></app-common-alias-list>
+		<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonlyPersonalInfo"></app-common-alias-list>
 
 		<div class="row mt-3">
 			<div class="col-lg-6 col-md-12">
@@ -37,7 +36,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					[form]="residentialAddressFormGroup"
 					[isWizardStep]="false"
 					[isReadonly]="true"
-					[isCheckboxReadOnly]="isReadonly"
+					[isCheckboxReadOnly]="isReadonlyMailingAddress"
 				></app-common-residential-address>
 			</div>
 
@@ -58,7 +57,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					<app-common-address
 						[form]="mailingAddressFormGroup"
 						[isWizardStep]="false"
-						[isReadonly]="isReadonly"
+						[isReadonly]="isReadonlyMailingAddress"
 					></app-common-address>
 				</ng-template>
 			</div>
@@ -75,8 +74,9 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
 	@ViewChild(CommonAddressComponent) mailingAddressComponent!: CommonAddressComponent;
 
-	@Input() isReadonly!: boolean;
-	@Input() hasBcscNameChange!: boolean;
+	@Input() isReadonlyPersonalInfo!: boolean;
+	@Input() isReadonlyMailingAddress!: boolean;
+	@Input() hasBcscNameChanged!: boolean;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 	@Input() aliasesFormGroup!: FormGroup;
@@ -86,11 +86,13 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	isFormValid(): boolean {
-		const valid1 = this.personalComponent.isFormValid();
-		const valid2 = this.isAliasesFormGroupFormValid();
-		const valid3 = this.isMailingTheSameAsResidential ? true : this.isMailingAddressFormGroupValid();
+		const isValid1 = this.personalComponent.isFormValid();
+		const isValid2 = this.isAliasesFormGroupFormValid();
+		const isValid3 = this.isMailingTheSameAsResidential ? true : this.isMailingAddressFormGroupValid();
 
-		return valid1 && valid2 && valid3;
+		console.debug('[CommonUserProfileComponent] isFormValid', isValid1, isValid2, isValid3);
+
+		return isValid1 && isValid2 && isValid3;
 	}
 
 	isAliasesFormGroupFormValid(): boolean {
