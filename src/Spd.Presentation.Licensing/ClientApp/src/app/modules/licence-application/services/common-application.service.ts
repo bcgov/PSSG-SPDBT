@@ -42,11 +42,11 @@ export interface UserApplicationResponse extends LicenceAppListResponse {
 }
 
 export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse {
-	nameOnCard?: null | string;
+	hasBcscNameChanged: boolean;
+	cardHolderName?: null | string;
+	licenceHolderName?: null | string;
 	licenceExpiryDate?: string;
 	licenceExpiryNumberOfDays?: null | number;
-	licenceHolderFirstName?: null | string;
-	licenceHolderLastName?: null | string;
 	licenceId?: null | string;
 	licenceNumber?: null | string;
 	licenceReprintFee: null | number;
@@ -218,13 +218,13 @@ export class CommonApplicationService {
 									(item: LicenceResponse) => item.licenceAppId === resp.licenceAppId
 								);
 								if (matchingLicence) {
-									licence.nameOnCard = matchingLicence.nameOnCard;
+									licence.cardHolderName = matchingLicence.nameOnCard;
+									licence.licenceHolderName = `${matchingLicence.licenceHolderFirstName} ${matchingLicence.licenceHolderLastName}`;
 									licence.licenceExpiryDate = matchingLicence.expiryDate;
 									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).diff(moment(), 'days');
-									licence.licenceHolderFirstName = matchingLicence.licenceHolderFirstName;
-									licence.licenceHolderLastName = matchingLicence.licenceHolderLastName;
 									licence.licenceId = matchingLicence.licenceId;
 									licence.licenceNumber = matchingLicence.licenceNumber;
+									licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
 
 									licence.isExpired = moment().isAfter(moment(licence.licenceExpiryDate));
 

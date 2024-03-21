@@ -27,18 +27,15 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
-						<section>
-							<app-common-user-profile
-								[personalInformationFormGroup]="personalInformationFormGroup"
-								[contactFormGroup]="contactFormGroup"
-								[aliasesFormGroup]="aliasesFormGroup"
-								[residentialAddressFormGroup]="residentialAddressFormGroup"
-								[mailingAddressFormGroup]="mailingAddressFormGroup"
-								[hasBcscNameChanged]="hasBcscNameChanged"
-								[isReadonlyPersonalInfo]="isReadonlyPersonalInfo"
-								[isReadonlyMailingAddress]="false"
-							></app-common-user-profile>
-						</section>
+						<app-common-user-profile
+							[personalInformationFormGroup]="personalInformationFormGroup"
+							[contactFormGroup]="contactFormGroup"
+							[aliasesFormGroup]="aliasesFormGroup"
+							[residentialAddressFormGroup]="residentialAddressFormGroup"
+							[mailingAddressFormGroup]="mailingAddressFormGroup"
+							[isReadonlyPersonalInfo]="isReadonlyPersonalInfo"
+							[isReadonlyMailingAddress]="false"
+						></app-common-user-profile>
 
 						<ng-container *ngIf="isNotReplacment">
 							<mat-divider class="mat-divider-main mt-3"></mat-divider>
@@ -119,7 +116,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	hasBcscNameChanged = false;
 	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
@@ -161,7 +157,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
-				this.hasBcscNameChanged = true; // TODO calculate if name has changed hasBcscNameChanged.
 				this.showConfirmation = true;
 				break;
 			}

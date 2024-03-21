@@ -10,16 +10,19 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 @Component({
 	selector: 'app-common-user-profile',
 	template: `
-		<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
-		<app-common-user-profile-personal-information
-			[personalInformationFormGroup]="personalInformationFormGroup"
-			[contactFormGroup]="contactFormGroup"
-			[hasBcscNameChanged]="hasBcscNameChanged"
-			[isReadonly]="isReadonlyPersonalInfo"
-		></app-common-user-profile-personal-information>
+		<section>
+			<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
+			<app-common-user-profile-personal-information
+				[personalInformationFormGroup]="personalInformationFormGroup"
+				[contactFormGroup]="contactFormGroup"
+				[isReadonly]="isReadonlyPersonalInfo"
+			></app-common-user-profile-personal-information>
+		</section>
 
-		<div class="text-minor-heading pb-3">Aliases or Previous Names</div>
-		<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonlyPersonalInfo"></app-common-alias-list>
+		<section>
+			<div class="text-minor-heading pb-3">Aliases or Previous Names</div>
+			<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonlyPersonalInfo"></app-common-alias-list>
+		</section>
 
 		<div class="row mt-3">
 			<div class="col-lg-6 col-md-12">
@@ -32,12 +35,14 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					BC Services Card. Any changes you make will then be updated here.
 				</app-alert>
 
-				<app-common-residential-address
-					[form]="residentialAddressFormGroup"
-					[isWizardStep]="false"
-					[isReadonly]="true"
-					[isCheckboxReadOnly]="isReadonlyMailingAddress"
-				></app-common-residential-address>
+				<section>
+					<app-common-residential-address
+						[form]="residentialAddressFormGroup"
+						[isWizardStep]="false"
+						[isReadonly]="true"
+						[isCheckboxReadOnly]="isReadonlyMailingAddress"
+					></app-common-residential-address>
+				</section>
 			</div>
 
 			<div class="col-lg-6 col-md-12">
@@ -54,11 +59,13 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 					</div>
 				</ng-container>
 				<ng-template #mailingIsDifferentThanResidential>
-					<app-common-address
-						[form]="mailingAddressFormGroup"
-						[isWizardStep]="false"
-						[isReadonly]="isReadonlyMailingAddress"
-					></app-common-address>
+					<section>
+						<app-common-address
+							[form]="mailingAddressFormGroup"
+							[isWizardStep]="false"
+							[isReadonly]="isReadonlyMailingAddress"
+						></app-common-address>
+					</section>
 				</ng-template>
 			</div>
 		</div>
@@ -76,7 +83,6 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 
 	@Input() isReadonlyPersonalInfo!: boolean;
 	@Input() isReadonlyMailingAddress!: boolean;
-	@Input() hasBcscNameChanged!: boolean;
 	@Input() personalInformationFormGroup!: FormGroup;
 	@Input() contactFormGroup!: FormGroup;
 	@Input() aliasesFormGroup!: FormGroup;

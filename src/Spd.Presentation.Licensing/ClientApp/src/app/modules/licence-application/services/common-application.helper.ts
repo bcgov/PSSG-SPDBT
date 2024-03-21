@@ -108,6 +108,8 @@ export abstract class CommonApplicationHelper {
 			genderCode: new FormControl('', [FormControlValidators.required]),
 			dateOfBirth: new FormControl('', [Validators.required]),
 			hasLegalNameChanged: new FormControl(false),
+			hasBcscNameChanged: new FormControl(),
+			isPrintNewName: new FormControl(),
 			origGivenName: new FormControl(''),
 			origMiddleName1: new FormControl(''),
 			origMiddleName2: new FormControl(''),
@@ -116,12 +118,18 @@ export abstract class CommonApplicationHelper {
 			origDateOfBirth: new FormControl(''),
 			hasGenderChanged: new FormControl(false),
 			attachments: new FormControl([]),
+			cardHolderName: new FormControl(), // placeholder for data to display in Update process
+			licenceHolderName: new FormControl(), // placeholder for data to display in Update process
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => !!form.get('hasLegalNameChanged')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'isPrintNewName',
+					(form) => !!form.get('hasBcscNameChanged')?.value
 				),
 			],
 		}

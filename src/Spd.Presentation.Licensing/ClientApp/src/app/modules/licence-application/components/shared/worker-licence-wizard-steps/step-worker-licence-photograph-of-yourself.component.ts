@@ -18,7 +18,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 					></app-common-update-renewal-alert>
 				</ng-container>
 
-				<app-step-title title="Upload a photo of yourself"></app-step-title>
+				<ng-container *ngIf="!isCalledFromModal">
+					<app-step-title title="Upload a photo of yourself"></app-step-title>
+				</ng-container>
 
 				<app-common-photograph-of-yourself
 					[form]="form"
