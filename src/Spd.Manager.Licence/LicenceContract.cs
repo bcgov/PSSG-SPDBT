@@ -18,8 +18,7 @@ public record LicenceResponse
     public DateOnly ExpiryDate { get; set; }
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
-    public string? LicenceHolderFirstName { get; set; }
-    public string? LicenceHolderLastName { get; set; }
+    public string? LicenceHolderName { get; set; }
     public string? NameOnCard { get; set; }
 };
 

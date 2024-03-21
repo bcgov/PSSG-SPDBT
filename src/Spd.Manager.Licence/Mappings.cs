@@ -116,7 +116,8 @@ internal class Mappings : Profile
              .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
              .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData));
 
-        CreateMap<LicenceResp, LicenceResponse>();
+        CreateMap<LicenceResp, LicenceResponse>()
+            .ForMember(d => d.LicenceHolderName, opt => opt.MapFrom(s => GetHolderName(s.LicenceHolderFirstName, s.LicenceHolderMiddleName1, s.LicenceHolderLastName)));
 
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
 
@@ -434,6 +435,13 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.BodyArmourRationale, DocumentTypeEnum.BodyArmourRationale},
     }.ToImmutableDictionary();
 
+    private string GetHolderName(string firstName, string middleName, string lastName)
+    {
+        string fn = firstName == null ? string.Empty : firstName.Trim();
+        string mn = middleName == null ? string.Empty : middleName.Trim();
+        string ln = lastName == null ? string.Empty : lastName.Trim();
+        return ($"{fn} {mn}".Trim() + " " + ln).Trim();
+    }
 }
 
 internal class BcscAddress
