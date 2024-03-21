@@ -3,13 +3,11 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Presentation.Licensing.Configurations;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Tests.Fixtures;
 using Spd.Utilities.Recaptcha;
@@ -44,11 +42,11 @@ public class SecurityWorkerLicensingControllerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         workerLicenceFixture = new WorkerLicenceFixture(CancellationToken.None);
-        
+
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(uploadFileConfiguration)
             .Build();
-        
+
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInCacheCommand>(), CancellationToken.None))
                .ReturnsAsync(new List<LicAppFileInfo>());
         mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppRenewCommand>(), CancellationToken.None))
@@ -59,7 +57,7 @@ public class SecurityWorkerLicensingControllerTest
             .Create();
         mockWslAnonymousSubmitValidator.Setup(x => x.ValidateAsync(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>(), CancellationToken.None))
             .ReturnsAsync(validationResults);
-        
+
         mockDpProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
 
