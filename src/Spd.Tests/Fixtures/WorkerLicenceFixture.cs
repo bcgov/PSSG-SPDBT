@@ -1,11 +1,6 @@
 ﻿using AutoFixture;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Tests.Fixtures;
 public class WorkerLicenceFixture
@@ -25,7 +20,7 @@ public class WorkerLicenceFixture
         WorkerLicenceAppAnonymousSubmitRequest workerLicenceAppAnonymousSubmitRequest = fixture.Build<WorkerLicenceAppAnonymousSubmitRequest>()
                 .With(w => w.ApplicationTypeCode, applicationTypeCode)
                 .Create();
-    
+
         return workerLicenceAppAnonymousSubmitRequest;
     }
 }
