@@ -219,7 +219,7 @@ export class CommonApplicationService {
 								);
 								if (matchingLicence) {
 									licence.cardHolderName = matchingLicence.nameOnCard;
-									licence.licenceHolderName = `${matchingLicence.licenceHolderFirstName} ${matchingLicence.licenceHolderLastName}`;
+									licence.licenceHolderName = matchingLicence.licenceHolderName;
 									licence.licenceExpiryDate = matchingLicence.expiryDate;
 									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).diff(moment(), 'days');
 									licence.licenceId = matchingLicence.licenceId;
