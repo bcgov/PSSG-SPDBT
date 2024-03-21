@@ -5,8 +5,7 @@ import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface LicenceResponse {
   expiryDate?: string;
   licenceAppId?: null | string;
-  licenceHolderFirstName?: null | string;
-  licenceHolderLastName?: null | string;
+  licenceHolderName?: null | string;
   licenceId?: null | string;
   licenceNumber?: null | string;
   licenceTermCode?: LicenceTermCode;

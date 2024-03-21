@@ -41,7 +41,8 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 						[aliasesFormGroup]="aliasesFormGroup"
 						[residentialAddressFormGroup]="residentialAddressFormGroup"
 						[mailingAddressFormGroup]="mailingAddressFormGroup"
-						[isReadonly]="isReadonly"
+						[isReadonlyPersonalInfo]="isReadonly"
+						[isReadonlyMailingAddress]="isReadonly"
 					></app-common-user-profile>
 
 					<div class="mt-3">

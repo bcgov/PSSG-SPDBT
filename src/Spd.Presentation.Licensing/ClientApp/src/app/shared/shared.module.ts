@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
@@ -72,7 +72,7 @@ const SHARED_COMPONENTS = [
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
-	providers: [provideNgxMask(), NgxMaskPipe, DatePipe, FormatDatePipe, OptionsPipe],
+	providers: [provideNgxMask(), NgxMaskPipe, DatePipe, CurrencyPipe, FormatDatePipe, OptionsPipe],
 	exports: [
 		CommonModule,
 		MaterialModule,
