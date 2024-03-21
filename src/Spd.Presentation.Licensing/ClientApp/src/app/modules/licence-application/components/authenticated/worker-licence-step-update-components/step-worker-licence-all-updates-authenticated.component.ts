@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { WorkerCategoryTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BusinessTypeCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceUpdateTypeCode } from '@app/core/code-types/model-desc.models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import {
@@ -9,7 +12,10 @@ import {
 	WorkerLicenceCategoryUpdateAuthenticatedModalComponent,
 } from './worker-licence-category-update-authenticated-modal.component';
 import { WorkerLicenceDogsUpdateAuthenticatedModalComponent } from './worker-licence-dogs-update-authenticated-modal.component';
-import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './worker-licence-name-change-update-authenticated-modal.component';
+import {
+	ApplyNameChangeDialogData,
+	WorkerLicenceNameChangeUpdateAuthenticatedModalComponent,
+} from './worker-licence-name-change-update-authenticated-modal.component';
 import { WorkerLicencePhotoUpdateAuthenticatedModalComponent } from './worker-licence-photo-update-authenticated-modal.component';
 import { WorkerLicenceRestraintsUpdateAuthenticatedModalComponent } from './worker-licence-restraints-update-authenticated-modal.component';
 
@@ -19,6 +25,7 @@ export interface UpdateOptionListData {
 	categoryDesc?: string | null;
 	label: string;
 	allowEdit: boolean;
+	allowView: boolean;
 	allowDelete: boolean;
 }
 
@@ -27,125 +34,104 @@ export interface UpdateOptionListData {
 	template: `
 		<section class="step-section pb-4">
 			<div class="step">
-				<app-step-title
-					title="Update your Licence or Permit"
-					subtitle="Making one or many of the following edits will incur a TOTAL $20 licence reprint fee"
-					[showDivider]="true"
-				></app-step-title>
-				<!-- TODO hardcoded payment cost -->
+				<app-step-title [title]="title" [subtitle]="subtitle" [showDivider]="true"></app-step-title>
 
 				<div class="row">
 					<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-						<div class="fs-4 mb-2">Your update options:</div>
-					</div>
-				</div>
+						<div class="section-title fs-5 mb-2">Your update options</div>
+						<div class="row">
+							<div class="col-xxl-6 col-xl-6 col-lg-12 col-md-12 col-sm-12" *ngIf="hasGenderChanged">
+								<button
+									mat-stroked-button
+									color="primary"
+									(click)="onUpdatePhotoModal()"
+									class="large my-2"
+									[disabled]="addedUpdatePhoto"
+								>
+									Update your Photo
+								</button>
+							</div>
 
-				<!-- <div class="row">
-						<div class="offset-xxl-2 col-xxl-4 col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<ul class="m-0">
-								<li class="my-2">
-									<a color="primary" class="large my-2" (click)="onApplyNameChangeModal()">Apply your Updated Name</a>
-								</li>
-								<li class="my-2">
-									<a color="primary" class="large my-2" (click)="onUpdatePhotoModal()">Update your Photo</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<ul class="m-0">
-								<li class="my-2">
-									<a color="primary" class="large my-2" (click)="onAddLicenceCategory()">Add a Licence Category</a>
-								</li>
-								<li class="my-2">
-									<a color="primary" class="large my-2" (click)="onUseRestraintsModal()"
-										>Add  Authorization to Use Restraints</a
-									>
-								</li>
-								<li class="my-2">
-									<a color="primary" class="large my-2" (click)="onUseDogsModal()"
-										>Add  Authorization to Use Dogs</a
-									>
-								</li>
-							</ul>
-						</div>
-					</div> -->
-
-				<div class="row">
-					<div class="offset-xxl-2 col-xxl-3 offset-xl-1 col-xl-4 col-lg-6 col-md-12 col-sm-12">
-						<button
-							mat-stroked-button
-							color="primary"
-							(click)="onApplyNameChangeModal()"
-							class="large my-2"
-							[disabled]="addedUpdateName"
-						>
-							Apply updated Name
-						</button>
-						<button
-							mat-stroked-button
-							color="primary"
-							(click)="onUpdatePhotoModal()"
-							class="large my-2"
-							[disabled]="addedUpdatePhoto"
-						>
-							Update your Photo
-						</button>
-					</div>
-
-					<div class="col-xxl-5 col-xl-6 col-lg-6 col-md-12 col-sm-12">
-						<button mat-stroked-button color="primary" (click)="onAddLicenceCategory()" class="large my-2">
-							Add a Licence Category
-						</button>
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large my-2"
-							(click)="onUseRestraintsModal()"
-							[disabled]="addedAuthorizationToUseRestraints"
-						>
-							Add Authorization to Use Restraints
-						</button>
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large my-2"
-							(click)="onUseDogsModal()"
-							[disabled]="addedAuthorizationToUseDogs"
-						>
-							Add Authorization to Use Dogs
-						</button>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-						<div class="fs-4 mt-3 mb-2">
-							<mat-icon class="me-2">shopping_cart</mat-icon>
-							Your list of updates:
-						</div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
-						<app-alert type="info" [showBorder]="false" icon="" *ngIf="updates.length === 0">
-							No updates have been selected
-						</app-alert>
-						<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
-							<div class="row">
-								<div class="col-lg-6 col-md-12">
-									<div class="fs-6 fw-normal" style="color: var(--color-primary);" [innerHTML]="update.label"></div>
-								</div>
-								<div class="col-lg-3 col-6">
-									<button mat-stroked-button class="mt-2" *ngIf="update.allowEdit" (click)="onEdit(update)">
-										<mat-icon>edit</mat-icon>Edit
+							<ng-container *ngIf="isLicence">
+								<div class="col-xxl-6 col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<button mat-stroked-button color="primary" (click)="onAddLicenceCategory()" class="large my-2">
+										Add a Licence Category
 									</button>
 								</div>
-								<div class="col-lg-3 col-6">
-									<button mat-stroked-button class="mt-2" *ngIf="update.allowDelete" (click)="onRemove(update, i)">
-										<mat-icon>delete_outline</mat-icon>Remove
+
+								<div class="col-xxl-6 col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large my-2"
+										(click)="onUseRestraintsModal()"
+										[disabled]="addedAuthorizationToUseRestraints"
+									>
+										Add Authorization to Use Restraints
 									</button>
+								</div>
+
+								<div class="col-xxl-6 col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large my-2"
+										(click)="onUseDogsModal()"
+										[disabled]="addedAuthorizationToUseDogs"
+									>
+										Add Authorization to Use Dogs
+									</button>
+								</div>
+							</ng-container>
+
+							<ng-container *ngIf="isPermit">
+								<div class="col-xxl-6 col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<button mat-stroked-button color="primary" (click)="onAddLicenceCategory()" class="large my-2">
+										Update Purpose
+									</button>
+								</div>
+								<div class="col-xxl-6 col-xl-6 col-lg-12 col-md-12 col-sm-12">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large my-2"
+										(click)="onUseRestraintsModal()"
+										[disabled]="addedAuthorizationToUseRestraints"
+									>
+										Update Rationale
+									</button>
+								</div>
+							</ng-container>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<mat-divider class="my-4"></mat-divider>
+								<div class="section-title fs-5 my-3">Your list of updates</div>
+							</div>
+							<div class="col-12">
+								<app-alert type="info" [showBorder]="false" icon="" *ngIf="updates.length === 0">
+									No updates have been selected
+								</app-alert>
+								<div class="summary-card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
+									<div class="row">
+										<div class="col-lg-6 col-md-12">
+											<div class="fs-6 fw-normal" style="color: var(--color-primary);" [innerHTML]="update.label"></div>
+										</div>
+										<div class="col-lg-3 col-6">
+											<button mat-stroked-button class="mt-2" *ngIf="update.allowEdit" (click)="onEdit(update)">
+												Edit
+											</button>
+										</div>
+										<div class="col-lg-3 col-6">
+											<button mat-stroked-button class="mt-2" *ngIf="update.allowView" (click)="onView()">
+												Review
+											</button>
+											<button mat-stroked-button class="mt-2" *ngIf="update.allowDelete" (click)="onRemove(update, i)">
+												Remove
+											</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -156,15 +142,56 @@ export interface UpdateOptionListData {
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
+export class StepWorkerLicenceAllUpdatesAuthenticatedComponent implements OnInit {
+	licenceModelData: any = {};
 	updates: Array<UpdateOptionListData> = [];
+
+	title = '';
+	subtitle = '';
 
 	addedUpdateName = false;
 	addedUpdatePhoto = false;
 	addedAuthorizationToUseRestraints = false;
 	addedAuthorizationToUseDogs = false;
 
-	constructor(private dialog: MatDialog, private optionsPipe: OptionsPipe) {}
+	constructor(
+		private dialog: MatDialog,
+		private currencyPipe: CurrencyPipe,
+		private optionsPipe: OptionsPipe,
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
+	) {}
+
+	ngOnInit(): void {
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+
+		const fee = this.commonApplicationService
+			.getLicenceTermsAndFees(
+				WorkerLicenceTypeCode.SecurityWorkerLicence,
+				ApplicationTypeCode.Update,
+				BusinessTypeCode.None
+			)
+			.find((item) => item.applicationTypeCode === ApplicationTypeCode.Update);
+
+		const licenceFee = fee ? fee.amount ?? null : null;
+		const displayFee = this.currencyPipe.transform(licenceFee, 'CAD', 'symbol-narrow', '1.0');
+
+		const label = this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
+		this.title = `Update your ${label}`;
+		this.subtitle = `Making one or many of the following edits will incur a TOTAL ${displayFee} licence reprint fee`;
+
+		if (this.hasBcscNameChanged) {
+			this.addedUpdateName = true;
+
+			this.updates.push({
+				updateTypeCode: LicenceUpdateTypeCode.UpdateName,
+				label: `Apply new name:<br/><b>${this.licenceHolderName}</b>`,
+				allowEdit: false,
+				allowView: true,
+				allowDelete: false,
+			});
+		}
+	}
 
 	onEdit(row: UpdateOptionListData) {
 		switch (row.updateTypeCode) {
@@ -181,6 +208,10 @@ export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
 				this.onUseDogsModal();
 				break;
 		}
+	}
+
+	onView() {
+		this.onReviewNameChangeModal();
 	}
 
 	onRemove(row: UpdateOptionListData, i: number) {
@@ -217,26 +248,15 @@ export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
 			});
 	}
 
-	onApplyNameChangeModal(): void {
-		// const dialogOptions: ApplyNameChangeDialogData = {};
+	onReviewNameChangeModal(): void {
+		const dialogOptions: ApplyNameChangeDialogData = {
+			cardHolderName: this.cardHolderName,
+			licenceHolderName: this.licenceHolderName,
+		};
 
-		this.dialog
-			.open(WorkerLicenceNameChangeUpdateAuthenticatedModalComponent, {
-				// data: dialogOptions,
-			})
-			.afterClosed()
-			.subscribe((resp) => {
-				if (resp.success) {
-					this.addedUpdateName = true;
-
-					this.updates.push({
-						updateTypeCode: LicenceUpdateTypeCode.UpdateName,
-						label: 'Apply New Name: <b>Joanna Lee</b>',
-						allowEdit: false,
-						allowDelete: true,
-					});
-				}
-			});
+		this.dialog.open(WorkerLicenceNameChangeUpdateAuthenticatedModalComponent, {
+			data: dialogOptions,
+		});
 	}
 
 	onUpdatePhotoModal(): void {
@@ -254,8 +274,9 @@ export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
 
 					this.updates.push({
 						updateTypeCode: LicenceUpdateTypeCode.UpdatePhoto,
-						label: 'Update your Photo',
+						label: 'Update your photo',
 						allowEdit: true,
+						allowView: false,
 						allowDelete: true,
 					});
 				}
@@ -292,8 +313,9 @@ export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
 						updateTypeCode: LicenceUpdateTypeCode.AddLicenceCategory,
 						category: category,
 						categoryDesc: categoryDesc,
-						label: `Add Licence Category: <b>${categoryDesc}</b>`,
+						label: `Add licence category:<br/><b>${categoryDesc}</b>`,
 						allowEdit: true,
+						allowView: false,
 						allowDelete: true,
 					});
 				}
@@ -315,8 +337,9 @@ export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
 
 					this.updates.push({
 						updateTypeCode: LicenceUpdateTypeCode.AddAuthorizationToUseRestraints,
-						label: 'Add Authorization to use Restraints',
+						label: 'Add authorization to use restraints',
 						allowEdit: true,
+						allowView: false,
 						allowDelete: true,
 					});
 				}
@@ -338,11 +361,37 @@ export class StepWorkerLicenceAllUpdatesAuthenticatedComponent {
 
 					this.updates.push({
 						updateTypeCode: LicenceUpdateTypeCode.AddAuthorizationToUseDogs,
-						label: 'Add Authorization to use Dogs',
+						label: 'Add authorization to use dogs',
 						allowEdit: true,
+						allowView: false,
 						allowDelete: true,
 					});
 				}
 			});
+	}
+
+	get isPermit(): boolean {
+		return (
+			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ||
+			this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+		);
+	}
+	get isLicence(): boolean {
+		return this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence;
+	}
+	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
+		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	}
+	get hasGenderChanged(): boolean {
+		return this.licenceModelData.personalInformationData.hasGenderChanged ?? false;
+	}
+	get hasBcscNameChanged(): boolean {
+		return this.licenceModelData.personalInformationData.hasBcscNameChanged ?? false;
+	}
+	get cardHolderName(): string {
+		return this.licenceModelData.personalInformationData.cardHolderName ?? '';
+	}
+	get licenceHolderName(): string {
+		return this.licenceModelData.personalInformationData.licenceHolderName ?? '';
 	}
 }

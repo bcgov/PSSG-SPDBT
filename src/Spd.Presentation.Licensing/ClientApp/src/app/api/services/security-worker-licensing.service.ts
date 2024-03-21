@@ -286,6 +286,144 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
+   * Path part for operation apiWorkerLicenceApplicationsAuthenticatedFilesPost
+   */
+  static readonly ApiWorkerLicenceApplicationsAuthenticatedFilesPostPath = '/api/worker-licence-applications/authenticated/files';
+
+  /**
+   * Upload licence application files for authenticated users.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsAuthenticatedFilesPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiWorkerLicenceApplicationsAuthenticatedFilesPost$Response(params?: {
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<string>> {
+
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsAuthenticatedFilesPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'multipart/form-data');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<string>;
+      })
+    );
+  }
+
+  /**
+   * Upload licence application files for authenticated users.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsAuthenticatedFilesPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiWorkerLicenceApplicationsAuthenticatedFilesPost(params?: {
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<string> {
+
+    return this.apiWorkerLicenceApplicationsAuthenticatedFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<string>) => r.body as string)
+    );
+  }
+
+  /**
+   * Path part for operation apiWorkerLicenceApplicationsAuthenticatedSubmitPost
+   */
+  static readonly ApiWorkerLicenceApplicationsAuthenticatedSubmitPostPath = '/api/worker-licence-applications/authenticated/submit';
+
+  /**
+   * Submit Security Worker Licence Application Json part for authenticated users, supports only: renewal, update and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiWorkerLicenceApplicationsAuthenticatedSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response(params?: {
+
+    /**
+     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     */
+    body?: WorkerLicenceAppAnonymousSubmitRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsAuthenticatedSubmitPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<WorkerLicenceCommandResponse>;
+      })
+    );
+  }
+
+  /**
+   * Submit Security Worker Licence Application Json part for authenticated users, supports only: renewal, update and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiWorkerLicenceApplicationsAuthenticatedSubmitPost(params?: {
+
+    /**
+     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     */
+    body?: WorkerLicenceAppAnonymousSubmitRequest
+  },
+  context?: HttpContext
+
+): Observable<WorkerLicenceCommandResponse> {
+
+    return this.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<WorkerLicenceCommandResponse>) => r.body as WorkerLicenceCommandResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiWorkerLicenceApplicationGet
    */
   static readonly ApiWorkerLicenceApplicationGetPath = '/api/worker-licence-application';

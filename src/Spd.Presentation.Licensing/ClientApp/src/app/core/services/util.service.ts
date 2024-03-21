@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -8,7 +9,6 @@ import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
 export interface SpdFile extends File {
 	name: string;
@@ -283,10 +283,23 @@ export class UtilService {
 	//------------------------------------
 	// Form related
 
+	enableInputs(form: FormGroup) {
+		Object.keys(form.controls).forEach((control: string) => {
+			const typedControl: AbstractControl = form.controls[control];
+			typedControl.enable({ emitEvent: false });
+		});
+	}
+
 	disableInputs(form: FormGroup) {
 		Object.keys(form.controls).forEach((control: string) => {
 			const typedControl: AbstractControl = form.controls[control];
 			typedControl.disable({ emitEvent: false });
+		});
+	}
+
+	enableFormArrayInputs(formArray: FormArray) {
+		formArray.controls.forEach((control) => {
+			control.enable({ emitEvent: false });
 		});
 	}
 

@@ -11,7 +11,16 @@ import { MatDialogRef } from '@angular/material/dialog';
 			<mat-divider class="mat-divider-main mt-2 mb-3"></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<app-step-worker-licence-photograph-of-yourself [isCalledFromModal]="true"></app-step-worker-licence-photograph-of-yourself>
+			<div class="row mb-3" *ngIf="photographOfYourself">
+				<div class="col-12 text-center">
+					<div class="fs-5 mb-2">Current photo:</div>
+					<img [src]="photographOfYourself" alt="Photograph of yourself" style="max-height: 200px;max-width: 200px;" />
+				</div>
+			</div>
+
+			<app-step-worker-licence-photograph-of-yourself
+				[isCalledFromModal]="true"
+			></app-step-worker-licence-photograph-of-yourself>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
@@ -27,10 +36,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 	styles: [],
 })
 export class WorkerLicencePhotoUpdateAuthenticatedModalComponent {
+	photographOfYourself = ''; // TODO show photo for update/authenticated
+
 	constructor(
-		private dialogRef: MatDialogRef<WorkerLicencePhotoUpdateAuthenticatedModalComponent>
-	) // @Inject(MAT_DIALOG_DATA) public dialogData: UpdatePhotoDialogData
-	{}
+		private dialogRef: MatDialogRef<WorkerLicencePhotoUpdateAuthenticatedModalComponent> // @Inject(MAT_DIALOG_DATA) public dialogData: UpdatePhotoDialogData
+	) {}
 
 	onSave(): void {
 		this.dialogRef.close({ success: true });

@@ -415,14 +415,23 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
 
+		const applicationTypeCode = applicationTypeData.applicationTypeCode;
+
 		const criminalChargeDescription =
-			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
+			applicationTypeCode === ApplicationTypeCode.Update &&
 			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
 				? criminalHistoryData.criminalChargeDescription
 				: null;
 
 		const documentKeyCodes: null | Array<string> = [];
 		const previousDocumentIds: null | Array<string> = [];
+
+		let hasNewMentalHealthCondition: boolean | null = null;
+		let hasNewCriminalRecordCharge: boolean | null = null;
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			hasNewMentalHealthCondition = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+			hasNewCriminalRecordCharge = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
+		}
 
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
@@ -445,14 +454,14 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			previousDocumentIds,
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			hasNewMentalHealthCondition: false, // TODO remove null, // this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
 			//-----------------------------------
 			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
 			otherOfficerRole: policeBackgroundData.otherOfficerRole,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: false, // TODO remove null, // TODO
+			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,

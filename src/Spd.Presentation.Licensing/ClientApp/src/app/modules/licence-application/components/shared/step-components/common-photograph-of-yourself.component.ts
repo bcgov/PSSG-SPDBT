@@ -10,15 +10,10 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
 				<div [ngClass]="isCalledFromModal ? 'col-12' : 'col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto'">
-					<!-- <ng-container *ngIf="!isAnonymous">
-						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-						<div class="text-minor-heading mb-2">Upload a photo of yourself</div>
-
-						<p>
-							This will appear on your {{ label }}. It must be a passport-quality photo of your face looking straight at
-							the camera, against a plain, white background. It must be from within the last year.
-						</p>
-					</ng-container> -->
+					<div class="mb-4" *ngIf="isCalledFromModal">
+						This will appear on your {{ label }}. It must be a passport-quality photo of your face looking straight at
+						the camera, against a plain, white background. It must be from within the last year.
+					</div>
 
 					<app-alert type="warning" icon="warning" *ngIf="!isCalledFromModal">
 						Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
