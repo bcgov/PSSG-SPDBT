@@ -148,7 +148,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/authenticated/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAythenticated(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
         {
             WorkerLicenceCommandResponse? response = null;
 
