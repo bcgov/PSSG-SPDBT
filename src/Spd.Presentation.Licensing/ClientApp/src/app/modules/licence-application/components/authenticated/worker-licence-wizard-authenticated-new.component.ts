@@ -1,10 +1,12 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { WorkerLicenceCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -14,6 +16,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 
@@ -71,7 +74,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, AfterViewInit {
+export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_IDENTIFICATION = 1;
 	readonly STEP_REVIEW = 2;
@@ -94,7 +97,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationService: LicenceApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -112,13 +116,13 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		this.updateCompleteStatus();
 	}
 
-	ngAfterViewInit(): void {
-		if (this.step2Complete) {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		} else if (this.step1Complete) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		}
-	}
+	// ngAfterViewInit(): void {
+	// if (this.step2Complete) {
+	// 	this.stepper.selectedIndex = this.STEP_REVIEW;
+	// } else if (this.step1Complete) {
+	// 	this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
+	// }
+	// }
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
@@ -184,9 +188,9 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 	onNextPayStep(): void {
 		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
-			next: (_resp: any) => {
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -336,5 +340,12 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				break;
 		}
 		this.updateCompleteStatus();
+	}
+
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowAuthenticated(
+			licenceAppId,
+			'Payment for New Security Worker Licence Application'
+		);
 	}
 }

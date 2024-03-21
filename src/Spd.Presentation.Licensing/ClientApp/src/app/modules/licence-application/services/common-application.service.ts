@@ -365,7 +365,7 @@ export class CommonApplicationService {
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
 
-	payNowUnauthenticated(licenceAppId: string, description: string): void {
+	payNowAnonymous(licenceAppId: string, description: string): void {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
@@ -384,9 +384,39 @@ export class CommonApplicationService {
 			});
 	}
 
+	payNowAuthenticated(licenceAppId: string, description: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description,
+		};
+		this.paymentService
+			.apiAuthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
+	}
+
 	downloadManualPaymentFormUnauthenticated(licenceAppId: string): void {
 		this.paymentService
 			.apiUnauthLicenceApplicationIdManualPaymentFormGet$Response({
+				applicationId: licenceAppId,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.fileUtilService.downloadFile(resp.headers, resp.body);
+			});
+	}
+
+	downloadManualPaymentFormAuthenticated(licenceAppId: string): void {
+		this.paymentService
+			.apiAuthLicenceApplicationIdManualPaymentFormGet$Response({
 				applicationId: licenceAppId,
 			})
 			.pipe()

@@ -270,6 +270,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowUnauthenticated(licenceAppId, 'Payment for Permit Update');
+		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Permit Update');
 	}
 }

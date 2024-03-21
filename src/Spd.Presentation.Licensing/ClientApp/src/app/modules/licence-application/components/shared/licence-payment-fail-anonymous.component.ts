@@ -8,7 +8,7 @@ import { switchMap } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 
 @Component({
-	selector: 'app-licence-payment-fail',
+	selector: 'app-licence-payment-fail-anonymous',
 	template: `
 		<section class="step-section">
 			<app-common-payment-fail
@@ -20,7 +20,7 @@ import { CommonApplicationService } from '../../services/common-application.serv
 	`,
 	styles: [],
 })
-export class LicencePaymentFailComponent implements OnInit {
+export class LicencePaymentFailAnonymousComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;
 	payment: PaymentResponse | null = null;
 
@@ -38,11 +38,11 @@ export class LicencePaymentFailComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 		this.paymentService
-			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
+			.apiUnauthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe(
 				switchMap((paymentResp: PaymentResponse) => {
 					this.payment = paymentResp;
-					return this.paymentService.apiAuthLicenceApplicationIdPaymentAttemptsGet({
+					return this.paymentService.apiUnauthLicenceApplicationIdPaymentAttemptsGet({
 						applicationId: paymentResp.applicationId!,
 					});
 				})
@@ -54,13 +54,13 @@ export class LicencePaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowAuthenticated(
+		this.commonApplicationService.payNowAnonymous(
 			this.payment!.applicationId!,
 			`Payment for: ${this.payment!.caseNumber}`
 		);
 	}
 
 	onDownloadManualPaymentForm(): void {
-		this.commonApplicationService.downloadManualPaymentFormAuthenticated(this.payment?.applicationId!);
+		this.commonApplicationService.downloadManualPaymentFormUnauthenticated(this.payment?.applicationId!);
 	}
 }
