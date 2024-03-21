@@ -17,7 +17,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
 
     public record AppInviteFilterBy(Guid? OrgId,
         string? EmailOrNameContains,
-        ServiceTypeEnum[]? ServiceTypes = null,
+        Guid? ParentOrgId = null, //used for PSSO
         Guid? AppInviteId = null,
         Guid? CreatedByUserId = null);
     public record AppInviteSortBy(bool? SubmittedDateDesc);

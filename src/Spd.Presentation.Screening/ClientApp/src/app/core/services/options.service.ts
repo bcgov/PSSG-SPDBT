@@ -11,14 +11,21 @@ export class OptionsService {
 
 	constructor(private ministryService: MinistryService) {}
 
-	public getMinistries(allMinistries?: boolean): Observable<Array<MinistryResponse>> {
+	public getMinistries(allMinistries?: boolean): Array<MinistryResponse> {
 		if (this.ministries) {
 			if (allMinistries) {
-				return of(this.ministries);
+				return this.ministries;
 			}
 			// by default, return only active
-			const activeOnly = this.ministries.filter((ministry) => ministry.isActive);
-			return of(activeOnly);
+			return this.ministries.filter((ministry) => ministry.isActive);
+		}
+
+		return [];
+	}
+
+	public loadMinistries(allMinistries?: boolean): Observable<Array<MinistryResponse>> {
+		if (this.ministries) {
+			return of(this.getMinistries(allMinistries));
 		}
 
 		return this.ministryService.apiMinistriesGet().pipe(
