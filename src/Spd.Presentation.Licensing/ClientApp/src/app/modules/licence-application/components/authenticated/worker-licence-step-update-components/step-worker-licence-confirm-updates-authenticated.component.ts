@@ -39,4 +39,6 @@ import { Component } from '@angular/core';
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceConfirmUpdatesAuthenticatedComponent {}
+export class StepWorkerLicenceConfirmUpdatesAuthenticatedComponent {
+	// TODO remove this component? StepWorkerLicenceConfirmUpdatesAuthenticatedComponent
+}

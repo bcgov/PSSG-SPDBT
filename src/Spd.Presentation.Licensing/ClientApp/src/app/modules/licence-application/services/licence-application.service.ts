@@ -48,7 +48,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { CommonApplicationService } from './common-application.service';
+import { CommonApplicationService, UserLicenceResponse } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
 export class LicenceDocumentsToSave {
@@ -426,7 +426,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
-		console.log('saveUserProfileAndContinue', applicationTypeCode);
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
 				switch (applicationTypeCode) {
@@ -514,9 +513,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	getLicenceWithSelectionAuthenticated(
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
-		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!).pipe(
+		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.licenceModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
 
@@ -593,11 +593,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceAnonymous] getProfileSaveBody', body);
-		console.debug('[submitLicenceAnonymous] getProfileDocsToSaveBlobs', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
+		console.debug('[saveUserProfile] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[saveUserProfile] getProfileSaveBody', body);
+		console.debug('[saveUserProfile] getProfileDocsToSaveBlobs', documentsToSave);
+		console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
+		console.debug('[saveUserProfile] documentsToSaveApis', documentsToSaveApis);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -652,7 +652,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode);
 	}
 
-	private loadExistingLicenceWithIdAuthenticated(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
+	private loadExistingLicenceWithIdAuthenticated(
+		licenceAppId: string,
+		userLicenceInformation?: UserLicenceResponse
+	): Observable<WorkerLicenceAppResponse> {
 		this.reset();
 
 		return forkJoin([
@@ -665,16 +668,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const workerLicenceResponse = resps[0];
 				const profile = resps[1];
 
-				return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profile);
+				return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profile, userLicenceInformation);
 			})
 		);
 	}
 
 	private applyLicenceAndProfileIntoModel(
 		workerLicence: WorkerLicenceAppResponse,
-		profile: ApplicantProfileResponse | null | undefined
+		profile: ApplicantProfileResponse | null | undefined,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
-		return this.applyLicenceProfileIntoModel(profile ?? workerLicence, workerLicence.applicationTypeCode).pipe(
+		return this.applyLicenceProfileIntoModel(
+			profile ?? workerLicence,
+			workerLicence.applicationTypeCode,
+			userLicenceInformation
+		).pipe(
 			switchMap((_resp: any) => {
 				return this.applyLicenceIntoModel(workerLicence);
 			})
@@ -688,7 +696,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private getLicenceOfTypeAuthenticated(
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
@@ -699,11 +708,25 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
+
+				// return forkJoin([ // TODO set the photo of yourself for update, authenticated
+				// 	this.loadExistingLicenceWithIdAuthenticated(licenceAppId, hasBcscNameChanged),
+				// 	this.licenceService.apiLicencesLicencePhotoGet(),
+				// ]).pipe(
+				// 	catchError((error) => of(error)),
+				// 	map((resps: any[]) => {
+				// 		this.setPhotographOfYourself(resps[1]);
+				// 		return resps[0];
+				// 	}),
+				// 	switchMap((_resp: any) => {
+				// 		return this.applyUpdateDataUpdatesToModel(_resp);
+				// 	})
+				// );
 			}
 			case ApplicationTypeCode.Replacement: {
 				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
@@ -792,11 +815,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceEmptyAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-
 		this.licenceModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData,
+				workerLicenceTypeData: { workerLicenceTypeCode: workerLicenceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
@@ -1018,7 +1039,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	private applyLicenceProfileIntoModel(
 		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined
+		applicationTypeCode: ApplicationTypeCode | undefined,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -1030,12 +1052,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			surname: profile.surname,
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
+			hasGenderChanged: false,
+			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
+			isPrintNewName: userLicenceInformation?.hasBcscNameChanged === true ? null : false,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,
 			origSurname: profile.surname,
 			origDateOfBirth: profile.dateOfBirth,
 			origGenderCode: profile.genderCode,
+			cardHolderName: userLicenceInformation?.cardHolderName ?? null,
+			licenceHolderName: userLicenceInformation?.licenceHolderName ?? null,
 		};
 
 		const contactInformationData = {
@@ -1517,7 +1544,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicationPortalStatus: resp.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
-				profileConfirmationData: { isProfileUpToDate: true },
 				soleProprietorData,
 				expiredLicenceData,
 				licenceTermData,
@@ -1569,10 +1595,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const licenceTermData = {
 			licenceTermCode: null,
 		};
-		// const bcDriversLicenceData = {
-		// 	hasBcDriversLicence: null,
-		// 	bcDriversLicenceNumber: null,
-		// };
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
@@ -1635,6 +1657,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				originalPhotoOfYourselfExpired,
 				originalDogAuthorizationExists,
@@ -1642,7 +1665,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				soleProprietorData,
 				licenceTermData,
 				fingerprintProofData,
-				// bcDriversLicenceData,
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
@@ -1675,6 +1697,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				mentalHealthConditionsData,
 				criminalHistoryData,
@@ -1699,6 +1722,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				residentialAddress: { ...residentialAddress },
 			},

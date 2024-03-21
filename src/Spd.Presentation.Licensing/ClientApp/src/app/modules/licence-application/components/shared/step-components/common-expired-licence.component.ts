@@ -186,7 +186,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	}
 
 	private handleValidExpiredLicence(resp: LicenceResponse, recaptchaCode: string): void {
-		const name = this.utilService.getFullName(resp.licenceHolderFirstName, resp.licenceHolderLastName);
+		const name = resp.licenceHolderName;
 
 		const formattedExpiryDate = this.formatDatePipe.transform(resp.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
 		this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;

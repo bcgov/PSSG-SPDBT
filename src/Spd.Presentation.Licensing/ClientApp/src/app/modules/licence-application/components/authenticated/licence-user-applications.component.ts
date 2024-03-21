@@ -471,7 +471,7 @@ import {
 					</div>
 
 					<br /><br /><br />
-
+					<mat-divider class="mat-divider-main my-3"></mat-divider>
 					<div class="fw-bold">Temp buttons for testing:</div>
 
 					<div class="my-2">
@@ -688,6 +688,9 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 				const userLicencesList: Array<UserLicenceResponse> = resps[0];
 				const userApplicationsList: Array<UserApplicationResponse> = resps[1];
 
+				console.debug('userLicencesList', userLicencesList);
+				console.debug('userApplicationsList', userApplicationsList);
+
 				// User Licences/Permits
 				this.activeApplications = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
 				this.expiredLicences = userLicencesList.filter((item: UserLicenceResponse) => item.isExpired);
@@ -895,7 +898,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		switch (appl.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update)
+					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update, appl)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(

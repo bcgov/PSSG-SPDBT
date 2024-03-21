@@ -104,6 +104,8 @@ export class CommonAliasListComponent implements OnInit {
 	ngOnInit(): void {
 		if (this.isReadonly) {
 			this.utilService.disableFormArrayInputs(this.aliasesArray);
+		} else {
+			this.utilService.enableFormArrayInputs(this.aliasesArray);
 		}
 	}
 

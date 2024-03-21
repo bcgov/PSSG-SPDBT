@@ -28,8 +28,6 @@ import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authe
 import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
-import { StepWorkerLicenceApplicationTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-application-type-authenticated.component';
-import { StepWorkerLicenceTypeAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-type-authenticated.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
@@ -61,8 +59,6 @@ export class LicenceApplicationRoutes {
 	public static LICENCE_LOGIN_USER_PROFILE = 'user-profile';
 
 	public static WORKER_LICENCE_USER_PROFILE_AUTHENTICATED = 'licence-user-profile';
-	public static WORKER_LICENCE_SELECTION_AUTHENTICATED = 'licence-selection';
-	public static WORKER_LICENCE_APPLICATION_TYPE_AUTHENTICATED = 'licence-application-type';
 
 	public static PERMIT_USER_PROFILE_AUTHENTICATED = 'permit-user-profile';
 	public static PERMIT_SELECTION_AUTHENTICATED = 'permit-selection';
@@ -298,14 +294,6 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED,
 						component: StepWorkerLicenceUserProfileComponent,
-					},
-					{
-						path: LicenceApplicationRoutes.WORKER_LICENCE_SELECTION_AUTHENTICATED,
-						component: StepWorkerLicenceTypeAuthenticatedComponent,
-					},
-					{
-						path: LicenceApplicationRoutes.WORKER_LICENCE_APPLICATION_TYPE_AUTHENTICATED,
-						component: StepWorkerLicenceApplicationTypeAuthenticatedComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED,
