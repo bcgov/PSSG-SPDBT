@@ -13,6 +13,7 @@ using Spd.Presentation.Licensing.Configurations;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Tests.Fixtures;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
@@ -88,11 +89,19 @@ public class SecurityWorkerLicensingControllerTest
     [Fact]
     public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Return_WorkerLicenceCommandResponse()
     {
-        var workerLicenceAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal);
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal);
 
-        var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(workerLicenceAppAnonymousSubmitRequest, CancellationToken.None);
+        var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
 
         Assert.IsType<WorkerLicenceCommandResponse>(result);
         mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_With_ApplicationTypeCode_New_Throw_Exception()
+    {
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest();
+
+        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None));
     }
 }
