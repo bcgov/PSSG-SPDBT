@@ -32,7 +32,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_WorkerLicenceUpsertCommand_Throw_Exception_LicApp()
+        public async void Handle_WorkerLicenceUpsertCommand_WithDuplicateApp_Throw_Exception()
         {
             //Arrange
             //have licAppId in the upsert request and there is duplicated same type active application.
@@ -57,7 +57,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_WorkerLicenceUpsertCommand_Throw_Exception_Lic()
+        public async void Handle_WorkerLicenceUpsertCommand_WithDuplicateLic_Throw_Exception()
         {
             //Arrange
             //have licAppId in the upsert request and there is duplicated same type active licence.
@@ -91,7 +91,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_WorkerLicenceUpsertCommand_Without_LicAppId_Return_WorkerLicenceCommandResponse()
+        public async void Handle_WorkerLicenceUpsertCommand_WithoutLicAppId_Return_WorkerLicenceCommandResponse()
         {
             //Arrange
             //no duplicates; no licAppId: means create a brand new application.
