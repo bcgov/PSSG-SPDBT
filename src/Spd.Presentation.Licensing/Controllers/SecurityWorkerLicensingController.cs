@@ -138,7 +138,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Submit Security Worker Licence Application Json part for authenticated users
+        /// Submit Security Worker Licence Application Json part for authenticated users, supports only: renewal, update and replace
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
         /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
