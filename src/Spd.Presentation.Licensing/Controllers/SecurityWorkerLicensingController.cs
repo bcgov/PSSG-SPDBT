@@ -73,13 +73,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/worker-licence-applications/{licenceAppId}")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<WorkerLicenceAppResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
             return await _mediator.Send(new GetWorkerLicenceQuery(licenceAppId));
         }
-
 
         /// <summary>
         /// Upload licence application files
@@ -116,6 +115,61 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest));
         }
+
+        /// <summary>
+        /// Upload licence application files for authenticated users.
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/authenticated/files")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadLicenceAppFilesAuthenticated([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+
+            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command, ct);
+            Guid fileKeyCode = Guid.NewGuid();
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
+            return fileKeyCode;
+        }
+
+        /// <summary>
+        /// Submit Security Worker Licence Application Json part for authenticated users, supports only: renewal, update and replace
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// </summary>
+        /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/authenticated/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
+        {
+            WorkerLicenceCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
+            var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            return response;
+        }
+
         #endregion
 
         #region anonymous 
@@ -228,7 +282,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
         #endregion
-
 
     }
 }
