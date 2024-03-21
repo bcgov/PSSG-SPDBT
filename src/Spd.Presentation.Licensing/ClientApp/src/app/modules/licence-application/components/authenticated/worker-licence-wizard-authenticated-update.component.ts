@@ -2,6 +2,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '../../services/licence-application.service';
@@ -21,7 +22,9 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 
 						<div class="row wizard-button-row">
 							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-								<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
+								<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
+									Previous
+								</button>
 							</div>
 							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
@@ -29,8 +32,8 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 						</div>
 					</mat-step>
 
-					<mat-step completed="true">
-						<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
+					<!-- <ng-template matStepLabel>Confirm Mailing Address</ng-template> -->
+					<!-- <mat-step completed="true">
 						<app-step-worker-licence-mailing-address-update-authenticated></app-step-worker-licence-mailing-address-update-authenticated>
 
 						<div class="row wizard-button-row">
@@ -41,11 +44,12 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
-					</mat-step>
+					</mat-step> -->
 
 					<mat-step completed="true">
 						<!-- <ng-template matStepLabel>Confirm Updates</ng-template> -->
-						<app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated>
+						<!-- <app-step-worker-licence-confirm-updates-authenticated></app-step-worker-licence-confirm-updates-authenticated> -->
+						<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 						<div class="row wizard-button-row">
 							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -80,17 +84,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 		}
-
-		// this.updateCompleteStatus(); // TODO what to set?
 	}
-
-	// onStepSelectionChange(_event: StepperSelectionEvent) {
-	// 	//empty
-	// }
-
-	// onScrollIntoView(): void {
-	// 	this.scrollIntoView();
-	// }
 
 	onPreviousStepperStep(stepper: MatStepper): void {
 		// console.debug('previous', stepper);
@@ -110,7 +104,12 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 		//empty
 	}
 
-	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+	onGotoUserProfile(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+			),
+			{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+		);
 	}
 }

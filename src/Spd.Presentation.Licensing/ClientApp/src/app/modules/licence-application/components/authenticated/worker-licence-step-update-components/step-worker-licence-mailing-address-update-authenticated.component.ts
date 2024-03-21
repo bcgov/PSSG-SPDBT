@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AddressRetrieveResponse } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { Address } from '@app/shared/components/address-autocomplete.component';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-step-worker-licence-mailing-address-update-authenticated',
@@ -100,6 +100,7 @@ import { Address } from '@app/shared/components/address-autocomplete.component';
 	styles: [],
 })
 export class StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent {
+	// TODO remove this component? StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 

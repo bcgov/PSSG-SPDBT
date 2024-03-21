@@ -27,17 +27,15 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
-						<section>
-							<app-common-user-profile
-								[personalInformationFormGroup]="personalInformationFormGroup"
-								[contactFormGroup]="contactFormGroup"
-								[aliasesFormGroup]="aliasesFormGroup"
-								[residentialAddressFormGroup]="residentialAddressFormGroup"
-								[mailingAddressFormGroup]="mailingAddressFormGroup"
-								[hasBcscNameChange]="hasBcscNameChange"
-								[isReadonly]="false"
-							></app-common-user-profile>
-						</section>
+						<app-common-user-profile
+							[personalInformationFormGroup]="personalInformationFormGroup"
+							[contactFormGroup]="contactFormGroup"
+							[aliasesFormGroup]="aliasesFormGroup"
+							[residentialAddressFormGroup]="residentialAddressFormGroup"
+							[mailingAddressFormGroup]="mailingAddressFormGroup"
+							[isReadonlyPersonalInfo]="isReadonlyPersonalInfo"
+							[isReadonlyMailingAddress]="false"
+						></app-common-user-profile>
 
 						<ng-container *ngIf="isNotReplacment">
 							<mat-divider class="mat-divider-main mt-3"></mat-divider>
@@ -60,27 +58,26 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 									[applicationTypeCode]="applicationTypeCode"
 								></app-common-user-profile-licence-mental-health-conditions>
 							</section>
-							<mat-divider class="mat-divider-main mt-3" *ngIf="!showConfirmation"></mat-divider>
 						</ng-container>
+
+						<mat-divider class="mat-divider-main mt-3"></mat-divider>
 
 						<section *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
-								<div>
-									<div class="text-minor-heading py-2">Confirmation</div>
-									<mat-checkbox formControlName="isProfileUpToDate">
-										I confirm that this information is up-to-date
-									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-											form.get('isProfileUpToDate')?.invalid &&
-											form.get('isProfileUpToDate')?.hasError('required')
-										"
-									>
-										This is required
-									</mat-error>
-								</div>
+								<div class="text-minor-heading py-2">Confirmation</div>
+								<mat-checkbox formControlName="isProfileUpToDate">
+									I confirm that this information is up-to-date
+								</mat-checkbox>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+										form.get('isProfileUpToDate')?.invalid &&
+										form.get('isProfileUpToDate')?.hasError('required')
+									"
+								>
+									This is required
+								</mat-error>
 							</form>
 						</section>
 
@@ -119,7 +116,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
-	hasBcscNameChange = false;
 	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
@@ -136,6 +132,8 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
 
+	isReadonlyPersonalInfo = false;
+
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
@@ -147,8 +145,9 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.alertText = 'Make sure your profile information is up-to-date before replacing your licence.';
+				this.alertText = 'Make sure your address information is up-to-date before replacing your licence.';
 				this.showConfirmation = true;
+				this.isReadonlyPersonalInfo = true;
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
@@ -158,7 +157,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
-				this.hasBcscNameChange = true; // TODO calculate if name has changed.
 				this.showConfirmation = true;
 				break;
 			}
@@ -193,6 +191,15 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.mentalHealthComponent.isFormValid() : true;
 
 		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+
+		console.debug(
+			'[StepWorkerLicenceUserProfileComponent] isFormValid',
+			isValid1,
+			isValid2,
+			isValid3,
+			isValid4,
+			isValid5
+		);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
