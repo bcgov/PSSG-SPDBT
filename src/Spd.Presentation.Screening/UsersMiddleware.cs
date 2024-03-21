@@ -101,6 +101,7 @@ namespace Spd.Utilities.LogonUser
             var Endpoints = new List<(string method, string path)>
             {
                 ("GET", "api/health"),
+                ("GET", "api/ministries"),
                 ("GET", "api/users/whoami"),
                 ("GET", "api/configuration"),
                 ("GET", "api/metadata/address"),

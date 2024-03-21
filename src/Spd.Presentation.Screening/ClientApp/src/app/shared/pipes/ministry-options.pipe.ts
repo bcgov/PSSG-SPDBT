@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { MinistryResponse } from 'src/app/api/models';
 import { OptionsService } from 'src/app/core/services/options.service';
 
@@ -12,10 +12,8 @@ export class MinistryOptionsPipe implements PipeTransform {
 			return of(defaultValue);
 		}
 
-		return this.optionsService.getMinistries(true).pipe(
-			map((resp: Array<MinistryResponse>) => {
-				return resp.find((item) => item.id == input)?.name ?? defaultValue;
-			})
+		return of(
+			this.optionsService.getMinistries(true).find((item: MinistryResponse) => item.id == input)?.name ?? defaultValue
 		);
 	}
 }

@@ -24,10 +24,11 @@ namespace Spd.Resource.Repository.ApplicationInvite
 
         public async Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken)
         {
-            if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy.ServiceTypes == null && query.FilterBy.AppInviteId == null))
+            if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy.ParentOrgId == null && query.FilterBy.AppInviteId == null))
                 throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id or service type or appInviteId.");
 
             var invites = _dynaContext.spd_portalinvitations
+                    .Expand(i => i.spd_OrganizationId)
                     .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest);
 
@@ -40,21 +41,9 @@ namespace Spd.Resource.Repository.ApplicationInvite
             if (query.FilterBy.CreatedByUserId != null)
                 invites = invites.Where(i => i._spd_invitedby_value == query.FilterBy.CreatedByUserId);
 
-            if (query.FilterBy.ServiceTypes != null)
-            {
-                List<Guid> stGuids = new List<Guid>();
-                foreach (ServiceTypeEnum st in query.FilterBy.ServiceTypes)
-                {
-                    var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(st.ToString(), out Guid stGuid);
-                    if (!keyExisted)
-                        throw new ArgumentException("invalid service type");
-                    stGuids.Add(stGuid);
-                }
-                if (stGuids.Count == 2)
-                {
-                    invites = invites.Where(i => i._spd_servicetypeid_value == stGuids[0] || i._spd_servicetypeid_value == stGuids[1]); //todo: only support two service types. Needs to figure out how to do 'in'.
-                }
-            }
+            if (query.FilterBy.ParentOrgId != null)
+                invites = invites.Where(i => i.spd_OrganizationId._parentaccountid_value == query.FilterBy.ParentOrgId);
+
             string? filterValue = query.FilterBy.EmailOrNameContains;
             if (!string.IsNullOrWhiteSpace(filterValue))
                 invites = invites.Where(i => i.spd_firstname.Contains(filterValue) || i.spd_surname.Contains(filterValue) || i.spd_email.Contains(filterValue));
