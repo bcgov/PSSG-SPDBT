@@ -7,19 +7,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideHotToastConfig } from '@ngneat/hot-toast';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { tap } from 'rxjs';
+import { forkJoin, tap } from 'rxjs';
 import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { ConfigService } from './core/services/config.service';
+import { OptionsService } from './core/services/options.service';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
 
-export function appInitializer(configService: ConfigService) {
+export function appInitializer(configService: ConfigService, optionsService: OptionsService) {
 	return () => {
-		return configService.getConfigs().pipe(
+		return forkJoin([configService.getConfigs(), optionsService.loadMinistries()]).pipe(
 			tap((configs) => {
 				console.debug('[appInitializer] configs', configs);
 			})
@@ -53,7 +54,7 @@ export function appInitializer(configService: ConfigService) {
 		{
 			provide: APP_INITIALIZER,
 			useFactory: appInitializer,
-			deps: [ConfigService],
+			deps: [ConfigService, OptionsService],
 			multi: true,
 		},
 		provideHotToastConfig(),

@@ -1,6 +1,5 @@
 using MediatR;
 using Spd.Engine.Validation;
-using Spd.Resource.Repository;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Shared;
@@ -58,17 +57,16 @@ namespace Spd.Manager.Screening
             ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
             if (request.IsPSSO)
             {
-                //psso, cannot use orgId to filter.
-                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS, ServiceTypeEnum.MCFD, ServiceTypeEnum.PE_CRC_VS, ServiceTypeEnum.PE_CRC };
+                //psso, use parent orgId to filter.
                 if (request.IsPSA)
                 {
                     //return all psso invites
-                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, serviceTypes.ToArray());
+                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, SpdConstants.BcGovOrgId);
                 }
                 else
                 {
                     //return all created by invites.
-                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, serviceTypes.ToArray(), CreatedByUserId: request.UserId);
+                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, SpdConstants.BcGovOrgId, CreatedByUserId: request.UserId);
                 }
             }
             var response = await _applicationInviteRepository.QueryAsync(
