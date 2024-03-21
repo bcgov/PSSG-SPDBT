@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import {
 	ApplicationInviteCreateRequest,
 	ApplicationInvitePrepopulateDataResponse,
@@ -20,7 +21,6 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -130,30 +130,31 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="serviceTypes">
-									<mat-form-field>
-										<mat-label>Service Type</mat-label>
-										<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
-												{{ srv.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="group.get('serviceType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div
-									class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
-									*ngIf="portal === portalTypeCodes.Psso && isPsaUser"
-								>
+								<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 pe-md-0" *ngIf="showMinistries">
 									<mat-form-field>
 										<mat-label>Ministry</mat-label>
-										<mat-select formControlName="orgId" [errorStateMatcher]="matcher">
+										<mat-select
+											formControlName="orgId"
+											(selectionChange)="onChangeMinistry($event, i)"
+											[errorStateMatcher]="matcher"
+										>
 											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 												{{ ministry.name }}
 											</mat-option>
 										</mat-select>
 										<mat-error *ngIf="group.get('orgId')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showServiceType">
+									<mat-form-field>
+										<mat-label>Service Type</mat-label>
+										<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
+											<mat-option *ngFor="let srv of serviceTypes[i]" [value]="srv.code">
+												{{ srv.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="group.get('serviceType')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -228,7 +229,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	showServiceType = false;
 	serviceTypeDefault: ServiceTypeCode | null = null;
-	serviceTypes: null | SelectOptions[] = null;
+	serviceTypes: Array<SelectOptions[]> = [];
 	portalTypeCodes = PortalTypeCode;
 
 	showScreeningType = false;
@@ -237,6 +238,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	requestName = '';
 	form!: FormGroup;
+
 	matcher = new FormErrorStateMatcher();
 
 	constructor(
@@ -244,26 +246,28 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<ScreeningRequestAddCommonModalComponent>,
 		private applicationService: ApplicationService,
 		private authUserBceidService: AuthUserBceidService,
-		private authUserIdirService: AuthUserIdirService,
 		private utilService: UtilService,
 		private optionsService: OptionsService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: ScreeningRequestAddDialogData
-	) { }
+	) {}
 
 	ngOnInit(): void {
 		this.portal = this.dialogData?.portal;
 		this.isPsaUser = this.dialogData?.isPsaUser ?? false;
 		this.orgId = this.dialogData?.orgId ?? null;
+
+		this.ministries = this.optionsService.getMinistries();
+
+		this.form = this.formBuilder.group({
+			crcs: this.formBuilder.array([]),
+		});
+
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.setupCrrp();
 		} else {
 			this.setupPsso();
 		}
-
-		this.form = this.formBuilder.group({
-			crcs: this.formBuilder.array([]),
-		});
 
 		const clearanceId = this.dialogData?.clearanceId;
 		if (clearanceId) {
@@ -292,13 +296,13 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		let serviceTypeCodeDefault: ServiceTypeCode | null = null;
 		if (this.portal == PortalTypeCode.Crrp) {
 			serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
-		} else {
+		} else if (!this.isPsaUser) {
 			serviceTypeCodeDefault = ServiceTypeCode.Psso;
 		}
 
 		const orgIdDefault = this.orgId;
 
-		return this.formBuilder.group(
+		const newForm = this.formBuilder.group(
 			{
 				firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [FormControlValidators.required]),
 				lastName: new FormControl(inviteDefault ? inviteDefault.lastName : '', [FormControlValidators.required]),
@@ -324,11 +328,19 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				],
 			}
 		);
+		return newForm;
+	}
+
+	onChangeMinistry(event: MatSelectChange, index: number): void {
+		this.populateServiceTypes(event.value, index);
 	}
 
 	onAddRow() {
-		const control = this.form.get('crcs') as FormArray;
-		control.push(this.initiateForm());
+		const crcsArray = this.form.get('crcs') as FormArray;
+		crcsArray.push(this.initiateForm());
+		this.form.setControl('crcs', crcsArray);
+
+		this.populateServiceTypes(this.orgId!, crcsArray.length - 1);
 	}
 
 	onDeleteRow(index: number) {
@@ -401,7 +413,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 		if (this.portal == PortalTypeCode.Psso) {
 			// see if any crcs have PSSO+VS
-			const pssoVs = control.filter((item) => item.serviceType == ServiceTypeCode.PssoVs || item.serviceType == ServiceTypeCode.PeCrcVs);
+			const pssoVs = control.filter(
+				(item) => item.serviceType == ServiceTypeCode.PssoVs || item.serviceType == ServiceTypeCode.PeCrcVs
+			);
 			if (pssoVs.length > 0) {
 				this.promptVulnerableSector(body);
 			} else {
@@ -413,8 +427,10 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	private addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest) {
-		const control = this.form.get('crcs') as FormArray;
-		control.push(this.initiateForm(inviteDefault));
+		const crcsArray = this.form.get('crcs') as FormArray;
+		crcsArray.push(this.initiateForm(inviteDefault));
+
+		this.populateServiceTypes(this.orgId!, crcsArray.length - 1);
 	}
 
 	private promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {
@@ -559,7 +575,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		if (this.isNotVolunteerOrg) {
 			this.showScreeningType = orgProfile
 				? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-				orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+				  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 				: false;
 		} else {
 			this.showScreeningType = false;
@@ -571,7 +587,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				this.serviceTypeDefault = serviceTypes[0];
 			} else {
 				this.showServiceType = true;
-				this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+				this.serviceTypes[0] = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
 			}
 		}
 	}
@@ -579,24 +595,29 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	private setupPsso(): void {
 		this.requestName = 'Criminal Record Check';
 
-		this.optionsService.getMinistries().subscribe((resp) => {
-			this.ministries = resp;
-		});
-
 		// using idir
 		this.isNotVolunteerOrg = false;
 		this.showScreeningType = false;
 		this.showServiceType = true;
+	}
 
-		// get the service types to show based upon the user's ministry
-		const userProfile = this.authUserIdirService.idirUserWhoamiProfile;
-		this.optionsService.getMinistries().subscribe((ministries: Array<MinistryResponse>) => {
-			const currentMinistry = ministries.find((item: MinistryResponse) => item.id === userProfile?.orgId);
+	private populateServiceTypes(orgId: string, index: number) {
+		const currentMinistry = this.ministries.find((item: MinistryResponse) => item.id === orgId);
+		const serviceTypes =
+			currentMinistry?.serviceTypeCodes?.map(
+				(item: ServiceTypeCode) => ServiceTypes.find((option: SelectOptions) => option.code === item)!
+			) ?? [];
+		serviceTypes.sort((a: SelectOptions, b: SelectOptions) =>
+			this.utilService.compareByStringUpper(a.desc ?? '', b.desc)
+		);
+		this.serviceTypes[index] = serviceTypes;
 
-			const serviceTypes = currentMinistry?.serviceTypeCodes?.map((item: ServiceTypeCode) => ServiceTypes.find((option: SelectOptions) => option.code === item)!) ?? [];
-			serviceTypes.sort((a: SelectOptions, b: SelectOptions) => this.utilService.compareByStringUpper(a.desc ?? '', b.desc));
-			this.serviceTypes = serviceTypes;
-		});
+		const control = this.form.get('crcs') as FormArray;
+		const crcFormGroup = control.at(index) as FormGroup;
+
+		if (this.isPsaUser && this.showServiceType && crcFormGroup) {
+			crcFormGroup.patchValue({ serviceType: null }, { emitEvent: false });
+		}
 	}
 
 	get getFormControls() {
@@ -607,5 +628,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	get rowsExist(): boolean {
 		const control = this.form.get('crcs') as FormArray;
 		return control.length > 1;
+	}
+
+	get showMinistries(): boolean {
+		return this.portal === PortalTypeCode.Psso && this.isPsaUser === true;
 	}
 }

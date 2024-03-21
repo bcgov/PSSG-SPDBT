@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -18,6 +19,7 @@ import { GenderTypes, ScreeningTypes, SelectOptions, ServiceTypes } from 'src/ap
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -29,7 +31,6 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { FormatDatePipe } from '../pipes/format-date.pipe';
-import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 
 export interface AliasCreateRequest {
 	givenName?: null | string;
@@ -63,6 +64,7 @@ export interface AliasCreateRequest {
 					</h2>
 				</div>
 			</div>
+
 			<form [formGroup]="form" novalidate>
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 				<section>
@@ -140,7 +142,7 @@ export interface AliasCreateRequest {
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Birth Place</mat-label>
+								<mat-label>Birthplace</mat-label>
 								<input
 									matInput
 									formControlName="birthPlace"
@@ -200,10 +202,10 @@ export interface AliasCreateRequest {
 								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 7 digits </mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal === portalTypeCodes.Psso && isPsaUser">
+						<div class="col-xl-6 col-lg-12 col-md-12" *ngIf="showMinistries">
 							<mat-form-field>
 								<mat-label>Ministry</mat-label>
-								<mat-select formControlName="orgId">
+								<mat-select formControlName="orgId" (selectionChange)="onChangeMinistry($event)">
 									<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 										{{ ministry.name }}
 									</mat-option>
@@ -211,7 +213,7 @@ export interface AliasCreateRequest {
 								<mat-error *ngIf="form.get('orgId')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="serviceTypes">
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showServiceType">
 							<mat-form-field>
 								<mat-label>Service Type</mat-label>
 								<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
@@ -475,7 +477,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	showServiceType = false;
 	serviceTypeDefault: ServiceTypeCode | null = null;
-	serviceTypes: null | SelectOptions[] = null;
+	serviceTypes: null | SelectOptions[] = [];
 
 	genderTypes = GenderTypes;
 	portalTypeCodes = PortalTypeCode;
@@ -530,10 +532,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 					'givenName',
 					(form) => form.get('oneLegalName')?.value != true
 				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'orgId',
-					(_form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
-				),
+				FormGroupValidators.conditionalRequiredValidator('orgId', (_form) => this.showMinistries),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
 					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
 				),
@@ -546,6 +545,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	@Input() orgId: string | null = null;
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
+
+	showMinistryDropdown = false;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -561,7 +562,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private maskPipe: NgxMaskPipe,
 		private formatDatePipe: FormatDatePipe,
 		private dialog: MatDialog
-	) { }
+	) {}
 
 	ngOnInit(): void {
 		if (!this.orgId) {
@@ -578,7 +579,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			if (this.isNotVolunteerOrg) {
 				this.showScreeningType = orgProfile
 					? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-					orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+					  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 					: false;
 			} else {
 				this.showScreeningType = false;
@@ -591,21 +592,18 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			this.isNotVolunteerOrg = true;
 			this.showScreeningType = false;
 			this.showServiceType = true;
-			this.serviceTypeDefault = ServiceTypeCode.Psso;
+			this.serviceTypeDefault = this.isPsaUser ? null : ServiceTypeCode.Psso;
 
 			// get the service types to show based upon the user's ministry
 			const userProfile = this.authUserIdirService.idirUserWhoamiProfile;
-			this.optionsService.getMinistries().subscribe((ministries: Array<MinistryResponse>) => {
-				this.ministries = ministries;
-				const currentMinistry = ministries.find((item: MinistryResponse) => item.id === userProfile?.orgId);
-
-				const serviceTypes = currentMinistry?.serviceTypeCodes?.map((item: ServiceTypeCode) => ServiceTypes.find((option: SelectOptions) => option.code === item)!) ?? [];
-				serviceTypes.sort((a: SelectOptions, b: SelectOptions) => this.utilService.compareByStringUpper(a.desc ?? '', b.desc));
-				this.serviceTypes = serviceTypes;
-			});
+			this.populateServiceTypes(userProfile?.orgId);
 		}
 
 		this.resetForm();
+	}
+
+	onChangeMinistry(event: MatSelectChange): void {
+		this.populateServiceTypes(event.value);
 	}
 
 	onCancel(): void {
@@ -657,10 +655,11 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				ApplicationCreateRequestJson: createRequest,
 			};
 
-
-			if (this.portal == PortalTypeCode.Psso &&
+			if (
+				this.portal == PortalTypeCode.Psso &&
 				createRequest.serviceType != ServiceTypeCode.PssoVs &&
-				createRequest.serviceType != ServiceTypeCode.PeCrcVs) {
+				createRequest.serviceType != ServiceTypeCode.PeCrcVs
+			) {
 				this.saveAndCheckDuplicates(body);
 			} else {
 				this.promptVulnerableSector(body);
@@ -765,6 +764,26 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	get isDisplayFacilityName(): boolean {
 		return [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(this.screeningType.value);
+	}
+
+	private populateServiceTypes(orgId: string | null | undefined) {
+		if (!orgId) {
+			this.serviceTypes = [];
+		}
+
+		this.ministries = this.optionsService.getMinistries();
+
+		const currentMinistry = this.ministries.find((item: MinistryResponse) => item.id === orgId);
+		const serviceTypes =
+			currentMinistry?.serviceTypeCodes?.map(
+				(item: ServiceTypeCode) => ServiceTypes.find((option: SelectOptions) => option.code === item)!
+			) ?? [];
+		serviceTypes.sort((a: SelectOptions, b: SelectOptions) =>
+			this.utilService.compareByStringUpper(a.desc ?? '', b.desc)
+		);
+		this.serviceTypes = serviceTypes;
+
+		this.form.patchValue({ serviceType: null }, { emitEvent: false });
 	}
 
 	private resetForm(): void {
@@ -888,5 +907,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		} else if (this.portal == PortalTypeCode.Psso) {
 			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 		}
+	}
+
+	get showMinistries(): boolean {
+		return this.portal === PortalTypeCode.Psso && this.isPsaUser === true;
 	}
 }
