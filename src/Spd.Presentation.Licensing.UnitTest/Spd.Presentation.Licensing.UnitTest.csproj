@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
     <ProjectReference Include="..\Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj" />
+    <ProjectReference Include="..\Spd.Tests\Spd.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
