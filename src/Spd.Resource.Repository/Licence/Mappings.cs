@@ -20,6 +20,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.firstname))
              .ForMember(d => d.LicenceStatusCode, opt => opt.MapFrom(s => GetLicenceStatusEnum(s.statuscode)))
              .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.lastname))
+             .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.MapFrom(s => s.spd_LicenceHolder_contact.spd_middlename1))
              .ForMember(d => d.NameOnCard, opt => opt.MapFrom(s => s.spd_nameonlicence));
         }
 

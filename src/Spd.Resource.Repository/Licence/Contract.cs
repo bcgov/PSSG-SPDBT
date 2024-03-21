@@ -36,6 +36,7 @@ namespace Spd.Resource.Repository.Licence
         public Guid? LicenceHolderId { get; set; }
         public string? LicenceHolderFirstName { get; set; }
         public string? LicenceHolderLastName { get; set; }
+        public string? LicenceHolderMiddleName1 { get; set; }
         public LicenceStatusEnum LicenceStatusCode { get; set; }
         public string? NameOnCard { get; set; }
     }
