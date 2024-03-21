@@ -404,9 +404,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				];
 			}
 
-			this.optionsService.getMinistries().subscribe((_resp) => {
-				this.onFilterReset();
-			});
+			this.onFilterReset();
 		}
 	}
 
