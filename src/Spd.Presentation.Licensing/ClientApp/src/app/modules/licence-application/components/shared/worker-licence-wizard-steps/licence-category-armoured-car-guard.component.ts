@@ -5,7 +5,6 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 
@@ -68,7 +67,6 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 
 	constructor(
 		private optionsPipe: OptionsPipe,
-		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService,
 		private hotToastService: HotToastService
 	) {}
@@ -78,7 +76,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate, file)
 				.subscribe({

@@ -44,6 +44,12 @@ import {
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+					<ng-container *ngFor="let msg of errorMessages; let i = index">
+						<app-alert type="danger" icon="error">
+							{{ msg }}
+						</app-alert>
+					</ng-container>
+
 					<ng-container *ngFor="let msg of warningMessages; let i = index">
 						<app-alert type="warning" icon="warning">
 							{{ msg }}
@@ -191,15 +197,15 @@ import {
 									<div class="col-lg-10">
 										<div class="row">
 											<div class="col-lg-3">
-												<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
+												<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
 												<div class="text-data">{{ appl.licenceNumber }}</div>
 											</div>
 											<div class="col-lg-3">
-												<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
+												<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 												<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-3">
-												<div class="d-block text-muted mt-2 mt-md-0">Case Id</div>
+												<div class="d-block text-muted mt-2 mt-lg-0">Case Id</div>
 												<div class="text-data">{{ appl.caseNumber }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
@@ -216,13 +222,13 @@ import {
 										>
 											<div class="row mb-2">
 												<div class="col-lg-3">
-													<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+													<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
 													<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
 														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 													</div>
 												</div>
-												<div class="col-lg-4">
-													<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
+												<div class="col-lg-9">
+													<div class="d-block text-muted mt-2 mt-lg-0">Licence Categories</div>
 													<div class="text-data">
 														<ul class="m-0">
 															<ng-container *ngFor="let catCode of appl.categoryCodes; let i = index">
@@ -231,12 +237,12 @@ import {
 														</ul>
 													</div>
 												</div>
-												<div class="col-lg-5" *ngIf="appl.dogAuthorization">
-													<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
+												<div class="col-lg-6" *ngIf="appl.dogAuthorization">
+													<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
 													<div class="text-data">{{ appl.dogAuthorization | options : 'DogDocumentTypes' }}</div>
 												</div>
-												<div class="col-lg-5" *ngIf="appl.restraintAuthorization">
-													<div class="d-block text-muted mt-2 mt-md-0">Authorization Documents</div>
+												<div class="col-lg-6" *ngIf="appl.restraintAuthorization">
+													<div class="d-block text-muted mt-2">Restraint Authorization Documents</div>
 													<div class="text-data">
 														{{ appl.restraintAuthorization | options : 'RestraintDocumentTypes' }}
 													</div>
@@ -279,7 +285,7 @@ import {
 										<ng-template #isPermit>
 											<div class="row mb-2">
 												<div class="col-lg-9">
-													<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+													<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
 													<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
 														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 													</div>
@@ -430,15 +436,15 @@ import {
 								<div class="col-lg-9">
 									<div class="row">
 										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
+											<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
 											<div class="text-data">{{ appl.licenceNumber }}</div>
 										</div>
 										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
+											<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 											<div class="text-data">5 Years</div>
 										</div>
 										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+											<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
 											<div class="text-data">
 												{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 											</div>
@@ -469,108 +475,6 @@ import {
 							account
 						</app-alert>
 					</div>
-
-					<br /><br /><br />
-					<mat-divider class="mat-divider-main my-3"></mat-divider>
-					<div class="fw-bold">Temp buttons for testing:</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onTestRenewSecurityWorkerLicence()"
-						>
-							Renew Security Worker Licence
-						</button>
-					</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onTestUpdateSecurityWorkerLicence()"
-						>
-							Update Security Worker Licence
-						</button>
-					</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onTestReplacmentSecurityWorkerLicence()"
-						>
-							Replace Security Worker Licence
-						</button>
-					</div>
-					<!-- 
-					<mat-divider class="my-3"></mat-divider>
-
-					<div class="my-2">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onNewArmouredVehiclePermit()"
-						>
-							<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
-						</button>
-					</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onRenewArmouredVehiclePermit()"
-						>
-							Renew Armoured Vehicle Permit
-						</button>
-					</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onUpdateArmouredVehiclePermit()"
-						>
-							Update Armoured Vehicle Permit
-						</button>
-					</div>
-
-					<mat-divider class="my-3"></mat-divider>
-
-					<div class="my-2">
-						<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onNewBodyArmourPermit()">
-							<mat-icon>add</mat-icon>Apply for a new Body Armour Permit
-						</button>
-					</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onRenewBodyArmourPermit()"
-						>
-							Renew Body Armour Permit
-						</button>
-					</div>
-
-					<div class="my-2">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large w-auto mt-2 mt-lg-0"
-							(click)="onUpdateBodyArmourPermit()"
-						>
-							Update Body Armour Permit
-						</button>
-					</div> -->
 				</div>
 			</div>
 		</section>
@@ -639,6 +543,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	yourProfileLabel = '';
 
 	warningMessages: Array<string> = [];
+	errorMessages: Array<string> = [];
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
@@ -698,9 +603,18 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 				renewals.forEach((item: UserLicenceResponse) => {
 					const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
 					const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
-					this.warningMessages.push(
-						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by ${itemExpiry}.`
-					);
+					if (item.licenceExpiryNumberOfDays) {
+						if (item.licenceExpiryNumberOfDays > 7) {
+							this.warningMessages.push(
+								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by ${itemExpiry}.`
+							);
+						} else {
+							const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
+							this.errorMessages.push(
+								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by ${itemExpiry}.`
+							);
+						}
+					}
 				});
 
 				// User Licence/Permit Applications
@@ -938,7 +852,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		switch (appl.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal)
+					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal, appl)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
@@ -984,54 +898,5 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onConnectToExpiredLicence();
-	}
-
-	onTestRenewSecurityWorkerLicence() {
-		this.licenceApplicationService
-			.getLicenceWithSelectionAuthenticated('976bc3b0-410b-4c3b-b2a5-9cccb8154013', ApplicationTypeCode.Renewal)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-	onTestUpdateSecurityWorkerLicence() {
-		this.licenceApplicationService
-			.getLicenceWithSelectionAuthenticated('976bc3b0-410b-4c3b-b2a5-9cccb8154013', ApplicationTypeCode.Update)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-	onTestReplacmentSecurityWorkerLicence() {
-		this.licenceApplicationService
-			.getLicenceWithSelectionAuthenticated('976bc3b0-410b-4c3b-b2a5-9cccb8154013', ApplicationTypeCode.Replacement)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
 	}
 }

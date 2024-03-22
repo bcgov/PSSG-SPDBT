@@ -21,6 +21,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { AuthenticationService } from '@app/core/services/authentication.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import * as moment from 'moment';
@@ -117,6 +118,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
+		private authenticationService: AuthenticationService,
 		private domSanitizer: DomSanitizer
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
@@ -300,10 +302,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Determine if the step data should be saved. If the data has changed and category data exists;
 	 * @returns
 	 */
-	isSaveStep(): boolean {
-		const shouldSaveStep = this.hasValueChanged;
-		console.debug('shouldSaveStep', shouldSaveStep);
-		return shouldSaveStep;
+	isAutoSave(): boolean {
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
+			return false;
+		}
+
+		return this.hasValueChanged;
 	}
 
 	/**

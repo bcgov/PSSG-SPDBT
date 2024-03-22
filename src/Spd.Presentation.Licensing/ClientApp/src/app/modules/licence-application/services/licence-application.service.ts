@@ -362,8 +362,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Determine if the step data should be saved. If the data has changed and category data exists;
 	 * @returns
 	 */
-	isSaveStep(): boolean {
-		// console.debug('isSaveStep', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
+	isAutoSave(): boolean {
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
+			return false;
+		}
+
+		// console.debug('isAutoSave', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
 		// const shouldSaveStep =
 		// 	this.hasValueChanged &&
@@ -467,7 +474,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Save the licence data as is.
+	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
 	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
@@ -518,13 +525,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<WorkerLicenceAppResponse> {
 		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
-				this.licenceModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
-
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
-					_resp.applicationTypeData.applicationTypeCode
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceNumber
 				);
 
 				console.debug('[getLicenceWithSelectionAuthenticated] licenceFormGroup', this.licenceModelFormGroup.value);
@@ -639,8 +645,53 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		console.debug('submitLicenceAuthenticated body', body);
+		console.debug('submitLicenceNewAuthenticated body', body);
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+	}
+
+	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		// const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
+
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// console.debug('submitLicenceRenewalAuthenticated body', body);
+		// return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
+
+		console.debug('[submitLicenceRenewalAuthenticated] licenceModelFormValue', licenceModelFormValue);
+
+		// const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const [body, documentInfos] = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
+		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+		let newDocumentsExist = false;
+		documentInfos?.forEach((doc: Document) => {
+			if (doc.documentUrlId) {
+				existingDocumentIds.push(doc.documentUrlId);
+			} else {
+				newDocumentsExist = true;
+			}
+		});
+
+		console.debug('[submitLicenceRenewalAuthenticated] body', body);
+		console.debug('[submitLicenceRenewalAuthenticated] documentsToSave', documentsToSave);
+		console.debug('[submitLicenceRenewalAuthenticated] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceRenewalAuthenticated] newDocumentsExist', newDocumentsExist);
+
+		// if (newDocumentsExist) {
+		// 	return this.postLicenceAnonymousNewDocuments(existingDocumentIds, documentsToSave, body);
+		// } else {
+		// 	return this.postLicenceAnonymousNoNewDocuments(existingDocumentIds, body);
+		// }
+		return of({} as StrictHttpResponse<WorkerLicenceCommandResponse>);
 	}
 
 	private createEmptyLicenceAuthenticated(
@@ -701,7 +752,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
@@ -1065,6 +1116,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			licenceHolderName: userLicenceInformation?.licenceHolderName ?? null,
 		};
 
+		const originalLicenceData = {
+			originalApplicationId: userLicenceInformation?.licenceAppId ?? null,
+			originalLicenceId: userLicenceInformation?.licenceId ?? null,
+			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
+			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
+			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
+			originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
+		};
+
 		const contactInformationData = {
 			emailAddress: profile.emailAddress,
 			phoneNumber: profile.phoneNumber,
@@ -1132,6 +1192,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				...originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },

@@ -15,47 +15,48 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	styles: [
 		`
 			.alert-info {
-				color: #0c5460;
-				background-color: #eef8fa;
-				border-color: #eef8fa;
-				border-radius: 0;
-			}
-
-			.alert-info-border {
-				border-left: 3px solid #0c5460;
+				border: 1px solid rgba(217, 234, 247, 1);
+				background-color: rgba(217, 234, 247, 1);
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #1a5a96;
+				line-height: 1.5 !important;
 			}
 
 			.alert-success {
-				color: #155724;
+				border: 1px solid #e8f5eb;
 				background-color: #e8f5eb;
-				border-color: #e8f5eb;
-				border-radius: 0;
-			}
-
-			.alert-success-border {
-				border-left: 3px solid #155724;
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #155724;
+				line-height: 1.5 !important;
 			}
 
 			.alert-warning {
-				color: #856404;
-				background-color: #fff9e5;
-				border-color: #fff9e5;
-				border-radius: 0;
-			}
-
-			.alert-warning-border {
-				border-left: 3px solid #856404;
+				border: 1px solid rgba(250, 235, 204, 1);
+				background-color: rgba(249, 241, 198, 1);
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #6c4a00;
+				line-height: 1.5 !important;
 			}
 
 			.alert-danger {
-				color: #721c24;
-				background-color: #fceded;
-				border-color: #fceded;
-				border-radius: 0;
-			}
+				border: 1px solid rgba(235, 204, 209, 1);
+				background-color: rgba(242, 222, 222, 1);
+				border-radius: 5px;
 
-			.alert-danger-border {
-				border-left: 3px solid #721c24;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #a12622;
+				line-height: 1.5 !important;
 			}
 		`,
 	],

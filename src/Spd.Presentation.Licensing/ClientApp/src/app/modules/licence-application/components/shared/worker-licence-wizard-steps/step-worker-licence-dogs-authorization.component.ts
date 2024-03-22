@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -111,11 +110,7 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private hotToastService: HotToastService, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.originalDogAuthorizationExists = this.licenceApplicationService.licenceModelFormGroup.get(
@@ -130,7 +125,7 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file)
 				.subscribe({

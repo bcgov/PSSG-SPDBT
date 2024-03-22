@@ -154,7 +154,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.isSaveStep()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
@@ -247,7 +247,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.isSaveStep()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
@@ -284,7 +284,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.isSaveStep()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;

@@ -176,7 +176,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.permitApplicationService.isSaveStep()) {
+		if (this.permitApplicationService.isAutoSave()) {
 			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
@@ -214,7 +214,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	onNextPayStep(): void {
 		this.permitApplicationService.submitPermitAuthenticated().subscribe({
 			next: (_resp: any) => {
-				this.hotToastService.success('Your permit has been successfully submitted');
+				this.hotToastService.success('Your permit renewal has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: any) => {
@@ -277,7 +277,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onGoToReview() {
-		if (this.permitApplicationService.isSaveStep()) {
+		if (this.permitApplicationService.isAutoSave()) {
 			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
@@ -304,7 +304,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onChildNextStep() {
-		if (this.permitApplicationService.isSaveStep()) {
+		if (this.permitApplicationService.isAutoSave()) {
 			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
