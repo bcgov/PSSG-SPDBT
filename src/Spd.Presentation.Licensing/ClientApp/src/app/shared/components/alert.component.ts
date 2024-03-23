@@ -51,7 +51,6 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				border: 1px solid rgba(235, 204, 209, 1);
 				background-color: rgba(242, 222, 222, 1);
 				border-radius: 5px;
-
 				font-weight: 500;
 				font-style: normal;
 				font-size: 1.1rem !important;

@@ -624,39 +624,42 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 				);
 
 				// Set flags that determine if NEW licences/permits can be created
-				this.activeSwlExist =
+				let activeSwlExist =
 					this.activeApplications.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 					) >= 0;
 
-				if (!this.activeSwlExist) {
-					this.activeSwlExist =
+				if (!activeSwlExist) {
+					activeSwlExist =
 						userApplicationsList.findIndex(
 							(item: UserApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 						) >= 0;
 				}
+				this.activeSwlExist = activeSwlExist;
 
-				this.activeBaPermitExist =
+				let activeBaPermitExist =
 					this.activeApplications.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 					) >= 0;
-				if (!this.activeBaPermitExist) {
-					this.activeBaPermitExist =
+				if (!activeBaPermitExist) {
+					activeBaPermitExist =
 						userApplicationsList.findIndex(
 							(item: UserApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 						) >= 0;
 				}
+				this.activeBaPermitExist = activeBaPermitExist;
 
-				this.activeAvPermitExist =
+				let activeAvPermitExist =
 					this.activeApplications.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 					) >= 0;
-				if (!this.activeBaPermitExist) {
-					this.activeAvPermitExist =
+				if (!activeAvPermitExist) {
+					activeAvPermitExist =
 						userApplicationsList.findIndex(
 							(item: UserApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 						) >= 0;
 				}
+				this.activeAvPermitExist = activeAvPermitExist;
 
 				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 			})
