@@ -16,6 +16,7 @@ using Spd.Resource.Repository.Invoice;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Payment;
+using Spd.Resource.Repository.ServiceTypes;
 using Spd.Utilities.Cache;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Payment;
@@ -51,6 +52,7 @@ namespace Spd.Manager.Payment
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly ILicenceFeeRepository _licFeeRepository;
         private readonly ILicenceApplicationRepository _licAppRepository;
+        private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ILogger<IPaymentManager> _logger;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
@@ -67,6 +69,7 @@ namespace Spd.Manager.Payment
             IInvoiceRepository invoiceRepository,
             ILicenceFeeRepository licFeeRepository,
             ILicenceApplicationRepository licAppRepository,
+            IServiceTypeRepository serviceTypeRepository,
             ILogger<IPaymentManager> logger)
         {
             _paymentService = paymentService;
@@ -81,6 +84,7 @@ namespace Spd.Manager.Payment
             _invoiceRepository = invoiceRepository;
             _licFeeRepository = licFeeRepository;
             _licAppRepository = licAppRepository;
+            _serviceTypeRepository = serviceTypeRepository;
             _logger = logger;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
@@ -386,9 +390,9 @@ namespace Spd.Manager.Payment
                 if (PaybcRevenueAccountConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
 
-                var serviceCostConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBCS_SERVICECOST_KEY);
-                if (serviceCostConfig == null)
-                    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service cost correctly.");
+                var serviceCost = _serviceTypeRepository.QueryAsync(new ServiceTypeQry(app.ServiceType));
+                //if (serviceCostConfig == null)
+                //    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service cost correctly.");
 
                 SpdPaymentConfig spdPaymentConfig = new SpdPaymentConfig()
                 {
