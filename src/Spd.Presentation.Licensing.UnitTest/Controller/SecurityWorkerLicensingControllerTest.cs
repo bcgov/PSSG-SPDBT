@@ -51,6 +51,8 @@ public class SecurityWorkerLicensingControllerTest
                .ReturnsAsync(new List<LicAppFileInfo>());
         mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppRenewCommand>(), CancellationToken.None))
                .ReturnsAsync(new WorkerLicenceCommandResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppUpdateCommand>(), CancellationToken.None))
+               .ReturnsAsync(new WorkerLicenceCommandResponse());
 
         var validationResults = fixture.Build<ValidationResult>()
             .With(r => r.Errors, [])
@@ -85,9 +87,20 @@ public class SecurityWorkerLicensingControllerTest
     }
 
     [Fact]
-    public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Return_WorkerLicenceCommandResponse()
+    public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Renewal_Return_WorkerLicenceCommandResponse()
     {
         var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal);
+
+        var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
+
+        Assert.IsType<WorkerLicenceCommandResponse>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Update_Return_WorkerLicenceCommandResponse()
+    {
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Update);
 
         var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
 
