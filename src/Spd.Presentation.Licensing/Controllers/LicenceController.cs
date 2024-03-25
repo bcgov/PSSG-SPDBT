@@ -117,7 +117,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licences/licence-photo")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<FileStreamResult> GetLicencePhoto()
+        public async Task<FileStreamResult> GetLicencePhotoAnonymously()
         {
             string? licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
 
