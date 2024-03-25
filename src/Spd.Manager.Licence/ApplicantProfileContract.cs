@@ -12,6 +12,7 @@ namespace Spd.Manager.Licence
         public Task<Unit> Handle(ApplicantTermAgreeCommand cmd, CancellationToken ct);
         public Task<IEnumerable<ApplicantListResponse>> Handle(ApplicantSearchCommand cmd, CancellationToken ct);
         public Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct);
+        public Task<Unit> Handle(ApplicantMergeCommand cmd, CancellationToken ct);
     }
 
     public record GetApplicantProfileQuery(Guid ApplicantId) : IRequest<ApplicantProfileResponse>;
@@ -23,6 +24,10 @@ namespace Spd.Manager.Licence
         ApplicantUpdateRequest ApplicantUpdateRequest,
         IEnumerable<LicAppFileInfo> LicAppFileInfos)
         : IRequest<Unit>;
+    public record ApplicantMergeCommand(
+    Guid OldApplicantId,
+    Guid NewApplicantId)
+    : IRequest<Unit>;
 
     public record ApplicantUpdateRequest : Applicant
     {

@@ -64,11 +64,16 @@ namespace Spd.Resource.Repository.Contact
         public Guid Id { get; set; }
         public Guid? IdentityId { get; set; }
     };
-    public record TermAgreementCmd(Guid Id): ContactCmd;
+    public record TermAgreementCmd(Guid Id) : ContactCmd;
     public record CreateContactCmd : ContactCmd
     {
         public Guid? IdentityId { get; set; }
         public string? DisplayName { get; set; }
         public string Sub { get; set; } = null!;
+    }
+    public record MergeContactsCmd : ContactCmd
+    {
+        public Guid OldContactId { get; set; }
+        public Guid NewContactId { get; set; }
     }
 }

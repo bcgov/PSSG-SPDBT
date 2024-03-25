@@ -112,6 +112,20 @@ namespace Spd.Presentation.Licensing.Controllers
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new ApplicantSearchCommand(info, false));
         }
+
+        /// <summary>
+        /// Get applicants who has the same name and birthday as login person
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant/merge?oldId={oldApplicantId}&newId={newApplicantId}")]
+        [HttpGet]
+        // [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IActionResult> MergeApplicants(Guid oldApplicantId, Guid newApplicantId)
+        {
+            //var info = _currentUser.GetBcscUserIdentityInfo();
+            await _mediator.Send(new ApplicantMergeCommand(oldApplicantId, newApplicantId));
+            return Ok();
+        }
     }
 
 

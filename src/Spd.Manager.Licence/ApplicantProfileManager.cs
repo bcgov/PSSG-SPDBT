@@ -19,6 +19,7 @@ namespace Spd.Manager.Licence
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
         IRequestHandler<ApplicantSearchCommand, IEnumerable<ApplicantListResponse>>,
         IRequestHandler<ApplicantUpdateCommand, Unit>,
+        IRequestHandler<ApplicantMergeCommand, Unit>,
         IApplicantProfileManager
     {
         private readonly IIdentityRepository _idRepository;
@@ -144,6 +145,13 @@ namespace Spd.Manager.Licence
                     null,
                     ct);
 
+            return default;
+        }
+
+        public async Task<Unit> Handle(ApplicantMergeCommand cmd, CancellationToken ct)
+        {
+            MergeContactsCmd mergeContactCmd = new MergeContactsCmd() { OldContactId = cmd.OldApplicantId, NewContactId = cmd.NewApplicantId };
+            await _contactRepository.ManageAsync(mergeContactCmd, ct);
             return default;
         }
 

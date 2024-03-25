@@ -72,6 +72,7 @@ internal class ContactRepository : IContactRepository
             UpdateContactCmd c => await UpdateContactAsync(c, ct),
             CreateContactCmd c => await CreateContactAsync(c, ct),
             TermAgreementCmd c => await TermAgreeAsync(c, ct),
+            //MergeContactsCmd c => await MergeContactsAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -121,6 +122,15 @@ internal class ContactRepository : IContactRepository
         _context.UpdateObject(existingContact);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
+    }
+
+    private async Task<bool> MergeContactsAsync(MergeContactsCmd c, CancellationToken ct)
+    {
+        contact? oldContact = await _context.GetContactById(c.OldContactId, ct);
+        contact? newContact = await _context.GetContactById(c.NewContactId, ct);
+
+        var result = _context.spd_MergeContacts(oldContact, newContact);
+        return true;
     }
 }
 
