@@ -615,8 +615,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		const control = this.form.get('crcs') as FormArray;
 		const crcFormGroup = control.at(index) as FormGroup;
 
-		if (this.isPsaUser && this.showServiceType && crcFormGroup) {
-			crcFormGroup.patchValue({ serviceType: null }, { emitEvent: false });
+		if (this.isPsaUser && crcFormGroup) {
+			const defaultServiceTypeCode = serviceTypes.length === 1 ? (serviceTypes[0].code as string) : null;
+			crcFormGroup.patchValue({ serviceType: defaultServiceTypeCode }, { emitEvent: false });
 		}
 	}
 
