@@ -390,15 +390,15 @@ namespace Spd.Manager.Payment
                 if (PaybcRevenueAccountConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
 
-                var serviceCost = _serviceTypeRepository.QueryAsync(new ServiceTypeQry(app.ServiceType));
-                //if (serviceCostConfig == null)
-                //    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service cost correctly.");
+                var serviceTypeListResp = await _serviceTypeRepository.QueryAsync(new ServiceTypeQry(null, app.ServiceType), ct);
+                if (serviceTypeListResp == null)
+                    throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service type correctly.");
 
                 SpdPaymentConfig spdPaymentConfig = new SpdPaymentConfig()
                 {
                     PbcRefNumber = pbcRefnumberConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
-                    ServiceCost = Decimal.Round(Decimal.Parse(serviceCostConfig.Value), 2)
+                    ServiceCost = Decimal.Round(serviceTypeListResp.Items.First().ScreeningCost ?? 0, 2)
                 };
                 return spdPaymentConfig;
             }

@@ -20,6 +20,10 @@ internal class ServiceTypeRepository : IServiceTypeRepository
 
     public async Task<ServiceTypeListResp> QueryAsync(ServiceTypeQry qry, CancellationToken cancellationToken)
     {
+        if (qry.ServiceTypeCode == null && qry.ServiceTypeId == null)
+        {
+            throw new ArgumentException("must be at leaset one qry parameter.");
+        }
         IEnumerable<spd_servicetype>? servicetypes = await _cache.Get<IEnumerable<spd_servicetype>>("spd_servicetypes");
         if (servicetypes == null)
         {
@@ -27,7 +31,15 @@ internal class ServiceTypeRepository : IServiceTypeRepository
             await _cache.Set<IEnumerable<spd_servicetype>>("spd_servicetypes", servicetypes, new TimeSpan(1, 0, 0));
         }
 
-        servicetypes = servicetypes.Where(s => s.spd_servicetypeid == qry.ServiceTypeId);
+        if (qry.ServiceTypeId != null)
+        {
+            servicetypes = servicetypes.Where(s => s.spd_servicetypeid == qry.ServiceTypeId);
+        }
+        if (qry.ServiceTypeCode != null)
+        {
+            var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.ServiceTypeCode.ToString(), out Guid guid);
+            servicetypes = servicetypes.Where(s => s.spd_servicetypeid == guid);
+        }
         var list = _mapper.Map<IEnumerable<ServiceTypeResp>>(servicetypes);
         var response = new ServiceTypeListResp();
         response.Items = list;

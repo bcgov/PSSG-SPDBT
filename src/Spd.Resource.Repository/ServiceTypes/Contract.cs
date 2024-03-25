@@ -5,10 +5,7 @@ public partial interface IServiceTypeRepository
 }
 
 
-public record ServiceTypeQry
-{
-    public Guid ServiceTypeId { get; set; }
-};
+public record ServiceTypeQry(Guid? ServiceTypeId, ServiceTypeEnum? ServiceTypeCode);
 
 public record ServiceTypeResp()
 {
