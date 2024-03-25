@@ -546,8 +546,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
 
-	showMinistryDropdown = false;
-
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
@@ -783,7 +781,16 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		);
 		this.serviceTypes = serviceTypes;
 
-		this.form.patchValue({ serviceType: null }, { emitEvent: false });
+		// if there is only one value, use it and do not show the dropdown
+		let defaultServiceTypeCode: string | null = null;
+		if (serviceTypes.length === 1) {
+			defaultServiceTypeCode = (serviceTypes[0].code as string) ?? null;
+			this.showServiceType = false;
+		} else {
+			this.showServiceType = true;
+		}
+
+		this.form.patchValue({ serviceType: defaultServiceTypeCode }, { emitEvent: false });
 	}
 
 	private resetForm(): void {
