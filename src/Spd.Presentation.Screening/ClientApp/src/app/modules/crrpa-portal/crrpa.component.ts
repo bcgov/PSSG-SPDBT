@@ -43,7 +43,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 				#stepper
 			>
 				<mat-step completed="false">
-					<ng-template matStepLabel>Eligibility Check</ng-template>
+					<ng-template matStepLabel>Checklist</ng-template>
 					<app-sa-step-eligibility
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
