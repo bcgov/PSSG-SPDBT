@@ -483,7 +483,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		console.debug('[saveLicenceStepAuthenticated] body', body);
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
@@ -645,53 +644,74 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		console.debug('submitLicenceNewAuthenticated body', body);
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
 	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		// const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
-
-		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		// console.debug('submitLicenceRenewalAuthenticated body', body);
-		// return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
-
-		console.debug('[submitLicenceRenewalAuthenticated] licenceModelFormValue', licenceModelFormValue);
-
-		// const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const [body, documentInfos] = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
-		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppAnonymousSubmitRequest;
+		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
+		// Create list of APIs to call for the newly added documents
+		const documentsToSaveApis: Observable<string>[] = [];
+
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
-		let newDocumentsExist = false;
-		documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			} else {
-				newDocumentsExist = true;
+
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+			const newDocumentsOnly: Array<Blob> = [];
+
+			doc.documents.forEach((item: Blob) => {
+				const spdFile: SpdFile = item as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(item);
+				}
+			});
+
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+						},
+					})
+				);
 			}
 		});
 
 		console.debug('[submitLicenceRenewalAuthenticated] body', body);
 		console.debug('[submitLicenceRenewalAuthenticated] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceRenewalAuthenticated] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceRenewalAuthenticated] newDocumentsExist', newDocumentsExist);
 
-		// if (newDocumentsExist) {
-		// 	return this.postLicenceAnonymousNewDocuments(existingDocumentIds, documentsToSave, body);
-		// } else {
-		// 	return this.postLicenceAnonymousNoNewDocuments(existingDocumentIds, body);
-		// }
-		return of({} as StrictHttpResponse<WorkerLicenceCommandResponse>);
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
+
+					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+						body,
+					});
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = [...existingDocumentIds];
+
+			return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+				body,
+			});
+		}
 	}
 
 	private createEmptyLicenceAuthenticated(
@@ -951,34 +971,45 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const [body, documentInfos] = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
-		const documentsToSave = this.getDocsToSaveAnonymousBlobs(licenceModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		// Get the keyCode for the existing documents to save.
-		const existingDocumentIds: Array<string> = [];
-		let newDocumentsExist = false;
-		documentInfos?.forEach((doc: Document) => {
-			if (doc.documentUrlId) {
-				existingDocumentIds.push(doc.documentUrlId);
-			} else {
-				newDocumentsExist = true;
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
 			}
 		});
+
+		const existingDocumentIds: Array<string> = documentInfos
+			.filter((item: Document) => !!item.documentUrlId)
+			.map((item: Document) => item.documentUrlId!);
 
 		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[submitLicenceAnonymous] body', body);
 		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		if (newDocumentsExist) {
-			return this.postLicenceAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
-		} else {
-			return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
-		}
+		return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, documentsToSaveApis, body);
 	}
 
 	/**
@@ -1002,86 +1033,55 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
 
 		const googleRecaptcha = { recaptchaCode: mailingAddress.captchaFormGroup.token };
-		return this.postLicenceAnonymousNoNewDocuments(googleRecaptcha, existingDocumentIds, body);
+		return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
 	}
 
 	/**
-	 * Post licence anonymous. This licence must not have any new documents (for example: with an update or replacement)
+	 * Post licence documents anonymous.
 	 * @returns
 	 */
-	private postLicenceAnonymousNoNewDocuments(
+	private postLicenceAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
+		documentsToSaveApis: Observable<string>[] | null,
 		body: WorkerLicenceAppAnonymousSubmitRequest
 	) {
-		return this.securityWorkerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((_resp: IActionResult) => {
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					body.previousDocumentIds = [...existingDocumentIds];
+		if (documentsToSaveApis) {
+			return this.securityWorkerLicensingService
+				.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						return forkJoin(documentsToSaveApis);
+					}),
+					switchMap((resps: string[]) => {
+						// pass in the list of document key codes
+						body.documentKeyCodes = [...resps];
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
-	}
-
-	/**
-	 * Post licence anonymous. This licence has new documents (for example: with new or renew)
-	 * @returns
-	 */
-	private postLicenceAnonymousNewDocuments(
-		googleRecaptcha: GoogleRecaptcha,
-		existingDocumentIds: Array<string>,
-		documentsToSave: Array<LicenceDocumentsToSave>,
-		body: WorkerLicenceAppAnonymousSubmitRequest
-	) {
-		return this.securityWorkerLicensingService
-			.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-			.pipe(
-				switchMap((_resp: IActionResult) => {
-					const documentsToSaveApis: Observable<string>[] = [];
-					documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-						// Only pass new documents and get a keyCode for each of those.
-						const newDocumentsOnly: Array<Blob> = [];
-						docBody.documents.forEach((doc: any) => {
-							if (!doc.documentUrlId) {
-								newDocumentsOnly.push(doc);
-							}
+						return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+							body,
 						});
+					})
+				)
+				.pipe(take(1));
+		} else {
+			return this.securityWorkerLicensingService
+				.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+				.pipe(
+					switchMap((_resp: IActionResult) => {
+						// pass in the list of document ids that were in the original
+						// application and are still being used
+						body.previousDocumentIds = [...existingDocumentIds];
 
-						// should always be at least one new document
-						if (newDocumentsOnly.length > 0) {
-							documentsToSaveApis.push(
-								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
-									body: {
-										Documents: newDocumentsOnly,
-										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-									},
-								})
-							);
-						}
-					});
-
-					return forkJoin(documentsToSaveApis);
-				}),
-				switchMap((resps: string[]) => {
-					// pass in the list of document key codes
-					body.documentKeyCodes = [...resps];
-					// pass in the list of document ids that were in the original
-					// application and are still being used
-					body.previousDocumentIds = [...existingDocumentIds];
-
-					return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-						body,
-					});
-				})
-			)
-			.pipe(take(1));
+						return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+							body,
+						});
+					})
+				)
+				.pipe(take(1));
+		}
 	}
 
 	/*************************************************************/

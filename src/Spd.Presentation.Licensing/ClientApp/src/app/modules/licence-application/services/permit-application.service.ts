@@ -620,7 +620,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	submitPermitAnonymous(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAnonymous(permitModelFormValue);
-		const documentsToSave = this.getDocsToSaveAnonymousBlobs(permitModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;

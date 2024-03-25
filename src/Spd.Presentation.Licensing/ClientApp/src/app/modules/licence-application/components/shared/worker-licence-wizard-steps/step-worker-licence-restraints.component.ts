@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -12,6 +13,12 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
+				<ng-container *ngIf="isRenewalOrUpdate">
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					*ngIf="!isCalledFromModal"
 					title="Do you want to request authorization to use restraints?"
@@ -100,6 +107,7 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	form: FormGroup = this.licenceApplicationService.restraintsAuthorizationFormGroup;
 
 	@Input() isCalledFromModal = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -141,12 +149,16 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	get carryAndUseRestraints(): FormControl {
 		return this.form.get('carryAndUseRestraints') as FormControl;
 	}
-
 	get carryAndUseRestraintsDocument(): FormControl {
 		return this.form.get('carryAndUseRestraintsDocument') as FormControl;
 	}
-
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }
