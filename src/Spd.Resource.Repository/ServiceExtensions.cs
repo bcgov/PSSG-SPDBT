@@ -17,6 +17,7 @@ using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.Report;
+using Spd.Resource.Repository.ServiceTypes;
 using Spd.Resource.Repository.Tasks;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.Hosting;
@@ -48,6 +49,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IIdentityRepository, IdentityRepository>();
             configurationServices.Services.AddTransient<IIdentityRepository, IdentityRepository>();
             configurationServices.Services.AddTransient<IConfigRepository, ConfigRepository>();
+            configurationServices.Services.AddTransient<IServiceTypeRepository, ServiceTypeRepository>();
         }
     }
 }
