@@ -391,7 +391,7 @@ namespace Spd.Manager.Payment
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
 
                 var serviceTypeListResp = await _serviceTypeRepository.QueryAsync(new ServiceTypeQry(null, app.ServiceType), ct);
-                if (serviceTypeListResp == null)
+                if (serviceTypeListResp == null || !serviceTypeListResp.Items.Any())
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service type correctly.");
 
                 SpdPaymentConfig spdPaymentConfig = new SpdPaymentConfig()
