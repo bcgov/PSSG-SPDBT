@@ -6,26 +6,41 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 	template: `
 		<section class="step-section p-4">
 			<div class="step">
-				<app-step-title
-					title="To submit a request for a criminal record check, you will need the following"
-				></app-step-title>
+				<app-step-title title="To submit this criminal record check form, you will need:"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<ul *ngIf="payeeType === payerPreferenceTypeCodes.Applicant">
-							<li>Your BC Services Card (recommended), or other government issued identification.</li>
+							<li>
+								Your BC Services Card app (recommended), or other
+								<a
+									href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/law-policy"
+									target="_blank"
+									>government issued identification</a
+								>.
+							</li>
 							<li *ngIf="isCrrpa">
-								A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)
+								A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit). The criminal
+								record check fee is non-refundable.
 							</li>
 							<li>
-								Before you submit a request for a criminal record check, if possible, verify your identity by using your
-								BC Services Card.
+								If you don’t have the BC Services Card app, you can
+								<a href="https://id.gov.bc.ca/account/setup-instruction" target="_blank">set it up now</a> and return to
+								this application process when you have completed that process.
 							</li>
 						</ul>
 						<ul *ngIf="payeeType === payerPreferenceTypeCodes.Organization">
-							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>
-								Before you submit a request for a criminal record check, if possible, verify your identity by using your
-								BC Services Card.
+								Your BC Services Card app (recommended), or other
+								<a
+									href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/law-policy"
+									target="_blank"
+									>government issued identification</a
+								>.
+							</li>
+							<li>
+								If you don’t have the BC Services Card app, you can
+								<a href="https://id.gov.bc.ca/account/setup-instruction" target="_blank">set it up now</a> and return to
+								this application process when you have completed that process.
 							</li>
 						</ul>
 					</div>

@@ -8,6 +8,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { ApplicantAppCreateRequest, ApplicationCreateResponse } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -34,7 +35,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 				#stepper
 			>
 				<mat-step completed="false">
-					<ng-template matStepLabel>Eligibility Check</ng-template>
+					<ng-template matStepLabel>Checklist</ng-template>
 					<app-sa-step-eligibility
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -59,6 +60,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
+						[portal]="portal.Psso"
 					></app-sa-step-login-options>
 				</mat-step>
 
@@ -98,6 +100,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 })
 export class PssoaComponent implements OnInit {
 	orgData: AppInviteOrgData | null = null;
+	portal = PortalTypeCode;
 
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
