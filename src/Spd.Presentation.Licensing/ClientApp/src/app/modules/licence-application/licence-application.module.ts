@@ -67,8 +67,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/
 import { CommonUserProfilePersonalInformationComponent } from './components/authenticated/user-profile/common-user-profile-personal-information.component';
 import { CommonUserProfileComponent } from './components/authenticated/user-profile/common-user-profile.component';
 import { StepWorkerLicenceAllUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-all-updates-authenticated.component';
-import { StepWorkerLicenceConfirmUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-confirm-updates-authenticated.component';
-import { StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-step-update-components/step-worker-licence-mailing-address-update-authenticated.component';
 import { WorkerLicenceCategoryUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-category-update-authenticated-modal.component';
 import { WorkerLicenceDogsUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-dogs-update-authenticated-modal.component';
 import { WorkerLicenceNameChangeUpdateAuthenticatedModalComponent } from './components/authenticated/worker-licence-step-update-components/worker-licence-name-change-update-authenticated-modal.component';
@@ -315,7 +313,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceChecklistRenewalComponent,
 		StepWorkerLicenceChecklistUpdateComponent,
 		StepWorkerLicenceCitizenshipComponent,
-		StepWorkerLicenceConfirmUpdatesAuthenticatedComponent,
 		StepWorkerLicenceConfirmationComponent,
 		StepWorkerLicenceConsentAndDeclarationComponent,
 		StepWorkerLicenceContactInformationComponent,
@@ -324,7 +321,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceExpiredComponent,
 		StepWorkerLicenceFingerprintsComponent,
 		StepWorkerLicenceMailingAddressComponent,
-		StepWorkerLicenceMailingAddressUpdateAuthenticatedComponent,
 		StepWorkerLicenceMentalHealthConditionsComponent,
 		StepWorkerLicencePersonalInformationAnonymousComponent,
 		StepWorkerLicencePhotographOfYourselfAnonymousComponent,
