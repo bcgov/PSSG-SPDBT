@@ -123,3 +123,9 @@ public enum PoliceOfficerRoleEnum
     PoliceOfficer,
     Other,
 }
+
+public enum ServiceTypeCategoryEnum
+{
+    Screening,
+    Licensing
+}

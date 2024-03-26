@@ -283,9 +283,7 @@ export class SecurityScreeningListComponent implements OnInit {
 
 				const firstRecord = this.allApplications ? this.allApplications[0] : null;
 
-				this.applicantName = firstRecord
-					? this.utilService.getFullName(firstRecord.givenName, firstRecord.surname)
-					: '';
+				this.applicantName = this.utilService.getFullName(firstRecord?.givenName, firstRecord?.surname) ?? '';
 
 				this.allApplications.forEach((app: ApplicantApplicationStatusResponse) => {
 					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);

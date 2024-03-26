@@ -367,6 +367,10 @@ export class CrrpaComponent implements OnInit {
 	}
 
 	private payNow(applicationId: string): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.authProcessService.refreshToken();
+		}
+
 		const body: PaymentLinkCreateRequest = {
 			applicationId: applicationId,
 			paymentMethod: PaymentMethodCode.CreditCard,
