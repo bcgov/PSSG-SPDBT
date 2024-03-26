@@ -302,5 +302,56 @@ namespace Spd.Manager.Licence.UnitTest
             Assert.IsType<WorkerLicenceCommandResponse>(result);
             Assert.Equal(licAppId, result.LicenceAppId);
         }
+
+        [Fact]
+        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithWrongApplicationTypeCode_Throw_Exception()
+        {
+            Guid licAppId = Guid.NewGuid();
+
+            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.New, licAppId);
+            AnonymousWorkerLicenceAppRenewCommand request = new AnonymousWorkerLicenceAppRenewCommand(wLAppAnonymousSubmitRequest, []);
+
+            Func<Task> act = () => sut.Handle(request, CancellationToken.None);
+
+            await Assert.ThrowsAsync<ArgumentException>(act);
+        }
+
+        [Fact]
+        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithNoLicences_Throw_Exception()
+        {
+            Guid licAppId = Guid.NewGuid();
+
+            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            AnonymousWorkerLicenceAppRenewCommand request = new AnonymousWorkerLicenceAppRenewCommand(wLAppAnonymousSubmitRequest, []);
+
+            Func<Task> act = () => sut.Handle(request, CancellationToken.None);
+
+            await Assert.ThrowsAsync<ArgumentException>(act);
+        }
+
+        [Fact]
+        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
+        {
+            Guid licAppId = Guid.NewGuid();
+            DateTime dateTime = DateTime.UtcNow.AddDays(1);
+            DateOnly expiryDate = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+
+            LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.ExpiryDate, expiryDate)
+                .Create();
+
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+                .ReturnsAsync(new LicenceListResp()
+                {
+                    Items = new List<LicenceResp> { licenceResp }
+                });
+
+            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            AnonymousWorkerLicenceAppRenewCommand request = new AnonymousWorkerLicenceAppRenewCommand(wLAppAnonymousSubmitRequest, []);
+
+            Func<Task> act = () => sut.Handle(request, CancellationToken.None);
+
+            await Assert.ThrowsAsync<ArgumentException>(act);
+        }
     }
 }
