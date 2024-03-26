@@ -1105,7 +1105,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			genderCode: profile.genderCode,
 			hasGenderChanged: false,
 			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
-			isPrintNewName: userLicenceInformation?.hasBcscNameChanged === true ? null : false,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,

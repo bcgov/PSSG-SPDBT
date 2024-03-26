@@ -74,6 +74,7 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './componen
 import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-summary-review-update-authenticated.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
+import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-updates-authenticated.component';
 import { BcBranchEditModalComponent } from './components/business/bc-branch-edit-modal.component';
 import { BusinessCategoryAmouredCarGuardComponent } from './components/business/business-category-amoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business/business-category-private-investigator.component';
@@ -354,6 +355,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsWorkerLicenceIdentificationAuthenticatedComponent,
 		StepsWorkerLicenceReviewAnonymousComponent,
 		StepsWorkerLicenceReviewAuthenticatedComponent,
+		StepsWorkerLicenceUpdatesAuthenticatedComponent,
 		StepsWorkerLicenceSelectionComponent,
 		LicenceUserApplicationsComponent,
 		UserBusinessApplicationsComponent,

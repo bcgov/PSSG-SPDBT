@@ -109,7 +109,6 @@ export abstract class CommonApplicationHelper {
 			dateOfBirth: new FormControl('', [Validators.required]),
 			hasLegalNameChanged: new FormControl(false),
 			hasBcscNameChanged: new FormControl(),
-			isPrintNewName: new FormControl(),
 			origGivenName: new FormControl(''),
 			origMiddleName1: new FormControl(''),
 			origMiddleName2: new FormControl(''),
@@ -126,10 +125,6 @@ export abstract class CommonApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => !!form.get('hasLegalNameChanged')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'isPrintNewName',
-					(form) => !!form.get('hasBcscNameChanged')?.value
 				),
 			],
 		}
