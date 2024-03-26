@@ -5,16 +5,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { WorkerLicenceCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 
@@ -42,18 +44,6 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Background</ng-template>
-						<app-steps-worker-licence-background
-							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
-							(nextReview)="onGoToReview()"
-							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
-							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-worker-licence-background>
-					</mat-step>
-
-					<mat-step [completed]="step3Complete">
 						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-worker-licence-identification-authenticated
 							(childNextStep)="onChildNextStep()"
@@ -69,7 +59,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextStepperStep)="onNextStepperStep(stepper)"
+							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
 						></app-steps-worker-licence-review-authenticated>
@@ -86,19 +76,14 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 })
 export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
-	readonly STEP_BACKGROUND = 1;
-	readonly STEP_IDENTIFICATION = 2;
-	readonly STEP_REVIEW = 3;
+	readonly STEP_IDENTIFICATION = 1;
+	readonly STEP_REVIEW = 2;
 
 	step1Complete = false;
 	step2Complete = false;
-	step3Complete = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
-
-	@ViewChild(StepsWorkerLicenceBackgroundComponent)
-	stepBackgroundComponent!: StepsWorkerLicenceBackgroundComponent;
 
 	@ViewChild(StepsWorkerLicenceIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepsWorkerLicenceIdentificationAuthenticatedComponent;
@@ -112,6 +97,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -145,9 +131,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
@@ -166,9 +149,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToLastStep();
 				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToLastStep();
-				break;
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToLastStep();
 				break;
@@ -176,44 +156,12 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Licence information has been saved');
-
-					if (stepper?.selected) stepper.selected.completed = true;
-					stepper.next();
-
-					switch (stepper.selectedIndex) {
-						case this.STEP_LICENCE_SELECTION:
-							this.stepLicenceSelectionComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_BACKGROUND:
-							this.stepBackgroundComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_IDENTIFICATION:
-							this.stepIdentificationComponent?.onGoToFirstStep();
-							break;
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
-				},
-			});
-		} else {
-			if (stepper?.selected) stepper.selected.completed = true;
-			stepper.next();
-		}
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
 	}
 
 	onGoToStep(step: number) {
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepBackgroundComponent?.onGoToFirstStep();
 		this.stepIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
@@ -260,7 +208,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.isSaveStep()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
@@ -287,29 +235,32 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.isSaveStep()) {
-			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
-					this.hotToastService.success('Licence information has been saved');
-					this.goToChildNextStep();
-				},
-				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
-				},
-			});
-		} else {
-			this.goToChildNextStep();
-		}
+		this.goToChildNextStep();
+	}
+
+	onNextPayStep(): void {
+		this.licenceApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				this.hotToastService.success('Your licence renewal has been successfully submitted');
+				this.payNow(_resp.body.licenceAppId!);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
+
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowAuthenticated(
+			licenceAppId,
+			'Payment for New Security Worker Licence Application'
+		);
 	}
 
 	private updateCompleteStatus(): void {
 		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step2Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
 		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
@@ -336,14 +287,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
-			// case this.STEP_LICENCE_SETUP:
-			// 	this.stepLicenceSetupAuthenticatedComponent?.onGoToNextStep();
-			// 	break;
 			case this.STEP_LICENCE_SELECTION:
 				this.stepLicenceSelectionComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
 				break;
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToNextStep();

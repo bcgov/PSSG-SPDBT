@@ -332,10 +332,11 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	}
 
 	private loadList(application: ApplicantApplicationResponse): void {
-		this.applicantName = this.utilService.getFullName(
-			this.authUserService.bcscUserWhoamiProfile?.firstName,
-			this.authUserService.bcscUserWhoamiProfile?.lastName
-		);
+		this.applicantName =
+			this.utilService.getFullName(
+				this.authUserService.bcscUserWhoamiProfile?.firstName,
+				this.authUserService.bcscUserWhoamiProfile?.lastName
+			) ?? '';
 
 		this.application = application;
 		this.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(application.status);

@@ -221,7 +221,7 @@ export class CommonApplicationService {
 									licence.cardHolderName = matchingLicence.nameOnCard;
 									licence.licenceHolderName = matchingLicence.licenceHolderName;
 									licence.licenceExpiryDate = matchingLicence.expiryDate;
-									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).diff(moment(), 'days');
+									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).diff(moment(), 'days') + 1;
 									licence.licenceId = matchingLicence.licenceId;
 									licence.licenceNumber = matchingLicence.licenceNumber;
 									licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;

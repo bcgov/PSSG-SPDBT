@@ -19,7 +19,7 @@ export class AgreementOfTermsModel {
 				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
+							<div class="conditions px-3 pt-2 mb-3" (scroll)="onScrollTermsAndConditions($event)">
 								<strong>TERMS AND CONDITIONS FOR EMPLOYERS THAT ENROL IN THE CRRP ONLINE SERVICE</strong><br /><br />
 								<ul>
 									<li>
@@ -123,10 +123,7 @@ export class AgreementOfTermsModel {
 
 			.conditions {
 				border: 1px solid var(--color-grey-light);
-				max-height: 300px;
-				overflow-y: auto;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-				font-size: smaller;
 			}
 		`,
 	],
