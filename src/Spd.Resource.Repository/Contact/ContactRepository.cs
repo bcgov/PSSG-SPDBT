@@ -72,9 +72,27 @@ internal class ContactRepository : IContactRepository
             UpdateContactCmd c => await UpdateContactAsync(c, ct),
             CreateContactCmd c => await CreateContactAsync(c, ct),
             TermAgreementCmd c => await TermAgreeAsync(c, ct),
-            //MergeContactsCmd c => await MergeContactsAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
+    }
+
+    public async Task MergeContactsAsync(MergeContactsCmd cmd, CancellationToken ct)
+    {
+        contact? oldContact = await _context.GetContactById(cmd.OldContactId, ct);
+        contact? newContact = await _context.GetContactById(cmd.NewContactId, ct);
+        if (oldContact == null || newContact == null)
+        {
+            _logger.LogError($"Merge contacts cannot find at least one of the contact");
+            throw new ArgumentException("cannot find contact for merging");
+        }
+
+        var result = await _context.spd_MergeContacts(oldContact, newContact).GetValueAsync(ct);
+        await _context.SaveChangesAsync(ct);
+        if (result.IsSuccess == null || !(result.IsSuccess.Value))
+        {
+            _logger.LogError($"Merge contacts failed for merging oldContact {cmd.OldContactId} to newContact {cmd.NewContactId}");
+        }
+        return;
     }
 
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
@@ -122,15 +140,6 @@ internal class ContactRepository : IContactRepository
         _context.UpdateObject(existingContact);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
-    }
-
-    private async Task<bool> MergeContactsAsync(MergeContactsCmd c, CancellationToken ct)
-    {
-        contact? oldContact = await _context.GetContactById(c.OldContactId, ct);
-        contact? newContact = await _context.GetContactById(c.NewContactId, ct);
-
-        var result = _context.spd_MergeContacts(oldContact, newContact);
-        return true;
     }
 }
 

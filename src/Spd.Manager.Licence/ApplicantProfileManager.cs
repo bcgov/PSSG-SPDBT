@@ -151,7 +151,7 @@ namespace Spd.Manager.Licence
         public async Task<Unit> Handle(ApplicantMergeCommand cmd, CancellationToken ct)
         {
             MergeContactsCmd mergeContactCmd = new MergeContactsCmd() { OldContactId = cmd.OldApplicantId, NewContactId = cmd.NewApplicantId };
-            await _contactRepository.ManageAsync(mergeContactCmd, ct);
+            await _contactRepository.MergeContactsAsync(mergeContactCmd, ct);
             return default;
         }
 

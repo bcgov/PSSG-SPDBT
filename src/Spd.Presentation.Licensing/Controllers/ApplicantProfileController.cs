@@ -117,12 +117,11 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Get applicants who has the same name and birthday as login person
         /// </summary>
         /// <returns></returns>
-        [Route("api/applicant/merge?oldId={oldApplicantId}&newId={newApplicantId}")]
+        [Route("api/applicant/merge/{oldApplicantId}/{newApplicantId}")]
         [HttpGet]
-        // [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IActionResult> MergeApplicants(Guid oldApplicantId, Guid newApplicantId)
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IActionResult> MergeApplicants([FromRoute] Guid oldApplicantId, [FromRoute] Guid newApplicantId)
         {
-            //var info = _currentUser.GetBcscUserIdentityInfo();
             await _mediator.Send(new ApplicantMergeCommand(oldApplicantId, newApplicantId));
             return Ok();
         }
