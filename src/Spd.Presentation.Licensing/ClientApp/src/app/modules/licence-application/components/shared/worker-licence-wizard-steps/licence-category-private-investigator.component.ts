@@ -10,7 +10,6 @@ import {
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorTrainingCode,
 } from 'src/app/core/code-types/model-desc.models';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 
@@ -232,7 +231,6 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 
 	constructor(
 		private optionsPipe: OptionsPipe,
-		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
@@ -242,7 +240,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
@@ -258,7 +256,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	}
 
 	onFileTrainingAdded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(this.trainingCode.value, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.trainingAttachments.value.find((item: File) => item.name == file.name);
