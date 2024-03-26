@@ -223,5 +223,36 @@ namespace Spd.Manager.Licence.UnitTest
 
             await Assert.ThrowsAsync<ArgumentException>(act);
         }
+
+        [Fact]
+        public async void Handle_AnonymousWorkerLicenceAppReplaceCommand_WithNoOriginalApplicationId_Throw_Exception()
+        {
+            Guid licAppId = Guid.NewGuid();
+            Guid applicantId = Guid.NewGuid();
+            DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays + 1);
+            DateOnly expiryDate = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+
+            LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.ExpiryDate, expiryDate)
+                .Create();
+
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None)) //no dup lic
+                .ReturnsAsync(new LicenceListResp()
+                {
+                    Items = new List<LicenceResp> { licenceResp }
+                });
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+                .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
+            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
+                .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+
+            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+            wLAppAnonymousSubmitRequest.OriginalApplicationId = null;
+            AnonymousWorkerLicenceAppReplaceCommand request = new AnonymousWorkerLicenceAppReplaceCommand(wLAppAnonymousSubmitRequest, []);
+
+            Func<Task> act = () => sut.Handle(request, CancellationToken.None);
+
+            await Assert.ThrowsAsync<ArgumentException>(act);
+        }
     }
 }
