@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -46,11 +45,7 @@ export class StepWorkerLicencePhotographOfYourselfComponent implements OnInit, L
 	@ViewChild(CommonPhotographOfYourselfComponent)
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
 		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(
@@ -59,7 +54,7 @@ export class StepWorkerLicencePhotographOfYourselfComponent implements OnInit, L
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);

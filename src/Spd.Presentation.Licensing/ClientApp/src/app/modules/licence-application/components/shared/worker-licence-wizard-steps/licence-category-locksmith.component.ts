@@ -7,7 +7,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { LocksmithRequirementCode } from 'src/app/core/code-types/model-desc.models';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 
@@ -76,14 +75,14 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 						*ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
 					>
 						Upload a letter of recommendation
-						<div class="fw-normal mb-2">
+						<div class="fs-6 my-2">
 							This letter must be on company letterhead, and proof of successful completion of an approved
 							apprenticeship program, other than that provided by the <i>Industry Training Authority</i>.
 						</div>
 					</span>
 					<span *ngIf="requirementCode.value === locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
 						Upload a letter of recommendation
-						<div class="fw-normal mb-2">
+						<div class="fs-6 my-2">
 							This letter must be on company letterhead, proof of experience, and proof of successful completion of an
 							approved course.
 						</div>
@@ -125,7 +124,6 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 
 	constructor(
 		private optionsPipe: OptionsPipe,
-		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
@@ -135,7 +133,7 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
