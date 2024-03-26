@@ -198,8 +198,8 @@ export interface AliasCreateRequest {
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal === portalTypeCodes.Psso">
 							<mat-form-field>
 								<mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="employeeId" mask="0000000" />
-								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 7 digits </mat-error>
+								<input matInput formControlName="employeeId" mask="000000" />
+								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 6 digits </mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xl-6 col-lg-12 col-md-12" *ngIf="showMinistries">
@@ -546,8 +546,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
 
-	showMinistryDropdown = false;
-
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
@@ -783,7 +781,16 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		);
 		this.serviceTypes = serviceTypes;
 
-		this.form.patchValue({ serviceType: null }, { emitEvent: false });
+		// if there is only one value, use it and do not show the dropdown
+		let defaultServiceTypeCode: string | null = null;
+		if (serviceTypes.length === 1) {
+			defaultServiceTypeCode = (serviceTypes[0].code as string) ?? null;
+			this.showServiceType = false;
+		} else {
+			this.showServiceType = true;
+		}
+
+		this.form.patchValue({ serviceType: defaultServiceTypeCode }, { emitEvent: false });
 	}
 
 	private resetForm(): void {

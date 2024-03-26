@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 @Component({
 	selector: 'app-sa-log-in-options',
@@ -10,7 +11,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 					<div class="step-container__box dark">
 						<div class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2">Register <span class="fw-bold">with</span> BC Services Card</div>
+							<div class="mx-2">Register <span class="fw-bold">with</span> your BC Services Card app</div>
 						</div>
 						<div class="step-container__box__content pt-4 pe-4" style="padding-left: 4em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
@@ -30,7 +31,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									</td>
 									<td>Apply faster</td>
 								</tr>
-								<tr>
+								<tr *ngIf="portal === portalTypeCodes.Crrp">
 									<td class="pr-2 pb-2">
 										<img
 											class="step-container__box__title__checkbox"
@@ -53,12 +54,19 @@ import { Component, EventEmitter, Output } from '@angular/core';
 					<div class="step-container__box">
 						<div style="padding-top: 4px">&nbsp;</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2">Register <span class="fw-bold">without</span> BC Services Card</div>
+							<div class="mx-2">Register <span class="fw-bold">without</span> your BC Services Card app</div>
 						</div>
 						<div class="step-container__box__content p-4">
 							<p>If you don't have a BC Services Card you can still complete the application.</p>
 						</div>
-						<div class="step-container__box__footer p-4" style="padding-top: 7.7rem!important;">
+						<div
+							class="p-4"
+							[ngClass]="
+								portal === portalTypeCodes.Psso
+									? 'step-container__box__footer-psso'
+									: 'step-container__box__footer-crrp'
+							"
+						>
 							<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
 								Continue without BC Services Card
 							</button>
@@ -99,12 +107,23 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							margin-right: 0.5em;
 						}
 					}
+
+					&__footer-psso {
+						padding-top: 4.5rem !important;
+					}
+
+					&__footer-crrp {
+						padding-top: 7.7rem !important;
+					}
 				}
 			}
 		`,
 	],
 })
 export class SaLogInOptionsComponent {
+	portalTypeCodes = PortalTypeCode;
+	@Input() portal!: PortalTypeCode;
+
 	@Output() clickNext: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() registerWithBcServicesCard: EventEmitter<boolean> = new EventEmitter<boolean>();
 
