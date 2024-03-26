@@ -114,7 +114,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get applicants who has the same name and birthday as login person
+        /// Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
         /// </summary>
         /// <returns></returns>
         [Route("api/applicant/merge/{oldApplicantId}/{newApplicantId}")]
