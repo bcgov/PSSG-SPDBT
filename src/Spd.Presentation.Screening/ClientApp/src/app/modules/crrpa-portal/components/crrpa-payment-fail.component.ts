@@ -76,6 +76,10 @@ export class CrrpaPaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
+		if (this.authProcessService.isLoggedIn()) {
+			this.authProcessService.refreshToken();
+		}
+
 		const body: PaymentLinkCreateRequest = {
 			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,

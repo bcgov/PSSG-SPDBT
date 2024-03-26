@@ -40,6 +40,14 @@ export class AuthProcessService {
 		return this._waitUntilAuthentication$.getValue();
 	}
 
+	public refreshToken(): void {
+		this.oauthService.refreshToken();
+	}
+
+	public isLoggedIn(): boolean {
+		return this.authenticationService.isLoggedIn();
+	}
+
 	//----------------------------------------------------------
 	// * CRRP Portal
 	// *
