@@ -91,6 +91,7 @@ internal class ContactRepository : IContactRepository
         if (result.IsSuccess == null || !(result.IsSuccess.Value))
         {
             _logger.LogError($"Merge contacts failed for merging oldContact {cmd.OldContactId} to newContact {cmd.NewContactId}");
+            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge contacts failed.");
         }
         return;
     }
