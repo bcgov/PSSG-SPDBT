@@ -9,7 +9,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
+		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
@@ -23,7 +23,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 					[form]="form"
 					name="permit"
 					[isAnonymous]="false"
-					[isCalledFromModal]="isCalledFromModal"
 					(fileUploaded)="onFileUploaded($event)"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
@@ -35,7 +34,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 export class StepPermitPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 
-	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonPhotographOfYourselfComponent)

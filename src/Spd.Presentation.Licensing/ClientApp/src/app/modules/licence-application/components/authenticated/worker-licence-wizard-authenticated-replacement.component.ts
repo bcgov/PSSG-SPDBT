@@ -1,6 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -25,7 +26,9 @@ import { CommonApplicationService } from '../../services/common-application.serv
 
 						<div class="row wizard-button-row">
 							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+								<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
+									Previous
+								</button>
 							</div>
 							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 								<button mat-flat-button color="primary" class="large mb-2" (click)="onNextPayStep()">Pay Now</button>
@@ -63,8 +66,17 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 		}
 	}
 
+	onGotoUserProfile(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+			),
+			{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
+		);
+	}
+
 	onNextPayStep(): void {
-		// swl replacement authenticated - pay - which licenceAppId ?
+		// TODO  swl replacement authenticated - pay - which licenceAppId ?
 		const licenceAppId = this.licenceApplicationService.licenceModelFormGroup.get('originalApplicationId')?.value;
 		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for Security Worker Licence Replacement');
 	}

@@ -758,7 +758,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	onRequestReplacement(appl: UserLicenceResponse): void {
 		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement)
+				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

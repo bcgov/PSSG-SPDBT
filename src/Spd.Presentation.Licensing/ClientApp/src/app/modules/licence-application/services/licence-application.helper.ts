@@ -361,7 +361,11 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'reprintLicence',
-					(_form) => !!this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value
+					(_form) =>
+						!!(
+							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
+							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
+						)
 				),
 			],
 		}

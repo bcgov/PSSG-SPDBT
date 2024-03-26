@@ -1,16 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	LicenceFeeResponse,
-	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -439,11 +436,8 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
 
-	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
-	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
-	swlCategoryTypes = WorkerCategoryTypes;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -473,7 +467,6 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
-		private router: Router,
 		private licenceApplicationService: LicenceApplicationService,
 		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
@@ -486,15 +479,6 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 	onEditStep(stepNumber: number) {
 		this.editStep.emit(stepNumber);
 	}
-
-	// onEditProfile() {
-	// 	this.router.navigateByUrl(
-	// 		LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-	// 			LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-	// 		),
-	// 		{ state: { applicationTypeCode: this.applicationTypeCode } }
-	// 	);
-	// }
 
 	onUpdateData(): void {
 		this.licenceModelData = {

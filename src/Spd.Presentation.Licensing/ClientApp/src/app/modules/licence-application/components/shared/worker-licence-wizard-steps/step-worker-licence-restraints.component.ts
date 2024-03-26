@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -11,7 +11,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 @Component({
 	selector: 'app-step-worker-licence-restraints',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
+		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
@@ -19,13 +19,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 					></app-common-update-renewal-alert>
 				</ng-container>
 
-				<app-step-title
-					*ngIf="!isCalledFromModal"
-					title="Do you want to request authorization to use restraints?"
-				></app-step-title>
+				<app-step-title title="Do you want to request authorization to use restraints?"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
-					<div class="row" *ngIf="!isCalledFromModal">
+					<div class="row">
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRestraints">
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -45,8 +42,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 					</div>
 
 					<div class="row" *ngIf="carryAndUseRestraints.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-						<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
-							<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
 
 							<div class="text-minor-heading my-2">Proof of qualification</div>
 							<mat-radio-group
@@ -100,26 +97,17 @@ import { HotToastService } from '@ngneat/hot-toast';
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepWorkerLicenceRestraintsComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 
 	form: FormGroup = this.licenceApplicationService.restraintsAuthorizationFormGroup;
 
-	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
-
-	ngOnInit(): void {
-		if (this.isCalledFromModal) {
-			this.form.patchValue({
-				carryAndUseRestraints: BooleanTypeCode.Yes,
-			});
-		}
-	}
 
 	onFileUploaded(file: File): void {
 		if (this.licenceApplicationService.isAutoSave()) {

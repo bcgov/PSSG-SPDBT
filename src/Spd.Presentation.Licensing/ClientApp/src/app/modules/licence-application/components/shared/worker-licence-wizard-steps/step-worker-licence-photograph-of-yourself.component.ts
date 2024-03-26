@@ -9,7 +9,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself',
 	template: `
-		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
+		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-common-update-renewal-alert
@@ -17,15 +17,12 @@ import { HotToastService } from '@ngneat/hot-toast';
 					></app-common-update-renewal-alert>
 				</ng-container>
 
-				<ng-container *ngIf="!isCalledFromModal">
-					<app-step-title title="Upload a photo of yourself"></app-step-title>
-				</ng-container>
+				<app-step-title title="Upload a photo of yourself"></app-step-title>
 
 				<app-common-photograph-of-yourself
 					[form]="form"
 					[isAnonymous]="false"
 					[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
-					[isCalledFromModal]="isCalledFromModal"
 					(fileUploaded)="onFileUploaded($event)"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
@@ -39,7 +36,6 @@ export class StepWorkerLicencePhotographOfYourselfComponent implements OnInit, L
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
 
-	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(CommonPhotographOfYourselfComponent)

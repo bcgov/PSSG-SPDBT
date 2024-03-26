@@ -800,14 +800,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				// );
 			}
 			case ApplicationTypeCode.Replacement: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyReplacementDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId);
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation);
 			}
 		}
 	}

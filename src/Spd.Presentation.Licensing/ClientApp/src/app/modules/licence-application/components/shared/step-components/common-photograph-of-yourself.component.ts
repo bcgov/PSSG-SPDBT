@@ -9,13 +9,8 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row my-2">
-				<div [ngClass]="isCalledFromModal ? 'col-12' : 'col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto'">
-					<div class="mb-4" *ngIf="isCalledFromModal">
-						This will appear on your {{ label }}. It must be a passport-quality photo of your face looking straight at
-						the camera, against a plain, white background. It must be from within the last year.
-					</div>
-
-					<app-alert type="warning" icon="warning" *ngIf="!isCalledFromModal">
+				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<app-alert type="warning" icon="warning">
 						Uploading a photo that is dissimilar from your submitted government-issued photo ID will delay your
 						application's processing time.
 					</app-alert>
@@ -56,7 +51,6 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 	@Input() isAnonymous = false;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
-	@Input() isCalledFromModal = false;
 
 	@Output() fileUploaded = new EventEmitter<File>();
 	@Output() fileRemoved = new EventEmitter();

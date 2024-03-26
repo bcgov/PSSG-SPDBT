@@ -36,7 +36,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					[form]="form"
 					[isAnonymous]="true"
 					[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
-					[isCalledFromModal]="isCalledFromModal"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
 			</div>
@@ -52,7 +51,6 @@ export class StepWorkerLicencePhotographOfYourselfAnonymousComponent
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
 
-	@Input() isCalledFromModal = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}

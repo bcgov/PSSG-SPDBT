@@ -217,6 +217,7 @@ export class CommonApplicationService {
 								const matchingLicence = licenceResps.find(
 									(item: LicenceResponse) => item.licenceAppId === resp.licenceAppId
 								);
+								console.log('****************', matchingLicence);
 								if (matchingLicence) {
 									licence.cardHolderName = matchingLicence.nameOnCard;
 									licence.licenceHolderName = matchingLicence.licenceHolderName;
