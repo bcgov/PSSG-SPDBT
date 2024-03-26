@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
     <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
+    <ProjectReference Include="..\Spd.Tests\Spd.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
