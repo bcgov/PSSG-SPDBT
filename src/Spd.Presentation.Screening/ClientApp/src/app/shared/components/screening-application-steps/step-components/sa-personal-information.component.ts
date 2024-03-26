@@ -72,7 +72,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>BC Government Employee ID <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="employeeId" [errorStateMatcher]="matcher" maxlength="100" />
+								<input matInput formControlName="employeeId" mask="000000" />
+								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 6 digits </mat-error>
 							</mat-form-field>
 						</div>
 					</div>

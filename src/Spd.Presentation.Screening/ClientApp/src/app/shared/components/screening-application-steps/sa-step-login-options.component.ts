@@ -1,5 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 @Component({
 	selector: 'app-sa-step-login-options',
@@ -9,6 +10,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 				<app-sa-log-in-options
 					(clickNext)="onStepNext()"
 					(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
+					[portal]="portal"
 				></app-sa-log-in-options>
 
 				<div class="row mt-4">
@@ -23,6 +25,8 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	encapsulation: ViewEncapsulation.None,
 })
 export class SaStepLoginOptionsComponent {
+	@Input() portal!: PortalTypeCode;
+
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
