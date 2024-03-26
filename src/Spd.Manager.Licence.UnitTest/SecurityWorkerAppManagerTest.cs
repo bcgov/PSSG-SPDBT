@@ -1,17 +1,23 @@
-﻿using AutoMapper;
+﻿using AutoFixture;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
+using Spd.Tests.Fixtures;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest
 {
     public class SecurityWorkerAppManagerTest
     {
+        private readonly IFixture fixture;
+        private WorkerLicenceFixture workerLicenceFixture;
         private Mock<ILicenceRepository> mockLicRepo = new();
         private Mock<ILicenceApplicationRepository> mockLicAppRepo = new();
         private Mock<IDocumentRepository> mockDocRepo = new();
@@ -22,6 +28,11 @@ namespace Spd.Manager.Licence.UnitTest
         private SecurityWorkerAppManager sut;
         public SecurityWorkerAppManagerTest()
         {
+            fixture = new Fixture();
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            workerLicenceFixture = new WorkerLicenceFixture(CancellationToken.None);
+
             sut = new SecurityWorkerAppManager(mockLicRepo.Object,
                 mockLicAppRepo.Object,
                 mockMapper.Object,
