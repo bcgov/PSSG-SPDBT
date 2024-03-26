@@ -105,7 +105,11 @@ export class HeaderComponent implements OnInit {
 				this.authUserBcscService.bcscUserWhoamiProfile
 			);
 
-			let name = this.authUserBcscService.bcscUserInfoProfile?.displayName;
+			let name = this.utilService.getFullName(
+				this.authUserBcscService.bcscUserInfoProfile?.firstName,
+				this.authUserBcscService.bcscUserInfoProfile?.lastName
+			);
+
 			if (!name) {
 				name = this.utilService.getFullName(
 					this.authUserBcscService.bcscUserWhoamiProfile?.firstName,
@@ -129,10 +133,7 @@ export class HeaderComponent implements OnInit {
 		);
 
 		const userData = this.authUserBceidService.bceidUserInfoProfile;
-		let name = '';
-		if (userData) {
-			name = this.utilService.getFullName(userData.firstName, userData.lastName);
-		}
+		let name = this.utilService.getFullName(userData!.firstName, userData!.lastName);
 		if (!name) {
 			name = this.authProcessService.loggedInUserTokenData.display_name;
 		}

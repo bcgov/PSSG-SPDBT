@@ -45,7 +45,6 @@ export class ConfigService {
 			showDebugInformation: true,
 			strictDiscoveryDocumentValidation: false,
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
-			useSilentRefresh: true,
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;
