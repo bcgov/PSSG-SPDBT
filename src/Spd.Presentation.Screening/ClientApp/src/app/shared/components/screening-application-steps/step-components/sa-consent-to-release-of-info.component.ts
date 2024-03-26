@@ -17,9 +17,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						<div class="row">
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 								<div class="conditions p-3 mb-3">
-									<strong>Please read and agree to each of the following statements</strong><br /><br />
-
-									<p>
+									<strong>Please read and agree to each of the following statements</strong><br />
+									<div>
 										<mat-checkbox formControlName="agreeToCriminalCheck" (click)="onCheckboxChange()">
 											I hereby consent to a criminal record check pursuant to the
 											<i>Criminal Records Review Act</i> (CRRA) to determine whether I have a conviction or outstanding
@@ -36,8 +35,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
-									<p>
+									</div>
+									<div>
 										<mat-checkbox formControlName="agreeToVulnerableSectorSearch" (click)="onCheckboxChange()">
 											I hereby consent to a Vulnerable Sector search to check if I have been convicted of and received a
 											record suspension (formerly known as a pardon) for any sexual offences as per the
@@ -60,7 +59,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
+									</div>
 									<p>
 										My organization and I will be notified that I have an outstanding charge or conviction for a
 										relevant or specified offence(s), and that the matter has been referred to the Deputy Registrar for
@@ -72,7 +71,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										determination will include consideration of any relevant or specified offence(s) for which I have
 										received a record suspension (formerly known as a pardon).
 									</p>
-									<p>
+									<div>
 										<mat-checkbox formControlName="agreeToReportCharge" (click)="onCheckboxChange()">
 											If I am charged with or convicted of any relevant or specified offence(s) at any time subsequent
 											to the criminal record check authorization herein, I agree to report the charge(s) or
@@ -88,12 +87,12 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
+									</div>
 									<p>
 										For the purpose of completing my CRRA check as described above, I authorize the collection and/or
 										consent to the disclosure of my personal information within Canada, as follows:
 									</p>
-									<p>
+									<div>
 										<mat-checkbox formControlName="agreeToBcCourtHistory" (click)="onCheckboxChange()">
 											Pursuant to the <i>Freedom of Information and Protection of Privacy Act</i> (FoIPPA), I hereby
 											consent to the disclosure by the Ministry of Attorney General to the Deputy Registrar of my
@@ -109,8 +108,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
-									<p>
+									</div>
+									<div>
 										<mat-checkbox formControlName="agreeToBcCorrectionsHistory" (click)="onCheckboxChange()">
 											Pursuant to FoIPPA, I hereby consent to the disclosure by the Ministry of Public Safety and
 											Solicitor General to the Deputy Registrar of my name(s), alias(es), CS#, history of contact with
@@ -127,8 +126,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
-									<p>
+									</div>
+									<div>
 										<mat-checkbox formControlName="agreeToDisclosurePersonalData" (click)="onCheckboxChange()">
 											Pursuant to FoIPPA, I hereby consent to the disclosure by the Deputy Registrar to the Criminal
 											Records Review Unit of the RCMP (CRRU) of my name(s), alias(es), CS#, date of birth, sex, driver’s
@@ -151,8 +150,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
-									<p>
+									</div>
+									<div>
 										<mat-checkbox formControlName="agreeToDisclosureToRegistrar" (click)="onCheckboxChange()">
 											Pursuant to FoIPPA, the Privacy Act, and any other relevant applicable provincial and federal
 											legislation, I hereby consent to the disclosure to the Deputy Registrar by the CRRU, the BC
@@ -169,7 +168,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
+									</div>
 									<ul>
 										<li>
 											Criminal record check or fingerprint- based criminal record verification by searching the Canadian
@@ -180,7 +179,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											(PRIME-BC) and the Police Reporting and Occurrence System (PROS).
 										</li>
 									</ul>
-									<p>
+									<div>
 										<mat-checkbox formControlName="agreeToReleaseToRegistrar" (click)="onCheckboxChange()">
 											In addition to the foregoing, and as may be required for the Deputy Registrar to make a
 											determination pursuant to s. 4 (2) and 4 (3) CRRA, I further authorize the release to the Deputy
@@ -199,7 +198,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
+									</div>
 									<strong> Collection Notice </strong>
 									<p>
 										The Security Programs Division (SPD) will collect your personal information for the purpose of
@@ -223,7 +222,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<div class="conditions p-3 mb-3">
 									<strong>PERMISSION, WAIVER and RELEASE</strong><br /><br />
-									<p>
+									<div>
 										<mat-checkbox formControlName="agreeToCriminalCheck" (click)="onCheckboxChange()">
 											Pursuant to Section 8(1) of the Privacy Act of Canada, and Sections 32(b) and 33(2)(c) of the
 											British Columbia Freedom of Information and Protection of Privacy Act (FOIPPA), by my signature
@@ -241,8 +240,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
-									<p>
+									</div>
+									<div>
 										<mat-checkbox formControlName="agreeToRelease" (click)="onCheckboxChange()">
 											I authorize the release of this information to the Personnel Security Screening Office of the
 											Ministry of Public Safety and Solicitor General for the purposes of determining my suitability for
@@ -257,8 +256,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
-									<p>
+									</div>
+									<div>
 										<mat-checkbox formControlName="agreeToReportCharge" (click)="onCheckboxChange()">
 											Subsequent to this record check, I agree to report any incident to the Personnel Security
 											Screening Office if I am arrested, charged or convicted of any criminal offence or any other
@@ -274,7 +273,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											"
 											>This is required</mat-error
 										>
-									</p>
+									</div>
 									<p>
 										This information is collected by the British Columbia Public Service under s.26(c) of FOIPPA. Any
 										questions about the collection and use of this information can be directed to an HR Service
@@ -318,16 +317,20 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	`,
 	styles: [
 		`
+			p {
+				margin-bottom: 0.5rem !important;
+			}
+
+			ul {
+				margin-bottom: 0 !important;
+			}
 			li:not(:last-child) {
-				margin-bottom: 1em;
+				margin-bottom: 0.5em;
 			}
 
 			.conditions {
 				border: 1px solid var(--color-grey-light);
-				max-height: 300px;
-				overflow-y: auto;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-				font-size: smaller;
 			}
 		`,
 	],
