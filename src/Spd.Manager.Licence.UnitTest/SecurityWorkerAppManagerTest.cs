@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -253,6 +254,53 @@ namespace Spd.Manager.Licence.UnitTest
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
             await Assert.ThrowsAsync<ArgumentException>(act);
+        }
+
+        [Fact]
+        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_Return_WorkerLicenceCommandResponse()
+        {
+            Guid licAppId = Guid.NewGuid();
+            Guid applicantId = Guid.NewGuid();
+            DateTime dateTime = DateTime.UtcNow.AddDays(-1);
+            DateOnly expiryDate = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+
+            LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.ExpiryDate, expiryDate)
+                .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
+                .Create();
+
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+                .ReturnsAsync(new LicenceListResp()
+                {
+                    Items = new List<LicenceResp> { licenceResp }
+                });
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+                .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
+            mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
+                .Returns(new CreateDocumentCmd());
+            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
+                .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+            mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LicenceFeeListResp());
+
+            WorkerLicenceAppAnonymousSubmitRequest wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            wLAppAnonymousSubmitRequest.PreviousDocumentIds = null;
+            wLAppAnonymousSubmitRequest.HasLegalNameChanged = false;
+            wLAppAnonymousSubmitRequest.IsPoliceOrPeaceOfficer = false;
+            wLAppAnonymousSubmitRequest.HasNewMentalHealthCondition = false;
+            wLAppAnonymousSubmitRequest.IsCanadianCitizen = true;
+            wLAppAnonymousSubmitRequest.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales };
+
+            LicAppFileInfo canadianCitizenship = new LicAppFileInfo() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
+            LicAppFileInfo proofOfFingerprint = new LicAppFileInfo() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
+            LicAppFileInfo photoOfYourself = new LicAppFileInfo() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
+            List<LicAppFileInfo> licAppFileInfos = new List<LicAppFileInfo>() { canadianCitizenship, proofOfFingerprint, photoOfYourself };
+            AnonymousWorkerLicenceAppRenewCommand request = new AnonymousWorkerLicenceAppRenewCommand(wLAppAnonymousSubmitRequest, licAppFileInfos);
+
+            var result = await sut.Handle(request, CancellationToken.None);
+
+            Assert.IsType<WorkerLicenceCommandResponse>(result);
+            Assert.Equal(licAppId, result.LicenceAppId);
         }
     }
 }
