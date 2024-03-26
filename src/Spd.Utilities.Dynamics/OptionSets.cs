@@ -357,4 +357,10 @@ namespace Spd.Utilities.Dynamics
         TravelInResponseToInternationalConflict = 100000004,
         Other = 100000002
     }
+
+    public enum ServiceTypeCategoryOptionSet
+    {
+        Screening = 100000000,
+        Licensing = 100000001,
+    }
 }

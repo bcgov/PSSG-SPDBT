@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { distinctUntilChanged, Observable, tap } from 'rxjs';
+import { Observable, distinctUntilChanged, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
 	ApplicationCreateResponse,
@@ -16,6 +16,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -42,7 +43,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 				#stepper
 			>
 				<mat-step completed="false">
-					<ng-template matStepLabel>Eligibility Check</ng-template>
+					<ng-template matStepLabel>Checklist</ng-template>
 					<app-sa-step-eligibility
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -67,6 +68,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
+						[portal]="portal.Crrp"
 					></app-sa-step-login-options>
 				</mat-step>
 
@@ -106,6 +108,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 })
 export class CrrpaComponent implements OnInit {
 	orgData: AppInviteOrgData | null = null;
+	portal = PortalTypeCode;
 
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
