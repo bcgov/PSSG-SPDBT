@@ -83,7 +83,7 @@ namespace Spd.Manager.Licence.UnitTest
                 {
                     Items = new List<LicenceResp>
                     {
-                        new LicenceResp(){ LicenceId=Guid.NewGuid() }
+                        new LicenceResp(){ LicenceId = Guid.NewGuid() }
                     }
                 });
 
