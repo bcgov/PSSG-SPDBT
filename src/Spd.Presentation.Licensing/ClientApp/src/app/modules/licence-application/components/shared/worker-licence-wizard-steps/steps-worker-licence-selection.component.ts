@@ -200,7 +200,9 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-step-worker-licence-restraints></app-step-worker-licence-restraints>
+				<app-step-worker-licence-restraints
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-restraints>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -235,7 +237,9 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-step-worker-licence-dogs-authorization></app-step-worker-licence-dogs-authorization>
+				<app-step-worker-licence-dogs-authorization
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-dogs-authorization>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">

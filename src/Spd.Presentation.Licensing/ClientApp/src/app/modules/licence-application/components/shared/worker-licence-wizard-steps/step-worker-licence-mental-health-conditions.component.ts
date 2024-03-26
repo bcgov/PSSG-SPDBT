@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -89,11 +88,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
 		if (
@@ -116,7 +111,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);

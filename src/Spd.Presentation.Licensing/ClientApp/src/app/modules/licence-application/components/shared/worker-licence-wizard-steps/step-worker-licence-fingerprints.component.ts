@@ -5,7 +5,6 @@ import { CommonFingerprintsComponent } from '@app/modules/licence-application/co
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 
 @Component({
 	selector: 'app-step-worker-licence-fingerprints',
@@ -32,14 +31,10 @@ export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepp
 
 	@ViewChild(CommonFingerprintsComponent) commonFingerprintsComponent!: CommonFingerprintsComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
