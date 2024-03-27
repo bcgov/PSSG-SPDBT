@@ -18,7 +18,7 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class SecurityWorkerLicensingControllerTest
 {
     private readonly IFixture fixture;
-    WorkerLicenceFixture workerLicenceFixture;
+    private WorkerLicenceFixture workerLicenceFixture;
     private Mock<IPrincipal> mockUser = new();
     private Mock<IMediator> mockMediator = new();
     private Mock<IValidator<WorkerLicenceAppSubmitRequest>> mockWslSubmitValidator = new();
@@ -49,6 +49,8 @@ public class SecurityWorkerLicensingControllerTest
 
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInCacheCommand>(), CancellationToken.None))
                .ReturnsAsync(new List<LicAppFileInfo>());
+        mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppReplaceCommand>(), CancellationToken.None))
+               .ReturnsAsync(new WorkerLicenceCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppRenewCommand>(), CancellationToken.None))
                .ReturnsAsync(new WorkerLicenceCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppUpdateCommand>(), CancellationToken.None))
@@ -83,6 +85,17 @@ public class SecurityWorkerLicensingControllerTest
         var result = await sut.UploadLicenceAppFilesAuthenticated(licenceAppDocumentUploadRequest, CancellationToken.None);
 
         Assert.IsType<Guid>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Replacement_Return_WorkerLicenceCommandResponse()
+    {
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement);
+
+        var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
+
+        Assert.IsType<WorkerLicenceCommandResponse>(result);
         mockMediator.Verify();
     }
 
