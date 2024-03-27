@@ -18,7 +18,7 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class SecurityWorkerLicensingControllerTest
 {
     private readonly IFixture fixture;
-    WorkerLicenceFixture workerLicenceFixture;
+    private WorkerLicenceFixture workerLicenceFixture;
     private Mock<IPrincipal> mockUser = new();
     private Mock<IMediator> mockMediator = new();
     private Mock<IValidator<WorkerLicenceAppSubmitRequest>> mockWslSubmitValidator = new();
