@@ -169,6 +169,8 @@ import { StepWorkerLicenceFingerprintsComponent } from './components/shared/work
 import { StepWorkerLicenceMailingAddressComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mental-health-conditions.component';
 import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-anonymous.component';
+import { StepWorkerLicencePhotographOfYourselfNewComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-new.component';
+import { StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-renew-and-update.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicencePoliceBackgroundComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-police-background.component';
@@ -321,6 +323,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicencePersonalInformationAnonymousComponent,
 		StepWorkerLicencePhotographOfYourselfAnonymousComponent,
 		StepWorkerLicencePhotographOfYourselfComponent,
+		StepWorkerLicencePhotographOfYourselfNewComponent,
+		StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent,
 		StepWorkerLicencePhysicalCharacteristicsComponent,
 		StepWorkerLicencePoliceBackgroundComponent,
 		StepWorkerLicenceReprintComponent,

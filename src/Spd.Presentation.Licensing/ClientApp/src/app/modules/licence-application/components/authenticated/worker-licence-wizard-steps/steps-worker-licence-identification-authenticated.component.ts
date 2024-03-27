@@ -21,8 +21,13 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_CITIZENSHIP)">
-							Save and Exit
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -51,8 +56,13 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_FINGERPRINTS)">
-							Save and Exit
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -83,8 +93,13 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)">
-							Save and Exit
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -118,8 +133,13 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)">
-							Save and Exit
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -149,12 +169,19 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-photograph-of-yourself></app-step-worker-licence-photograph-of-yourself>
+				<app-step-worker-licence-photograph-of-yourself
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-photograph-of-yourself>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_PHOTO)">
-							Save and Exit
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_PHOTO)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -191,10 +218,10 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	readonly STEP_PHOTO = 5;
 
 	showCitizenshipStep = true;
+	showSaveAndExit = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
-	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
 	isFormValid = false;
@@ -227,12 +254,13 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 
 				this.showCitizenshipStep =
 					this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No;
+
+				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
 			}
 		);
 	}
 
 	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 

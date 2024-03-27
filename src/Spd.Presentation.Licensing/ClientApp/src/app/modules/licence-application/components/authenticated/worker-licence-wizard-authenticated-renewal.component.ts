@@ -59,7 +59,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextPayStep)="onNextPayStep()"
+							(nextPayStep)="onPayNow()"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
 						></app-steps-worker-licence-review-authenticated>
@@ -238,7 +238,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.goToChildNextStep();
 	}
 
-	onNextPayStep(): void {
+	onPayNow(): void {
 		this.licenceApplicationService.submitLicenceRenewalAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence renewal has been successfully submitted');

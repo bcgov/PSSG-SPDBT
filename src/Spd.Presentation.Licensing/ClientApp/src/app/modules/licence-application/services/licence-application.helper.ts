@@ -480,6 +480,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	getDocsToSaveBlobs(licenceModelFormValue: any, includeProfileDocs = true): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
+		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
@@ -718,9 +719,16 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
 		}
 
-		if (photographOfYourselfData.attachments) {
+		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto) {
 			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
+			photographOfYourselfData.attachments?.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+		} else {
+			const docs: Array<Blob> = [];
+			photographOfYourselfData.updateAttachments?.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
@@ -1004,12 +1012,22 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			});
 		}
 
-		photographOfYourselfData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto) {
+			photographOfYourselfData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				});
 			});
-		});
+		} else {
+			photographOfYourselfData.updateAttachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				});
+			});
+		}
 
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
 			documentInfos

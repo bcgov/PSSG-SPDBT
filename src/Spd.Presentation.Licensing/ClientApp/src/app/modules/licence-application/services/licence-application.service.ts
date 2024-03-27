@@ -314,14 +314,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const updateNameOrGenderChange = this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ?? false;
 
 		if (this.authenticationService.isLoggedIn()) {
+			// console.debug(
+			// 	'isStepIdentificationComplete',
+			// 	this.citizenshipFormGroup.valid,
+			// 	this.fingerprintProofFormGroup.valid && this.bcDriversLicenceFormGroup.valid,
+			// 	this.characteristicsFormGroup.valid,
+			// 	this.photographOfYourselfFormGroup.valid
+			// );
 			return (
-				// console.debug(
-				// 	'isStepIdentificationComplete',
-				// 	this.citizenshipFormGroup.valid,
-				// 	this.bcDriversLicenceFormGroup.valid,
-				// 	this.characteristicsFormGroup.valid,
-				// 	this.photographOfYourselfFormGroup.valid,
-				// );
 				this.citizenshipFormGroup.valid &&
 				this.fingerprintProofFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
@@ -1594,6 +1594,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,
 			uploadedDateTime: photographOfYourselfLastUploadedDateTime,
+			updatePhoto: null,
+			updateAttachments: [],
 		};
 
 		this.licenceModelFormGroup.patchValue(
@@ -1683,17 +1685,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const originalPhotoOfYourselfLastUpload = resp.photographOfYourselfData.uploadedDateTime;
+		const photographOfYourselfData = { ...resp.photographOfYourselfData };
 
 		// We require a new photo every 5 years. Please provide a new photo for your licence
 		const yearsDiff = moment().startOf('day').diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
 		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
-		let photographOfYourselfData = {};
 		if (originalPhotoOfYourselfExpired) {
-			// clear out data to force user to upload a new photo
-			photographOfYourselfData = {
-				attachments: [],
-			};
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,

@@ -152,6 +152,10 @@ a {
 	color: var(--color-primary);
 }
 
+.mdc-text-field--filled.mdc-text-field--disabled .mdc-line-ripple::before {
+	border: none;
+}
+
 button.mat-green-button {
 	background-color: var(--color-green-dark) !important;
 	color: var(--color-white) !important;

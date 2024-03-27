@@ -84,10 +84,28 @@ export abstract class CommonApplicationHelper {
 		bcDriversLicenceNumber: new FormControl(),
 	});
 
-	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
-		uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
-		attachments: new FormControl('', [FormControlValidators.required]),
-	});
+	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
+		{
+			updatePhoto: new FormControl(''), // used by update/renewal
+			uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
+			attachments: new FormControl([], [FormControlValidators.required]),
+			updateAttachments: new FormControl([]), // used by update/renewal
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'updateAttachments',
+					(form) =>
+						form.get('updatePhoto')?.value == this.booleanTypeCodes.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value !== ApplicationTypeCode.New
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'updatePhoto',
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value !== ApplicationTypeCode.New
+				),
+			],
+		}
+	);
 
 	characteristicsFormGroup: FormGroup = this.formBuilder.group({
 		hairColourCode: new FormControl('', [FormControlValidators.required]),

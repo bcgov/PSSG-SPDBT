@@ -2,10 +2,13 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './worker-licence-wizard-steps/step-worker-licence-summary-review-update-authenticated.component';
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-updates-authenticated.component';
@@ -85,6 +88,8 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);
@@ -123,5 +128,20 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	onPayNow(): void {
 		const isValid = this.licenceSummaryComponent.isFormValid();
 		if (!isValid) return;
+
+		this.licenceApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				this.hotToastService.success('Your licence update has been successfully submitted');
+				this.payNow(_resp.body.licenceAppId!);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
+
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for Security Worker Licence Update');
 	}
 }

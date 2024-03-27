@@ -25,7 +25,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							(click)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -65,7 +65,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							(click)="onSaveAndExit(STEP_MAILING_ADDRESS)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -107,7 +107,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							(click)="onSaveAndExit(STEP_CONTACT_INFORMATION)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">

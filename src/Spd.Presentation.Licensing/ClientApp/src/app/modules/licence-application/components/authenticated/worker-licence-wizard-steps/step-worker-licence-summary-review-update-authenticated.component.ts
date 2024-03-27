@@ -222,7 +222,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
+		return this.licenceModelData.photographOfYourselfData.updateAttachments ?? [];
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {
