@@ -133,6 +133,8 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 	}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {

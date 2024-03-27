@@ -5,7 +5,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -58,6 +58,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
+							[applicationTypeCode]="applicationTypeCodeNew"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -75,6 +76,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 	styles: [],
 })
 export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCodeNew = ApplicationTypeCode.New;
+
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_IDENTIFICATION = 1;
 	readonly STEP_REVIEW = 2;

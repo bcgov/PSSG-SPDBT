@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
@@ -210,9 +210,9 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_RESTRAINTS)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -243,8 +243,13 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_DOGS)" *ngIf="isLoggedIn">
-							Save and Exit
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_DOGS)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -275,9 +280,9 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_LICENCE_TERM)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -316,10 +321,10 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	readonly STEP_RESTRAINTS = 6;
 	readonly STEP_LICENCE_TERM = 7;
 
-	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
+	showSaveAndExit = false;
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
@@ -349,19 +354,13 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	constructor(
 		private router: Router,
-		private authProcessService: AuthProcessService,
+		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super();
 	}
 
 	ngOnInit(): void {
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-			}
-		);
-
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -372,6 +371,10 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 				this.showStepDogsAndRestraints =
 					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+
+				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+
+				this.isLoggedIn = this.authenticationService.isLoggedIn();
 			}
 		);
 	}
@@ -411,7 +414,6 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 	}
 
 	onCancel(): void {

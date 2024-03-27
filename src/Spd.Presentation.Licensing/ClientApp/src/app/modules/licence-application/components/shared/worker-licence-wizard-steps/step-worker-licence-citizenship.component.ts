@@ -237,6 +237,8 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			const proofTypeCode =
 				this.isCanadianCitizen.value == BooleanTypeCode.Yes
@@ -262,6 +264,8 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onGovernmentIssuedFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value ?? LicenceDocumentTypeCode.BcServicesCard; // default value (f nothing is selected)
 
