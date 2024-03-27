@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
@@ -22,9 +21,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -64,9 +63,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -106,9 +105,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -146,9 +145,9 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -184,10 +183,9 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 
-	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	isLoggedIn = false;
+	showSaveAndExit = false;
 	isFormValid = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -201,10 +199,7 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
-	) {
+	constructor(private licenceApplicationService: LicenceApplicationService) {
 		super();
 	}
 
@@ -217,18 +212,13 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
-			}
-		);
 
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
+				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
 			}
 		);
 	}
 
 	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 

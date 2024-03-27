@@ -1,6 +1,6 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
@@ -15,7 +15,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { Observable, Subscription, forkJoin, take, tap } from 'rxjs';
+import { Observable, forkJoin, take, tap } from 'rxjs';
 import {
 	CommonApplicationService,
 	UserApplicationResponse,
@@ -535,7 +535,7 @@ import {
 		`,
 	],
 })
-export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
+export class LicenceUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
 	results$!: Observable<any>;
@@ -559,7 +559,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 
 	expiredLicences: Array<UserLicenceResponse> = [];
 
-	authenticationSubscription!: Subscription;
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
 	applicationsDataSource: MatTableDataSource<UserApplicationResponse> = new MatTableDataSource<UserApplicationResponse>(
@@ -666,10 +665,6 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 		);
 	}
 
-	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	}
-
 	onUserProfile(): void {
 		// When a user has started an application but has not submitted it yet,
 		// the user can view their Profile page in read-only mode – they can't edit
@@ -758,7 +753,7 @@ export class LicenceUserApplicationsComponent implements OnInit, OnDestroy {
 	onRequestReplacement(appl: UserLicenceResponse): void {
 		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceApplicationService
-				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement)
+				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

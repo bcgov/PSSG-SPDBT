@@ -484,7 +484,7 @@ import { Subscription } from 'rxjs';
 														</div>
 													</div>
 
-													<div class="col-lg-6 col-md-12">
+													<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
 														<div class="text-label d-block text-muted">Photograph of Yourself</div>
 														<div class="summary-text-data">
 															<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
@@ -1021,7 +1021,13 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		return this.licenceModelData.photographOfYourselfData.attachments ?? [];
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
+			return this.licenceModelData.photographOfYourselfData.attachments ?? [];
+		} else {
+			const updatePhoto = this.licenceModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = this.licenceModelData.photographOfYourselfData.updateAttachments ?? [];
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 
 	get emailAddress(): string {

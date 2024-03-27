@@ -21,6 +21,8 @@ export abstract class CommonApplicationHelper {
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceAppId: new FormControl(null),
 		linkedExpiryDate: new FormControl(null),
+		linkedCardHolderName: new FormControl(null),
+		linkedLicenceHolderName: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),
@@ -84,10 +86,28 @@ export abstract class CommonApplicationHelper {
 		bcDriversLicenceNumber: new FormControl(),
 	});
 
-	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group({
-		uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
-		attachments: new FormControl('', [FormControlValidators.required]),
-	});
+	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
+		{
+			updatePhoto: new FormControl(''), // used by update/renewal
+			uploadedDateTime: new FormControl(''), // used in Renewal to determine if a new photo is mandatory
+			attachments: new FormControl([], [FormControlValidators.required]),
+			updateAttachments: new FormControl([]), // used by update/renewal
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'updateAttachments',
+					(form) =>
+						form.get('updatePhoto')?.value == this.booleanTypeCodes.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value !== ApplicationTypeCode.New
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'updatePhoto',
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value !== ApplicationTypeCode.New
+				),
+			],
+		}
+	);
 
 	characteristicsFormGroup: FormGroup = this.formBuilder.group({
 		hairColourCode: new FormControl('', [FormControlValidators.required]),
@@ -109,7 +129,6 @@ export abstract class CommonApplicationHelper {
 			dateOfBirth: new FormControl('', [Validators.required]),
 			hasLegalNameChanged: new FormControl(false),
 			hasBcscNameChanged: new FormControl(),
-			isPrintNewName: new FormControl(),
 			origGivenName: new FormControl(''),
 			origMiddleName1: new FormControl(''),
 			origMiddleName2: new FormControl(''),
@@ -126,10 +145,6 @@ export abstract class CommonApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => !!form.get('hasLegalNameChanged')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'isPrintNewName',
-					(form) => !!form.get('hasBcscNameChanged')?.value
 				),
 			],
 		}

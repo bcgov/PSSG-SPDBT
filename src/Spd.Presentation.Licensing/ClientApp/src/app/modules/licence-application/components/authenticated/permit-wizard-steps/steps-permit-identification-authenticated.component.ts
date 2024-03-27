@@ -29,7 +29,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_PERSONAL_INFORMATION)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -69,7 +69,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_ALIASES)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -104,7 +104,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -141,7 +141,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -183,7 +183,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -225,7 +225,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -267,7 +267,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 							(click)="onSaveAndExit(STEP_PHYSICAL_CHARACTERISTICS)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
