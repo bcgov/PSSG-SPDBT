@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Delegates;
-using Spd.Utilities.Shared;
 using System.ComponentModel;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
@@ -681,10 +680,15 @@ namespace Spd.Manager.Screening
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
 
-            RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, 7 digits
-                .Length(7)
+            RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, 6 digits - spdbt-2401
+                .Length(6)
                 .Must(r => int.TryParse(r, out var i) && i > 0)
-                .When(r => r.OrgId == SpdConstants.BcGovOrgId && !string.IsNullOrEmpty(r.EmployeeId));
+                .When(r => !string.IsNullOrEmpty(r.EmployeeId) &&
+                    (r.ServiceType == ServiceTypeCode.PSSO ||
+                    r.ServiceType == ServiceTypeCode.PSSO_VS ||
+                    r.ServiceType != ServiceTypeCode.MCFD ||
+                    r.ServiceType != ServiceTypeCode.PE_CRC ||
+                    r.ServiceType != ServiceTypeCode.PE_CRC_VS));
         }
     }
 

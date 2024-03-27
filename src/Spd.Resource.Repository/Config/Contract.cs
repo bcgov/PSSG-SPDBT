@@ -8,7 +8,6 @@
         public static readonly string PAYBC_PBCREFNUMBER_KEY = "PbcRefNumber";
         public static readonly string PAYBC_PBCREFNUMBER_LICENSING_KEY = "PbcRefNumberLicensing";
         public static readonly string PAYBC_REVENUEACCOUNT_LICENSING_KEY = "RevenueAccountLicensing";
-        public static readonly string PAYBCS_SERVICECOST_KEY = "Service Amount";
         Task<ConfigResult> Query(ConfigQuery query, CancellationToken ct);
     }
 
