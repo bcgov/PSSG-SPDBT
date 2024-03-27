@@ -19,6 +19,7 @@ public record LicenceResponse
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
     public string? LicenceHolderName { get; set; }
+    public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
 };
 
