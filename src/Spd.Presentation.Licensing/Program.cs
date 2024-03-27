@@ -1,5 +1,4 @@
 using FluentValidation;
-using Microsoft.Dynamics.CRM;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
@@ -11,7 +10,6 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
-using System.Configuration;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
