@@ -6,7 +6,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityGuardRequirementCode } from 'src/app/core/code-types/model-desc.models';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 
@@ -99,7 +98,6 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 
 	constructor(
 		private optionsPipe: OptionsPipe,
-		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
@@ -109,7 +107,7 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);

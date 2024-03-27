@@ -509,9 +509,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		return body;
 	}
 
-	getDocsToSaveAnonymousBlobs(permitModelFormValue: any): Array<PermitDocumentsToSave> {
-		console.debug('getDocsToSaveAnonymousBlobs permitModelFormValue', permitModelFormValue);
-
+	getDocsToSaveBlobs(permitModelFormValue: any): Array<PermitDocumentsToSave> {
 		const documents: Array<PermitDocumentsToSave> = [];
 
 		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
@@ -586,7 +584,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: documentTypeCode, documents: docs });
 		}
 
-		console.debug('getDocsToSaveAnonymousBlobs documentsToSave', documents);
+		console.debug('getDocsToSaveBlobs documentsToSave', documents);
 
 		return documents;
 	}
