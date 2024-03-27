@@ -26,7 +26,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 							(click)="onSaveAndExit(STEP_PERMIT_REASON)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -68,7 +68,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 							(click)="onSaveAndExit(STEP_EMPLOYER_INFORMATION)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -108,7 +108,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 							(click)="onSaveAndExit(STEP_PERMIT_RATIONALE)"
 							*ngIf="isLoggedIn"
 						>
-							Save and Exit
+							Save & Exit
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">

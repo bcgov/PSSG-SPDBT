@@ -150,6 +150,8 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)

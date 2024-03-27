@@ -76,6 +76,8 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate, file)

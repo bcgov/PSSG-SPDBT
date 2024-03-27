@@ -111,6 +111,8 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
 				next: (resp: any) => {

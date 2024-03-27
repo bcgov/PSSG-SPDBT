@@ -5,7 +5,6 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonResidentialAddressComponent } from '@app/modules/licence-application/components/shared/step-components/common-residential-address.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-step-worker-licence-residential-address',
@@ -32,7 +31,6 @@ export class StepWorkerLicenceResidentialAddressComponent implements LicenceChil
 
 	subtitle = '';
 
-	authenticationSubscription!: Subscription;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;

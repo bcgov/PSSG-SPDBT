@@ -11,6 +11,21 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-user-profile-personal-information',
 	template: `
 		<div [formGroup]="personalInformationFormGroup">
+			<ng-container *ngIf="hasBcscNameChanged.value; else hasNameChanged">
+				<app-alert type="info" icon="" [showBorder]="false">
+					We noticed you changed your name recently on your BC Services Card.
+				</app-alert>
+			</ng-container>
+			<ng-template #hasNameChanged>
+				<app-alert type="info" icon="" [showBorder]="false">
+					Have you changed your name?
+					<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
+						>Visit ICBC</a
+					>
+					to update this information on your BC Services Card. Any changes you make will then be updated here.
+				</app-alert>
+			</ng-template>
+
 			<div class="row mb-3">
 				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
 					<div class="fs-6 text-muted">Full Name</div>
@@ -24,38 +39,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</div>
 				</div>
 			</div>
-
-			<ng-container *ngIf="hasBcscNameChanged.value; else hasNameChanged">
-				<app-alert type="info" icon="warning">
-					<div>We noticed you changed your name recently on your BC Services Card.</div>
-					<div class="fw-bold">Do you want a new licence printed with your new name for a $20 fee?</div>
-					<mat-radio-group aria-label="Select an option" class="mdc-radio-no-bg" formControlName="isPrintNewName">
-						<div class="d-flex justify-content-start">
-							<mat-radio-button class="radio-label w-auto" [value]="true">Yes</mat-radio-button>
-							<mat-radio-button class="radio-label w-auto" [value]="false">No</mat-radio-button>
-						</div>
-					</mat-radio-group>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(personalInformationFormGroup.get('isPrintNewName')?.dirty ||
-								personalInformationFormGroup.get('isPrintNewName')?.touched) &&
-							personalInformationFormGroup.get('isPrintNewName')?.invalid &&
-							personalInformationFormGroup.get('isPrintNewName')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-				</app-alert>
-			</ng-container>
-			<ng-template #hasNameChanged>
-				<app-alert type="info" icon="" [showBorder]="false">
-					Have you changed your name?
-					<a href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address" target="_blank"
-						>Visit ICBC</a
-					>
-					to update this information on your BC Services Card. Any changes you make will then be updated here.
-				</app-alert>
-			</ng-template>
 		</div>
 
 		<div class="row mt-3 mb-2">

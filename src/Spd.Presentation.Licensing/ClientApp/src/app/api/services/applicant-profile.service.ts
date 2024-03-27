@@ -12,6 +12,7 @@ import { map, filter } from 'rxjs/operators';
 import { ApplicantListResponse } from '../models/applicant-list-response';
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
 import { ApplicantUpdateRequest } from '../models/applicant-update-request';
+import { IActionResult } from '../models/i-action-result';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 
 @Injectable({
@@ -280,6 +281,70 @@ export class ApplicantProfileService extends BaseService {
 
     return this.apiApplicantSearchGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<ApplicantListResponse>>) => r.body as Array<ApplicantListResponse>)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantMergeOldApplicantIdNewApplicantIdGet
+   */
+  static readonly ApiApplicantMergeOldApplicantIdNewApplicantIdGetPath = '/api/applicant/merge/{oldApplicantId}/{newApplicantId}';
+
+  /**
+   * Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantMergeOldApplicantIdNewApplicantIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params: {
+    oldApplicantId: string;
+    newApplicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<IActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantMergeOldApplicantIdNewApplicantIdGetPath, 'get');
+    if (params) {
+      rb.path('oldApplicantId', params.oldApplicantId, {"style":"simple"});
+      rb.path('newApplicantId', params.newApplicantId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<IActionResult>;
+      })
+    );
+  }
+
+  /**
+   * Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantMergeOldApplicantIdNewApplicantIdGet(params: {
+    oldApplicantId: string;
+    newApplicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<IActionResult> {
+
+    return this.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<IActionResult>) => r.body as IActionResult)
     );
   }
 
