@@ -29,7 +29,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<app-alert type="info" icon="warning">
 					<div>We noticed you changed your name recently on your BC Services Card.</div>
 					<div class="fw-bold">Do you want a new licence printed with your new name for a $20 fee?</div>
-					<mat-radio-group aria-label="Select an option" formControlName="isPrintNewName">
+					<mat-radio-group aria-label="Select an option" class="mdc-radio-no-bg" formControlName="isPrintNewName">
 						<div class="d-flex justify-content-start">
 							<mat-radio-button class="radio-label w-auto" [value]="true">Yes</mat-radio-button>
 							<mat-radio-button class="radio-label w-auto" [value]="false">No</mat-radio-button>
