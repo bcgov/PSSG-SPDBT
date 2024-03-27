@@ -5,7 +5,7 @@ namespace Spd.Resource.Repository.Contact
         public Task<ContactListResp> QueryAsync(ContactQry qry, CancellationToken cancellationToken);
         public Task<ContactResp> ManageAsync(ContactCmd cmd, CancellationToken cancellationToken);
         public Task<ContactResp> GetAsync(Guid contactId, CancellationToken cancellationToken);
-        public Task MergeContactsAsync(MergeContactsCmd cmd, CancellationToken cancellationToken);
+        public Task<bool> MergeContactsAsync(MergeContactsCmd cmd, CancellationToken cancellationToken);
     }
 
     public record ContactListResp

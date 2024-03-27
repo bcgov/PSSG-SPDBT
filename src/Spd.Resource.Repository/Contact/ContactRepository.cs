@@ -76,7 +76,7 @@ internal class ContactRepository : IContactRepository
         };
     }
 
-    public async Task MergeContactsAsync(MergeContactsCmd cmd, CancellationToken ct)
+    public async Task<bool> MergeContactsAsync(MergeContactsCmd cmd, CancellationToken ct)
     {
         contact? oldContact = await _context.GetContactById(cmd.OldContactId, ct);
         contact? newContact = await _context.GetContactById(cmd.NewContactId, ct);
@@ -93,7 +93,7 @@ internal class ContactRepository : IContactRepository
             _logger.LogError($"Merge contacts failed for merging oldContact {cmd.OldContactId} to newContact {cmd.NewContactId}");
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge contacts failed.");
         }
-        return;
+        return true;
     }
 
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)

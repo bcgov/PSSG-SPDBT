@@ -31,15 +31,17 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_ApplicantMergeCommand_Success()
         {
-            //Arrange
+            ////Arrange
             ApplicantMergeCommand cmd = new ApplicantMergeCommand(Guid.NewGuid(), Guid.NewGuid());
-            mockContactRepo.Setup(a => a.MergeContactsAsync(It.IsAny<MergeContactsCmd>(), CancellationToken.None))
-                .Verifiable();
+            mockContactRepo.Setup(a => a.MergeContactsAsync(It.IsAny<MergeContactsCmd>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
 
-            //Act
-            Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+            ////Act
+            await sut.Handle(cmd, CancellationToken.None);
+
+            ////Assert
+            mockContactRepo.VerifyAll();
         }
-
 
     }
 }
