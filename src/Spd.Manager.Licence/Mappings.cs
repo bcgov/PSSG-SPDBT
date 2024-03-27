@@ -153,7 +153,8 @@ internal class Mappings : Profile
         CreateMap<Alias, Spd.Resource.Repository.Alias>()
             .ReverseMap();
 
-        CreateMap<LicenceAppListResp, LicenceAppListResponse>();
+        CreateMap<LicenceAppListResp, LicenceAppListResponse>()
+            .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode));
 
         CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));

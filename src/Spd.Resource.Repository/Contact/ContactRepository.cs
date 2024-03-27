@@ -76,6 +76,26 @@ internal class ContactRepository : IContactRepository
         };
     }
 
+    public async Task<bool> MergeContactsAsync(MergeContactsCmd cmd, CancellationToken ct)
+    {
+        contact? oldContact = await _context.GetContactById(cmd.OldContactId, ct);
+        contact? newContact = await _context.GetContactById(cmd.NewContactId, ct);
+        if (oldContact == null || newContact == null)
+        {
+            _logger.LogError($"Merge contacts cannot find at least one of the contact");
+            throw new ArgumentException("cannot find contact for merging");
+        }
+
+        var result = await _context.spd_MergeContacts(oldContact, newContact).GetValueAsync(ct);
+        await _context.SaveChangesAsync(ct);
+        if (result.IsSuccess == null || !(result.IsSuccess.Value))
+        {
+            _logger.LogError($"Merge contacts failed for merging oldContact {cmd.OldContactId} to newContact {cmd.NewContactId}");
+            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge contacts failed.");
+        }
+        return true;
+    }
+
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact newContact = _mapper.Map<contact>(c);

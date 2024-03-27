@@ -74,11 +74,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Screening", "Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Resource.Repository", "Spd.Resource.Repository\Spd.Resource.Repository.csproj", "{E69649CE-E31E-4719-A700-6BA2B5580697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Presentation.Dynamics.UnitTest", "Spd.Presentation.Dynamics.UnitTest\Spd.Presentation.Dynamics.UnitTest.csproj", "{33567F85-3F18-4DA6-AB0B-78BB7FDA6A9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Dynamics.UnitTest", "Spd.Presentation.Dynamics.UnitTest\Spd.Presentation.Dynamics.UnitTest.csproj", "{33567F85-3F18-4DA6-AB0B-78BB7FDA6A9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Presentation.Licensing.UnitTest", "Spd.Presentation.Licensing.UnitTest\Spd.Presentation.Licensing.UnitTest.csproj", "{6D1D6339-73D4-4E73-BF92-4CCA2E9EF180}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Licensing.UnitTest", "Spd.Presentation.Licensing.UnitTest\Spd.Presentation.Licensing.UnitTest.csproj", "{6D1D6339-73D4-4E73-BF92-4CCA2E9EF180}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.Licence.UnitTest", "Spd.Manager.Licence.UnitTest\Spd.Manager.Licence.UnitTest.csproj", "{53D19A90-22FF-4AC8-9EC7-B3711456F053}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Licence.UnitTest", "Spd.Manager.Licence.UnitTest\Spd.Manager.Licence.UnitTest.csproj", "{53D19A90-22FF-4AC8-9EC7-B3711456F053}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Resource.Repository.IntegrationTest", "Spd.Resource.Repository.IntegrationTest\Spd.Resource.Repository.IntegrationTest.csproj", "{9C0BB07F-92A3-41AA-8A8C-08DEF0F07C88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -202,6 +204,10 @@ Global
 		{53D19A90-22FF-4AC8-9EC7-B3711456F053}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53D19A90-22FF-4AC8-9EC7-B3711456F053}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53D19A90-22FF-4AC8-9EC7-B3711456F053}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C0BB07F-92A3-41AA-8A8C-08DEF0F07C88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C0BB07F-92A3-41AA-8A8C-08DEF0F07C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C0BB07F-92A3-41AA-8A8C-08DEF0F07C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C0BB07F-92A3-41AA-8A8C-08DEF0F07C88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +242,7 @@ Global
 		{33567F85-3F18-4DA6-AB0B-78BB7FDA6A9A} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{6D1D6339-73D4-4E73-BF92-4CCA2E9EF180} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{53D19A90-22FF-4AC8-9EC7-B3711456F053} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
+		{9C0BB07F-92A3-41AA-8A8C-08DEF0F07C88} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}
