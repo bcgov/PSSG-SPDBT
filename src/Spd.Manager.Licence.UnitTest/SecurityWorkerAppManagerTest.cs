@@ -391,8 +391,6 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new LicenceFeeListResp());
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
-            //mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(d => d.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync(new DocumentListResp());
 
             WorkerLicenceAppAnonymousSubmitRequest wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Update, licAppId);
             wLAppAnonymousSubmitRequest.PreviousDocumentIds = null;
