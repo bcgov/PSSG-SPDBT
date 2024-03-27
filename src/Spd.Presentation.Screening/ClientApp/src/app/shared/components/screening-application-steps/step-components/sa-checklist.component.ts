@@ -15,7 +15,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 								<a
 									href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/law-policy"
 									target="_blank"
-									>government issued identification</a
+									>government-issued photo identification</a
 								>.
 							</li>
 							<li *ngIf="isCrrpa">
