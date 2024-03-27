@@ -48,7 +48,6 @@ export class CommonPhotographOfYourselfComponent implements LicenceChildStepperS
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	@Input() form!: FormGroup;
-	@Input() isAnonymous = false;
 	@Input() label = 'licence'; // licence or permit
 	@Input() originalPhotoOfYourselfExpired = false;
 

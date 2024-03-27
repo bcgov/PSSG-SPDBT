@@ -122,6 +122,8 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file)

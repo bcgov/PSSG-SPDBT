@@ -18,7 +18,7 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_NAME_CHANGE)">
@@ -35,7 +35,14 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large mb-2"
+							(click)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
+						>
+							Previous
+						</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button
@@ -57,7 +64,14 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large mb-2"
+							(click)="onStepUpdatePrevious(STEP_LICENCE_CATEGORY)"
+						>
+							Previous
+						</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidCategoryNextStep()">
@@ -156,6 +170,27 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+	}
+
+	onStepUpdatePrevious(step: number): void {
+		switch (step) {
+			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
+				if (this.hasBcscNameChanged) {
+					this.childstepper.previous();
+					return;
+				}
+				break;
+			case this.STEP_LICENCE_CATEGORY:
+				if (this.hasGenderChanged || this.hasBcscNameChanged) {
+					this.childstepper.previous();
+					return;
+				}
+				break;
+			default:
+				console.error('Unknown Form', step);
+		}
+
+		this.previousStepperStep.emit(true);
 	}
 
 	onFormValidCategoryNextStep(): void {

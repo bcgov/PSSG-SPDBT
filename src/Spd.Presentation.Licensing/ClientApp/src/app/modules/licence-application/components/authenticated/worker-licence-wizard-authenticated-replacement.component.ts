@@ -79,7 +79,7 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 	}
 
 	onPayNow(): void {
-		this.licenceApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+		this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence replacement has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);

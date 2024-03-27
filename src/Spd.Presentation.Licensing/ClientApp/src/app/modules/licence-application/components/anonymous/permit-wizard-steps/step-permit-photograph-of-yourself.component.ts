@@ -22,7 +22,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 				<app-common-photograph-of-yourself
 					[form]="form"
 					name="permit"
-					[isAnonymous]="false"
 					(fileUploaded)="onFileUploaded($event)"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>

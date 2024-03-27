@@ -647,7 +647,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
-	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppAnonymousSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
@@ -685,9 +685,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[submitLicenceRenewalAuthenticated] body', body);
-		console.debug('[submitLicenceRenewalAuthenticated] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceRenewalAuthenticated] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] body', body);
+		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] documentsToSave', documentsToSave);
+		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] existingDocumentIds', existingDocumentIds);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(

@@ -15,7 +15,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 
 				<app-common-photograph-of-yourself
 					[form]="form"
-					[isAnonymous]="false"
 					(fileUploaded)="onFileUploaded($event)"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
@@ -34,6 +33,8 @@ export class StepWorkerLicencePhotographOfYourselfNewComponent implements Licenc
 	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
 				next: (resp: any) => {

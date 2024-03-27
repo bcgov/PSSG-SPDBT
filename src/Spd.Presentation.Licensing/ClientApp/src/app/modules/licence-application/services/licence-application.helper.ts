@@ -720,7 +720,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
-		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto) {
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
 			const docs: Array<Blob> = [];
 			photographOfYourselfData.attachments?.forEach((doc: SpdFile) => {
 				docs.push(doc);
@@ -735,7 +735,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 
 		console.debug('[getDocsToSaveBlobs] documentsToSave', documents);
-
 		return documents;
 	}
 
@@ -792,7 +791,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
 		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
 
-		const baseData = this.getSaveBodyBase(licenceModelFormValue);
+		const baseData = this.getSaveBodyBase(licenceModelFormValue, true);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		// documentInfos
@@ -803,7 +802,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppAnonymousSubmitRequest, Array<Document>] {
 		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 
-		const baseData = this.getSaveBodyBase(licenceModelFormValue);
+		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		// documentKeyCodes xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -816,7 +815,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		return [baseData, baseData.documentInfos];
 	}
 
-	private getSaveBodyBase(licenceModelFormValue: any): any {
+	private getSaveBodyBase(licenceModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = licenceModelFormValue.licenceAppId;
 		const originalApplicationId = licenceModelFormValue.originalApplicationId;
 		const originalLicenceId = licenceModelFormValue.originalLicenceId;
@@ -978,6 +977,22 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			});
 		});
 
+		if (!isAuthenticated) {
+			policeBackgroundData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				});
+			});
+
+			mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+				});
+			});
+		}
+
 		citizenshipData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
 				documentUrlId: doc.documentUrlId,
@@ -1013,7 +1028,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 
 		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
-		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto) {
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
 			photographOfYourselfData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -1263,7 +1278,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 
 		if (this.utilService.booleanTypeToBoolean(restraintsAuthorizationData.carryAndUseRestraints)) {
-			dogsAuthorizationData.attachments?.forEach((doc: any) => {
+			restraintsAuthorizationData.attachments?.forEach((doc: any) => {
 				documents.push({
 					documentUrlId: doc.documentUrlId,
 					licenceDocumentTypeCode: restraintsAuthorizationData.carryAndUseRestraintsDocument,

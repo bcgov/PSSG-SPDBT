@@ -34,6 +34,8 @@ export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepp
 	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
 				next: (resp: any) => {

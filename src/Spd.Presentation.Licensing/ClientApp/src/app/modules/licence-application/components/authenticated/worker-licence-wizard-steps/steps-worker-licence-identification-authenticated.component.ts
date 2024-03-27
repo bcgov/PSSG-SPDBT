@@ -253,7 +253,8 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 				)?.value;
 
 				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No;
+					this.applicationTypeCode === ApplicationTypeCode.New ||
+					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
 				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
 			}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
@@ -23,7 +23,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				></app-step-title>
 
 				<div class="row">
-					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row mt-0 mb-4">
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">
@@ -70,36 +70,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 								</div>
 							</div>
 						</div>
-
-						<mat-divider class="mat-divider-main"></mat-divider>
-
-						<div [formGroup]="consentFormGroup" class="my-4">
-							<mat-checkbox formControlName="agreeToCompleteAndAccurate">
-								I HEREBY CERTIFY THAT I have read and understand all portions of this application form and the
-								information set out by me in this application is true and correct to the best of my knowledge and
-								belief. I have read and understand the <i>Security Services Act</i> and Regulations; and I am aware of,
-								and understand, the conditions that will be placed on me as a licensee.
-							</mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(consentFormGroup.get('agreeToCompleteAndAccurate')?.dirty ||
-										consentFormGroup.get('agreeToCompleteAndAccurate')?.touched) &&
-									consentFormGroup.get('agreeToCompleteAndAccurate')?.invalid &&
-									consentFormGroup.get('agreeToCompleteAndAccurate')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-
-						<app-alert type="info" icon="" [showBorder]="false">
-							<div class="mb-2">COLLECTION NOTICE</div>
-							All information regarding this application is collected under the <i>Security Services Act</i> and its
-							Regulation and will be used for that purpose. The use of this information will comply with the
-							<i>Freedom of Information</i> and <i>Privacy Act</i> and the federal <i>Privacy Act</i>. If you have any
-							questions regarding the collection or use of this information, please contact
-							<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
-						</app-alert>
 					</div>
 				</div>
 			</div>
@@ -110,10 +80,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-
-	consentFormGroup: FormGroup = this.formBuilder.group({
-		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
-	});
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -158,8 +124,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	}
 
 	isFormValid(): boolean {
-		this.consentFormGroup.markAllAsTouched();
-		return this.consentFormGroup.valid;
+		return true;
 	}
 
 	get licenceHolderName(): string {

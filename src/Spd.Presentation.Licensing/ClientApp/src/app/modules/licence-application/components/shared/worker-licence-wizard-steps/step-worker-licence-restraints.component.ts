@@ -110,6 +110,8 @@ export class StepWorkerLicenceRestraintsComponent implements LicenceChildStepper
 	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	onFileUploaded(file: File): void {
+		this.licenceApplicationService.hasValueChanged = true;
+
 		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService.addUploadDocument(this.carryAndUseRestraintsDocument.value, file).subscribe({
 				next: (resp: any) => {

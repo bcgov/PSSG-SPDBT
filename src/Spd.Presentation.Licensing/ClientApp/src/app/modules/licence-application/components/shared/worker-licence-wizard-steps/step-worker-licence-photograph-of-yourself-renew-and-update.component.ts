@@ -15,8 +15,18 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 
 				<div [formGroup]="form" class="row">
 					<ng-container *ngIf="!originalPhotoOfYourselfExpired">
+						<div class="row mb-3" *ngIf="photographOfYourself">
+							<div class="col-12 text-center">
+								<div class="fs-5 mb-2">Current licence photo:</div>
+								<img
+									[src]="photographOfYourself"
+									alt="Photograph of yourself"
+									style="max-height: 200px;max-width: 200px;"
+								/>
+							</div>
+						</div>
+
 						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<h1>TODO show current photo</h1>
 							<mat-radio-group aria-label="Select an option" formControlName="updatePhoto">
 								<div class="d-flex justify-content-start">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -68,15 +78,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 						</div>
 					</ng-container>
 				</div>
-				<!-- updateAttachments
-				<ng-container *ngIf="updatePhoto.value">
-					<app-common-photograph-of-yourself
-						[form]="form"
-						[isAnonymous]="false"
-						[originalPhotoOfYourselfExpired]="originalPhotoOfYourselfExpired"
-						(fileRemoved)="onFileRemoved()"
-					></app-common-photograph-of-yourself>
-				</ng-container> -->
 			</div>
 		</section>
 	`,
@@ -94,6 +95,8 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	@Input() form!: FormGroup;
 	@Input() label = 'licence'; // licence or permit
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+	photographOfYourself = this.licenceApplicationService.photographOfYourself;
 
 	@ViewChild(CommonPhotographOfYourselfComponent)
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;

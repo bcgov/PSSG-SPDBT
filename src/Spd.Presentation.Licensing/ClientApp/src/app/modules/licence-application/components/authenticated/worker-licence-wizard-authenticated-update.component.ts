@@ -1,4 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -10,7 +11,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { LicenceApplicationService } from '../../services/licence-application.service';
-import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './worker-licence-wizard-steps/step-worker-licence-summary-review-update-authenticated.component';
+import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-updates-authenticated.component';
 
 @Component({
@@ -45,6 +46,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 						<ng-template matStepLabel>Licence Updates</ng-template>
 						<app-steps-worker-licence-updates-authenticated
 							(childNextStep)="onChildNextStep()"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-worker-licence-updates-authenticated>
@@ -52,17 +54,12 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
-
-						<app-step-worker-licence-summary-review-update-authenticated></app-step-worker-licence-summary-review-update-authenticated>
-
-						<div class="row wizard-button-row">
-							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-								<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
-							</div>
-						</div>
+						<app-steps-worker-licence-review-authenticated
+							[applicationTypeCode]="applicationTypeCodeUpdate"
+							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextPayStep)="onPayNow()"
+							(scrollIntoView)="onScrollIntoView()"
+						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
 					<mat-step completed="false">
@@ -76,14 +73,16 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 	encapsulation: ViewEncapsulation.None,
 })
 export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
+
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_UPDATES = 1;
 	readonly STEP_REVIEW_AND_CONFIRM = 2;
 
 	@ViewChild(StepsWorkerLicenceUpdatesAuthenticatedComponent)
-	licenceUpdatesComponent!: StepsWorkerLicenceUpdatesAuthenticatedComponent;
-	@ViewChild(StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent)
-	licenceSummaryComponent!: StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent;
+	stepsLicenceUpdatesComponent!: StepsWorkerLicenceUpdatesAuthenticatedComponent;
+	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
+	stepsReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -115,8 +114,34 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 		);
 	}
 
+	override onStepSelectionChange(event: StepperSelectionEvent) {
+		switch (event.selectedIndex) {
+			case this.STEP_LICENCE_UPDATES:
+				this.stepsLicenceUpdatesComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_REVIEW_AND_CONFIRM:
+				this.stepsReviewAuthenticatedComponent?.onGoToFirstStep();
+				break;
+		}
+
+		super.onStepSelectionChange(event);
+	}
+
+	onPreviousStepperStep(stepper: MatStepper): void {
+		stepper.previous();
+
+		switch (stepper.selectedIndex) {
+			case this.STEP_LICENCE_CONFIRMATION:
+				this.stepper.selectedIndex = 0;
+				break;
+			case this.STEP_LICENCE_UPDATES:
+				this.stepsLicenceUpdatesComponent?.onGoToLastStep();
+				break;
+		}
+	}
+
 	onChildNextStep() {
-		this.licenceUpdatesComponent?.onGoToNextStep();
+		this.stepsLicenceUpdatesComponent?.onGoToNextStep();
 		// this.updateCompleteStatus();
 	}
 
@@ -126,10 +151,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	}
 
 	onPayNow(): void {
-		const isValid = this.licenceSummaryComponent.isFormValid();
-		if (!isValid) return;
-
-		this.licenceApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+		this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence update has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);
