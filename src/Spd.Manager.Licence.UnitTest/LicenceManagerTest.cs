@@ -107,5 +107,28 @@ public class LicenceManagerTest
         Assert.Null(result.FileName);
     }
 
-    
+    [Fact]
+    public async void Handle_LicencePhotoQuery_WithNoLicences_Throw_Exception()
+    {
+        Guid licenceId = Guid.NewGuid();
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.LicenceId, licenceId)
+                .Without(r => r.LicenceHolderId)
+                .Create();
+
+        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == licenceId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+
+        LicencePhotoQuery request = fixture.Build<LicencePhotoQuery>()
+            .With(q => q.LicenceId, licenceId)
+            .Create();
+
+        Func<Task> act = () => sut.Handle(request, CancellationToken.None);
+
+        await Assert.ThrowsAsync<ApiException>(act);
+    }
 }
