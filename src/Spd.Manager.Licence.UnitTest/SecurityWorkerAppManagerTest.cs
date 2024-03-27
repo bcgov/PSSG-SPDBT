@@ -237,7 +237,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None)) //no dup lic
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
                 .ReturnsAsync(new LicenceListResp()
                 {
                     Items = new List<LicenceResp> { licenceResp }
