@@ -501,7 +501,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	getLicenceWithSelectionAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation: UserLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
 		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
@@ -749,36 +749,38 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceOfTypeAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation: UserLicenceResponse
 	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
+				return forkJoin([
+					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
+				return forkJoin([
+					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
-
-				// return forkJoin([ // TODO set the photo of yourself for update, authenticated
-				// 	this.loadExistingLicenceWithIdAuthenticated(licenceAppId, hasBcscNameChanged),
-				// 	this.licenceService.apiLicencesLicencePhotoGet(),
-				// ]).pipe(
-				// 	catchError((error) => of(error)),
-				// 	map((resps: any[]) => {
-				// 		this.setPhotographOfYourself(resps[1]);
-				// 		return resps[0];
-				// 	}),
-				// 	switchMap((_resp: any) => {
-				// 		return this.applyUpdateDataUpdatesToModel(_resp);
-				// 	})
-				// );
 			}
 			case ApplicationTypeCode.Replacement: {
 				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
@@ -939,6 +941,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private setPhotographOfYourself(image: Blob | null): void {
+		console.debug('setPhotographOfYourself', image);
 		if (!image || image.size == 0) {
 			this.photographOfYourself = null;
 			return;
