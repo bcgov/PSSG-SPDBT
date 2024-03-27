@@ -5,6 +5,7 @@ namespace Spd.Resource.Repository.Contact
         public Task<ContactListResp> QueryAsync(ContactQry qry, CancellationToken cancellationToken);
         public Task<ContactResp> ManageAsync(ContactCmd cmd, CancellationToken cancellationToken);
         public Task<ContactResp> GetAsync(Guid contactId, CancellationToken cancellationToken);
+        public Task<bool> MergeContactsAsync(MergeContactsCmd cmd, CancellationToken cancellationToken);
     }
 
     public record ContactListResp
@@ -64,11 +65,16 @@ namespace Spd.Resource.Repository.Contact
         public Guid Id { get; set; }
         public Guid? IdentityId { get; set; }
     };
-    public record TermAgreementCmd(Guid Id): ContactCmd;
+    public record TermAgreementCmd(Guid Id) : ContactCmd;
     public record CreateContactCmd : ContactCmd
     {
         public Guid? IdentityId { get; set; }
         public string? DisplayName { get; set; }
         public string Sub { get; set; } = null!;
+    }
+    public record MergeContactsCmd
+    {
+        public Guid OldContactId { get; set; }
+        public Guid NewContactId { get; set; }
     }
 }

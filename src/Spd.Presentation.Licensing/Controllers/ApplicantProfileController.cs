@@ -112,6 +112,19 @@ namespace Spd.Presentation.Licensing.Controllers
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new ApplicantSearchCommand(info, false));
         }
+
+        /// <summary>
+        /// Merge the old applicant to the new applicant, old applicant will be marked as inactive. All the entities reference to old applicant will be changed to refer to new applicant.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant/merge/{oldApplicantId}/{newApplicantId}")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IActionResult> MergeApplicants([FromRoute] Guid oldApplicantId, [FromRoute] Guid newApplicantId)
+        {
+            await _mediator.Send(new ApplicantMergeCommand(oldApplicantId, newApplicantId));
+            return Ok();
+        }
     }
 
 
