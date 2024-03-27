@@ -37,7 +37,7 @@ public class IntegrationTestSetup
         serviceCollection.AddAutoMapper(assemblies);
         serviceCollection.AddDistributedMemoryCache();
         serviceCollection.AddTransient<IContactRepository, ContactRepository>();
-        ServiceProvider = serviceCollection.BuildServiceProvider();
+        ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
-    public ServiceProvider ServiceProvider { get; private set; }
+    public IServiceProvider ServiceProvider { get; private set; }
 }

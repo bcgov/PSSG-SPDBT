@@ -13,7 +13,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     public ContactRepositoryTest(IntegrationTestSetup testSetup)
     {
         _repository = testSetup.ServiceProvider.GetService<IContactRepository>();
-        _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().CreateChangeOverwrite();
+        _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().Create();
     }
 
     [Fact]
@@ -31,6 +31,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.AddTospd_licences(oldContactLic);
         _context.SetLink(oldContactLic, nameof(spd_licence.spd_LicenceHolder_contact), oldContact);
         await _context.SaveChangesAsync();
+        _context.DetachAll();
 
         //Act
         await _repository.MergeContactsAsync(new MergeContactsCmd() { OldContactId = oldContactId, NewContactId = newContactId }, CancellationToken.None);
