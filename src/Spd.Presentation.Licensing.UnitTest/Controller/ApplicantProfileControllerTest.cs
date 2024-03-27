@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -48,5 +49,21 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller
             mockMediator.Verify();
         }
 
+        [Fact]
+        public async void MergeApplicants_Return_Ok()
+        {
+            //Arrange
+            mockMediator.Setup(m => m.Send(It.IsAny<ApplicantMergeCommand>(), CancellationToken.None))
+                .ReturnsAsync(new Unit());
+
+            //Act
+            var viewResult = await sut.MergeApplicants(Guid.NewGuid(), Guid.NewGuid());
+
+            //Assert
+            Assert.IsType<OkResult>(viewResult);
+            mockMediator.Verify();
+        }
+
     }
+
 }

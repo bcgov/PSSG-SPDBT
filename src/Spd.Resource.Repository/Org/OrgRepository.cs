@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.Org
         private readonly IMapper _mapper;
         public OrgRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgRepository> logger)
         {
-            _dynaContext = ctx.Create();
+            _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
         }
         public async Task<OrgQryData?> QueryOrgAsync(OrgQry query, CancellationToken ct)
