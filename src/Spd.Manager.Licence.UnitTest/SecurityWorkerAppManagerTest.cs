@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
