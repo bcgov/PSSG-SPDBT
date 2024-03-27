@@ -1,16 +1,9 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
-using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
-using Spd.Resource.Repository.LicenceFee;
-using Spd.Resource.Repository.Tasks;
-using Spd.Tests.Fixtures;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -57,7 +50,7 @@ public class LicenceManagerTest
             });
 
         DocumentResp document = fixture.Create<DocumentResp>();
-        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == applicantId && 
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == applicantId &&
             q.FileType == DocumentTypeEnum.Photograph), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() { document } });
 
