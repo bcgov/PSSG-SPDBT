@@ -25,9 +25,9 @@ namespace Spd.Manager.Licence
         IEnumerable<LicAppFileInfo> LicAppFileInfos)
         : IRequest<Unit>;
     public record ApplicantMergeCommand(
-    Guid OldApplicantId,
-    Guid NewApplicantId)
-    : IRequest<Unit>;
+        Guid OldApplicantId,
+        Guid NewApplicantId)
+        : IRequest<Unit>;
 
     public record ApplicantUpdateRequest : Applicant
     {
