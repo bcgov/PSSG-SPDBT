@@ -13,7 +13,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				<app-step-title title="Confirm your current licence information"></app-step-title>
 
 				<div class="row">
-					<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<app-alert type="warning" icon="warning">
 							If any of this information is not correct, please call the Security Program's Licensing Unit during
 							regular office hours: {{ spdPhoneNumber }}
@@ -21,7 +21,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 						<div class="row mt-0 mb-3">
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Holder Name</div>
-								<div class="summary-text-data">{{ licenceHolderName }}</div>
+								<div class="summary-text-data">{{ cardHolderName }}</div>
 							</div>
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Number</div>
@@ -30,9 +30,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Categories</div>
 								<div class="summary-text-data">
-									<ng-container *ngFor="let category of categoryList; let i = index">
-										<div>{{ category | options : 'WorkerCategoryTypes' }}</div>
-									</ng-container>
+									<ul class="m-0">
+										<ng-container *ngFor="let category of categoryList; let i = index">
+											<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+										</ng-container>
+									</ul>
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-12">
@@ -99,15 +101,9 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 		}
 	}
 
-	get licenceHolderName(): string {
-		return this.utilService.getFullNameWithMiddle(
-			this.licenceModelData.personalInformationData.givenName,
-			this.licenceModelData.personalInformationData.middleName1,
-			this.licenceModelData.personalInformationData.middleName2,
-			this.licenceModelData.personalInformationData.surname
-		);
+	get cardHolderName(): string {
+		return this.licenceModelData.personalInformationData.cardHolderName;
 	}
-
 	get originalLicenceNumber(): string {
 		return this.licenceModelData.originalLicenceNumber ?? '';
 	}

@@ -36,7 +36,6 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 				<app-common-photograph-of-yourself
 					[form]="form"
 					name="permit"
-					[isAnonymous]="true"
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
 			</div>

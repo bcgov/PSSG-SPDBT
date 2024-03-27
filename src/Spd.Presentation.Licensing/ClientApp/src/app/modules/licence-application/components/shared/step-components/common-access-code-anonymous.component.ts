@@ -226,6 +226,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 				linkedLicenceId: resp.licenceId,
 				linkedLicenceAppId: resp.licenceAppId,
 				linkedExpiryDate: resp.expiryDate,
+				linkedCardHolderName: resp.nameOnCard,
+				linkedLicenceHolderName: resp.licenceHolderName,
 			});
 			this.linkSuccess.emit();
 

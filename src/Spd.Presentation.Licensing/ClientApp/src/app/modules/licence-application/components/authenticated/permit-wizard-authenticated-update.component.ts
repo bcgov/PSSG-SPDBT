@@ -12,8 +12,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 		<div class="row">
 			<div class="offset-xl-1 col-xl-10 col-lg-12">
 				<mat-stepper class="child-stepper" linear (selectionChange)="onStepSelectionChange($event)" #stepper>
-					<mat-step completed="true">
-						<!-- <ng-template matStepLabel> Update your Licence or Permit </ng-template> -->
+					<!-- <mat-step completed="true">
 						<app-step-worker-licence-all-updates-authenticated
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
@@ -27,7 +26,7 @@ import { LicenceApplicationService } from '../../services/licence-application.se
 								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 							</div>
 						</div>
-					</mat-step>
+					</mat-step> -->
 
 					<!-- <mat-step completed="true">
 						<app-step-worker-licence-mailing-address-update-authenticated></app-step-worker-licence-mailing-address-update-authenticated>

@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
@@ -19,17 +18,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-step-worker-licence-police-background>
 
 				<div class="row wizard-button-row" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -61,17 +50,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-step-worker-licence-mental-health-conditions>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -103,17 +82,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-step-worker-licence-criminal-history>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -143,17 +112,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
-							*ngIf="isLoggedIn"
-						>
-							Save and Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -190,10 +149,8 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 
-	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	isLoggedIn = false;
 	isFormValid = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -207,10 +164,7 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 	criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
-	) {
+	constructor(private licenceApplicationService: LicenceApplicationService) {
 		super();
 	}
 
@@ -225,16 +179,9 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 				)?.value;
 			}
 		);
-
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-			}
-		);
 	}
 
 	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 

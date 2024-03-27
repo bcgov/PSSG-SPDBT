@@ -5,7 +5,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -36,7 +36,6 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel> Licence Selection </ng-template>
 						<app-steps-worker-licence-selection
 							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
@@ -47,7 +46,6 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-worker-licence-identification-authenticated
 							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -58,8 +56,9 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
+							[applicationTypeCode]="applicationTypeCodeRenewal"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextPayStep)="onNextPayStep()"
+							(nextPayStep)="onPayNow()"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
 						></app-steps-worker-licence-review-authenticated>
@@ -75,6 +74,8 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 	styles: [],
 })
 export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCodeRenewal = ApplicationTypeCode.Renewal;
+
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_IDENTIFICATION = 1;
 	readonly STEP_REVIEW = 2;
@@ -166,28 +167,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.stepper.selectedIndex = step;
 	}
 
-	onSaveAndExit() {
-		if (!this.authenticationService.isLoggedIn()) {
-			this.exitAndLoseChanges();
-			return;
-		}
-
-		this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
-			next: (_resp: any) => {
-				this.licenceApplicationService.hasValueChanged = false;
-
-				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				// only 403s will be here as an error
-				if (error.status == 403) {
-					this.handleDuplicateLicence();
-				}
-			},
-		});
-	}
-
 	private exitAndLoseChanges() {
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -238,8 +217,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.goToChildNextStep();
 	}
 
-	onNextPayStep(): void {
-		this.licenceApplicationService.submitLicenceRenewalAuthenticated().subscribe({
+	onPayNow(): void {
+		this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence renewal has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);

@@ -1,16 +1,23 @@
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent-and-declaration.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-worker-licence-summary-review-authenticated.component';
+import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './step-worker-licence-summary-review-update-authenticated.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-review-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-worker-licence-summary-review-authenticated
-					(editStep)="onGoToStep($event)"
-				></app-step-worker-licence-summary-review-authenticated>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdate">
+					<app-step-worker-licence-summary-review-update-authenticated></app-step-worker-licence-summary-review-update-authenticated>
+				</ng-container>
+				<ng-template #notUpdate>
+					<app-step-worker-licence-summary-review-authenticated
+						(editStep)="onGoToStep($event)"
+					></app-step-worker-licence-summary-review-authenticated>
+				</ng-template>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -23,7 +30,9 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-wor
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-consent-and-declaration></app-step-worker-licence-consent-and-declaration>
+				<app-step-worker-licence-consent-and-declaration
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-consent-and-declaration>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -40,11 +49,18 @@ import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-wor
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardStepComponent {
+	applicationTypeCodes = ApplicationTypeCode;
+
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepWorkerLicenceSummaryReviewAuthenticatedComponent)
 	summaryReviewComponent!: StepWorkerLicenceSummaryReviewAuthenticatedComponent;
-	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
+	@ViewChild(StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent)
+	summaryReviewUpdateComponent!: StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent;
+	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
+	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
 	constructor() {
 		super();
@@ -71,6 +87,10 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 
 	override onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
-		this.summaryReviewComponent.onUpdateData();
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.summaryReviewUpdateComponent.onUpdateData();
+		} else {
+			this.summaryReviewComponent.onUpdateData();
+		}
 	}
 }

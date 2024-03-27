@@ -314,14 +314,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const updateNameOrGenderChange = this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ?? false;
 
 		if (this.authenticationService.isLoggedIn()) {
+			// console.debug(
+			// 	'isStepIdentificationComplete',
+			// 	this.citizenshipFormGroup.valid,
+			// 	this.fingerprintProofFormGroup.valid && this.bcDriversLicenceFormGroup.valid,
+			// 	this.characteristicsFormGroup.valid,
+			// 	this.photographOfYourselfFormGroup.valid
+			// );
 			return (
-				// console.debug(
-				// 	'isStepIdentificationComplete',
-				// 	this.citizenshipFormGroup.valid,
-				// 	this.bcDriversLicenceFormGroup.valid,
-				// 	this.characteristicsFormGroup.valid,
-				// 	this.photographOfYourselfFormGroup.valid,
-				// );
 				this.citizenshipFormGroup.valid &&
 				this.fingerprintProofFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
@@ -370,28 +370,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			return false;
 		}
 
-		// console.debug('isAutoSave', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
-		// const shouldSaveStep =
-		// 	this.hasValueChanged &&
-		// 	((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
-
 		console.debug('shouldSaveStep', shouldSaveStep);
 		return shouldSaveStep;
 	}
@@ -483,6 +462,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
+		console.debug('saveLicenceStepAuthenticated PARTIAL SAVE', licenceModelFormValue, body);
+
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
@@ -520,7 +501,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	getLicenceWithSelectionAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation: UserLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
 		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
@@ -647,7 +628,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
-	submitLicenceRenewalAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppAnonymousSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
@@ -685,9 +666,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[submitLicenceRenewalAuthenticated] body', body);
-		console.debug('[submitLicenceRenewalAuthenticated] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceRenewalAuthenticated] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] body', body);
+		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] documentsToSave', documentsToSave);
+		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] existingDocumentIds', existingDocumentIds);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -768,46 +749,48 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceOfTypeAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation: UserLicenceResponse
 	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
+				return forkJoin([
+					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
+				return forkJoin([
+					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
-
-				// return forkJoin([ // TODO set the photo of yourself for update, authenticated
-				// 	this.loadExistingLicenceWithIdAuthenticated(licenceAppId, hasBcscNameChanged),
-				// 	this.licenceService.apiLicencesLicencePhotoGet(),
-				// ]).pipe(
-				// 	catchError((error) => of(error)),
-				// 	map((resps: any[]) => {
-				// 		this.setPhotographOfYourself(resps[1]);
-				// 		return resps[0];
-				// 	}),
-				// 	switchMap((_resp: any) => {
-				// 		return this.applyUpdateDataUpdatesToModel(_resp);
-				// 	})
-				// );
 			}
 			case ApplicationTypeCode.Replacement: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyReplacementDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId);
+				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation);
 			}
 		}
 	}
@@ -844,12 +827,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
+				const personalInformationData = { ..._resp.personalInformationData };
+
+				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
+				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
+
 				this.licenceModelFormGroup.patchValue(
 					{
 						originalApplicationId: accessCodeData.linkedLicenceAppId,
 						originalLicenceId: accessCodeData.linkedLicenceId,
 						originalLicenceNumber: accessCodeData.licenceNumber,
 						originalExpiryDate: accessCodeData.linkedExpiryDate,
+						personalInformationData,
 					},
 					{ emitEvent: false }
 				);
@@ -952,6 +941,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private setPhotographOfYourself(image: Blob | null): void {
+		console.debug('setPhotographOfYourself', image);
 		if (!image || image.size == 0) {
 			this.photographOfYourself = null;
 			return;
@@ -1007,9 +997,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		console.debug('[submitLicenceAnonymous] body', body);
 		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, documentsToSaveApis, body);
+		return this.postLicenceAnonymousDocuments(
+			googleRecaptcha,
+			existingDocumentIds,
+			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
+			body
+		);
 	}
 
 	/**
@@ -1105,7 +1101,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			genderCode: profile.genderCode,
 			hasGenderChanged: false,
 			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
-			isPrintNewName: userLicenceInformation?.hasBcscNameChanged === true ? null : false,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,
@@ -1595,6 +1590,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const photographOfYourselfData = {
 			attachments: photographOfYourselfAttachments,
 			uploadedDateTime: photographOfYourselfLastUploadedDateTime,
+			updatePhoto: null,
+			updateAttachments: [],
 		};
 
 		this.licenceModelFormGroup.patchValue(
@@ -1684,17 +1681,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const originalPhotoOfYourselfLastUpload = resp.photographOfYourselfData.uploadedDateTime;
+		const photographOfYourselfData = { ...resp.photographOfYourselfData };
 
 		// We require a new photo every 5 years. Please provide a new photo for your licence
 		const yearsDiff = moment().startOf('day').diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
 		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
-		let photographOfYourselfData = {};
 		if (originalPhotoOfYourselfExpired) {
-			// clear out data to force user to upload a new photo
-			photographOfYourselfData = {
-				attachments: [],
-			};
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,

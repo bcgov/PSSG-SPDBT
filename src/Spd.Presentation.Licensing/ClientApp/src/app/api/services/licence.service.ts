@@ -222,6 +222,69 @@ export class LicenceService extends BaseService {
   }
 
   /**
+   * Path part for operation apiLicencesLicencePhotoLicenceIdGet
+   */
+  static readonly ApiLicencesLicencePhotoLicenceIdGetPath = '/api/licences/licence-photo/{licenceId}';
+
+  /**
+   * Get licence photo by licenceId.
+   * Example: api/licences/licence-photo/10000000-0000-0000-0000-000000000000.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicencesLicencePhotoLicenceIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesLicencePhotoLicenceIdGet$Response(params: {
+    licenceId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicencePhotoLicenceIdGetPath, 'get');
+    if (params) {
+      rb.path('licenceId', params.licenceId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * Get licence photo by licenceId.
+   * Example: api/licences/licence-photo/10000000-0000-0000-0000-000000000000.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicencesLicencePhotoLicenceIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesLicencePhotoLicenceIdGet(params: {
+    licenceId: string;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiLicencesLicencePhotoLicenceIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+    );
+  }
+
+  /**
    * Path part for operation apiLicencesLicencePhotoGet
    */
   static readonly ApiLicencesLicencePhotoGetPath = '/api/licences/licence-photo';
