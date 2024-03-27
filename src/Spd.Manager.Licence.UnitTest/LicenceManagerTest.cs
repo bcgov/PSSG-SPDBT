@@ -77,4 +77,35 @@ public class LicenceManagerTest
         Assert.NotNull(result.ContentType);
         Assert.NotNull(result.FileName);
     }
+
+    [Fact]
+    public async void Handle_LicencePhotoQuery_Return_Empty_FileResponse()
+    {
+        Guid licenceId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.LicenceId, licenceId)
+                .With(r => r.LicenceHolderId, applicantId)
+                .Create();
+
+        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == licenceId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+
+        LicencePhotoQuery request = fixture.Build<LicencePhotoQuery>()
+            .With(q => q.LicenceId, licenceId)
+            .Create();
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsType<FileResponse>(result);
+        Assert.Empty(result.Content);
+        Assert.Null(result.ContentType);
+        Assert.Null(result.FileName);
+    }
+
+    
 }
