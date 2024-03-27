@@ -161,6 +161,12 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
             }
 
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
                 AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
