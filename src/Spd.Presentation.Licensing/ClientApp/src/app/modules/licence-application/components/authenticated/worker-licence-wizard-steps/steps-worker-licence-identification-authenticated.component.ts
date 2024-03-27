@@ -1,4 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
@@ -12,8 +14,10 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 	selector: 'app-steps-worker-licence-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-worker-licence-citizenship></app-step-worker-licence-citizenship>
+			<mat-step *ngIf="showCitizenshipStep">
+				<app-step-worker-licence-citizenship
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-citizenship>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -52,7 +56,9 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onFingerprintStepPrevious()">
+							Previous
+						</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_FINGERPRINTS)">
@@ -184,6 +190,10 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	readonly STEP_HEIGHT_AND_WEIGHT = 4;
 	readonly STEP_PHOTO = 5;
 
+	showCitizenshipStep = true;
+
+	applicationTypeCode: ApplicationTypeCode | null = null;
+
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -206,6 +216,17 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+					'citizenshipData.isCanadianCitizen'
+				)?.value;
+
+				this.showCitizenshipStep =
+					this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No;
 			}
 		);
 	}
@@ -213,6 +234,15 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
+	}
+
+	onFingerprintStepPrevious(): void {
+		if (this.showCitizenshipStep) {
+			this.childstepper.previous();
+			return;
+		}
+
+		this.previousStepperStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {

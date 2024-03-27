@@ -473,7 +473,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		return requestbody;
 	}
 
-	getDocsToSaveAnonymousBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(licenceModelFormValue: any, includeProfileDocs = true): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
@@ -667,23 +667,25 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
 		}
 
-		if (policeBackgroundData.attachments) {
-			const docs: Array<Blob> = [];
-			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				documents: docs,
-			});
-		}
+		if (includeProfileDocs) {
+			if (policeBackgroundData.attachments) {
+				const docs: Array<Blob> = [];
+				policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+					documents: docs,
+				});
+			}
 
-		if (mentalHealthConditionsData.attachments) {
-			const docs: Array<Blob> = [];
-			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+			if (mentalHealthConditionsData.attachments) {
+				const docs: Array<Blob> = [];
+				mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+			}
 		}
 
 		if (citizenshipData.attachments) {
@@ -720,7 +722,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
 		}
 
-		console.debug('[getDocsToSaveAnonymousBlobs] documentsToSave', documents);
+		console.debug('[getDocsToSaveBlobs] documentsToSave', documents);
 
 		return documents;
 	}
@@ -792,7 +794,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const baseData = this.getSaveBodyBase(licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
-		// documentKeyCodes
+		// documentKeyCodes xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 		// criminalChargeDescription
 		// originalApplicationId
 		// originalLicenceId
@@ -956,20 +958,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			});
 		}
 		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
-
-		policeBackgroundData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-			});
-		});
-
-		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
-			});
-		});
 
 		fingerprintProofData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
