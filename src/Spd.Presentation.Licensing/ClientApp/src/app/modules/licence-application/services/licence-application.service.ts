@@ -370,28 +370,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			return false;
 		}
 
-		// console.debug('isAutoSave', this.soleProprietorFormGroup.valid, this.soleProprietorFormGroup.value);
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
-		// const shouldSaveStep =
-		// 	this.hasValueChanged &&
-		// 	((this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryFireInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryLocksmithFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryLocksmithSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityConsultantFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityGuardFormGroup.get('isInclude')?.value ?? false) ||
-		// 		(this.categorySecurityGuardSupFormGroup.get('isInclude')?.value ?? false));
-
 		console.debug('shouldSaveStep', shouldSaveStep);
 		return shouldSaveStep;
 	}
@@ -482,6 +461,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		console.debug('saveLicenceStepAuthenticated PARTIAL SAVE', licenceModelFormValue, body);
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
@@ -844,12 +825,18 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	): Observable<any> {
 		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
+				const personalInformationData = { ..._resp.personalInformationData };
+
+				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
+				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
+
 				this.licenceModelFormGroup.patchValue(
 					{
 						originalApplicationId: accessCodeData.linkedLicenceAppId,
 						originalLicenceId: accessCodeData.linkedLicenceId,
 						originalLicenceNumber: accessCodeData.licenceNumber,
 						originalExpiryDate: accessCodeData.linkedExpiryDate,
+						personalInformationData,
 					},
 					{ emitEvent: false }
 				);
@@ -1007,9 +994,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		console.debug('[submitLicenceAnonymous] body', body);
 		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
 		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, documentsToSaveApis, body);
+		return this.postLicenceAnonymousDocuments(
+			googleRecaptcha,
+			existingDocumentIds,
+			documentsToSaveApis.length > 0 ? documentsToSaveApis : null,
+			body
+		);
 	}
 
 	/**
