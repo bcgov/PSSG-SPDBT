@@ -224,7 +224,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			return false;
 		}
 
-		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
+		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days') + 1;
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.

@@ -23,22 +23,6 @@ export class AuthenticationService {
 
 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
-		// if (isLoggedIn) {
-		// 	const tokenExpiration = this.oauthService.getAccessTokenExpiration();
-
-		// 	const g = new Date(tokenExpiration);
-		// 	console.log('aatokenExpiration', g);
-
-		// 	const f = new Date();
-		// 	console.log('aanow', f);
-
-		// 	const diffMs = g.getTime() - f.getTime();
-		// 	const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
-
-		// 	this.oauthService.silentRefreshTimeout = diffMins * 1000;
-		// 	console.log('aasilentRefreshTimeout', this.oauthService.silentRefreshTimeout / 1000);
-		// }
-
 		return {
 			state: this.oauthService.state || null,
 			loggedIn: isLoggedIn,
@@ -63,20 +47,6 @@ export class AuthenticationService {
 		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
 		if (isLoggedIn) {
-			// const tokenExpiration = this.oauthService.getAccessTokenExpiration();
-
-			// const g = new Date(tokenExpiration);
-			// console.log('tokenExpiration', g);
-
-			// const f = new Date();
-			// console.log('now', f);
-
-			// const diffMs = g.getTime() - f.getTime();
-			// const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
-
-			// this.oauthService.silentRefreshTimeout = diffMins * 1000;
-			// console.log('silentRefreshTimeout', this.oauthService.silentRefreshTimeout / 1000);
-
 			return Promise.resolve(this.oauthService.state || returnRoute);
 		}
 

@@ -8,7 +8,6 @@ import {
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -226,7 +225,6 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
-		private authenticationService: AuthenticationService,
 		private licenceApplicationService: LicenceApplicationService,
 		private utilService: UtilService,
 		private hotToastService: HotToastService
@@ -239,7 +237,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			const proofTypeCode =
 				this.isCanadianCitizen.value == BooleanTypeCode.Yes
 					? this.canadianCitizenProofTypeCode.value
@@ -264,7 +262,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onGovernmentIssuedFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value ?? LicenceDocumentTypeCode.BcServicesCard; // default value (f nothing is selected)
 
 			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({

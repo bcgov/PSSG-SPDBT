@@ -1,9 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -14,6 +13,12 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section'">
 			<div class="step">
+				<ng-container *ngIf="isRenewalOrUpdate">
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
+				</ng-container>
+
 				<app-step-title
 					*ngIf="!isCalledFromModal"
 					title="Do you want to request authorization to use dogs?"
@@ -108,14 +113,11 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	form: FormGroup = this.licenceApplicationService.dogsAuthorizationFormGroup;
 
 	@Input() isCalledFromModal = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private authenticationService: AuthenticationService,
-		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private hotToastService: HotToastService, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.originalDogAuthorizationExists = this.licenceApplicationService.licenceModelFormGroup.get(
@@ -130,7 +132,7 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	}
 
 	onFileUploaded(file: File): void {
-		if (this.authenticationService.isLoggedIn()) {
+		if (this.licenceApplicationService.isAutoSave()) {
 			this.licenceApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file)
 				.subscribe({
@@ -163,13 +165,10 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
-
-	// get isDogPurposesGroup(): boolean {
-	// 	const dogsPurposeFormGroup = this.form.get('dogsPurposeFormGroup') as FormGroup;
-	// 	return (
-	// 		(dogsPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-	// 		(dogsPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-	// 		(dogsPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value
-	// 	);
-	// }
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
+	}
 }

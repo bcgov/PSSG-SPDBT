@@ -176,7 +176,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.permitApplicationService.isSaveStep()) {
+		if (this.permitApplicationService.isAutoSave()) {
 			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
@@ -277,7 +277,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onGoToReview() {
-		if (this.permitApplicationService.isSaveStep()) {
+		if (this.permitApplicationService.isAutoSave()) {
 			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
@@ -304,7 +304,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onChildNextStep() {
-		if (this.permitApplicationService.isSaveStep()) {
+		if (this.permitApplicationService.isAutoSave()) {
 			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
