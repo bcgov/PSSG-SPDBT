@@ -101,7 +101,7 @@ public class LicenceManagerTest
     }
 
     [Fact]
-    public async void Handle_LicencePhotoQuery_WuthNoFiles_Return_Empty_FileResponse()
+    public async void Handle_LicencePhotoQuery_WithNoFiles_Return_Empty_FileResponse()
     {
         Guid licenceId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
