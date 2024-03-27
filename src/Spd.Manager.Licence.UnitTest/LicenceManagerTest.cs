@@ -108,6 +108,38 @@ public class LicenceManagerTest
     }
 
     [Fact]
+    public async void Handle_LicencePhotoQuery_WuthNoFiles_Return_Empty_FileResponse()
+    {
+        Guid licenceId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.LicenceId, licenceId)
+                .With(r => r.LicenceHolderId, applicantId)
+                .Create();
+
+        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == licenceId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == applicantId &&
+            q.FileType == DocumentTypeEnum.Photograph), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp());
+
+        LicencePhotoQuery request = fixture.Build<LicencePhotoQuery>()
+            .With(q => q.LicenceId, licenceId)
+            .Create();
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsType<FileResponse>(result);
+        Assert.Empty(result.Content);
+        Assert.Null(result.ContentType);
+        Assert.Null(result.FileName);
+    }
+
+    [Fact]
     public async void Handle_LicencePhotoQuery_WithNoLicences_Throw_Exception()
     {
         Guid licenceId = Guid.NewGuid();
