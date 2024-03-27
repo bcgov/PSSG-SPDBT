@@ -83,6 +83,33 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Get licence photo by licenceId.
+        /// Example: api/licences/licence-photo/10000000-0000-0000-0000-000000000000
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/licences/licence-photo/{licenceId}")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<FileStreamResult> GetLicencePhoto([FromRoute] Guid licenceId)
+        {
+            FileResponse? response = await _mediator.Send(new LicencePhotoQuery(licenceId));
+            MemoryStream content;
+            string contentType;
+            if (response == null)
+            {
+                content = new MemoryStream(Array.Empty<byte>());
+                contentType = string.Empty;
+            }
+            else
+            {
+                content = new MemoryStream(response.Content);
+                contentType = response.ContentType ?? "application/octet-stream";
+            }
+
+            return File(content, contentType, response?.FileName);
+        }
+
+        /// <summary>
         /// Get licence photo by licenceId, the licenceId is put into cookie and encoded.
         /// Example: http://localhost:5114/api/licences/image
         /// </summary>
@@ -90,7 +117,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licences/licence-photo")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<FileStreamResult> GetLicencePhoto()
+        public async Task<FileStreamResult> GetLicencePhotoAnonymously()
         {
             string? licenceIdsStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
 
