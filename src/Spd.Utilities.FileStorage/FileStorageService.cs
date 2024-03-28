@@ -142,9 +142,9 @@ namespace Spd.Utilities.FileStorage
             var destKey = $"{destFolder}/{cmd.DestKey}";
             var request = new CopyObjectRequest
             {
-                SourceBucket = this._config.Value.Bucket,
+                SourceBucket = "ag-pssg-spd-sparc-transient-dev-bkt",
                 SourceKey = key,
-                DestinationBucket = this._config.Value.Bucket,
+                DestinationBucket = "ag-pssg-spd-sparc-dev-bkt",
                 DestinationKey = destKey,
             };
 
