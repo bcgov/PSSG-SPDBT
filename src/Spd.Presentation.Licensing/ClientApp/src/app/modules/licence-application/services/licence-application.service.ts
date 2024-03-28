@@ -380,6 +380,27 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	/*************************************************************/
 
 	/**
+	 * Link two applicants
+	 * @returns
+	 */
+	linkLicenceOrPermit(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<any>> {
+		const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
+
+		return this.licenceService.apiLicenceLookupLicenceNumberGet$Response({ licenceNumber, accessCode }).pipe(
+			switchMap((resp: StrictHttpResponse<LicenceResponse>) => {
+				if (resp.status != 200) {
+					return of(resp);
+				}
+
+				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
+					oldApplicantId: resp.body.licenceHolderId!,
+					newApplicantId,
+				});
+			})
+		);
+	}
+
+	/**
 	 * Load a user profile
 	 * @returns
 	 */
@@ -838,6 +859,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						originalLicenceId: accessCodeData.linkedLicenceId,
 						originalLicenceNumber: accessCodeData.licenceNumber,
 						originalExpiryDate: accessCodeData.linkedExpiryDate,
+						originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
 						personalInformationData,
 					},
 					{ emitEvent: false }

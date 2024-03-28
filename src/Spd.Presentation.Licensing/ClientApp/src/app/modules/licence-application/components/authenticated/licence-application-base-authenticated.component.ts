@@ -36,6 +36,7 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 					LicenceApplicationRoutes.LICENCE_FIRST_TIME_USER_TERMS
 				)
 			);
+			return;
 		}
 
 		// If the user is navigating to a payment page, the service does not have to be initialized
