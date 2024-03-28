@@ -69,11 +69,16 @@ export interface AliasCreateRequest {
 				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 				<section>
 					<div class="text-minor-heading fw-semibold mb-2">Applicant Information</div>
-					<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
+					<mat-checkbox formControlName="oneLegalName" (click)="onOneLegalNameChange()">
+						Applicant has only a given name OR a surname
+					</mat-checkbox>
 					<div class="row">
 						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Legal Given Name</mat-label>
+								<mat-label
+									>Legal Given Name
+									<span class="optional-label" *ngIf="isGivenNameOptional">(optional)</span></mat-label
+								>
 								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
 								<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
@@ -94,7 +99,12 @@ export interface AliasCreateRequest {
 							<mat-form-field>
 								<mat-label>Legal Surname</mat-label>
 								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="!isGivenNameOptional && form.get('surname')?.hasError('required')">
+									This is required
+								</mat-error>
+								<mat-error *ngIf="isGivenNameOptional && form.get('surname')?.hasError('required')">
+									Use this field if applicant has only one name
+								</mat-error>
 							</mat-form-field>
 						</div>
 
@@ -471,6 +481,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
 
+	isGivenNameOptional = false;
+
 	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
 	screeningTypeCodes = ScreeningTypeCode;
@@ -663,6 +675,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				this.promptVulnerableSector(body);
 			}
 		}
+	}
+
+	onOneLegalNameChange(): void {
+		this.isGivenNameOptional = this.oneLegalName.value;
 	}
 
 	onAddressAutocomplete(address: Address): void {
@@ -918,5 +934,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	get showMinistries(): boolean {
 		return this.portal === PortalTypeCode.Psso && this.isPsaUser === true;
+	}
+	get oneLegalName(): FormControl {
+		return this.form.get('oneLegalName') as FormControl;
 	}
 }
