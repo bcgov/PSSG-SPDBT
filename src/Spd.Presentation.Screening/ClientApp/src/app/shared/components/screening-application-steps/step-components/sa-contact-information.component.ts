@@ -20,7 +20,10 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 					<div class="row">
 						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
-								<mat-label>Legal Given Name</mat-label>
+								<mat-label
+									>Legal Given Name
+									<span class="optional-label" *ngIf="isGivenNameOptional">(optional)</span></mat-label
+								>
 								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
 								<mat-error *ngIf="form.get('givenName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
@@ -43,10 +46,17 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							<mat-form-field>
 								<mat-label>Legal Surname</mat-label>
 								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('surname')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="!isGivenNameOptional && form.get('surname')?.hasError('required')">
+									This is required
+								</mat-error>
+								<mat-error *ngIf="isGivenNameOptional && form.get('surname')?.hasError('required')">
+									Use this field if you have only one name
+								</mat-error>
 							</mat-form-field>
-							<div class="w-100 mb-4">
-								<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
+							<div class="w-100 mb-4" *ngIf="!orgData?.readonlyTombstone">
+								<mat-checkbox formControlName="oneLegalName" (click)="onOneLegalNameChange()">
+									I have only a given name OR a surname
+								</mat-checkbox>
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
@@ -121,6 +131,8 @@ export class SaContactInformationComponent implements CrcFormStepComponent {
 		return this._orgData;
 	}
 
+	isGivenNameOptional = false;
+
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
@@ -133,7 +145,15 @@ export class SaContactInformationComponent implements CrcFormStepComponent {
 		return data;
 	}
 
+	onOneLegalNameChange(): void {
+		this.isGivenNameOptional = this.oneLegalName.value;
+	}
+
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	get oneLegalName(): FormControl {
+		return this.form.get('oneLegalName') as FormControl;
 	}
 }
