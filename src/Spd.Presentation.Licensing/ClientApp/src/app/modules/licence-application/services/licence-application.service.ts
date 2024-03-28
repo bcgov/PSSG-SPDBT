@@ -425,7 +425,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
-		return this.saveUserProfile();
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
+
+		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			body,
+		});
 	}
 
 	/**
@@ -1159,7 +1165,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const mailingAddress = {
-			addressSelected: true,
+			addressSelected: profile.mailingAddress ? true : false,
 			isMailingTheSameAsResidential: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
 			addressLine2: profile.mailingAddress?.addressLine2,

@@ -12,6 +12,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-alias-list',
 	template: `
 		<form [formGroup]="form" novalidate>
+			<div class="py-2" *ngIf="aliasesArray.length === 0">No past aliases or previous names</div>
+
 			<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
 				<div class="row" [formGroupName]="i">
 					<div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-sm-12">

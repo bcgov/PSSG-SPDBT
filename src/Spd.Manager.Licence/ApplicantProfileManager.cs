@@ -134,8 +134,8 @@ namespace Spd.Manager.Licence
             foreach (var documentUrlId in documentsToRemove)
                 await _documentRepository.ManageAsync(new DeactivateDocumentCmd(documentUrlId), ct);
 
-            if ((cmd.ApplicantUpdateRequest.IsTreatedForMHC.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) ||
-                (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer.Value && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
+            if ((cmd.ApplicantUpdateRequest?.IsTreatedForMHC == true && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) ||
+                (cmd.ApplicantUpdateRequest?.IsPoliceOrPeaceOfficer == true && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
                 await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
                     null,
