@@ -39,7 +39,6 @@ import {
 	switchMap,
 	take,
 	tap,
-	throwError,
 } from 'rxjs';
 import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -384,17 +383,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Link two applicants
 	 * @returns
 	 */
-	linkLicenceOrPermit(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<IActionResult>> {
+	linkLicenceOrPermit(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<any>> {
 		const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 
-		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(
-			switchMap((resp: LicenceResponse) => {
-				if (!resp) {
-					const err = new Error('Link failed');
-					return throwError(() => err);
+		return this.licenceService.apiLicenceLookupLicenceNumberGet$Response({ licenceNumber, accessCode }).pipe(
+			switchMap((resp: StrictHttpResponse<LicenceResponse>) => {
+				if (resp.status != 200) {
+					return of(resp);
 				}
+
 				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
-					oldApplicantId: resp.licenceHolderId!,
+					oldApplicantId: resp.body.licenceHolderId!,
 					newApplicantId,
 				});
 			})

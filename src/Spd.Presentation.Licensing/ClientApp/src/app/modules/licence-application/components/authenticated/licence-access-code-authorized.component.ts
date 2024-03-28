@@ -83,10 +83,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 									<mat-icon>link</mat-icon>Link to your Account
 								</button>
 							</div>
-							<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12" *ngIf="isLinkError">
+							<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12" *ngIf="isLinkErrorMessage">
 								<app-alert type="danger" icon="error">
-									An error during the linking process. Please call the Security Program's Licensing Unit during regular
-									office hours: {{ spdPhoneNumber }}.
+									{{ isLinkErrorMessage }}
 								</app-alert>
 							</div>
 						</div>
@@ -101,7 +100,7 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	isLinkError = false;
+	isLinkErrorMessage: string | null = null;
 
 	form: FormGroup = this.licenceApplicationService.linkAccountCodeFormGroup;
 
@@ -121,7 +120,7 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 	}
 
 	ngOnInit(): void {
-		this.isLinkError = false;
+		this.isLinkErrorMessage = null;
 		this.form.reset();
 	}
 
@@ -131,18 +130,23 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 	}
 
 	onLink(): void {
-		this.isLinkError = false;
+		this.isLinkErrorMessage = null;
 
 		if (!this.isFormValid()) return;
 
 		this.licenceApplicationService.linkLicenceOrPermit(this.licenceNumber.value, this.accessCode.value).subscribe({
 			next: (_resp: StrictHttpResponse<IActionResult>) => {
+				if (_resp.status != 200) {
+					this.isLinkErrorMessage = 'This licence number and access code are not a valid combination.';
+					return;
+				}
+
 				this.hotToastService.success('The licence or permit has been successfully linked to your account');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.isLinkError = true;
+				this.isLinkErrorMessage = `An error during the linking process. Please call the Security Program's Licensing Unit during regular office hours: ${this.spdPhoneNumber}.`;
 			},
 		});
 	}
