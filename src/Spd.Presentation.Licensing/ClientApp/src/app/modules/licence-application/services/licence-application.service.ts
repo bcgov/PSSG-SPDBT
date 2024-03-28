@@ -1684,7 +1684,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
-		if (!resp.citizenshipData.isCanadianCitizen) {
+		const isCanadianCitizen = resp.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes;
+		if (!isCanadianCitizen) {
 			citizenshipData = {
 				isCanadianCitizen: BooleanTypeCode.No,
 				canadianCitizenProofTypeCode: null,
