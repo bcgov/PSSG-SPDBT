@@ -20,12 +20,19 @@ export abstract class CommonApplicationHelper {
 		accessCode: new FormControl('', [FormControlValidators.required]),
 		linkedLicenceId: new FormControl(null, [FormControlValidators.required]),
 		linkedLicenceAppId: new FormControl(null),
+		linkedLicenceTermCode: new FormControl(null),
 		linkedExpiryDate: new FormControl(null),
 		linkedCardHolderName: new FormControl(null),
 		linkedLicenceHolderName: new FormControl(null),
+		linkedLicenceHolderId: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),
+	});
+
+	linkAccountCodeFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumber: new FormControl('', [FormControlValidators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
 	});
 
 	expiredLicenceFormGroup = this.formBuilder.group(
