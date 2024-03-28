@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
 	selector: 'app-licence-first-time-user-terms-of-use',
@@ -18,7 +18,10 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/
 					subtitle="Read, download, and accept the Terms of Use to continue"
 				></app-step-title>
 
-				<app-common-swl-permit-terms [form]="form" [applicationTypeCode]="applicationTypeCodes.New"></app-common-swl-permit-terms>
+				<app-common-swl-permit-terms
+					[form]="form"
+					[applicationTypeCode]="applicationTypeCodes.New"
+				></app-common-swl-permit-terms>
 
 				<div class="row">
 					<div class="offset-xxl-8 col-xxl-3 offset-xl-7 col-xl-4 offset-lg-7 col-lg-5 col-md-12 col-sm-12 mb-2">
