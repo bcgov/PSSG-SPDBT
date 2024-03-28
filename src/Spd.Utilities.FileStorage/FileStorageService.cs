@@ -23,6 +23,7 @@ namespace Spd.Utilities.FileStorage
                 UploadFileStreamCommand c => await UploadStorageItemStream(c, cancellationToken),
                 UpdateTagsCommand c => await UpdateTags(c, cancellationToken),
                 CopyFileCommand c => await CopyStorageItem(c, cancellationToken),
+                CopyFileFromTransientToMainCommand c => await CopyStorageItemFromTransientToMain(c, cancellationToken),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -153,6 +154,28 @@ namespace Spd.Utilities.FileStorage
 
             return cmd.Key;
         }
+
+        private async Task<string> CopyStorageItemFromTransientToMain(CopyFileFromTransientToMainCommand cmd, CancellationToken cancellationToken)
+        {
+            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
+            var key = $"{folder}{cmd.Key}";
+
+            var destFolder = cmd.DestFolder == null ? "" : $"{cmd.DestFolder}/";
+            var destKey = $"{destFolder}/{cmd.DestKey}";
+            var request = new CopyObjectRequest
+            {
+                SourceBucket = "ag-pssg-spd-sparc-transient-dev-bkt",
+                SourceKey = key,
+                DestinationBucket = "ag-pssg-spd-sparc-dev-bkt",
+                DestinationKey = destKey,
+            };
+
+            var response = await _amazonS3Client.CopyObjectAsync(request, cancellationToken);
+            response.EnsureSuccess();
+
+            return cmd.Key;
+        }
+
         private async Task<FileQueryResult> DownloadStorageItem(string key, string? folder, CancellationToken ct)
         {
             var dir = folder == null ? "" : $"{folder}/";

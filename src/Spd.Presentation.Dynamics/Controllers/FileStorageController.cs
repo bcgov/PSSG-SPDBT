@@ -223,34 +223,13 @@ public class FileStorageController : SpdControllerBase
 
         if (!fileExists) { return NotFound(); }
 
+        //copy the file to main bucket
         await _storageService.HandleCommand(new CopyFileCommand(moveFileRequest.SourceKey, null, moveFileRequest.DestKey, null), ct);
 
-
-        //download file
-        //FileQueryResult result = (FileQueryResult)await _tranientFileStorageService.HandleQuery(
-        //    new FileQuery { Key = moveFileRequest.SourceKey, Folder = null },
-        //    ct);
-
-        //var content = new MemoryStream(result.File.Content);
-        //var contentType = result.File.ContentType ?? "application/octet-stream";
-
-        ////upload file
-        //File file = new()
-        //{
-        //    FileName = moveFileRequest.DestKey,
-        //    ContentType = contentType,
-        //    Content = content.ToArray()
-        //};
-        //FileTag fileTag = result.FileTag;
-        //await _storageService.HandleCommand(
-        //    new UploadFileCommand(moveFileRequest.DestKey, null, file, fileTag),
-        //    ct);
-
         ////remove old file from transite bucket
-        //await _tranientFileStorageService.HandleDeleteCommand(
-        //    new StorageDeleteCommand(moveFileRequest.SourceKey, null),
-        //    ct
-        //    );
+        await _tranientFileStorageService.HandleDeleteCommand(
+            new StorageDeleteCommand(moveFileRequest.SourceKey, null),
+            ct);
 
         return StatusCode(StatusCodes.Status201Created);
     }

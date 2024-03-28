@@ -20,6 +20,8 @@
     //copy the file from source to dest for the same bucket.
     public record CopyFileCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder) : StorageCommand(SourceKey, SourceFolder);
 
+    //copy the file from transient bucket Source to main bucket destination
+    public record CopyFileFromTransientToMainCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder) : StorageCommand(SourceKey, SourceFolder);
     public record StorageDeleteCommand(string Key, string? Folder);
     public record FileTag
     {
