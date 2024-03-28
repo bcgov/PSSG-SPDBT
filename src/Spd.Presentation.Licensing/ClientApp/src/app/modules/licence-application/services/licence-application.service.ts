@@ -859,6 +859,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						originalLicenceId: accessCodeData.linkedLicenceId,
 						originalLicenceNumber: accessCodeData.licenceNumber,
 						originalExpiryDate: accessCodeData.linkedExpiryDate,
+						originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
 						personalInformationData,
 					},
 					{ emitEvent: false }
