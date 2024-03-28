@@ -39,6 +39,7 @@ import {
 	switchMap,
 	take,
 	tap,
+	throwError,
 } from 'rxjs';
 import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -378,6 +379,27 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	/*************************************************************/
 	// AUTHENTICATED
 	/*************************************************************/
+
+	/**
+	 * Link two applicants
+	 * @returns
+	 */
+	linkLicenceOrPermit(licenceNumber: string, accessCode: string): Observable<StrictHttpResponse<IActionResult>> {
+		const newApplicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
+
+		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber, accessCode }).pipe(
+			switchMap((resp: LicenceResponse) => {
+				if (!resp) {
+					const err = new Error('Link failed');
+					return throwError(() => err);
+				}
+				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
+					oldApplicantId: resp.licenceHolderId!,
+					newApplicantId,
+				});
+			})
+		);
+	}
 
 	/**
 	 * Load a user profile

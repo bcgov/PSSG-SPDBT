@@ -28,6 +28,11 @@ export abstract class CommonApplicationHelper {
 		}),
 	});
 
+	linkAccountCodeFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumber: new FormControl('', [FormControlValidators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
+	});
+
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
