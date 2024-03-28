@@ -6,6 +6,11 @@
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
+    public interface IMainFileStorageService : IFileStorageService
+    {
+        Task<string> HandleCopyFileFromTransientToMainCommand(CopyFileFromTransientToMainCommand cmd, CancellationToken cancellationToken);
+    }
+
     public interface ITransientFileStorageService : IFileStorageService
     {
         Task<string> HandleDeleteCommand(StorageDeleteCommand cmd, CancellationToken cancellationToken);
@@ -21,7 +26,7 @@
     public record CopyFileCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder) : StorageCommand(SourceKey, SourceFolder);
 
     //copy the file from transient bucket Source to main bucket destination
-    public record CopyFileFromTransientToMainCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder) : StorageCommand(SourceKey, SourceFolder);
+    public record CopyFileFromTransientToMainCommand(string SourceKey, string? SourceFolder, string DestKey, string? DestFolder);
     public record StorageDeleteCommand(string Key, string? Folder);
     public record FileTag
     {

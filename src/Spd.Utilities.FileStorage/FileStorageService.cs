@@ -6,10 +6,10 @@ using System.Web;
 
 namespace Spd.Utilities.FileStorage
 {
-    internal class FileStorageService : IFileStorageService, ITransientFileStorageService
+    internal class FileStorageService : IFileStorageService
     {
-        private readonly AmazonS3Client _amazonS3Client;
-        private readonly IOptions<S3Settings> _config;
+        protected readonly AmazonS3Client _amazonS3Client;
+        protected readonly IOptions<S3Settings> _config;
         public FileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config)
         {
             _amazonS3Client = amazonS3Client;
@@ -23,7 +23,6 @@ namespace Spd.Utilities.FileStorage
                 UploadFileStreamCommand c => await UploadStorageItemStream(c, cancellationToken),
                 UpdateTagsCommand c => await UpdateTags(c, cancellationToken),
                 CopyFileCommand c => await CopyStorageItem(c, cancellationToken),
-                CopyFileFromTransientToMainCommand c => await CopyStorageItemFromTransientToMain(c, cancellationToken),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -38,10 +37,7 @@ namespace Spd.Utilities.FileStorage
             };
         }
 
-        public async Task<string> HandleDeleteCommand(StorageDeleteCommand cmd, CancellationToken cancellationToken)
-        {
-            return await DeleteStorageItem(cmd, cancellationToken);
-        }
+
         private async Task<string> UploadStorageItem(UploadFileCommand cmd, CancellationToken cancellationToken)
         {
             File file = cmd.File;
@@ -67,24 +63,6 @@ namespace Spd.Utilities.FileStorage
             var response = await _amazonS3Client.PutObjectAsync(request, cancellationToken);
             response.EnsureSuccess();
 
-            return cmd.Key;
-        }
-
-        private async Task<string> DeleteStorageItem(StorageDeleteCommand cmd, CancellationToken cancellationToken)
-        {
-            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
-            var key = $"{folder}{cmd.Key}";
-
-            var request = new DeleteObjectRequest
-            {
-                Key = key,
-                BucketName = _config.Value.Bucket,
-            };
-
-            var response = await _amazonS3Client.DeleteObjectAsync(request, cancellationToken);
-
-            //If the delete action is successful, the service sends back an HTTP 204 response.
-            response.EnsureNoContent();
             return cmd.Key;
         }
 
@@ -135,27 +113,6 @@ namespace Spd.Utilities.FileStorage
         }
 
         private async Task<string> CopyStorageItem(CopyFileCommand cmd, CancellationToken cancellationToken)
-        {
-            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
-            var key = $"{folder}{cmd.Key}";
-
-            var destFolder = cmd.DestFolder == null ? "" : $"{cmd.DestFolder}/";
-            var destKey = $"{destFolder}/{cmd.DestKey}";
-            var request = new CopyObjectRequest
-            {
-                SourceBucket = "ag-pssg-spd-sparc-transient-dev-bkt",
-                SourceKey = key,
-                DestinationBucket = "ag-pssg-spd-sparc-dev-bkt",
-                DestinationKey = destKey,
-            };
-
-            var response = await _amazonS3Client.CopyObjectAsync(request, cancellationToken);
-            response.EnsureSuccess();
-
-            return cmd.Key;
-        }
-
-        private async Task<string> CopyStorageItemFromTransientToMain(CopyFileFromTransientToMainCommand cmd, CancellationToken cancellationToken)
         {
             var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
             var key = $"{folder}{cmd.Key}";

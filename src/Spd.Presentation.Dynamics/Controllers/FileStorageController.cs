@@ -17,9 +17,9 @@ namespace Spd.Presentation.Dynamics.Controllers;
 [Authorize]
 public class FileStorageController : SpdControllerBase
 {
-    private readonly IFileStorageService _storageService;
+    private readonly IMainFileStorageService _storageService;
     private readonly ITransientFileStorageService _tranientFileStorageService;
-    public FileStorageController(IFileStorageService storageService, ITransientFileStorageService tranientFileStorageService) : base()
+    public FileStorageController(IMainFileStorageService storageService, ITransientFileStorageService tranientFileStorageService) : base()
     {
         _storageService = storageService;
         _tranientFileStorageService = tranientFileStorageService;
@@ -224,7 +224,7 @@ public class FileStorageController : SpdControllerBase
         if (!fileExists) { return NotFound(); }
 
         //copy the file to main bucket
-        await _storageService.HandleCommand(new CopyFileCommand(moveFileRequest.SourceKey, null, moveFileRequest.DestKey, null), ct);
+        await _storageService.HandleCopyFileFromTransientToMainCommand(new CopyFileFromTransientToMainCommand(moveFileRequest.SourceKey, null, moveFileRequest.DestKey, null), ct);
 
         ////remove old file from transite bucket
         await _tranientFileStorageService.HandleDeleteCommand(
