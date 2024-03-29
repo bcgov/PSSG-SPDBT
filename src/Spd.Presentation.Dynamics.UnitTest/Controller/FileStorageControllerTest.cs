@@ -9,7 +9,7 @@ using System.Text;
 namespace Spd.Presentation.Dynamics.UnitTest.Controller;
 public class FileStorageControllerTest
 {
-    private Mock<IFileStorageService> mockService = new Mock<IFileStorageService>();
+    private Mock<IMainFileStorageService> mockService = new Mock<IMainFileStorageService>();
     private Mock<ITransientFileStorageService> mockTransientService = new Mock<ITransientFileStorageService>();
     private FileStorageController sut;
     public FileStorageControllerTest()
