@@ -760,6 +760,12 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		this.editStep.emit(stepNumber);
 	}
 
+	onUpdateData(): void {
+		this.licenceModelData = {
+			...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
+		};
+	}
+
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
 		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
 	}
