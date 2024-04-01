@@ -190,8 +190,7 @@ internal class SecurityWorkerAppManager :
         LicenceResp originalLic = originalLicences.Items.First();
         if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
         {
-            if (DateTime.UtcNow > originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-                && DateTime.UtcNow < originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
         else
