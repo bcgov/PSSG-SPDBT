@@ -46,7 +46,6 @@ import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components
 import { StepWorkerLicenceConfirmationComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-confirmation.component';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-personal-information-anonymous.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-summary-review-anonymous.component';
-import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-type-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated/licence-access-code-authorized.component';
@@ -338,7 +337,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent,
 		StepWorkerLicenceTermComponent,
 		StepWorkerLicenceTermsOfUseComponent,
-		StepWorkerLicenceTypeAnonymousComponent,
 		StepWorkerLicenceUpdateFeeComponent,
 		StepWorkerLicenceUserProfileComponent,
 		StepsBusinessLicenceInformationNewComponent,
