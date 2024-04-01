@@ -22,6 +22,7 @@ namespace Spd.Engine.Search
             _identityRepo = identityRepo;
             _mapper = mapper;
         }
+
         public async Task<SearchResponse?> SearchAsync(SearchRequest request, CancellationToken ct)
         {
             return request switch
@@ -39,7 +40,7 @@ namespace Spd.Engine.Search
             var contact = contacts.Items.FirstOrDefault();
             if (contact == null) return response;
 
-            ClearanceQry qry = new ClearanceQry(
+            ClearanceQry qry = new(
                 ContactId: contact.ContactId,
                 FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.ShareableClearanceExpiredDateBufferInMonths),
                 Shareable: true,
