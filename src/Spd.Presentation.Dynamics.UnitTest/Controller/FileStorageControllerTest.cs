@@ -70,4 +70,25 @@ public class FileStorageControllerTest
         Assert.Equal(201, ((StatusCodeResult)viewResult).StatusCode);
         mockService.Verify();
     }
+
+    [Fact]
+    public async void Post_MoveFileAsync_Return_Created()
+    {
+        //Arrange
+        mockTransientService.Setup(s => s.HandleQuery(It.IsAny<FileMetadataQuery>(), CancellationToken.None))
+            .ReturnsAsync(new FileMetadataQueryResult("fileId", "folder", Array.Empty<Metadata>()));
+        mockService.Setup(s => s.HandleCopyStorageFromTransientToMainCommand(It.IsAny<CopyStorageFromTransientToMainCommand>(), CancellationToken.None))
+            .ReturnsAsync("key");
+        mockTransientService.Setup(s => s.HandleDeleteCommand(It.IsAny<StorageDeleteCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync("key");
+
+        //Act
+        var viewResult = await sut.MoveFileAsync(new MoveFileRequest() { SourceKey = "source", DestKey = "dest" },
+            CancellationToken.None);
+
+        //Assert
+        Assert.IsType<StatusCodeResult>(viewResult);
+        Assert.Equal(201, ((StatusCodeResult)viewResult).StatusCode);
+        mockService.Verify();
+    }
 }

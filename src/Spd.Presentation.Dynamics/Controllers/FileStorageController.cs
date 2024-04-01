@@ -224,7 +224,7 @@ public class FileStorageController : SpdControllerBase
         if (!fileExists) { return NotFound(); }
 
         //copy the file to main bucket
-        await _storageService.HandleCopyFileFromTransientToMainCommand(new CopyFileFromTransientToMainCommand(moveFileRequest.SourceKey, null, moveFileRequest.DestKey, null), ct);
+        await _storageService.HandleCopyStorageFromTransientToMainCommand(new CopyStorageFromTransientToMainCommand(moveFileRequest.SourceKey, null, moveFileRequest.DestKey, null), ct);
 
         ////remove old file from transite bucket
         await _tranientFileStorageService.HandleDeleteCommand(

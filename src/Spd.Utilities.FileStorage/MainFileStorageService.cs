@@ -13,18 +13,18 @@ namespace Spd.Utilities.FileStorage
             _transientConfig = transientConfig;
         }
 
-        public async Task<string> HandleCopyFileFromTransientToMainCommand(CopyFileFromTransientToMainCommand cmd, CancellationToken cancellationToken)
+        public async Task<string> HandleCopyStorageFromTransientToMainCommand(CopyStorageFromTransientToMainCommand cmd, CancellationToken cancellationToken)
         {
             return await CopyStorageItemFromTransientToMain(cmd, cancellationToken);
         }
 
-        private async Task<string> CopyStorageItemFromTransientToMain(CopyFileFromTransientToMainCommand cmd, CancellationToken cancellationToken)
+        private async Task<string> CopyStorageItemFromTransientToMain(CopyStorageFromTransientToMainCommand cmd, CancellationToken cancellationToken)
         {
             var folder = cmd.SourceFolder == null ? "" : $"{cmd.SourceFolder}/";
             var key = $"{folder}{cmd.SourceKey}";
 
             var destFolder = cmd.DestFolder == null ? "" : $"{cmd.DestFolder}/";
-            var destKey = $"{destFolder}/{cmd.DestKey}";
+            var destKey = $"{destFolder}{cmd.DestKey}";
             var request = new CopyObjectRequest
             {
                 SourceBucket = _transientConfig.Value.Bucket,
