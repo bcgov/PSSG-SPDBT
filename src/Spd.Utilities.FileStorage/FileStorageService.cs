@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Spd.Utilities.FileStorage
 {
-    internal class FileStorageService : IFileStorageService
+    internal abstract class FileStorageService : IFileStorageService
     {
         protected readonly AmazonS3Client _amazonS3Client;
         protected readonly IOptions<S3Settings> _config;
