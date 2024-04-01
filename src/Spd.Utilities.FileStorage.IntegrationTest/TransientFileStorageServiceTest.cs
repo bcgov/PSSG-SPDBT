@@ -2,11 +2,11 @@
 using System.Text;
 
 namespace Spd.Utilities.FileStorage.IntegrationTest;
-public class TransientFileStroageServiceTest : IClassFixture<IntegrationTestSetup>
+public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
 {
     private readonly ITransientFileStorageService _transientFileService;
 
-    public TransientFileStroageServiceTest(IntegrationTestSetup testSetup)
+    public TransientFileStorageServiceTest(IntegrationTestSetup testSetup)
     {
         _transientFileService = testSetup.ServiceProvider.GetService<ITransientFileStorageService>();
     }
