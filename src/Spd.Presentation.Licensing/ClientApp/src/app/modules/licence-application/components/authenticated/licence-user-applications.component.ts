@@ -56,30 +56,6 @@ import {
 						</app-alert>
 					</ng-container>
 
-					<!-- 
-					<app-alert type="info" icon="info">
-						We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
-						fee?
-					</app-alert>
-
-					<app-alert type="danger" icon="error">
-						You haven't submitted your licence application yet. It will expire on <strong>January 12, 2024</strong>
-					</app-alert> 
-					-->
-
-					<!-- <div class="summary-card-section my-4 px-4 py-3" *ngIf="isNoActiveOrExpiredLicences">
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="text-data">You don't have an active licence</div>
-							</div>
-							<div class="col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onNew()">
-									<mat-icon>add</mat-icon>Apply for a new Licence or Permit
-								</button>
-							</div>
-						</div>
-					</div> -->
-
 					<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 						<div class="section-title fs-5 py-3">Applications</div>
 
@@ -148,7 +124,7 @@ import {
 												color="primary"
 												class="large my-2"
 												(click)="onResume(application)"
-												*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
+												*ngIf="isResumable(application)"
 											>
 												<mat-icon>play_arrow</mat-icon>Resume
 											</button>
@@ -896,5 +872,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onConnectToExpiredLicence();
+	}
+
+	isResumable(appl: LicenceAppListResponse): boolean {
+		return (
+			appl.applicationTypeCode === ApplicationTypeCode.New &&
+			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+		);
 	}
 }

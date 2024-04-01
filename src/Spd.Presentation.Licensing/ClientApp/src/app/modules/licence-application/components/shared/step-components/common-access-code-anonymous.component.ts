@@ -223,10 +223,12 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		} else {
 			this.form.patchValue({
 				licenceNumber: resp.licenceNumber,
+				linkedLicenceTermCode: resp.licenceTermCode,
 				linkedLicenceId: resp.licenceId,
 				linkedLicenceAppId: resp.licenceAppId,
 				linkedExpiryDate: resp.expiryDate,
 				linkedCardHolderName: resp.nameOnCard,
+				linkedLicenceHolderId: resp.licenceHolderId,
 				linkedLicenceHolderName: resp.licenceHolderName,
 			});
 			this.linkSuccess.emit();

@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IActionResult } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -50,24 +52,41 @@ import { HotToastService } from '@ngneat/hot-toast';
 
 					<form [formGroup]="form" novalidate>
 						<div class="row mt-4">
-							<div class="offset-xxl-1 col-xxl-4 offset-xl-1 col-xl-4 col-lg-4 col-md-12">
+							<div class="offset-xxl-1 col-xxl-3 offset-xl-1 col-xl-4 col-lg-4 col-md-12">
 								<mat-form-field>
 									<mat-label>Current Licence Number</mat-label>
-									<input matInput formControlName="licenceNumber" [errorStateMatcher]="matcher" maxlength="10" />
+									<input
+										matInput
+										formControlName="licenceNumber"
+										oninput="this.value = this.value.toUpperCase()"
+										[errorStateMatcher]="matcher"
+										maxlength="10"
+									/>
 									<mat-error *ngIf="form.get('licenceNumber')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12">
+							<div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
 								<mat-form-field>
 									<mat-label>Access Code</mat-label>
-									<input matInput formControlName="accessCode" [errorStateMatcher]="matcher" />
+									<input
+										matInput
+										formControlName="accessCode"
+										oninput="this.value = this.value.toUpperCase()"
+										[errorStateMatcher]="matcher"
+										maxlength="10"
+									/>
 									<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xxl-2 col-xl-2 col-lg-4 col-md-12">
+							<div class="col-xxl-3 col-xl-2 col-lg-4 col-md-12">
 								<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
-									<mat-icon>link</mat-icon>Link
+									<mat-icon>link</mat-icon>Link to your Account
 								</button>
+							</div>
+							<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12" *ngIf="isLinkErrorMessage">
+								<app-alert type="danger" icon="error">
+									{{ isLinkErrorMessage }}
+								</app-alert>
 							</div>
 						</div>
 					</form>
@@ -77,13 +96,15 @@ import { HotToastService } from '@ngneat/hot-toast';
 	`,
 	styles: [],
 })
-export class LicenceAccessCodeAuthorizedComponent implements LicenceChildStepperStepComponent {
+export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
+	isLinkErrorMessage: string | null = null;
 
-	licenceNumber: string | null = null;
+	form: FormGroup = this.licenceApplicationService.linkAccountCodeFormGroup;
+
+	licenceNumberParam: string | null = null;
 
 	constructor(
 		private router: Router,
@@ -92,10 +113,15 @@ export class LicenceAccessCodeAuthorizedComponent implements LicenceChildStepper
 	) {
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.licenceNumber = state && state['licenceNumber'] ? state['licenceNumber'] : null;
-		if (this.licenceNumber) {
-			this.form.patchValue({ licenceNumber: this.licenceNumber });
+		this.licenceNumberParam = state && state['licenceNumber'] ? state['licenceNumber'] : null;
+		if (this.licenceNumberParam) {
+			this.form.patchValue({ licenceNumber: this.licenceNumberParam });
 		}
+	}
+
+	ngOnInit(): void {
+		this.isLinkErrorMessage = null;
+		this.form.reset();
 	}
 
 	isFormValid(): boolean {
@@ -104,14 +130,35 @@ export class LicenceAccessCodeAuthorizedComponent implements LicenceChildStepper
 	}
 
 	onLink(): void {
-		const isValid = this.isFormValid();
-		if (!isValid) return;
+		this.isLinkErrorMessage = null;
 
-		this.hotToastService.success('The licence or permit has been successfully linked to your account');
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+		if (!this.isFormValid()) return;
+
+		this.licenceApplicationService.linkLicenceOrPermit(this.licenceNumber.value, this.accessCode.value).subscribe({
+			next: (_resp: StrictHttpResponse<IActionResult>) => {
+				if (_resp.status != 200) {
+					this.isLinkErrorMessage = 'This licence number and access code are not a valid combination.';
+					return;
+				}
+
+				this.hotToastService.success('The licence or permit has been successfully linked to your account');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.isLinkErrorMessage = `An error during the linking process. Please call the Security Program's Licensing Unit during regular office hours: ${this.spdPhoneNumber}.`;
+			},
+		});
 	}
 
 	onBack(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+	}
+
+	get licenceNumber(): FormControl {
+		return this.form.get('licenceNumber') as FormControl;
+	}
+	get accessCode(): FormControl {
+		return this.form.get('accessCode') as FormControl;
 	}
 }
