@@ -48,7 +48,7 @@ namespace Spd.Manager.Payment
         private readonly IApplicationRepository _appRepository;
         private readonly IDocumentRepository _documentRepository;
         private readonly IDocumentTemplateRepository _documentTemplateRepository;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IMainFileStorageService _fileStorageService;
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly ILicenceFeeRepository _licFeeRepository;
         private readonly ILicenceApplicationRepository _licAppRepository;
@@ -65,7 +65,7 @@ namespace Spd.Manager.Payment
             IDataProtectionProvider dpProvider,
             IDocumentRepository documentRepository,
             IDocumentTemplateRepository documentTemplateRepository,
-            IFileStorageService fileStorageService,
+            IMainFileStorageService fileStorageService,
             IInvoiceRepository invoiceRepository,
             ILicenceFeeRepository licFeeRepository,
             ILicenceApplicationRepository licAppRepository,

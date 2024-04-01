@@ -13,7 +13,7 @@ public class LicenceManagerTest
     private readonly IFixture fixture;
     private Mock<ILicenceRepository> mockLicRepo = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
-    private Mock<IFileStorageService> mockFileService = new();
+    private Mock<IMainFileStorageService> mockFileService = new();
     private Mock<IMapper> mockMapper = new();
 
     private LicenceManager sut;

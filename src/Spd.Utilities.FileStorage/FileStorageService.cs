@@ -6,10 +6,10 @@ using System.Web;
 
 namespace Spd.Utilities.FileStorage
 {
-    internal class FileStorageService : IFileStorageService, ITransientFileStorageService
+    internal abstract class FileStorageService : IFileStorageService
     {
-        private readonly AmazonS3Client _amazonS3Client;
-        private readonly IOptions<S3Settings> _config;
+        protected readonly AmazonS3Client _amazonS3Client;
+        protected readonly IOptions<S3Settings> _config;
         public FileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config)
         {
             _amazonS3Client = amazonS3Client;
@@ -37,10 +37,7 @@ namespace Spd.Utilities.FileStorage
             };
         }
 
-        public async Task<string> HandleDeleteCommand(StorageDeleteCommand cmd, CancellationToken cancellationToken)
-        {
-            return await DeleteStorageItem(cmd, cancellationToken);
-        }
+
         private async Task<string> UploadStorageItem(UploadFileCommand cmd, CancellationToken cancellationToken)
         {
             File file = cmd.File;
@@ -66,24 +63,6 @@ namespace Spd.Utilities.FileStorage
             var response = await _amazonS3Client.PutObjectAsync(request, cancellationToken);
             response.EnsureSuccess();
 
-            return cmd.Key;
-        }
-
-        private async Task<string> DeleteStorageItem(StorageDeleteCommand cmd, CancellationToken cancellationToken)
-        {
-            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
-            var key = $"{folder}{cmd.Key}";
-
-            var request = new DeleteObjectRequest
-            {
-                Key = key,
-                BucketName = _config.Value.Bucket,
-            };
-
-            var response = await _amazonS3Client.DeleteObjectAsync(request, cancellationToken);
-
-            //If the delete action is successful, the service sends back an HTTP 204 response.
-            response.EnsureNoContent();
             return cmd.Key;
         }
 
@@ -139,7 +118,7 @@ namespace Spd.Utilities.FileStorage
             var key = $"{folder}{cmd.Key}";
 
             var destFolder = cmd.DestFolder == null ? "" : $"{cmd.DestFolder}/";
-            var destKey = $"{destFolder}/{cmd.DestKey}";
+            var destKey = $"{destFolder}{cmd.DestKey}";
             var request = new CopyObjectRequest
             {
                 SourceBucket = this._config.Value.Bucket,
@@ -153,6 +132,7 @@ namespace Spd.Utilities.FileStorage
 
             return cmd.Key;
         }
+
         private async Task<FileQueryResult> DownloadStorageItem(string key, string? folder, CancellationToken ct)
         {
             var dir = folder == null ? "" : $"{folder}/";
