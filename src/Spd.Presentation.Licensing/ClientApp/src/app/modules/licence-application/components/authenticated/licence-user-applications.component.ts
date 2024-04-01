@@ -124,7 +124,7 @@ import {
 												color="primary"
 												class="large my-2"
 												(click)="onResume(application)"
-												*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
+												*ngIf="isResumable(application)"
 											>
 												<mat-icon>play_arrow</mat-icon>Resume
 											</button>
@@ -872,5 +872,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onConnectToExpiredLicence();
+	}
+
+	isResumable(appl: LicenceAppListResponse): boolean {
+		return (
+			appl.applicationTypeCode === ApplicationTypeCode.New &&
+			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+		);
 	}
 }

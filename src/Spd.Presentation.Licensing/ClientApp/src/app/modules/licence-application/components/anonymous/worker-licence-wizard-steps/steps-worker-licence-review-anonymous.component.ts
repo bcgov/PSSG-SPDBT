@@ -24,7 +24,9 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-consent-and-declaration [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-consent-and-declaration>
+				<app-step-worker-licence-consent-and-declaration
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-consent-and-declaration>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -66,7 +68,8 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 
 	@ViewChild(StepWorkerLicenceSummaryReviewAnonymousComponent)
 	summaryReviewComponent!: StepWorkerLicenceSummaryReviewAnonymousComponent;
-	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent) consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
+	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
+	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
 	constructor() {
 		super();
@@ -97,6 +100,11 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 
 	onGoToStep(step: number): void {
 		this.goToStep.emit(step);
+	}
+
+	override onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+		this.summaryReviewComponent.onUpdateData();
 	}
 
 	override onStepNext(_formNumber: number): void {
