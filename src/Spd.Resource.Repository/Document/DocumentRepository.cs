@@ -10,13 +10,13 @@ internal class DocumentRepository : IDocumentRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
-    private readonly IFileStorageService _fileStorageService;
+    private readonly IMainFileStorageService _fileStorageService;
     private readonly ITransientFileStorageService _transientFileStorageService;
     private readonly ITempFileStorageService _tempFileService;
 
     public DocumentRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
-        IFileStorageService fileStorageService,
+        IMainFileStorageService fileStorageService,
         ITempFileStorageService tempFileService,
         ITransientFileStorageService transientFileStorageService)
     {
