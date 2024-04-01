@@ -19,14 +19,14 @@ internal class LicenceManager :
     private readonly ILicenceRepository _licenceRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
-    private readonly IFileStorageService _fileStorageService;
+    private readonly IMainFileStorageService _fileStorageService;
     private readonly IMapper _mapper;
 
     public LicenceManager(
         ILicenceRepository licenceRepository,
         IDocumentRepository documentRepository,
         ILogger<ILicenceManager> logger,
-        IFileStorageService fileStorageService,
+        IMainFileStorageService fileStorageService,
         IMapper mapper)
     {
         _licenceRepository = licenceRepository;
