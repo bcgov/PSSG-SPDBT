@@ -33,9 +33,5 @@ namespace Spd.Utilities.FileStorage
             response.EnsureNoContent();
             return cmd.Key;
         }
-
-
     }
-
-
 }
