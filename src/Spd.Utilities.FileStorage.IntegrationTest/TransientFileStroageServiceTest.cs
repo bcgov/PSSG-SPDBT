@@ -12,7 +12,7 @@ public class TransientFileStroageServiceTest : IClassFixture<IntegrationTestSetu
     }
 
     [Fact]
-    public async Task HandleCopyFileFromTransientToMainCommand_Run_Correctly()
+    public async Task HandleDeleteCommand_Run_Correctly()
     {
         //Arrange
         //create a file in transient bucket
