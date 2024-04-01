@@ -7,6 +7,7 @@ namespace Spd.Utilities.FileStorage
     internal class MainFileStorageService : FileStorageService, IMainFileStorageService
     {
         private IOptions<S3Settings> _transientConfig;
+
         public MainFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, IOptions<S3Settings> transientConfig)
             : base(amazonS3Client, config)
         {
@@ -38,9 +39,5 @@ namespace Spd.Utilities.FileStorage
 
             return cmd.SourceKey;
         }
-
-
     }
-
-
 }
