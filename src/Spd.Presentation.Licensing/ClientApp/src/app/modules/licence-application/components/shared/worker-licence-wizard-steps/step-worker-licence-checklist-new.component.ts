@@ -53,6 +53,14 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
+								<span class="checklist-label">Government-issued photo ID</span>
+							</mat-checkbox>
+							<p class="checklist-info">
+								The identification needs to be issued by a federal, provincial, territorial or state government
+								authority and valid, that is, not expired.
+							</p>
+
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Photograph of yourself for the licence</span>
 							</mat-checkbox>
 							<p class="checklist-info">
