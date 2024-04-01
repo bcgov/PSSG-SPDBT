@@ -53,7 +53,8 @@ internal class Mappings : Profile
         .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.firstname))
         .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
         .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
-        .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.lastname));
+        .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.lastname))
+        .ForMember(d => d.BcDriversLicenceNumber, opt => opt.Ignore());
 
         _ = CreateMap<contact, LicenceApplicationResp>()
         .IncludeBase<contact, LicenceApplication>();
@@ -169,8 +170,7 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => GetEmployerAddressData(s)))
          .ForMember(d => d.IsCanadianResident, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_resideincanada)))
-         .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s.spd_permitpurpose)))
-         ;
+         .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s.spd_permitpurpose)));
 
         _ = CreateMap<CreateLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
