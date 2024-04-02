@@ -11,6 +11,7 @@ namespace Spd.Manager.Common.Admin
         IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
         IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
         IRequestHandler<GetBannerMsgQuery, string>,
+        IRequestHandler<GetReplacementProcessingTimeQuery, string>,
         IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
         IAdminManager
     {
@@ -45,6 +46,14 @@ namespace Spd.Manager.Common.Admin
         public async Task<string> Handle(GetBannerMsgQuery query, CancellationToken cancellationToken)
         {
             return (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken))
+                .ConfigItems
+                .First()
+                .Value;
+        }
+
+        public async Task<string> Handle(GetReplacementProcessingTimeQuery query, CancellationToken cancellationToken)
+        {
+            return (await _configRepo.Query(new ConfigQuery(IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), cancellationToken))
                 .ConfigItems
                 .First()
                 .Value;
