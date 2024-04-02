@@ -1,9 +1,11 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import {
 	Alias,
 	ApplicantProfileResponse,
+	ApplicantUpdateRequest,
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
 	BodyArmourPermitReasonCode,
@@ -17,6 +19,7 @@ import {
 	LicenceTermCode,
 	PermitAppAnonymousSubmitRequest,
 	PermitAppCommandResponse,
+	PermitCommandResponse,
 	PermitLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -50,7 +53,8 @@ import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.servic
 import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { CommonApplicationService } from './common-application.service';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { CommonApplicationService, UserLicenceResponse } from './common-application.service';
 import { LicenceDocument } from './licence-application.helper';
 import { PermitApplicationHelper } from './permit-application.helper';
 
@@ -101,7 +105,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		mailingAddress: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
 		printPermitData: this.printPermitFormGroup,
-		// profileConfirmationData: this.profileConfirmationFormGroup,
+		profileConfirmationData: this.profileConfirmationFormGroup,
 	});
 
 	permitModelChangedSubscription!: Subscription;
@@ -112,13 +116,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private router: Router,
 		private tempSecurityWorkerLicensingService: SecurityWorkerLicensingService, // TODO remove later
 		private permitService: PermitService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
+		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private authenticationService: AuthenticationService,
 		private domSanitizer: DomSanitizer
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
@@ -138,10 +143,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 					console.debug(
 						'permitModelFormGroup CHANGED',
-						step1Complete,
-						step2Complete,
-						step3Complete,
-						step4Complete,
+						// step1Complete,
+						// step2Complete,
+						// step3Complete,
+						// step4Complete,
 						this.permitModelFormGroup.getRawValue()
 					);
 
@@ -251,36 +256,43 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
-		console.debug('isStepIdentificationComplete aliases', this.aliasesFormGroup.value, this.aliasesFormGroup.valid);
-		console.debug(
-			'isStepIdentificationComplete',
-			this.personalInformationFormGroup.valid,
-			this.criminalHistoryFormGroup.valid,
-			this.aliasesFormGroup.valid,
-			this.citizenshipFormGroup.valid,
-			this.bcDriversLicenceFormGroup.valid,
-			this.characteristicsFormGroup.valid,
-			this.photographOfYourselfFormGroup.valid
-		);
+		if (this.authenticationService.isLoggedIn()) {
+			// console.debug(
+			// 	'isStepIdentificationComplete',
+			// 	this.citizenshipFormGroup.valid,
+			// 	this.bcDriversLicenceFormGroup.valid,
+			// 	this.characteristicsFormGroup.valid,
+			// 	this.photographOfYourselfFormGroup.valid
+			// );
 
-		// if (this.authenticationService.isLoggedIn()) {
-		// 	return (
-		// 		this.citizenshipFormGroup.valid &&
-		// 		this.bcDriversLicenceFormGroup.valid &&
-		// 		this.characteristicsFormGroup.valid &&
-		// 		this.photographOfYourselfFormGroup.valid
-		// 	);
-		// } else {
-		return (
-			this.personalInformationFormGroup.valid &&
-			this.criminalHistoryFormGroup.valid &&
-			this.aliasesFormGroup.valid &&
-			this.citizenshipFormGroup.valid &&
-			this.bcDriversLicenceFormGroup.valid &&
-			this.characteristicsFormGroup.valid &&
-			this.photographOfYourselfFormGroup.valid
-		);
-		// }
+			return (
+				this.citizenshipFormGroup.valid &&
+				this.bcDriversLicenceFormGroup.valid &&
+				this.characteristicsFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid
+			);
+		} else {
+			// console.debug(
+			// 	'isStepIdentificationComplete',
+			// 	this.personalInformationFormGroup.valid,
+			// 	this.criminalHistoryFormGroup.valid,
+			// 	this.aliasesFormGroup.valid,
+			// 	this.citizenshipFormGroup.valid,
+			// 	this.bcDriversLicenceFormGroup.valid,
+			// 	this.characteristicsFormGroup.valid,
+			// 	this.photographOfYourselfFormGroup.valid
+			// );
+
+			return (
+				this.personalInformationFormGroup.valid &&
+				this.criminalHistoryFormGroup.valid &&
+				this.aliasesFormGroup.valid &&
+				this.citizenshipFormGroup.valid &&
+				this.bcDriversLicenceFormGroup.valid &&
+				this.characteristicsFormGroup.valid &&
+				this.photographOfYourselfFormGroup.valid
+			);
+		}
 	}
 
 	isStepContactComplete(): boolean {
@@ -303,14 +315,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		if (
-			!this.authenticationService.isLoggedIn() ||
-			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
-		) {
-			return false;
-		}
+		return false; // TODO api not ready
+		// if (
+		// 	!this.authenticationService.isLoggedIn() ||
+		// 	this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		// ) {
+		// 	return false;
+		// }
 
-		return this.hasValueChanged;
+		// return this.hasValueChanged;
 	}
 
 	/**
@@ -334,6 +347,112 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	/*************************************************************/
 	// AUTHENTICATED
 	/*************************************************************/
+
+	/**
+	 * Load a user profile
+	 * @returns
+	 */
+	loadUserProfile(): Observable<any> {
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((resp: ApplicantProfileResponse) => {
+					return this.createEmptyPermitAuthenticated(resp, undefined, undefined).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle();
+						})
+					);
+				})
+			);
+	}
+
+	/**
+	 * Save the login user profile
+	 * @returns
+	 */
+	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
+		const licenceModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
+
+		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			body,
+		});
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
+		return this.saveUserProfile().pipe(
+			tap((_resp: StrictHttpResponse<string>) => {
+				switch (applicationTypeCode) {
+					case ApplicationTypeCode.Renewal: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_RENEWAL_AUTHENTICATED)
+						);
+						break;
+					}
+					case ApplicationTypeCode.Update: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED)
+						);
+						break;
+					}
+					default: {
+						this.router.navigateByUrl(
+							LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED)
+						);
+						break;
+					}
+				}
+			})
+		);
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
+	savePermitStepAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue);
+
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId; // TODO set applicantId type in permit
+
+		console.debug('savePermitStepAuthenticated PARTIAL SAVE', permitModelFormValue, body);
+
+		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
+			take(1),
+			tap((res: StrictHttpResponse<PermitCommandResponse>) => {
+				const formValue = this.permitModelFormGroup.getRawValue();
+				if (!formValue.licenceAppId) {
+					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+				}
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getPermitToResume(licenceAppId: string): Observable<PermitLicenceAppResponse> {
+		return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
 
 	/**
 	 * Create an empty permit
@@ -381,12 +500,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
+	 * Save the login user profile
+	 * @returns
+	 */
+	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body: ApplicantUpdateRequest = this.getProfileSaveBody(permitModelFormValue);
+
+		console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
+		console.debug('[saveUserProfile] getProfileSaveBody', body);
+
+		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
+			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			body,
+		});
+	}
+
+	/**
 	 * Submit the permit data
 	 * @returns
 	 */
 	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const body = this.getSaveBodyBaseAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
-		console.debug('[submitLicenceAuthenticated] body', body);
+		console.debug('[submitPermitAuthenticated] body', body);
 
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
 	}
@@ -422,6 +558,20 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
+	 * Create an empty permit just containing profile data
+	 * @returns
+	 */
+	private createEmptyPermitAuthenticated(
+		profile: ApplicantProfileResponse,
+		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined
+	): Observable<any> {
+		this.reset();
+
+		return this.applyPermitProfileIntoModel(profile, workerLicenceTypeCode, applicationTypeCode);
+	}
+
+	/**
 	 * Load a permit using an ID
 	 * @returns
 	 */
@@ -441,20 +591,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				return this.applyPermitAndProfileIntoModel(permitLicenceAppResponse, profile);
 			})
 		);
-	}
-
-	/**
-	 * Create an empty permit just containing profile data
-	 * @returns
-	 */
-	private createEmptyPermitAuthenticated(
-		profile: ApplicantProfileResponse,
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode | undefined
-	): Observable<any> {
-		this.reset();
-
-		return this.applyPermitProfileIntoModel(profile, workerLicenceTypeCode, applicationTypeCode);
 	}
 
 	/*************************************************************/
@@ -586,22 +722,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty anonymous permit
 	 * @returns
 	 */
+
 	private createEmptyPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
-		const permitRequirementData = {
-			workerLicenceTypeCode: workerLicenceTypeCode,
-		};
-		const licenceTermData = {
-			licenceTermCode: LicenceTermCode.FiveYears,
-		};
-
 		this.permitModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData,
-				permitRequirementData,
-				licenceTermData,
+				workerLicenceTypeData: { workerLicenceTypeCode: workerLicenceTypeCode },
+				permitRequirementData: { workerLicenceTypeCode: workerLicenceTypeCode },
+				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
+				profileConfirmationData: { isProfileUpToDate: true },
 			},
 			{
 				emitEvent: false,
@@ -609,7 +739,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 
 		console.debug('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
-
 		return of(this.permitModelFormGroup.value);
 	}
 
@@ -766,8 +895,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	private applyPermitProfileIntoModel(
 		profile: ApplicantProfileResponse | PermitLicenceAppResponse,
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode | undefined
+		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
+		applicationTypeCode: ApplicationTypeCode | undefined,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -779,12 +909,25 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			surname: profile.surname,
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
+			hasGenderChanged: false,
+			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,
 			origSurname: profile.surname,
 			origDateOfBirth: profile.dateOfBirth,
 			origGenderCode: profile.genderCode,
+			cardHolderName: userLicenceInformation?.cardHolderName ?? null,
+			licenceHolderName: userLicenceInformation?.licenceHolderName ?? null,
+		};
+
+		const originalLicenceData = {
+			originalApplicationId: userLicenceInformation?.licenceAppId ?? null,
+			originalLicenceId: userLicenceInformation?.licenceId ?? null,
+			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
+			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
+			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
+			originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
 		};
 
 		const contactInformationData = {
@@ -804,7 +947,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		const mailingAddress = {
-			addressSelected: true,
+			addressSelected: profile.mailingAddress ? true : false,
 			isMailingTheSameAsResidential: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
 			addressLine2: profile.mailingAddress?.addressLine2,
@@ -823,6 +966,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				workerLicenceTypeData,
 				applicationTypeData,
+				...originalLicenceData,
+				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
+				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },
 				mailingAddress: { ...mailingAddress },
@@ -970,7 +1116,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		let photographOfYourselfLastUploadedDateTime = '';
 
 		resp.documentInfos?.forEach((doc: Document) => {
-			switch (doc.licenceDocumentTypeCode) {
+			switch (
+				doc.licenceDocumentTypeCode // TODO verify permit auth licence doc types are correct here
+			) {
 				case LicenceDocumentTypeCode.DriversLicenceAdditional:
 				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.Bcid:
@@ -1049,24 +1197,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				characteristicsData,
 				citizenshipData,
 				photographOfYourselfData,
-				profileConfirmationData: { isProfileUpToDate: true },
 			},
 			{
 				emitEvent: false,
 			}
 		);
-
-		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
-		resp.aliases?.forEach((alias: Alias) => {
-			aliasesArray.push(
-				new FormGroup({
-					givenName: new FormControl(alias.givenName),
-					middleName1: new FormControl(alias.middleName1),
-					middleName2: new FormControl(alias.middleName2),
-					surname: new FormControl(alias.surname, [FormControlValidators.required]),
-				})
-			);
-		});
 
 		console.debug('[applyPermitIntoModel] permitModelFormGroup', this.permitModelFormGroup.value);
 		return of(this.permitModelFormGroup.value);
@@ -1104,6 +1239,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				licenceAppId: null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
 				criminalHistoryData,
@@ -1135,6 +1271,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				licenceAppId: null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
 				criminalHistoryData,

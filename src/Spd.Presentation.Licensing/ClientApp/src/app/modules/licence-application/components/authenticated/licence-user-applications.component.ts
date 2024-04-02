@@ -439,16 +439,16 @@ import {
 
 					<div class="mt-4">
 						<app-alert type="info" [showBorder]="false" icon="">
-							Do you have a security licence but it's not showing here?
+							Do you have a security licence, body armour permit, or armoured vehicle permit but it's not showing here?
 
 							<a
 								class="fw-normal"
 								tabindex="0"
 								(click)="onConnectToExpiredLicence()"
 								(keydown)="onKeydownConnectToExpiredLicence($event)"
-								>Connect a current or expired licence</a
+								>Connect a current or expired licence or permit</a
 							>
-							account
+							to your account.
 						</app-alert>
 					</div>
 				</div>

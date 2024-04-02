@@ -24,7 +24,12 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				></app-step-worker-licence-terms-of-use>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
+							Previous
+						</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
 							Next
 						</button>
@@ -65,16 +70,6 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 						</div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large next-review-step mb-2"
-								(click)="onNextReview(STEP_LICENCE_CATEGORY)"
-							>
-								Next: Review
-							</button>
-						</div>
 					</div>
 				</ng-template>
 			</mat-step>
@@ -100,7 +95,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+					<!-- <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
 						<button
 							mat-stroked-button
 							color="primary"
@@ -109,7 +104,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 						>
 							Next: Review
 						</button>
-					</div>
+					</div> -->
 				</div>
 			</mat-step>
 
@@ -132,16 +127,6 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
-						>
-							Next: Review
-						</button>
-					</div>
 				</div>
 			</mat-step>
 
@@ -157,16 +142,6 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onExpiredLicenceNextStep()">
 							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
-						>
-							Next: Review
 						</button>
 					</div>
 				</div>

@@ -12,7 +12,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsNewComponent } from './permit-wizard-steps/steps-permit-details-new.component';
 import { StepsPermitIdentificationAnonymousComponent } from './permit-wizard-steps/steps-permit-identification-anonymous.component';
-import { StepsPermitPurposeComponent } from './permit-wizard-steps/steps-permit-purpose.component';
+import { StepsPermitPurposeAnonymousComponent } from './permit-wizard-steps/steps-permit-purpose.component-anonymous';
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
 
 @Component({
@@ -37,13 +37,13 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Purpose & Rationale</ng-template>
-				<app-steps-permit-purpose
+				<app-steps-permit-purpose-anonymous
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-permit-purpose>
+				></app-steps-permit-purpose-anonymous>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
@@ -106,8 +106,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	@ViewChild(StepsPermitDetailsNewComponent)
 	stepsPermitDetailsComponent!: StepsPermitDetailsNewComponent;
 
-	@ViewChild(StepsPermitPurposeComponent)
-	stepsPermitPurposeComponent!: StepsPermitPurposeComponent;
+	@ViewChild(StepsPermitPurposeAnonymousComponent)
+	stepsPermitPurposeComponent!: StepsPermitPurposeAnonymousComponent;
 
 	@ViewChild(StepsPermitIdentificationAnonymousComponent)
 	stepsPermitIdentificationComponent!: StepsPermitIdentificationAnonymousComponent;

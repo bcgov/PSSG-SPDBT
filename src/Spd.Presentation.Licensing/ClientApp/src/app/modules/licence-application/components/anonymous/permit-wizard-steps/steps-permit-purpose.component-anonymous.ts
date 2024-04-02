@@ -9,7 +9,7 @@ import { StepPermitRationaleComponent } from './step-permit-rationale.component'
 import { StepPermitReasonComponent } from './step-permit-reason.component';
 
 @Component({
-	selector: 'app-steps-permit-purpose',
+	selector: 'app-steps-permit-purpose-anonymous',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -19,17 +19,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 				></app-step-permit-reason>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PERMIT_REASON)"
-							*ngIf="isLoggedIn"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -61,17 +51,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 				></app-step-permit-employer-information>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_EMPLOYER_INFORMATION)"
-							*ngIf="isLoggedIn"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -101,17 +81,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PERMIT_RATIONALE)"
-							*ngIf="isLoggedIn"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -136,7 +106,7 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitPurposeComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_PERMIT_REASON = 1;
 	readonly STEP_EMPLOYER_INFORMATION = 2;
 	readonly STEP_PERMIT_RATIONALE = 3;
@@ -166,7 +136,6 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 	ngOnInit(): void {
 		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
-				// console.debug('permitModelValueChanges$', _resp);
 				this.isFormValid = _resp;
 
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
@@ -209,10 +178,6 @@ export class StepsPermitPurposeComponent extends BaseWizardStepComponent impleme
 		const isValid = this.dirtyForm(_formNumber);
 		if (!isValid) return;
 
-		// if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
-		// 	this.nextStepperStep.emit(true);
-		// 	return;
-		// }
 		this.childNextStep.next(true);
 	}
 

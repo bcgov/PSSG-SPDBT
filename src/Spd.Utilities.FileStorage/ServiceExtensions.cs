@@ -13,7 +13,7 @@ namespace Spd.Utilities.FileStorage
             var options = configuration.GetSection("storage").Get<StorageSetting>()!;
 
             services.Configure<StorageSetting>(opts => configuration.GetSection("storage").Bind(opts));
-            
+
             //create main bucket
             var mainBucketConfig = new AmazonS3Config
             {
@@ -25,9 +25,10 @@ namespace Spd.Utilities.FileStorage
             };
 
             var mainClient = new AmazonS3Client(new BasicAWSCredentials(options.MainBucketSettings.AccessKey, options.MainBucketSettings.Secret), mainBucketConfig);
-            services.AddSingleton<IFileStorageService>(sp => new FileStorageService(
+            services.AddSingleton<IMainFileStorageService>(sp => new MainFileStorageService(
                 mainClient,
-                Options.Create(options.MainBucketSettings)));
+                Options.Create(options.MainBucketSettings),
+                Options.Create(options.TransientBucketSettings)));
 
             //create transient bucket
             if (options.TransientBucketSettings?.Url != null && !string.IsNullOrWhiteSpace(options.TransientBucketSettings?.Url.ToString()))
@@ -40,8 +41,8 @@ namespace Spd.Utilities.FileStorage
                     SignatureMethod = SigningAlgorithm.HmacSHA1,
                     UseHttp = false,
                 };
-                var transientClient = new AmazonS3Client(new BasicAWSCredentials(options.TransientBucketSettings.AccessKey, options.TransientBucketSettings.Secret), mainBucketConfig);
-                services.AddSingleton<ITransientFileStorageService>(sp => new FileStorageService(
+                var transientClient = new AmazonS3Client(new BasicAWSCredentials(options.TransientBucketSettings.AccessKey, options.TransientBucketSettings.Secret), transientBucketConfig);
+                services.AddSingleton<ITransientFileStorageService>(sp => new TransientFileStorageService(
                     transientClient,
                     Options.Create(options.TransientBucketSettings)));
             }

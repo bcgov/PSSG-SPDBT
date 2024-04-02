@@ -14,8 +14,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitDetailsNewComponent } from '../anonymous/permit-wizard-steps/steps-permit-details-new.component';
-import { StepsPermitPurposeComponent } from '../anonymous/permit-wizard-steps/steps-permit-purpose.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './permit-wizard-steps/steps-permit-identification-authenticated.component';
+import { StepsPermitPurposeAuthenticatedComponent } from './permit-wizard-steps/steps-permit-purpose-authenticated.component';
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/steps-permit-review-authenticated.component';
 
 @Component({
@@ -43,14 +43,14 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 
 					<mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Purpose & Rationale</ng-template>
-						<app-steps-permit-purpose
+						<app-steps-permit-purpose-authenticated
 							(childNextStep)="onChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-permit-purpose>
+						></app-steps-permit-purpose-authenticated>
 					</mat-step>
 
 					<mat-step [completed]="step3Complete">
@@ -97,8 +97,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	@ViewChild(StepsPermitDetailsNewComponent)
 	stepPermitDetailsComponent!: StepsPermitDetailsNewComponent;
 
-	@ViewChild(StepsPermitPurposeComponent)
-	stepPurposeComponent!: StepsPermitPurposeComponent;
+	@ViewChild(StepsPermitPurposeAuthenticatedComponent)
+	stepPurposeComponent!: StepsPermitPurposeAuthenticatedComponent;
 
 	@ViewChild(StepsPermitIdentificationAuthenticatedComponent)
 	stepIdentificationComponent!: StepsPermitIdentificationAuthenticatedComponent;

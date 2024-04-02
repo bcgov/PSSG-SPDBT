@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicantUpdateRequest,
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
 	BodyArmourPermitReasonCode,
@@ -216,24 +217,154 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		super(formBuilder);
 	}
 
-	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): PermitAppAnonymousSubmitRequest {
-		// TODO change to authenticated
-		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
+	/**
+	 * Get the form group data into the correct structure
+	 * @returns
+	 */
+	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
+		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
+		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
+		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
+		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
+		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
 
-		const baseData = this.getSaveBodyBase(licenceModelFormValue);
+		const applicationTypeCode = applicationTypeData.applicationTypeCode;
+
+		const criminalChargeDescription =
+			applicationTypeCode === ApplicationTypeCode.Update &&
+			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+				? criminalHistoryData.criminalChargeDescription
+				: null;
+
+		const documentKeyCodes: null | Array<string> = [];
+		const previousDocumentIds: null | Array<string> = [];
+
+		let hasNewCriminalRecordCharge: boolean | null = null;
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			hasNewCriminalRecordCharge = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
+		}
+
+		const requestbody: ApplicantUpdateRequest = {
+			licenceId: undefined,
+			applicationTypeCode: undefined,
+			givenName: personalInformationData.givenName,
+			surname: personalInformationData.surname,
+			middleName1: personalInformationData.middleName1,
+			middleName2: personalInformationData.middleName2,
+			dateOfBirth: personalInformationData.dateOfBirth,
+			emailAddress: contactInformationData.emailAddress,
+			phoneNumber: contactInformationData.phoneNumber,
+			genderCode: personalInformationData.genderCode,
+			//-----------------------------------
+			aliases:
+				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? licenceModelFormValue.aliasesData.aliases
+					: [],
+			//-----------------------------------
+			documentKeyCodes,
+			previousDocumentIds,
+			//-----------------------------------
+			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
+			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
+			criminalChargeDescription, // populated only for Update and new charges is Yes
+			//-----------------------------------
+			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			residentialAddress: residentialAddress,
+		};
+
+		console.debug('[getProfileSaveBody] requestbody', requestbody);
+		return requestbody;
+	}
+
+	getDocsToSaveBlobs(permitModelFormValue: any): Array<PermitDocumentsToSave> {
+		const documents: Array<PermitDocumentsToSave> = [];
+
+		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
+		const citizenshipData = { ...permitModelFormValue.citizenshipData };
+		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
+		const personalInformationData = { ...permitModelFormValue.personalInformationData };
+		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
+
+		if (personalInformationData.hasLegalNameChanged && personalInformationData.attachments) {
+			const docs: Array<Blob> = [];
+			personalInformationData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.LegalNameChange,
+				documents: docs,
+			});
+		}
+
+		if (citizenshipData.attachments) {
+			const docs: Array<Blob> = [];
+			citizenshipData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+
+			let citizenshipLicenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
+			if (citizenshipData.isCanadianCitizen != BooleanTypeCode.Yes) {
+				if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
+					citizenshipLicenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
+				} else {
+					citizenshipLicenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
+				}
+			}
+
+			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
+		}
+
+		const showAdditionalGovIdData = this.utilService.getPermitShowAdditionalGovIdData(
+			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			citizenshipData.isCanadianResident == BooleanTypeCode.Yes,
+			citizenshipData.canadianCitizenProofTypeCode,
+			citizenshipData.proofOfResidentStatusCode,
+			citizenshipData.proofOfCitizenshipCode
+		);
+
+		if (showAdditionalGovIdData && citizenshipData.governmentIssuedAttachments) {
+			const docs: Array<Blob> = [];
+			citizenshipData.governmentIssuedAttachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
+		}
+
+		if (photographOfYourselfData.attachments) {
+			const docs: Array<Blob> = [];
+			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+		}
+
+		if (permitRationaleData.attachments) {
+			const documentTypeCode =
+				workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+					? LicenceDocumentTypeCode.ArmouredVehicleRationale
+					: LicenceDocumentTypeCode.BodyArmourRationale;
+
+			const docs: Array<Blob> = [];
+			permitRationaleData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: documentTypeCode, documents: docs });
+		}
+
+		console.debug('getDocsToSaveBlobs documentsToSave', documents);
+		return documents;
+	}
+
+	getSaveBodyBaseAuthenticated(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
+		const baseData = this.getSaveBodyBase(permitModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
-
-		//  TODO list differences:
-		// applicantId
-		// documentInfos
 
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(licenceModelFormValue: any): PermitAppAnonymousSubmitRequest {
-		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
-
-		const baseData = this.getSaveBodyBase(licenceModelFormValue);
+	getSaveBodyBaseAnonymous(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
+		const baseData = this.getSaveBodyBase(permitModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		//  TODO list differences:
@@ -355,6 +486,24 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			.forEach((doc: any) => {
 				previousDocumentIds.push(doc.documentUrlId);
 			});
+
+		// TODO update photo
+		// const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+		// if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
+		// 	photographOfYourselfData.attachments?.forEach((doc: any) => {
+		// 		documentInfos.push({
+		// 			documentUrlId: doc.documentUrlId,
+		// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+		// 		});
+		// 	});
+		// } else {
+		// 	photographOfYourselfData.updateAttachments?.forEach((doc: any) => {
+		// 		documentInfos.push({
+		// 			documentUrlId: doc.documentUrlId,
+		// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+		// 		});
+		// 	});
+		// }
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -507,85 +656,5 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
-	}
-
-	getDocsToSaveBlobs(permitModelFormValue: any): Array<PermitDocumentsToSave> {
-		const documents: Array<PermitDocumentsToSave> = [];
-
-		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
-		const citizenshipData = { ...permitModelFormValue.citizenshipData };
-		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
-		const personalInformationData = { ...permitModelFormValue.personalInformationData };
-		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
-
-		if (personalInformationData.hasLegalNameChanged && personalInformationData.attachments) {
-			const docs: Array<Blob> = [];
-			personalInformationData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.LegalNameChange,
-				documents: docs,
-			});
-		}
-
-		if (citizenshipData.attachments) {
-			const docs: Array<Blob> = [];
-			citizenshipData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-
-			let citizenshipLicenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
-			if (citizenshipData.isCanadianCitizen != BooleanTypeCode.Yes) {
-				if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
-					citizenshipLicenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
-				} else {
-					citizenshipLicenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
-				}
-			}
-
-			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
-		}
-
-		const showAdditionalGovIdData = this.utilService.getPermitShowAdditionalGovIdData(
-			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
-			citizenshipData.isCanadianResident == BooleanTypeCode.Yes,
-			citizenshipData.canadianCitizenProofTypeCode,
-			citizenshipData.proofOfResidentStatusCode,
-			citizenshipData.proofOfCitizenshipCode
-		);
-
-		if (showAdditionalGovIdData && citizenshipData.governmentIssuedAttachments) {
-			const docs: Array<Blob> = [];
-			citizenshipData.governmentIssuedAttachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
-		}
-
-		if (photographOfYourselfData.attachments) {
-			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
-		}
-
-		if (permitRationaleData.attachments) {
-			const documentTypeCode =
-				workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
-					? LicenceDocumentTypeCode.ArmouredVehicleRationale
-					: LicenceDocumentTypeCode.BodyArmourRationale;
-
-			const docs: Array<Blob> = [];
-			permitRationaleData.attachments.forEach((doc: SpdFile) => {
-				docs.push(doc);
-			});
-			documents.push({ licenceDocumentTypeCode: documentTypeCode, documents: docs });
-		}
-
-		console.debug('getDocsToSaveBlobs documentsToSave', documents);
-
-		return documents;
 	}
 }
