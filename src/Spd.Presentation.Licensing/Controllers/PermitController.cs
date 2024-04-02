@@ -41,7 +41,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         #region authenticated
         /// <summary>
-        /// Create Security Worker Licence Application
+        /// Create Permit Application
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
