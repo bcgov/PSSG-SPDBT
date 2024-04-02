@@ -3,9 +3,9 @@
 namespace Spd.Manager.Licence;
 public interface IPermitAppManager
 {
-    public Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand command, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(AnonymousPermitAppRenewCommand command, CancellationToken ct);
-    public Task<PermitAppCommandResponse> Handle(AnonymousPermitAppUpdateCommand command, CancellationToken ct);
+    public Task<PermitAppCommandResponse> Handle(PermitAppNewCommand command, CancellationToken ct);
+    public Task<PermitAppCommandResponse> Handle(PermitAppRenewCommand command, CancellationToken ct);
+    public Task<PermitAppCommandResponse> Handle(PermitAppUpdateCommand command, CancellationToken ct);
     public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
 }
 
@@ -43,24 +43,24 @@ public record PermitCommandResponse : LicenceAppUpsertResponse
 #endregion
 
 #region anonymous user
-public record AnonymousPermitAppNewCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record PermitAppNewCommand(
+    PermitAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
-public record AnonymousPermitAppRenewCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record PermitAppRenewCommand(
+    PermitAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
-public record AnonymousPermitAppUpdateCommand(
-    PermitAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record PermitAppUpdateCommand(
+    PermitAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record GetPermitApplicationQuery(Guid LicenceApplicationId) : IRequest<PermitLicenceAppResponse>;
 
-public record PermitAppAnonymousSubmitRequest : PermitLicenceAppBase
+public record PermitAppSubmitRequest : PermitLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew

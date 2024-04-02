@@ -15,7 +15,7 @@ public class WorkerLicenceFixture
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
     }
 
-    public WorkerLicenceAppSubmitRequest GenerateValidWorkerLicenceAppAnonymousSubmitRequest(
+    public WorkerLicenceAppSubmitRequest GenerateValidWorkerLicenceAppSubmitRequest(
         ApplicationTypeCode applicationTypeCode = ApplicationTypeCode.New,
         Guid? appLicId = null)
     {

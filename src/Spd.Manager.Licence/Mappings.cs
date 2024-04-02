@@ -31,7 +31,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             ;
 
-        CreateMap<PermitAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
+        CreateMap<PermitAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.Ignore())
@@ -84,7 +84,7 @@ internal class Mappings : Profile
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode));
 
-        CreateMap<PermitAppAnonymousSubmitRequest, UpdateContactCmd>()
+        CreateMap<PermitAppSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
@@ -276,7 +276,7 @@ internal class Mappings : Profile
         return request.HasCriminalHistory;
     }
 
-    private static IEnumerable<PermitPurposeEnum>? GetPermitPurposeEnums(PermitAppAnonymousSubmitRequest request)
+    private static IEnumerable<PermitPurposeEnum>? GetPermitPurposeEnums(PermitAppSubmitRequest request)
     {
         if (request.BodyArmourPermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
         {

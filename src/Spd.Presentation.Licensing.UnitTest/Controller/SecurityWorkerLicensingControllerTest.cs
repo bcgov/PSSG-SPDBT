@@ -90,7 +90,7 @@ public class SecurityWorkerLicensingControllerTest
     [Fact]
     public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Replacement_Return_WorkerLicenceCommandResponse()
     {
-        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement);
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement);
 
         var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
 
@@ -101,7 +101,7 @@ public class SecurityWorkerLicensingControllerTest
     [Fact]
     public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Renewal_Return_WorkerLicenceCommandResponse()
     {
-        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal);
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal);
 
         var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
 
@@ -112,7 +112,7 @@ public class SecurityWorkerLicensingControllerTest
     [Fact]
     public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Update_Return_WorkerLicenceCommandResponse()
     {
-        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Update);
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update);
 
         var result = await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None);
 
@@ -123,7 +123,7 @@ public class SecurityWorkerLicensingControllerTest
     [Fact]
     public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_With_ApplicationTypeCode_New_Throw_Exception()
     {
-        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest();
+        var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest();
 
         _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(wLAppAnonymousSubmitRequest, CancellationToken.None));
     }

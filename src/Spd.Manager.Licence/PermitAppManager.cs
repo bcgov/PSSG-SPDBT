@@ -17,9 +17,9 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
-        IRequestHandler<AnonymousPermitAppNewCommand, PermitAppCommandResponse>,
-        IRequestHandler<AnonymousPermitAppRenewCommand, PermitAppCommandResponse>,
-        IRequestHandler<AnonymousPermitAppUpdateCommand, PermitAppCommandResponse>,
+        IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
+        IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
+        IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -54,9 +54,9 @@ internal class PermitAppManager :
         return result;
     }
 
-    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppNewCommand cmd, CancellationToken cancellationToken)
+    public async Task<PermitAppCommandResponse> Handle(PermitAppNewCommand cmd, CancellationToken cancellationToken)
     {
-        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         ValidateFilesForNewApp(cmd);
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -66,9 +66,9 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
-    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppRenewCommand cmd, CancellationToken cancellationToken)
+    public async Task<PermitAppCommandResponse> Handle(PermitAppRenewCommand cmd, CancellationToken cancellationToken)
     {
-        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
 
@@ -116,9 +116,9 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
-    public async Task<PermitAppCommandResponse> Handle(AnonymousPermitAppUpdateCommand cmd, CancellationToken cancellationToken)
+    public async Task<PermitAppCommandResponse> Handle(PermitAppUpdateCommand cmd, CancellationToken cancellationToken)
     {
-        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be an update request");
 
@@ -161,9 +161,9 @@ internal class PermitAppManager :
 
     #endregion
 
-    private static void ValidateFilesForNewApp(AnonymousPermitAppNewCommand cmd)
+    private static void ValidateFilesForNewApp(PermitAppNewCommand cmd)
     {
-        PermitAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
 
         if (request.IsCanadianCitizen == false && request.IsCanadianResident == true)
@@ -195,7 +195,7 @@ internal class PermitAppManager :
     }
 
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
-        PermitAppAnonymousSubmitRequest newRequest,
+        PermitAppSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic, CancellationToken ct)
     {
@@ -252,7 +252,7 @@ internal class PermitAppManager :
 
     }
 
-    private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppAnonymousSubmitRequest request,
+    private async Task ValidateFilesForRenewUpdateAppAsync(PermitAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
         CancellationToken ct)
     {
@@ -306,7 +306,7 @@ internal class PermitAppManager :
         }
     }
 
-    private bool ChangeInEmployerInfo(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
+    private bool ChangeInEmployerInfo(LicenceApplicationResp originalApp, PermitAppSubmitRequest newRequest)
     {
         if (!String.Equals(StringHelper.SanitizeNull(originalApp.EmployerName), StringHelper.SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
             !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorName), StringHelper.SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
@@ -325,7 +325,7 @@ internal class PermitAppManager :
         return false;
     }
 
-    private List<string> GetPurposes(PermitAppAnonymousSubmitRequest newRequest)
+    private List<string> GetPurposes(PermitAppSubmitRequest newRequest)
     {
         List<string> purposes = [];
 
@@ -343,7 +343,7 @@ internal class PermitAppManager :
         return purposes;
     }
 
-    private bool ChangeInPurpose(LicenceApplicationResp originalApp, PermitAppAnonymousSubmitRequest newRequest)
+    private bool ChangeInPurpose(LicenceApplicationResp originalApp, PermitAppSubmitRequest newRequest)
     {
         List<PermitPurposeEnum> permitPurposeRequest = [];
 
