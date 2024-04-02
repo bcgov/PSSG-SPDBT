@@ -27,6 +27,7 @@ import { StepPermitRationaleComponent } from './components/anonymous/permit-wiza
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
+import { StepPermitSummaryAuthenticatedComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-authenticated.component';
 import { StepPermitTermsOfUseComponent } from './components/anonymous/permit-wizard-steps/step-permit-terms-of-use.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-steps/steps-permit-contact.component';
@@ -300,6 +301,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitRationaleComponent,
 		StepPermitReasonComponent,
 		StepPermitResidentialAddressComponent,
+		StepPermitSummaryAuthenticatedComponent,
 		StepPermitSummaryAnonymousComponent,
 		StepPermitTermsOfUseComponent,
 		StepPermitTypeAnonymousComponent,

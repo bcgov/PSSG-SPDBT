@@ -5,8 +5,6 @@ import {
 	BodyArmourPermitReasonCode,
 	BusinessTypeCode,
 	LicenceDocumentTypeCode,
-	PoliceOfficerRoleCode,
-	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -14,7 +12,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-step-business-licence-summary',
@@ -534,9 +532,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
-	policeOfficerRoleCodes = PoliceOfficerRoleCode;
-	categoryTypeCodes = WorkerCategoryTypeCode;
-	swlCategoryTypes = WorkerCategoryTypes;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -549,7 +544,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
-		console.debug('this.permitModelData', this.permitModelData);
 	}
 
 	onEditStep(stepNumber: number) {
