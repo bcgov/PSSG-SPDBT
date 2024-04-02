@@ -1,11 +1,10 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
-using Spd.Resource.Repository.LicenceApplication;
-using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -13,7 +12,6 @@ using System.Net;
 namespace Spd.Manager.Licence
 {
     internal class ApplicantProfileManager :
-        LicenceAppManagerBase,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ApplicantLoginCommand, ApplicantLoginResponse>,
         IRequestHandler<ApplicantTermAgreeCommand, Unit>,
@@ -33,9 +31,7 @@ namespace Spd.Manager.Licence
             IContactRepository contactRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
-            IDocumentRepository documentRepository,
-            ILicenceFeeRepository feeRepository,
-            ILicenceApplicationRepository licenceAppRepository) : base(mapper, documentRepository, feeRepository, licenceAppRepository)
+            IDocumentRepository documentRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
@@ -136,14 +132,18 @@ namespace Spd.Manager.Licence
 
             if ((cmd.ApplicantUpdateRequest?.IsTreatedForMHC == true && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)) ||
                 (cmd.ApplicantUpdateRequest?.IsPoliceOrPeaceOfficer == true && cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
-                await UploadNewDocsAsync(null,
-                    cmd.LicAppFileInfos,
-                    null,
-                    contact.Id,
-                    null,
-                    null,
-                    null,
-                    ct);
+            {
+                foreach (LicAppFileInfo licAppFile in cmd.LicAppFileInfos)
+                {
+                    SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                    CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                    fileCmd.ApplicantId = contact.Id;
+                    fileCmd.TempFile = tempFile;
+                    fileCmd.SubmittedByApplicantId = contact.Id;
+                    //create bcgov_documenturl and file
+                    await _documentRepository.ManageAsync(fileCmd, ct);
+                }
+            }
 
             return default;
         }

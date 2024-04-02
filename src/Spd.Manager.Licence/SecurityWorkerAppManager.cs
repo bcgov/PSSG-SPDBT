@@ -10,6 +10,7 @@ using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
@@ -37,7 +38,15 @@ internal class SecurityWorkerAppManager :
         IDocumentRepository documentUrlRepository,
         ITaskRepository taskRepository,
         ILicenceFeeRepository feeRepository,
-        IContactRepository contactRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
+        IContactRepository contactRepository,
+        IMainFileStorageService mainFileStorageService,
+        ITransientFileStorageService transientFileStorageService) : base(
+            mapper,
+            documentUrlRepository,
+            feeRepository,
+            licenceAppRepository,
+            mainFileStorageService,
+            transientFileStorageService)
     {
         _licenceRepository = licenceRepository;
         _taskRepository = taskRepository;
@@ -69,15 +78,15 @@ internal class SecurityWorkerAppManager :
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand cmd, CancellationToken cancellationToken)
     {
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
-        //dynamics will call an endpoint in dynamicsHelper to move files from transient bucket to main bucket when app status changed to Submitted.
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, cancellationToken);
         decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken cancellationToken)
     {
-        LicenceAppQuery q = new LicenceAppQuery
-        (
+        LicenceAppQuery q = new(
             query.ApplicantId,
             new List<WorkerLicenceTypeEnum>
             {
@@ -302,8 +311,7 @@ internal class SecurityWorkerAppManager :
 
     private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
-        LicenceAppQuery q = new LicenceAppQuery
-        (
+        LicenceAppQuery q = new(
             applicantId,
             new List<WorkerLicenceTypeEnum>
             {
@@ -353,9 +361,10 @@ internal class SecurityWorkerAppManager :
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
         WorkerLicenceAppAnonymousSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
-        LicenceResp originalLic, CancellationToken ct)
+        LicenceResp originalLic,
+        CancellationToken ct)
     {
-        ChangeSpec changes = new ChangeSpec();
+        ChangeSpec changes = new();
         //categories changed
         if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
             changes.CategoriesChanged = true;

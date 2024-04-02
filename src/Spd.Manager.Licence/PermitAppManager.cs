@@ -8,6 +8,7 @@ using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
 using System.Net;
@@ -32,7 +33,10 @@ internal class PermitAppManager :
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
         IContactRepository contactRepository,
-        ITaskRepository taskRepository) : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository)
+        ITaskRepository taskRepository,
+        IMainFileStorageService mainFileStorageService,
+        ITransientFileStorageService transientFileStorageService)
+        : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
         _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
@@ -190,13 +194,13 @@ internal class PermitAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp, 
+    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
         PermitAppAnonymousSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic, CancellationToken ct)
     {
-        ChangeSpec changes = new ChangeSpec();
-        
+        ChangeSpec changes = new();
+
         // Check if prupose changed
         changes.PurposeChanged = ChangeInPurpose(originalApp, newRequest);
 
@@ -204,13 +208,13 @@ internal class PermitAppManager :
         if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase) ||
             newFileInfos.Any(n => n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale))
             changes.RationaleChanged = true;
-        
+
         List<string> purposes = GetPurposes(newRequest);
 
         // Purpose or rationale changed, create a task for Licensing RA team
         if (changes.PurposeChanged || changes.RationaleChanged)
         {
-            IEnumerable<string> fileNames = newFileInfos.Where(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || 
+            IEnumerable<string> fileNames = newFileInfos.Where(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale ||
                 f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale).Select(f => f.FileName);
             changes.PurposeChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
@@ -329,7 +333,8 @@ internal class PermitAppManager :
         {
             foreach (var reasonCode in newRequest.ArmouredVehiclePermitReasonCodes)
                 purposes.Add(reasonCode.ToString());
-        } else
+        }
+        else
         {
             foreach (var reasonCode in newRequest.BodyArmourPermitReasonCodes)
                 purposes.Add(reasonCode.ToString());
@@ -369,7 +374,7 @@ internal class PermitAppManager :
             List<PermitPurposeEnum> originalList = originalApp.PermitPurposeEnums.ToList();
             originalList.Sort();
 
-            if (!newList.SequenceEqual(originalList)) 
+            if (!newList.SequenceEqual(originalList))
                 return true;
         }
 
