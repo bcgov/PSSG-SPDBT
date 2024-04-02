@@ -18,7 +18,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="text-minor-heading mb-2">Business Manager Information</div>
+					<div class="summary-heading mb-2">Business Manager Information</div>
 					<form [formGroup]="form" novalidate>
 						<div class="row">
 							<div class="col-xl-6 col-lg-6 col-md-12">

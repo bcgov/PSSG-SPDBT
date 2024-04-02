@@ -219,6 +219,7 @@ export abstract class BusinessApplicationHelper {
 
 	membersWithSwlFormGroup: FormGroup = this.formBuilder.group({
 		hasMembersWithSwl: new FormControl(''),
+		licenceNumberLookup: new FormControl(''),
 		members: this.formBuilder.array([]),
 	});
 
@@ -246,6 +247,31 @@ export abstract class BusinessApplicationHelper {
 		managerSwlNumber: new FormControl(''),
 		managerPhoneNumber: new FormControl(''),
 		managerEmail: new FormControl(''),
+	});
+
+	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
+		{
+			givenName: new FormControl('', [FormControlValidators.required]),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [FormControlValidators.required]),
+			emailAddress: new FormControl(''),
+			noEmailAddress: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'emailAddress',
+					(_form) => _form.get('noEmailAddress')?.value != true
+				),
+			],
+		}
+	);
+
+	employeesFormGroup: FormGroup = this.formBuilder.group({
+		hasEmployees: new FormControl(''),
+		licenceNumberLookup: new FormControl(''),
+		employees: this.formBuilder.array([]),
 	});
 
 	constructor(
