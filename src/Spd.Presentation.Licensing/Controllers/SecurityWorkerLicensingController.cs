@@ -24,17 +24,16 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
+        // private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
         private readonly IValidator<WorkerLicenceAppUpsertRequest> _wslUpsertValidator;
-        private readonly IValidator<WorkerLicenceAppAnonymousSubmitRequest> _anonymousLicenceAppSubmitRequestValidator;
+        private readonly IValidator<WorkerLicenceAppSubmitRequest> _anonymousLicenceAppSubmitRequestValidator;
 
         public SecurityWorkerLicensingController(ILogger<SecurityWorkerLicensingController> logger,
             IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
-            IValidator<WorkerLicenceAppSubmitRequest> wslSubmitValidator,
             IValidator<WorkerLicenceAppUpsertRequest> wslUpsertValidator,
-            IValidator<WorkerLicenceAppAnonymousSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
+            IValidator<WorkerLicenceAppSubmitRequest> anonymousLicenceAppSubmitRequestValidator,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider,
             IRecaptchaVerificationService recaptchaVerificationService) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -43,7 +42,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
-            _wslSubmitValidator = wslSubmitValidator;
+            //_wslSubmitValidator = wslSubmitValidator;
             _wslUpsertValidator = wslUpsertValidator;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
@@ -61,9 +60,8 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<WorkerLicenceCommandResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get WorkerLicenceAppUpsertRequest");
-            var validateResult = await _wslUpsertValidator.ValidateAsync(licenceCreateRequest);
-            if (!validateResult.IsValid)
-                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            if (licenceCreateRequest.ApplicantId == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
         }
 
@@ -107,9 +105,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppSubmitRequest licenceSubmitRequest, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse> SubmitSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceAppUpsertRequest licenceSubmitRequest, CancellationToken ct)
         {
-            var validateResult = await _wslSubmitValidator.ValidateAsync(licenceSubmitRequest, ct);
+            var validateResult = await _wslUpsertValidator.ValidateAsync(licenceSubmitRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
@@ -130,7 +128,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             VerifyFiles(fileUploadRequest.Documents);
 
-            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
             await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
@@ -147,7 +145,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licence-applications/authenticated/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(WorkerLicenceAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             WorkerLicenceCommandResponse? response = null;
 
@@ -163,19 +161,19 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
@@ -240,7 +238,7 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyKeyCode();
             VerifyFiles(fileUploadRequest.Documents);
 
-            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
             await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
@@ -256,7 +254,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/worker-licence-applications/anonymous/submit")]
         [HttpPost]
-        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
@@ -268,25 +266,25 @@ namespace Spd.Presentation.Licensing.Controllers
             WorkerLicenceCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousWorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppNewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                AnonymousWorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousWorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousWorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);

@@ -21,7 +21,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, CreateLicenceApplicationCmd>()
+        CreateMap<WorkerLicenceAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetIsTreatedForMHC(s)))
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => GetHasCriminalHistory(s)))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
@@ -78,7 +78,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.LicensingTermAgreedDateTime == null));
 
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, UpdateContactCmd>()
+        CreateMap<WorkerLicenceAppSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
@@ -156,7 +156,7 @@ internal class Mappings : Profile
         CreateMap<LicenceAppListResp, LicenceAppListResponse>()
             .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode));
 
-        CreateMap<WorkerLicenceAppAnonymousSubmitRequest, SaveLicenceApplicationCmd>()
+        CreateMap<WorkerLicenceAppSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
 
         CreateMap<UploadFileRequest, SpdTempFile>()

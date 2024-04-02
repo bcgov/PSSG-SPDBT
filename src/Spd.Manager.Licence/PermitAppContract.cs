@@ -36,8 +36,6 @@ public record PermitAppUpsertRequest : PermitLicenceAppBase
     public Guid? LicenceAppId { get; set; }
 };
 
-public record PermitAppSubmitRequest : PermitAppUpsertRequest;
-
 public record PermitCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }

@@ -21,15 +21,15 @@ public class SecurityWorkerLicensingControllerTest
     private WorkerLicenceFixture workerLicenceFixture;
     private Mock<IPrincipal> mockUser = new();
     private Mock<IMediator> mockMediator = new();
-    private Mock<IValidator<WorkerLicenceAppSubmitRequest>> mockWslSubmitValidator = new();
     private Mock<IValidator<WorkerLicenceAppUpsertRequest>> mockWslUpsertValidator = new();
-    private Mock<IValidator<WorkerLicenceAppAnonymousSubmitRequest>> mockWslAnonymousSubmitValidator = new();
+    private Mock<IValidator<WorkerLicenceAppSubmitRequest>> mockWslAnonymousSubmitValidator = new();
     private Mock<IDistributedCache> mockCache = new();
     private Mock<IDataProtectionProvider> mockDpProvider = new();
     private Mock<IRecaptchaVerificationService> mockRecaptch = new();
     private SecurityWorkerLicensingController sut;
 
-    private Dictionary<string, string> uploadFileConfiguration = new Dictionary<string, string> {
+    private Dictionary<string, string> uploadFileConfiguration = new()
+    {
         {"UploadFile:StreamFileFolder", "/tmp"},
         {"UploadFile:MaxFileSizeMB", "25"},
         {"UploadFile:AllowedExtensions", ".docx"},
@@ -49,17 +49,17 @@ public class SecurityWorkerLicensingControllerTest
 
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInCacheCommand>(), CancellationToken.None))
                .ReturnsAsync(new List<LicAppFileInfo>());
-        mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppReplaceCommand>(), CancellationToken.None))
+        mockMediator.Setup(m => m.Send(It.IsAny<WorkerLicenceAppReplaceCommand>(), CancellationToken.None))
                .ReturnsAsync(new WorkerLicenceCommandResponse());
-        mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppRenewCommand>(), CancellationToken.None))
+        mockMediator.Setup(m => m.Send(It.IsAny<WorkerLicenceAppRenewCommand>(), CancellationToken.None))
                .ReturnsAsync(new WorkerLicenceCommandResponse());
-        mockMediator.Setup(m => m.Send(It.IsAny<AnonymousWorkerLicenceAppUpdateCommand>(), CancellationToken.None))
+        mockMediator.Setup(m => m.Send(It.IsAny<WorkerLicenceAppUpdateCommand>(), CancellationToken.None))
                .ReturnsAsync(new WorkerLicenceCommandResponse());
 
         var validationResults = fixture.Build<ValidationResult>()
             .With(r => r.Errors, [])
             .Create();
-        mockWslAnonymousSubmitValidator.Setup(x => x.ValidateAsync(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>(), CancellationToken.None))
+        mockWslAnonymousSubmitValidator.Setup(x => x.ValidateAsync(It.IsAny<WorkerLicenceAppSubmitRequest>(), CancellationToken.None))
             .ReturnsAsync(validationResults);
 
         mockDpProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
@@ -69,7 +69,6 @@ public class SecurityWorkerLicensingControllerTest
                 mockUser.Object,
                 mockMediator.Object,
                 configuration,
-                mockWslSubmitValidator.Object,
                 mockWslUpsertValidator.Object,
                 mockWslAnonymousSubmitValidator.Object,
                 mockCache.Object,
