@@ -35,7 +35,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Permit Selection</div>
+													<div class="panel-header">Licence Selection</div>
 													<button
 														mat-mini-fab
 														color="primary"
@@ -50,10 +50,10 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											</mat-panel-title>
 										</mat-expansion-panel-header>
 										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Permit Information</div>
+											<div class="text-minor-heading mt-4">Licence Information</div>
 											<div class="row mt-0">
 												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Permit Type</div>
+													<div class="text-label d-block text-muted">Licence Type</div>
 													<div class="summary-text-data">
 														{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 													</div>
@@ -65,7 +65,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													</div>
 												</div>
 												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Permit Term</div>
+													<div class="text-label d-block text-muted">Licence Term</div>
 													<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 												</div>
 												<div class="col-lg-3 col-md-12">
@@ -76,7 +76,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 												</div>
 												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Print Permit</div>
+														<div class="text-label d-block text-muted">Print Licence</div>
 														<div class="summary-text-data">{{ isPrintPermit }}</div>
 													</div>
 												</ng-container>
@@ -84,14 +84,14 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 
 											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 												<mat-divider class="mt-3 mb-2"></mat-divider>
-												<div class="text-minor-heading">Expired Permit</div>
+												<div class="text-minor-heading">Expired Licence</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Permit Number</div>
+														<div class="text-label d-block text-muted">Expired Licence Number</div>
 														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Permit Expiry Date</div>
+														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
 														<div class="summary-text-data">
 															{{ expiredLicenceExpiryDate | formatDate | default }}
 														</div>
@@ -103,7 +103,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 											<div class="text-minor-heading mt-4">Purpose and Rationale</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Reason to Require a Permit</div>
+													<div class="text-label d-block text-muted">Reason to Require a Licence</div>
 													<div class="summary-text-data">
 														{{ reasonForRequirement }}
 													</div>
@@ -132,11 +132,11 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="showEmployerInformation">
+									<mat-expansion-panel class="mb-2" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Employer Information</div>
+													<div class="panel-header">Business Information</div>
 													<button
 														mat-mini-fab
 														color="primary"
@@ -218,7 +218,7 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Identification</div>
+													<div class="panel-header">Controlling Members and Employees</div>
 													<button
 														mat-mini-fab
 														color="primary"
@@ -387,28 +387,8 @@ import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/mo
 													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
 												</div>
 											</div>
-										</div>
-									</mat-expansion-panel>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="review-panel-title">
-												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Contact Information</div>
-													<button
-														mat-mini-fab
-														color="primary"
-														class="go-to-step-button"
-														matTooltip="Go to Step 4"
-														aria-label="Go to Step 4"
-														(click)="$event.stopPropagation(); onEditStep(3)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-												</mat-toolbar>
-											</mat-panel-title>
-										</mat-expansion-panel-header>
-										<div class="panel-body">
 											<div class="text-minor-heading mt-4">Contact</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">

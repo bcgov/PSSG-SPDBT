@@ -368,10 +368,17 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 						</div>
 					</div> -->
 
-					<div class="text-center" *ngIf="isAllowCreateNew">
-						<button mat-flat-button color="primary" class="large w-auto mt-2 mt-lg-0" (click)="onCreateNew()">
-							<mat-icon>add</mat-icon>Apply for a New Business Licence
-						</button>
+					<div class="summary-card-section mb-3 px-4 py-3">
+						<div class="row">
+							<div class="col-xl-7 col-lg-6">
+								<div class="text-data">You don't have an active business licence</div>
+							</div>
+							<div class="col-xl-5 col-lg-6 text-end">
+								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onCreateNew()">
+									<mat-icon>add</mat-icon>Apply for a new Business Licence
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
