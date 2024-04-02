@@ -74,6 +74,54 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
+        public async void Handle_WorkerLicenceSubmitCommand_Return_WorkerLicenceCommandResponse()
+        {
+            //Arrange
+            //no duplicates; 
+            Guid applicantId = Guid.NewGuid();
+            Guid licAppId = Guid.NewGuid();
+            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+                .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None)) //no dup lic
+                .ReturnsAsync(new LicenceListResp()
+                {
+                    Items = new List<LicenceResp> { }
+                });
+            mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
+                .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+            mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppUpsertRequest>()))
+                .Returns(new SaveLicenceApplicationCmd());
+            mockMapper.Setup(m => m.Map<WorkerLicenceCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
+                .Returns(new WorkerLicenceCommandResponse() { LicenceAppId = licAppId });
+            mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DocumentListResp()
+                {
+                    Items = new List<DocumentResp> { new() }
+                });
+            mockTransientFileStorageService.Setup(m => m.HandleQuery(It.IsAny<FileMetadataQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new FileMetadataQueryResult("key", "folder", null));
+            mockMainFileService.Setup(m => m.HandleCopyStorageFromTransientToMainCommand(It.IsAny<CopyStorageFromTransientToMainCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("string");
+            mockTransientFileStorageService.Setup(m => m.HandleDeleteCommand(It.IsAny<StorageDeleteCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("string");
+            WorkerLicenceAppUpsertRequest request = new()
+            {
+                LicenceAppId = licAppId,
+                WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+                ApplicantId = applicantId,
+            };
+
+            //Act
+            var viewResult = await sut.Handle(new WorkerLicenceSubmitCommand(request), CancellationToken.None);
+
+            //Assert
+            Assert.IsType<WorkerLicenceCommandResponse>(viewResult);
+            Assert.Equal(licAppId, viewResult.LicenceAppId);
+            mockMainFileService.Verify();
+            mockTransientFileStorageService.Verify();
+        }
+
+        [Fact]
         public async void Handle_WorkerLicenceUpsertCommand_WithDuplicateLic_Throw_Exception()
         {
             //Arrange
@@ -338,7 +386,7 @@ namespace Spd.Manager.Licence.UnitTest
         public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
-            DateTime dateTime = DateTime.UtcNow.AddDays(1);
+            DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays + 1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()

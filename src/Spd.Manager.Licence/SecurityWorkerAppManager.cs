@@ -510,7 +510,7 @@ internal class SecurityWorkerAppManager :
         DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
         IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
 
-        if (request.PreviousDocumentIds != null)
+        if (request.PreviousDocumentIds != null && docListResps != null)
         {
             existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
             .Select(f => new LicAppFileInfo()

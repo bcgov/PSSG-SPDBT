@@ -44,11 +44,11 @@ internal abstract class LicenceAppManagerBase
             WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
-        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+        if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
         else
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-        return price.LicenceFees.FirstOrDefault()?.Amount;
+        return price?.LicenceFees.FirstOrDefault()?.Amount;
     }
 
     //upload file from cache to main bucket
@@ -100,7 +100,7 @@ internal abstract class LicenceAppManagerBase
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
         foreach (DocumentResp existingDoc in existingDocs.Items)
         {
-            var doc = request.DocumentInfos.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
+            var doc = request.DocumentInfos?.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
             if (doc == null)
             {
                 //remove existingDoc and delete it from s3 bucket.
