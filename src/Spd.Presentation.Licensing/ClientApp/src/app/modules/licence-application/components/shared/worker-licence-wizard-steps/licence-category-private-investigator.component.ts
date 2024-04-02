@@ -83,8 +83,8 @@ import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses
 						"
 					>
-						Upload document(s) providing the following information:
-						<span class="fw-normal">
+						<div class="summary-heading mb-2">Upload document(s) providing the following information:</div>
+						<span class="fs-6 fw-normal">
 							<ul>
 								<li>The names of employers</li>
 								<li>The names of supervising private investigator licensees</li>
