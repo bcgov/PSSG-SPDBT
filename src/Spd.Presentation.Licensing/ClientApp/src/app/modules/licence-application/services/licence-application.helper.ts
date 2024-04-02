@@ -618,13 +618,13 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 
 		if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			if (licenceModelFormValue.categorySecurityAlarmInstallerData.attachments) {
+			if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categorySecurityAlarmInstallerData.attachments.forEach((doc: SpdFile) => {
+				licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityAlarmInstallerData.requirementCode,
+					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
