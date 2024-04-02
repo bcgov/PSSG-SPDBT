@@ -32,7 +32,6 @@ internal class FeeManager :
         return new LicenceFeeListResponse
         {
             LicenceFees = feeResps
-
         };
     }
 }
