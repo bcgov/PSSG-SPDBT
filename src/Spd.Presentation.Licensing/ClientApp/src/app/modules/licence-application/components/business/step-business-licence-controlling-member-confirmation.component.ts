@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -14,21 +13,50 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
-						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-							<div class="mb-2">Current members with active security worker licences</div>
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<div class="summary-heading mb-2">Current members with active security worker licences</div>
+							<div class="row">
+								<div class="col-6">Nav Singh</div>
+								<div class="col-6">E1234398</div>
+								<div class="col-6">John Lee</div>
+								<div class="col-6">E5627844</div>
+							</div>
 						</div>
 					</div>
 
 					<div class="row">
-						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
-							<div class="mb-2">Members who require criminal record checks</div>
+							<div class="summary-heading mb-2">Current members without active security worker licences</div>
+							<div class="row">
+								<div class="col-12">Sammy Jung</div>
+								<div class="col-12">Gerhart Lang</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+							<div class="summary-heading mb-2">Members who require criminal record checks</div>
+							<p>
+								A link to an online application form will be sent to each controlling member via email. They must
+								provide personal information and consent to a criminal record check. We must receive criminal record
+								check consent forms from each individual listed here before the business licence application will be
+								reviewed.
+							</p>
+							<div class="row">
+								<div class="col-6">Sammy Jung</div>
+								<div class="col-6">Sammy.Jung&#64;hotmail.com</div>
+								<div class="col-6">Gerhart Lang</div>
+								<div class="col-6">Manual Form</div>
+							</div>
 						</div>
 					</div>
 
 					<div class="row mt-2">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+							<mat-divider class="mat-divider-main my-3"></mat-divider>
 							<div class="mb-2">
 								Upload a copy of the corporate registry documents for your business in the province in which you are
 								originally registered
@@ -43,44 +71,10 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 						</div>
 					</div>
 				</form>
-
-				<!-- <form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<mat-radio-group aria-label="Select an option" formControlName="hasMembersWithoutSwl">
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							</mat-radio-group>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('hasMembersWithoutSwl')?.dirty || form.get('hasMembersWithoutSwl')?.touched) &&
-									form.get('hasMembersWithoutSwl')?.invalid &&
-									form.get('hasMembersWithoutSwl')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-
-					<div
-						class="row mt-4"
-						*ngIf="hasMembersWithoutSwl.value === booleanTypeCodes.Yes"
-						@showHideTriggerSlideAnimation
-					>
-						<div class="col-xxl-8 col-xl-10 col-lg-8 col-md-8 col-sm-12 mx-auto">
-							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
-							<div class="text-minor-heading mb-2">Added Controlling Members</div>
-						</div>
-					</div>
-				</form> -->
 			</div>
 		</section>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepBusinessLicenceControllingMemberConfirmationComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
@@ -90,7 +84,6 @@ export class StepBusinessLicenceControllingMemberConfirmationComponent implement
 	constructor(private formBuilder: FormBuilder, private businessApplicationService: BusinessApplicationService) {}
 
 	onFileUploaded(_file: File): void {
-		// if (this.authenticationService.isLoggedIn()) {
 		// 	this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
 		// 		next: (resp: any) => {
 		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
@@ -102,7 +95,6 @@ export class StepBusinessLicenceControllingMemberConfirmationComponent implement
 		// 			this.fileUploadComponent.removeFailedFile(file);
 		// 		},
 		// 	});
-		// }
 	}
 
 	onFileRemoved(): void {

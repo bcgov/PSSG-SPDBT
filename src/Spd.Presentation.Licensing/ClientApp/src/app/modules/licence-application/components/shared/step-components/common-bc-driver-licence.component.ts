@@ -33,7 +33,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 					<div class="row mt-2">
 						<div class="col-lg-6 col-md-12 col-sm-12 mx-auto">
 							<mat-form-field>
-								<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
+								<mat-label>BC Driver's Licence <span class="optional-label">(recommended)</span></mat-label>
 								<input matInput formControlName="bcDriversLicenceNumber" mask="00000009" />
 								<mat-error *ngIf="form.get('bcDriversLicenceNumber')?.hasError('mask')">
 									This must be 7 or 8 digits

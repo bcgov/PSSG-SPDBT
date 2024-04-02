@@ -208,9 +208,7 @@ export class LoginSelectionComponent implements OnInit {
 			.createNewBusinessLicence()
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS)
-					);
+					this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 				}),
 				take(1)
 			)

@@ -27,6 +27,7 @@ import { StepPermitRationaleComponent } from './components/anonymous/permit-wiza
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
+import { StepPermitSummaryAuthenticatedComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-authenticated.component';
 import { StepPermitTermsOfUseComponent } from './components/anonymous/permit-wizard-steps/step-permit-terms-of-use.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-steps/steps-permit-contact.component';
@@ -81,6 +82,7 @@ import { BusinessCategoryPrivateInvestigatorComponent } from './components/busin
 import { BusinessCategorySecurityGuardComponent } from './components/business/business-category-security-guard.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
+import { MemberWithoutSwlEditModalComponent } from './components/business/member-without-swl-edit-modal.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceBcBranchesComponent } from './components/business/step-business-licence-bc-branches.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
@@ -215,6 +217,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonSwlPermitTermsComponent,
 		CommonUpdateRenewalAlertComponent,
 		CommonUserProfileComponent,
+		CommonUserProfileLicencePoliceBackgroundComponent,
 		CommonUserProfilePersonalInformationComponent,
 		LicenceApplicationComponent,
 		LicenceCategoryArmouredCarGuardComponent,
@@ -245,8 +248,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentFailAnonymousComponent,
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessAnonymousComponent,
-		CommonUserProfileLicencePoliceBackgroundComponent,
 		LoginSelectionComponent,
+		MemberWithoutSwlEditModalComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
@@ -298,6 +301,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitRationaleComponent,
 		StepPermitReasonComponent,
 		StepPermitResidentialAddressComponent,
+		StepPermitSummaryAuthenticatedComponent,
 		StepPermitSummaryAnonymousComponent,
 		StepPermitTermsOfUseComponent,
 		StepPermitTypeAnonymousComponent,

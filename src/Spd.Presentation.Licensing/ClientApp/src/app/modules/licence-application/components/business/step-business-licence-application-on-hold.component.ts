@@ -22,7 +22,8 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 						<div class="my-3">
 							You will receive an email with further instructions once all controlling members have submitted their
-							criminal record check consent forms. You will be able to return to this
+							criminal record check consent forms. You will be able to return to this application to review and pay the
+							security business licence fee.
 						</div>
 					</div>
 				</div>

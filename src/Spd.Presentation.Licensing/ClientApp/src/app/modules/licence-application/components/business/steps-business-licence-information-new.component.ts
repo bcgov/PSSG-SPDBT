@@ -18,7 +18,10 @@ import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.c
 				<app-step-business-licence-checklist-new></app-step-business-licence-checklist-new>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
@@ -205,7 +208,7 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 	// }
 
 	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathBusinessLicence()]);
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 	}
 
 	override dirtyForm(step: number): boolean {

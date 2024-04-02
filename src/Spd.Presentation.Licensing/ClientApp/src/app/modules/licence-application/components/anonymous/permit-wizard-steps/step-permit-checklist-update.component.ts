@@ -15,11 +15,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<!-- <app-alert type="info" icon="info">
-							{{ subTitle }}
-							<a class="large" [href]="viewExemptionsLink" target="_blank">View exemptions</a>
-						</app-alert> -->
-
 						<form [formGroup]="form" novalidate>
 							<div class="fw-semibold fs-6">
 								Required documents depend on what updates you need to make to your licence:
@@ -59,40 +54,11 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitChecklistUpdateComponent implements LicenceChildStepperStepComponent {
-	// subTitle = '';
-	// viewExemptionsLink = '';
-
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
 
-	// readonly body_armour_subtitle =
-	// 	'You may be exempt from a body armour permit depending on your job or if you have a valid firearms licence.';
-	// readonly armoured_vehicle_subtitle =
-	// 	'You may be allowed to operate an armoured vehicle without a permit while performing your job.';
-
 	constructor(private formBuilder: FormBuilder, private permitApplicationService: PermitApplicationService) {}
-
-	// ngOnInit(): void {
-	// 	const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-	// 		'workerLicenceTypeData.workerLicenceTypeCode'
-	// 	)?.value;
-
-	// 	console.debug('workerLicenceTypeCode', workerLicenceTypeCode);
-
-	// switch (workerLicenceTypeCode) {
-	// 	case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
-	// 		this.subTitle = this.armoured_vehicle_subtitle;
-	// 		this.viewExemptionsLink = SPD_CONSTANTS.urls.permitArmouredVehicleViewExemptions;
-	// 		break;
-	// 	}
-	// 	case WorkerLicenceTypeCode.BodyArmourPermit: {
-	// 		this.subTitle = this.body_armour_subtitle;
-	// 		this.viewExemptionsLink = SPD_CONSTANTS.urls.permitBodyAmourViewExemptions;
-	// 		break;
-	// 	}
-	// }
-	// }
 
 	isFormValid(): boolean {
 		return true;
