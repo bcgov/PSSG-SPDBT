@@ -10,7 +10,6 @@ import {
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -618,13 +617,13 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 
 		if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			if (licenceModelFormValue.categorySecurityAlarmInstallerData.attachments) {
+			if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categorySecurityAlarmInstallerData.attachments.forEach((doc: SpdFile) => {
+				licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityAlarmInstallerData.requirementCode,
+					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
@@ -799,7 +798,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppAnonymousSubmitRequest, Array<Document>] {
+	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppSubmitRequest, Array<Document>] {
 		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
