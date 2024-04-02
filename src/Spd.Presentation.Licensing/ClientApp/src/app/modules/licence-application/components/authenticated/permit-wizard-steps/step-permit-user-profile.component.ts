@@ -56,25 +56,22 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 							></app-common-user-profile-licence-criminal-history>
 						</section>
 
-						<section>
+						<section *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
-								<div>
-									<mat-divider class="mat-divider-main mt-2"></mat-divider>
-									<div class="text-minor-heading py-2">Confirmation</div>
-									<mat-checkbox formControlName="isProfileUpToDate">
-										I confirm that this information is up-to-date
-									</mat-checkbox>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-											form.get('isProfileUpToDate')?.invalid &&
-											form.get('isProfileUpToDate')?.hasError('required')
-										"
-									>
-										This is required
-									</mat-error>
-								</div>
+								<div class="text-minor-heading py-2">Confirmation</div>
+								<mat-checkbox formControlName="isProfileUpToDate">
+									I confirm that this information is up-to-date
+								</mat-checkbox>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+										form.get('isProfileUpToDate')?.invalid &&
+										form.get('isProfileUpToDate')?.hasError('required')
+									"
+								>
+									This is required
+								</mat-error>
 							</form>
 						</section>
 
@@ -113,6 +110,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 	form: FormGroup = this.permitApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
+	showConfirmation = false;
 
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 	@ViewChild(CommonUserProfileLicenceCriminalHistoryComponent)
@@ -132,20 +130,16 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state && state['applicationTypeCode'];
-	}
-
-	ngOnInit(): void {
-		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
-		}
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.alertText = 'Make sure your profile information is up-to-date before renewing your permit.';
+				this.showConfirmation = true;
 				break;
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your permit.';
+				this.showConfirmation = true;
 				break;
 			}
 			default: {
@@ -153,6 +147,12 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 					'Make sure your profile information is up-to-date before renewing or updating your permit, or starting a new application.';
 				break;
 			}
+		}
+	}
+
+	ngOnInit(): void {
+		if (!this.permitApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
 		}
 	}
 
@@ -185,9 +185,9 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 			return;
 		}
 
-		// if (this.applicationTypeCode) {
-		// 	this.permitApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
-		// }
+		if (this.applicationTypeCode) {
+			this.permitApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+		}
 	}
 
 	onBack(): void {

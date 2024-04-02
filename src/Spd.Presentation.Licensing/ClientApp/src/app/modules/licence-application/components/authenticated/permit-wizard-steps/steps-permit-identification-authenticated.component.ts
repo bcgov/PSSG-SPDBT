@@ -4,11 +4,8 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
-import { StepPermitAliasesComponent } from '../../anonymous/permit-wizard-steps/step-permit-aliases.component';
 import { StepPermitBcDriverLicenceComponent } from '../../anonymous/permit-wizard-steps/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '../../anonymous/permit-wizard-steps/step-permit-citizenship.component';
-import { StepPermitCriminalHistoryComponent } from '../../anonymous/permit-wizard-steps/step-permit-criminal-history.component';
-import { StepPermitPersonalInformationComponent } from '../../anonymous/permit-wizard-steps/step-permit-personal-information.component';
 import { StepPermitPhotographOfYourselfAnonymousComponent } from '../../anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
 
@@ -16,83 +13,6 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 	selector: 'app-steps-permit-identification-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-permit-personal-information
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-personal-information>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PERSONAL_INFORMATION)"
-							*ngIf="isLoggedIn"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PERSONAL_INFORMATION)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_ALIASES)"
-							*ngIf="isLoggedIn"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_ALIASES)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_ALIASES)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
 			<mat-step>
 				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
 
@@ -108,7 +28,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
@@ -213,48 +133,6 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-criminal-history
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-criminal-history>
-
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
-							*ngIf="isLoggedIn"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
 				<app-step-permit-physical-characteristics
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-physical-characteristics>
@@ -304,13 +182,10 @@ export class StepsPermitIdentificationAuthenticatedComponent
 	extends BaseWizardStepComponent
 	implements OnInit, OnDestroy
 {
-	readonly STEP_PERSONAL_INFORMATION = 1;
-	readonly STEP_CRIMINAL_HISTORY = 2;
-	readonly STEP_ALIASES = 4;
-	readonly STEP_CITIZENSHIP = 5;
-	readonly STEP_BC_DRIVERS_LICENCE = 6;
-	readonly STEP_PHYSICAL_CHARACTERISTICS = 7;
-	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 8;
+	readonly STEP_CITIZENSHIP = 1;
+	readonly STEP_BC_DRIVERS_LICENCE = 2;
+	readonly STEP_PHYSICAL_CHARACTERISTICS = 3;
+	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 4;
 
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
@@ -320,10 +195,6 @@ export class StepsPermitIdentificationAuthenticatedComponent
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(StepPermitPersonalInformationComponent)
-	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;
-	@ViewChild(StepPermitCriminalHistoryComponent) stepCriminalHistoryComponent!: StepPermitCriminalHistoryComponent;
-	@ViewChild(StepPermitAliasesComponent) stepAliasesComponent!: StepPermitAliasesComponent;
 	@ViewChild(StepPermitCitizenshipComponent) stepCitizenshipComponent!: StepPermitCitizenshipComponent;
 	@ViewChild(StepPermitBcDriverLicenceComponent)
 	stepDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
@@ -372,12 +243,6 @@ export class StepsPermitIdentificationAuthenticatedComponent
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
-			case this.STEP_PERSONAL_INFORMATION:
-				return this.stepPersonalInformationComponent.isFormValid();
-			case this.STEP_CRIMINAL_HISTORY:
-				return this.stepCriminalHistoryComponent.isFormValid();
-			case this.STEP_ALIASES:
-				return this.stepAliasesComponent.isFormValid();
 			case this.STEP_CITIZENSHIP:
 				return this.stepCitizenshipComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:

@@ -17,7 +17,12 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
+							Previous
+						</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
 							Next
 						</button>
@@ -28,11 +33,28 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step>
 				<app-step-permit-checklist-new></app-step-permit-checklist-new>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
+					<div class="row wizard-button-row">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
 					</div>
-				</div>
+				</ng-container>
+				<ng-template #isLoggedInChecklistSteps>
+					<div class="row wizard-button-row">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+							<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
+								Previous
+							</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
+				</ng-template>
 			</mat-step>
 
 			<mat-step>
@@ -47,16 +69,6 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 							Next
 						</button>
 					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<!-- <button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PERMIT_EXPIRED)"
-						>
-							Next: Review
-						</button> -->
-					</div>
 				</div>
 			</mat-step>
 		</mat-stepper>
@@ -69,17 +81,13 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	readonly STEP_PERMIT_EXPIRED = 2;
 
 	private authenticationSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
+	private permitModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
-	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(StepPermitTermsOfUseComponent)
-	termsOfUseComponent!: StepPermitTermsOfUseComponent;
-
-	@ViewChild(StepPermitExpiredComponent)
-	permitExpiredComponent!: StepPermitExpiredComponent;
+	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
+	@ViewChild(StepPermitExpiredComponent) permitExpiredComponent!: StepPermitExpiredComponent;
 
 	constructor(
 		private router: Router,
@@ -96,10 +104,8 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 			}
 		);
 
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
+		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
-				// console.debug('permitModelValueChanges$', _resp);
-				this.isFormValid = _resp;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
@@ -108,8 +114,8 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	}
 
 	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+		if (this.permitModelChangedSubscription) this.permitModelChangedSubscription.unsubscribe();
 	}
 
 	onCancel(): void {
@@ -122,6 +128,13 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 
 	onValidExpiredLicence(): void {
 		this.nextStepperStep.emit(true);
+	}
+
+	onGotoUserProfile(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED),
+			{ state: { applicationTypeCode: this.applicationTypeCode } }
+		);
 	}
 
 	override dirtyForm(step: number): boolean {
