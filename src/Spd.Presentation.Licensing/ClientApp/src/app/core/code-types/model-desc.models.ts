@@ -226,7 +226,7 @@ export const RestraintDocumentTypes: SelectOptions[] = [
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_ASTCertificate,
 	},
 	{
-		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months.',
+		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months. This letter should be signed on official letterhead and include the exact date of the training for our records.',
 		code: RestraintDocumentTypeCode.CategorySecurityGuard_UseForceEmployerLetter,
 	},
 	{
@@ -243,8 +243,8 @@ export const BooleanTypes: SelectOptions[] = [
 export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
 	{ desc: 'Canadian Birth Certificate', code: LicenceDocumentTypeCode.BirthCertificate },
 	{ desc: 'Canadian Citizenship Certificate', code: LicenceDocumentTypeCode.CanadianCitizenship },
-	{ desc: 'Canadian Native Status Card', code: LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen },
 	{ desc: 'Canadian Passport', code: LicenceDocumentTypeCode.CanadianPassport },
+	{ desc: 'Secure certificate of Indian Status', code: LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen },
 ];
 
 export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
@@ -263,13 +263,13 @@ export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'BC Services Card (with photo)', code: LicenceDocumentTypeCode.BcServicesCard },
 	{ desc: 'BCID', code: LicenceDocumentTypeCode.Bcid },
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
+	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCardAdditional },
+	{ desc: `Driver's Licence`, code: LicenceDocumentTypeCode.DriversLicenceAdditional },
+	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
 	{
-		desc: 'Canadian Native Status Card (with photo)',
+		desc: 'Secure certificate of Indian Status (with photo)',
 		code: LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional,
 	},
-	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCardAdditional },
-	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicenceAdditional },
-	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
 ];
 
 export const PermitProofOfResidenceStatusTypes: SelectOptions[] = [
@@ -284,7 +284,7 @@ export const PermitProofOfResidenceStatusTypes: SelectOptions[] = [
 ];
 
 export const PermitProofOfCitizenshipTypes: SelectOptions[] = [
-	{ desc: 'Drivers Licence', code: LicenceDocumentTypeCode.DriversLicence },
+	{ desc: `Driver's Licence`, code: LicenceDocumentTypeCode.DriversLicence },
 	{ desc: 'Valid Government Issued Photo ID', code: LicenceDocumentTypeCode.GovernmentIssuedPhotoId },
 	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
 ];
