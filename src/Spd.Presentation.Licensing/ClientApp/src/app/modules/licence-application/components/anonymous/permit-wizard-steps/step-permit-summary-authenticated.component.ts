@@ -15,7 +15,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
-	selector: 'app-step-permit-summary-anonymous',
+	selector: 'app-step-permit-summary-authenticated',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -231,54 +231,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</mat-panel-title>
 										</mat-expansion-panel-header>
 										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Personal Information</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Applicant Name</div>
-													<div class="summary-text-data">
-														{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-														{{ surname }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Date of Birth</div>
-													<div class="summary-text-data">
-														{{ dateOfBirth | formatDate | default }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Sex</div>
-													<div class="summary-text-data">
-														{{ genderCode | options : 'GenderTypes' | default }}
-													</div>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
 											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-												<div class="text-minor-heading">Aliases</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Previous Names or Aliases</div>
-														<div class="summary-text-data">{{ previousNameFlag }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-															<div class="text-label d-block text-muted">Alias Name(s)</div>
-															<div class="summary-text-data">
-																<div
-																	*ngFor="let alias of aliases; let i = index; let first = first"
-																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-																>
-																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																	{{ alias.surname }}
-																</div>
-															</div>
-														</ng-container>
-													</div>
-												</div>
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-
 												<div class="text-minor-heading">Citizenship</div>
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12">
@@ -372,125 +325,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													</div>
 												</div>
 											</ng-container>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Criminal History</div>
-											<div class="row mt-0">
-												<div class="col-12">
-													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-												</div>
-												<div class="col-12" *ngIf="criminalChargeDescription">
-													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-												</div>
-											</div>
-										</div>
-									</mat-expansion-panel>
-
-									<mat-expansion-panel class="mb-2" [expanded]="true">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="review-panel-title">
-												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Contact Information</div>
-													<button
-														mat-mini-fab
-														color="primary"
-														class="go-to-step-button"
-														matTooltip="Go to Step 4"
-														aria-label="Go to Step 4"
-														(click)="$event.stopPropagation(); onEditStep(3)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-												</mat-toolbar>
-											</mat-panel-title>
-										</mat-expansion-panel-header>
-										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Contact</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Email Address</div>
-													<div class="summary-text-data">{{ emailAddress | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Phone Number</div>
-													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
-													</div>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Residential Address</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 1</div>
-													<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 2</div>
-													<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">City</div>
-													<div class="summary-text-data">{{ residentialCity | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Postal Code</div>
-													<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Province</div>
-													<div class="summary-text-data">
-														{{ residentialProvince | default }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Country</div>
-													<div class="summary-text-data">
-														{{ residentialCountry | default }}
-													</div>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Mailing Address</div>
-											<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-												<div class="row mt-0">
-													<div class="col-12">
-														<div class="summary-text-data">Mailing address is the same as the residential address</div>
-													</div>
-												</div>
-											</ng-container>
-											<ng-template #mailingIsDifferentThanResidential>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Address Line 1</div>
-														<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Address Line 2</div>
-														<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">City</div>
-														<div class="summary-text-data">{{ mailingCity | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Postal Code</div>
-														<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Province</div>
-														<div class="summary-text-data">{{ mailingProvince | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Country</div>
-														<div class="summary-text-data">{{ mailingCountry | default }}</div>
-													</div>
-												</div>
-											</ng-template>
 										</div>
 									</mat-expansion-panel>
 								</mat-accordion>
@@ -545,7 +379,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 		`,
 	],
 })
-export class StepPermitSummaryAnonymousComponent implements OnInit {
+export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	permitModelData: any = {};
 	showEmployerInformation = false;
 
@@ -606,51 +440,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 	get expiredLicenceExpiryDate(): string {
 		return this.permitModelData.expiredLicenceData.expiryDate ?? '';
-	}
-
-	get givenName(): string {
-		return this.permitModelData.personalInformationData.givenName ?? '';
-	}
-	get middleName1(): string {
-		return this.permitModelData.personalInformationData.middleName1 ?? '';
-	}
-	get middleName2(): string {
-		return this.permitModelData.personalInformationData.middleName2 ?? '';
-	}
-	get surname(): string {
-		return this.permitModelData.personalInformationData.surname ?? '';
-	}
-	get genderCode(): string {
-		return this.permitModelData.personalInformationData.genderCode ?? '';
-	}
-	get dateOfBirth(): string {
-		return this.permitModelData.personalInformationData.dateOfBirth ?? '';
-	}
-
-	get previousNameFlag(): string {
-		return this.permitModelData.aliasesData.previousNameFlag ?? '';
-	}
-	get aliases(): Array<any> {
-		return this.permitModelData.aliasesData.aliases ?? [];
-	}
-
-	get criminalHistoryLabel(): string {
-		if (
-			this.applicationTypeCode === ApplicationTypeCode.Update ||
-			this.applicationTypeCode === ApplicationTypeCode.Renewal
-		) {
-			return 'New Criminal Charges or Convictions';
-		} else {
-			return 'Previously been Charged or Convicted of a Crime';
-		}
-	}
-	get hasCriminalHistory(): string {
-		return this.permitModelData.criminalHistoryData.hasCriminalHistory ?? '';
-	}
-	get criminalChargeDescription(): string {
-		return this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory === BooleanTypeCode.Yes
-			? this.permitModelData.criminalHistoryData.criminalChargeDescription
-			: '';
 	}
 
 	get isCanadianCitizen(): string {
@@ -736,13 +525,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get photoOfYourselfAttachments(): File[] {
 		return this.permitModelData.photographOfYourselfData.attachments ?? [];
-	}
-
-	get emailAddress(): string {
-		return this.permitModelData.contactInformationData?.emailAddress ?? '';
-	}
-	get phoneNumber(): string {
-		return this.permitModelData.contactInformationData?.phoneNumber ?? '';
 	}
 
 	get reasonForRequirement(): string {
@@ -878,46 +660,5 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 	get businessCountry(): string {
 		return this.permitModelData.employerData?.country ?? '';
-	}
-
-	get residentialAddressLine1(): string {
-		return this.permitModelData.residentialAddress?.addressLine1 ?? '';
-	}
-	get residentialAddressLine2(): string {
-		return this.permitModelData.residentialAddress?.addressLine2 ?? '';
-	}
-	get residentialCity(): string {
-		return this.permitModelData.residentialAddress?.city ?? '';
-	}
-	get residentialPostalCode(): string {
-		return this.permitModelData.residentialAddress?.postalCode ?? '';
-	}
-	get residentialProvince(): string {
-		return this.permitModelData.residentialAddress?.province ?? '';
-	}
-	get residentialCountry(): string {
-		return this.permitModelData.residentialAddress?.country ?? '';
-	}
-	get isMailingTheSameAsResidential(): string {
-		return this.permitModelData.residentialAddress?.isMailingTheSameAsResidential ?? '';
-	}
-
-	get mailingAddressLine1(): string {
-		return this.permitModelData.mailingAddress?.addressLine1 ?? '';
-	}
-	get mailingAddressLine2(): string {
-		return this.permitModelData.mailingAddress?.addressLine2 ?? '';
-	}
-	get mailingCity(): string {
-		return this.permitModelData.mailingAddress?.city ?? '';
-	}
-	get mailingPostalCode(): string {
-		return this.permitModelData.mailingAddress?.postalCode ?? '';
-	}
-	get mailingProvince(): string {
-		return this.permitModelData.mailingAddress?.province ?? '';
-	}
-	get mailingCountry(): string {
-		return this.permitModelData.mailingAddress?.country ?? '';
 	}
 }

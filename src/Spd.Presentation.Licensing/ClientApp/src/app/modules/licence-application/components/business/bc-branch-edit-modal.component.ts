@@ -29,14 +29,14 @@ export interface UserDialogData {
 
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Manager's security worker licence number (optional)</mat-label>
+							<mat-label>Manager's Security Worker Licence Number (optional)</mat-label>
 							<input matInput formControlName="managerSwlNumber" maxlength="10" [errorStateMatcher]="matcher" />
 						</mat-form-field>
 					</div>
 
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Manager's phone number</mat-label>
+							<mat-label>Manager's Phone Number</mat-label>
 							<input
 								matInput
 								formControlName="managerPhoneNumber"

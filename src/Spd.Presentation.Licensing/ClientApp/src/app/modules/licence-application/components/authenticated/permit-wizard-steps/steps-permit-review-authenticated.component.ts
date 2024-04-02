@@ -3,14 +3,14 @@ import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from '../../anonymous/permit-wizard-steps/step-permit-consent-and-declaration.component';
-import { StepPermitSummaryAnonymousComponent } from '../../anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
+import { StepPermitSummaryAuthenticatedComponent } from '../../anonymous/permit-wizard-steps/step-permit-summary-authenticated.component';
 
 @Component({
 	selector: 'app-steps-permit-review-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-summary-anonymous (editStep)="onGoToStep($event)"></app-step-permit-summary-anonymous>
+				<app-step-permit-summary-authenticated (editStep)="onGoToStep($event)"></app-step-permit-summary-authenticated>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -52,7 +52,7 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepPermitSummaryAnonymousComponent) summaryReviewComponent!: StepPermitSummaryAnonymousComponent;
+	@ViewChild(StepPermitSummaryAuthenticatedComponent) summaryReviewComponent!: StepPermitSummaryAuthenticatedComponent;
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
