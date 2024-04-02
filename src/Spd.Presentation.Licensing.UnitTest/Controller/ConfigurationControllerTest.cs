@@ -21,15 +21,10 @@ public class ConfigurationControllerTest
     private readonly IFixture fixture;
     private Mock<IOptions<BCeIDAuthenticationConfiguration>> mockBceIdAuthConfig = new();
     private Mock<IOptions<BcscAuthenticationConfiguration>> mockBcscAuthConfig = new();
-    private Mock<IConfiguration> mockConfig = new();
     private Mock<IOptions<GoogleReCaptchaConfiguration>> mockRecaptchConfig = new();
     private Mock<IMediator> mockMediator = new();
 
     private ConfigurationController sut;
-
-    private Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> uploadFileConfiguration = new Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> {
-        {WorkerCategoryTypeCode.ArmouredCarGuard, new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard } }
-    };
 
     public ConfigurationControllerTest()
     {
