@@ -4,25 +4,33 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
+
 internal abstract class LicenceAppManagerBase
 {
     protected readonly IMapper _mapper;
     protected readonly IDocumentRepository _documentRepository;
     protected readonly ILicenceFeeRepository _feeRepository;
     protected readonly ILicenceApplicationRepository _licenceAppRepository;
+    protected readonly IMainFileStorageService _mainFileService;
+    protected readonly ITransientFileStorageService _transientFileService;
 
     public LicenceAppManagerBase(IMapper mapper,
         IDocumentRepository documentRepository,
         ILicenceFeeRepository feeRepository,
-        ILicenceApplicationRepository licenceAppRepository)
+        ILicenceApplicationRepository licenceAppRepository,
+        IMainFileStorageService mainFileService,
+        ITransientFileStorageService transientFileService)
     {
         _mapper = mapper;
         _documentRepository = documentRepository;
         _feeRepository = feeRepository;
         _licenceAppRepository = licenceAppRepository;
+        _mainFileService = mainFileService;
+        _transientFileService = transientFileService;
     }
 
     protected async Task<decimal?> CommitApplicationAsync(PersonalLicenceAppBase request, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
@@ -36,11 +44,11 @@ internal abstract class LicenceAppManagerBase
             WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
-        if (price.LicenceFees.FirstOrDefault() == null || price.LicenceFees.FirstOrDefault()?.Amount == 0)
+        if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
         else
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-        return price.LicenceFees.FirstOrDefault()?.Amount;
+        return price?.LicenceFees.FirstOrDefault()?.Amount;
     }
 
     //upload file from cache to main bucket
@@ -92,7 +100,7 @@ internal abstract class LicenceAppManagerBase
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
         foreach (DocumentResp existingDoc in existingDocs.Items)
         {
-            var doc = request.DocumentInfos.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
+            var doc = request.DocumentInfos?.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
             if (doc == null)
             {
                 //remove existingDoc and delete it from s3 bucket.
@@ -100,7 +108,7 @@ internal abstract class LicenceAppManagerBase
             }
             else
             {
-                //update expiredDate 
+                //update expiredDate
                 LicenceDocumentTypeCode? existDocType = Mappings.GetLicenceDocumentTypeCode(existingDoc.DocumentType, existingDoc.DocumentType2);
                 if (doc.LicenceDocumentTypeCode == null)
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "documentType cannot be null");
@@ -118,5 +126,32 @@ internal abstract class LicenceAppManagerBase
             }
         }
     }
-}
 
+    protected async Task MoveFilesAsync(Guid applicationId, CancellationToken cancellationToken)
+    {
+        var result = await _documentRepository.QueryAsync(new DocumentQry() { ApplicationId = applicationId }, cancellationToken);
+        foreach (var document in result.Items)
+        {
+            FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _transientFileService.HandleQuery(
+                new FileMetadataQuery { Key = document.DocumentUrlId.ToString(), Folder = document.Folder },
+                cancellationToken);
+            bool fileExists = queryResult != null;
+
+            if (fileExists)
+            {
+                await _mainFileService.HandleCopyStorageFromTransientToMainCommand(
+                    new CopyStorageFromTransientToMainCommand
+                    (
+                        SourceKey: document.DocumentUrlId.ToString(),
+                        SourceFolder: document.Folder,
+                        DestKey: document.DocumentUrlId.ToString(),
+                        DestFolder: document.Folder
+                    ),
+                    cancellationToken);
+                await _transientFileService.HandleDeleteCommand(
+                    new StorageDeleteCommand(document.DocumentUrlId.ToString(), document.Folder),
+                    cancellationToken);
+            }
+        }
+    }
+}
