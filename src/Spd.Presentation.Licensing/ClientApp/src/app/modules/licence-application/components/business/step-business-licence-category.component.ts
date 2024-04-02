@@ -14,7 +14,6 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 
 				<div class="row">
 					<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
-						<div class="fs-5 mb-2">Select Licence Category</div>
 						<form [formGroup]="form" novalidate>
 							<div class="row mb-4">
 								<ng-container *ngFor="let item of businessCategoryTypes">
@@ -149,7 +148,7 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 	showSecurityAlarmResponseMessage = false;
 	showSecurityGuardMessage = false;
 
-	title = 'What category of security business licence are you applying for?';
+	title = 'Which categories of security business licence are you applying for?';
 	// infoTitle = '';
 
 	// readonly title_new = 'What category of security business licence are you applying for?';

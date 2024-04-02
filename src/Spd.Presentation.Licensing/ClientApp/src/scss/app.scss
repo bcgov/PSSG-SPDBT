@@ -227,7 +227,11 @@ body {
 .text-minor-heading {
 	font-size: 1.25rem !important;
 	color: var(--color-primary) !important;
-	// font-weight: 600 !important;
+}
+
+.summary-heading {
+	font-size: 1.1rem !important;
+	color: var(--color-primary) !important;
 }
 
 .text-label {

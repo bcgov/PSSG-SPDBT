@@ -141,6 +141,10 @@ export class LicenceApplicationRoutes {
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}/${route}`
 			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}`;
 	}
+
+	public static pathBusinessApplications(): string {
+		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.BUSINESS_BASE}/${LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS}`;
+	}
 }
 
 const routes: Routes = [
