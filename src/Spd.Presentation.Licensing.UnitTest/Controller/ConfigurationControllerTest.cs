@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -9,11 +8,6 @@ using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class ConfigurationControllerTest
@@ -51,10 +45,10 @@ public class ConfigurationControllerTest
         mockMediator.Setup(m => m.Send(It.IsAny<GetReplacementProcessingTimeQuery>(), CancellationToken.None))
             .ReturnsAsync("test");
 
-        sut = new ConfigurationController(mockBceIdAuthConfig.Object, 
-            mockRecaptchConfig.Object, 
-            mockBcscAuthConfig.Object, 
-            configuration, 
+        sut = new ConfigurationController(mockBceIdAuthConfig.Object,
+            mockRecaptchConfig.Object,
+            mockBcscAuthConfig.Object,
+            configuration,
             mockMediator.Object);
     }
 
