@@ -34,7 +34,7 @@ import { StepsPermitDetailsNewComponent } from './components/anonymous/permit-wi
 import { StepsPermitDetailsUpdateComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-update.component';
 import { StepsPermitDetailsRenewalComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component-renewal';
 import { StepsPermitIdentificationAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification-anonymous.component';
-import { StepsPermitPurposeComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component';
+import { StepsPermitPurposeAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component-anonymous';
 import { StepsPermitReviewAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-review-anonymous.component';
 import { WorkerLicenceApplicationBaseAnonymousComponent } from './components/anonymous/worker-licence-application-base-anonymous.component';
 import { WorkerLicenceWizardAnonymousNewComponent } from './components/anonymous/worker-licence-wizard-anonymous-new.component';
@@ -46,7 +46,6 @@ import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components
 import { StepWorkerLicenceConfirmationComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-confirmation.component';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-personal-information-anonymous.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-summary-review-anonymous.component';
-import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-type-anonymous.component';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated/licence-access-code-authorized.component';
@@ -60,6 +59,7 @@ import { PermitWizardAuthenticatedRenewalComponent } from './components/authenti
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-identification-authenticated.component';
+import { StepsPermitPurposeAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-purpose-authenticated.component';
 import { StepsPermitReviewAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-review-authenticated.component';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
@@ -337,7 +337,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent,
 		StepWorkerLicenceTermComponent,
 		StepWorkerLicenceTermsOfUseComponent,
-		StepWorkerLicenceTypeAnonymousComponent,
 		StepWorkerLicenceUpdateFeeComponent,
 		StepWorkerLicenceUserProfileComponent,
 		StepsBusinessLicenceInformationNewComponent,
@@ -350,7 +349,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsPermitDetailsUpdateComponent,
 		StepsPermitIdentificationAnonymousComponent,
 		StepsPermitIdentificationAuthenticatedComponent,
-		StepsPermitPurposeComponent,
+		StepsPermitPurposeAuthenticatedComponent,
+		StepsPermitPurposeAnonymousComponent,
 		StepsPermitReviewAnonymousComponent,
 		StepsPermitReviewAuthenticatedComponent,
 		StepsWorkerLicenceBackgroundComponent,

@@ -13,7 +13,6 @@ import { WorkerLicenceWizardAnonymousReplacementComponent } from './components/a
 import { WorkerLicenceWizardAnonymousUpdateComponent } from './components/anonymous/worker-licence-wizard-anonymous-update.component';
 import { StepWorkerLicenceAccessCodeComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-access-code.component';
 import { StepWorkerLicenceApplicationTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-application-type-anonymous.component';
-import { StepWorkerLicenceTypeAnonymousComponent } from './components/anonymous/worker-licence-wizard-steps/step-worker-licence-type-anonymous.component';
 import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated/licence-access-code-authorized.component';
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
@@ -81,7 +80,6 @@ export class LicenceApplicationRoutes {
 
 	// ANONYMOUS
 	public static LICENCE_APPLICATION_ANONYMOUS = 'applications-anonymous';
-	public static LICENCE_SELECTION_ANONYMOUS = 'licence-selection';
 	public static LICENCE_APPLICATION_TYPE_ANONYMOUS = 'licence-application-type';
 	public static LICENCE_ACCESS_CODE_ANONYMOUS = 'licence-access-code';
 
@@ -123,13 +121,13 @@ export class LicenceApplicationRoutes {
 	public static pathSecurityWorkerLicenceAnonymous(route: string | null = null): string {
 		return route
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS}`;
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LOGIN_SELECTION}`;
 	}
 
 	public static pathPermitAnonymous(route: string | null = null): string {
 		return route
 			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.PERMIT_ANONYMOUS}`;
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LOGIN_SELECTION}`;
 	}
 
 	public static pathPermitAuthenticated(route: string | null = null): string {
@@ -162,10 +160,6 @@ const routes: Routes = [
 				component: WorkerLicenceApplicationBaseAnonymousComponent,
 				children: [
 					{
-						path: LicenceApplicationRoutes.LICENCE_SELECTION_ANONYMOUS,
-						component: StepWorkerLicenceTypeAnonymousComponent,
-					},
-					{
 						path: LicenceApplicationRoutes.LICENCE_APPLICATION_TYPE_ANONYMOUS,
 						component: StepWorkerLicenceApplicationTypeAnonymousComponent,
 					},
@@ -189,10 +183,6 @@ const routes: Routes = [
 						path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_ANONYMOUS,
 						component: WorkerLicenceWizardAnonymousUpdateComponent,
 					},
-					{
-						path: '',
-						component: StepWorkerLicenceTypeAnonymousComponent,
-					},
 				],
 			},
 			{
@@ -202,10 +192,6 @@ const routes: Routes = [
 				path: LicenceApplicationRoutes.PERMIT_ANONYMOUS,
 				component: PermitApplicationBaseAnonymousComponent,
 				children: [
-					{
-						path: LicenceApplicationRoutes.LICENCE_SELECTION_ANONYMOUS,
-						component: StepWorkerLicenceTypeAnonymousComponent,
-					},
 					{
 						path: LicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS,
 						component: StepPermitTypeAnonymousComponent,
@@ -225,10 +211,6 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.PERMIT_UPDATE_ANONYMOUS,
 						component: PermitWizardAnonymousUpdateComponent,
-					},
-					{
-						path: '',
-						component: StepWorkerLicenceTypeAnonymousComponent,
 					},
 				],
 			},

@@ -35,7 +35,7 @@ export class PermitService extends BaseService {
   static readonly ApiPermitApplicationsPostPath = '/api/permit-applications';
 
   /**
-   * Create Security Worker Licence Application.
+   * Create Permit Application.
    *
    *
    *
@@ -69,7 +69,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Create Security Worker Licence Application.
+   * Create Permit Application.
    *
    *
    *

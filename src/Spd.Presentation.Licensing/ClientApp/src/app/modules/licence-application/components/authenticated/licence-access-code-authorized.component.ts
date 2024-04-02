@@ -39,10 +39,13 @@ import { HotToastService } from '@ngneat/hot-toast';
 
 					<app-alert type="info" icon="">
 						<p>
-							You need both <strong>your licence number</strong> as it appears on your current licence, plus the
-							<strong>access code number</strong>
-							provided following your initial security worker application or in your renewal letter from the Registrar,
-							Security Services. Enter the two numbers below then click 'Link' to continue.
+							If you have an valid or expired security worker licence, body armour permit, or armoured vehicle permit,
+							link your existing account with your unique access code.
+						</p>
+						<p>
+							You need both your licence number as it appears on your current or expired licence, plus the access code
+							number. You can find your access code on the letter that came with your new licence, or your licence
+							renewal letter.
 						</p>
 						<p>
 							If you do not know your access code, you may call Security Program's Licensing Unit during regular office
@@ -52,9 +55,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 
 					<form [formGroup]="form" novalidate>
 						<div class="row mt-4">
-							<div class="offset-xxl-1 col-xxl-3 offset-xl-1 col-xl-4 col-lg-4 col-md-12">
+							<div class="col-xxl-4 col-xl-4 col-lg-5 col-md-12">
 								<mat-form-field>
-									<mat-label>Current Licence Number</mat-label>
+									<mat-label>Current or Expired Licence Number</mat-label>
 									<input
 										matInput
 										formControlName="licenceNumber"
@@ -65,7 +68,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									<mat-error *ngIf="form.get('licenceNumber')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
+							<div class="col-xxl-3 col-xl-4 col-lg-3 col-md-12">
 								<mat-form-field>
 									<mat-label>Access Code</mat-label>
 									<input
@@ -78,7 +81,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									<mat-error *ngIf="form.get('accessCode')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xxl-3 col-xl-2 col-lg-4 col-md-12">
+							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-12">
 								<button mat-flat-button color="primary" class="large mt-2" (click)="onLink()">
 									<mat-icon>link</mat-icon>Link to your Account
 								</button>
