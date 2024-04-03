@@ -49,9 +49,9 @@ export const SPD_CONSTANTS = {
 		debounceTime: 500, // milliseconds
 	},
 	payment: {
-		maxNumberOfAttempts: 3,
+		maxNumberOfAttempts: 10,
 	},
-	maxNumberOfAliases: 3,
+	maxNumberOfAliases: 10,
 	// sessionStorage: {
 	// 	organizationRegStateKey: 'state',
 	// 	crcPortalStateKey: 'crc-state',

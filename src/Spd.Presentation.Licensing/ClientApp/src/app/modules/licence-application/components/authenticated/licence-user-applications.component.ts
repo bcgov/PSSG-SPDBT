@@ -46,13 +46,13 @@ import {
 
 					<ng-container *ngFor="let msg of errorMessages; let i = index">
 						<app-alert type="danger" icon="error">
-							{{ msg }}
+							<div [innerHTML]="msg"></div>
 						</app-alert>
 					</ng-container>
 
 					<ng-container *ngFor="let msg of warningMessages; let i = index">
 						<app-alert type="warning" icon="warning">
-							{{ msg }}
+							<div [innerHTML]="msg"></div>
 						</app-alert>
 					</ng-container>
 
@@ -131,26 +131,8 @@ import {
 										</mat-cell>
 									</ng-container>
 
-									<ng-container matColumnDef="expandedDetail">
-										<mat-cell *matCellDef="let application" [attr.colspan]="applicationColumns.length" class="px-0">
-											<ng-container *ngIf="application.isExpiryWarning || application.isExpiryError">
-												<div
-													class="alert d-flex d-inline-flex align-items-center w-100"
-													[ngClass]="application.isExpiryWarning ? 'draft-warning-message' : 'draft-error-message'"
-													role="alert"
-												>
-													<div class="my-1 px-2">
-														You haven't submitted this licence application yet. It will expire on
-														{{ application.applicationExpiryDate | formatDate : constants.date.formalDateFormat }}.
-													</div>
-												</div>
-											</ng-container>
-										</mat-cell>
-									</ng-container>
-
 									<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
 									<mat-row *matRowDef="let row; columns: applicationColumns"></mat-row>
-									<mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expanded-detail-row"></mat-row>
 								</mat-table>
 							</div>
 						</div>
@@ -159,10 +141,10 @@ import {
 					<div class="mb-3">
 						<div class="section-title fs-5 py-3">Active Licences/Permits</div>
 
-						<ng-container *ngIf="activeApplications.length > 0">
+						<ng-container *ngIf="activeLicences.length > 0">
 							<div
 								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-								*ngFor="let appl of activeApplications; let i = index"
+								*ngFor="let appl of activeLicences; let i = index"
 							>
 								<div class="row">
 									<div class="col-lg-2">
@@ -524,7 +506,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
-	activeApplications: Array<UserLicenceResponse> = [];
+	activeLicences: Array<UserLicenceResponse> = [];
 
 	// If the licence holder has a SWL, they can add a new Body Armour and/or Armoured Vehicle permit
 	// If the licence holder has a Body Armour permit, they can add a new Armoured Vehicle permit and/or a security worker licence
@@ -571,22 +553,44 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				console.debug('userLicencesList', userLicencesList);
 				console.debug('userApplicationsList', userApplicationsList);
 
+				// User Applications
+				const draftNotifications = userApplicationsList.filter(
+					(item: UserApplicationResponse) => item.isExpiryWarning || item.isExpiryError
+				);
+				draftNotifications.forEach((item: UserApplicationResponse) => {
+					const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'WorkerLicenceTypes');
+					const itemExpiry = this.formatDatePipe.transform(
+						item.applicationExpiryDate,
+						SPD_CONSTANTS.date.formalDateFormat
+					);
+					if (item.isExpiryWarning) {
+						this.warningMessages.push(
+							`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
+						);
+					} else {
+						this.errorMessages.push(
+							`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
+						);
+					}
+				});
+
 				// User Licences/Permits
-				this.activeApplications = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
+				this.activeLicences = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
+
 				this.expiredLicences = userLicencesList.filter((item: UserLicenceResponse) => item.isExpired);
-				const renewals = this.activeApplications.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
+				const renewals = this.activeLicences.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
 				renewals.forEach((item: UserLicenceResponse) => {
 					const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
 					const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
 					if (item.licenceExpiryNumberOfDays) {
 						if (item.licenceExpiryNumberOfDays > 7) {
 							this.warningMessages.push(
-								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by ${itemExpiry}.`
+								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
 							);
 						} else {
 							const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
 							this.errorMessages.push(
-								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by ${itemExpiry}.`
+								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
 							);
 						}
 					}
@@ -600,7 +604,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
-					this.activeApplications.findIndex(
+					this.activeLicences.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 					) >= 0;
 
@@ -613,7 +617,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.activeSwlExist = activeSwlExist;
 
 				let activeBaPermitExist =
-					this.activeApplications.findIndex(
+					this.activeLicences.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 					) >= 0;
 				if (!activeBaPermitExist) {
@@ -625,7 +629,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.activeBaPermitExist = activeBaPermitExist;
 
 				let activeAvPermitExist =
-					this.activeApplications.findIndex(
+					this.activeLicences.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 					) >= 0;
 				if (!activeAvPermitExist) {
