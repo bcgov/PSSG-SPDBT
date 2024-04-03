@@ -8,11 +8,14 @@ namespace Spd.Manager.Common.Admin
         public Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery request, CancellationToken cancellationToken);
         public Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery request, CancellationToken cancellationToken);
         public Task<string> Handle(GetBannerMsgQuery request, CancellationToken cancellationToken);
+        public Task<string> Handle(GetReplacementProcessingTimeQuery request, CancellationToken cancellationToken);
         public Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken);
 
     }
 
     public record GetBannerMsgQuery : IRequest<string>;
+
+    public record GetReplacementProcessingTimeQuery : IRequest<string>;
 
     public record FindAddressQuery(string SearchTerm, string Country = "CAN", string? LastId = null) : IRequest<IEnumerable<AddressFindResponse>>;
 
