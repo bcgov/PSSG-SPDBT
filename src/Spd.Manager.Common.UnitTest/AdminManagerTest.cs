@@ -23,6 +23,42 @@ public class AdminManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        var bannerItem = fixture.Build<ConfigItem>()
+            .With(i => i.Value, "test")
+            .Create();
+        var bannerItems = new List<ConfigItem>() { bannerItem };
+        mockConfigRepo.Setup(m => m.Query(It.Is<ConfigQuery>(q => q.Key == IConfigRepository.BANNER_MSG_CONFIG_KEY), CancellationToken.None))
+            .ReturnsAsync(new ConfigResult(bannerItems));
+
+        var licensingItem = fixture.Build<ConfigItem>()
+            .With(i => i.Value, "0")
+            .Create();
+        var licensingItems = new List<ConfigItem>() { licensingItem };
+        mockConfigRepo.Setup(m => m.Query(It.Is<ConfigQuery>(q => q.Key == IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), CancellationToken.None))
+            .ReturnsAsync(new ConfigResult(licensingItems));
+
         sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object);
+    }
+
+    [Fact]
+    public async void Handle_GetBannerMsgQuery_Return_StringResponse()
+    {
+        GetBannerMsgQuery request = new GetBannerMsgQuery();
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsType<string>(result);
+        Assert.Equal("test", result);
+    }
+
+    [Fact]
+    public async void Handle_GetReplacementProcessingTimeQuery_Return_StringResponse()
+    {
+        GetReplacementProcessingTimeQuery request = new GetReplacementProcessingTimeQuery();
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsType<string>(result);
+        Assert.Equal("0", result);
     }
 }
