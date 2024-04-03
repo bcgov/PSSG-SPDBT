@@ -48,7 +48,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 			<div class="col-lg-6 col-md-12">
 				<mat-divider class="mat-divider-main"></mat-divider>
 				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
-				<app-alert type="info" icon="" [showBorder]="false">
+				<app-alert type="info" icon="" [showBorder]="false" *ngIf="!isReadonlyMailingAddress">
 					Provide your mailing address, if different from your residential address. This cannot be a company address.
 				</app-alert>
 
