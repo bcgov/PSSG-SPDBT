@@ -10,6 +10,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { ConfigService } from '@app/core/services/config.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -277,7 +278,7 @@ import {
 											*ngIf="appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else IsPermit"
 										>
 											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
-												<div class="col-12">
+												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
 													<span class="fw-semibold">Lost your licence? </span>
 													<a
@@ -287,7 +288,7 @@ import {
 														(keydown)="onKeydownRequestReplacement($event, appl)"
 														>Request a replacement</a
 													>
-													and we'll send you a new licence in xx-xx business days.
+													and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
 												</div>
 											</ng-container>
 											<ng-template #IsNotReplacementPeriod>
@@ -302,7 +303,7 @@ import {
 
 										<ng-template #IsPermit>
 											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
-												<div class="col-12">
+												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
 													<span class="fw-semibold">Lost or stolen permit? </span>
 													<a
@@ -312,7 +313,7 @@ import {
 														(keydown)="onKeydownRequestReplacement($event, appl)"
 														>Request a replacement</a
 													>
-													and we'll send you one in xx-xx business days.
+													and we'll send you one in {{ lostLicenceDaysText }} business days.
 												</div>
 											</ng-container>
 											<ng-template #IsNotReplacementPeriod>
@@ -499,6 +500,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	results$!: Observable<any>;
 	applicationIsInProgress: boolean | null = null;
 	yourProfileLabel = '';
+	lostLicenceDaysText: string | null = null;
 
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
@@ -536,12 +538,15 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private formatDatePipe: FormatDatePipe,
+		private configService: ConfigService,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
+		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? null;
+
 		this.results$ = forkJoin([
 			this.commonApplicationService.userLicencesList(),
 			this.commonApplicationService.userApplicationsList(),
