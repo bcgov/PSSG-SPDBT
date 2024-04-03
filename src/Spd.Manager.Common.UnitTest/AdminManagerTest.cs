@@ -23,6 +23,16 @@ public class AdminManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        var addressAutocompleteFindResponse = fixture.Create<AddressAutocompleteFindResponse>();
+        var addressAutocompleteFindList = new List<AddressAutocompleteFindResponse>() { addressAutocompleteFindResponse };
+        mockAddressClient.Setup(m => m.Query(It.IsAny<AddressSearchQuery>(), CancellationToken.None))
+            .ReturnsAsync(addressAutocompleteFindList);
+
+        var addressAutocompleteRetrieveResponse = fixture.Create<AddressAutocompleteRetrieveResponse>();
+        var addressAutocompleteRetrieveList = new List<AddressAutocompleteRetrieveResponse>() { addressAutocompleteRetrieveResponse };
+        mockAddressClient.Setup(m => m.Query(It.IsAny<AddressSearchQuery>(), CancellationToken.None))
+            .ReturnsAsync(addressAutocompleteRetrieveList);
+
         var bannerItem = fixture.Build<ConfigItem>()
             .With(i => i.Value, "test")
             .Create();
@@ -42,6 +52,26 @@ public class AdminManagerTest
             .ReturnsAsync(orgsQryResult);
 
         sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object);
+    }
+
+    [Fact]
+    public async void Handle_FindAddressQuery_Return_AddressFindResponse()
+    {
+        FindAddressQuery request = new FindAddressQuery("test");
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsAssignableFrom<IEnumerable<AddressFindResponse>>(result);
+    }
+
+    [Fact]
+    public async void Handle_RetrieveAddressQuery_Return_AddressFindResponse()
+    {
+        RetrieveAddressByIdQuery request = new RetrieveAddressByIdQuery("1");
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsAssignableFrom<IEnumerable<AddressRetrieveResponse>>(result);
     }
 
     [Fact]
