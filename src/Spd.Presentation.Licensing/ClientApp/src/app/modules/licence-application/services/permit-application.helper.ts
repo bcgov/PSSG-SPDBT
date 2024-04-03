@@ -9,7 +9,7 @@ import {
 	DocumentExpiredInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
-	PermitAppAnonymousSubmitRequest,
+	PermitAppSubmitRequest,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -357,14 +357,14 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		return documents;
 	}
 
-	getSaveBodyBaseAuthenticated(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
+	getSaveBodyBaseAuthenticated(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(permitModelFormValue: any): PermitAppAnonymousSubmitRequest {
+	getSaveBodyBaseAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
