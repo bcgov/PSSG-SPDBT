@@ -30,7 +30,7 @@ public class AdminManagerTest
 
         var addressAutocompleteRetrieveResponse = fixture.Create<AddressAutocompleteRetrieveResponse>();
         var addressAutocompleteRetrieveList = new List<AddressAutocompleteRetrieveResponse>() { addressAutocompleteRetrieveResponse };
-        mockAddressClient.Setup(m => m.Query(It.IsAny<AddressSearchQuery>(), CancellationToken.None))
+        mockAddressClient.Setup(m => m.Query(It.IsAny<AddressRetrieveQuery>(), CancellationToken.None))
             .ReturnsAsync(addressAutocompleteRetrieveList);
 
         var bannerItem = fixture.Build<ConfigItem>()
