@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Spd.Manager.Common.UnitTest" />
+  </ItemGroup>
+
 </Project>
