@@ -37,6 +37,10 @@ public class AdminManagerTest
         mockConfigRepo.Setup(m => m.Query(It.Is<ConfigQuery>(q => q.Key == IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), CancellationToken.None))
             .ReturnsAsync(new ConfigResult(licensingItems));
 
+        var orgsQryResult = fixture.Create<OrgsQryResult>();
+        mockOrgRepo.Setup(m => m.QueryOrgAsync(It.IsAny<OrgsQry>(), CancellationToken.None))
+            .ReturnsAsync(orgsQryResult);
+
         sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object);
     }
 
@@ -60,5 +64,15 @@ public class AdminManagerTest
 
         Assert.IsType<string>(result);
         Assert.Equal("0", result);
+    }
+
+    [Fact]
+    public async void Handle_GetMinistryQuery_Return_MinistryResponse()
+    {
+        GetMinistryQuery request = new GetMinistryQuery();
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsAssignableFrom<IEnumerable<MinistryResponse>>(result);
     }
 }
