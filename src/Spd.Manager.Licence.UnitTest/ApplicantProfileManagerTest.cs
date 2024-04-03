@@ -23,6 +23,23 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
+        public async void Handle_GetApplicantProfileQuery_Return_ApplicantProfileResponse()
+        {
+            GetApplicantProfileQuery request = new(Guid.NewGuid());
+            mockContactRepo.Setup(m => m.GetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContactResp());
+
+            mockMapper.Setup(m => m.Map<ApplicantProfileResponse>(It.IsAny<ContactResp>()))
+                .Returns(new ApplicantProfileResponse());
+            mockDocRepo.Setup(m => m.QueryAsync(It.IsAny<DocumentQry>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DocumentListResp());
+
+            var result = await sut.Handle(request, CancellationToken.None);
+
+            Assert.IsType<ApplicantProfileResponse>(result);
+        }
+
+        [Fact]
         public async void Handle_ApplicantMergeCommand_Success()
         {
             ////Arrange
