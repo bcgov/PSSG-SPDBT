@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
@@ -193,7 +193,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppReplaceCommand_Return_WorkerLicenceCommandResponse()
+        public async void Handle_WorkerLicenceAppReplaceCommand_Return_WorkerLicenceCommandResponse()
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
@@ -209,7 +209,7 @@ namespace Spd.Manager.Licence.UnitTest
                 {
                     Items = new List<LicenceResp> { licenceResp }
                 });
-            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
             mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
@@ -218,8 +218,8 @@ namespace Spd.Manager.Licence.UnitTest
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
-            AnonymousWorkerLicenceAppReplaceCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+            WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
 
             var result = await sut.Handle(request, CancellationToken.None);
 
@@ -228,12 +228,12 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppReplaceCommand_WithWrongApplicationTypeCode_Throw_Exception()
+        public async void Handle_WorkerLicenceAppReplaceCommand_WithWrongApplicationTypeCode_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.New, licAppId);
-            AnonymousWorkerLicenceAppReplaceCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.New, licAppId);
+            WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -241,12 +241,12 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppReplaceCommand_WithNoLicences_Throw_Exception()
+        public async void Handle_WorkerLicenceAppReplaceCommand_WithNoLicences_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
-            AnonymousWorkerLicenceAppReplaceCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+            WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -254,7 +254,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppReplaceCommand_WithInvalidExpirationDate_Throw_Exception()
+        public async void Handle_WorkerLicenceAppReplaceCommand_WithInvalidExpirationDate_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays);
@@ -270,8 +270,8 @@ namespace Spd.Manager.Licence.UnitTest
                     Items = new List<LicenceResp> { licenceResp }
                 });
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
-            AnonymousWorkerLicenceAppReplaceCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+            WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -279,7 +279,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppReplaceCommand_WithNoOriginalApplicationId_Throw_Exception()
+        public async void Handle_WorkerLicenceAppReplaceCommand_WithNoOriginalApplicationId_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
@@ -295,14 +295,14 @@ namespace Spd.Manager.Licence.UnitTest
                 {
                     Items = new List<LicenceResp> { licenceResp }
                 });
-            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
             mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
-            wLAppAnonymousSubmitRequest.OriginalApplicationId = null;
-            AnonymousWorkerLicenceAppReplaceCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+            swlAppSubmitRequest.OriginalApplicationId = null;
+            WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -310,7 +310,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_Return_WorkerLicenceCommandResponse()
+        public async void Handle_WorkerLicenceAppRenewCommand_Return_WorkerLicenceCommandResponse()
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
@@ -327,7 +327,7 @@ namespace Spd.Manager.Licence.UnitTest
                 {
                     Items = new List<LicenceResp> { licenceResp }
                 });
-            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
@@ -336,7 +336,7 @@ namespace Spd.Manager.Licence.UnitTest
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
 
-            WorkerLicenceAppAnonymousSubmitRequest wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            WorkerLicenceAppSubmitRequest wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
             wLAppAnonymousSubmitRequest.PreviousDocumentIds = null;
             wLAppAnonymousSubmitRequest.HasLegalNameChanged = false;
             wLAppAnonymousSubmitRequest.IsPoliceOrPeaceOfficer = false;
@@ -348,7 +348,7 @@ namespace Spd.Manager.Licence.UnitTest
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
             LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
             List<LicAppFileInfo> licAppFileInfos = new() { canadianCitizenship, proofOfFingerprint, photoOfYourself };
-            AnonymousWorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, licAppFileInfos);
+            WorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, licAppFileInfos);
 
             var result = await sut.Handle(request, CancellationToken.None);
 
@@ -357,12 +357,12 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithWrongApplicationTypeCode_Throw_Exception()
+        public async void Handle_WorkerLicenceAppRenewCommand_WithWrongApplicationTypeCode_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.New, licAppId);
-            AnonymousWorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.New, licAppId);
+            WorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -370,12 +370,12 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithNoLicences_Throw_Exception()
+        public async void Handle_WorkerLicenceAppRenewCommand_WithNoLicences_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
-            AnonymousWorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            WorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -383,7 +383,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
+        public async void Handle_WorkerLicenceAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays + 1);
@@ -399,8 +399,8 @@ namespace Spd.Manager.Licence.UnitTest
                     Items = new List<LicenceResp> { licenceResp }
                 });
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
-            AnonymousWorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            WorkerLicenceAppRenewCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -408,7 +408,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppUpdateCommand_Return_WorkerLicenceCommandResponse()
+        public async void Handle_WorkerLicenceAppUpdateCommand_Return_WorkerLicenceCommandResponse()
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
@@ -424,7 +424,7 @@ namespace Spd.Manager.Licence.UnitTest
                 {
                     Items = new List<LicenceResp> { licenceResp }
                 });
-            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
 
             LicenceApplicationResp originalApp = fixture.Build<LicenceApplicationResp>()
@@ -438,27 +438,27 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new TaskResp());
             mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
-            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<WorkerLicenceAppAnonymousSubmitRequest>()))
+            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new UpdateContactCmd());
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
 
-            WorkerLicenceAppAnonymousSubmitRequest wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Update, licAppId);
-            wLAppAnonymousSubmitRequest.PreviousDocumentIds = null;
-            wLAppAnonymousSubmitRequest.HasLegalNameChanged = false;
-            wLAppAnonymousSubmitRequest.IsPoliceOrPeaceOfficer = false;
-            wLAppAnonymousSubmitRequest.HasNewMentalHealthCondition = false;
-            wLAppAnonymousSubmitRequest.IsCanadianCitizen = true;
-            wLAppAnonymousSubmitRequest.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales };
+            WorkerLicenceAppSubmitRequest swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
+            swlAppSubmitRequest.PreviousDocumentIds = null;
+            swlAppSubmitRequest.HasLegalNameChanged = false;
+            swlAppSubmitRequest.IsPoliceOrPeaceOfficer = false;
+            swlAppSubmitRequest.HasNewMentalHealthCondition = false;
+            swlAppSubmitRequest.IsCanadianCitizen = true;
+            swlAppSubmitRequest.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales };
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
             LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
             List<LicAppFileInfo> licAppFileInfos = new() { canadianCitizenship, proofOfFingerprint, photoOfYourself };
 
-            AnonymousWorkerLicenceAppUpdateCommand request = new(wLAppAnonymousSubmitRequest, licAppFileInfos);
+            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, licAppFileInfos);
 
             var result = await sut.Handle(request, CancellationToken.None);
 
@@ -467,12 +467,12 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppUpdateCommand_WithWrongApplicationTypeCode_Throw_Exception()
+        public async void Handle_WorkerLicenceAppUpdateCommand_WithWrongApplicationTypeCode_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.New, licAppId);
-            AnonymousWorkerLicenceAppUpdateCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.New, licAppId);
+            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -480,12 +480,12 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppUpdateCommand_WithNoLicences_Throw_Exception()
+        public async void Handle_WorkerLicenceAppUpdateCommand_WithNoLicences_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Update, licAppId);
-            AnonymousWorkerLicenceAppUpdateCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
+            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
@@ -493,7 +493,7 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_AnonymousWorkerLicenceAppUpdateCommand_WithInvalidExpirationDate_Throw_Exception()
+        public async void Handle_WorkerLicenceAppUpdateCommand_WithInvalidExpirationDate_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow.AddDays(1);
@@ -509,8 +509,8 @@ namespace Spd.Manager.Licence.UnitTest
                     Items = new List<LicenceResp> { licenceResp }
                 });
 
-            var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppAnonymousSubmitRequest(ApplicationTypeCode.Update, licAppId);
-            AnonymousWorkerLicenceAppUpdateCommand request = new(wLAppAnonymousSubmitRequest, []);
+            var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
+            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
