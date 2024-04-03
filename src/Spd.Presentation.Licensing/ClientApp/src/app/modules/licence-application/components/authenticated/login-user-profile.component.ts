@@ -33,7 +33,9 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
+					<ng-container *ngIf="!isReadonly">
+						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
+					</ng-container>
 
 					<app-common-user-profile
 						[personalInformationFormGroup]="personalInformationFormGroup"

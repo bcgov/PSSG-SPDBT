@@ -17,8 +17,8 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	LicenceTermCode,
-	PermitAppAnonymousSubmitRequest,
 	PermitAppCommandResponse,
+	PermitAppSubmitRequest,
 	PermitCommandResponse,
 	PermitLicenceAppResponse,
 	WorkerLicenceTypeCode,
@@ -788,7 +788,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private postPermitAnonymousNoNewDocuments(
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
-		body: PermitAppAnonymousSubmitRequest
+		body: PermitAppSubmitRequest
 	) {
 		return this.permitService
 			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -814,7 +814,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
 		documentsToSave: Array<PermitDocumentsToSave>,
-		body: PermitAppAnonymousSubmitRequest
+		body: PermitAppSubmitRequest
 	) {
 		return this.permitService
 			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
