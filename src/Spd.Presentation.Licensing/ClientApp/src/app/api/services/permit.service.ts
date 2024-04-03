@@ -12,8 +12,8 @@ import { map, filter } from 'rxjs/operators';
 import { GoogleRecaptcha } from '../models/google-recaptcha';
 import { IActionResult } from '../models/i-action-result';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
-import { PermitAppAnonymousSubmitRequest } from '../models/permit-app-anonymous-submit-request';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
+import { PermitAppSubmitRequest } from '../models/permit-app-submit-request';
 import { PermitAppUpsertRequest } from '../models/permit-app-upsert-request';
 import { PermitCommandResponse } from '../models/permit-command-response';
 import { PermitLicenceAppResponse } from '../models/permit-licence-app-response';
@@ -361,7 +361,7 @@ export class PermitService extends BaseService {
     /**
      * PermitAppAnonymousSubmitRequest data
      */
-    body?: PermitAppAnonymousSubmitRequest
+    body?: PermitAppSubmitRequest
   },
   context?: HttpContext
 
@@ -401,7 +401,7 @@ export class PermitService extends BaseService {
     /**
      * PermitAppAnonymousSubmitRequest data
      */
-    body?: PermitAppAnonymousSubmitRequest
+    body?: PermitAppSubmitRequest
   },
   context?: HttpContext
 

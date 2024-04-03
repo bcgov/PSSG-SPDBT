@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Spd.Manager.Common.Admin;
 using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
@@ -62,12 +63,14 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
 
             var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(null));
+            var replacementProcessingTime = await _mediator.Send(new GetReplacementProcessingTimeQuery());
 
             return await Task.FromResult(new ConfigurationResponse(oidcResp,
                 recaptchaResp,
                 bcscConfig,
                 invalidCategoryMatrix,
-                (List<LicenceFeeResponse>)licenceFeesResponse.LicenceFees));
+                (List<LicenceFeeResponse>)licenceFeesResponse.LicenceFees,
+                replacementProcessingTime));
         }
     }
 
@@ -76,7 +79,8 @@ namespace Spd.Presentation.Licensing.Controllers
         RecaptchaConfiguration RecaptchaConfiguration,
         OidcConfiguration BcscConfiguration,
         Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration,
-        List<LicenceFeeResponse> LicenceFees
+        List<LicenceFeeResponse> LicenceFees,
+        string? ReplacementProcessingTime
     );
 
     public record OidcConfiguration
@@ -88,5 +92,6 @@ namespace Spd.Presentation.Licensing.Controllers
         public Uri? PostLogoutRedirectUri { get; set; }
         public string? IdentityProvider { get; set; }
     }
+
     public record RecaptchaConfiguration(string Key);
 }

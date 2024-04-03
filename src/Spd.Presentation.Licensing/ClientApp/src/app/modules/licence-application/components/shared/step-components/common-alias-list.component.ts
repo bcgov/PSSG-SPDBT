@@ -60,6 +60,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</div>
 				</div>
 			</ng-container>
+
 			<div class="row mb-2" *ngIf="isAllowAliasAdd">
 				<div class="col-12">
 					<button mat-stroked-button (click)="onAddRow()" class="w-auto">
@@ -100,6 +101,14 @@ export class CommonAliasListComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadonly = false;
+
+	private aliasFields = {
+		// id: new FormControl(), // TODO add ID to alias
+		givenName: new FormControl(),
+		middleName1: new FormControl(),
+		middleName2: new FormControl(),
+		surname: new FormControl('', [FormControlValidators.required]),
+	};
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService, private dialog: MatDialog) {}
 
@@ -153,12 +162,7 @@ export class CommonAliasListComponent implements OnInit {
 	private newAliasRow(): FormGroup {
 		this.form.patchValue({ previousNameFlag: BooleanTypeCode.Yes });
 
-		return this.formBuilder.group({
-			givenName: [''],
-			middleName1: [''],
-			middleName2: [''],
-			surname: ['', [FormControlValidators.required]],
-		});
+		return this.formBuilder.group({ ...this.aliasFields });
 	}
 
 	get previousNameFlag(): FormControl {
