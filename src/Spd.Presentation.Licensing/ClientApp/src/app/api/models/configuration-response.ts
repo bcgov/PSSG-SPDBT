@@ -12,4 +12,5 @@ export interface ConfigurationResponse {
   licenceFees?: null | Array<LicenceFeeResponse>;
   oidcConfiguration?: OidcConfiguration;
   recaptchaConfiguration?: RecaptchaConfiguration;
+  replacementProcessingTime?: null | string;
 }
