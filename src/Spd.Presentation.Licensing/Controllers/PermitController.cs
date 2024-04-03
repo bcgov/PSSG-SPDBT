@@ -23,12 +23,12 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<PermitAppAnonymousSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
+        private readonly IValidator<PermitAppSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
 
         public PermitController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
-            IValidator<PermitAppAnonymousSubmitRequest> permitAppAnonymousSubmitRequestValidator,
+            IValidator<PermitAppSubmitRequest> permitAppAnonymousSubmitRequestValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -125,7 +125,7 @@ namespace Spd.Presentation.Licensing.Controllers
             await VerifyKeyCode();
             VerifyFiles(fileUploadRequest.Documents);
 
-            CreateDocumentInCacheCommand command = new CreateDocumentInCacheCommand(fileUploadRequest);
+            CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
             await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
@@ -142,7 +142,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/permit-applications/anonymous/submit")]
         [HttpPost]
-        public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppAnonymousSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
 
@@ -154,19 +154,19 @@ namespace Spd.Presentation.Licensing.Controllers
             PermitAppCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
-                AnonymousPermitAppNewCommand command = new(jsonRequest, newDocInfos);
+                PermitAppNewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                AnonymousPermitAppRenewCommand command = new(jsonRequest, newDocInfos);
+                PermitAppRenewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                AnonymousPermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
+                PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
 
             }

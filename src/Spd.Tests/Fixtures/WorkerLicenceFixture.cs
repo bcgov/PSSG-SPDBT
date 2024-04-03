@@ -15,11 +15,11 @@ public class WorkerLicenceFixture
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
     }
 
-    public WorkerLicenceAppAnonymousSubmitRequest GenerateValidWorkerLicenceAppAnonymousSubmitRequest(
+    public WorkerLicenceAppSubmitRequest GenerateValidWorkerLicenceAppSubmitRequest(
         ApplicationTypeCode applicationTypeCode = ApplicationTypeCode.New,
         Guid? appLicId = null)
     {
-        WorkerLicenceAppAnonymousSubmitRequest workerLicenceAppAnonymousSubmitRequest = fixture.Build<WorkerLicenceAppAnonymousSubmitRequest>()
+        WorkerLicenceAppSubmitRequest workerLicenceAppAnonymousSubmitRequest = fixture.Build<WorkerLicenceAppSubmitRequest>()
             .With(w => w.OriginalApplicationId, appLicId ?? Guid.NewGuid())
             .With(w => w.ApplicationTypeCode, applicationTypeCode)
             .Create();
