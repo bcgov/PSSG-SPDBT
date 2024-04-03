@@ -45,7 +45,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Credit card</span>
 							</mat-checkbox>
-							<p class="checklist-info">All major credit cards accepted through our secure payment platform.</p>
+							<p class="checklist-info">All major credit cards are accepted through our secure payment platform.</p>
 
 							<mat-divider class="my-4"></mat-divider>
 							<div class="fw-semibold fs-6">For some applicants:</div>
