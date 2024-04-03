@@ -8,33 +8,33 @@ public interface ISecurityWorkerAppManager
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken ct);
-    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand command, CancellationToken ct);
-    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand command, CancellationToken ct);
-    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand command, CancellationToken ct);
-    public Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppNewCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppReplaceCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppRenewCommand command, CancellationToken ct);
+    public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppUpdateCommand command, CancellationToken ct);
 }
 
 public record WorkerLicenceUpsertCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest) : IRequest<WorkerLicenceCommandResponse>;
 public record WorkerLicenceSubmitCommand(WorkerLicenceAppUpsertRequest LicenceUpsertRequest)
     : WorkerLicenceUpsertCommand(LicenceUpsertRequest), IRequest<WorkerLicenceCommandResponse>;
 
-public record AnonymousWorkerLicenceAppNewCommand(
-    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record WorkerLicenceAppNewCommand(
+    WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
-public record AnonymousWorkerLicenceAppReplaceCommand(
-    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record WorkerLicenceAppReplaceCommand(
+    WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
-public record AnonymousWorkerLicenceAppRenewCommand(
-    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record WorkerLicenceAppRenewCommand(
+    WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
-public record AnonymousWorkerLicenceAppUpdateCommand(
-    WorkerLicenceAppAnonymousSubmitRequest LicenceAnonymousRequest,
+public record WorkerLicenceAppUpdateCommand(
+    WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
@@ -85,8 +85,6 @@ public record WorkerLicenceAppUpsertRequest : WorkerLicenceAppBase
     public Guid ApplicantId { get; set; }
 };
 
-public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppUpsertRequest;
-
 public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }
@@ -97,7 +95,7 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 
 #region anonymous user
 
-public record WorkerLicenceAppAnonymousSubmitRequest : WorkerLicenceAppBase //for anonymous user
+public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase //for anonymous user
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew

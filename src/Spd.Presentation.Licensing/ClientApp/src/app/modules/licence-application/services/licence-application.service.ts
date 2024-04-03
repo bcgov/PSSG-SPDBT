@@ -16,8 +16,9 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceAppResponse,
+	WorkerLicenceAppSubmitRequest,
+	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceCommandResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -485,7 +486,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -645,7 +646,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -657,7 +658,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppAnonymousSubmitRequest;
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -1068,7 +1069,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		googleRecaptcha: GoogleRecaptcha,
 		existingDocumentIds: Array<string>,
 		documentsToSaveApis: Observable<string>[] | null,
-		body: WorkerLicenceAppAnonymousSubmitRequest
+		body: WorkerLicenceAppSubmitRequest
 	) {
 		if (documentsToSaveApis) {
 			return this.securityWorkerLicensingService

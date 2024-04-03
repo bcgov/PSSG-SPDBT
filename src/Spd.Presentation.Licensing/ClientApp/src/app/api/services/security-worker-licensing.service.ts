@@ -13,7 +13,6 @@ import { GoogleRecaptcha } from '../models/google-recaptcha';
 import { IActionResult } from '../models/i-action-result';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
-import { WorkerLicenceAppAnonymousSubmitRequest } from '../models/worker-licence-app-anonymous-submit-request';
 import { WorkerLicenceAppResponse } from '../models/worker-licence-app-response';
 import { WorkerLicenceAppSubmitRequest } from '../models/worker-licence-app-submit-request';
 import { WorkerLicenceAppUpsertRequest } from '../models/worker-licence-app-upsert-request';
@@ -240,7 +239,7 @@ export class SecurityWorkerLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiWorkerLicenceApplicationsSubmitPost$Response(params: {
-    body: WorkerLicenceAppSubmitRequest
+    body: WorkerLicenceAppUpsertRequest
   },
   context?: HttpContext
 
@@ -274,7 +273,7 @@ export class SecurityWorkerLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiWorkerLicenceApplicationsSubmitPost(params: {
-    body: WorkerLicenceAppSubmitRequest
+    body: WorkerLicenceAppUpsertRequest
   },
   context?: HttpContext
 
@@ -373,7 +372,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
      */
-    body?: WorkerLicenceAppAnonymousSubmitRequest
+    body?: WorkerLicenceAppSubmitRequest
   },
   context?: HttpContext
 
@@ -412,7 +411,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
      */
-    body?: WorkerLicenceAppAnonymousSubmitRequest
+    body?: WorkerLicenceAppSubmitRequest
   },
   context?: HttpContext
 
@@ -634,7 +633,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
      */
-    body?: WorkerLicenceAppAnonymousSubmitRequest
+    body?: WorkerLicenceAppSubmitRequest
   },
   context?: HttpContext
 
@@ -673,7 +672,7 @@ export class SecurityWorkerLicensingService extends BaseService {
     /**
      * WorkerLicenceAppAnonymousSubmitRequestJson data
      */
-    body?: WorkerLicenceAppAnonymousSubmitRequest
+    body?: WorkerLicenceAppSubmitRequest
   },
   context?: HttpContext
 
