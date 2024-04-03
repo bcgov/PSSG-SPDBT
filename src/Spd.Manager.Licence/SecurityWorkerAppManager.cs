@@ -21,10 +21,10 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
         IRequestHandler<GetLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
-        IRequestHandler<AnonymousWorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
-        IRequestHandler<AnonymousWorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
-        IRequestHandler<AnonymousWorkerLicenceAppRenewCommand, WorkerLicenceCommandResponse>,
-        IRequestHandler<AnonymousWorkerLicenceAppUpdateCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<WorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<WorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<WorkerLicenceAppRenewCommand, WorkerLicenceCommandResponse>,
+        IRequestHandler<WorkerLicenceAppUpdateCommand, WorkerLicenceCommandResponse>,
         ISecurityWorkerAppManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -123,9 +123,9 @@ internal class SecurityWorkerAppManager :
 
     #region anonymous
 
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppNewCommand cmd, CancellationToken cancellationToken)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppNewCommand cmd, CancellationToken cancellationToken)
     {
-        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         ValidateFilesForNewApp(cmd);
 
         //save the application
@@ -137,9 +137,9 @@ internal class SecurityWorkerAppManager :
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppReplaceCommand cmd, CancellationToken cancellationToken)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppReplaceCommand cmd, CancellationToken cancellationToken)
     {
-        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
             throw new ArgumentException("should be a replacement request");
 
@@ -186,9 +186,9 @@ internal class SecurityWorkerAppManager :
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppRenewCommand cmd, CancellationToken cancellationToken)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppRenewCommand cmd, CancellationToken cancellationToken)
     {
-        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
 
@@ -259,9 +259,9 @@ internal class SecurityWorkerAppManager :
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<WorkerLicenceCommandResponse> Handle(AnonymousWorkerLicenceAppUpdateCommand cmd, CancellationToken cancellationToken)
+    public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppUpdateCommand cmd, CancellationToken cancellationToken)
     {
-        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be a update request");
 
@@ -359,7 +359,7 @@ internal class SecurityWorkerAppManager :
     }
 
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
-        WorkerLicenceAppAnonymousSubmitRequest newRequest,
+        WorkerLicenceAppSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
         LicenceResp originalLic,
         CancellationToken ct)
@@ -452,9 +452,9 @@ internal class SecurityWorkerAppManager :
         return changes;
     }
 
-    private static void ValidateFilesForNewApp(AnonymousWorkerLicenceAppNewCommand cmd)
+    private static void ValidateFilesForNewApp(WorkerLicenceAppNewCommand cmd)
     {
-        WorkerLicenceAppAnonymousSubmitRequest request = cmd.LicenceAnonymousRequest;
+        WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
         IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
         if (request.IsPoliceOrPeaceOfficer == true &&
             !fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
@@ -503,7 +503,7 @@ internal class SecurityWorkerAppManager :
 
     }
 
-    private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppAnonymousSubmitRequest request,
+    private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
         CancellationToken ct)
     {

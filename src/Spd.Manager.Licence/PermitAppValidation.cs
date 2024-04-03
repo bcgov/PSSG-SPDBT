@@ -4,7 +4,7 @@ using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
-public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseValidator<PermitAppAnonymousSubmitRequest>
+public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseValidator<PermitAppSubmitRequest>
 {
     public PermitAppAnonymousSubmitRequestValidator(IConfiguration configuration)
     {

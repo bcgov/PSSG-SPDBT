@@ -51,7 +51,6 @@ export { ResidentialAddress } from './models/residential-address';
 export { ServiceTypeCode } from './models/service-type-code';
 export { WeightUnitCode } from './models/weight-unit-code';
 export { WorkerCategoryTypeCode } from './models/worker-category-type-code';
-export { WorkerLicenceAppAnonymousSubmitRequest } from './models/worker-licence-app-anonymous-submit-request';
 export { WorkerLicenceAppResponse } from './models/worker-licence-app-response';
 export { WorkerLicenceAppSubmitRequest } from './models/worker-licence-app-submit-request';
 export { WorkerLicenceAppUpsertRequest } from './models/worker-licence-app-upsert-request';

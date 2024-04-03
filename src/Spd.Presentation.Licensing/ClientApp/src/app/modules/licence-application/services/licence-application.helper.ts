@@ -10,7 +10,6 @@ import {
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppAnonymousSubmitRequest,
 	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -799,7 +798,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppAnonymousSubmitRequest, Array<Document>] {
+	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppSubmitRequest, Array<Document>] {
 		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
