@@ -150,7 +150,10 @@ export class CommonApplicationService {
 						item.isExpiryWarning = false;
 						item.isExpiryError = false;
 
-						if (item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft) {
+						if (
+							item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+							item.applicationTypeCode === ApplicationTypeCode.New
+						) {
 							const applicationExpiryDate = moment(item.updatedOn).add(applicationNotSubmittedValidDays, 'days');
 							item.applicationExpiryDate = applicationExpiryDate.toString();
 							if (
