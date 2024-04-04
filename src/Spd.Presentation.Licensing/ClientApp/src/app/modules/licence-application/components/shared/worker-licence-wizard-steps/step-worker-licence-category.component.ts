@@ -1191,7 +1191,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 				case WorkerCategoryTypeCode.PrivateInvestigator:
 					this.expandPrivateInvestigator = true;
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
-					this.onPromptFireInvestigator();
+					// this.onPromptFireInvestigator(); // TODO is FireInvestigator related to PrivateInvestigator?
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
 					this.expandPrivateInvestigatorUnderSupervision = true;
@@ -1338,30 +1338,30 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			});
 	}
 
-	onPromptFireInvestigator() {
-		if (this.showFireInvestigator) {
-			return; // this has already been added
-		}
+	// onPromptFireInvestigator() {
+	// 	if (this.showFireInvestigator) {
+	// 		return; // this has already been added
+	// 	}
 
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Would you also like to add Fire Investigator to this licence?',
-			actionText: 'Yes',
-			cancelText: 'No',
-		};
+	// 	const data: DialogOptions = {
+	// 		icon: 'warning',
+	// 		title: 'Confirmation',
+	// 		message: 'Would you also like to add Fire Investigator to this licence?',
+	// 		actionText: 'Yes',
+	// 		cancelText: 'No',
+	// 	};
 
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
+	// 	this.dialog
+	// 		.open(DialogComponent, { data })
+	// 		.afterClosed()
+	// 		.subscribe((response: boolean) => {
+	// 			if (response) {
+	// 				this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
 
-					this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
-				}
-			});
-	}
+	// 				this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
+	// 			}
+	// 		});
+	// }
 
 	isFormValid(): boolean {
 		this.categoryArmouredCarGuardFormGroup.markAllAsTouched();

@@ -56,8 +56,10 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCodeUpdate"
+							[licenceCost]="newLicenceCost"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextPayStep)="onPayNow()"
+							(nextSubmitStep)="onSubmitStep()"
+							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
@@ -74,6 +76,9 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 })
 export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit {
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
+
+	newLicenceAppId: string | null = null;
+	newLicenceCost = 0;
 
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_UPDATES = 1;
@@ -161,6 +166,41 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
+	}
+
+	onSubmitStep(): void {
+		if (this.newLicenceAppId) {
+			if (this.newLicenceCost > 0) {
+				this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
+			} else {
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+			}
+		} else {
+			this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+					const workerLicenceCommandResponse = resp.body;
+
+					// save this locally just in application payment fails
+					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
+					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
+
+					if (this.newLicenceCost > 0) {
+						this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
+					} else {
+						this.hotToastService.success('Your licence update has been successfully submitted');
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+					}
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		}
+	}
+
+	onNextPayStep(): void {
+		this.payNow(this.newLicenceAppId!);
 	}
 
 	private payNow(licenceAppId: string): void {

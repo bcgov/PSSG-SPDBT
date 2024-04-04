@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
@@ -107,7 +107,6 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
 	constructor(
-		private formBuilder: FormBuilder,
 		private licenceApplicationService: LicenceApplicationService,
 		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
