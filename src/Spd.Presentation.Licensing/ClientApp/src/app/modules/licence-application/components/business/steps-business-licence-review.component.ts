@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsul
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
 
 @Component({
@@ -21,11 +22,10 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				</div>
 			</mat-step>
 
-			<!-- 	<mat-step>
-				<app-step-permit-consent-and-declaration
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+			<mat-step>
+				<app-step-business-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-consent-and-declaration>
+				></app-step-business-licence-consent-and-declaration>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -37,7 +37,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -52,8 +52,8 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	@ViewChild(StepBusinessLicenceSummaryComponent) summaryReviewComponent!: StepBusinessLicenceSummaryComponent;
-	// @ViewChild(StepPermitConsentAndDeclarationComponent)
-	// consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
+	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
+	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {
 		super();

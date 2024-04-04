@@ -773,11 +773,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								),
 								{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
 							);
-							// this.router.navigateByUrl(
-							// 	LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-							// 		LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-							// 	)
-							// );
 						}),
 						take(1)
 					)
