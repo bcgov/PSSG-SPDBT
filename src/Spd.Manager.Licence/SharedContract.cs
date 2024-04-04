@@ -1,4 +1,6 @@
-﻿namespace Spd.Manager.Licence;
+﻿using Spd.Utilities.Dynamics;
+
+namespace Spd.Manager.Licence;
 
 public class UploadFileRequest
 {
@@ -176,11 +178,13 @@ public record Address
     public string? PostalCode { get; set; }
     public string? Province { get; set; }
 }
+
 public record Alias
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
+    public AliasSourceTypeOptionSet? SourceType { get; set; }
 }
