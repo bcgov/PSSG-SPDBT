@@ -14,7 +14,7 @@ namespace Spd.Manager.Screening
         public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken ct);
         public Task<InvitationResponse> Handle(VerifyUserInvitation request, CancellationToken ct);
         public Task<Unit> Handle(OrgUserUpdateLoginCommand command, CancellationToken ct);
-        public Task<Unit> Handle(RegisterBceidPrimaryUser command, CancellationToken ct);
+        public Task<OrgUserResponse> Handle(RegisterBceidPrimaryUser command, CancellationToken ct);
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest, string HostUrl, Guid? CreatedByUserId) : IRequest<OrgUserResponse>;
@@ -24,7 +24,7 @@ namespace Spd.Manager.Screening
     public record OrgUserDeleteCommand(Guid UserId, Guid OrganizationId) : IRequest<Unit>;
     public record OrgUserUpdateLoginCommand(Guid UserId) : IRequest<Unit>;
     public record VerifyUserInvitation(InvitationRequest InvitationRequest, Guid OrgGuid, Guid UserGuid) : IRequest<InvitationResponse>;
-    public record RegisterBceidPrimaryUser(Guid OrganizationId, BceidIdentityInfo IdentityInfo) : IRequest<Unit>;
+    public record RegisterBceidPrimaryUser(Guid OrganizationId, BceidIdentityInfo IdentityInfo) : IRequest<OrgUserResponse>;
 
     public abstract record OrgUserUpsertRequest
     {

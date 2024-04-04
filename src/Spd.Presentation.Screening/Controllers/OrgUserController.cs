@@ -119,11 +119,10 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/add-bceid-primary-users/{orgId}")]
         [HttpGet]
-        public async Task<IActionResult> AddBceidPrimaryUser([FromRoute] Guid orgId)
+        public async Task<OrgUserResponse> AddBceidPrimaryUser([FromRoute] Guid orgId)
         {
             BceidIdentityInfo idInfo = _currentUser.GetBceidUserIdentityInfo();
-            await _mediator.Send(new RegisterBceidPrimaryUser(orgId, idInfo));
-            return Ok();
+            return await _mediator.Send(new RegisterBceidPrimaryUser(orgId, idInfo));
         }
     }
 }

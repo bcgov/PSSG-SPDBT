@@ -17,7 +17,7 @@ namespace Spd.Manager.Screening
         IRequestHandler<OrgUserUpdateLoginCommand, Unit>,
         IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
         IRequestHandler<VerifyUserInvitation, InvitationResponse>,
-        IRequestHandler<RegisterBceidPrimaryUser, Unit>,
+        IRequestHandler<RegisterBceidPrimaryUser, OrgUserResponse>,
         IOrgUserManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -154,7 +154,7 @@ namespace Spd.Manager.Screening
             return new InvitationResponse((Guid)result.UserResult.OrganizationId);
         }
 
-        public async Task<Unit> Handle(RegisterBceidPrimaryUser request, CancellationToken ct)
+        public async Task<OrgUserResponse> Handle(RegisterBceidPrimaryUser request, CancellationToken ct)
         {
             Guid identityId;
             IdentityQueryResult idResult = await _idRepository.Query(new IdentityQry(request.IdentityInfo.UserGuid.ToString(),
@@ -175,16 +175,20 @@ namespace Spd.Manager.Screening
                 identityId = idResult.Items.First().Id;
             }
 
-            OrgUsersResult orgUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(request.OrganizationId, identityId), ct);
-            if (orgUser.UserResults.Any())
+            OrgUsersResult orgUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(request.OrganizationId, null), ct);
+            if (orgUser.UserResults.Any(u => u.UserGuid == request.IdentityInfo.UserGuid))
             {
                 throw new ArgumentException("You are already a user of the organization.");
+            }
+            if (orgUser.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary) >= 2)
+            {
+                throw new ArgumentException("There is already maximum primary contact, we cannnot add another one.");
             }
 
             User user = _mapper.Map<User>(request.IdentityInfo);
             user.OrganizationId = request.OrganizationId;
-            await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId, null), ct);
-            return default;
+            var response = await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId, null), ct);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
         private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
