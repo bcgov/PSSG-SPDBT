@@ -1,4 +1,5 @@
 using AutoMapper;
+using MediatR;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
@@ -94,6 +95,14 @@ internal class ContactRepository : IContactRepository
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "merge contacts failed.");
         }
         return true;
+    }
+
+    public async Task<Unit> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken ct)
+    {
+        contact? contact = await _context.GetContactById(cmd.ContactId, ct);
+        await _context.CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias), ct);
+
+        return default;
     }
 
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
