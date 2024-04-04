@@ -1,4 +1,6 @@
-﻿namespace Spd.Resource.Repository;
+﻿using Spd.Utilities.Dynamics;
+
+namespace Spd.Resource.Repository;
 public enum PayerPreferenceTypeCode
 {
     Organization,
@@ -95,6 +97,7 @@ public record Alias
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
+    public AliasSourceTypeOptionSet? SourceType { get; set; }
 
 }
 public enum ApplicationTypeEnum
