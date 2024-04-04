@@ -145,6 +145,8 @@ namespace Spd.Manager.Licence
                 }
             }
 
+            await ProcessAliases((List<Resource.Repository.Alias>)contact.Aliases, (List<Resource.Repository.Alias>)updateContactCmd.Aliases, contact.Id, ct);
+
             return default;
         }
 
@@ -186,6 +188,26 @@ namespace Spd.Manager.Licence
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
                 }
+            }
+        }
+
+        private async Task ProcessAliases(List<Resource.Repository.Alias> aliases, List<Resource.Repository.Alias> aliasesToProcess, Guid contactId, CancellationToken ct)
+        {
+            // Add new aliases
+            var numOfCurrentAliases = aliases.Count(a => a.SourceType == Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered);
+            var numOfNewAliases = aliasesToProcess.Count(a => a.Id == null);
+
+            if (numOfCurrentAliases + numOfNewAliases > 10)
+                throw new ApiException(HttpStatusCode.BadRequest, "No more than 10 user entered aliases are allowed");
+
+            foreach (var newAlias in aliasesToProcess.Where(a => a.Id == null)) 
+            {
+                CreateAliasCommand createAliasCommand = new CreateAliasCommand()
+                {
+                    ContactId = contactId,
+                    Alias = newAlias
+                };
+                await _contactRepository.CreateAliasAsync(createAliasCommand, ct);
             }
         }
     }
