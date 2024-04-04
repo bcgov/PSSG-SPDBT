@@ -6,6 +6,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCategoryComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-dogs-authorization.component';
+import { StepWorkerLicenceReprintComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-reprint.component';
 import { StepWorkerLicenceRestraintsComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-restraints.component';
 import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-review-name-change.component';
 
@@ -22,6 +23,24 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_NAME_CHANGE)">
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="showReprint">
+				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
+
+				<div class="row wizard-button-row">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepUpdatePrevious(STEP_REPRINT)">
+							Previous
+						</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_REPRINT)">
 							Next
 						</button>
 					</div>
@@ -124,10 +143,11 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	applicationTypeCodes = ApplicationTypeCode;
 
 	readonly STEP_NAME_CHANGE = 0;
-	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 1;
-	readonly STEP_LICENCE_CATEGORY = 2;
-	readonly STEP_DOGS = 3;
-	readonly STEP_RESTRAINTS = 4;
+	readonly STEP_REPRINT = 1;
+	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 2;
+	readonly STEP_LICENCE_CATEGORY = 3;
+	readonly STEP_DOGS = 4;
+	readonly STEP_RESTRAINTS = 5;
 
 	showStepDogsAndRestraints = false;
 	hasBcscNameChanged = false;
@@ -140,11 +160,13 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
 	stepLicencePhotographOfYourselfComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 	@ViewChild(StepWorkerLicenceCategoryComponent)
-	licenceCategoryComponent!: StepWorkerLicenceCategoryComponent;
+	stepLicenceCategoryComponent!: StepWorkerLicenceCategoryComponent;
 	@ViewChild(StepWorkerLicenceRestraintsComponent)
-	restraintsComponent!: StepWorkerLicenceRestraintsComponent;
+	stepRestraintsComponent!: StepWorkerLicenceRestraintsComponent;
 	@ViewChild(StepWorkerLicenceDogsAuthorizationComponent)
-	dogsComponent!: StepWorkerLicenceDogsAuthorizationComponent;
+	stepDogsComponent!: StepWorkerLicenceDogsAuthorizationComponent;
+	@ViewChild(StepWorkerLicenceReprintComponent)
+	stepReprintComponent!: StepWorkerLicenceReprintComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {
 		super();
@@ -174,14 +196,20 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 
 	onStepUpdatePrevious(step: number): void {
 		switch (step) {
-			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
+			case this.STEP_REPRINT:
 				if (this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}
 				break;
+			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
+				if (this.showReprint) {
+					this.childstepper.previous();
+					return;
+				}
+				break;
 			case this.STEP_LICENCE_CATEGORY:
-				if (this.hasGenderChanged || this.hasBcscNameChanged) {
+				if (this.hasGenderChanged || this.hasBcscNameChanged || this.showReprint) {
 					this.childstepper.previous();
 					return;
 				}
@@ -209,17 +237,25 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 		switch (step) {
 			case this.STEP_NAME_CHANGE:
 				return this.stepLicenceNameChangeComponent.isFormValid();
+			case this.STEP_REPRINT:
+				return this.stepReprintComponent.isFormValid();
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
 				return this.stepLicencePhotographOfYourselfComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:
-				return this.licenceCategoryComponent.isFormValid();
+				return this.stepLicenceCategoryComponent.isFormValid();
 			case this.STEP_RESTRAINTS:
-				return this.restraintsComponent.isFormValid();
+				return this.stepRestraintsComponent.isFormValid();
 			case this.STEP_DOGS:
-				return this.dogsComponent.isFormValid();
+				return this.stepDogsComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	// for Update flow: only show if they changed their sex selection earlier in the application
+	// and name change
+	get showReprint(): boolean {
+		return this.hasGenderChanged || this.hasBcscNameChanged;
 	}
 }
