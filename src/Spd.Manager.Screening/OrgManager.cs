@@ -1,25 +1,33 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Cache;
+using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Screening
 {
     internal class OrgManager :
         IRequestHandler<OrgUpdateCommand, OrgResponse>,
         IRequestHandler<OrgGetQuery, OrgResponse>,
+        IRequestHandler<OrgInvitationLinkCreateCommand, OrgInvitationLinkResponse>,
         IOrgManager
     {
         private readonly IOrgRepository _orgRepository;
         private readonly IMapper _mapper;
         private readonly IDistributedCache _cache;
+        private readonly ITimeLimitedDataProtector _dataProtector;
 
-        public OrgManager(IOrgRepository orgRepository, IMapper mapper, IDistributedCache cache)
+        public OrgManager(IOrgRepository orgRepository, IMapper mapper, IDistributedCache cache, IDataProtectionProvider dpProvider)
         {
             _orgRepository = orgRepository;
             _mapper = mapper;
             _cache = cache;
+            _dataProtector = dpProvider.CreateProtector(nameof(OrgInvitationLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
         public async Task<OrgResponse> Handle(OrgUpdateCommand request, CancellationToken cancellationToken)
@@ -32,7 +40,7 @@ namespace Spd.Manager.Screening
         public async Task<OrgResponse?> Handle(OrgGetQuery request, CancellationToken cancellationToken)
         {
             OrgResponse response;
-            if(request.AccessCode != null)
+            if (request.AccessCode != null)
             {
                 response = await _cache.Get<OrgResponse>($"org-response-{request.AccessCode}");
                 if (response != null) return response;
@@ -43,6 +51,23 @@ namespace Spd.Manager.Screening
             response = _mapper.Map<OrgResponse>(result.OrgResult);
             await _cache.Set<OrgResponse>($"org-response-{response.AccessCode}", response, new TimeSpan(0, 30, 0));
             return response;
+        }
+
+        public async Task<OrgInvitationLinkResponse?> Handle(OrgInvitationLinkCreateCommand cmd, CancellationToken cancellationToken)
+        {
+            OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(cmd.OrgId), cancellationToken);
+            if (org == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "org does not exist.");
+
+            //todo, the valid days needs to get from biz, current days is temporary
+            var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
+
+            if (org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
+            {
+                //if it is screening org
+                return new OrgInvitationLinkResponse($"{cmd.ScreeningAppOrgUrl}?encodedOrgId={encryptedOrgId}");
+            }
+            return null;
         }
     }
 }

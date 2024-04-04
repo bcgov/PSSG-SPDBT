@@ -8,10 +8,12 @@ namespace Spd.Manager.Screening
     {
         public Task<OrgResponse> Handle(OrgUpdateCommand request, CancellationToken cancellationToken);
         public Task<OrgResponse> Handle(OrgGetQuery request, CancellationToken cancellationToken);
+        public Task<OrgInvitationLinkResponse?> Handle(OrgInvitationLinkCreateCommand cmd, CancellationToken cancellationToken);
     }
 
     public record OrgUpdateCommand(OrgUpdateRequest OrgUpdateRequest, Guid OrgId) : IRequest<OrgResponse>;
     public record OrgGetQuery(Guid? OrgId, string? AccessCode = null) : IRequest<OrgResponse>;
+    public record OrgInvitationLinkCreateCommand(Guid OrgId, string ScreeningAppOrgUrl) : IRequest<OrgInvitationLinkResponse>;
     public record OrgInfo
     {
         public Guid Id { get; set; }
@@ -87,4 +89,5 @@ namespace Spd.Manager.Screening
                 .MaximumLength(100);
         }
     }
+    public record OrgInvitationLinkResponse(string OrgInvitationLinkUrl);
 }
