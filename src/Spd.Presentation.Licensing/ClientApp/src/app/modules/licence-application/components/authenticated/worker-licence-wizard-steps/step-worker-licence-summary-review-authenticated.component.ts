@@ -329,7 +329,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 													<div class="text-label d-block text-muted">BC Driver's Licence</div>
 													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
 												</div>
-												<div class="col-lg-6 col-md-12">
+												<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
 													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
 													<div class="summary-text-data">
 														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
@@ -481,6 +481,10 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		this.licenceModelData = {
 			...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
 		};
+	}
+
+	get isNotRenewal(): boolean {
+		return this.applicationTypeCode != ApplicationTypeCode.Renewal;
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {

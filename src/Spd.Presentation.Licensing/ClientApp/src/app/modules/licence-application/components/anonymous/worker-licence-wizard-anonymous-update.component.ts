@@ -213,19 +213,16 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		} else {
 			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-					console.debug('[onSubmitStep] submitLicenceAnonymous', resp.body);
-
 					const workerLicenceCommandResponse = resp.body;
 
 					// save this locally just in application payment fails
 					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
 					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
-					this.hotToastService.success('Your licence update has been successfully submitted');
-
 					if (this.newLicenceCost > 0) {
 						this.stepReviewLicenceComponent?.onGoToLastStep();
 					} else {
+						this.hotToastService.success('Your licence update has been successfully submitted');
 						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
 					}
 				},
