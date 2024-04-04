@@ -92,5 +92,5 @@ namespace Spd.Manager.Screening
         }
     }
     public record OrgInvitationLinkResponse(string OrgInvitationLinkUrl);
-    public record OrgInviteVerifyResponse(Guid? OrgId, bool LinkIsValid = false);
+    public record OrgInviteVerifyResponse(Guid? OrgId, bool LinkIsValid = false, string? ErrMsg = null);
 }

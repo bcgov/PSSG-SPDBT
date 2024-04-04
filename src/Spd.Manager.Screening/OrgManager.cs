@@ -81,14 +81,14 @@ namespace Spd.Manager.Screening
             }
             catch
             {
-                return new OrgInviteVerifyResponse(null, false);
+                return new OrgInviteVerifyResponse(null, false, "the link is not valid");
             }
 
             OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(orgId), cancellationToken);
             if (!org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
             {
                 //if it is screening org
-                return new OrgInviteVerifyResponse(null, false);
+                return new OrgInviteVerifyResponse(null, false, "the organization is not a screening org");
             }
 
             return new OrgInviteVerifyResponse(orgId, true);
