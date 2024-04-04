@@ -15,6 +15,7 @@ namespace Spd.Manager.Screening
         IRequestHandler<OrgUpdateCommand, OrgResponse>,
         IRequestHandler<OrgGetQuery, OrgResponse>,
         IRequestHandler<OrgInvitationLinkCreateCommand, OrgInvitationLinkResponse>,
+        IRequestHandler<OrgInvitationLinkVerifyCommand, OrgInviteVerifyResponse>,
         IOrgManager
     {
         private readonly IOrgRepository _orgRepository;
@@ -60,7 +61,7 @@ namespace Spd.Manager.Screening
                 throw new ApiException(HttpStatusCode.BadRequest, "org does not exist.");
 
             //todo, the valid days needs to get from biz, current days is temporary
-            var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
+            var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays))); //biz said we just use the same value as user invite valid days
 
             if (org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
             {
@@ -68,6 +69,29 @@ namespace Spd.Manager.Screening
                 return new OrgInvitationLinkResponse($"{cmd.ScreeningAppOrgUrl}?encodedOrgId={encryptedOrgId}");
             }
             return null;
+        }
+
+        public async Task<OrgInviteVerifyResponse?> Handle(OrgInvitationLinkVerifyCommand cmd, CancellationToken cancellationToken)
+        {
+            Guid orgId;
+            try
+            {
+                string orgIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(cmd.EncodedOrgId));
+                orgId = Guid.Parse(orgIdStr);
+            }
+            catch
+            {
+                return new OrgInviteVerifyResponse(null, false);
+            }
+
+            OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(orgId), cancellationToken);
+            if (!org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
+            {
+                //if it is screening org
+                return new OrgInviteVerifyResponse(null, false);
+            }
+
+            return new OrgInviteVerifyResponse(orgId, true);
         }
     }
 }
