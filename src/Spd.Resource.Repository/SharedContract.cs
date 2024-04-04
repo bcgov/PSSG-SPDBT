@@ -98,7 +98,6 @@ public record Alias
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
     public AliasSourceTypeOptionSet? SourceType { get; set; }
-
 }
 public enum ApplicationTypeEnum
 {
