@@ -75,7 +75,7 @@ internal static class SharedContactFuncs
             if (AddressExists(context, newAddress, existingContact) == null)
             {
                 context.AddTospd_addresses(newAddress);
-                // associate alias to contact
+                // associate address to contact
                 context.SetLink(newAddress, nameof(newAddress.spd_Contact), existingContact);
             }
         }
