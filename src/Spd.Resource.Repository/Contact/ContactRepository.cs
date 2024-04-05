@@ -100,7 +100,12 @@ internal class ContactRepository : IContactRepository
     public async Task<Unit> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken ct)
     {
         contact? contact = await _context.GetContactById(cmd.ContactId, ct);
-        await _context.CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias), ct);
+
+        if (cmd.Alias.Id == Guid.Empty)
+            cmd.Alias.Id = null;
+
+        await _context.CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias), ct); 
+        await _context.SaveChangesAsync(ct);
 
         return default;
     }
