@@ -9,6 +9,7 @@ namespace Spd.Resource.Repository.Contact
         public Task<ContactResp> GetAsync(Guid contactId, CancellationToken cancellationToken);
         public Task<bool> MergeContactsAsync(MergeContactsCmd cmd, CancellationToken cancellationToken);
         public Task<Unit> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);
+        public Task DeleteAliasAsync(Guid aliasId, CancellationToken cancellationToken);
     }
 
     public record ContactListResp
