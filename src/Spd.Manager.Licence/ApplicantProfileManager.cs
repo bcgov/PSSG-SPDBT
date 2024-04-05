@@ -195,12 +195,12 @@ namespace Spd.Manager.Licence
         {
             // Add new aliases
             var numOfCurrentAliases = aliases.Count(a => a.SourceType == Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered);
-            var numOfNewAliases = aliasesToProcess.Count(a => a.Id == null);
+            var numOfNewAliases = aliasesToProcess.Count(a => a.Id == null || a.Id == Guid.Empty);
 
             if (numOfCurrentAliases + numOfNewAliases > 10)
                 throw new ApiException(HttpStatusCode.BadRequest, "No more than 10 user entered aliases are allowed");
 
-            foreach (var newAlias in aliasesToProcess.Where(a => a.Id == null)) 
+            foreach (var newAlias in aliasesToProcess.Where(a => a.Id == null || a.Id == Guid.Empty)) 
             {
                 CreateAliasCommand createAliasCommand = new CreateAliasCommand()
                 {
