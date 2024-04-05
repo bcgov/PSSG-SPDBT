@@ -7,7 +7,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
@@ -165,25 +164,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
-	}
-
-	private exitAndLoseChanges() {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Are you sure you want to leave this application? All of your data will be lost.',
-			actionText: 'Yes',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigate([AppRoutes.LANDING]);
-				}
-			});
 	}
 
 	onGoToReview() {

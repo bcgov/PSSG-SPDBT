@@ -791,7 +791,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						return resps[0];
 					}),
 					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp);
+						return this.applyRenewalDataUpdatesToModel(_resp, true);
 					})
 				);
 			}
@@ -933,7 +933,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						return resps[0];
 					}),
 					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp);
+						return this.applyRenewalDataUpdatesToModel(_resp, false);
 					})
 				);
 			}
@@ -1669,16 +1669,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private applyRenewalDataUpdatesToModel(resp: any): Observable<any> {
+	private applyRenewalDataUpdatesToModel(resp: any, isAuthenticated: boolean): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		// Remove data that should be re-prompted for
 		const soleProprietorData = {
 			isSoleProprietor: null,
 			businessTypeCode: null,
-		};
-		const fingerprintProofData = {
-			attachments: [],
 		};
 		const licenceTermData = {
 			licenceTermCode: null,
@@ -1751,7 +1748,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				soleProprietorData,
 				licenceTermData,
-				fingerprintProofData,
+				fingerprintProofData: isAuthenticated ? {} : { attachments: [] },
 				photographOfYourselfData,
 				citizenshipData,
 				dogsAuthorizationData,
