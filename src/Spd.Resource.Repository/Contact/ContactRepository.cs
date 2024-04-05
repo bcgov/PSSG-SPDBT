@@ -113,7 +113,7 @@ internal class ContactRepository : IContactRepository
     public async Task DeleteAliasAsync(Guid aliasId, CancellationToken ct)
     {
         spd_alias? alias = _context.spd_aliases.Where(a =>
-            a.spd_aliasid == Guid.Parse("bb5f3c43-a8ba-4cb1-92c8-20e292de2194") &&
+            a.spd_aliasid == aliasId &&
             a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
         ).FirstOrDefault();
 
@@ -126,6 +126,30 @@ internal class ContactRepository : IContactRepository
         alias.statecode = DynamicsConstants.StateCode_Inactive;
         alias.statuscode = DynamicsConstants.StatusCode_Inactive;
         _context.UpdateObject(alias);
+        await _context.SaveChangesAsync(ct);
+    }
+
+    public async Task UpdateAliasAsync(UpdateAliasCommand cmd, CancellationToken ct)
+    {
+        foreach (Alias alias in cmd.Aliases)
+        {
+            spd_alias? existingAlias = _context.spd_aliases.Where(a =>
+                a.spd_aliasid == alias.Id &&
+                a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+            ).FirstOrDefault();
+
+            if (existingAlias == null)
+            {
+                _logger.LogError($"Alias to be updated was not found");
+                throw new ArgumentException("cannot find alias to be updated");
+            }
+
+            existingAlias.spd_firstname = alias.GivenName;
+            existingAlias.spd_surname = alias.Surname;
+            existingAlias.spd_middlename1 = alias.MiddleName1;
+            existingAlias.spd_middlename2 = alias.MiddleName2;
+            _context.UpdateObject(existingAlias);
+        }
         await _context.SaveChangesAsync(ct);
     }
 
