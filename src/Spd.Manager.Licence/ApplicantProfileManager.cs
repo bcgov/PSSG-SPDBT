@@ -213,6 +213,15 @@ namespace Spd.Manager.Licence
                 };
                 await _contactRepository.CreateAliasAsync(createAliasCommand, ct);
             }
+
+            // Remove aliases defined in the entity that are not part of the request
+            var modifiedAliases = aliasesToProcess.Where(a => a.Id != null && a.Id != Guid.Empty);
+            var aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).ToList();
+
+            foreach (var aliasToRemove in aliasesToRemove) 
+            {
+                await _contactRepository.DeleteAliasAsync((Guid)aliasToRemove.Id, ct);
+            }
         }
     }
 }
