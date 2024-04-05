@@ -60,7 +60,7 @@ namespace Spd.Manager.Screening
             if (org == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "org does not exist.");
 
-            //biz said we just use the same value as user invite valid days
+            //business said we just use the same value as user invite valid days
             var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
 
             if (org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))

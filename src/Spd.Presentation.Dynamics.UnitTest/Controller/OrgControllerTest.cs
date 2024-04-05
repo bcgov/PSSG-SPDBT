@@ -32,7 +32,10 @@ public class OrgControllerTest
     {
         //Arrange
         mockMediator.Setup(m => m.Send(It.IsAny<OrgInvitationLinkCreateCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(fixture.Build<OrgInvitationLinkResponse>().With(i => i.OrgInvitationLinkUrl, "url").Create());
+            .ReturnsAsync(
+                fixture.Build<OrgInvitationLinkResponse>()
+                .With(i => i.OrgInvitationLinkUrl, "url")
+                .Create());
 
         //Act
         var viewResult = await sut.GetOrgInvitationLinkAsync(Guid.NewGuid(), CancellationToken.None);
