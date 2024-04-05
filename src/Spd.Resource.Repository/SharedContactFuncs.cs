@@ -88,27 +88,17 @@ internal static class SharedContactFuncs
             if (newAddress.spd_address1 != null && newAddress.spd_country != null && AddressExists(context, newAddress, existingContact) == null)
             {
                 context.AddTospd_addresses(newAddress);
-                // associate alias to contact
+                // associate address to contact
                 context.SetLink(newAddress, nameof(newAddress.spd_Contact), existingContact);
             }
         }
         //update current contact
         UpdateExistingContact(existingContact, newContact);
         context.UpdateObject(existingContact);
-        if (aliases.Any())
-        {
-            foreach (var alias in aliases)
-            {
-                if (AliasExists(context, alias, existingContact) == null)
-                {
-                    context.AddTospd_aliases(alias);
-                    // associate alias to contact
-                    context.SetLink(alias, nameof(alias.spd_ContactId), existingContact);
-                }
-            }
-        }
+        
         return existingContact;
     }
+
     private static spd_alias? AliasExists(DynamicsContext context, spd_alias newAlias, contact contact)
     {
         var matchingAlias = context.spd_aliases.Where(o =>
