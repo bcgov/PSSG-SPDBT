@@ -26,6 +26,7 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller
         private Mock<IDataProtectionProvider> mockDpProvider = new();
         private Mock<IRecaptchaVerificationService> mockRecaptch = new();
         private ApplicantProfileController sut;
+
         public ApplicantProfileControllerTest()
         {
             fixture = new Fixture();
