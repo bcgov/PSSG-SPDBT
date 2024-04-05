@@ -41,8 +41,11 @@ public class OrgUserControllerTest
     public async void AddBceidPrimaryUser_Return_OrgUserResponse()
     {
         //Arrange
-        mockMediator.Setup(m => m.Send(It.IsAny<RegisterBceidPrimaryUserCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(fixture.Build<OrgUserResponse>().Create());
+        mockMediator.Setup(m => m.Send(
+                It.IsAny<RegisterBceidPrimaryUserCommand>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                fixture.Build<OrgUserResponse>().Create());
 
         //Act
         var viewResult = await sut.AddBceidPrimaryUser(Guid.NewGuid());
