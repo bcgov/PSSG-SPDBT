@@ -110,6 +110,18 @@ internal class ContactRepository : IContactRepository
         return default;
     }
 
+    public async Task DeleteAliasAsync(Guid aliasId, CancellationToken ct)
+    {
+        spd_alias? alias = _context.spd_aliases.Where(a =>
+            a.spd_aliasid == aliasId &&
+            a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+        ).FirstOrDefault();
+
+        alias.statecode = DynamicsConstants.StateCode_Inactive;
+        _context.UpdateObject(alias);
+        await _context.SaveChangesAsync(ct);
+    }
+
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact newContact = _mapper.Map<contact>(c);
