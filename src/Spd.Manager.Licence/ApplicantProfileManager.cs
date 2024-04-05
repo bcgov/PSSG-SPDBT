@@ -145,7 +145,11 @@ namespace Spd.Manager.Licence
                 }
             }
 
-            await ProcessAliases((List<Resource.Repository.Alias>)contact.Aliases, (List<Resource.Repository.Alias>)updateContactCmd.Aliases, contact.Id, ct);
+            await ProcessAliases(
+                contact.Aliases.Where(a => a.SourceType == Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered).ToList(), 
+                updateContactCmd.Aliases.ToList(), 
+                contact.Id, 
+                ct);
 
             return default;
         }
@@ -194,7 +198,7 @@ namespace Spd.Manager.Licence
         private async Task ProcessAliases(List<Resource.Repository.Alias> aliases, List<Resource.Repository.Alias> aliasesToProcess, Guid contactId, CancellationToken ct)
         {
             // Add new aliases
-            var numOfCurrentAliases = aliases.Count(a => a.SourceType == Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered);
+            var numOfCurrentAliases = aliases.Count;
             var numOfNewAliases = aliasesToProcess.Count(a => a.Id == null || a.Id == Guid.Empty);
 
             if (numOfCurrentAliases + numOfNewAliases > 10)
