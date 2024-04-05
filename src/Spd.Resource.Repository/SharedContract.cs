@@ -92,7 +92,7 @@ public record Addr
 }
 public record Alias
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
