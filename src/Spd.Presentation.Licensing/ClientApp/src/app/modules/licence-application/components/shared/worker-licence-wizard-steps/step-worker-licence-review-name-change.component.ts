@@ -19,38 +19,14 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div [formGroup]="form">
 							<div class="row mt-0 mb-3">
-								<div class="col-lg-6 col-md-12">
+								<div class="offset-lg-3 col-lg-9 col-md-12">
 									<div class="text-label d-block text-muted">New Name</div>
 									<div class="summary-text-data">{{ fullname }}</div>
 								</div>
-								<div class="col-lg-6 col-md-12">
+								<div class="offset-lg-3 col-lg-9 col-md-12">
 									<div class="text-label d-block text-muted">Previous Name</div>
 									<div class="summary-text-data">{{ cardHolderName.value }}</div>
 								</div>
-							</div>
-						</div>
-
-						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-						<div class="text-minor-heading mb-2">Do you need a new licence printed?</div>
-
-						<div [formGroup]="reprintFormGroup" class="row">
-							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-								<mat-radio-group aria-label="Select an option" formControlName="reprintLicence">
-									<div class="d-flex justify-content-start">
-										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-									</div>
-								</mat-radio-group>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(reprintFormGroup.get('reprintLicence')?.dirty ||
-											reprintFormGroup.get('reprintLicence')?.touched) &&
-										reprintFormGroup.get('reprintLicence')?.invalid &&
-										reprintFormGroup.get('reprintLicence')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
 							</div>
 						</div>
 					</div>
@@ -62,7 +38,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 })
 export class StepWorkerLicenceReviewNameChangeComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
-	reprintFormGroup: FormGroup = this.licenceApplicationService.reprintLicenceFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 
@@ -70,9 +45,7 @@ export class StepWorkerLicenceReviewNameChangeComponent implements LicenceChildS
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		this.reprintFormGroup.markAllAsTouched();
-
-		return this.form.valid && this.reprintFormGroup.valid;
+		return this.form.valid;
 	}
 
 	get fullname(): string {

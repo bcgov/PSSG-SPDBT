@@ -83,6 +83,7 @@ import { BusinessCategorySecurityGuardComponent } from './components/business/bu
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { MemberWithoutSwlEditModalComponent } from './components/business/member-without-swl-edit-modal.component';
+import { StepBusinessLicenceConsentAndDeclarationComponent } from './components/business/step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceBcBranchesComponent } from './components/business/step-business-licence-bc-branches.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
@@ -265,6 +266,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceChecklistNewComponent,
 		StepBusinessLicenceChecklistRenewComponent,
 		StepBusinessLicenceCompanyBrandingComponent,
+		StepBusinessLicenceConsentAndDeclarationComponent,
 		StepBusinessLicenceControllingMemberConfirmationComponent,
 		StepBusinessLicenceControllingMemberInvitesComponent,
 		StepBusinessLicenceControllingMemberWithSwlComponent,
