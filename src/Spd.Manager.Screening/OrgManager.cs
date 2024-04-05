@@ -60,8 +60,8 @@ namespace Spd.Manager.Screening
             if (org == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "org does not exist.");
 
-            //todo, the valid days needs to get from biz, current days is temporary
-            var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays))); //biz said we just use the same value as user invite valid days
+            //biz said we just use the same value as user invite valid days
+            var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
 
             if (org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
             {

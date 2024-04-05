@@ -122,7 +122,7 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<OrgUserResponse> AddBceidPrimaryUser([FromRoute] Guid orgId)
         {
             BceidIdentityInfo idInfo = _currentUser.GetBceidUserIdentityInfo();
-            return await _mediator.Send(new RegisterBceidPrimaryUser(orgId, idInfo));
+            return await _mediator.Send(new RegisterBceidPrimaryUserCommand(orgId, idInfo));
         }
     }
 }

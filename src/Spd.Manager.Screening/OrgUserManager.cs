@@ -17,7 +17,7 @@ namespace Spd.Manager.Screening
         IRequestHandler<OrgUserUpdateLoginCommand, Unit>,
         IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
         IRequestHandler<VerifyUserInvitation, InvitationResponse>,
-        IRequestHandler<RegisterBceidPrimaryUser, OrgUserResponse>,
+        IRequestHandler<RegisterBceidPrimaryUserCommand, OrgUserResponse>,
         IOrgUserManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -154,7 +154,7 @@ namespace Spd.Manager.Screening
             return new InvitationResponse((Guid)result.UserResult.OrganizationId);
         }
 
-        public async Task<OrgUserResponse> Handle(RegisterBceidPrimaryUser request, CancellationToken ct)
+        public async Task<OrgUserResponse> Handle(RegisterBceidPrimaryUserCommand request, CancellationToken ct)
         {
             Guid identityId;
             IdentityQueryResult idResult = await _idRepository.Query(new IdentityQry(request.IdentityInfo.UserGuid.ToString(),
@@ -176,11 +176,11 @@ namespace Spd.Manager.Screening
             }
 
             OrgUsersResult orgUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(request.OrganizationId, null), ct);
-            if (orgUser.UserResults.Any(u => u.UserGuid == request.IdentityInfo.UserGuid))
+            if (orgUser != null && orgUser.UserResults.Any(u => u.UserGuid == request.IdentityInfo.UserGuid))
             {
                 throw new ArgumentException("You are already a user of the organization.");
             }
-            if (orgUser.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary) >= 2)
+            if (orgUser != null && orgUser.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary) >= 2)
             {
                 throw new ArgumentException("There is already maximum primary contact, we cannnot add another one.");
             }
