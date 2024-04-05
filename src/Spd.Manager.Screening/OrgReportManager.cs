@@ -15,9 +15,9 @@ namespace Spd.Manager.Screening
         private readonly IOrgReportRepository _reportRepository;
         private readonly IMapper _mapper;
         private readonly IDocumentRepository _documentRepository;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IMainFileStorageService _fileStorageService;
 
-        public OrgReportManager(IOrgReportRepository reportRepository, IMapper mapper, IDocumentRepository documentRepository, IFileStorageService fileStorageService)
+        public OrgReportManager(IOrgReportRepository reportRepository, IMapper mapper, IDocumentRepository documentRepository, IMainFileStorageService fileStorageService)
         {
             _reportRepository = reportRepository;
             _mapper = mapper;
@@ -38,7 +38,7 @@ namespace Spd.Manager.Screening
 
         public async Task<FileResponse> Handle(ReportFileQuery query, CancellationToken ct)
         {
-            DocumentQry qry = new DocumentQry(ReportId: query.ReportId);
+            DocumentQry qry = new(ReportId: query.ReportId);
             var docList = await _documentRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
                 return new FileResponse();

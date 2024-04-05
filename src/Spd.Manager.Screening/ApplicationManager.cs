@@ -61,7 +61,7 @@ namespace Spd.Manager.Screening
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
         private readonly IIdentityRepository _identityRepository;
         private readonly IDocumentRepository _documentRepository;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IMainFileStorageService _fileStorageService;
         private readonly IIncidentRepository _incidentRepository;
         private readonly IDelegateRepository _delegateRepository;
         private readonly IPortalUserRepository _portalUserRepository;
@@ -77,7 +77,7 @@ namespace Spd.Manager.Screening
             ISearchEngine searchEngine,
             IIdentityRepository identityRepository,
             IDocumentRepository documentUrlRepository,
-            IFileStorageService fileStorageService,
+            IMainFileStorageService fileStorageService,
             IIncidentRepository incidentRepository,
             IDelegateRepository delegateRepository,
             IPortalUserRepository portalUserRepository,
@@ -229,7 +229,7 @@ namespace Spd.Manager.Screening
         public async Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct)
         {
             OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
-            UpdateCmd updateCmd = new UpdateCmd()
+            UpdateCmd updateCmd = new()
             {
                 OrgId = request.OrgId,
                 ApplicationId = request.ApplicationId,
@@ -264,7 +264,7 @@ namespace Spd.Manager.Screening
 
         private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)
         {
-            ApplicationCreateResponse resp = new ApplicationCreateResponse();
+            ApplicationCreateResponse resp = new();
 
             var searchApplicationQry = _mapper.Map<SearchApplicationQry>(request);
 
@@ -298,7 +298,7 @@ namespace Spd.Manager.Screening
 
         public async Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
         {
-            BulkUploadCreateResponse response = new BulkUploadCreateResponse();
+            BulkUploadCreateResponse response = new();
             if (cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
             {
                 var checks = _mapper.Map<IEnumerable<AppBulkDuplicateCheck>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
@@ -365,7 +365,7 @@ namespace Spd.Manager.Screening
 
         public async Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
-            DocumentQry qry = new DocumentQry(ClearanceId: query.ClearanceId);
+            DocumentQry qry = new(ClearanceId: query.ClearanceId);
             var docList = await _documentRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
                 return new FileResponse();
@@ -384,7 +384,7 @@ namespace Spd.Manager.Screening
 
         public async Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery query, CancellationToken ct)
         {
-            ShareableClearanceResponse response = new ShareableClearanceResponse();
+            ShareableClearanceResponse response = new();
             ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
 
             if (searchResponse.Items.Any())
@@ -511,7 +511,7 @@ namespace Spd.Manager.Screening
             if (contact == null)
                 throw new ArgumentException("No contact found");
 
-            DocumentQry qry = new DocumentQry(query.ApplicationId, contact.ContactId);
+            DocumentQry qry = new(query.ApplicationId, contact.ContactId);
             var docList = await _documentRepository.QueryAsync(qry, ct);
 
             return new ApplicantApplicationFileListResponse
@@ -583,7 +583,7 @@ namespace Spd.Manager.Screening
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the case for this application.");
 
             //dynamics will put the pre-popluated template file in S3 and add record in documentUrl. so, download file from there.
-            DocumentQry qry = new DocumentQry
+            DocumentQry qry = new()
             {
                 CaseId = incidents.Items.First().IncidentId,
                 FileType = Enum.Parse<DocumentTypeEnum>(query.FileTemplateType.ToString()),

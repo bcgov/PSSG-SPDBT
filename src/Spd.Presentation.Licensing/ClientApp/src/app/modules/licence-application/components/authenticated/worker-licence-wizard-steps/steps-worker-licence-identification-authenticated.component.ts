@@ -51,7 +51,7 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="isNotRenewal">
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
 				<div class="row wizard-button-row">
@@ -272,6 +272,10 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 		}
 
 		this.previousStepperStep.emit(true);
+	}
+
+	get isNotRenewal(): boolean {
+		return this.applicationTypeCode != ApplicationTypeCode.Renewal;
 	}
 
 	override dirtyForm(step: number): boolean {
