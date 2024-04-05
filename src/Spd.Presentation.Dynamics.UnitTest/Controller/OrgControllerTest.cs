@@ -9,7 +9,7 @@ namespace Spd.Presentation.Dynamics.UnitTest.Controller;
 public class OrgControllerTest
 {
     private Mock<IMediator> mockMediator = new();
-    private Mock<IConfiguration> mockConfig = new();
+    private IConfiguration config;
     private readonly IFixture fixture;
     private OrgController sut;
     public OrgControllerTest()
@@ -17,15 +17,20 @@ public class OrgControllerTest
         fixture = new Fixture();
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        sut = new OrgController(mockMediator.Object,
-            mockConfig.Object);
+        var inMemorySettings = new Dictionary<string, string> {
+            {"ScreeningHostUrl", "localhost"},
+            {"ScreeningOrgInvitationPath", "path"},
+        };
+        config = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+        sut = new OrgController(mockMediator.Object, config);
     }
 
     [Fact]
     public async void OrgInvitationLinkCreateCommand_Return_OrgInvitationLinkResponse()
     {
         //Arrange
-        mockConfig.Setup(c => c.GetValue<string>(It.IsAny<string>())).Returns("path");
         mockMediator.Setup(m => m.Send(It.IsAny<OrgInvitationLinkCreateCommand>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fixture.Build<OrgInvitationLinkResponse>().With(i => i.OrgInvitationLinkUrl, "url").Create());
 
