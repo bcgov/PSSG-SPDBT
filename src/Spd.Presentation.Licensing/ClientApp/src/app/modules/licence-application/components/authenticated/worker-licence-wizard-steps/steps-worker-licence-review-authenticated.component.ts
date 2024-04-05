@@ -10,10 +10,10 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdate">
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
 					<app-step-worker-licence-summary-review-update-authenticated></app-step-worker-licence-summary-review-update-authenticated>
 				</ng-container>
-				<ng-template #notUpdate>
+				<ng-template #notUpdateReview>
 					<app-step-worker-licence-summary-review-authenticated
 						(editStep)="onGoToStep($event)"
 					></app-step-worker-licence-summary-review-authenticated>
@@ -39,6 +39,24 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateConsent">
+							<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmitNow()">Submit</button>
+						</ng-container>
+						<ng-template #notUpdateConsent>
+							<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
+						</ng-template>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="isUpdate">
+				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
 					</div>
 				</div>
@@ -52,6 +70,7 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() licenceCost = 0;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -66,10 +85,14 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 		super();
 	}
 
-	onPayNow(): void {
+	onSubmitNow(): void {
 		const isValid = this.consentAndDeclarationComponent.isFormValid();
 		if (!isValid) return;
 
+		this.nextSubmitStep.emit();
+	}
+
+	onPayNow(): void {
 		this.nextPayStep.emit();
 	}
 
@@ -92,5 +115,9 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 		} else {
 			this.summaryReviewComponent.onUpdateData();
 		}
+	}
+
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

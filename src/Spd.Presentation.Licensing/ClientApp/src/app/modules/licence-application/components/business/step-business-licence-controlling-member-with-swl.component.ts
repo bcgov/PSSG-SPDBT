@@ -78,18 +78,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 								</div>
 							</div>
 
-							<!-- <div class="mt-3" *ngIf="errorMessage">
-						<app-alert type="danger" icon="error">
-							{{ errorMessage }}
-						</app-alert>
-					</div>
-
-					<div class="mt-3" *ngIf="isExpired">
-						<a class="w-auto" tabindex="0" (click)="onCreateNewLicence()" (keydown)="onKeydownCreateNewLicence($event)">
-							Apply for a new Licence
-						</a>
-					</div> -->
-
 							<div class="row mt-4" *ngIf="dataSource.data.length > 0">
 								<div class="col-12">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
