@@ -7,6 +7,10 @@ export class OptionsPipe implements PipeTransform {
 	constructor(private utilService: UtilService) {}
 
 	transform(input: string | undefined, codeTableName: keyof typeof CodeDescTypes, defaultValue = ''): string {
-		return input ? this.utilService.getDescByCode(codeTableName, input) : defaultValue;
+		if (!input) {
+			return defaultValue;
+		}
+		const desc = this.utilService.getDescByCode(codeTableName, input);
+		return desc ? desc : defaultValue;
 	}
 }
