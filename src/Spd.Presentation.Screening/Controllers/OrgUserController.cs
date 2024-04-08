@@ -116,5 +116,13 @@ namespace Spd.Presentation.Screening.Controllers
 
             return await _mediator.Send(new OrgUserListQuery(orgId));
         }
+
+        [Route("api/orgs/add-bceid-primary-users/{orgId}")]
+        [HttpGet]
+        public async Task<OrgUserResponse> AddBceidPrimaryUser([FromRoute] Guid orgId)
+        {
+            BceidIdentityInfo idInfo = _currentUser.GetBceidUserIdentityInfo();
+            return await _mediator.Send(new RegisterBceidPrimaryUserCommand(orgId, idInfo));
+        }
     }
 }
