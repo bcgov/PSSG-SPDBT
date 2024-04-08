@@ -24,6 +24,7 @@ import { UsersComponent } from './components/users.component';
 import { CrrpFirstTimeTermsAndCondsComponent } from './crrp-first-time-terms-and-conds.component';
 import { CrrpRoutingModule } from './crrp-routing.module';
 import { CrrpComponent } from './crrp.component';
+import { InvitationLinkOrganizationComponent } from './invitation-link-organization.component';
 import { InvitationUserComponent } from './invitation-user.component';
 
 @NgModule({
@@ -44,6 +45,7 @@ import { InvitationUserComponent } from './invitation-user.component';
 		ManualSubmissionComponent,
 		ReportsComponent,
 		InvitationUserComponent,
+		InvitationLinkOrganizationComponent,
 		CrrpPaymentFailComponent,
 		CrrpPaymentSuccessComponent,
 		CrrpPaymentManualComponent,

@@ -62,6 +62,7 @@ export { InvitationResponse } from './models/invitation-response';
 export { LicenceTermCode } from './models/licence-term-code';
 export { MinistryResponse } from './models/ministry-response';
 export { OidcConfiguration } from './models/oidc-configuration';
+export { OrgInviteVerifyResponse } from './models/org-invite-verify-response';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { OrgRegistrationCreateResponse } from './models/org-registration-create-response';
