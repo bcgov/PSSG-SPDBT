@@ -5,7 +5,7 @@ using Moq;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
-using Spd.Resource.Repository.LicenceFee;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest
 {
@@ -88,6 +88,105 @@ namespace Spd.Manager.Licence.UnitTest
             var result = await sut.Handle(cmd, CancellationToken.None);
 
             Assert.IsType<Unit>(result);
+        }
+
+        [Fact]
+        public async void Handle_ApplicantUpdateCommand_WithMoreThanTenAliases_Throw_Exception()
+        {
+            ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
+                .With(r => r.IsTreatedForMHC, false)
+                .With(r => r.IsPoliceOrPeaceOfficer, false)
+                .Without(r => r.PreviousDocumentIds)
+                .Create();
+
+            ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
+                .With(c => c.LicAppFileInfos, [])
+                .With(c => c.ApplicantUpdateRequest, request)
+                .Create();
+
+            List<Resource.Repository.Alias> aliases = fixture.Build<Resource.Repository.Alias>()
+                .With(a => a.SourceType, Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered)
+                .CreateMany(10)
+                .ToList();
+            IEnumerable<Resource.Repository.Alias> newAliases = fixture.Build<Resource.Repository.Alias>()
+                .With(a => a.SourceType, Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered)
+                .Without(a => a.Id)
+                .CreateMany(1);
+
+            ContactResp contactResp = fixture.Build<ContactResp>()
+                .With(r => r.Aliases, aliases)
+                .Create();
+
+            mockContactRepo.Setup(m => m.GetAsync(It.Is<Guid>(g => g.Equals(cmd.ApplicantId)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContactResp() { Aliases = aliases });
+            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<ApplicantUpdateRequest>()))
+                .Returns(new UpdateContactCmd() { Aliases = newAliases });
+            mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DocumentListResp() { Items = [] });
+
+            _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.Handle(cmd, CancellationToken.None));
+        }
+
+        [Fact]
+        public async void Handle_ApplicantUpdateCommand_WithNoMentalHealthConditionFile_Throw_Exception()
+        {
+            ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
+                .With(r => r.IsTreatedForMHC, true)
+                .With(r => r.IsPoliceOrPeaceOfficer, false)
+                .With(r => r.PreviousDocumentIds, new List<Guid>() { Guid.NewGuid() })
+                .Create();
+
+            ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
+                .With(c => c.LicAppFileInfos, [])
+                .With(c => c.ApplicantUpdateRequest, request)
+                .Create();
+
+            mockContactRepo.Setup(m => m.GetAsync(It.Is<Guid>(g => g.Equals(cmd.ApplicantId)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContactResp());
+            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<ApplicantUpdateRequest>()))
+                .Returns(new UpdateContactCmd());
+
+            DocumentResp document = new DocumentResp()
+            {
+                DocumentType = DocumentTypeEnum.MentalHealthConditionForm,
+                DocumentType2 = DocumentTypeEnum.MentalHealthConditionForm,
+                DocumentUrlId = request.PreviousDocumentIds.First()
+            };
+            mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() { document } });
+
+            _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.Handle(cmd, CancellationToken.None));
+        }
+
+        [Fact]
+        public async void Handle_ApplicantUpdateCommand_WithNoPoliceBackgroundLetterOfNoConflictFile_Throw_Exception()
+        {
+            ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
+                .With(r => r.IsTreatedForMHC, false)
+                .With(r => r.IsPoliceOrPeaceOfficer, true)
+                .With(r => r.PreviousDocumentIds, new List<Guid>() { Guid.NewGuid() })
+                .Create();
+
+            ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
+                .With(c => c.LicAppFileInfos, [])
+                .With(c => c.ApplicantUpdateRequest, request)
+                .Create();
+
+            mockContactRepo.Setup(m => m.GetAsync(It.Is<Guid>(g => g.Equals(cmd.ApplicantId)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ContactResp());
+            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<ApplicantUpdateRequest>()))
+                .Returns(new UpdateContactCmd());
+
+            DocumentResp document = new DocumentResp()
+            {
+                DocumentType = DocumentTypeEnum.LetterOfNoConflict,
+                DocumentType2 = DocumentTypeEnum.LetterOfNoConflict,
+                DocumentUrlId = request.PreviousDocumentIds.First()
+            };
+            mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() { document } });
+
+            _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.Handle(cmd, CancellationToken.None));
         }
     }
 }
