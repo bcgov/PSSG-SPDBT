@@ -401,4 +401,57 @@ export class OrgUserService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiOrgsAddBceidPrimaryUsersOrgIdGet
+   */
+  static readonly ApiOrgsAddBceidPrimaryUsersOrgIdGetPath = '/api/orgs/add-bceid-primary-users/{orgId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsAddBceidPrimaryUsersOrgIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsAddBceidPrimaryUsersOrgIdGet$Response(params: {
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<OrgUserResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiOrgsAddBceidPrimaryUsersOrgIdGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OrgUserResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsAddBceidPrimaryUsersOrgIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsAddBceidPrimaryUsersOrgIdGet(params: {
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<OrgUserResponse> {
+
+    return this.apiOrgsAddBceidPrimaryUsersOrgIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<OrgUserResponse>) => r.body as OrgUserResponse)
+    );
+  }
+
 }
