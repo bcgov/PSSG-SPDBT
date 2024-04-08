@@ -3,6 +3,7 @@ import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
+import { StepPermitEmployerInformationComponent } from '../../anonymous/permit-wizard-steps/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '../../anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/step-permit-reason.component';
 import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
@@ -82,12 +83,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				></app-step-permit-reason>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_REASON)">
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -98,16 +94,33 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				</div>
 			</mat-step>
 
+			<mat-step *ngIf="showEmployerInformation">
+				<app-step-permit-employer-information
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-employer-information>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
+						>
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
 			<mat-step>
 				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
 				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit(STEP_RATIONALE)">
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -130,10 +143,12 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	readonly STEP_REPRINT = 1;
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 2;
 	readonly STEP_REASON = 3;
-	readonly STEP_RATIONALE = 4;
+	readonly STEP_EMPLOYER_INFORMATION = 4;
+	readonly STEP_RATIONALE = 5;
 
 	hasBcscNameChanged = false;
 	hasGenderChanged = false;
+	showEmployerInformation = true;
 
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -144,6 +159,7 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitReasonComponent) stepReasonComponent!: StepPermitReasonComponent;
 	@ViewChild(StepPermitRationaleComponent) stepRationaleComponent!: StepPermitRationaleComponent;
 	@ViewChild(StepPermitReprintComponent) stepReprintComponent!: StepPermitReprintComponent;
+	@ViewChild(StepPermitEmployerInformationComponent) stepEmployerComponent!: StepPermitEmployerInformationComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {
 		super();
@@ -163,6 +179,20 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 				this.hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
+
+				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.bodyArmourRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+				} else {
+					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.armouredVehicleRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+				}
 			}
 		);
 	}
@@ -202,6 +232,8 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 				return this.stepPhotographOfYourselfComponent.isFormValid();
 			case this.STEP_REASON:
 				return this.stepReasonComponent.isFormValid();
+			case this.STEP_EMPLOYER_INFORMATION:
+				return this.stepEmployerComponent.isFormValid();
 			case this.STEP_RATIONALE:
 				return this.stepRationaleComponent.isFormValid();
 			default:

@@ -56,6 +56,8 @@ import { LoginUserProfileComponent } from './components/authenticated/login-user
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
+import { StepPermitPhotographOfYourselfNewComponent } from './components/authenticated/permit-wizard-steps/step-permit-photograph-of-yourself-new.component';
+import { StepPermitPhotographOfYourselfRenewAndUpdateComponent } from './components/authenticated/permit-wizard-steps/step-permit-photograph-of-yourself-renew-and-update.component';
 import { StepPermitPhotographOfYourselfComponent } from './components/authenticated/permit-wizard-steps/step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './components/authenticated/permit-wizard-steps/step-permit-review-name-change.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
@@ -301,6 +303,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitPersonalInformationComponent,
 		StepPermitPhotographOfYourselfAnonymousComponent,
 		StepPermitPhotographOfYourselfComponent,
+		StepPermitPhotographOfYourselfNewComponent,
+		StepPermitPhotographOfYourselfRenewAndUpdateComponent,
 		StepPermitPhysicalCharacteristicsComponent,
 		StepPermitPrintComponent,
 		StepPermitRationaleComponent,

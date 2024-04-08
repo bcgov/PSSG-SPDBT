@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitBcDriverLicenceComponent } from '../../anonymous/permit-wizard-steps/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '../../anonymous/permit-wizard-steps/step-permit-citizenship.component';
-import { StepPermitPhotographOfYourselfAnonymousComponent } from '../../anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
 import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-wizard-steps/step-permit-physical-characteristics.component';
+import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-steps-permit-identification-authenticated',
@@ -22,7 +21,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -59,7 +58,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -101,7 +100,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -143,7 +142,7 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_PHYSICAL_CHARACTERISTICS)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -190,7 +189,7 @@ export class StepsPermitIdentificationAuthenticatedComponent
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	isLoggedIn = false;
+	showSaveAndExit = false;
 	isFormValid = false;
 
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -200,13 +199,10 @@ export class StepsPermitIdentificationAuthenticatedComponent
 	stepDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
 	@ViewChild(StepPermitPhysicalCharacteristicsComponent)
 	stepCharacteristicsComponent!: StepPermitPhysicalCharacteristicsComponent;
-	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
-	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
+	@ViewChild(StepPermitPhotographOfYourselfComponent)
+	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(private permitApplicationService: PermitApplicationService) {
 		super();
 	}
 
@@ -219,12 +215,8 @@ export class StepsPermitIdentificationAuthenticatedComponent
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
-			}
-		);
 
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
+				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
 			}
 		);
 	}

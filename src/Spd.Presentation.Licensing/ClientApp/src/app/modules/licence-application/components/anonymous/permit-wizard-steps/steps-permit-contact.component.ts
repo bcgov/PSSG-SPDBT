@@ -3,7 +3,6 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { StepPermitContactInformationComponent } from './step-permit-contact-information.component';
 import { StepPermitMailingAddressComponent } from './step-permit-mailing-address.component';
 import { StepPermitResidentialAddressComponent } from './step-permit-residential-address.component';
@@ -23,7 +22,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -63,7 +62,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_MAILING_ADDRESS)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -105,7 +104,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_CONTACT_INFORMATION)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -143,7 +142,7 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	isLoggedIn = false;
+	showSaveAndExit = false;
 	isFormValid = false;
 	showMailingAddressStep!: boolean;
 
@@ -155,10 +154,7 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 	@ViewChild(StepPermitContactInformationComponent)
 	stepContactInformationComponent!: StepPermitContactInformationComponent;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(private permitApplicationService: PermitApplicationService) {
 		super();
 	}
 
@@ -180,12 +176,8 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
 					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
-			}
-		);
 
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
+				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
 			}
 		);
 	}

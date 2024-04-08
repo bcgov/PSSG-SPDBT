@@ -315,7 +315,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		return false; // TODO api not ready
+		return false; // TODO fix when permit auto save is ready
 		// if (
 		// 	!this.authenticationService.isLoggedIn() ||
 		// 	this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
@@ -1018,6 +1018,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		profile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
+					// id: new FormControl('123123'), // TODO add ID to alias
 					givenName: new FormControl(alias.givenName),
 					middleName1: new FormControl(alias.middleName1),
 					middleName2: new FormControl(alias.middleName2),
