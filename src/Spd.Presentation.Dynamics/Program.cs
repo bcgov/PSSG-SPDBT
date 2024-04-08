@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Spd.Presentation.Dynamics.Swagger;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
@@ -9,6 +10,7 @@ using Spd.Utilities.Payment;
 using Spd.Utilities.TempFileStorage;
 using System.Configuration;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,6 +80,9 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme)!;
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+builder.Services.AddBCeIDService(builder.Configuration);
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();

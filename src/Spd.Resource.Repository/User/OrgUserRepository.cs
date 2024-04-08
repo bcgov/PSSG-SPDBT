@@ -45,7 +45,7 @@ namespace Spd.Resource.Repository.User
                 UserUpdateLoginCmd c => await UpdateUserLoginAsync(c.Id, ct),
                 UserInvitationVerify v => await VerifyOrgUserInvitationAsync(v, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
-            };;
+            }; ;
         }
 
         private async Task<OrgUserManageResult> VerifyOrgUserInvitationAsync(UserInvitationVerify verify, CancellationToken ct)
@@ -125,7 +125,7 @@ namespace Spd.Resource.Repository.User
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
 
-            if(createUserCmd.IdentityId != null)
+            if (createUserCmd.IdentityId != null)
             {
                 var id = await _dynaContext.GetIdentityById((Guid)createUserCmd.IdentityId, ct);
                 _dynaContext.SetLink(user, nameof(spd_portaluser.spd_IdentityId), id);
@@ -146,24 +146,27 @@ namespace Spd.Resource.Repository.User
             }
 
             // create portal invitation
-            spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
-            Guid inviteId = Guid.NewGuid();
-            invitation.spd_portalinvitationid = inviteId;
-            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
-            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}{SpdConstants.UserInviteLink}{encryptedInviteId}";
-            _dynaContext.AddTospd_portalinvitations(invitation);
-            _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
-            _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
-            if(createUserCmd.CreatedByUserId != null)
+            if (createUserCmd.IdentityId == null)
             {
-                spd_portaluser invitedBy = await _dynaContext.GetUserById((Guid)createUserCmd.CreatedByUserId, ct);
-                _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), invitedBy);
+                spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
+                Guid inviteId = Guid.NewGuid();
+                invitation.spd_portalinvitationid = inviteId;
+                var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
+                invitation.spd_invitationlink = $"{createUserCmd.HostUrl}{SpdConstants.UserInviteLink}{encryptedInviteId}";
+                _dynaContext.AddTospd_portalinvitations(invitation);
+                _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
+                _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+                if (createUserCmd.CreatedByUserId != null)
+                {
+                    spd_portaluser invitedBy = await _dynaContext.GetUserById((Guid)createUserCmd.CreatedByUserId, ct);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), invitedBy);
+                }
             }
 
             await _dynaContext.SaveChangesAsync(ct);
 
             user._spd_organizationid_value = createUserCmd.User.OrganizationId;
-            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
+            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = role.spd_roleid } };
 
             return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
@@ -197,7 +200,7 @@ namespace Spd.Resource.Repository.User
             _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = newRole.spd_roleid } };
+            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = newRole.spd_roleid } };
             return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
 
@@ -250,7 +253,7 @@ namespace Spd.Resource.Repository.User
                     .Where(r => r.spd_portaluserid == user.spd_portaluserid)
                     .FirstOrDefault();
                 if (role != null)
-                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
+                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = role.spd_roleid } };
             });
 
             return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
