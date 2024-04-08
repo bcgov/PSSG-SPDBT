@@ -45,8 +45,6 @@ export class AuthUserBceidService {
 			return Promise.resolve(false);
 		}
 
-		console.log('************** setUserOrgProfile', this.bceidUserInfoProfile);
-
 		const bceidUserOrgProfile = await lastValueFrom(
 			this.orgService.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
 		);
@@ -58,6 +56,16 @@ export class AuthUserBceidService {
 
 		console.debug('[AuthUserBceidService] setUserOrgProfile bceidUserOrgProfile', this.bceidUserOrgProfile);
 		return Promise.resolve(true);
+	}
+
+	//----------------------------------------------------------
+	// *
+	// *
+	async linkBceidPrimaryUsers(orgId: string): Promise<boolean> {
+		const orgUserResponse = await lastValueFrom(this.orgUserService.apiOrgsAddBceidPrimaryUsersOrgIdGet({ orgId }));
+
+		console.debug('[AuthUserBceidService] linkBceidPrimaryUsers orgUserResponse', orgUserResponse);
+		return Promise.resolve(!!orgUserResponse);
 	}
 
 	//----------------------------------------------------------
