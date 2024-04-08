@@ -203,7 +203,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 										class="w-100"
 										*ngIf="application.status"
 									>
-										{{ application.status | options : 'ApplicationPortalStatusTypes' }}
+										{{ application.status | options : 'ApplicationPortalStatusTypes' : 'Unknown' }}
 									</mat-chip-row>
 								</ng-container>
 								<ng-template #noStatus>
