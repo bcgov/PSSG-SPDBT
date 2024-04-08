@@ -182,7 +182,7 @@ namespace Spd.Manager.Screening
             }
             if (orgUser != null && orgUser.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary) >= 2)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "There is already maximum primary contact, we cannnot add another one.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The maximum number of primary contacts has already been reached. We cannnot add another one.");
             }
 
             User user = _mapper.Map<User>(request.IdentityInfo);
