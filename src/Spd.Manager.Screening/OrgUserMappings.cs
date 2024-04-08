@@ -1,5 +1,6 @@
 using AutoMapper;
 using Spd.Resource.Repository.User;
+using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Screening
 {
@@ -8,6 +9,8 @@ namespace Spd.Manager.Screening
         public OrgUserMappings()
         {
             CreateMap<OrgUserCreateRequest, UserCreateCmd>();
+            CreateMap<BceidIdentityInfo, User>()
+               .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => ContactAuthorizationTypeCode.Primary));
             CreateMap<OrgUserUpdateRequest, UserUpdateCmd>();
             CreateMap<UserResult, OrgUserResponse>();
             CreateMap<OrgUserCreateRequest, User>();
