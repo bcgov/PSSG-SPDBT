@@ -18,6 +18,7 @@ import { TermsAndConditionsComponent } from './components/terms-and-conditions.c
 import { UsersComponent } from './components/users.component';
 import { CrrpFirstTimeTermsAndCondsComponent } from './crrp-first-time-terms-and-conds.component';
 import { CrrpComponent } from './crrp.component';
+import { InvitationLinkOrganizationComponent } from './invitation-link-organization.component';
 import { InvitationUserComponent } from './invitation-user.component';
 
 export class CrrpRoutes {
@@ -36,6 +37,7 @@ export class CrrpRoutes {
 	public static PAYMENT_MANUAL = 'payment-manual';
 	public static PAYMENT_ERROR = 'payment-error';
 	public static INVITATION = 'invitation';
+	public static INVITATION_LINK_ORG = 'invitation-link-bceid';
 	public static INVITATION_ACCEPT = 'invitation-accept';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
@@ -76,6 +78,10 @@ const routes: Routes = [
 	{
 		path: `${CrrpRoutes.INVITATION}/:id`,
 		component: InvitationUserComponent,
+	},
+	{
+		path: `${CrrpRoutes.INVITATION_LINK_ORG}/:id`,
+		component: InvitationLinkOrganizationComponent,
 	},
 ];
 
