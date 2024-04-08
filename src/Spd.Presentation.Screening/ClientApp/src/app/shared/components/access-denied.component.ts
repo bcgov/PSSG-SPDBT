@@ -33,9 +33,16 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 					</p>
 				</ng-container>
 				<ng-container *ngSwitchDefault>
-					<mat-icon class="my-4">do_not_disturb</mat-icon>
-					<h2 class="my-4">Access Denied</h2>
-					<p class="fs-5 my-4">You currently do not have permission to access this page.</p>
+					<ng-container *ngIf="errorMessage; else NoErrorMessage">
+						<mat-icon class="my-4">do_not_disturb</mat-icon>
+						<h2 class="my-4">Access Denied</h2>
+						<p class="fs-5 my-4">{{ errorMessage }}</p>
+					</ng-container>
+					<ng-template #NoErrorMessage>
+						<mat-icon class="my-4">do_not_disturb</mat-icon>
+						<h2 class="my-4">Access Denied</h2>
+						<p class="fs-5 my-4">You currently do not have permission to access this page.</p>
+					</ng-template>
 				</ng-container>
 			</ng-container>
 		</div>
@@ -53,6 +60,7 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 	],
 })
 export class AccessDeniedComponent implements OnInit {
+	errorMessage: string | null = null;
 	userInfoMsgType: UserInfoMsgTypeCode | null = null;
 	userInfoMsgTypeCodes = UserInfoMsgTypeCode;
 
@@ -60,5 +68,6 @@ export class AccessDeniedComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.userInfoMsgType = (this.location.getState() as any).userInfoMsgType;
+		this.errorMessage = (this.location.getState() as any).errorMessage;
 	}
 }
