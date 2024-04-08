@@ -18,4 +18,7 @@
     <ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Spd.Manager.Screening.UnitTest" />
+	</ItemGroup>
 </Project>

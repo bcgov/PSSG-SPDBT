@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spd.Presentation.Dynamics\Spd.Presentation.Dynamics.csproj" />
+    <ProjectReference Include="..\Spd.Tests\Spd.Tests.csproj" />
     <ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
   </ItemGroup>
 

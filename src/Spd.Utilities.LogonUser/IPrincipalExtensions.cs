@@ -20,6 +20,9 @@ namespace Spd.Utilities.LogonUser
         public static readonly string ISSUER = "iss";
         public static readonly string SUB = "sub";
         public static readonly string SPD_IDIR_IsPSA = "SPD_IDIR_IsPSA";
+        public static readonly string BCeID_GIVEN_NAME = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname";
+        public static readonly string BCeID_SUR_NAME = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname";
+        public static readonly string BCeID_Email = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
 #pragma warning restore CA1707 // Identifiers should not contain underscores
         public static bool IsAuthenticated(this IPrincipal principal)
         {
@@ -29,8 +32,8 @@ namespace Spd.Utilities.LogonUser
 
         public static string? GetIssuer(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ISSUER);
         public static string? GetUserId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_USERID);
-        public static bool IsPSA(this IPrincipal principal) => 
-            ValidatePrincipal(principal).GetClaimValue(SPD_IDIR_IsPSA)==null? false : Boolean.Parse(ValidatePrincipal(principal).GetClaimValue(SPD_IDIR_IsPSA));
+        public static bool IsPSA(this IPrincipal principal) =>
+            ValidatePrincipal(principal).GetClaimValue(SPD_IDIR_IsPSA) == null ? false : Boolean.Parse(ValidatePrincipal(principal).GetClaimValue(SPD_IDIR_IsPSA));
         public static string? GetUserRole(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Role);
 
         public static BcscIdentityInfo GetBcscUserIdentityInfo(this IPrincipal principal)
@@ -69,9 +72,9 @@ namespace Spd.Utilities.LogonUser
             return new BceidIdentityInfo()
             {
                 DisplayName = claim.GetClaimValue("display_name"),
-                Email = claim.GetClaimValue("email"),
-                FirstName = claim.GetClaimValue("given_name"),
-                LastName = claim.GetClaimValue("family_name"),
+                Email = claim.GetClaimValue(BCeID_Email),
+                FirstName = claim.GetClaimValue(BCeID_GIVEN_NAME),
+                LastName = claim.GetClaimValue(BCeID_SUR_NAME),
                 PreferredUserName = claim.GetClaimValue("preferred_username"),
                 BCeIDUserName = claim.GetClaimValue("bceid_username"),
                 UserGuid = claim.GetClaimValue("bceid_user_guid") == null ? Guid.Empty : Guid.Parse(claim.GetClaimValue("bceid_user_guid")),
