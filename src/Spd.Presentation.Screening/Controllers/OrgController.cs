@@ -51,5 +51,19 @@ namespace Spd.Presentation.Screening.Controllers
             var orgResponse = await _mediator.Send(new OrgGetQuery(null, accessCode));
             return _mapper.Map<AppOrgResponse>(orgResponse);
         }
+
+        /// <summary>
+        /// the link is used for some existing org which has no org registration. 
+        /// But later, they found they have bceid, and they want to connect their bceid to this org as the primary contact
+        /// </summary>
+        /// <param name="encodedOrgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/invite-link-verify")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<OrgInviteVerifyResponse> VerifyOrgInviteLink([FromQuery] string encodedOrgId)
+        {
+            return await _mediator.Send(new OrgInvitationLinkVerifyCommand(encodedOrgId));
+        }
     }
 }
