@@ -77,6 +77,46 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
+	// * CRRP Portal - Invitation for Organization to link to BCeID
+	// *
+	async initializeCrrpOrgLinkBceid(defaultOrgId: string, defaultRoute: string | null = null): Promise<string | null> {
+		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
+
+		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('[initializeCrrpOrgLinkBceid] nextUrl', nextUrl);
+
+		if (nextUrl) {
+			const linksuccess = await this.authUserBceidService.linkBceidPrimaryUsers(defaultOrgId);
+			if (!linksuccess) {
+				this.notify(linksuccess);
+				console.debug(
+					'[initializeCrrpOrgLinkBceid] - link not successful',
+					this.identityProvider,
+					nextUrl,
+					linksuccess
+				);
+				return Promise.resolve(null);
+			}
+
+			const success = await this.authUserBceidService.whoAmIAsync(defaultOrgId);
+			if (!success) {
+				this.notify(success);
+				console.debug('[initializeCrrpOrgLinkBceid] - whoami not successful', this.identityProvider, nextUrl, success);
+				return Promise.resolve(null);
+			}
+
+			this.notify(success);
+
+			const nextRoute = decodeURIComponent(nextUrl);
+			return Promise.resolve(nextRoute);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
 	// * CRRP Portal - User Invitation
 	// * sign in but do not call whoami/org endpoints
 	//

@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { AppOrgResponse } from '../models/app-org-response';
+import { OrgInviteVerifyResponse } from '../models/org-invite-verify-response';
 import { OrgResponse } from '../models/org-response';
 import { OrgUpdateRequest } from '../models/org-update-request';
 
@@ -191,6 +192,69 @@ export class OrgService extends BaseService {
 
     return this.apiOrgsAccessCodeAccessCodeGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<AppOrgResponse>) => r.body as AppOrgResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsInviteLinkVerifyGet
+   */
+  static readonly ApiOrgsInviteLinkVerifyGetPath = '/api/orgs/invite-link-verify';
+
+  /**
+   * the link is used for some existing org which has no org registration. 
+   * But later, they found they have bceid, and they want to connect their bceid to this org as the primary contact.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsInviteLinkVerifyGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsInviteLinkVerifyGet$Response(params?: {
+    encodedOrgId?: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<OrgInviteVerifyResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsInviteLinkVerifyGetPath, 'get');
+    if (params) {
+      rb.query('encodedOrgId', params.encodedOrgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OrgInviteVerifyResponse>;
+      })
+    );
+  }
+
+  /**
+   * the link is used for some existing org which has no org registration. 
+   * But later, they found they have bceid, and they want to connect their bceid to this org as the primary contact.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsInviteLinkVerifyGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsInviteLinkVerifyGet(params?: {
+    encodedOrgId?: string;
+  },
+  context?: HttpContext
+
+): Observable<OrgInviteVerifyResponse> {
+
+    return this.apiOrgsInviteLinkVerifyGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<OrgInviteVerifyResponse>) => r.body as OrgInviteVerifyResponse)
     );
   }
 
