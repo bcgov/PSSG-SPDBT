@@ -3,12 +3,13 @@ using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Screening;
 using Spd.Utilities.Cache;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Shared;
 using System.Net;
 using System.Security.Claims;
 
-namespace Spd.Utilities.LogonUser
+namespace Spd.Presentation.Screening
 {
     public class UsersMiddleware
     {
@@ -110,7 +111,8 @@ namespace Spd.Utilities.LogonUser
                 ("POST", "api/anonymous-org-registrations"),
                 ("POST", "api/org-registrations"),
                 ("POST", "api/user/invitation"),
-                ("POST", "api/applicants/invites")
+                ("POST", "api/applicants/invites"),
+                ("GET", "api/orgs/add-bceid-primary-users")
             };
 
             if (context.Request.Path.HasValue)
@@ -144,7 +146,7 @@ namespace Spd.Utilities.LogonUser
                 idirUserProfile = await mediator.Send(new GetIdirUserProfileQuery(mapper.Map<IdirUserIdentity>(idirUserIdentityInfo)));
                 if (idirUserProfile != null)
                 {
-                    await cache.Set<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{idirUserIdentityInfo.UserGuid}", idirUserProfile, new TimeSpan(0, 30, 0));
+                    await cache.Set($"{IdirUserCacheKeyPrefix}{idirUserIdentityInfo.UserGuid}", idirUserProfile, new TimeSpan(0, 30, 0));
                 }
                 else
                 {
@@ -171,7 +173,7 @@ namespace Spd.Utilities.LogonUser
             if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
             {
                 userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                await cache.Set<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
+                await cache.Set($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
             }
 
             if (userProfile?.UserInfos == null)
