@@ -163,7 +163,7 @@ namespace Spd.Manager.Licence
 
         private async Task ValidateFilesAsync(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
-            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(cmd.ApplicantId), ct);
+            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
             IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
 
             if (cmd.ApplicantUpdateRequest.PreviousDocumentIds != null)
