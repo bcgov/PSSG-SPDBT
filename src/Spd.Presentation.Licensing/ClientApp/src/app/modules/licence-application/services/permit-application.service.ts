@@ -481,9 +481,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	getPermitWithSelectionAuthenticated(
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		userLicenceInformation: UserLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
-		return this.getPermitOfTypeAuthenticated(licenceAppId, applicationTypeCode).pipe(
+		return this.getPermitOfTypeAuthenticated(licenceAppId, applicationTypeCode, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.permitModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
 
@@ -534,18 +535,35 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	private getPermitOfTypeAuthenticated(
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		userLicenceInformation: UserLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
+				return forkJoin([
+					this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
+				return forkJoin([
+					this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
@@ -575,7 +593,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load a permit using an ID
 	 * @returns
 	 */
-	private loadExistingPermitWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
+	private loadExistingPermitWithIdAuthenticated(
+		licenceAppId: string,
+		userLicenceInformation?: UserLicenceResponse
+	): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
 		return forkJoin([
@@ -588,7 +609,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitLicenceAppResponse = resps[0];
 				const profile = resps[1];
 
-				return this.applyPermitAndProfileIntoModel(permitLicenceAppResponse, profile);
+				return this.applyPermitAndProfileIntoModel(permitLicenceAppResponse, profile, userLicenceInformation);
 			})
 		);
 	}
@@ -625,12 +646,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	): Observable<PermitLicenceAppResponse> {
 		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
+				const personalInformationData = { ..._resp.personalInformationData };
+
+				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
+				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
+
 				this.permitModelFormGroup.patchValue(
 					{
 						originalApplicationId: accessCodeData.linkedLicenceAppId,
 						originalLicenceId: accessCodeData.linkedLicenceId,
 						originalLicenceNumber: accessCodeData.licenceNumber,
 						originalExpiryDate: accessCodeData.linkedExpiryDate,
+						originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+						personalInformationData,
 					},
 					{ emitEvent: false }
 				);
@@ -879,16 +907,18 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	/*************************************************************/
 
 	private applyPermitAndProfileIntoModel(
-		permitLicenceApp: PermitLicenceAppResponse,
-		profile: ApplicantProfileResponse | null | undefined
+		permitLicenceApplication: PermitLicenceAppResponse,
+		profile: ApplicantProfileResponse | null | undefined,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
 		return this.applyPermitProfileIntoModel(
-			profile ?? permitLicenceApp,
-			permitLicenceApp.workerLicenceTypeCode!,
-			permitLicenceApp.applicationTypeCode
+			profile ?? permitLicenceApplication,
+			permitLicenceApplication.workerLicenceTypeCode!,
+			permitLicenceApplication.applicationTypeCode,
+			userLicenceInformation
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyPermitIntoModel(permitLicenceApp);
+				return this.applyPermitIntoModel(permitLicenceApplication);
 			})
 		);
 	}
@@ -1254,7 +1284,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
+		// const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 
@@ -1269,7 +1299,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
-				workerLicenceTypeData,
+				// workerLicenceTypeData,
 				applicationTypeData,
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,

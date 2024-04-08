@@ -12,6 +12,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	template: `
 		<section class="step-section">
 			<div class="step">
+				<ng-container *ngIf="isRenewalOrUpdate">
+					<app-common-update-renewal-alert
+						[applicationTypeCode]="applicationTypeCode"
+					></app-common-update-renewal-alert>
+				</ng-container>
+
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -124,5 +130,11 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }

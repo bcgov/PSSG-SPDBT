@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { StepPermitBcDriverLicenceComponent } from '../../anonymous/permit-wizard-steps/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '../../anonymous/permit-wizard-steps/step-permit-citizenship.component';
 import { StepPermitPhotographOfYourselfAnonymousComponent } from '../../anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
-import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
+import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 
 @Component({
 	selector: 'app-steps-permit-identification-authenticated',
@@ -91,9 +91,9 @@ import { StepPermitPhysicalCharacteristicsComponent } from '../../anonymous/perm
 			</mat-step>
 
 			<mat-step *ngIf="showPhotographOfYourself">
-				<app-step-permit-photograph-of-yourself-anonymous
+				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-photograph-of-yourself-anonymous>
+				></app-step-permit-photograph-of-yourself>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">

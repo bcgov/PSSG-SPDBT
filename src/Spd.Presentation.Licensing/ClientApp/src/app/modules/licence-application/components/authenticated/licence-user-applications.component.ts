@@ -807,21 +807,20 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				// TODO permit update
-				// this.permitApplicationService
-				// 		.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Update)
-				// 		.pipe(
-				// 			tap((_resp: any) => {
-				// 				this.router.navigateByUrl(
-				// 					LicenceApplicationRoutes.pathPermitAuthenticated(
-				// 						LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-				// 					),
-				//				{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
-				// 				);
-				// 			}),
-				// 			take(1)
-				// 		)
-				// 		.subscribe();
+				this.permitApplicationService
+					.getPermitWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update, appl)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAuthenticated(
+									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
 			}
 		}
 	}
@@ -847,21 +846,20 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				// TODO permit renew
-				// this.permitApplicationService
-				// 	.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal)
-				// 	.pipe(
-				// 		tap((_resp: any) => {
-				// 			this.router.navigateByUrl(
-				// 				LicenceApplicationRoutes.pathPermitAuthenticated(
-				// 					LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-				// 				),
-				//				{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
-				// 			);
-				// 		}),
-				// 		take(1)
-				// 	)
-				// 	.subscribe();
+				this.permitApplicationService
+					.getPermitWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal, appl)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAuthenticated(
+									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
 			}
 		}
 	}

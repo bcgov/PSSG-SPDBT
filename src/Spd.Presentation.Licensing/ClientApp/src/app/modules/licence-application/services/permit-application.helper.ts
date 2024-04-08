@@ -185,6 +185,24 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		}
 	);
 
+	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
+		{
+			reprintLicence: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'reprintLicence',
+					(_form) =>
+						!!(
+							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
+							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
+						)
+				),
+			],
+		}
+	);
+
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		check2: new FormControl(null, [Validators.requiredTrue]),

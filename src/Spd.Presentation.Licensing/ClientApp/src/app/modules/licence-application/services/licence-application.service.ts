@@ -754,17 +754,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private applyLicenceAndProfileIntoModel(
-		workerLicence: WorkerLicenceAppResponse,
+		workerLicenceApplication: WorkerLicenceAppResponse,
 		profile: ApplicantProfileResponse | null | undefined,
 		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
 		return this.applyLicenceProfileIntoModel(
-			profile ?? workerLicence,
-			workerLicence.applicationTypeCode,
+			profile ?? workerLicenceApplication,
+			workerLicenceApplication.applicationTypeCode,
 			userLicenceInformation
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(workerLicence);
+				return this.applyLicenceIntoModel(workerLicenceApplication);
 			})
 		);
 	}

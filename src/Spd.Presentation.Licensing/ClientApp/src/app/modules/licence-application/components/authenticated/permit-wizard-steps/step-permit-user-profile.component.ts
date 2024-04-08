@@ -46,6 +46,8 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
+								[isReadonlyPersonalInfo]="false"
+								[isReadonlyMailingAddress]="false"
 							></app-common-user-profile>
 						</section>
 
@@ -168,6 +170,8 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		const isValid3 = this.criminalHistoryComponent.isFormValid();
 
 		const isValid = isValid1 && isValid2 && isValid3;
+
+		console.debug('[StepPermitUserProfileComponent] isFormValid', isValid1, isValid2, isValid3);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();

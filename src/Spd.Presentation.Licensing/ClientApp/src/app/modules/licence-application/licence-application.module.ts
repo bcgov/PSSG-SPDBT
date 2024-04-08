@@ -20,8 +20,6 @@ import { StepPermitExpiredComponent } from './components/anonymous/permit-wizard
 import { StepPermitMailingAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-mailing-address.component';
 import { StepPermitPersonalInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-personal-information.component';
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
-import { StepPermitPhotographOfYourselfComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself.component';
-import { StepPermitPhysicalCharacteristicsComponent } from './components/anonymous/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitPrintComponent } from './components/anonymous/permit-wizard-steps/step-permit-print.component';
 import { StepPermitRationaleComponent } from './components/anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
@@ -58,10 +56,13 @@ import { LoginUserProfileComponent } from './components/authenticated/login-user
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
+import { StepPermitPhotographOfYourselfComponent } from './components/authenticated/permit-wizard-steps/step-permit-photograph-of-yourself.component';
+import { StepPermitReviewNameChangeComponent } from './components/authenticated/permit-wizard-steps/step-permit-review-name-change.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-identification-authenticated.component';
 import { StepsPermitPurposeAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-purpose-authenticated.component';
 import { StepsPermitReviewAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-review-authenticated.component';
+import { StepsPermitUpdatesAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-updates-authenticated.component';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile/common-user-profile-licence-police-background.component';
@@ -83,13 +84,13 @@ import { BusinessCategorySecurityGuardComponent } from './components/business/bu
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { MemberWithoutSwlEditModalComponent } from './components/business/member-without-swl-edit-modal.component';
-import { StepBusinessLicenceConsentAndDeclarationComponent } from './components/business/step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceBcBranchesComponent } from './components/business/step-business-licence-bc-branches.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
 import { StepBusinessLicenceChecklistNewComponent } from './components/business/step-business-licence-checklist-new.component';
 import { StepBusinessLicenceChecklistRenewComponent } from './components/business/step-business-licence-checklist-renew.component';
 import { StepBusinessLicenceCompanyBrandingComponent } from './components/business/step-business-licence-company-branding.component';
+import { StepBusinessLicenceConsentAndDeclarationComponent } from './components/business/step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './components/business/step-business-licence-controlling-member-confirmation.component';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './components/business/step-business-licence-controlling-member-invites-component';
 import { StepBusinessLicenceControllingMemberWithSwlComponent } from './components/business/step-business-licence-controlling-member-with-swl.component';
@@ -121,6 +122,8 @@ import { LicencePaymentSuccessAnonymousComponent } from './components/shared/lic
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessAnonymousComponent } from './components/shared/licence-update-received-success-anonymous.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
+import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-steps/step-permit-physical-characteristics.component';
+import { StepPermitReprintComponent } from './components/shared/permit-wizard-steps/step-permit-reprint.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
 import { CommonAddressComponent } from './components/shared/step-components/common-address.component';
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
@@ -302,7 +305,9 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitPrintComponent,
 		StepPermitRationaleComponent,
 		StepPermitReasonComponent,
+		StepPermitReprintComponent,
 		StepPermitResidentialAddressComponent,
+		StepPermitReviewNameChangeComponent,
 		StepPermitSummaryAuthenticatedComponent,
 		StepPermitSummaryAnonymousComponent,
 		StepPermitTermsOfUseComponent,
@@ -359,6 +364,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepsPermitPurposeAnonymousComponent,
 		StepsPermitReviewAnonymousComponent,
 		StepsPermitReviewAuthenticatedComponent,
+		StepsPermitUpdatesAuthenticatedComponent,
 		StepsWorkerLicenceBackgroundComponent,
 		StepsWorkerLicenceBackgroundRenewAndUpdateComponent,
 		StepsWorkerLicenceIdentificationAnonymousComponent,
