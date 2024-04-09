@@ -50,4 +50,103 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         //_context.DeleteObject(newContact);
         //await _context.SaveChangesAsync();
     }
+
+    [Fact]
+    public async Task CreateAlias_Run_Correctly()
+    {
+        contact contact = new contact() { contactid = Guid.NewGuid(), firstname = IntegrationTestSetup.DataPrefix + "firstname", lastname = IntegrationTestSetup.DataPrefix + "lastname" };
+        _context.AddTocontacts(contact);
+        await _context.SaveChangesAsync();
+        _context.DetachAll();
+
+        Alias newAlias = new Alias()
+        {
+            Id = Guid.NewGuid(),
+            GivenName = "test",
+            Surname = "test"
+        };
+
+        CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
+        await _repository.CreateAliasAsync(cmd, CancellationToken.None);
+
+        spd_alias? alias = await _context.spd_aliases.Where(a => a.spd_aliasid == newAlias.Id).FirstOrDefaultAsync();
+        Assert.NotNull(alias);
+    }
+
+    [Fact]
+    public async Task DeleteAlias_Run_Correctly()
+    {
+        contact contact = new contact() { contactid = Guid.NewGuid(), firstname = IntegrationTestSetup.DataPrefix + "firstname", lastname = IntegrationTestSetup.DataPrefix + "lastname" };
+        _context.AddTocontacts(contact);
+        await _context.SaveChangesAsync();
+        _context.DetachAll();
+
+        Alias newAlias = new Alias()
+        {
+            Id = Guid.NewGuid(),
+            GivenName = "test",
+            Surname = "test"
+        };
+
+        CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
+        await _repository.CreateAliasAsync(cmd, CancellationToken.None);
+        await _repository.DeleteAliasAsync((Guid)cmd.Alias.Id, CancellationToken.None);
+
+        spd_alias? alias = await _context.spd_aliases.Where(a => a.spd_aliasid == newAlias.Id && a.statecode == DynamicsConstants.StateCode_Inactive).FirstOrDefaultAsync();
+        Assert.NotNull(alias);
+    }
+
+    [Fact]
+    public async Task UpdateAlias_Run_Correctly()
+    {
+        contact contact = new contact() { contactid = Guid.NewGuid(), firstname = IntegrationTestSetup.DataPrefix + "firstname", lastname = IntegrationTestSetup.DataPrefix + "lastname" };
+        _context.AddTocontacts(contact);
+        await _context.SaveChangesAsync();
+        _context.DetachAll();
+
+        Alias newAlias = new Alias()
+        {
+            Id = Guid.NewGuid(),
+            GivenName = "test",
+            Surname = "test"
+        };
+
+        CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
+        await _repository.CreateAliasAsync(cmd, CancellationToken.None);
+
+        Alias aliasToUpdate = new Alias()
+        {
+            Id = (Guid)newAlias.Id,
+            GivenName = "test2",
+            Surname = "test2"
+        };
+        UpdateAliasCommand updateCmd = new UpdateAliasCommand()
+        {
+            Aliases = new List<Alias>() { aliasToUpdate }
+        };
+
+        await _repository.UpdateAliasAsync(updateCmd, CancellationToken.None);
+
+        spd_alias? alias = await _context.spd_aliases
+            .Where(a => a.spd_aliasid == newAlias.Id && a.spd_firstname == aliasToUpdate.GivenName && a.spd_surname == aliasToUpdate.Surname)
+            .FirstOrDefaultAsync();
+        Assert.NotNull(alias);
+    }
+
+    [Fact]
+    public async Task UpdateAlias_AliasNotFound_Throw_Exception()
+    {
+        Alias aliasToUpdate = new Alias()
+        {
+            Id = Guid.NewGuid(),
+            GivenName = "test2",
+            Surname = "test2"
+        };
+        UpdateAliasCommand updateCmd = new UpdateAliasCommand()
+        {
+            Aliases = new List<Alias>() { aliasToUpdate }
+        };
+
+        _ = await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.UpdateAliasAsync(updateCmd, CancellationToken.None));
+    }
 }
