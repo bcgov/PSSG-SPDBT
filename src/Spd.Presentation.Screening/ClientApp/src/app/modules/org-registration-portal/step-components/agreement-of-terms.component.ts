@@ -123,6 +123,8 @@ export class AgreementOfTermsModel {
 
 			.conditions {
 				border: 1px solid var(--color-grey-light);
+				max-height: 400px;
+				overflow-y: auto;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 			}
 		`,
