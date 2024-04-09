@@ -1703,6 +1703,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
 		};
 
+		const policeBackgroundData = {
+			isPoliceOrPeaceOfficer: null,
+			policeOfficerRoleCode: null,
+			otherOfficerRole: null,
+			attachments: [],
+		};
+
 		const criminalHistoryData = {
 			hasCriminalHistory: null,
 			criminalChargeDescription: null,
@@ -1753,6 +1760,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				citizenshipData,
 				dogsAuthorizationData,
 				mentalHealthConditionsData,
+				policeBackgroundData,
 				criminalHistoryData,
 			},
 			{
@@ -1772,6 +1780,14 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			attachments: [],
 			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
 		};
+
+		const policeBackgroundData = {
+			isPoliceOrPeaceOfficer: null,
+			policeOfficerRoleCode: null,
+			otherOfficerRole: null,
+			attachments: [],
+		};
+
 		const criminalHistoryData = {
 			hasCriminalHistory: null,
 			criminalChargeDescription: null,
@@ -1784,6 +1800,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				profileConfirmationData: { isProfileUpToDate: false },
 				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				mentalHealthConditionsData,
+				policeBackgroundData,
 				criminalHistoryData,
 			},
 			{
