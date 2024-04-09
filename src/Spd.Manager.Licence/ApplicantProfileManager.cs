@@ -201,7 +201,7 @@ namespace Spd.Manager.Licence
             var numOfCurrentAliases = aliases.Count;
             var numOfNewAliases = aliasesToProcess.Count(a => a.Id == null || a.Id == Guid.Empty);
 
-            if (numOfCurrentAliases + numOfNewAliases > 10)
+            if (numOfCurrentAliases + numOfNewAliases > Constants.MaximumNumberOfUserEnteredAliases)
                 throw new ApiException(HttpStatusCode.BadRequest, "No more than 10 user entered aliases are allowed");
 
             foreach (var newAlias in aliasesToProcess.Where(a => a.Id == null || a.Id == Guid.Empty)) 
