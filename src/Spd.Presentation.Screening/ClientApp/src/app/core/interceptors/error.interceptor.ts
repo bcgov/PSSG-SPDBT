@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ApplicantService, OrgService, UserProfileService } from 'src/app/api/services';
+import { ApplicantService, OrgService, OrgUserService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
@@ -30,13 +30,23 @@ export class ErrorInterceptor implements HttpInterceptor {
 					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
 					this.router.navigate([AppRoutes.ACCESS_DENIED]);
 					return throwError(() => new Error('Access denied'));
-				} else if (
-					errorResponse.status == 403 &&
-					errorResponse.url?.includes(UserProfileService.ApiApplicantsWhoamiGetPath)
-				) {
+				}
+
+				if (errorResponse.status == 403 && errorResponse.url?.includes(UserProfileService.ApiApplicantsWhoamiGetPath)) {
 					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
 					this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.LOGIN_FAIL)]);
 					return throwError(() => new Error('Login failure'));
+				}
+
+				if (errorResponse.status == 400) {
+					const addBceidPrimaryUsers = OrgUserService.ApiOrgsAddBceidPrimaryUsersOrgIdGetPath.substring(
+						OrgService.ApiOrgsAccessCodeAccessCodeGetPath.indexOf('/api') + 1,
+						OrgService.ApiOrgsAccessCodeAccessCodeGetPath.lastIndexOf('/')
+					);
+					if (errorResponse.url?.includes(addBceidPrimaryUsers)) {
+						this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { errorMessage: errorResponse.error?.message } });
+						return throwError(() => errorResponse);
+					}
 				}
 
 				// Certain 404s will be handled in the component

@@ -185,7 +185,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 											[routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]"
 											aria-label="Pay now"
 										>
-											<mat-icon>paid</mat-icon>Pay Now
+											<mat-icon>payment</mat-icon>Pay Now
 										</button>
 									</mat-card-actions>
 								</mat-card>
@@ -204,7 +204,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 											color="accent"
 											[routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]"
 										>
-											<mat-icon>send</mat-icon>Verify Now
+											<mat-icon>done</mat-icon>Verify Now
 										</button>
 									</mat-card-actions>
 								</mat-card>

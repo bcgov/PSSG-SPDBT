@@ -14,7 +14,53 @@ export type AlertType = 'success' | 'warning' | 'danger';
 			<ng-content #alertContent></ng-content>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			.alert-info {
+				border: 1px solid rgba(217, 234, 247, 1);
+				background-color: rgba(217, 234, 247, 1);
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #1a5a96;
+				line-height: 1.5 !important;
+			}
+
+			.alert-success {
+				border: 1px solid #e8f5eb;
+				background-color: #e8f5eb;
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #155724;
+				line-height: 1.5 !important;
+			}
+
+			.alert-warning {
+				border: 1px solid rgba(250, 235, 204, 1);
+				background-color: rgba(249, 241, 198, 1);
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #6c4a00;
+				line-height: 1.5 !important;
+			}
+
+			.alert-danger {
+				border: 1px solid rgba(235, 204, 209, 1);
+				background-color: rgba(242, 222, 222, 1);
+				border-radius: 5px;
+				font-weight: 500;
+				font-style: normal;
+				font-size: 1.1rem !important;
+				color: #a12622;
+				line-height: 1.5 !important;
+			}
+		`,
+	],
 })
 export class AlertComponent {
 	@Input() public type: AlertType = 'warning';

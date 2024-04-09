@@ -20,7 +20,14 @@ export class DropdownOverlayButtonComponent {}
 	selector: 'app-dropdown-overlay',
 	template: `
 		<!-- This button triggers the overlay and is it's origin -->
-		<button mat-icon-button (click)="toggleOverlay()" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+		<button
+			matTooltip="Apply filters"
+			mat-icon-button
+			(click)="toggleOverlay()"
+			type="button"
+			cdkOverlayOrigin
+			#trigger="cdkOverlayOrigin"
+		>
 			<!-- This is the default button to be rendered if custom content is not provided -->
 			<ng-template #defaultOverlayButton>
 				<mat-icon
@@ -74,7 +81,7 @@ export class DropdownOverlayComponent implements OnInit {
 
 	@Input() closeWhenClickOutside = false;
 	@Input() showDropdownOverlay = false;
-	@Input() label = '';
+	@Input() label = 'Apply filters';
 	@Input() icon = '';
 
 	@ContentChild(DropdownOverlayButtonComponent) overlayButton!: TemplateRef<DropdownOverlayButtonComponent>;

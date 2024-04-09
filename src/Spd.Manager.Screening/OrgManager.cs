@@ -66,7 +66,7 @@ namespace Spd.Manager.Screening
             if (org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
             {
                 //if it is screening org
-                return new OrgInvitationLinkResponse($"{cmd.ScreeningAppOrgUrl}?encodedOrgId={encryptedOrgId}");
+                return new OrgInvitationLinkResponse($"{cmd.ScreeningAppOrgUrl}/{encryptedOrgId}");
             }
             return null;
         }
