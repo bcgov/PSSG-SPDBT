@@ -539,7 +539,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Create list of APIs to call for the newly added documents
-		const documentsToSaveApis: Observable<string>[] = [];
+		// const documentsToSaveApis: Observable<string>[] = [];
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];

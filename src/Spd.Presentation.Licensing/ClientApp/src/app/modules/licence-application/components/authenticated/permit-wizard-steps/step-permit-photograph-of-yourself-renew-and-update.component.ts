@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -83,7 +83,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 	`,
 	styles: [],
 })
-export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements LicenceChildStepperStepComponent {
+export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements OnInit, LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 	booleanTypeCodes = BooleanTypeCode;
 	originalPhotoOfYourselfExpired = false;
