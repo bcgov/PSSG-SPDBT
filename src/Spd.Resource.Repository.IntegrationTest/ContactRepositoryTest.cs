@@ -128,7 +128,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _repository.UpdateAliasAsync(updateCmd, CancellationToken.None);
 
         spd_alias? alias = await _context.spd_aliases
-            .Where(a => a.spd_aliasid == newAlias.Id && a.spd_firstname == aliasToUpdate.GivenName && a.spd_surname == aliasToUpdate.Surname)
+            .Where(a => a.spd_aliasid == aliasToUpdate.Id && a.spd_firstname == aliasToUpdate.GivenName && a.spd_surname == aliasToUpdate.Surname)
             .FirstOrDefaultAsync();
         Assert.NotNull(alias);
     }
