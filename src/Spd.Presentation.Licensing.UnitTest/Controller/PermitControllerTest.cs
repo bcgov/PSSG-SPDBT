@@ -8,9 +8,11 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
+
 public class PermitControllerTest
 {
     private readonly IFixture fixture;
@@ -42,8 +44,16 @@ public class PermitControllerTest
 
         mockDpProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
+        mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppDocumentResponse>());
 
-        sut = new PermitController(mockUser.Object,
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim("birthdate", "2000-01-01"),
+                new Claim("sub", "test"),
+            ], "mock"));
+
+        sut = new PermitController(user,
                 mockMediator.Object,
                 configuration,
                 mockPermitAppSubmitValidator.Object,
@@ -60,6 +70,17 @@ public class PermitControllerTest
         var result = await sut.UploadPermitAppFiles(licenceAppDocumentUploadRequest, CancellationToken.None);
 
         Assert.IsType<Guid>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_UploadLicenceAppFilesAuthenticated_Return_LicenceAppDocumentResponse_List()
+    {
+        LicenceAppDocumentUploadRequest licenceAppDocumentUploadRequest = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
+
+        var result = await sut.UploadLicenceAppFiles(licenceAppDocumentUploadRequest, Guid.NewGuid(), CancellationToken.None);
+
+        Assert.IsType<List<LicenceAppDocumentResponse>>(result);
         mockMediator.Verify();
     }
 }
