@@ -25,7 +25,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import * as moment from 'moment';
 import {
@@ -56,6 +56,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { CommonApplicationService, UserLicenceResponse } from './common-application.service';
 import { LicenceDocument } from './licence-application.helper';
+import { LicenceDocumentsToSave } from './licence-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
 
 export class PermitDocumentsToSave {
@@ -526,6 +527,74 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('[submitPermitAuthenticated] body', body);
 
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
+	}
+
+	submitPermitRenewalOrUpdateAuthenticated(): void {
+		//} Observable<StrictHttpResponse<PermitAppSubmitRequest>> {//WorkerLicenceCommandResponse
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
+		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// Create list of APIs to call for the newly added documents
+		const documentsToSaveApis: Observable<string>[] = [];
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+			const newDocumentsOnly: Array<Blob> = [];
+
+			doc.documents.forEach((item: Blob) => {
+				const spdFile: SpdFile = item as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(item);
+				}
+			});
+
+			if (newDocumentsOnly.length > 0) {
+				// documentsToSaveApis.push(
+				// 	this.permitService.apiWorkerLicenceApplicationsAuthenticatedFilesPost({
+				// 		body: {
+				// 			Documents: newDocumentsOnly,
+				// 			LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+				// 		},
+				// 	})
+				// );
+			}
+		});
+
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated] body', body);
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
+
+		// if (documentsToSaveApis.length > 0) {
+		// 	return forkJoin(documentsToSaveApis).pipe(
+		// 		switchMap((resps: string[]) => {
+		// 			// pass in the list of document key codes
+		// 			body.documentKeyCodes = [...resps];
+		// 			// pass in the list of document ids that were in the original
+		// 			// application and are still being used
+		// 			body.previousDocumentIds = [...existingDocumentIds];
+
+		// 			return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+		// 				body,
+		// 			});
+		// 		})
+		// 	);
+		// } else {
+		// 	// pass in the list of document ids that were in the original
+		// 	// application and are still being used
+		// 	body.previousDocumentIds = [...existingDocumentIds];
+
+		// 	return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+		// 		body,
+		// 	});
+		// }
 	}
 
 	/**
@@ -1285,7 +1354,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
-		// const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 

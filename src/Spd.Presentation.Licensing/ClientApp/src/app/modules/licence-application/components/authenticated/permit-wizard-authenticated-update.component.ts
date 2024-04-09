@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
@@ -82,6 +83,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -143,7 +145,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	}
 
 	onPayNow(): void {
-		// this.permitApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+		// this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
 		// 	next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 		// 		this.hotToastService.success('Your licence update has been successfully submitted');
 		// 		this.payNow(_resp.body.licenceAppId!);
@@ -163,7 +165,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 		// 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
 		// 	}
 		// } else {
-		// 	this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+		// 	this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
 		// 		next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 		// 			const workerLicenceCommandResponse = resp.body;
 		// 			// save this locally just in application payment fails
