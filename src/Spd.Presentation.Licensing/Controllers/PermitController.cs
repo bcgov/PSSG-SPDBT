@@ -68,7 +68,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload licence application files to transient storage
+        /// Upload permit application files to transient storage
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="licenceAppId"></param>
