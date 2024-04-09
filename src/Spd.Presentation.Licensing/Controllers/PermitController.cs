@@ -87,7 +87,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
+        /// Uploading file only save files in cache, the files are not connected to the application yet
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="ct"></param>
