@@ -37,7 +37,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 				</mat-toolbar>
 				<mat-card>
 					<mat-card-content class="mb-2 text-start">
-						<mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 200px">
+						<mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 350px">
 							<mat-label>Filter by status</mat-label>
 							<mat-select formControlName="statuses" placeholder="All statuses" multiple>
 								<mat-select-trigger>
@@ -116,8 +116,7 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 						item.code != ApplicationPortalStatusCode.ClosedJudicialReview
 				);
 		} else {
-			this.applicationPortalStatusCodes = this.utilService
-				.getCodeDescSorted('ApplicationPortalStatusTypes');
+			this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
 		}
 	}
 
