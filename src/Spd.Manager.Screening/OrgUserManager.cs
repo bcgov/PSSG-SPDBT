@@ -178,11 +178,11 @@ namespace Spd.Manager.Screening
             OrgUsersResult orgUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(request.OrganizationId, null), ct);
             if (orgUser != null && orgUser.UserResults.Any(u => u.UserGuid == request.IdentityInfo.UserGuid))
             {
-                throw new ArgumentException("You are already a user of the organization.");
+                throw new ApiException(HttpStatusCode.BadRequest, "You are already a user of the organization.");
             }
             if (orgUser != null && orgUser.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary) >= 2)
             {
-                throw new ArgumentException("There is already maximum primary contact, we cannnot add another one.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The maximum number of primary contacts has already been reached. We cannnot add another one.");
             }
 
             User user = _mapper.Map<User>(request.IdentityInfo);
