@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, tap } from 'rxjs';
@@ -66,15 +67,29 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 	}
 
+	loadBusinessProfile(): Observable<any> {
+		// return this.applicantProfileService
+		// 	.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+		// 	.pipe(
+		// 		switchMap((resp: ApplicantProfileResponse) => {
+		return this.createEmptyLicenceAuthenticated({}, undefined).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle();
+			})
+		);
+		// 	})
+		// );
+	}
+
 	/**
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
 	createNewBusinessLicence(): Observable<any> {
-		return this.createEmptyBusinessLicence().pipe(
+		return this.createEmptyLicenceAuthenticated({}, ApplicationTypeCode.New).pipe(
 			tap((resp: any) => {
-				console.debug('[createNewBusinessAnonymous] resp', resp);
-
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
@@ -95,24 +110,160 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.hasValueChanged = false;
 
 		this.businessModelFormGroup.reset();
+
+		// clear the alias data - this does not seem to get reset during a formgroup reset
+		const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
+		while (bcBranchesArray.length) {
+			bcBranchesArray.removeAt(0);
+		}
 	}
 
-	private createEmptyBusinessLicence(): Observable<any> {
+	/*************************************************************/
+	// COMMON
+	/*************************************************************/
+
+	private createEmptyLicenceAuthenticated(
+		profile: any, //ApplicantProfileResponse,
+		applicationTypeCode: ApplicationTypeCode | undefined
+	): Observable<any> {
 		this.reset();
 
-		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
-		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.New };
+		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode);
+	}
+
+	private applyLicenceProfileIntoModel(
+		profile: any, //ApplicantProfileResponse | WorkerLicenceAppResponse,
+		applicationTypeCode: ApplicationTypeCode | undefined,
+		userLicenceInformation?: any //UserLicenceResponse
+	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
+		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+
+		// const personalInformationData = {
+		// 	givenName: profile.givenName,
+		// 	middleName1: profile.middleName1,
+		// 	middleName2: profile.middleName2,
+		// 	surname: profile.surname,
+		// 	dateOfBirth: profile.dateOfBirth,
+		// 	genderCode: profile.genderCode,
+		// 	hasGenderChanged: false,
+		// 	hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
+		// 	origGivenName: profile.givenName,
+		// 	origMiddleName1: profile.middleName1,
+		// 	origMiddleName2: profile.middleName2,
+		// 	origSurname: profile.surname,
+		// 	origDateOfBirth: profile.dateOfBirth,
+		// 	origGenderCode: profile.genderCode,
+		// 	cardHolderName: userLicenceInformation?.cardHolderName ?? null,
+		// 	licenceHolderName: userLicenceInformation?.licenceHolderName ?? null,
+		// };
+
+		// const originalLicenceData = {
+		// 	originalApplicationId: userLicenceInformation?.licenceAppId ?? null,
+		// 	originalLicenceId: userLicenceInformation?.licenceId ?? null,
+		// 	originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
+		// 	originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
+		// 	originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
+		// 	originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
+		// };
+
+		// const contactInformationData = {
+		// 	emailAddress: profile.emailAddress,
+		// 	phoneNumber: profile.phoneNumber,
+		// };
+
+		// const residentialAddress = {
+		// 	addressSelected: true,
+		// 	isMailingTheSameAsResidential: false,
+		// 	addressLine1: profile.residentialAddress?.addressLine1,
+		// 	addressLine2: profile.residentialAddress?.addressLine2,
+		// 	city: profile.residentialAddress?.city,
+		// 	country: profile.residentialAddress?.country,
+		// 	postalCode: profile.residentialAddress?.postalCode,
+		// 	province: profile.residentialAddress?.province,
+		// };
+
+		// const mailingAddress = {
+		// 	addressSelected: profile.mailingAddress ? true : false,
+		// 	isMailingTheSameAsResidential: false,
+		// 	addressLine1: profile.mailingAddress?.addressLine1,
+		// 	addressLine2: profile.mailingAddress?.addressLine2,
+		// 	city: profile.mailingAddress?.city,
+		// 	country: profile.mailingAddress?.country,
+		// 	postalCode: profile.mailingAddress?.postalCode,
+		// 	province: profile.mailingAddress?.province,
+		// };
+
+		const branchesInBcData = { hasBranchesInBc: BooleanTypeCode.Yes };
 
 		this.businessModelFormGroup.patchValue(
 			{
+				// 		applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				// 		...originalLicenceData,
+				// 		profileConfirmationData: { isProfileUpToDate: true },
+				// 		personalInformationData: { ...personalInformationData },
+				// 		residentialAddress: { ...residentialAddress },
+				// 		mailingAddress: { ...mailingAddress },
+				branchesInBcData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
+		const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
+		bcBranchesArray.push(
+			new FormGroup({
+				id: new FormControl('1'),
+				addressSelected: new FormControl(true),
+				addressLine1: new FormControl('2344 Douglas Street'),
+				addressLine2: new FormControl(''),
+				city: new FormControl('Timmons'),
+				country: new FormControl('Canada'),
+				postalCode: new FormControl('V8R2E4'),
+				province: new FormControl('British Columbia'),
+				managerName: new FormControl('Barbara Streisand'),
+				managerSwlNumber: new FormControl('123123'),
+				managerPhoneNumber: new FormControl('5551228787'),
+				managerEmail: new FormControl('xxx@xxx.com'),
+			})
+		);
+		bcBranchesArray.push(
+			new FormGroup({
+				id: new FormControl('2'),
+				addressSelected: new FormControl(true),
+				addressLine1: new FormControl('2344 Douglas Street'),
+				addressLine2: new FormControl(''),
+				city: new FormControl('Kamloops'),
+				country: new FormControl('Canada'),
+				postalCode: new FormControl('V8R2E4'),
+				province: new FormControl('British Columbia'),
+				managerName: new FormControl('Jason Alexander'),
+				managerSwlNumber: new FormControl('123123'),
+				managerPhoneNumber: new FormControl('5551228787'),
+				managerEmail: new FormControl('yyy@yyy.com'),
+			})
+		);
+		bcBranchesArray.push(
+			new FormGroup({
+				id: new FormControl('3'),
+				addressSelected: new FormControl(true),
+				addressLine1: new FormControl('2344 Blenkinsop Street'),
+				addressLine2: new FormControl(''),
+				city: new FormControl('Victoria'),
+				country: new FormControl('Canada'),
+				postalCode: new FormControl('V8R2E4'),
+				province: new FormControl('British Columbia'),
+				managerName: new FormControl('Anderson Cooper'),
+				managerSwlNumber: new FormControl('4456789'),
+				managerPhoneNumber: new FormControl('5551228787'),
+				managerEmail: new FormControl('zzz@zzz.com'),
+			})
+		);
+
+		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
 	}
 }

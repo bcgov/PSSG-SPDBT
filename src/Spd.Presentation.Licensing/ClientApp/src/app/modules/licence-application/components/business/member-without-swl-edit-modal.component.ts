@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { BusinessApplicationService } from '../../services/business-application.service';
-import { BranchResponse } from './step-business-licence-bc-branches.component';
 
 export interface UserDialogData {
 	// user: OrgUserResponse;
@@ -92,7 +91,7 @@ export class MemberWithoutSwlEditModalComponent implements OnInit {
 	constructor(
 		private dialogRef: MatDialogRef<MemberWithoutSwlEditModalComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: BranchResponse
+		@Inject(MAT_DIALOG_DATA) public dialogData: any
 	) {}
 
 	ngOnInit(): void {
