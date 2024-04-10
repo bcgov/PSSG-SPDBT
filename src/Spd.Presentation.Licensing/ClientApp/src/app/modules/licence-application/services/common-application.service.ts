@@ -200,6 +200,7 @@ export class CommonApplicationService {
 							apis.push(this.permitService.apiPermitApplicationsLicenceAppIdGet({ licenceAppId: appl.licenceAppId! }));
 						}
 					});
+
 					return forkJoin(apis).pipe(
 						map((resps: Array<WorkerLicenceAppResponse | PermitLicenceAppResponse>) => {
 							const response: Array<UserLicenceResponse> = [];
@@ -220,6 +221,7 @@ export class CommonApplicationService {
 								const matchingLicence = licenceResps.find(
 									(item: LicenceResponse) => item.licenceAppId === resp.licenceAppId
 								);
+
 								if (matchingLicence) {
 									licence.cardHolderName = matchingLicence.nameOnCard;
 									licence.licenceHolderName = matchingLicence.licenceHolderName;
@@ -293,20 +295,6 @@ export class CommonApplicationService {
 								licence.restraintAuthorization = hasRestraintAuthorization?.licenceDocumentTypeCode
 									? hasRestraintAuthorization.licenceDocumentTypeCode
 									: null;
-
-								// If the expiry date is within 90 days, applicant sees "renew" option next to the licence
-								// At top of page when renew option is available, add yellow alert: "Your licence is expiring in 71 days. Please renew your licence by July 30, 2023."
-								// After day 0, hide Renew button Licence is no longer in the Valid licences & permit section Licence will show in the Expired licences & permit section
-
-								// If the licence term has expired, the licence holder can still see the expired licence. The can see a "Re-apply" button
-
-								// They can request a replacement, even if during renewal period, up until 14 days from expiry date
-								// If within 14 days before expiry, do not allow replacement, but inform applicant they can contact SPD to be provided a digital copy of their current licence or permit.
-								// "Lost your licence? Contact SPD for a digital copy of your current licence before it expires"
-								// "Lost or stolen permit? Contact SPD for a digital copy of your current permit before it expires"
-								// links to https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/contact
-
-								// When a user has started an application but has not submitted it yet, the user can view their Profile page in read-only mode – they can't edit this info while the application is in progress
 
 								response.push(licence);
 							});

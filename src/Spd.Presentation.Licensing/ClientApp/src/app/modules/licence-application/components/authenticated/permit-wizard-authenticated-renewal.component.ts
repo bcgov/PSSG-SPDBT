@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -84,7 +84,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 	`,
 	styles: [],
 })
-export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit, AfterViewInit {
+export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PURPOSE_AND_RATIONALE = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -128,16 +128,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		}
 
 		this.updateCompleteStatus();
-	}
-
-	ngAfterViewInit(): void {
-		if (this.step3Complete) {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		} else if (this.step2Complete) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		} else if (this.step1Complete) {
-			this.stepper.selectedIndex = this.STEP_PURPOSE_AND_RATIONALE;
-		}
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
