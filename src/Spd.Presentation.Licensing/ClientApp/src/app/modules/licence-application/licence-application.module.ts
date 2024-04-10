@@ -86,6 +86,7 @@ import { BusinessCategorySecurityGuardComponent } from './components/business/bu
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
+import { BusinessManagerEditModalComponent } from './components/business/business-manager-edit-modal.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
@@ -207,6 +208,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 	declarations: [
 		StepPermitUserProfileComponent,
 		BcBranchEditModalComponent,
+		BusinessManagerEditModalComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
 		CommonAccessCodeAnonymousComponent,

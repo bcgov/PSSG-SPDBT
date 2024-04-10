@@ -26,13 +26,49 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 								</button>
 							</div>
 						</div>
+						<div class="col-12 mb-3">
+							Your business must have valid security worker licence holders in B.C. that support the various licence
+							categories the business wishes to be licensed for. If your controlling members don't meet this
+							requirement, add employees who do.
+						</div>
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
+
+					<mat-accordion multi="false">
+						<div class="summary-text-data mt-4">
+							If your <b>controlling members</b> change during the business licence term, update their information here.
+						</div>
+						<mat-expansion-panel class="my-2 w-100">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="title"> Controlling Members </mat-panel-title>
+							</mat-expansion-panel-header>
+
+							<div class="panel-body">Controlling Members</div>
+						</mat-expansion-panel>
+
+						<div class="summary-text-data mt-4">
+							If your employees who are <b>licence holders</b> for the business change during the business licence term,
+							update their information here.
+						</div>
+						<mat-expansion-panel class="my-2 w-100">
+							<mat-expansion-panel-header>
+								<mat-panel-title class="title"> Licence Holders </mat-panel-title>
+							</mat-expansion-panel-header>
+
+							<div class="panel-body">Licence Holders</div>
+						</mat-expansion-panel>
+					</mat-accordion>
 				</div>
 			</div>
 		</section>
 	`,
-	styles: ``,
+	styles: [
+		`
+			.panel-body {
+				margin-top: 1rem !important;
+			}
+		`,
+	],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
 	constructor(private router: Router) {}

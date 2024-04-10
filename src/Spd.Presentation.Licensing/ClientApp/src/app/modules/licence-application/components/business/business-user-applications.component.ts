@@ -44,11 +44,11 @@ export interface LicenceInProgress extends LicenceAppListResponse {
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto me-2 mb-3" (click)="onBusinessProfile()">
 									<mat-icon>person</mat-icon>
-									Your Business Profile
+									Business Profile
 								</button>
 								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
 									<mat-icon>people</mat-icon>
-									Your Business Managers
+									Business Managers
 								</button>
 							</div>
 						</div>

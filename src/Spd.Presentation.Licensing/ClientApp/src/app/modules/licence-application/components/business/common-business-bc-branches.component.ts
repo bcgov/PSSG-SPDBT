@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -148,17 +148,12 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 	) {}
 
 	ngOnInit(): void {
-		console.log('branchesArray', this.branchesArray);
-		console.log('branchesArray.value', this.branchesArray.value);
-
 		this.branchList = this.branchesArray.value;
 		this.dataSource = new MatTableDataSource(this.branchList);
 		this.onSortData({
 			active: 'city',
 			direction: 'asc',
 		});
-		console.log('branchList', this.branchList);
-		console.log('dataSource', this.dataSource.data);
 	}
 
 	ngAfterViewInit(): void {
@@ -227,9 +222,6 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 			});
 	}
 
-	get hasBranchesInBc(): FormControl {
-		return this.form.get('hasBranchesInBc') as FormControl;
-	}
 	get branchesArray(): FormArray {
 		return <FormArray>this.form.get('branches');
 	}
