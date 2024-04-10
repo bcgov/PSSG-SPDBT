@@ -68,7 +68,26 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
+        /// Upload permit application files to transient storage
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="licenceAppId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications/{licenceAppId}/files")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
+
+            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+        }
+
+        /// <summary>
+        /// Uploading file only save files in cache, the files are not connected to the application yet
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="ct"></param>
@@ -88,15 +107,15 @@ namespace Spd.Presentation.Licensing.Controllers
             return fileKeyCode;
         }
 
-        #endregion
+    #endregion
 
-        #region anonymous 
+    #region anonymous 
 
-        /// <summary>
-        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/permit-application")]
+    /// <summary>
+    /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+    /// </summary>
+    /// <returns></returns>
+    [Route("api/permit-application")]
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
