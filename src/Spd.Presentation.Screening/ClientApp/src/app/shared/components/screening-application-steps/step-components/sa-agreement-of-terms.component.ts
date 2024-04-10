@@ -100,8 +100,9 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									<strong class="terms-subtitle">Authentication:</strong>
 									<li>
 										You must be authenticated before you can login and submit an online request for a criminal record
-										check. Your identity will be verified through your BC Services Card, approved government-issued ID,
-										or other approved authentication method as may be implemented from time to time.
+										check. Your identity will be verified through your BC Services Card account login, approved
+										government-issued ID, or other approved authentication method as may be implemented from time to
+										time.
 									</li>
 									<li>
 										Your identity will be verified each time you access the Site, and depending on the authentication
@@ -258,7 +259,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								</p>
 								<p>
 									These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of
-									British Columbia, represented by the Minister of Public Safety and SolicitorGeneral (the "Province")
+									British Columbia, represented by the Minister of Public Safety and Solicitor General (the "Province")
 									and they govern your use of the Site and, where applicable, any associated service ("Associated
 									Service" and, together with the Site, the "Services"). By clicking the box to indicate that you accept
 									these Terms of Use, and in consideration of your use of the Services, you agree, to the terms and
@@ -315,7 +316,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										continue to access the Services. Notwithstanding the foregoing, you are responsible for reviewing
 										these Terms of Use on a regular basis to ensure that you are aware of any modifications that may
 										have been made and your continued use of the Services constitutes your acceptance of any such
-										modified Terms of Use
+										modified Terms of Use.
 									</li>
 									<li>
 										The information that you input on the Site may also be logged and attributed to you for verification
@@ -329,8 +330,9 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									<strong class="terms-subtitle">Authentication:</strong>
 									<li>
 										You must be authenticated before you can login and submit an online request for a criminal record
-										check. Your identity will be verified through your BC Services Card, approved government-issued ID,
-										or other approved authentication method as may be implemented from time to time.
+										check. Your identity will be verified through your BC Services Card account login, approved
+										government-issued ID, or other approved authentication method as may be implemented from time to
+										time.
 									</li>
 									<li>
 										Your identity will be verified each time you access the Site, and depending on the authentication
