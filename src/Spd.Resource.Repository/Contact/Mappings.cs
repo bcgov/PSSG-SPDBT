@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.Alias;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
 
@@ -70,7 +71,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => s.Id))
             .IncludeBase<ContactCmd, contact>();
 
-            _ = CreateMap<Alias, spd_alias>()
+            _ = CreateMap<AliasResp, spd_alias>()
              .ForMember(d => d.spd_aliasid, opt => opt.MapFrom(s => s.Id))
              .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
              .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
@@ -79,7 +80,7 @@ namespace Spd.Resource.Repository.Contact
              .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered))
              .ReverseMap();
 
-            _ = CreateMap<spd_alias, Alias>()
+            _ = CreateMap<spd_alias, AliasResp>()
              .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_aliasid))
              .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
              .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname))

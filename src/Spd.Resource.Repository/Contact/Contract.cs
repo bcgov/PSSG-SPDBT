@@ -1,3 +1,5 @@
+using Spd.Resource.Repository.Alias;
+
 namespace Spd.Resource.Repository.Contact
 {
     public interface IContactRepository
@@ -25,7 +27,7 @@ namespace Spd.Resource.Repository.Contact
         public GenderEnum? Gender { get; set; }
         public ResidentialAddr? ResidentialAddress { get; set; }
         public MailingAddr? MailingAddress { get; set; }
-        public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
+        public IEnumerable<AliasResp> Aliases { get; set; } = Array.Empty<AliasResp>();
         public bool? IsPoliceOrPeaceOfficer { get; set; }
         public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
