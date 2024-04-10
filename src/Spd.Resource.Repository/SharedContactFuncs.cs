@@ -28,19 +28,6 @@ internal static class SharedContactFuncs
         return contact;
     }
 
-    public static async Task CreateAlias(this DynamicsContext context,
-        contact contact,
-        spd_alias alias,
-        CancellationToken ct)
-    {
-        if (AliasExists(context, alias, contact) == null)
-        {
-            context.AddTospd_aliases(alias);
-            // associate alias to contact
-            context.SetLink(alias, nameof(alias.spd_ContactId), contact);
-        }
-    }
-
     public static async Task<contact?> UpdateContact(this DynamicsContext context,
         contact existingContact,
         contact newContact,
