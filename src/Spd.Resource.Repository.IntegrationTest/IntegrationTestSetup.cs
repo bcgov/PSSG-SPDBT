@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Contact;
 using Spd.Utilities.Dynamics;
 using System.Reflection;
@@ -37,6 +38,7 @@ public class IntegrationTestSetup
         serviceCollection.AddAutoMapper(assemblies);
         serviceCollection.AddDistributedMemoryCache();
         serviceCollection.AddTransient<IContactRepository, ContactRepository>();
+        serviceCollection.AddTransient<IAliasRepository, AliasRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }

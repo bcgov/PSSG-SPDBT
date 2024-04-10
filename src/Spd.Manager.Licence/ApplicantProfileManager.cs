@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
@@ -22,6 +23,7 @@ namespace Spd.Manager.Licence
     {
         private readonly IIdentityRepository _idRepository;
         private readonly IContactRepository _contactRepository;
+        private readonly IAliasRepository _aliasRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<IApplicantProfileManager> _logger;
         private readonly IDocumentRepository _documentRepository;
@@ -29,6 +31,7 @@ namespace Spd.Manager.Licence
         public ApplicantProfileManager(
             IIdentityRepository idRepository,
             IContactRepository contactRepository,
+            IAliasRepository aliasRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
             IDocumentRepository documentRepository)
@@ -38,6 +41,7 @@ namespace Spd.Manager.Licence
             _logger = logger;
             _contactRepository = contactRepository;
             _documentRepository = documentRepository;
+            _aliasRepository = aliasRepository;
         }
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
@@ -195,7 +199,10 @@ namespace Spd.Manager.Licence
             }
         }
 
-        private async Task ProcessAliases(List<Resource.Repository.Alias> aliases, List<Resource.Repository.Alias> aliasesToProcess, Guid contactId, CancellationToken ct)
+        private async Task ProcessAliases(List<AliasResp> aliases, 
+            List<AliasResp> aliasesToProcess, 
+            Guid contactId, 
+            CancellationToken ct)
         {
             // Add new aliases
             var numOfCurrentAliases = aliases.Count;
@@ -211,7 +218,7 @@ namespace Spd.Manager.Licence
                     ContactId = contactId,
                     Alias = newAlias
                 };
-                await _contactRepository.CreateAliasAsync(createAliasCommand, ct);
+                await _aliasRepository.CreateAliasAsync(createAliasCommand, ct);
             }
 
             // Remove aliases defined in the entity that are not part of the request
@@ -220,7 +227,7 @@ namespace Spd.Manager.Licence
 
             foreach (var aliasToRemove in aliasesToRemove) 
             {
-                await _contactRepository.DeleteAliasAsync((Guid)aliasToRemove.Id, ct);
+                await _aliasRepository.DeleteAliasAsync((Guid)aliasToRemove.Id, ct);
             }
 
             // Update aliases
@@ -229,7 +236,7 @@ namespace Spd.Manager.Licence
                 Aliases = modifiedAliases
             };
 
-            await _contactRepository.UpdateAliasAsync(updateAliasCommand, ct);
+            await _aliasRepository.UpdateAliasAsync(updateAliasCommand, ct);
         }
     }
 }

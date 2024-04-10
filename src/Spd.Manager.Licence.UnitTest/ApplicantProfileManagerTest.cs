@@ -2,6 +2,7 @@
 using AutoMapper;
 using MediatR;
 using Moq;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
@@ -15,6 +16,7 @@ namespace Spd.Manager.Licence.UnitTest
         private Mock<IIdentityRepository> mockIdRepo = new();
         private Mock<IDocumentRepository> mockDocRepo = new();
         private Mock<IContactRepository> mockContactRepo = new();
+        private Mock<IAliasRepository> mockAliasRepo = new();
         private Mock<IMapper> mockMapper = new();
         private ApplicantProfileManager sut;
 
@@ -27,6 +29,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             sut = new ApplicantProfileManager(mockIdRepo.Object,
                 mockContactRepo.Object,
+                mockAliasRepo.Object,
                 mockMapper.Object,
                 null,
                 mockDocRepo.Object);
@@ -104,11 +107,11 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(c => c.ApplicantUpdateRequest, request)
                 .Create();
 
-            List<Resource.Repository.Alias> aliases = fixture.Build<Resource.Repository.Alias>()
+            List<AliasResp> aliases = fixture.Build<AliasResp>()
                 .With(a => a.SourceType, Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered)
                 .CreateMany(10)
                 .ToList();
-            IEnumerable<Resource.Repository.Alias> newAliases = fixture.Build<Resource.Repository.Alias>()
+            IEnumerable<AliasResp> newAliases = fixture.Build<AliasResp>()
                 .With(a => a.SourceType, Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered)
                 .Without(a => a.Id)
                 .CreateMany(1);
