@@ -27,7 +27,7 @@ internal class AliasRepository : IAliasRepository
         if (cmd.Alias.Id == Guid.Empty)
             cmd.Alias.Id = null;
 
-        await _context.CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias), ct);
+        await CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias));
         await _context.SaveChangesAsync(ct);
 
         return default;
@@ -74,5 +74,30 @@ internal class AliasRepository : IAliasRepository
             _context.UpdateObject(existingAlias);
         }
         await _context.SaveChangesAsync(ct);
+    }
+
+    private void CreateAlias(contact contact,
+        spd_alias alias)
+    {
+        if (AliasExists(alias, contact) == null)
+        {
+            _context.AddTospd_aliases(alias);
+            // associate alias to contact
+            _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
+        }
+    }
+
+    private spd_alias? AliasExists(spd_alias newAlias, contact contact)
+    {
+        var matchingAlias = _context.spd_aliases.Where(o =>
+           o.spd_firstname == newAlias.spd_firstname &&
+           o.spd_middlename1 == newAlias.spd_middlename1 &&
+           o.spd_middlename2 == newAlias.spd_middlename2 &&
+           o.spd_surname == newAlias.spd_surname &&
+           o.statecode != DynamicsConstants.StateCode_Inactive &&
+           o._spd_contactid_value == contact.contactid &&
+           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+       ).FirstOrDefault();
+        return matchingAlias;
     }
 }
