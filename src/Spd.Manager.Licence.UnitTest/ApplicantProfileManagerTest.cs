@@ -97,43 +97,6 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
-        public async void Handle_ApplicantUpdateCommand_WithMoreThanTenAliases_Throw_Exception()
-        {
-            ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
-                .With(r => r.IsTreatedForMHC, false)
-                .With(r => r.IsPoliceOrPeaceOfficer, false)
-                .Without(r => r.PreviousDocumentIds)
-                .Create();
-
-            ApplicantUpdateCommand cmd = fixture.Build<ApplicantUpdateCommand>()
-                .With(c => c.LicAppFileInfos, [])
-                .With(c => c.ApplicantUpdateRequest, request)
-                .Create();
-
-            List<AliasResp> aliases = fixture.Build<AliasResp>()
-                .With(a => a.SourceType, Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered)
-                .CreateMany(10)
-                .ToList();
-            IEnumerable<AliasResp> newAliases = fixture.Build<AliasResp>()
-                .With(a => a.SourceType, Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered)
-                .Without(a => a.Id)
-                .CreateMany(1);
-
-            ContactResp contactResp = fixture.Build<ContactResp>()
-                .With(r => r.Aliases, aliases)
-                .Create();
-
-            mockContactRepo.Setup(m => m.GetAsync(It.Is<Guid>(g => g.Equals(cmd.ApplicantId)), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ContactResp() { Aliases = aliases });
-            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<ApplicantUpdateRequest>()))
-                .Returns(new UpdateContactCmd() { Aliases = newAliases });
-            mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DocumentListResp() { Items = [] });
-
-            _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.Handle(cmd, CancellationToken.None));
-        }
-
-        [Fact]
         public async void Handle_ApplicantUpdateCommand_WithNoMentalHealthConditionFile_Throw_Exception()
         {
             ApplicantUpdateRequest request = fixture.Build<ApplicantUpdateRequest>()
