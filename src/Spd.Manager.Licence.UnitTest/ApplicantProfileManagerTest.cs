@@ -53,7 +53,7 @@ namespace Spd.Manager.Licence.UnitTest
         {
             //Arrange
             ApplicantUpdateCommand cmd = new(Guid.NewGuid(), fixture.Create<ApplicantUpdateRequest>(), fixture.Create<IEnumerable<LicAppFileInfo>>());
-            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), It.IsAny<CancellationToken>()))
+            mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(fixture.Create<IEnumerable<LicenceAppListResp>>);
 
             //Act
