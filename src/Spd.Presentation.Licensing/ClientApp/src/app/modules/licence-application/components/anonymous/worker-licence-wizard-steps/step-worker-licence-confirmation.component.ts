@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -71,7 +70,6 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	private licenceModelData: any = {};
 
 	constructor(
-		private utilService: UtilService,
 		private licenceApplicationService: LicenceApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}

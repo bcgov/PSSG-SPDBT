@@ -3,13 +3,13 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
+import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitAliasesComponent } from './step-permit-aliases.component';
 import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from './step-permit-citizenship.component';
 import { StepPermitCriminalHistoryComponent } from './step-permit-criminal-history.component';
 import { StepPermitPersonalInformationComponent } from './step-permit-personal-information.component';
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-photograph-of-yourself-anonymous.component';
-import { StepPermitPhysicalCharacteristicsComponent } from './step-permit-physical-characteristics.component';
 
 @Component({
 	selector: 'app-steps-permit-identification-anonymous',

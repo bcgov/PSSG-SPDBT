@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from '@app/core/code-types/model-desc.models';
@@ -11,7 +11,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	selector: 'app-common-user-profile-licence-police-background',
 	template: `
 		<div class="text-minor-heading pt-2">Police Background</div>
-		<div class="py-2">Are you currently a Police Officer or Peace Officer?</div>
+		<div class="py-2">{{ title }}</div>
 
 		<ng-container *ngIf="isRenewalOrUpdate">
 			<app-alert type="info" icon="" [showBorder]="false">
@@ -117,10 +117,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonUserProfileLicencePoliceBackgroundComponent implements LicenceChildStepperStepComponent {
+export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
+
+	title = '';
 
 	matcher = new FormErrorStateMatcher();
 
@@ -131,6 +133,17 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements Licenc
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		if (
+			this.applicationTypeCode === ApplicationTypeCode.Update ||
+			this.applicationTypeCode === ApplicationTypeCode.Renewal
+		) {
+			this.title = 'Do you now hold any Police Officer or Peace Officer roles?';
+		} else {
+			this.title = 'Are you currently a Police Officer or Peace Officer?';
+		}
+	}
 
 	onFileRemoved(): void {
 		this.licenceApplicationService.hasValueChanged = true;

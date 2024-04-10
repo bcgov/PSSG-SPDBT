@@ -3,7 +3,6 @@ import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { StepPermitEmployerInformationComponent } from '../../anonymous/permit-wizard-steps/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '../../anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/step-permit-reason.component';
@@ -24,7 +23,7 @@ import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/s
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_PERMIT_REASON)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -66,7 +65,7 @@ import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/s
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_EMPLOYER_INFORMATION)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -106,7 +105,7 @@ import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/s
 							mat-flat-button
 							class="large bordered mb-2"
 							(click)="onSaveAndExit(STEP_PERMIT_RATIONALE)"
-							*ngIf="isLoggedIn"
+							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
 						</button>
@@ -144,7 +143,7 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 	private authenticationSubscription!: Subscription;
 	private licenceModelChangedSubscription!: Subscription;
 
-	isLoggedIn = false;
+	showSaveAndExit = false;
 	isFormValid = false;
 	showEmployerInformation = true;
 
@@ -156,10 +155,7 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 	stepEmployerInformationComponent!: StepPermitEmployerInformationComponent;
 	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
 
-	constructor(
-		private authProcessService: AuthProcessService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(private permitApplicationService: PermitApplicationService) {
 		super();
 	}
 
@@ -189,12 +185,8 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 				}
-			}
-		);
 
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
+				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
 			}
 		);
 	}
