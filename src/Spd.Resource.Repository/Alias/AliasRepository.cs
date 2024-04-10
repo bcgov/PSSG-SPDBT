@@ -33,22 +33,26 @@ internal class AliasRepository : IAliasRepository
         return default;
     }
 
-    public async Task DeleteAliasAsync(Guid aliasId, CancellationToken ct)
+    public async Task DeleteAliasAsync(List<Guid> aliasIds, CancellationToken ct)
     {
-        spd_alias? alias = _context.spd_aliases.Where(a =>
-            a.spd_aliasid == aliasId &&
-            a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
-        ).FirstOrDefault();
-
-        if (alias == null)
+        foreach(var aliasId in aliasIds)
         {
-            _logger.LogError($"Alias to be deleted was not found");
-            throw new ArgumentException("cannot find alias to be deleted");
+            spd_alias? alias = _context.spd_aliases.Where(a =>
+                a.spd_aliasid == aliasId &&
+                a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+            ).FirstOrDefault();
+
+            if (alias == null)
+            {
+                _logger.LogError($"Alias to be deleted was not found");
+                throw new ArgumentException("cannot find alias to be deleted");
+            }
+
+            alias.statecode = DynamicsConstants.StateCode_Inactive;
+            alias.statuscode = DynamicsConstants.StatusCode_Inactive;
+            _context.UpdateObject(alias);
         }
 
-        alias.statecode = DynamicsConstants.StateCode_Inactive;
-        alias.statuscode = DynamicsConstants.StatusCode_Inactive;
-        _context.UpdateObject(alias);
         await _context.SaveChangesAsync(ct);
     }
 
