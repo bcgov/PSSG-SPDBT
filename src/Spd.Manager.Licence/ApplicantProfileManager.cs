@@ -125,17 +125,17 @@ namespace Spd.Manager.Licence
                 cmd.ApplicantId,
                 new List<WorkerLicenceTypeEnum>
                 {
-                           WorkerLicenceTypeEnum.ArmouredVehiclePermit,
-                           WorkerLicenceTypeEnum.BodyArmourPermit,
-                           WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                    WorkerLicenceTypeEnum.ArmouredVehiclePermit,
+                    WorkerLicenceTypeEnum.BodyArmourPermit,
+                    WorkerLicenceTypeEnum.SecurityWorkerLicence,
                 },
                 new List<ApplicationPortalStatusEnum>
                 {
-                           ApplicationPortalStatusEnum.AwaitingThirdParty,
-                           ApplicationPortalStatusEnum.InProgress,
-                           ApplicationPortalStatusEnum.AwaitingApplicant,
-                           ApplicationPortalStatusEnum.UnderAssessment,
-                           ApplicationPortalStatusEnum.VerifyIdentity
+                    ApplicationPortalStatusEnum.AwaitingThirdParty,
+                    ApplicationPortalStatusEnum.InProgress,
+                    ApplicationPortalStatusEnum.AwaitingApplicant,
+                    ApplicationPortalStatusEnum.UnderAssessment,
+                    ApplicationPortalStatusEnum.VerifyIdentity
                 }
             );
             var response = await _licAppRepository.QueryAsync(q, ct);
