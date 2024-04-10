@@ -179,7 +179,6 @@ namespace Spd.Manager.Licence
             await ProcessAliases(
                 contact.Aliases.Where(a => a.SourceType == Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered).ToList(), 
                 updateContactCmd.Aliases.ToList(), 
-                contact.Id, 
                 ct);
 
             return default;
@@ -228,34 +227,13 @@ namespace Spd.Manager.Licence
 
         private async Task ProcessAliases(List<AliasResp> aliases, 
             List<AliasResp> aliasesToProcess, 
-            Guid contactId, 
             CancellationToken ct)
         {
-            // Add new aliases
-            var numOfCurrentAliases = aliases.Count;
-            var numOfNewAliases = aliasesToProcess.Count(a => a.Id == null || a.Id == Guid.Empty);
-
-            if (numOfCurrentAliases + numOfNewAliases > Constants.MaximumNumberOfUserEnteredAliases)
-                throw new ApiException(HttpStatusCode.BadRequest, "No more than 10 user entered aliases are allowed");
-
-            foreach (var newAlias in aliasesToProcess.Where(a => a.Id == null || a.Id == Guid.Empty)) 
-            {
-                CreateAliasCommand createAliasCommand = new CreateAliasCommand()
-                {
-                    ContactId = contactId,
-                    Alias = newAlias
-                };
-                await _aliasRepository.CreateAliasAsync(createAliasCommand, ct);
-            }
-
             // Remove aliases defined in the entity that are not part of the request
-            var modifiedAliases = aliasesToProcess.Where(a => a.Id != null && a.Id != Guid.Empty);
-            var aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).ToList();
+            var modifiedAliases = aliasesToProcess.Where(a => a.Id != Guid.Empty);
+            List<Guid> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
 
-            foreach (var aliasToRemove in aliasesToRemove) 
-            {
-                await _aliasRepository.DeleteAliasAsync((Guid)aliasToRemove.Id, ct);
-            }
+            await _aliasRepository.DeleteAliasAsync(aliasesToRemove, ct);
 
             // Update aliases
             UpdateAliasCommand updateAliasCommand = new UpdateAliasCommand()
