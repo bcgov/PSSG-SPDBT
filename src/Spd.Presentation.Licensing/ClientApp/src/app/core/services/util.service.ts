@@ -174,6 +174,20 @@ export class UtilService {
 		return a > b ? 1 : a < b ? -1 : 0;
 	}
 
+	public sortDate(a: string | null | undefined, b: string | null | undefined): SortWeight {
+		if (!a) {
+			return -1;
+		}
+		if (!b) {
+			return 1;
+		}
+
+		const aDate = moment(a).startOf('day');
+		const bDate = moment(b).startOf('day');
+
+		return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
+	}
+
 	//------------------------------------
 	// Misc
 

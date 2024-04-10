@@ -10,7 +10,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 				<app-step-title
 					title="Checklist"
 					subtitle="Make sure you have the following items before you continue"
-					info="<strong>Required documents are dependant on what updates you need to make to your licence</strong>"
+					info="<strong>Required documents depend on what updates you need to make to your licence</strong>"
 				></app-step-title>
 
 				<div class="row">

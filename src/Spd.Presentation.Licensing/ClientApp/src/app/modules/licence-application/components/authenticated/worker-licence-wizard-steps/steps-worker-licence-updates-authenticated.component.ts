@@ -156,9 +156,9 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	private licenceModelChangedSubscription!: Subscription;
 
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
-	stepLicenceNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
+	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
-	stepLicencePhotographOfYourselfComponent!: StepWorkerLicencePhotographOfYourselfComponent;
+	stepPhotographOfYourselfComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 	@ViewChild(StepWorkerLicenceCategoryComponent)
 	stepLicenceCategoryComponent!: StepWorkerLicenceCategoryComponent;
 	@ViewChild(StepWorkerLicenceRestraintsComponent)
@@ -236,11 +236,11 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_NAME_CHANGE:
-				return this.stepLicenceNameChangeComponent.isFormValid();
+				return this.stepNameChangeComponent.isFormValid();
 			case this.STEP_REPRINT:
 				return this.stepReprintComponent.isFormValid();
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				return this.stepLicencePhotographOfYourselfComponent.isFormValid();
+				return this.stepPhotographOfYourselfComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:
 				return this.stepLicenceCategoryComponent.isFormValid();
 			case this.STEP_RESTRAINTS:
