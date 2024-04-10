@@ -275,7 +275,8 @@ namespace Spd.Manager.Screening
         ClosedNoResponse,
         ClosedNoConsent,
         CancelledByApplicant,
-        CancelledByOrganization
+        CancelledByOrganization,
+        RefundRequested
     }
 
     public enum ApplicationPortalStatisticsCode
