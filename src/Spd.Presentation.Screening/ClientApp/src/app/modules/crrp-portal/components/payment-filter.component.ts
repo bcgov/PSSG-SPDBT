@@ -75,7 +75,7 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 
 			.mat-toolbar-single-row {
 				justify-content: space-between;
-				background-color: var(--color-sidebar);
+				background-color: var(--color-primary-light);
 				color: var(--color-white);
 			}
 
