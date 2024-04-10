@@ -46,11 +46,13 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
+								[isReadonlyPersonalInfo]="false"
+								[isReadonlyMailingAddress]="false"
 							></app-common-user-profile>
 						</section>
 
 						<mat-divider class="mat-divider-main mt-3"></mat-divider>
-						<section>
+						<section *ngIf="isVisibleBackgroundInfo">
 							<app-common-user-profile-licence-criminal-history
 								[applicationTypeCode]="applicationTypeCode"
 							></app-common-user-profile-licence-criminal-history>
@@ -165,9 +167,11 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
-		const isValid3 = this.criminalHistoryComponent.isFormValid();
+		const isValid3 = this.isVisibleBackgroundInfo ? this.criminalHistoryComponent.isFormValid() : true;
 
 		const isValid = isValid1 && isValid2 && isValid3;
+
+		console.debug('[StepPermitUserProfileComponent] isFormValid', isValid1, isValid2, isValid3);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();
@@ -192,5 +196,9 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 	onBack(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+	}
+
+	get isVisibleBackgroundInfo(): boolean {
+		return this.applicationTypeCode != ApplicationTypeCode.Replacement;
 	}
 }

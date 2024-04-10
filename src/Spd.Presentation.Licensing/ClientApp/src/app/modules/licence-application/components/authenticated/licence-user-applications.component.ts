@@ -11,6 +11,7 @@ import {
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService } from '@app/core/services/config.service';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -539,6 +540,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		private optionsPipe: OptionsPipe,
 		private formatDatePipe: FormatDatePipe,
 		private configService: ConfigService,
+		private utilService: UtilService,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
@@ -580,10 +582,11 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				});
 
 				// User Licences/Permits
-				this.activeLicences = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
+				const activeLicences = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
 
 				this.expiredLicences = userLicencesList.filter((item: UserLicenceResponse) => item.isExpired);
-				const renewals = this.activeLicences.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
+
+				const renewals = activeLicences.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
 				renewals.forEach((item: UserLicenceResponse) => {
 					const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
 					const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
@@ -609,7 +612,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
-					this.activeLicences.findIndex(
+					activeLicences.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 					) >= 0;
 
@@ -622,7 +625,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.activeSwlExist = activeSwlExist;
 
 				let activeBaPermitExist =
-					this.activeLicences.findIndex(
+					activeLicences.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 					) >= 0;
 				if (!activeBaPermitExist) {
@@ -634,7 +637,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.activeBaPermitExist = activeBaPermitExist;
 
 				let activeAvPermitExist =
-					this.activeLicences.findIndex(
+					activeLicences.findIndex(
 						(item: UserLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 					) >= 0;
 				if (!activeAvPermitExist) {
@@ -644,6 +647,10 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						) >= 0;
 				}
 				this.activeAvPermitExist = activeAvPermitExist;
+
+				this.activeLicences = [...activeLicences].sort((a, b) => {
+					return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+				});
 
 				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
 			})
@@ -807,21 +814,20 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				// TODO permit update
-				// this.permitApplicationService
-				// 		.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Update)
-				// 		.pipe(
-				// 			tap((_resp: any) => {
-				// 				this.router.navigateByUrl(
-				// 					LicenceApplicationRoutes.pathPermitAuthenticated(
-				// 						LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-				// 					),
-				//				{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
-				// 				);
-				// 			}),
-				// 			take(1)
-				// 		)
-				// 		.subscribe();
+				this.permitApplicationService
+					.getPermitWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Update, appl)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAuthenticated(
+									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
 			}
 		}
 	}
@@ -847,21 +853,20 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				// TODO permit renew
-				// this.permitApplicationService
-				// 	.getPermitWithSelectionAuthenticated('f9c7d780-e5a7-405e-9f2d-21aff037c18d', ApplicationTypeCode.Renewal)
-				// 	.pipe(
-				// 		tap((_resp: any) => {
-				// 			this.router.navigateByUrl(
-				// 				LicenceApplicationRoutes.pathPermitAuthenticated(
-				// 					LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
-				// 				),
-				//				{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
-				// 			);
-				// 		}),
-				// 		take(1)
-				// 	)
-				// 	.subscribe();
+				this.permitApplicationService
+					.getPermitWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Renewal, appl)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAuthenticated(
+									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
 			}
 		}
 	}
