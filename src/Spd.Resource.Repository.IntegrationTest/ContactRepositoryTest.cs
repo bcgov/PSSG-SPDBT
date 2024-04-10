@@ -1,5 +1,6 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Contact;
 using Spd.Utilities.Dynamics;
 
@@ -7,12 +8,14 @@ namespace Spd.Resource.Repository.IntegrationTest;
 
 public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
 {
-    private readonly IContactRepository _repository;
+    private readonly IContactRepository _contactRepository;
+    private readonly IAliasRepository _aliasRepository;
     private DynamicsContext _context;
 
     public ContactRepositoryTest(IntegrationTestSetup testSetup)
     {
-        _repository = testSetup.ServiceProvider.GetService<IContactRepository>();
+        _contactRepository = testSetup.ServiceProvider.GetService<IContactRepository>();
+        _aliasRepository = testSetup.ServiceProvider.GetRequiredService<IAliasRepository>();
         _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().Create();
     }
 
@@ -34,7 +37,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.DetachAll();
 
         //Act
-        await _repository.MergeContactsAsync(new MergeContactsCmd() { OldContactId = oldContactId, NewContactId = newContactId }, CancellationToken.None);
+        await _contactRepository.MergeContactsAsync(new MergeContactsCmd() { OldContactId = oldContactId, NewContactId = newContactId }, CancellationToken.None);
 
         //Assert
         contact? old = await _context.contacts.Where(c => c.contactid == oldContactId).FirstOrDefaultAsync();
@@ -67,7 +70,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
 
         CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
-        await _repository.CreateAliasAsync(cmd, CancellationToken.None);
+        await _aliasRepository.CreateAliasAsync(cmd, CancellationToken.None);
 
         spd_alias? alias = await _context.spd_aliases.Where(a => a.spd_aliasid == newAlias.Id).FirstOrDefaultAsync();
         Assert.NotNull(alias);
@@ -89,8 +92,8 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
 
         CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
-        await _repository.CreateAliasAsync(cmd, CancellationToken.None);
-        await _repository.DeleteAliasAsync((Guid)cmd.Alias.Id, CancellationToken.None);
+        await _aliasRepository.CreateAliasAsync(cmd, CancellationToken.None);
+        await _aliasRepository.DeleteAliasAsync((Guid)cmd.Alias.Id, CancellationToken.None);
 
         spd_alias? alias = await _context.spd_aliases.Where(a => a.spd_aliasid == newAlias.Id && a.statecode == DynamicsConstants.StateCode_Inactive).FirstOrDefaultAsync();
         Assert.NotNull(alias);
@@ -112,9 +115,9 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
 
         CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
-        await _repository.CreateAliasAsync(cmd, CancellationToken.None);
+        await _aliasRepository.CreateAliasAsync(cmd, CancellationToken.None);
 
-        Alias aliasToUpdate = new Alias()
+        AliasResp aliasToUpdate = new AliasResp()
         {
             Id = (Guid)newAlias.Id,
             GivenName = "test2",
@@ -122,10 +125,10 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
         UpdateAliasCommand updateCmd = new UpdateAliasCommand()
         {
-            Aliases = new List<Alias>() { aliasToUpdate }
+            Aliases = new List<AliasResp>() { aliasToUpdate }
         };
 
-        await _repository.UpdateAliasAsync(updateCmd, CancellationToken.None);
+        await _aliasRepository.UpdateAliasAsync(updateCmd, CancellationToken.None);
 
         spd_alias? alias = await _context.spd_aliases
             .Where(a => a.spd_aliasid == aliasToUpdate.Id && a.spd_firstname == aliasToUpdate.GivenName && a.spd_surname == aliasToUpdate.Surname)
@@ -144,9 +147,9 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
         UpdateAliasCommand updateCmd = new UpdateAliasCommand()
         {
-            Aliases = new List<Alias>() { aliasToUpdate }
+            Aliases = new List<AliasResp>() { aliasToUpdate }
         };
 
-        _ = await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.UpdateAliasAsync(updateCmd, CancellationToken.None));
+        _ = await Assert.ThrowsAsync<ArgumentException>(async () => await _aliasRepository.UpdateAliasAsync(updateCmd, CancellationToken.None));
     }
 }
