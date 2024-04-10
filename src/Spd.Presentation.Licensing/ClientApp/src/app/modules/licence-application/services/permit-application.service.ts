@@ -25,7 +25,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import * as moment from 'moment';
 import {
@@ -56,6 +56,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { CommonApplicationService, UserLicenceResponse } from './common-application.service';
 import { LicenceDocument } from './licence-application.helper';
+import { LicenceDocumentsToSave } from './licence-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
 
 export class PermitDocumentsToSave {
@@ -315,7 +316,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		return false; // TODO api not ready
+		return false; // TODO fix when permit auto save is ready
 		// if (
 		// 	!this.authenticationService.isLoggedIn() ||
 		// 	this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
@@ -481,9 +482,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	getPermitWithSelectionAuthenticated(
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		userLicenceInformation: UserLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
-		return this.getPermitOfTypeAuthenticated(licenceAppId, applicationTypeCode).pipe(
+		return this.getPermitOfTypeAuthenticated(licenceAppId, applicationTypeCode, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.permitModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
 
@@ -527,6 +529,74 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
 	}
 
+	submitPermitRenewalOrUpdateAuthenticated(): void {
+		//} Observable<StrictHttpResponse<PermitAppSubmitRequest>> {//WorkerLicenceCommandResponse
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
+		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// Create list of APIs to call for the newly added documents
+		// const documentsToSaveApis: Observable<string>[] = [];
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+			const newDocumentsOnly: Array<Blob> = [];
+
+			doc.documents.forEach((item: Blob) => {
+				const spdFile: SpdFile = item as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(item);
+				}
+			});
+
+			if (newDocumentsOnly.length > 0) {
+				// documentsToSaveApis.push(
+				// 	this.permitService.apiWorkerLicenceApplicationsAuthenticatedFilesPost({
+				// 		body: {
+				// 			Documents: newDocumentsOnly,
+				// 			LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+				// 		},
+				// 	})
+				// );
+			}
+		});
+
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated] body', body);
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
+
+		// if (documentsToSaveApis.length > 0) {
+		// 	return forkJoin(documentsToSaveApis).pipe(
+		// 		switchMap((resps: string[]) => {
+		// 			// pass in the list of document key codes
+		// 			body.documentKeyCodes = [...resps];
+		// 			// pass in the list of document ids that were in the original
+		// 			// application and are still being used
+		// 			body.previousDocumentIds = [...existingDocumentIds];
+
+		// 			return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+		// 				body,
+		// 			});
+		// 		})
+		// 	);
+		// } else {
+		// 	// pass in the list of document ids that were in the original
+		// 	// application and are still being used
+		// 	body.previousDocumentIds = [...existingDocumentIds];
+
+		// 	return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
+		// 		body,
+		// 	});
+		// }
+	}
+
 	/**
 	 * Load an existing licence application with a certain type
 	 * @param licenceAppId
@@ -534,18 +604,35 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	private getPermitOfTypeAuthenticated(
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		userLicenceInformation: UserLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
-				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
+				return forkJoin([
+					this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyRenewalDataUpdatesToModel(_resp);
 					})
 				);
 			}
 			case ApplicationTypeCode.Update: {
-				return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
+				return forkJoin([
+					this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+				]).pipe(
+					catchError((error) => of(error)),
+					map((resps: any[]) => {
+						this.setPhotographOfYourself(resps[1]);
+						return resps[0];
+					}),
 					switchMap((_resp: any) => {
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
@@ -575,7 +662,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load a permit using an ID
 	 * @returns
 	 */
-	private loadExistingPermitWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
+	private loadExistingPermitWithIdAuthenticated(
+		licenceAppId: string,
+		userLicenceInformation?: UserLicenceResponse
+	): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
 		return forkJoin([
@@ -588,7 +678,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				const permitLicenceAppResponse = resps[0];
 				const profile = resps[1];
 
-				return this.applyPermitAndProfileIntoModel(permitLicenceAppResponse, profile);
+				return this.applyPermitAndProfileIntoModel(permitLicenceAppResponse, profile, userLicenceInformation);
 			})
 		);
 	}
@@ -625,12 +715,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	): Observable<PermitLicenceAppResponse> {
 		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
 			tap((_resp: any) => {
+				const personalInformationData = { ..._resp.personalInformationData };
+
+				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
+				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
+
 				this.permitModelFormGroup.patchValue(
 					{
 						originalApplicationId: accessCodeData.linkedLicenceAppId,
 						originalLicenceId: accessCodeData.linkedLicenceId,
 						originalLicenceNumber: accessCodeData.licenceNumber,
 						originalExpiryDate: accessCodeData.linkedExpiryDate,
+						originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+						personalInformationData,
 					},
 					{ emitEvent: false }
 				);
@@ -879,16 +976,18 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	/*************************************************************/
 
 	private applyPermitAndProfileIntoModel(
-		permitLicenceApp: PermitLicenceAppResponse,
-		profile: ApplicantProfileResponse | null | undefined
+		permitLicenceApplication: PermitLicenceAppResponse,
+		profile: ApplicantProfileResponse | null | undefined,
+		userLicenceInformation?: UserLicenceResponse
 	): Observable<any> {
 		return this.applyPermitProfileIntoModel(
-			profile ?? permitLicenceApp,
-			permitLicenceApp.workerLicenceTypeCode!,
-			permitLicenceApp.applicationTypeCode
+			profile ?? permitLicenceApplication,
+			permitLicenceApplication.workerLicenceTypeCode!,
+			permitLicenceApplication.applicationTypeCode,
+			userLicenceInformation
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyPermitIntoModel(permitLicenceApp);
+				return this.applyPermitIntoModel(permitLicenceApplication);
 			})
 		);
 	}
@@ -988,6 +1087,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		profile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
+					// id: new FormControl('123123'), // TODO add ID to alias
 					givenName: new FormControl(alias.givenName),
 					middleName1: new FormControl(alias.middleName1),
 					middleName2: new FormControl(alias.middleName2),
@@ -1254,7 +1354,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 
@@ -1269,7 +1368,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
-				workerLicenceTypeData,
+				// workerLicenceTypeData,
 				applicationTypeData,
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,

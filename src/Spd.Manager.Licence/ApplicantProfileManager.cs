@@ -6,6 +6,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -27,6 +28,7 @@ namespace Spd.Manager.Licence
         private readonly IMapper _mapper;
         private readonly ILogger<IApplicantProfileManager> _logger;
         private readonly IDocumentRepository _documentRepository;
+        private readonly ILicenceApplicationRepository _licAppRepository;
 
         public ApplicantProfileManager(
             IIdentityRepository idRepository,
@@ -34,7 +36,8 @@ namespace Spd.Manager.Licence
             IAliasRepository aliasRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
-            IDocumentRepository documentRepository)
+            IDocumentRepository documentRepository,
+            ILicenceApplicationRepository licAppRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
@@ -42,6 +45,7 @@ namespace Spd.Manager.Licence
             _contactRepository = contactRepository;
             _documentRepository = documentRepository;
             _aliasRepository = aliasRepository;
+            _licAppRepository = licAppRepository;
         }
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
@@ -116,7 +120,30 @@ namespace Spd.Manager.Licence
 
         public async Task<Unit> Handle(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
+            //if there is application in progress, then do not allow to update applicant profile
+            LicenceAppQuery q = new(
+                cmd.ApplicantId,
+                new List<WorkerLicenceTypeEnum>
+                {
+                           WorkerLicenceTypeEnum.ArmouredVehiclePermit,
+                           WorkerLicenceTypeEnum.BodyArmourPermit,
+                           WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                },
+                new List<ApplicationPortalStatusEnum>
+                {
+                           ApplicationPortalStatusEnum.AwaitingThirdParty,
+                           ApplicationPortalStatusEnum.InProgress,
+                           ApplicationPortalStatusEnum.AwaitingApplicant,
+                           ApplicationPortalStatusEnum.UnderAssessment,
+                           ApplicationPortalStatusEnum.VerifyIdentity
+                }
+            );
+            var response = await _licAppRepository.QueryAsync(q, ct);
+            if (response.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, "There is some application in progress, you cannot update your profile.");
+
             await ValidateFilesAsync(cmd, ct);
+
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 
             UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ApplicantUpdateRequest);
