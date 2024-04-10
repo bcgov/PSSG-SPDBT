@@ -11,9 +11,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	selector: 'app-common-user-profile-licence-mental-health-conditions',
 	template: `
 		<div class="text-minor-heading pt-2">Mental Health Condition</div>
-		<div class="py-2">{{ labelText }}</div>
-		<app-alert type="info" icon="" [showBorder]="false" *ngIf="subLabelText">
-			{{ subLabelText }}
+		<div class="py-2">{{ title }}</div>
+		<app-alert type="info" icon="" [showBorder]="false" *ngIf="subTitle">
+			{{ subTitle }}
 		</app-alert>
 
 		<form [formGroup]="form" novalidate>
@@ -78,8 +78,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 export class CommonUserProfileLicenceMentalHealthConditionsComponent
 	implements OnInit, LicenceChildStepperStepComponent
 {
-	labelText = '';
-	subLabelText = '';
+	title = '';
+	subTitle = '';
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
@@ -97,15 +97,15 @@ export class CommonUserProfileLicenceMentalHealthConditionsComponent
 		) {
 			if (this.hasPreviousMhcFormUpload.value) {
 				// If they uploaded a MHC form during the previous application
-				this.labelText =
+				this.title =
 					'Has your mental health condition changed since you last submitted a mental health condition form?';
 			} else {
 				// If they have never uploaded a MHC form before, show this
-				this.labelText = 'Have you been treated for a mental health condition in the last 3 years?';
+				this.title = 'Have you been treated for a mental health condition in the last 3 years?';
 			}
 		} else {
-			this.labelText = 'Have you been treated for any mental health conditions?';
-			this.subLabelText =
+			this.title = 'Have you been treated for any mental health conditions?';
+			this.subTitle =
 				'An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment';
 		}
 	}

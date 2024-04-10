@@ -37,7 +37,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 				</mat-toolbar>
 				<mat-card>
 					<mat-card-content class="mb-2 text-start">
-						<mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 350px">
+						<mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 300px">
 							<mat-label>Filter by status</mat-label>
 							<mat-select formControlName="statuses" placeholder="All statuses" multiple>
 								<mat-select-trigger>
@@ -77,7 +77,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 		`
 			.mat-toolbar-single-row {
 				justify-content: space-between;
-				background-color: var(--color-sidebar);
+				background-color: var(--color-primary-light);
 				color: var(--color-white);
 			}
 

@@ -171,6 +171,7 @@ namespace Spd.Utilities.Dynamics
         CancelledByApplicant = 100000014,
         CancelledByOrganization = 100000013,
         Completed = 100000015,
+        RefundRequested = 100000016
     }
 
     public enum BcGovOriginCode

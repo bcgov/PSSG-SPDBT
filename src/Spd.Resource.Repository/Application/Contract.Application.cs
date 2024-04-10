@@ -5,7 +5,7 @@ namespace Spd.Resource.Repository.Application;
 
 public partial interface IApplicationRepository
 {
-    public static readonly List<ServiceTypeEnum> ScreeningServiceTypes = new List<ServiceTypeEnum>() {
+    public static readonly List<ServiceTypeEnum> ScreeningServiceTypes = new() {
         ServiceTypeEnum.PSSO,
         ServiceTypeEnum.CRRP_EMPLOYEE,
         ServiceTypeEnum.CRRP_VOLUNTEER,
@@ -339,7 +339,8 @@ public enum ApplicationPortalStatusEnum
     ClosedNoConsent,
     CancelledByApplicant,
     CancelledByOrganization,
-    Completed
+    Completed,
+    RefundRequested
 }
 
 public enum ApplicationPortalStatisticsCd
