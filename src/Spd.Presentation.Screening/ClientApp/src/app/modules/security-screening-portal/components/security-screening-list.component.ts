@@ -108,7 +108,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Application Status:</span>
 							<mat-chip-row aria-label="Status" [ngClass]="application.applicationPortalStatusClass" class="w-100">
-								{{ application.status | options : 'ApplicationPortalStatusTypes' : 'Unknown' }}
+								{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
 							</mat-chip-row>
 						</mat-cell>
 					</ng-container>
