@@ -5,13 +5,13 @@ namespace Spd.Resource.Repository.Alias;
 public interface IAliasRepository
 {
     public Task<Unit> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);
-    public Task DeleteAliasAsync(Guid aliasId, CancellationToken cancellationToken);
+    public Task DeleteAliasAsync(List<Guid> aliasIds, CancellationToken cancellationToken);
     public Task UpdateAliasAsync(UpdateAliasCommand cmd, CancellationToken cancellationToken);
 }
 
 public record AliasResp
 {
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
