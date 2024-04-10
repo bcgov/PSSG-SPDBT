@@ -92,8 +92,9 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
 
         CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
+        List<Guid> aliasToRemove = new List<Guid>() { cmd.Alias.Id };
         await _aliasRepository.CreateAliasAsync(cmd, CancellationToken.None);
-        await _aliasRepository.DeleteAliasAsync((Guid)cmd.Alias.Id, CancellationToken.None);
+        await _aliasRepository.DeleteAliasAsync(aliasToRemove, CancellationToken.None);
 
         spd_alias? alias = await _context.spd_aliases.Where(a => a.spd_aliasid == newAlias.Id && a.statecode == DynamicsConstants.StateCode_Inactive).FirstOrDefaultAsync();
         Assert.NotNull(alias);
