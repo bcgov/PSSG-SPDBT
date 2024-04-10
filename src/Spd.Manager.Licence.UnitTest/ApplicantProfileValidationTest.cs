@@ -1,10 +1,5 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class ApplicantProfileValidationTest
