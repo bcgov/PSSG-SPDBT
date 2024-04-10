@@ -37,7 +37,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 							[isReadonlyMailingAddress]="false"
 						></app-common-user-profile>
 
-						<ng-container *ngIf="isNotReplacment">
+						<ng-container *ngIf="isVisibleBackgroundInfo">
 							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-criminal-history
@@ -183,12 +183,9 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		const isValid1 = this.form.valid;
 		const isValid2 = this.userProfileComponent.isFormValid();
-		const isValid3 =
-			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.criminalHistoryComponent.isFormValid() : true;
-		const isValid4 =
-			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.policeBackgroundComponent.isFormValid() : true;
-		const isValid5 =
-			this.applicationTypeCode != ApplicationTypeCode.Replacement ? this.mentalHealthComponent.isFormValid() : true;
+		const isValid3 = this.isVisibleBackgroundInfo ? this.criminalHistoryComponent.isFormValid() : true;
+		const isValid4 = this.isVisibleBackgroundInfo ? this.policeBackgroundComponent.isFormValid() : true;
+		const isValid5 = this.isVisibleBackgroundInfo ? this.mentalHealthComponent.isFormValid() : true;
 
 		const isValid = isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
 
@@ -222,7 +219,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		}
 	}
 
-	get isNotReplacment(): boolean {
+	get isVisibleBackgroundInfo(): boolean {
 		return this.applicationTypeCode != ApplicationTypeCode.Replacement;
 	}
 }
