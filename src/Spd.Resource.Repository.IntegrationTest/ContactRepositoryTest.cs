@@ -62,7 +62,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
         _context.DetachAll();
 
-        Alias newAlias = new Alias()
+        AliasResp newAlias = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test",
@@ -84,7 +84,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
         _context.DetachAll();
 
-        Alias newAlias = new Alias()
+        AliasResp newAlias = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test",
@@ -107,7 +107,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
         _context.DetachAll();
 
-        Alias newAlias = new Alias()
+        AliasResp newAlias = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test",
@@ -139,7 +139,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task UpdateAlias_AliasNotFound_Throw_Exception()
     {
-        Alias aliasToUpdate = new Alias()
+        AliasResp aliasToUpdate = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test2",
