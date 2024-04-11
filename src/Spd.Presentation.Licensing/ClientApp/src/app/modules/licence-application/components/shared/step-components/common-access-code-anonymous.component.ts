@@ -72,7 +72,7 @@ import { Subject, take, tap } from 'rxjs';
 
 					<div class="mt-3" *ngIf="isExpired">
 						<a class="w-auto" tabindex="0" (click)="onCreateNewLicence()" (keydown)="onKeydownCreateNewLicence($event)">
-							Apply for a new Licence
+							Apply for a New Licence
 						</a>
 					</div>
 				</form>
