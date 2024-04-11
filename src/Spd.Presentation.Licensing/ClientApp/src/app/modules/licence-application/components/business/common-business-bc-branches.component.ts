@@ -3,7 +3,6 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -125,7 +124,6 @@ export interface BranchResponse {
 			}
 		`,
 	],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;

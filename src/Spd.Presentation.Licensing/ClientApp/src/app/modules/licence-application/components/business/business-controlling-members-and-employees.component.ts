@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { BusinessApplicationService } from '../../services/business-application.service';
 
 @Component({
 	selector: 'app-business-controlling-members-and-employees',
@@ -43,10 +44,16 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 								<mat-panel-title class="title"> Controlling Members </mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body">Controlling Members</div>
+							<div class="panel-body">
+								<app-common-business-controlling-members
+									[form]="membersWithSwlFormGroup"
+								></app-common-business-controlling-members>
+							</div>
 						</mat-expansion-panel>
 
-						<div class="summary-text-data mt-4">
+						<mat-divider class="my-4"></mat-divider>
+
+						<div class="summary-text-data mt-2">
 							If your employees who are <b>licence holders</b> for the business change during the business licence term,
 							update their information here.
 						</div>
@@ -71,7 +78,9 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 	],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
-	constructor(private router: Router) {}
+	membersWithSwlFormGroup = this.businessApplicationService.membersWithSwlFormGroup;
+
+	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());

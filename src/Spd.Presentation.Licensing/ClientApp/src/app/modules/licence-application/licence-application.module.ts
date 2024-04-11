@@ -91,7 +91,9 @@ import { BusinessManagersComponent } from './components/business/business-manage
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { CommonBusinessBcBranchesComponent } from './components/business/common-business-bc-branches.component';
+import { CommonBusinessControllingMembers } from './components/business/common-business-controlling-members.component';
 import { CommonBusinessProfileComponent } from './components/business/common-business-profile.component';
+import { MemberWithSwlAddModalComponent } from './components/business/member-with-swl-add-modal.component';
 import { MemberWithoutSwlEditModalComponent } from './components/business/member-without-swl-edit-modal.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceBcBranchesComponent } from './components/business/step-business-licence-bc-branches.component';
@@ -217,6 +219,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
 		CommonBusinessBcBranchesComponent,
+		CommonBusinessControllingMembers,
 		CommonBusinessProfileComponent,
 		CommonBusinessTermsComponent,
 		CommonContactInformationComponent,
@@ -265,6 +268,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicenceUpdateReceivedSuccessAnonymousComponent,
 		LoginSelectionComponent,
 		MemberWithoutSwlEditModalComponent,
+		MemberWithSwlAddModalComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
