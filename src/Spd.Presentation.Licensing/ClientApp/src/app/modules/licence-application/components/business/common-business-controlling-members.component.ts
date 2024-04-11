@@ -104,7 +104,7 @@ import { MemberWithoutSwlEditModalComponent } from './member-without-swl-edit-mo
 		`,
 	],
 })
-export class CommonBusinessControllingMembers implements OnInit, LicenceChildStepperStepComponent {
+export class CommonBusinessControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Input() form!: FormGroup;

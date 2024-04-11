@@ -589,7 +589,7 @@ export class BusinessUserApplicationsComponent implements OnInit, OnDestroy {
 		this.onManageMembers();
 	}
 
-	onRequestReplacement(appl: LicenceInProgress): void {
+	onRequestReplacement(_appl: LicenceInProgress): void {
 		// 	this.licenceApplicationService
 		// 		.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
 		// 		.pipe(
