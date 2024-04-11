@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { BusinessApplicationService } from '../../services/business-application.service';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { BranchResponse } from './common-business-bc-branches.component';
 
 export interface UserDialogData {
 	// user: OrgUserResponse;
@@ -10,7 +11,7 @@ export interface UserDialogData {
 }
 
 @Component({
-	selector: 'app-business-manager-edit-modal',
+	selector: 'app-modal-bc-branch-edit',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
@@ -78,7 +79,7 @@ export interface UserDialogData {
 	`,
 	styles: [],
 })
-export class BusinessManagerEditModalComponent implements OnInit {
+export class ModalBcBranchEditComponent implements OnInit {
 	title = '';
 	isEdit = false;
 
@@ -88,16 +89,16 @@ export class BusinessManagerEditModalComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	constructor(
-		private dialogRef: MatDialogRef<BusinessManagerEditModalComponent>,
+		private dialogRef: MatDialogRef<ModalBcBranchEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: any
+		@Inject(MAT_DIALOG_DATA) public dialogData: BranchResponse
 	) {}
 
 	ngOnInit(): void {
 		this.form.reset();
 		this.form.patchValue(this.dialogData);
 		this.isEdit = !!this.dialogData.id;
-		this.title = this.dialogData.id ? 'Edit Business Manager' : 'Add Business Manager';
+		this.title = this.dialogData.id ? 'Edit Branch' : 'Add Branch';
 	}
 
 	onSave(): void {

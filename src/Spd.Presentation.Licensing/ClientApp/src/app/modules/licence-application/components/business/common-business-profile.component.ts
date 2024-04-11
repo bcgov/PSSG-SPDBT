@@ -43,7 +43,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 				<mat-divider class="mat-divider-main"></mat-divider>
 				<div class="text-minor-heading pt-2 pb-3">B.C. Business Address</div>
 				<app-alert type="info" icon="" [showBorder]="false">
-					Provide an address in British Columbia for document service.
+					Provide an address in British Columbia for document service
 				</app-alert>
 
 				<ng-template #mailingIsDifferentThanResidential>
@@ -61,7 +61,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 				<mat-divider class="mat-divider-main"></mat-divider>
 				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
 				<app-alert type="info" icon="" [showBorder]="false">
-					Provide your mailing address, if different from your business address.
+					Provide your mailing address, if different from your business address
 				</app-alert>
 
 				<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
@@ -92,9 +92,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 			<div class="col-12">
 				<mat-divider class="mat-divider-main"></mat-divider>
 				<div class="text-minor-heading pt-2 pb-3">Branches in B.C.</div>
-				<app-alert type="info" icon="" [showBorder]="false">
-					Branches in B.C. where licenced employees work.
-				</app-alert>
+				<app-alert type="info" icon="" [showBorder]="false"> Branches in B.C. where licenced employees work </app-alert>
 
 				<app-common-business-bc-branches [form]="branchesInBcFormGroup"></app-common-business-bc-branches>
 			</div>

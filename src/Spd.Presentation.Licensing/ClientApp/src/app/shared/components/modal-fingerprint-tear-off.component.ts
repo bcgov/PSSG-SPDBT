@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-fingerprint-tear-off-modal',
+	selector: 'app-modal-fingerprint-tear-off',
 	template: `
 		<div mat-dialog-title>
 			Sample Tear-off Section
@@ -26,4 +26,4 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class FingerprintTearOffModalComponent {}
+export class ModalFingerprintTearOffComponent {}

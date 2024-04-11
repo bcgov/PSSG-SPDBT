@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FingerprintTearOffModalComponent } from '@app/shared/components/fingerprint-tear-off-modal.component';
+import { ModalFingerprintTearOffComponent } from '@app/shared/components/modal-fingerprint-tear-off.component';
 
 @Component({
 	selector: 'app-common-fingerprints',
@@ -92,7 +92,7 @@ export class CommonFingerprintsComponent {
 	}
 
 	onShowSampleTearOffModal(): void {
-		this.dialog.open(FingerprintTearOffModalComponent);
+		this.dialog.open(ModalFingerprintTearOffComponent);
 	}
 
 	get attachments(): FormControl {
