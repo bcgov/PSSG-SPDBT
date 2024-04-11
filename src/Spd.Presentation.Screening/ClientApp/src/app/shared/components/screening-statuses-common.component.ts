@@ -203,7 +203,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 										class="w-100"
 										*ngIf="application.status"
 									>
-										{{ application.status | options : 'ApplicationPortalStatusTypes' }}
+										{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
 									</mat-chip-row>
 								</ng-container>
 								<ng-template #noStatus>
@@ -222,7 +222,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									aria-label="Pay now"
 									*ngIf="application.isPayNow"
 								>
-									<mat-icon>send</mat-icon>Payment
+									<mat-icon>payment</mat-icon>Payment
 								</button>
 								<button
 									mat-flat-button
@@ -232,7 +232,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									aria-label="Verify Applicant"
 									*ngIf="application.isVerifyIdentity"
 								>
-									<mat-icon>send</mat-icon>Verify Applicant
+									<mat-icon>done</mat-icon>Verify Applicant
 								</button>
 							</mat-cell>
 						</ng-container>

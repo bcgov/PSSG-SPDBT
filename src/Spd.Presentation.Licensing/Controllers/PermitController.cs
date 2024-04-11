@@ -67,15 +67,55 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));
         }
 
-        #endregion
+        /// <summary>
+        /// Upload permit application files to transient storage
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="licenceAppId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications/{licenceAppId}/files")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
-        #region anonymous 
+            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+        }
 
         /// <summary>
-        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+        /// Uploading file only save files in cache, the files are not connected to the application yet
         /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/permit-application")]
+        [Route("api/permit-applications/files")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadPermitAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+
+            CreateDocumentInCacheCommand command = new(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command, ct);
+            Guid fileKeyCode = Guid.NewGuid();
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            return fileKeyCode;
+        }
+
+    #endregion
+
+    #region anonymous 
+
+    /// <summary>
+    /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+    /// </summary>
+    /// <returns></returns>
+    [Route("api/permit-application")]
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
