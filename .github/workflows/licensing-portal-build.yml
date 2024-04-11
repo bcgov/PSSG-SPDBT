@@ -7,6 +7,7 @@ on:
       - 'release/**'
     paths:
       - src/**
+      - 'src/Spd.Presentation.Licensing/**'
       - '!src/Spd.Presentation.Dynamics/**'
       - '!src/Spd.Presentation.Screening/**'   
       - '!src/Spd.Manager.Screening/**'      
