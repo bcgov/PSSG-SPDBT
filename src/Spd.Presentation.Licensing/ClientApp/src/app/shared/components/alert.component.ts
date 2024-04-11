@@ -65,22 +65,14 @@ export class AlertComponent {
 	@Input() public icon: string | null = 'warning';
 	@Input() public showBorder: boolean | null = true;
 	@Input() public boldText: boolean | null = false;
-	@Input() public withMarginBottom: boolean | null = true;
 
 	@ContentChild('alertContent') alertContent!: ElementRef;
 
 	public getType(): string {
-		let classStyle = '';
 		if (this.showBorder) {
-			classStyle = `alert-${this.type} alert-${this.type}-border`;
-		} else {
-			classStyle = `alert-${this.type}`;
+			return `alert-${this.type} alert-${this.type}-border`;
 		}
-
-		if (!this.withMarginBottom) {
-			classStyle += ' mb-0';
-		}
-		return classStyle;
+		return `alert-${this.type}`;
 	}
 
 	public getText(): string {
