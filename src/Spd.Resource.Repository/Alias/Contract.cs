@@ -15,7 +15,6 @@ public record AliasResp
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public AliasSourceTypeOptionSet? SourceType { get; set; }
 }
 
 public record CreateAliasCommand
