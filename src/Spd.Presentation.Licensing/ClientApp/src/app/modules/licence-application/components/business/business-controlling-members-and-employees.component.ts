@@ -36,8 +36,11 @@ import { BusinessApplicationService } from '../../services/business-application.
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<mat-accordion multi="false">
-						<div class="summary-text-data mt-4">
-							If your <b>controlling members</b> change during the business licence term, update their information here.
+						<div class="mt-4">
+							<app-alert type="info" [showBorder]="false" icon="" [withMarginBottom]="false">
+								If your <b>controlling members</b> change during the business licence term, update their information
+								here.
+							</app-alert>
 						</div>
 						<mat-expansion-panel class="my-2 w-100">
 							<mat-expansion-panel-header>
@@ -49,11 +52,11 @@ import { BusinessApplicationService } from '../../services/business-application.
 							></app-common-business-controlling-members>
 						</mat-expansion-panel>
 
-						<mat-divider class="my-4"></mat-divider>
-
-						<div class="summary-text-data mt-2">
-							If your employees who are <b>licence holders</b> for the business change during the business licence term,
-							update their information here.
+						<div class="mt-5">
+							<app-alert type="info" [showBorder]="false" icon="" [withMarginBottom]="false">
+								If your employees who are <b>licence holders</b> for the business change during the business licence
+								term, update their information here.
+							</app-alert>
 						</div>
 						<mat-expansion-panel class="my-2 w-100">
 							<mat-expansion-panel-header>

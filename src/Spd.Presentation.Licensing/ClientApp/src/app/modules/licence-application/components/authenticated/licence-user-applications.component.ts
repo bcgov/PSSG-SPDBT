@@ -343,7 +343,7 @@ import {
 										class="large mt-2 mt-lg-0"
 										(click)="onNewSecurityWorkerLicence()"
 									>
-										<mat-icon>add</mat-icon>Apply for a new Security Worker Licence
+										<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
 									</button>
 								</div>
 							</div>
@@ -356,7 +356,7 @@ import {
 								</div>
 								<div class="col-xl-5 col-lg-6 text-end">
 									<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewBodyArmourPermit()">
-										<mat-icon>add</mat-icon>Apply for a new Body Amour Permit
+										<mat-icon>add</mat-icon>Apply for a New Body Amour Permit
 									</button>
 								</div>
 							</div>
@@ -374,7 +374,7 @@ import {
 										class="large mt-2 mt-lg-0"
 										(click)="onNewArmouredVehiclePermit()"
 									>
-										<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
+										<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 									</button>
 								</div>
 							</div>
@@ -474,20 +474,6 @@ import {
 				background-color: #f6f6f6 !important;
 			}
 
-			.draft-error-message {
-				color: #721c24;
-				background-color: #fceded;
-				border-radius: 0;
-				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-			}
-
-			.draft-warning-message {
-				color: #856404;
-				background-color: #fff9e5;
-				border-radius: 0;
-				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-			}
-
 			.error-color {
 				font-weight: 600;
 				color: var(--color-red-dark);
@@ -519,8 +505,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	activeBaPermitExist = false;
 
 	expiredLicences: Array<UserLicenceResponse> = [];
-
-	licenceApplicationRoutes = LicenceApplicationRoutes;
 
 	applicationsDataSource: MatTableDataSource<UserApplicationResponse> = new MatTableDataSource<UserApplicationResponse>(
 		[]
