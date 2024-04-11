@@ -17,6 +17,7 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
+        IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
@@ -42,6 +43,29 @@ internal class PermitAppManager :
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
     }
+
+    #region for portal
+    // Authenticated save
+    public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
+    {
+        //bool hasDuplicate = await HasDuplicates(cmd.LicenceUpsertRequest.ApplicantId,
+        //    Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
+        //    cmd.LicenceUpsertRequest.LicenceAppId,
+        //    cancellationToken);
+        //if (hasDuplicate)
+        //{
+        //    throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+        //}
+
+        //var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        if (cmd.PermitUpsertRequest.LicenceAppId == null)
+            cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
+        //await UpdateDocumentsAsync(cmd.PermitUpsertRequest, cancellationToken);
+
+        return null;
+    }
+
+    #endregion
 
     #region anonymous
 
