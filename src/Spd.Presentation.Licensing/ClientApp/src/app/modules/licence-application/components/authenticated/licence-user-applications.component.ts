@@ -788,7 +788,25 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				// TODO resume permit
+				this.permitApplicationService
+					.getPermitToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAuthenticated(
+									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+								),
+								{
+									state: {
+										applicationTypeCode: _resp.applicationTypeData.applicationTypeCode,
+									},
+								}
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
 			}
 		}
 	}

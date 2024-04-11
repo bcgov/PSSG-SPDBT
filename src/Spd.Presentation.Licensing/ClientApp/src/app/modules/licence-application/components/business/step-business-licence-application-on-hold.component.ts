@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
@@ -44,7 +43,6 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 			}
 		`,
 	],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class StepBusinessLicenceApplicationOnHoldComponent implements LicenceChildStepperStepComponent {
 	isFormValid(): boolean {
