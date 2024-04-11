@@ -24,9 +24,6 @@ internal class AliasRepository : IAliasRepository
     {
         contact? contact = await _context.GetContactById(cmd.ContactId, ct);
 
-        if (cmd.Alias.Id == Guid.Empty)
-            cmd.Alias.Id = null;
-
         CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias));
         await _context.SaveChangesAsync(ct);
 
