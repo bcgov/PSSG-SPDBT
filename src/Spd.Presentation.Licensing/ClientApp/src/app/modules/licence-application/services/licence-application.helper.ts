@@ -438,7 +438,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
-			applicationTypeCode: undefined,
+			applicationTypeCode,
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
