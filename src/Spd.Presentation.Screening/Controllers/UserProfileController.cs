@@ -8,6 +8,7 @@ using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -18,17 +19,18 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _currentUser;
-
+        private readonly ILogger<UserProfileController> _logger;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="currentUser"></param>
-        public UserProfileController(IMediator mediator, IPrincipal currentUser, IMapper mapper)
+        public UserProfileController(IMediator mediator, IPrincipal currentUser, IMapper mapper, ILogger<UserProfileController> logger)
         {
             _mediator = mediator;
             _mapper = mapper;
             _currentUser = (ClaimsPrincipal)currentUser;
+            _logger = logger;
         }
 
         /// <summary>
@@ -54,6 +56,8 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
+            _logger.LogDebug(JsonSerializer.Serialize(info));
+
             var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
             if (response == null)
             {
