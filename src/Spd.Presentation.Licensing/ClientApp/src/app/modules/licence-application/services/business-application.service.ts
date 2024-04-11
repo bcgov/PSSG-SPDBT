@@ -89,7 +89,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	createNewBusinessLicence(): Observable<any> {
 		return this.createEmptyLicenceAuthenticated({}, ApplicationTypeCode.New).pipe(
-			tap((resp: any) => {
+			tap((_resp: any) => {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
@@ -132,9 +132,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private applyLicenceProfileIntoModel(
-		profile: any, //ApplicantProfileResponse | WorkerLicenceAppResponse,
+		_profile: any, //ApplicantProfileResponse | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		userLicenceInformation?: any //UserLicenceResponse
+		_userLicenceInformation?: any //UserLicenceResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
