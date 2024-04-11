@@ -9,8 +9,6 @@ public interface IPermitAppManager
     public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
 }
 
-
-
 public record PermitLicenceAppBase : PersonalLicenceAppBase
 {
     public string? PermitOtherRequiredReason { get; set; }
