@@ -820,9 +820,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
 								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-								),
-								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+									LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_TERMS_AUTHENTICATED
+								)
 							);
 						}),
 						take(1)
@@ -838,7 +837,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
 								LicenceApplicationRoutes.pathPermitAuthenticated(
-									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+									LicenceApplicationRoutes.PERMIT_UPDATE_TERMS_AUTHENTICATED
 								),
 								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
 							);

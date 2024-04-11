@@ -60,6 +60,7 @@ import { StepPermitPhotographOfYourselfNewComponent } from './components/authent
 import { StepPermitPhotographOfYourselfRenewAndUpdateComponent } from './components/authenticated/permit-wizard-steps/step-permit-photograph-of-yourself-renew-and-update.component';
 import { StepPermitPhotographOfYourselfComponent } from './components/authenticated/permit-wizard-steps/step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './components/authenticated/permit-wizard-steps/step-permit-review-name-change.component';
+import { StepPermitUpdateTermsAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/step-permit-update-terms-authenticated.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-identification-authenticated.component';
 import { StepsPermitPurposeAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/steps-permit-purpose-authenticated.component';
@@ -76,17 +77,16 @@ import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './componen
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-summary-review-authenticated.component';
 import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-summary-review-update-authenticated.component';
+import { StepWorkerLicenceUpdateTermsAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-update-terms-authenticated.component';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-updates-authenticated.component';
-import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
 import { BusinessCategoryAmouredCarGuardComponent } from './components/business/business-category-amoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business/business-category-private-investigator.component';
 import { BusinessCategorySecurityGuardComponent } from './components/business/business-category-security-guard.component';
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
-import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
@@ -94,6 +94,8 @@ import { CommonBusinessBcBranchesComponent } from './components/business/common-
 import { CommonBusinessControllingMembersComponent } from './components/business/common-business-controlling-members.component';
 import { CommonBusinessEmployeesComponent } from './components/business/common-business-employees.component';
 import { CommonBusinessProfileComponent } from './components/business/common-business-profile.component';
+import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
+import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
 import { ModalMemberWithSwlAddComponent } from './components/business/modal-member-with-swl-add.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/business/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
@@ -330,6 +332,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitSummaryAuthenticatedComponent,
 		StepPermitSummaryAnonymousComponent,
 		StepPermitTermsOfUseComponent,
+		StepPermitUpdateTermsAuthenticatedComponent,
 		StepPermitTypeAnonymousComponent,
 		LicenceAccessCodeAuthorizedComponent,
 		StepWorkerLicenceAccessCodeComponent,
@@ -368,6 +371,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceTermComponent,
 		StepWorkerLicenceTermsOfUseComponent,
 		StepWorkerLicenceUpdateFeeComponent,
+		StepWorkerLicenceUpdateTermsAuthenticatedComponent,
 		StepWorkerLicenceUserProfileComponent,
 		StepsBusinessLicenceInformationNewComponent,
 		StepsBusinessLicenceSelectionNewComponent,

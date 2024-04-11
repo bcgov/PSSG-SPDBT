@@ -54,6 +54,7 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 						<mat-divider class="mat-divider-main mt-3"></mat-divider>
 						<section *ngIf="isVisibleBackgroundInfo">
 							<app-common-user-profile-licence-criminal-history
+								[form]="criminalHistoryFormGroup"
 								[applicationTypeCode]="applicationTypeCode"
 							></app-common-user-profile-licence-criminal-history>
 						</section>
@@ -123,6 +124,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	aliasesFormGroup = this.permitApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.permitApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.permitApplicationService.mailingAddressFormGroup;
+	criminalHistoryFormGroup = this.permitApplicationService.criminalHistoryFormGroup;
 
 	constructor(
 		private router: Router,
