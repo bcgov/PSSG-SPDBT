@@ -5,6 +5,7 @@ using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -32,6 +33,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<ApplicantLoginResponse?> ApplicantPortalLogin()
         {
             var info = _currentUser.GetBcscUserIdentityInfo();
+            _logger.LogDebug(JsonSerializer.Serialize(info));
             var response = await _mediator.Send(new ApplicantLoginCommand(info));
             return response;
         }
