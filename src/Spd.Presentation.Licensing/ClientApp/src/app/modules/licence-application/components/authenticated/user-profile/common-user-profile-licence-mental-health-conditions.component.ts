@@ -82,8 +82,7 @@ export class CommonUserProfileLicenceMentalHealthConditionsComponent
 	subTitle = '';
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
-
+	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;

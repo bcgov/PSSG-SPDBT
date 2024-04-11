@@ -126,9 +126,8 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit
 
 	matcher = new FormErrorStateMatcher();
 
+	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
