@@ -33,12 +33,13 @@ internal class AliasRepository : IAliasRepository
         return default;
     }
 
-    public async Task DeleteAliasAsync(List<Guid> aliasIds, CancellationToken ct)
+    public async Task DeleteAliasAsync(List<Guid?> aliasIds, CancellationToken ct)
     {
         foreach(var aliasId in aliasIds)
         {
             spd_alias? alias = _context.spd_aliases.Where(a =>
                 a.spd_aliasid == aliasId &&
+                a.statecode == DynamicsConstants.StateCode_Active &&
                 a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
             ).FirstOrDefault();
 
@@ -62,6 +63,7 @@ internal class AliasRepository : IAliasRepository
         {
             spd_alias? existingAlias = _context.spd_aliases.Where(a =>
                 a.spd_aliasid == alias.Id &&
+                a.statecode == DynamicsConstants.StateCode_Active &&
                 a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
             ).FirstOrDefault();
 
