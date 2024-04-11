@@ -92,7 +92,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
 
         CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
-        List<Guid> aliasToRemove = new List<Guid>() { cmd.Alias.Id };
+        List<Guid?> aliasToRemove = new List<Guid?>() { cmd.Alias.Id };
         await _aliasRepository.CreateAliasAsync(cmd, CancellationToken.None);
         await _aliasRepository.DeleteAliasAsync(aliasToRemove, CancellationToken.None);
 
