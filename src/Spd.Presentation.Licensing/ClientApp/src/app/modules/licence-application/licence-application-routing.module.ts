@@ -27,9 +27,12 @@ import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authe
 import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
+import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
-import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
+import { BusinessManagersComponent } from './components/business/business-managers.component';
+import { BusinessProfileComponent } from './components/business/business-profile.component';
+import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorAnonymousComponent } from './components/shared/licence-payment-error-anonymous.component';
@@ -77,6 +80,9 @@ export class LicenceApplicationRoutes {
 	public static BUSINESS_NEW = 'business-new';
 	public static BUSINESS_USER_APPLICATIONS = 'applications';
 	public static BUSINESS_RENEW = 'business-renew';
+	public static BUSINESS_PROFILE = 'business-profile';
+	public static BUSINESS_MANAGERS = 'business-managers';
+	public static BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
 
 	// ANONYMOUS
 	public static LICENCE_APPLICATION_ANONYMOUS = 'applications-anonymous';
@@ -231,7 +237,7 @@ const routes: Routes = [
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,
-						component: UserBusinessApplicationsComponent,
+						component: BusinessUserApplicationsComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_NEW,
@@ -242,8 +248,20 @@ const routes: Routes = [
 						component: BusinessLicenceWizardNewComponent,
 					},
 					{
+						path: LicenceApplicationRoutes.BUSINESS_PROFILE,
+						component: BusinessProfileComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_MANAGERS,
+						component: BusinessManagersComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES,
+						component: BusinessControllingMembersAndEmployeesComponent,
+					},
+					{
 						path: '',
-						component: UserBusinessApplicationsComponent,
+						component: BusinessUserApplicationsComponent,
 					},
 				],
 			},

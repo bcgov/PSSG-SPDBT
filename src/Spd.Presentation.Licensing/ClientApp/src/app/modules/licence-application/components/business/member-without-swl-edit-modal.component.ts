@@ -1,15 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { BusinessApplicationService } from '../../services/business-application.service';
-import { BranchResponse } from './step-business-licence-bc-branches.component';
-
-export interface UserDialogData {
-	// user: OrgUserResponse;
-	isAllowedPrimary: boolean;
-}
 
 @Component({
 	selector: 'app-member-without-swl-edit-modal',
@@ -59,7 +54,7 @@ export interface UserDialogData {
 						</mat-form-field>
 						<mat-checkbox formControlName="noEmailAddress"> Doesn’t have an email address </mat-checkbox>
 					</div>
-					<div class="col-xl-6 col-lg-6 col-md-12" *ngIf="noEmailAddress.value">
+					<div class="col-12" *ngIf="noEmailAddress.value" @showHideTriggerSlideAnimation>
 						<app-alert type="danger" icon="error">
 							Download the Consent to Criminal Record Check form and provide it to the member to fill out.
 						</app-alert>
@@ -79,6 +74,7 @@ export interface UserDialogData {
 		</mat-dialog-actions>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class MemberWithoutSwlEditModalComponent implements OnInit {
 	title = '';
@@ -92,14 +88,16 @@ export class MemberWithoutSwlEditModalComponent implements OnInit {
 	constructor(
 		private dialogRef: MatDialogRef<MemberWithoutSwlEditModalComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: BranchResponse
+		@Inject(MAT_DIALOG_DATA) public dialogData: any
 	) {}
 
 	ngOnInit(): void {
 		this.form.reset();
 		this.form.patchValue(this.dialogData);
 		this.isEdit = !!this.dialogData.id;
-		this.title = this.dialogData.id ? 'Edit Member' : 'Add Member';
+		this.title = this.dialogData.id
+			? 'Edit Member without Security Worker Licence'
+			: 'Add Member without Security Worker Licence';
 	}
 
 	onSave(): void {
