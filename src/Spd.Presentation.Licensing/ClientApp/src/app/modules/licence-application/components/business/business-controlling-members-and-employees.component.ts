@@ -44,11 +44,9 @@ import { BusinessApplicationService } from '../../services/business-application.
 								<mat-panel-title class="title"> Controlling Members </mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body">
-								<app-common-business-controlling-members
-									[form]="membersWithSwlFormGroup"
-								></app-common-business-controlling-members>
-							</div>
+							<app-common-business-controlling-members
+								[form]="membersWithSwlFormGroup"
+							></app-common-business-controlling-members>
 						</mat-expansion-panel>
 
 						<mat-divider class="my-4"></mat-divider>
@@ -62,23 +60,18 @@ import { BusinessApplicationService } from '../../services/business-application.
 								<mat-panel-title class="title"> Licence Holders </mat-panel-title>
 							</mat-expansion-panel-header>
 
-							<div class="panel-body">Licence Holders</div>
+							<app-common-business-employees [form]="employeeWithSwlFormGroup"></app-common-business-employees>
 						</mat-expansion-panel>
 					</mat-accordion>
 				</div>
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.panel-body {
-				margin-top: 1rem !important;
-			}
-		`,
-	],
+	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
 	membersWithSwlFormGroup = this.businessApplicationService.membersWithSwlFormGroup;
+	employeeWithSwlFormGroup = this.businessApplicationService.employeeWithSwlFormGroup;
 
 	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {}
 

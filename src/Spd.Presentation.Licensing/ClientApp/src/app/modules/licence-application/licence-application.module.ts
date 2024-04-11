@@ -79,22 +79,23 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './co
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-identification-authenticated.component';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/steps-worker-licence-updates-authenticated.component';
-import { BcBranchEditModalComponent } from './components/business/bc-branch-edit-modal.component';
+import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
 import { BusinessCategoryAmouredCarGuardComponent } from './components/business/business-category-amoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business/business-category-private-investigator.component';
 import { BusinessCategorySecurityGuardComponent } from './components/business/business-category-security-guard.component';
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
-import { BusinessManagerEditModalComponent } from './components/business/business-manager-edit-modal.component';
+import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { CommonBusinessBcBranchesComponent } from './components/business/common-business-bc-branches.component';
 import { CommonBusinessControllingMembersComponent } from './components/business/common-business-controlling-members.component';
+import { CommonBusinessEmployeesComponent } from './components/business/common-business-employees.component';
 import { CommonBusinessProfileComponent } from './components/business/common-business-profile.component';
-import { MemberWithSwlAddModalComponent } from './components/business/member-with-swl-add-modal.component';
-import { MemberWithoutSwlEditModalComponent } from './components/business/member-without-swl-edit-modal.component';
+import { ModalMemberWithSwlAddComponent } from './components/business/modal-member-with-swl-add.component';
+import { ModalMemberWithoutSwlEditComponent } from './components/business/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceBcBranchesComponent } from './components/business/step-business-licence-bc-branches.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
@@ -209,8 +210,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 @NgModule({
 	declarations: [
 		StepPermitUserProfileComponent,
-		BcBranchEditModalComponent,
-		BusinessManagerEditModalComponent,
+		ModalBcBranchEditComponent,
+		ModalBusinessManagerEditComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
 		CommonAccessCodeAnonymousComponent,
@@ -220,6 +221,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonBcDriverLicenceComponent,
 		CommonBusinessBcBranchesComponent,
 		CommonBusinessControllingMembersComponent,
+		CommonBusinessEmployeesComponent,
 		CommonBusinessProfileComponent,
 		CommonBusinessTermsComponent,
 		CommonContactInformationComponent,
@@ -267,8 +269,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessAnonymousComponent,
 		LoginSelectionComponent,
-		MemberWithoutSwlEditModalComponent,
-		MemberWithSwlAddModalComponent,
+		ModalMemberWithoutSwlEditComponent,
+		ModalMemberWithSwlAddComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
