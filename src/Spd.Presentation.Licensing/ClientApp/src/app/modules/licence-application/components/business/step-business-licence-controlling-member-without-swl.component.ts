@@ -10,7 +10,6 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { HotToastService } from '@ngneat/hot-toast';
 import { MemberWithoutSwlEditModalComponent } from './member-without-swl-edit-modal.component';
-import { BranchResponse } from './step-business-licence-bc-branches.component';
 
 @Component({
 	selector: 'app-step-business-licence-controlling-member-without-swl',
@@ -275,7 +274,7 @@ export class StepBusinessLicenceControllingMemberWithoutSwlComponent
 		this.memberDialog({}, true);
 	}
 
-	private memberDialog(dialogOptions: BranchResponse, isCreate: boolean): void {
+	private memberDialog(dialogOptions: any, isCreate: boolean): void {
 		this.dialog
 			.open(MemberWithoutSwlEditModalComponent, {
 				width: '800px',
