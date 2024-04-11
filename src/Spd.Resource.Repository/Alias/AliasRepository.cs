@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
@@ -20,14 +19,12 @@ internal class AliasRepository : IAliasRepository
         _logger = logger;
     }
 
-    public async Task<Unit> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken ct)
+    public async Task CreateAliasAsync(CreateAliasCommand cmd, CancellationToken ct)
     {
         contact? contact = await _context.GetContactById(cmd.ContactId, ct);
 
         CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias));
         await _context.SaveChangesAsync(ct);
-
-        return default;
     }
 
     public async Task DeleteAliasAsync(List<Guid?> aliasIds, CancellationToken ct)
