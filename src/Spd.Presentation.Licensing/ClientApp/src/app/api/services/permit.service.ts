@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { GoogleRecaptcha } from '../models/google-recaptcha';
 import { IActionResult } from '../models/i-action-result';
+import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
 import { PermitAppSubmitRequest } from '../models/permit-app-submit-request';
@@ -148,6 +149,76 @@ export class PermitService extends BaseService {
 
     return this.apiPermitApplicationsLicenceAppIdGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<PermitLicenceAppResponse>) => r.body as PermitLicenceAppResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiPermitApplicationsLicenceAppIdFilesPost
+   */
+  static readonly ApiPermitApplicationsLicenceAppIdFilesPostPath = '/api/permit-applications/{licenceAppId}/files';
+
+  /**
+   * Upload permit application files to transient storage.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiPermitApplicationsLicenceAppIdFilesPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiPermitApplicationsLicenceAppIdFilesPost$Response(params: {
+    licenceAppId: string;
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsLicenceAppIdFilesPostPath, 'post');
+    if (params) {
+      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+      rb.body(params.body, 'multipart/form-data');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<LicenceAppDocumentResponse>>;
+      })
+    );
+  }
+
+  /**
+   * Upload permit application files to transient storage.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiPermitApplicationsLicenceAppIdFilesPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiPermitApplicationsLicenceAppIdFilesPost(params: {
+    licenceAppId: string;
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<Array<LicenceAppDocumentResponse>> {
+
+    return this.apiPermitApplicationsLicenceAppIdFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>) => r.body as Array<LicenceAppDocumentResponse>)
     );
   }
 

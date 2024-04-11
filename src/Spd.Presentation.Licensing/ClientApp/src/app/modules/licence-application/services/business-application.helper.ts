@@ -249,6 +249,10 @@ export abstract class BusinessApplicationHelper {
 		managerEmail: new FormControl(''),
 	});
 
+	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
+	});
+
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
 			givenName: new FormControl('', [FormControlValidators.required]),
