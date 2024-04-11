@@ -176,11 +176,7 @@ namespace Spd.Manager.Licence
                 }
             }
 
-            await ProcessAliases(
-                contact.Aliases.Where(a => a.SourceType == Utilities.Dynamics.AliasSourceTypeOptionSet.UserEntered).ToList(), 
-                updateContactCmd.Aliases.ToList(), 
-                ct);
-
+            await ProcessAliases(contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
             return default;
         }
 
@@ -230,8 +226,8 @@ namespace Spd.Manager.Licence
             CancellationToken ct)
         {
             // Remove aliases defined in the entity that are not part of the request
-            var modifiedAliases = aliasesToProcess.Where(a => a.Id != Guid.Empty);
-            List<Guid> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
+            var modifiedAliases = aliasesToProcess.Where(a => a.Id != Guid.Empty && a.Id != null);
+            List<Guid?> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
 
             await _aliasRepository.DeleteAliasAsync(aliasesToRemove, ct);
 
