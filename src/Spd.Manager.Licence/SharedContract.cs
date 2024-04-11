@@ -1,6 +1,4 @@
-﻿using Spd.Utilities.Dynamics;
-
-namespace Spd.Manager.Licence;
+﻿namespace Spd.Manager.Licence;
 
 public class UploadFileRequest
 {
