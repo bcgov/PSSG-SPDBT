@@ -64,8 +64,7 @@ export class CommonUserProfileLicenceCriminalHistoryComponent implements OnInit,
 
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
-
+	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}

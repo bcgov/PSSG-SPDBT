@@ -59,5 +59,9 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
             .MaximumLength(1000)
             .When(r => r.HasNewCriminalRecordCharge == true && r.LicenceId != null &&
             (r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update));
+        RuleFor(r => r.Aliases)
+            .Must(r => r.Count() <= Constants.MaximumNumberOfUserEnteredAliases)
+            .When(r => r.Aliases != null)
+            .WithMessage("No more than 10 user entered aliases are allowed");
     }
 }
