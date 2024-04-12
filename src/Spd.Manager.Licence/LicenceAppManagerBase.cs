@@ -2,6 +2,7 @@
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
@@ -153,5 +154,54 @@ internal abstract class LicenceAppManagerBase
                     cancellationToken);
             }
         }
+    }
+
+    protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
+    {
+        LicenceAppQuery q = new(
+            applicantId,
+            new List<WorkerLicenceTypeEnum>
+            {
+                workerLicenceType
+            },
+            new List<ApplicationPortalStatusEnum>
+            {
+                ApplicationPortalStatusEnum.Draft,
+                ApplicationPortalStatusEnum.AwaitingThirdParty,
+                ApplicationPortalStatusEnum.AwaitingPayment,
+                ApplicationPortalStatusEnum.Incomplete,
+                ApplicationPortalStatusEnum.InProgress,
+                ApplicationPortalStatusEnum.AwaitingApplicant,
+                ApplicationPortalStatusEnum.UnderAssessment,
+                ApplicationPortalStatusEnum.VerifyIdentity,
+            }
+        );
+        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        if (response.Any())
+        {
+            if (existingLicAppId != null)
+            {
+                if (response.Any(l => l.LicenceAppId != existingLicAppId))
+                    return true;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        var licResponse = await _licenceRepository.QueryAsync(
+            new LicenceQry
+            {
+                ContactId = applicantId,
+                Type = workerLicenceType,
+                IsExpired = false
+            }, ct);
+
+        if (licResponse.Items.Any())
+        {
+            return true;
+        }
+        return false;
     }
 }
