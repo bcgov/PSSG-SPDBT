@@ -32,6 +32,7 @@ public record PermitAppUpsertRequest : PermitLicenceAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? LicenceAppId { get; set; }
+    public Guid ApplicantId { get; set; }
 };
 
 public record PermitCommandResponse : LicenceAppUpsertResponse
