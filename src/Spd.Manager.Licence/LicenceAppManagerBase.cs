@@ -95,13 +95,13 @@ internal abstract class LicenceAppManagerBase
     }
 
     //for auth, update doc expired date and remove old files
-    protected async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
+    protected async Task UpdateDocumentsAsync(Guid licenceAppId, List<Document>? documentInfos, CancellationToken ct)
     {
         //for all files under this application, if it is not in request.DocumentInfos, deactivate it.
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(licenceAppId), ct);
         foreach (DocumentResp existingDoc in existingDocs.Items)
         {
-            var doc = request.DocumentInfos?.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
+            var doc = documentInfos?.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
             if (doc == null)
             {
                 //remove existingDoc and delete it from s3 bucket.
