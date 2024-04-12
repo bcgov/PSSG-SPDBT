@@ -107,15 +107,15 @@ namespace Spd.Presentation.Licensing.Controllers
             return fileKeyCode;
         }
 
-    #endregion
+        #endregion
 
-    #region anonymous 
+        #region anonymous 
 
-    /// <summary>
-    /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-    /// </summary>
-    /// <returns></returns>
-    [Route("api/permit-application")]
+        /// <summary>
+        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/permit-application")]
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
