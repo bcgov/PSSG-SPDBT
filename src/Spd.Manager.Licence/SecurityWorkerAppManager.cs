@@ -73,7 +73,7 @@ internal class SecurityWorkerAppManager :
             cmd.LicenceUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
             (Guid)cmd.LicenceUpsertRequest.LicenceAppId,
-            (List<Document>?)cmd.LicenceUpsertRequest.DocumentExpiredInfos, 
+            (List<Document>?)cmd.LicenceUpsertRequest.DocumentInfos, 
             cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
