@@ -6,7 +6,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { BusinessManagerEditModalComponent } from './business-manager-edit-modal.component';
+import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
 @Component({
 	selector: 'app-business-managers',
@@ -336,7 +336,7 @@ export class BusinessManagersComponent implements OnInit {
 
 	private managerDialog(dialogOptions: any, isCreate: boolean): void {
 		this.dialog
-			.open(BusinessManagerEditModalComponent, {
+			.open(ModalBusinessManagerEditComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

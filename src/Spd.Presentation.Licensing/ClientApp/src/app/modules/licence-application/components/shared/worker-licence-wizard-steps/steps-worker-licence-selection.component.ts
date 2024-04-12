@@ -4,6 +4,7 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCategoryComponent } from './step-worker-licence-category.component';
@@ -330,6 +331,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	constructor(
 		private router: Router,
 		private authenticationService: AuthenticationService,
+		private commonApplicationService: CommonApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super();
@@ -392,7 +394,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	}
 
 	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()]);
+		this.commonApplicationService.onGoToHome();
 	}
 
 	onExpiredLicenceNextStep(): void {

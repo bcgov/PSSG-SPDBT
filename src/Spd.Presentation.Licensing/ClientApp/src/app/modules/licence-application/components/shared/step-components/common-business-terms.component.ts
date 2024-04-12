@@ -333,7 +333,7 @@ import { UtilService } from '@app/core/services/util.service';
 	styles: [
 		`
 			.conditions {
-				max-height: 300px;
+				max-height: 400px;
 				overflow-y: auto;
 			}
 		`,
