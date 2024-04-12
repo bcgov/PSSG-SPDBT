@@ -50,8 +50,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<PermitCommandResponse> SavePermitLicenceApplication([FromBody][Required] PermitAppUpsertRequest licenceCreateRequest)
         {
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest, info.Sub));
+            if (licenceCreateRequest.ApplicantId == Guid.Empty)
+                throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+            return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest));
         }
 
         /// <summary>
