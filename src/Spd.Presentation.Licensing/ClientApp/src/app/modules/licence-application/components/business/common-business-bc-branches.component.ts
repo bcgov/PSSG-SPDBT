@@ -7,7 +7,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BcBranchEditModalComponent } from './bc-branch-edit-modal.component';
+import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
 
 export interface BranchResponse {
 	id?: null | number;
@@ -197,7 +197,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 
 	private branchDialog(dialogOptions: BranchResponse, isCreate: boolean): void {
 		this.dialog
-			.open(BcBranchEditModalComponent, {
+			.open(ModalBcBranchEditComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

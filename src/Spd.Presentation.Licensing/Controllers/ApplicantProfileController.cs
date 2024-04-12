@@ -126,7 +126,4 @@ namespace Spd.Presentation.Licensing.Controllers
             return Ok();
         }
     }
-
-
-
 }
