@@ -64,7 +64,7 @@ internal class PermitAppManager :
             cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
             (Guid)cmd.PermitUpsertRequest.LicenceAppId,
-            (List<Document>?)cmd.PermitUpsertRequest.DocumentExpiredInfos,
+            (List<Document>?)cmd.PermitUpsertRequest.DocumentInfos,
             cancellationToken);
         return _mapper.Map<PermitCommandResponse>(response);
     }
