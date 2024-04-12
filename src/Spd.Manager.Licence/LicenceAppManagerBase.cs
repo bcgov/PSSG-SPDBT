@@ -15,6 +15,7 @@ internal abstract class LicenceAppManagerBase
     protected readonly IMapper _mapper;
     protected readonly IDocumentRepository _documentRepository;
     protected readonly ILicenceFeeRepository _feeRepository;
+    protected readonly ILicenceRepository _licenceRepository;
     protected readonly ILicenceApplicationRepository _licenceAppRepository;
     protected readonly IMainFileStorageService _mainFileService;
     protected readonly ITransientFileStorageService _transientFileService;
@@ -22,6 +23,7 @@ internal abstract class LicenceAppManagerBase
     public LicenceAppManagerBase(IMapper mapper,
         IDocumentRepository documentRepository,
         ILicenceFeeRepository feeRepository,
+        ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService)
@@ -29,6 +31,7 @@ internal abstract class LicenceAppManagerBase
         _mapper = mapper;
         _documentRepository = documentRepository;
         _feeRepository = feeRepository;
+        _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
         _mainFileService = mainFileService;
         _transientFileService = transientFileService;
