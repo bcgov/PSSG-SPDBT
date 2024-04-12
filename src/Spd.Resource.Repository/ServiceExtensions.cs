@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Config;
@@ -50,6 +51,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IIdentityRepository, IdentityRepository>();
             configurationServices.Services.AddTransient<IConfigRepository, ConfigRepository>();
             configurationServices.Services.AddTransient<IServiceTypeRepository, ServiceTypeRepository>();
+            configurationServices.Services.AddTransient<IAliasRepository, AliasRepository>();
         }
     }
 }

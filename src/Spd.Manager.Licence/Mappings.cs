@@ -150,9 +150,6 @@ internal class Mappings : Profile
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType1Enum(s.LicenceDocumentTypeCode)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2Enum(s.LicenceDocumentTypeCode)));
 
-        CreateMap<Alias, Spd.Resource.Repository.Alias>()
-            .ReverseMap();
-
         CreateMap<LicenceAppListResp, LicenceAppListResponse>()
             .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode));
 
