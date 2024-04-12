@@ -37,7 +37,7 @@ internal class PermitAppManager :
         ITaskRepository taskRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService)
-        : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
+        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
         _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;

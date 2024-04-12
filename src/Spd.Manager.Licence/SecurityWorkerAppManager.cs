@@ -44,6 +44,7 @@ internal class SecurityWorkerAppManager :
             mapper,
             documentUrlRepository,
             feeRepository,
+            licenceRepository,
             licenceAppRepository,
             mainFileStorageService,
             transientFileStorageService)
