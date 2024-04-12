@@ -46,6 +46,8 @@ public class PermitControllerTest
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
+        mockMediator.Setup(m => m.Send(It.IsAny<PermitUpsertCommand>(), CancellationToken.None))
+            .ReturnsAsync(new PermitCommandResponse());
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [
@@ -81,6 +83,17 @@ public class PermitControllerTest
         var result = await sut.UploadLicenceAppFiles(licenceAppDocumentUploadRequest, Guid.NewGuid(), CancellationToken.None);
 
         Assert.IsType<List<LicenceAppDocumentResponse>>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SavePermitLicenceApplication_Return_PermitCommandResponse()
+    {
+        PermitAppUpsertRequest licenceCreateRequest = new();
+
+        var result = await sut.SavePermitLicenceApplication(licenceCreateRequest);
+
+        Assert.IsType<PermitCommandResponse>(result);
         mockMediator.Verify();
     }
 }
