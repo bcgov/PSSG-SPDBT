@@ -101,7 +101,8 @@ internal class ContactRepository : IContactRepository
         contact newContact = _mapper.Map<contact>(c);
         ContactResp resp = new();
         contact? existingContact = await _context.GetContactById(c.Id, ct);
-        existingContact = await _context.UpdateContact(existingContact, newContact, null, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+        List<spd_alias> newAliasesToAdd = (List<spd_alias>)_mapper.Map<IEnumerable<spd_alias>>(c.Aliases.Where(a => a.Id == null || a.Id == Guid.Empty)); // Only aliases with Id null or empty are considered as new
+        existingContact = await _context.UpdateContact(existingContact, newContact, null, newAliasesToAdd, ct);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
