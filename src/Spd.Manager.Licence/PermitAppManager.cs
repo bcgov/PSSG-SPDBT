@@ -48,14 +48,15 @@ internal class PermitAppManager :
     // Authenticated save
     public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
     {
-        //bool hasDuplicate = await HasDuplicates(cmd.LicenceUpsertRequest.ApplicantId,
-        //    Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
-        //    cmd.LicenceUpsertRequest.LicenceAppId,
-        //    cancellationToken);
-        //if (hasDuplicate)
-        //{
-        //    throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
-        //}
+        bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
+            Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            cmd.PermitUpsertRequest.LicenceAppId,
+            cancellationToken);
+
+        if (hasDuplicate)
+        {
+            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+        }
 
         //var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
         if (cmd.PermitUpsertRequest.LicenceAppId == null)
