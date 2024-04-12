@@ -58,12 +58,15 @@ internal class PermitAppManager :
             throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
         }
 
-        //var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
         if (cmd.PermitUpsertRequest.LicenceAppId == null)
             cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
-        //await UpdateDocumentsAsync(cmd.PermitUpsertRequest, cancellationToken);
-
-        return null;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.PermitUpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.PermitUpsertRequest.DocumentExpiredInfos,
+            cancellationToken);
+        return _mapper.Map<PermitCommandResponse>(response);
     }
 
     #endregion
