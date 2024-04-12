@@ -8,6 +8,7 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -89,11 +90,19 @@ public class PermitControllerTest
     [Fact]
     public async void Post_SavePermitLicenceApplication_Return_PermitCommandResponse()
     {
-        PermitAppUpsertRequest licenceCreateRequest = new();
+        PermitAppUpsertRequest request = new() { ApplicantId = Guid.NewGuid() };
 
-        var result = await sut.SavePermitLicenceApplication(licenceCreateRequest);
+        var result = await sut.SavePermitLicenceApplication(request);
 
         Assert.IsType<PermitCommandResponse>(result);
         mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SavePermitLicenceApplication_With_Empty_ApplicantId_Throw_Exception()
+    {
+        PermitAppUpsertRequest request = new();
+
+        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SavePermitLicenceApplication(request));
     }
 }
