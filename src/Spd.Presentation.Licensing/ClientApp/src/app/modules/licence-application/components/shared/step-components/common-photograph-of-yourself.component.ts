@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 
 @Component({
@@ -42,7 +41,6 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 		</form>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');

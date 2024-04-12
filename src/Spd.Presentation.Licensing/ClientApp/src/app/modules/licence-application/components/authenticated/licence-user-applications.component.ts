@@ -227,6 +227,7 @@ import {
 														*ngIf="appl.isRenewalPeriod"
 														class="large my-2"
 														(click)="onRenew(appl)"
+														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>restore</mat-icon>Renew
 													</button>
@@ -236,6 +237,7 @@ import {
 														*ngIf="appl.isUpdatePeriod"
 														class="large my-2"
 														(click)="onUpdate(appl)"
+														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>update</mat-icon>Update
 													</button>
@@ -257,6 +259,7 @@ import {
 														*ngIf="appl.isRenewalPeriod"
 														class="large my-2"
 														(click)="onRenew(appl)"
+														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>restore</mat-icon>Renew
 													</button>
@@ -266,6 +269,7 @@ import {
 														*ngIf="appl.isUpdatePeriod"
 														class="large my-2"
 														(click)="onUpdate(appl)"
+														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>update</mat-icon>Update
 													</button>
@@ -287,6 +291,7 @@ import {
 														tabindex="0"
 														(click)="onRequestReplacement(appl)"
 														(keydown)="onKeydownRequestReplacement($event, appl)"
+														[class.disable]="applicationIsInProgress"
 														>Request a replacement</a
 													>
 													and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
@@ -312,6 +317,7 @@ import {
 														tabindex="0"
 														(click)="onRequestReplacement(appl)"
 														(keydown)="onKeydownRequestReplacement($event, appl)"
+														[class.disable]="applicationIsInProgress"
 														>Request a replacement</a
 													>
 													and we'll send you one in {{ lostLicenceDaysText }} business days.
@@ -342,8 +348,9 @@ import {
 										color="primary"
 										class="large mt-2 mt-lg-0"
 										(click)="onNewSecurityWorkerLicence()"
+										[disabled]="applicationIsInProgress"
 									>
-										<mat-icon>add</mat-icon>Apply for a new Security Worker Licence
+										<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
 									</button>
 								</div>
 							</div>
@@ -355,8 +362,14 @@ import {
 									<div class="text-data">You don't have an active Body Armour permit</div>
 								</div>
 								<div class="col-xl-5 col-lg-6 text-end">
-									<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewBodyArmourPermit()">
-										<mat-icon>add</mat-icon>Apply for a new Body Amour Permit
+									<button
+										mat-flat-button
+										color="primary"
+										class="large mt-2 mt-lg-0"
+										(click)="onNewBodyArmourPermit()"
+										[disabled]="applicationIsInProgress"
+									>
+										<mat-icon>add</mat-icon>Apply for a New Body Amour Permit
 									</button>
 								</div>
 							</div>
@@ -373,8 +386,9 @@ import {
 										color="primary"
 										class="large mt-2 mt-lg-0"
 										(click)="onNewArmouredVehiclePermit()"
+										[disabled]="applicationIsInProgress"
 									>
-										<mat-icon>add</mat-icon>Apply for a new Armoured Vehicle Permit
+										<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 									</button>
 								</div>
 							</div>
@@ -474,20 +488,6 @@ import {
 				background-color: #f6f6f6 !important;
 			}
 
-			.draft-error-message {
-				color: #721c24;
-				background-color: #fceded;
-				border-radius: 0;
-				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-			}
-
-			.draft-warning-message {
-				color: #856404;
-				background-color: #fff9e5;
-				border-radius: 0;
-				border-bottom: 1px solid var(--mat-table-row-item-outline-color, rgba(0, 0, 0, 0.12));
-			}
-
 			.error-color {
 				font-weight: 600;
 				color: var(--color-red-dark);
@@ -519,8 +519,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	activeBaPermitExist = false;
 
 	expiredLicences: Array<UserLicenceResponse> = [];
-
-	licenceApplicationRoutes = LicenceApplicationRoutes;
 
 	applicationsDataSource: MatTableDataSource<UserApplicationResponse> = new MatTableDataSource<UserApplicationResponse>(
 		[]
@@ -762,6 +760,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onKeydownRequestReplacement(event: KeyboardEvent, appl: UserLicenceResponse) {
+		if (this.applicationIsInProgress) return;
+
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onRequestReplacement(appl);
@@ -788,7 +788,25 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			}
 			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
 			case WorkerLicenceTypeCode.BodyArmourPermit: {
-				// TODO resume permit
+				this.permitApplicationService
+					.getPermitToResume(appl.licenceAppId!)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathPermitAuthenticated(
+									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+								),
+								{
+									state: {
+										applicationTypeCode: _resp.applicationTypeData.applicationTypeCode,
+									},
+								}
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
 			}
 		}
 	}
@@ -802,9 +820,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
 								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-								),
-								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+									LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_TERMS_AUTHENTICATED
+								)
 							);
 						}),
 						take(1)
@@ -820,7 +837,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
 								LicenceApplicationRoutes.pathPermitAuthenticated(
-									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
+									LicenceApplicationRoutes.PERMIT_UPDATE_TERMS_AUTHENTICATED
 								),
 								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
 							);

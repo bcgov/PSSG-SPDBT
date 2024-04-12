@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -140,7 +141,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
         _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
-        appResp.Aliases = _mapper.Map<Alias[]>(aliases);
+        appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
         return appResp;
     }
 

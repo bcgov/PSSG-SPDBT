@@ -22,14 +22,19 @@ import { LoginUserProfileComponent } from './components/authenticated/login-user
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
+import { StepPermitUpdateTermsAuthenticatedComponent } from './components/authenticated/permit-wizard-steps/step-permit-update-terms-authenticated.component';
 import { StepPermitUserProfileComponent } from './components/authenticated/permit-wizard-steps/step-permit-user-profile.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
 import { WorkerLicenceWizardAuthenticatedRenewalComponent } from './components/authenticated/worker-licence-wizard-authenticated-renewal.component';
 import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './components/authenticated/worker-licence-wizard-authenticated-replacement.component';
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
+import { StepWorkerLicenceUpdateTermsAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-update-terms-authenticated.component';
+import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
-import { UserBusinessApplicationsComponent } from './components/business/user-business-applications.component';
+import { BusinessManagersComponent } from './components/business/business-managers.component';
+import { BusinessProfileComponent } from './components/business/business-profile.component';
+import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorAnonymousComponent } from './components/shared/licence-payment-error-anonymous.component';
@@ -57,11 +62,11 @@ export class LicenceApplicationRoutes {
 	public static LICENCE_LINK = 'licence-link';
 	public static LICENCE_LOGIN_USER_PROFILE = 'user-profile';
 
+	public static WORKER_LICENCE_UPDATE_TERMS_AUTHENTICATED = 'licence-update-terms';
 	public static WORKER_LICENCE_USER_PROFILE_AUTHENTICATED = 'licence-user-profile';
 
+	public static PERMIT_UPDATE_TERMS_AUTHENTICATED = 'permit-update-terms';
 	public static PERMIT_USER_PROFILE_AUTHENTICATED = 'permit-user-profile';
-	public static PERMIT_SELECTION_AUTHENTICATED = 'permit-selection';
-	public static PERMIT_APPLICATION_TYPE_AUTHENTICATED = 'permit-application-type';
 
 	public static PERMIT_NEW_AUTHENTICATED = 'permit-new';
 	public static PERMIT_RENEWAL_AUTHENTICATED = 'permit-renew';
@@ -77,6 +82,9 @@ export class LicenceApplicationRoutes {
 	public static BUSINESS_NEW = 'business-new';
 	public static BUSINESS_USER_APPLICATIONS = 'applications';
 	public static BUSINESS_RENEW = 'business-renew';
+	public static BUSINESS_PROFILE = 'business-profile';
+	public static BUSINESS_MANAGERS = 'business-managers';
+	public static BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
 
 	// ANONYMOUS
 	public static LICENCE_APPLICATION_ANONYMOUS = 'applications-anonymous';
@@ -231,7 +239,7 @@ const routes: Routes = [
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,
-						component: UserBusinessApplicationsComponent,
+						component: BusinessUserApplicationsComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_NEW,
@@ -242,8 +250,20 @@ const routes: Routes = [
 						component: BusinessLicenceWizardNewComponent,
 					},
 					{
+						path: LicenceApplicationRoutes.BUSINESS_PROFILE,
+						component: BusinessProfileComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_MANAGERS,
+						component: BusinessManagersComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES,
+						component: BusinessControllingMembersAndEmployeesComponent,
+					},
+					{
 						path: '',
-						component: UserBusinessApplicationsComponent,
+						component: BusinessUserApplicationsComponent,
 					},
 				],
 			},
@@ -278,6 +298,10 @@ const routes: Routes = [
 					// SECURITY WORKER LICENCE AUTHENTICATED
 					/**************************************************** */
 					{
+						path: LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_TERMS_AUTHENTICATED,
+						component: StepWorkerLicenceUpdateTermsAuthenticatedComponent,
+					},
+					{
 						path: LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED,
 						component: StepWorkerLicenceUserProfileComponent,
 					},
@@ -300,6 +324,10 @@ const routes: Routes = [
 					/**************************************************** */
 					// PERMIT AUTHENTICATED
 					/**************************************************** */
+					{
+						path: LicenceApplicationRoutes.PERMIT_UPDATE_TERMS_AUTHENTICATED,
+						component: StepPermitUpdateTermsAuthenticatedComponent,
+					},
 					{
 						path: LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED,
 						component: StepPermitUserProfileComponent,

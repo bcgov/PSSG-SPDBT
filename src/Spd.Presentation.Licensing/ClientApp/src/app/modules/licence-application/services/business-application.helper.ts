@@ -243,10 +243,18 @@ export abstract class BusinessApplicationHelper {
 			FormControlValidators.requiredValue('British Columbia'),
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
-		managerName: new FormControl(''),
+		managerName: new FormControl('', [Validators.requiredTrue]),
 		managerSwlNumber: new FormControl(''),
-		managerPhoneNumber: new FormControl(''),
-		managerEmail: new FormControl(''),
+		managerPhoneNumber: new FormControl('', [FormControlValidators.required]),
+		managerEmail: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+	});
+
+	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
+	});
+
+	employeeWithSwlFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
 
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
@@ -255,7 +263,7 @@ export abstract class BusinessApplicationHelper {
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
-			emailAddress: new FormControl(''),
+			emailAddress: new FormControl('', [FormControlValidators.email]),
 			noEmailAddress: new FormControl(''),
 		},
 		{
@@ -272,6 +280,15 @@ export abstract class BusinessApplicationHelper {
 		hasEmployees: new FormControl(''),
 		licenceNumberLookup: new FormControl(''),
 		employees: this.formBuilder.array([]),
+	});
+
+	managerFormGroup: FormGroup = this.formBuilder.group({
+		givenName: new FormControl('', [FormControlValidators.required]),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		phoneNumber: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({

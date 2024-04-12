@@ -42,12 +42,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import {
-	ApplicantProfileService,
-	LicenceService,
-	PermitService,
-	SecurityWorkerLicensingService,
-} from 'src/app/api/services';
+import { ApplicantProfileService, LicenceService, PermitService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -118,7 +113,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private router: Router,
-		private tempSecurityWorkerLicensingService: SecurityWorkerLicensingService, // TODO remove later
 		private permitService: PermitService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
@@ -192,8 +186,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		// TODO Permit service is reference swl service - fix
-		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
+		return this.permitService.apiPermitApplicationsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -316,7 +309,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		return false; // TODO fix when permit auto save is ready
+		return false;
 		// if (
 		// 	!this.authenticationService.isLoggedIn() ||
 		// 	this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
@@ -332,9 +325,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyBaseAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
-		// TODO Permit service is reference swl service - fix
-		return this.tempSecurityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
+		const body = this.getSaveBodyBaseAuthenticated(this.permitModelFormGroup.getRawValue());
+		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
 				const formValue = this.permitModelFormGroup.getRawValue();
@@ -523,8 +515,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyBaseAnonymous(this.permitModelFormGroup.getRawValue()); // TODO fix for authenticated
-		console.debug('[submitPermitAuthenticated] body', body);
+		const body = this.getSaveBodyBaseAuthenticated(this.permitModelFormGroup.getRawValue());
 
 		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
 	}
@@ -1368,7 +1359,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
-				// workerLicenceTypeData,
 				applicationTypeData,
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
