@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
@@ -23,6 +24,7 @@ namespace Spd.Manager.Licence
     {
         private readonly IIdentityRepository _idRepository;
         private readonly IContactRepository _contactRepository;
+        private readonly IAliasRepository _aliasRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<IApplicantProfileManager> _logger;
         private readonly IDocumentRepository _documentRepository;
@@ -31,6 +33,7 @@ namespace Spd.Manager.Licence
         public ApplicantProfileManager(
             IIdentityRepository idRepository,
             IContactRepository contactRepository,
+            IAliasRepository aliasRepository,
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
             IDocumentRepository documentRepository,
@@ -41,6 +44,7 @@ namespace Spd.Manager.Licence
             _logger = logger;
             _contactRepository = contactRepository;
             _documentRepository = documentRepository;
+            _aliasRepository = aliasRepository;
             _licAppRepository = licAppRepository;
         }
 
@@ -121,17 +125,17 @@ namespace Spd.Manager.Licence
                 cmd.ApplicantId,
                 new List<WorkerLicenceTypeEnum>
                 {
-                           WorkerLicenceTypeEnum.ArmouredVehiclePermit,
-                           WorkerLicenceTypeEnum.BodyArmourPermit,
-                           WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                    WorkerLicenceTypeEnum.ArmouredVehiclePermit,
+                    WorkerLicenceTypeEnum.BodyArmourPermit,
+                    WorkerLicenceTypeEnum.SecurityWorkerLicence,
                 },
                 new List<ApplicationPortalStatusEnum>
                 {
-                           ApplicationPortalStatusEnum.AwaitingThirdParty,
-                           ApplicationPortalStatusEnum.InProgress,
-                           ApplicationPortalStatusEnum.AwaitingApplicant,
-                           ApplicationPortalStatusEnum.UnderAssessment,
-                           ApplicationPortalStatusEnum.VerifyIdentity
+                    ApplicationPortalStatusEnum.AwaitingThirdParty,
+                    ApplicationPortalStatusEnum.InProgress,
+                    ApplicationPortalStatusEnum.AwaitingApplicant,
+                    ApplicationPortalStatusEnum.UnderAssessment,
+                    ApplicationPortalStatusEnum.VerifyIdentity
                 }
             );
             var response = await _licAppRepository.QueryAsync(q, ct);
@@ -172,6 +176,7 @@ namespace Spd.Manager.Licence
                 }
             }
 
+            await ProcessAliases(contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
             return default;
         }
 
@@ -184,7 +189,7 @@ namespace Spd.Manager.Licence
 
         private async Task ValidateFilesAsync(ApplicantUpdateCommand cmd, CancellationToken ct)
         {
-            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(cmd.ApplicantId), ct);
+            DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: cmd.ApplicantId), ct);
             IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
 
             if (cmd.ApplicantUpdateRequest.PreviousDocumentIds != null)
@@ -214,6 +219,25 @@ namespace Spd.Manager.Licence
                     throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
                 }
             }
+        }
+
+        private async Task ProcessAliases(List<AliasResp> aliases, 
+            List<AliasResp> aliasesToProcess, 
+            CancellationToken ct)
+        {
+            // Remove aliases defined in the entity that are not part of the request
+            var modifiedAliases = aliasesToProcess.Where(a => a.Id != Guid.Empty && a.Id != null);
+            List<Guid?> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
+
+            await _aliasRepository.DeleteAliasAsync(aliasesToRemove, ct);
+
+            // Update aliases
+            UpdateAliasCommand updateAliasCommand = new UpdateAliasCommand()
+            {
+                Aliases = modifiedAliases
+            };
+
+            await _aliasRepository.UpdateAliasAsync(updateAliasCommand, ct);
         }
     }
 }

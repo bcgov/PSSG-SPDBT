@@ -369,6 +369,11 @@ a {
 	// text-decoration: none;
 }
 
+a.disable {
+	cursor: not-allowed;
+	color: var(--mdc-filled-button-disabled-label-text-color);
+}
+
 .optional-label {
 	font-size: 0.8em;
 }

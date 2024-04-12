@@ -41,6 +41,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-criminal-history
+									[form]="criminalHistoryFormGroup"
 									[applicationTypeCode]="applicationTypeCode"
 								></app-common-user-profile-licence-criminal-history>
 							</section>
@@ -48,6 +49,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-police-background
+									[form]="policeBackgroundFormGroup"
 									[applicationTypeCode]="applicationTypeCode"
 								></app-common-user-profile-licence-police-background>
 							</section>
@@ -55,6 +57,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-mental-health-conditions
+									[form]="mentalHealthConditionsFormGroup"
 									[applicationTypeCode]="applicationTypeCode"
 								></app-common-user-profile-licence-mental-health-conditions>
 							</section>
@@ -131,6 +134,9 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+	criminalHistoryFormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
+	mentalHealthConditionsFormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
+	policeBackgroundFormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
 
 	isReadonlyPersonalInfo = false;
 
