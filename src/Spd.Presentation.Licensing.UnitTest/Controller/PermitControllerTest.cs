@@ -10,14 +10,12 @@ using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 
 public class PermitControllerTest
 {
     private readonly IFixture fixture;
-    private Mock<IPrincipal> mockUser = new();
     private Mock<IMediator> mockMediator = new();
     private Mock<IDistributedCache> mockCache = new();
     private Mock<IValidator<PermitAppSubmitRequest>> mockPermitAppSubmitValidator = new();
@@ -68,9 +66,9 @@ public class PermitControllerTest
     [Fact]
     public async void Post_UploadPermitAppFilesAuthenticated_Return_Guid()
     {
-        LicenceAppDocumentUploadRequest licenceAppDocumentUploadRequest = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
+        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
 
-        var result = await sut.UploadPermitAppFiles(licenceAppDocumentUploadRequest, CancellationToken.None);
+        var result = await sut.UploadPermitAppFiles(request, CancellationToken.None);
 
         Assert.IsType<Guid>(result);
         mockMediator.Verify();
@@ -79,9 +77,9 @@ public class PermitControllerTest
     [Fact]
     public async void Post_UploadLicenceAppFilesAuthenticated_Return_LicenceAppDocumentResponse_List()
     {
-        LicenceAppDocumentUploadRequest licenceAppDocumentUploadRequest = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
+        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
 
-        var result = await sut.UploadLicenceAppFiles(licenceAppDocumentUploadRequest, Guid.NewGuid(), CancellationToken.None);
+        var result = await sut.UploadLicenceAppFiles(request, Guid.NewGuid(), CancellationToken.None);
 
         Assert.IsType<List<LicenceAppDocumentResponse>>(result);
         mockMediator.Verify();
