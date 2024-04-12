@@ -22,7 +22,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.telephone1))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
-            .ForMember(d => d.Aliases, opt => opt.MapFrom(s => s.spd_Contact_Alias))
+            .ForMember(d => d.Aliases, opt => opt.MapFrom(s => GetUserEnteredAliases(s.spd_Contact_Alias)))
             .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_selfdisclosure)))
             .ForMember(d => d.CriminalChargeDescription, opt => opt.MapFrom(s => s.spd_selfdisclosuredetails))
             .ForMember(d => d.OtherOfficerRole, opt => opt.MapFrom(s => s.spd_peaceofficerother))
@@ -84,14 +84,12 @@ namespace Spd.Resource.Repository.Contact
              .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
              .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname))
              .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
-             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
-             .ForMember(d => d.SourceType, opt => opt.MapFrom(s => s.spd_source));
+             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2));
 
             _ = CreateMap<spd_licence, LicenceInfo>()
              .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_licenceid))
              .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_expirydate)));
-
         }
 
         private static ResidentialAddr? GetResidentialAddress(contact contact)
@@ -119,5 +117,9 @@ namespace Spd.Resource.Repository.Contact
             addr.PostalCode = contact.address1_postalcode;
             return addr;
         }
+
+        private static IEnumerable<spd_alias> GetUserEnteredAliases(IEnumerable<spd_alias> aliases) => aliases
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active && 
+                a.spd_source == (int)Enum.Parse<AliasSourceTypeOptionSet>(AliasSourceTypeOptionSet.UserEntered.ToString()));
     }
 }
