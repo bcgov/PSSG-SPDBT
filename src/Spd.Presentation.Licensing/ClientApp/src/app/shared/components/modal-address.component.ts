@@ -8,7 +8,7 @@ export interface AddressDialogData {
 }
 
 @Component({
-	selector: 'app-address-modal',
+	selector: 'app-modal-address',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
@@ -45,13 +45,13 @@ export interface AddressDialogData {
 	`,
 	styles: [],
 })
-export class AddressModalComponent implements OnInit {
+export class ModalAddressComponent implements OnInit {
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
 	title = 'Address selection';
 
 	constructor(
-		private dialogRef: MatDialogRef<AddressModalComponent>,
+		private dialogRef: MatDialogRef<ModalAddressComponent>,
 		@Inject(MAT_DIALOG_DATA) public dialogData: AddressDialogData
 	) {}
 

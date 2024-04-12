@@ -1359,7 +1359,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
-				// workerLicenceTypeData,
 				applicationTypeData,
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
