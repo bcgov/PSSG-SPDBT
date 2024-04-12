@@ -61,9 +61,10 @@ internal class SecurityWorkerAppManager :
             Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
             cmd.LicenceUpsertRequest.LicenceAppId,
             cancellationToken);
+
         if (hasDuplicate)
         {
-            throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
