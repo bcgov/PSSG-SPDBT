@@ -8,10 +8,9 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.component';
-import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
-	selector: 'app-common-business-controlling-members',
+	selector: 'app-common-business-employees',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row mt-4" *ngIf="dataSource.data.length > 0">
@@ -59,22 +58,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let member">
-								<button
-									mat-flat-button
-									class="table-button"
-									style="color: var(--color-green);"
-									aria-label="Edit controlling member"
-									(click)="onEditMemberWithoutSWL(member)"
-									*ngIf="!member.licenceNumber"
-								>
-									<mat-icon>edit</mat-icon>Edit
-								</button>
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="action2">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let member; let i = index">
 								<button
 									mat-flat-button
@@ -94,16 +77,10 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				</div>
 			</div>
 
-			<div class="text-minor-heading mt-4 mb-2">Add controlling members</div>
 			<div class="row">
-				<div class="col-lg-6 col-md-12">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
-						Add Member with Security Worker Licence
-					</button>
-				</div>
-				<div class="col-lg-6 col-md-12">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithoutSWL()">
-						Add Member without Security Worker Licence
+				<div class="col-xl-4 col-lg-6 col-md-12">
+					<button mat-flat-button color="primary" class="large mt-4 mb-2" (click)="onAddLicenceHolder()">
+						Add Licence Holder
 					</button>
 				</div>
 			</div>
@@ -118,30 +95,23 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 					min-width: 130px;
 				}
 			}
-			.mat-column-action2 {
-				min-width: 150px;
-				max-width: 150px;
-				.table-button {
-					min-width: 130px;
-				}
-			}
 		`,
 	],
 })
-export class CommonBusinessControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
+export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Input() form!: FormGroup;
 
-	memberList: Array<any> = [];
+	licenceHolderList: Array<any> = [];
 
 	dataSource!: MatTableDataSource<any>;
-	columns: string[] = ['fullName', 'licenceNumber', 'status', 'expiryDate', 'clearanceStatus', 'action1', 'action2'];
+	columns: string[] = ['fullName', 'licenceNumber', 'status', 'expiryDate', 'action1'];
 
 	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
-		this.memberList = [
+		this.licenceHolderList = [
 			{
 				id: 1,
 				givenName: 'Barbara',
@@ -149,7 +119,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 				licenceNumber: '7465766',
 				status: 'Valid',
 				expiryDate: '2024-05-15',
-				clearanceStatus: 'Completed',
 			},
 			{
 				id: 2,
@@ -158,19 +127,9 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 				licenceNumber: '2345433',
 				status: 'Expired',
 				expiryDate: '2023-02-25',
-				clearanceStatus: 'Completed',
-			},
-			{
-				id: 3,
-				givenName: 'Anderson',
-				surname: 'Cooper',
-				licenceNumber: null,
-				status: null,
-				expiryDate: null,
-				clearanceStatus: 'Completed',
 			},
 		];
-		this.dataSource = new MatTableDataSource(this.memberList);
+		this.dataSource = new MatTableDataSource(this.licenceHolderList);
 		this.updateAndSortData();
 	}
 
@@ -184,7 +143,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to remove this member?',
+			message: 'Are you sure you want to remove this licence holder?',
 			actionText: 'Yes, remove',
 			cancelText: 'Cancel',
 		};
@@ -194,13 +153,13 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.memberList.splice(index, 1);
-					this.dataSource = new MatTableDataSource(this.memberList);
+					this.licenceHolderList.splice(index, 1);
+					this.dataSource = new MatTableDataSource(this.licenceHolderList);
 				}
 			});
 	}
 
-	onAddMemberWithSWL(): void {
+	onAddLicenceHolder(): void {
 		this.dialog
 			.open(ModalMemberWithSwlAddComponent, {
 				width: '800px',
@@ -209,52 +168,18 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			.afterClosed()
 			.subscribe((resp: any) => {
 				if (resp) {
-					this.memberList.push(resp.data);
-					this.hotToastService.success('Controlling member was successfully added');
+					this.licenceHolderList.push(resp.data);
+					this.hotToastService.success('Licence Holder was successfully added');
 					this.updateAndSortData();
 				}
 			});
 	}
 
-	onEditMemberWithoutSWL(member: any): void {
-		this.memberDialog(member, false);
-	}
-
-	onAddMemberWithoutSWL(): void {
-		this.memberDialog({}, true);
-	}
-
 	private updateAndSortData() {
-		this.memberList = [...this.memberList].sort((a, b) => {
+		this.licenceHolderList = [...this.licenceHolderList].sort((a, b) => {
 			return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
 		});
-		this.dataSource.data = this.memberList;
-	}
-
-	private memberDialog(dialogOptions: any, isCreate: boolean): void {
-		this.dialog
-			.open(ModalMemberWithoutSwlEditComponent, {
-				width: '800px',
-				data: dialogOptions,
-			})
-			.afterClosed()
-			.subscribe((resp: any) => {
-				console.log('resp', resp);
-				if (resp) {
-					if (isCreate) {
-						this.memberList.push(resp.data);
-						this.hotToastService.success('Controlling member was successfully added');
-						this.updateAndSortData();
-					} else {
-						const memberIndex = this.memberList.findIndex((item) => item.id == dialogOptions.id!);
-						if (memberIndex >= 0) {
-							this.memberList[memberIndex] = resp.data;
-							this.updateAndSortData();
-						}
-						this.hotToastService.success('Controlling member was successfully updated');
-					}
-				}
-			});
+		this.dataSource.data = this.licenceHolderList;
 	}
 
 	get hasMembersWithSwl(): FormControl {
