@@ -1,6 +1,9 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Spd.Manager.Screening;
+using Spd.Presentation.Screening.Health;
 using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
@@ -81,7 +84,9 @@ namespace Spd.Presentation.Screening
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddCheck<DynamicsHealthCheck>("dynamics")
+                .AddCheck<FileStorageHealthCheck>("storage");
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
@@ -99,7 +104,10 @@ namespace Spd.Presentation.Screening
             app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
-            app.MapHealthChecks("/health").ShortCircuit();
+            app.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            }).ShortCircuit();
 
             app.UseDefaultHttpRequestLogging();
 
