@@ -51,16 +51,16 @@ public class PermitAppManagerTest
         //no duplicates; no licAppId: means create a brand new application.
         Guid applicantId = Guid.NewGuid();
         Guid licAppId = Guid.NewGuid();
-        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
-        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None)) //no dup lic
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == applicantId), CancellationToken.None)) //no dup lic
             .ReturnsAsync(new LicenceListResp()
             {
                 Items = new List<LicenceResp> { }
             });
         mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
-        mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.IsAny<PermitAppUpsertRequest>()))
+        mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.Is<PermitAppUpsertRequest>(r => r.ApplicantId == applicantId)))
             .Returns(new SaveLicenceApplicationCmd());
         mockMapper.Setup(m => m.Map<PermitCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
             .Returns(new PermitCommandResponse() { LicenceAppId = licAppId });
@@ -88,11 +88,11 @@ public class PermitAppManagerTest
         //have licAppId in the upsert request and there is duplicated same type active licence.
         Guid licAppId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
-        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp> {
                 new() { LicenceAppId = licAppId }
             });
-        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == applicantId), CancellationToken.None))
             .ReturnsAsync(new LicenceListResp()
             {
                 Items = new List<LicenceResp>
@@ -122,7 +122,7 @@ public class PermitAppManagerTest
         //have licAppId in the upsert request and there is duplicated same type active application.
         Guid licAppId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
-        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp> {
                     new() { LicenceAppId = licAppId },
                     new() { LicenceAppId = Guid.NewGuid() } });
