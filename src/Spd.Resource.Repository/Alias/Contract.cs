@@ -8,7 +8,7 @@ public interface IAliasRepository
     public Task UpdateAliasAsync(UpdateAliasCommand cmd, CancellationToken cancellationToken);
 }
 
-public record AliasResp
+public record AliasResponse
 {
     public Guid? Id { get; set; }
     public string? GivenName { get; set; }
@@ -20,10 +20,10 @@ public record AliasResp
 public record CreateAliasCommand
 {
     public Guid ContactId { get; set; }
-    public AliasResp Alias { get; set; }
+    public AliasResponse Alias { get; set; }
 };
 
 public record UpdateAliasCommand
 {
-    public IEnumerable<AliasResp> Aliases { get; set; } = [];
+    public IEnumerable<AliasResponse> Aliases { get; set; } = [];
 }

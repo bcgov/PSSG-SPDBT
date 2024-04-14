@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import {
-	Alias,
+	AliasResponse,
 	ApplicantProfileResponse,
 	ApplicantUpdateRequest,
 	ApplicationTypeCode,
@@ -1075,10 +1075,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 
 		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
-		profile.aliases?.forEach((alias: Alias) => {
+		profile.aliases?.forEach((alias: AliasResponse) => {
 			aliasesArray.push(
 				new FormGroup({
-					// id: new FormControl('123123'), // TODO add ID to alias
+					id: new FormControl(alias.id),
 					givenName: new FormControl(alias.givenName),
 					middleName1: new FormControl(alias.middleName1),
 					middleName2: new FormControl(alias.middleName2),

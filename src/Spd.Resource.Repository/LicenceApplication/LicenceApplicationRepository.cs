@@ -141,7 +141,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
         _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
-        appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
+        appResp.Aliases = _mapper.Map<AliasResponse[]>(aliases);
         return appResp;
     }
 

@@ -221,8 +221,8 @@ namespace Spd.Manager.Licence
             }
         }
 
-        private async Task ProcessAliases(List<AliasResp> aliases, 
-            List<AliasResp> aliasesToProcess, 
+        private async Task ProcessAliases(List<AliasResponse> aliases, 
+            List<AliasResponse> aliasesToProcess, 
             CancellationToken ct)
         {
             // Remove aliases defined in the entity that are not part of the request

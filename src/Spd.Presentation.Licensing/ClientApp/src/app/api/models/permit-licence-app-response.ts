@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Alias } from './alias';
+import { AliasResponse } from './alias-response';
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
 import { ArmouredVehiclePermitReasonCode } from './armoured-vehicle-permit-reason-code';
@@ -20,7 +20,7 @@ import { WeightUnitCode } from './weight-unit-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface PermitLicenceAppResponse {
   agreeToCompleteAndAccurate?: null | boolean;
-  aliases?: null | Array<Alias>;
+  aliases?: null | Array<AliasResponse>;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   armouredVehiclePermitReasonCodes?: null | Array<ArmouredVehiclePermitReasonCode>;

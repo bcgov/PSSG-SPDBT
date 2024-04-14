@@ -205,7 +205,7 @@ internal class Mappings : Profile
           .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
           .ForMember(d => d.ApplicationPortalStatusCode, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()));
 
-        _ = CreateMap<AliasResp, spd_alias>()
+        _ = CreateMap<AliasResponse, spd_alias>()
           .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
           .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
           .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))

@@ -35,7 +35,7 @@ public record LicenceApplication
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
     public bool? UseDogs { get; set; }
-    public IEnumerable<AliasResp>? Aliases { get; set; }
+    public IEnumerable<AliasResponse>? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public HairColourEnum? HairColourCode { get; set; }

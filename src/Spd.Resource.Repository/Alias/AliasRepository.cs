@@ -53,7 +53,7 @@ internal class AliasRepository : IAliasRepository
 
     public async Task UpdateAliasAsync(UpdateAliasCommand cmd, CancellationToken ct)
     {
-        foreach (AliasResp alias in cmd.Aliases)
+        foreach (AliasResponse alias in cmd.Aliases)
         {
             spd_alias? existingAlias = _context.spd_aliases.Where(a =>
                 a.spd_aliasid == alias.Id &&

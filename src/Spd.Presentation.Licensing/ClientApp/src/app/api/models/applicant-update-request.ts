@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Address } from './address';
-import { Alias } from './alias';
+import { AliasResponse } from './alias-response';
 import { ApplicationTypeCode } from './application-type-code';
 import { GenderEnum } from './gender-enum';
 import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
 export interface ApplicantUpdateRequest {
-  aliases?: null | Array<Alias>;
+  aliases?: null | Array<AliasResponse>;
   applicationTypeCode?: ApplicationTypeCode;
   criminalChargeDescription?: null | string;
   dateOfBirth?: string;

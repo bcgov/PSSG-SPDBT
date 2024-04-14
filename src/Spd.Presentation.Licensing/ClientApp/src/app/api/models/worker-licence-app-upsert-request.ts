@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Alias } from './alias';
+import { AliasResponse } from './alias-response';
 import { ApplicationTypeCode } from './application-type-code';
 import { BusinessTypeCode } from './business-type-code';
 import { Document } from './document';
@@ -18,7 +18,7 @@ import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface WorkerLicenceAppUpsertRequest {
   agreeToCompleteAndAccurate?: null | boolean;
-  aliases?: null | Array<Alias>;
+  aliases?: null | Array<AliasResponse>;
   applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
