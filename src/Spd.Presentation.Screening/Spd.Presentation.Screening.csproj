@@ -12,12 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.Redis" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="FluentValidation.AspNetCore" />
     <PackageReference Include="IdentityModel" />
     <PackageReference Include="MediatR" />
 	<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 

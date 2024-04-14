@@ -73,7 +73,16 @@ namespace Spd.Presentation.Screening
 
             services.AddAutoMapper(assemblies);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-            services.AddDistributedMemoryCache();
+
+            string? redisConnection = configuration.GetValue<string>("RedisConnection");
+            if (redisConnection != null && !string.IsNullOrWhiteSpace(redisConnection))
+            {
+                services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+            }
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
             services.AddTempFileStorageService();
             services.AddFileStorageProxy(configuration);
             services
@@ -84,6 +93,10 @@ namespace Spd.Presentation.Screening
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
+
+            //add smart health check
+            if (redisConnection != null)
+                services.AddHealthChecks().AddRedis(redisConnection);
             services.AddHealthChecks()
                 .AddCheck<DynamicsHealthCheck>("dynamics")
                 .AddCheck<FileStorageHealthCheck>("storage");
