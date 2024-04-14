@@ -23,7 +23,7 @@ public interface IBcMailPlusApi
     /// <param name="jobs">The job ids to get statuses for</param>
     /// <param name="ct">A cancellation token</param>
     /// <returns>Array of job status responses</returns>
-    Task<IEnumerable<JobStatus>> GetJobStatus(IEnumerable<string> jobs, CancellationToken ct);
+    Task<JobStatusResponse> GetJobStatus(IEnumerable<string> jobs, CancellationToken ct);
 
     /// <summary>
     /// Gets a digital asset from a job
@@ -51,8 +51,14 @@ public class JobStatus
     public const string ProcessingError = "PROCESSING_ERROR";
 
     /// <summary>
+    /// Job status that indicates errors
+    /// </summary>
+    public const string FileReceived = "FILE_RECEIVED";
+
+    /// <summary>
     /// The job id
     /// </summary>
+    [JsonPropertyName("jobId")]
     public string? JobId { get; set; }
 
     /// <summary>
@@ -64,11 +70,13 @@ public class JobStatus
     /// <summary>
     /// Any errors related to the job
     /// </summary>
+    [JsonPropertyName("errors")]
     public string? Errors { get; set; }
 
     /// <summary>
     /// Various job properties
     /// </summary>
+    [JsonPropertyName("jobProperties")]
     public JobProperties? JobProperties { get; set; }
 }
 
@@ -88,4 +96,49 @@ public class JobProperties
     /// </summary>
     [JsonPropertyName("ASSET")]
     public string? Asset { get; set; }
+}
+
+/// <summary>
+/// Response from job status request
+/// </summary>
+public class JobStatusResponse
+{
+    /// <summary>
+    /// List of jobs with statuses
+    /// </summary>
+    [JsonPropertyName("jobs")]
+    public IEnumerable<JobStatus> Jobs { get; set; } = Array.Empty<JobStatus>();
+}
+
+/// <summary>
+/// Contains a BCMailPlus job information and expected behaviour
+/// </summary>
+/// <param name="JobName">The job name as defined by BCMailPlus</param>
+/// <param name="AssetExtension">The file extension of the generated preview of the job</param>
+public record JobTemplate(string JobName, string AssetExtension);
+
+/// <summary>
+/// Job names
+/// </summary>
+public static class Jobs
+{
+    /// <summary>
+    /// Security worker licence job
+    /// </summary>
+    public const string SecurityWorkerLicense = "PSSG-SPD-CARD";
+
+    /// <summary>
+    /// Business licence job
+    /// </summary>
+    public const string BusinessLicense = "PSSG-SPD-BUS-LIC";
+
+    /// <summary>
+    /// Fingerprint letter job
+    /// </summary>
+    public const string FingerprintsLetter = "PSSG-SPD-FPT-LET";
+
+    /// <summary>
+    /// Metal dealer and recyclers permit job
+    /// </summary>
+    public const string MetalDealerAndRecyclersPermit = "PSSG-SPD-MTL-PMT";
 }

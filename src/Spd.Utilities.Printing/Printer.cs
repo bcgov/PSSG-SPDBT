@@ -17,12 +17,12 @@ internal sealed class Printer : IPrinter
     {
         return request switch
         {
-            BcMailPlusPrintRequest req => await HandleBcMailPlusPrintRequest(req, ct),
+            SynchronousBcMailPlusPrintRequest req => await HandleBcMailPlusPrintRequest(req, ct),
             _ => throw new InvalidOperationException("")
         };
     }
 
-    private async Task<PrintResponse> HandleBcMailPlusPrintRequest(BcMailPlusPrintRequest req, CancellationToken ct)
+    private async Task<PrintResponse> HandleBcMailPlusPrintRequest(SynchronousBcMailPlusPrintRequest req, CancellationToken ct)
     {
         var jobs = new ConcurrentBag<JobStatus>();
         await Parallel.ForEachAsync(req.Items, ct, async (item, ct) =>
