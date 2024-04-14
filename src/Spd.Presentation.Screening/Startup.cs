@@ -104,10 +104,14 @@ namespace Spd.Presentation.Screening
             app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
-            app.MapHealthChecks("/health", new HealthCheckOptions
+            app.MapHealthChecks("/startup", new HealthCheckOptions
             {
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             }).ShortCircuit();
+            app.MapHealthChecks("/liveness", new HealthCheckOptions { Predicate = _ => false })
+               .ShortCircuit();
+            app.MapHealthChecks("/ready", new HealthCheckOptions { Predicate = _ => false })
+               .ShortCircuit();
 
             app.UseDefaultHttpRequestLogging();
 
