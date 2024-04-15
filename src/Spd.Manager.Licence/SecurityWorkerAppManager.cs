@@ -73,7 +73,7 @@ internal class SecurityWorkerAppManager :
             cmd.LicenceUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
             (Guid)cmd.LicenceUpsertRequest.LicenceAppId,
-            (List<Document>?)cmd.LicenceUpsertRequest.DocumentInfos, 
+            (List<Document>?)cmd.LicenceUpsertRequest.DocumentInfos,
             cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
@@ -134,6 +134,7 @@ internal class SecurityWorkerAppManager :
 
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        createApp.UploadedDocumentEnums =
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
 
