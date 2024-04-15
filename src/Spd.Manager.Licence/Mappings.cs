@@ -1,5 +1,6 @@
 using AutoMapper;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
@@ -148,6 +149,9 @@ internal class Mappings : Profile
             .IncludeBase<Address, Addr>()
             .ReverseMap();
 
+        CreateMap<Alias, AliasResp>()
+            .ReverseMap();
+
         CreateMap<UploadFileRequest, CreateDocumentCmd>()
             .ForMember(d => d.DocumentType, opt => opt.MapFrom(s => GetDocumentType1Enum(s.FileTypeCode)))
             .ForMember(d => d.DocumentType2, opt => opt.MapFrom(s => GetDocumentType2Enum(s.FileTypeCode)));
@@ -184,7 +188,7 @@ internal class Mappings : Profile
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
     {
-        List<WorkerCategoryTypeEnum> categories = new List<WorkerCategoryTypeEnum> { };
+        List<WorkerCategoryTypeEnum> categories = new() { };
         foreach (WorkerCategoryTypeCode code in codes)
         {
             categories.Add(Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()));
