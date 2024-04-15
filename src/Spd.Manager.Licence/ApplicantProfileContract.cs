@@ -1,7 +1,6 @@
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Alias;
 using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Licence
@@ -58,7 +57,7 @@ namespace Spd.Manager.Licence
         public string? PhoneNumber { get; set; }
         public Address? ResidentialAddress { get; set; }
         public Address? MailingAddress { get; set; }
-        public IEnumerable<AliasResp> Aliases { get; set; } = Array.Empty<AliasResp>();
+        public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
         public bool? IsPoliceOrPeaceOfficer { get; set; }
         public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
