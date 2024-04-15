@@ -44,11 +44,11 @@ internal class SecurityWorkerAppManager :
             mapper,
             documentUrlRepository,
             feeRepository,
+            licenceRepository,
             licenceAppRepository,
             mainFileStorageService,
             transientFileStorageService)
     {
-        _licenceRepository = licenceRepository;
         _taskRepository = taskRepository;
         _contactRepository = contactRepository;
     }
@@ -61,16 +61,20 @@ internal class SecurityWorkerAppManager :
             Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
             cmd.LicenceUpsertRequest.LicenceAppId,
             cancellationToken);
+
         if (hasDuplicate)
         {
-            throw new ApiException(System.Net.HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
         if (cmd.LicenceUpsertRequest.LicenceAppId == null)
             cmd.LicenceUpsertRequest.LicenceAppId = response.LicenceAppId;
-        await UpdateDocumentsAsync(cmd.LicenceUpsertRequest, cancellationToken);
+        await UpdateDocumentsAsync(
+            (Guid)cmd.LicenceUpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.LicenceUpsertRequest.DocumentInfos, 
+            cancellationToken);
         return _mapper.Map<WorkerLicenceCommandResponse>(response);
     }
 
@@ -308,55 +312,6 @@ internal class SecurityWorkerAppManager :
     }
 
     #endregion
-
-    private async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
-    {
-        LicenceAppQuery q = new(
-            applicantId,
-            new List<WorkerLicenceTypeEnum>
-            {
-                workerLicenceType
-            },
-            new List<ApplicationPortalStatusEnum>
-            {
-                ApplicationPortalStatusEnum.Draft,
-                ApplicationPortalStatusEnum.AwaitingThirdParty,
-                ApplicationPortalStatusEnum.AwaitingPayment,
-                ApplicationPortalStatusEnum.Incomplete,
-                ApplicationPortalStatusEnum.InProgress,
-                ApplicationPortalStatusEnum.AwaitingApplicant,
-                ApplicationPortalStatusEnum.UnderAssessment,
-                ApplicationPortalStatusEnum.VerifyIdentity,
-            }
-        );
-        var response = await _licenceAppRepository.QueryAsync(q, ct);
-        if (response.Any())
-        {
-            if (existingLicAppId != null)
-            {
-                if (response.Any(l => l.LicenceAppId != existingLicAppId))
-                    return true;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        var licResponse = await _licenceRepository.QueryAsync(
-            new LicenceQry
-            {
-                ContactId = applicantId,
-                Type = workerLicenceType,
-                IsExpired = false
-            }, ct);
-
-        if (licResponse.Items.Any())
-        {
-            return true;
-        }
-        return false;
-    }
 
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
         WorkerLicenceAppSubmitRequest newRequest,
