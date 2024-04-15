@@ -108,6 +108,23 @@ namespace Spd.Presentation.Licensing.Controllers
             return fileKeyCode;
         }
 
+        /// <summary>
+        /// Submit Permit Application
+        /// </summary>
+        /// <param name="permitSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("api/permit/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<PermitCommandResponse> SubmitPermitApplication([FromBody][Required] PermitAppUpsertRequest permitSubmitRequest, CancellationToken ct)
+        {
+            //var validateResult = await _wslUpsertValidator.ValidateAsync(licenceSubmitRequest, ct);
+            //if (!validateResult.IsValid)
+            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
+        }
+
         #endregion
 
         #region anonymous 
