@@ -20,6 +20,7 @@ import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface PermitAppUpsertRequest {
   agreeToCompleteAndAccurate?: null | boolean;
   aliases?: null | Array<Alias>;
+  applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   armouredVehiclePermitReasonCodes?: null | Array<ArmouredVehiclePermitReasonCode>;
   bcDriversLicenceNumber?: null | string;
