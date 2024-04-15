@@ -103,7 +103,7 @@ export class CommonAliasListComponent implements OnInit {
 	@Input() isReadonly = false;
 
 	private aliasFields = {
-		// id: new FormControl(), // TODO add ID to alias
+		id: new FormControl(),
 		givenName: new FormControl(),
 		middleName1: new FormControl(),
 		middleName2: new FormControl(),

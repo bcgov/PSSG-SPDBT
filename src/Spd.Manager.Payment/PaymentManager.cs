@@ -98,11 +98,10 @@ namespace Spd.Manager.Payment
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
 
-            //todo, the valid days needs to get from biz, current days is temporary
-            var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
+            var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.PrePaymentLinkValidDays)));
 
             var paymentId = Guid.NewGuid();
-            var encryptedPaymentId = WebUtility.UrlEncode(_dataProtector.Protect(paymentId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
+            var encryptedPaymentId = WebUtility.UrlEncode(_dataProtector.Protect(paymentId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.PrePaymentLinkValidDays)));
             if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
                 //if it is screening application
                 return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
@@ -205,7 +204,7 @@ namespace Spd.Manager.Payment
             cmd.PbcRefNumber = spdPaymentConfig.PbcRefNumber;
             var result = (RefundPaymentResult)await _paymentService.HandleCommand(cmd);
 
-            UpdatePaymentCmd updatePaymentCmd = new UpdatePaymentCmd()
+            UpdatePaymentCmd updatePaymentCmd = new()
             {
                 PaymentId = command.PaymentId,
                 Success = result.Approved,
@@ -237,7 +236,7 @@ namespace Spd.Manager.Payment
         {
             //receipt generation is async operation to payment, so, needs wait for a while to get the receipt. Here we add
             //retry 8 times, everytime wait for 5 seconds
-            DocumentQry qry = new DocumentQry(ApplicationId: query.ApplicationId, FileType: DocumentTypeEnum.PaymentReceipt);
+            DocumentQry qry = new(ApplicationId: query.ApplicationId, FileType: DocumentTypeEnum.PaymentReceipt);
             DocumentListResp docList = null;
             RetryPolicy<Task<bool>> retryIfNoFound = Policy.HandleResult<Task<bool>>(b => !b.Result)
                 .WaitAndRetry(8, waitSec => TimeSpan.FromSeconds(5));
@@ -288,7 +287,7 @@ namespace Spd.Manager.Payment
             {
                 var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
                 var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
-                UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                UpdateInvoiceCmd update = new()
                 {
                     InvoiceId = invoice.Id,
                     CasResponse = result.Message
@@ -321,7 +320,7 @@ namespace Spd.Manager.Payment
 
             var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
             var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
-            UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+            UpdateInvoiceCmd update = new()
             {
                 InvoiceId = invoice.Id,
                 CasResponse = result.Message
@@ -355,7 +354,7 @@ namespace Spd.Manager.Payment
                 {
                     if (result.AmountDue == 0)
                     {
-                        UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                        UpdateInvoiceCmd update = new()
                         {
                             InvoiceId = invoice.Id,
                             InvoiceStatus = InvoiceStatusEnum.Paid,
@@ -394,7 +393,7 @@ namespace Spd.Manager.Payment
                 if (serviceTypeListResp == null || !serviceTypeListResp.Items.Any())
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service type correctly.");
 
-                SpdPaymentConfig spdPaymentConfig = new SpdPaymentConfig()
+                SpdPaymentConfig spdPaymentConfig = new()
                 {
                     PbcRefNumber = pbcRefnumberConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,

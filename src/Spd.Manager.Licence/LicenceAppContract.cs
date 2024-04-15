@@ -1,5 +1,4 @@
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.Alias;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
 namespace Spd.Manager.Licence;
@@ -21,7 +20,7 @@ public abstract record PersonalLicenceAppBase
     public LicenceTermCode? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
-    public IEnumerable<AliasResp>? Aliases { get; set; }
+    public IEnumerable<Alias>? Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public HairColourCode? HairColourCode { get; set; }
