@@ -24,7 +24,7 @@ public class ApplicantProfileValidationTest
         var address = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
             .With(a => a.City, new string('a', 100))
-            .With(a => a.City, new string('a', 100))
+            .With(a => a.Country, new string('a', 100))
             .With(a => a.PostalCode, new string('a', 20))
             .Create();
 
