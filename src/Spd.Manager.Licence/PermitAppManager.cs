@@ -39,7 +39,6 @@ internal class PermitAppManager :
         ITransientFileStorageService transientFileStorageService)
         : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
-        _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
     }
