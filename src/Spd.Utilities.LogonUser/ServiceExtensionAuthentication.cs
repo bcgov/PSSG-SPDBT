@@ -129,8 +129,8 @@ namespace Spd.Utilities.LogonUser
                         validationParameters.ValidateLifetime = false;
                         validationParameters.ValidateIssuer = false;
 
-                        string tokenStr = ((JsonWebToken)ctx.SecurityToken).EncodedHeader + "." 
-                            + ((JsonWebToken)ctx.SecurityToken).EncodedPayload + "." 
+                        string tokenStr = ((JsonWebToken)ctx.SecurityToken).EncodedHeader + "."
+                            + ((JsonWebToken)ctx.SecurityToken).EncodedPayload + "."
                             + ((JsonWebToken)ctx.SecurityToken).EncodedSignature;
 
                         var userInfoRequest = new UserInfoRequest
@@ -180,7 +180,7 @@ namespace Spd.Utilities.LogonUser
                         else
                         {
                             //handle non encrypted
-                            JsonDocument jd = JsonDocument.Parse(response.Json.GetRawText());
+                            JsonDocument jd = JsonDocument.Parse(((JsonElement)response.Json).GetRawText());
                             var claims = jd.RootElement.ToClaims();
                             MapClaimsToPrincipalClaims(ctx.Principal, claims);
                         }
