@@ -1,6 +1,4 @@
-﻿using Spd.Utilities.Dynamics;
-
-namespace Spd.Resource.Repository.Alias;
+﻿namespace Spd.Resource.Repository.Alias;
 public interface IAliasRepository
 {
     public Task CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);
@@ -8,7 +6,7 @@ public interface IAliasRepository
     public Task UpdateAliasAsync(UpdateAliasCommand cmd, CancellationToken cancellationToken);
 }
 
-public record AliasResponse
+public record AliasResp
 {
     public Guid? Id { get; set; }
     public string? GivenName { get; set; }
@@ -20,10 +18,10 @@ public record AliasResponse
 public record CreateAliasCommand
 {
     public Guid ContactId { get; set; }
-    public AliasResponse Alias { get; set; }
+    public AliasResp Alias { get; set; }
 };
 
 public record UpdateAliasCommand
 {
-    public IEnumerable<AliasResponse> Aliases { get; set; } = [];
+    public IEnumerable<AliasResp> Aliases { get; set; } = [];
 }

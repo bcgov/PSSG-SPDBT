@@ -71,7 +71,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => s.Id))
             .IncludeBase<ContactCmd, contact>();
 
-            _ = CreateMap<AliasResponse, spd_alias>()
+            _ = CreateMap<AliasResp, spd_alias>()
              .ForMember(d => d.spd_aliasid, opt => opt.MapFrom(s => Guid.NewGuid()))
              .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
              .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
@@ -79,7 +79,7 @@ namespace Spd.Resource.Repository.Contact
              .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
              .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered));
 
-            _ = CreateMap<spd_alias, AliasResponse>()
+            _ = CreateMap<spd_alias, AliasResp>()
              .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_aliasid))
              .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
              .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname))

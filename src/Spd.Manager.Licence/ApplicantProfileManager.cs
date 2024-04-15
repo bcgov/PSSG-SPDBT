@@ -221,8 +221,8 @@ namespace Spd.Manager.Licence
             }
         }
 
-        private async Task ProcessAliases(List<AliasResponse> aliases, 
-            List<AliasResponse> aliasesToProcess, 
+        private async Task ProcessAliases(List<AliasResp> aliases,
+            List<AliasResp> aliasesToProcess,
             CancellationToken ct)
         {
             // Remove aliases defined in the entity that are not part of the request
@@ -232,7 +232,7 @@ namespace Spd.Manager.Licence
             await _aliasRepository.DeleteAliasAsync(aliasesToRemove, ct);
 
             // Update aliases
-            UpdateAliasCommand updateAliasCommand = new UpdateAliasCommand()
+            UpdateAliasCommand updateAliasCommand = new()
             {
                 Aliases = modifiedAliases
             };

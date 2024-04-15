@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
-using Spd.Resource.Repository.Alias;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class ApplicantProfileValidationTest
@@ -49,7 +48,7 @@ public class ApplicantProfileValidationTest
             .With(a => a.PostalCode, new string('a', 20))
             .Create();
 
-        var aliases = fixture.CreateMany<AliasResponse>(11);
+        var aliases = fixture.CreateMany<Alias>(11);
 
         var model = fixture.Build<ApplicantUpdateRequest>()
             .With(r => r.EmailAddress, "test@test.com")

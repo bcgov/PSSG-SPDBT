@@ -62,7 +62,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
         _context.DetachAll();
 
-        AliasResponse newAlias = new AliasResponse()
+        AliasResp newAlias = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test",
@@ -84,7 +84,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
         _context.DetachAll();
 
-        AliasResponse newAlias = new AliasResponse()
+        AliasResp newAlias = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test",
@@ -108,7 +108,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync();
         _context.DetachAll();
 
-        AliasResponse newAlias = new AliasResponse()
+        AliasResp newAlias = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test",
@@ -118,7 +118,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         CreateAliasCommand cmd = new CreateAliasCommand() { ContactId = (Guid)contact.contactid, Alias = newAlias };
         await _aliasRepository.CreateAliasAsync(cmd, CancellationToken.None);
 
-        AliasResponse aliasToUpdate = new AliasResponse()
+        AliasResp aliasToUpdate = new AliasResp()
         {
             Id = (Guid)newAlias.Id,
             GivenName = "test2",
@@ -126,7 +126,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
         UpdateAliasCommand updateCmd = new UpdateAliasCommand()
         {
-            Aliases = new List<AliasResponse>() { aliasToUpdate }
+            Aliases = new List<AliasResp>() { aliasToUpdate }
         };
 
         await _aliasRepository.UpdateAliasAsync(updateCmd, CancellationToken.None);
@@ -140,7 +140,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task UpdateAlias_AliasNotFound_Throw_Exception()
     {
-        AliasResponse aliasToUpdate = new AliasResponse()
+        AliasResp aliasToUpdate = new AliasResp()
         {
             Id = Guid.NewGuid(),
             GivenName = "test2",
@@ -148,7 +148,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
         UpdateAliasCommand updateCmd = new UpdateAliasCommand()
         {
-            Aliases = new List<AliasResponse>() { aliasToUpdate }
+            Aliases = new List<AliasResp>() { aliasToUpdate }
         };
 
         _ = await Assert.ThrowsAsync<ArgumentException>(async () => await _aliasRepository.UpdateAliasAsync(updateCmd, CancellationToken.None));
