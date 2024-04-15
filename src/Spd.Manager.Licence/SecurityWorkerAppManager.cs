@@ -49,7 +49,6 @@ internal class SecurityWorkerAppManager :
             mainFileStorageService,
             transientFileStorageService)
     {
-        _licenceRepository = licenceRepository;
         _taskRepository = taskRepository;
         _contactRepository = contactRepository;
     }
