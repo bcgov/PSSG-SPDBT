@@ -267,7 +267,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 		this.licenceApplicationService.hasValueChanged = true;
 
 		if (this.licenceApplicationService.isAutoSave()) {
-			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value ?? LicenceDocumentTypeCode.BcServicesCard; // default value (f nothing is selected)
+			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value;
 
 			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
 				next: (resp: any) => {

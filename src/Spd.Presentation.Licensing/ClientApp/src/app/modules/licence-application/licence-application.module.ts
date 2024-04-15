@@ -26,12 +26,13 @@ import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
 import { StepPermitSummaryAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-anonymous.component';
 import { StepPermitSummaryAuthenticatedComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-authenticated.component';
+import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from './components/anonymous/permit-wizard-steps/step-permit-summary-review-update-authenticated.component';
 import { StepPermitTermsOfUseComponent } from './components/anonymous/permit-wizard-steps/step-permit-terms-of-use.component';
 import { StepPermitTypeAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-type-anonymous.component';
 import { StepsPermitContactComponent } from './components/anonymous/permit-wizard-steps/steps-permit-contact.component';
 import { StepsPermitDetailsNewComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-new.component';
+import { StepsPermitDetailsRenewalComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-renewal.component';
 import { StepsPermitDetailsUpdateComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details-update.component';
-import { StepsPermitDetailsRenewalComponent } from './components/anonymous/permit-wizard-steps/steps-permit-details.component-renewal';
 import { StepsPermitIdentificationAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-identification-anonymous.component';
 import { StepsPermitPurposeAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-purpose.component-anonymous';
 import { StepsPermitReviewAnonymousComponent } from './components/anonymous/permit-wizard-steps/steps-permit-review-anonymous.component';
@@ -115,6 +116,7 @@ import { StepBusinessLicenceLiabilityComponent } from './components/business/ste
 import { StepBusinessLicenceMailingAddressComponent } from './components/business/step-business-licence-mailing-address.component';
 import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
 import { StepBusinessLicenceNameComponent } from './components/business/step-business-licence-name.component';
+import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
 import { StepBusinessLicenceSummaryComponent } from './components/business/step-business-licence-summary.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
 import { StepBusinessLicenceTypeComponent } from './components/business/step-business-licence-type.component';
@@ -296,6 +298,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceEmployeesComponent,
 		StepBusinessLicenceLiabilityComponent,
 		StepBusinessLicenceNameComponent,
+		StepBusinessLicenceProfileComponent,
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,
 		StepBusinessLicenceTermComponent,
@@ -331,6 +334,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitReviewNameChangeComponent,
 		StepPermitSummaryAuthenticatedComponent,
 		StepPermitSummaryAnonymousComponent,
+		StepPermitSummaryReviewUpdateAuthenticatedComponent,
 		StepPermitTermsOfUseComponent,
 		StepPermitUpdateTermsAuthenticatedComponent,
 		StepPermitTypeAnonymousComponent,

@@ -98,15 +98,19 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required]),
 	});
 
-	printPermitFormGroup: FormGroup = this.formBuilder.group(
+	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isPrintPermit: new FormControl(''),
+			reprintLicence: new FormControl(''),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'isPrintPermit',
-					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value === ApplicationTypeCode.Update
+				FormGroupValidators.conditionalRequiredValidator(
+					'reprintLicence',
+					(_form) =>
+						!!(
+							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
+							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
+						)
 				),
 			],
 		}
@@ -180,24 +184,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
 							form.get('isCanadianResident')?.value == BooleanTypeCode.No &&
 							form.get('proofOfCitizenshipCode')?.value !== LicenceDocumentTypeCode.NonCanadianPassport)
-				),
-			],
-		}
-	);
-
-	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
-		{
-			reprintLicence: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'reprintLicence',
-					(_form) =>
-						!!(
-							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
-							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
-						)
 				),
 			],
 		}
@@ -419,7 +405,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 		const permitRequirementData = { ...permitModelFormValue.permitRequirementData };
 		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
-		const printPermitData = { ...permitModelFormValue.printPermitData };
 		let employerData = {};
 		let employerPrimaryAddress = {};
 
@@ -647,9 +632,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			reprint: this.utilService.booleanTypeToBoolean(printPermitData.isPrintPermit),
-			//-----------------------------------
 			licenceTermCode: permitModelFormValue.licenceTermData.licenceTermCode,
+			//-----------------------------------
+			reprint: this.utilService.booleanTypeToBoolean(permitModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
 			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
 			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,

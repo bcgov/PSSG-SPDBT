@@ -340,7 +340,7 @@ import {
 						<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeSwlExist">
 							<div class="row">
 								<div class="col-xl-7 col-lg-6">
-									<div class="text-data">You don't have an active licence</div>
+									<div class="text-data">You don't have an active Security Worker licence</div>
 								</div>
 								<div class="col-xl-5 col-lg-6 text-end">
 									<button

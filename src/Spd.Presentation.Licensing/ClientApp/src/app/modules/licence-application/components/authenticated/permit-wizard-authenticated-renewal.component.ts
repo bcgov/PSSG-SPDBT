@@ -5,6 +5,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -32,13 +33,13 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 				>
 					<mat-step [completed]="step1Complete">
 						<ng-template matStepLabel>Permit Details</ng-template>
-						<app-steps-permit-details-new
+						<app-steps-permit-details-renewal
 							(childNextStep)="onChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
-						></app-steps-permit-details-new>
+						></app-steps-permit-details-renewal>
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
@@ -68,6 +69,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
+							[applicationTypeCode]="applicationTypeCodeRenewal"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -85,6 +87,8 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 	styles: [],
 })
 export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCodeRenewal = ApplicationTypeCode.Renewal;
+
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PURPOSE_AND_RATIONALE = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -167,7 +171,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
 
@@ -231,7 +235,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 			return;
 		}
 
-		this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+		this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.permitApplicationService.hasValueChanged = false;
 
@@ -268,7 +272,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 
 	onGoToReview() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
 					this.updateCompleteStatus();
@@ -295,7 +299,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 
 	onChildNextStep() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
 					this.hotToastService.success('Licence information has been saved');

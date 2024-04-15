@@ -372,7 +372,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		}
 
 		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
-		console.debug('shouldSaveStep', shouldSaveStep);
 		return shouldSaveStep;
 	}
 
@@ -489,8 +488,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		console.debug('saveLicenceStepAuthenticated PARTIAL SAVE', licenceModelFormValue, body);
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
