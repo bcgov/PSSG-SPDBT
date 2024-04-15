@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Address } from './address';
-import { AliasResponse } from './alias-response';
+import { Alias } from './alias';
 import { Document } from './document';
 import { GenderEnum } from './gender-enum';
 import { IdentityProviderTypeCode } from './identity-provider-type-code';
 import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
 export interface ApplicantProfileResponse {
-  aliases?: null | Array<AliasResponse>;
+  aliases?: null | Array<Alias>;
   applicantId?: string;
   dateOfBirth?: string;
   documentInfos?: null | Array<Document>;

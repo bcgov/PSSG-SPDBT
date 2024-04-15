@@ -2,7 +2,7 @@ export { ActionResult } from './models/action-result';
 export { Address } from './models/address';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
-export { AliasResponse } from './models/alias-response';
+export { Alias } from './models/alias';
 export { ApplicantListResponse } from './models/applicant-list-response';
 export { ApplicantLoginResponse } from './models/applicant-login-response';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';

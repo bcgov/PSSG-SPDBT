@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface AliasResponse {
+export interface Alias {
   givenName?: null | string;
   id?: null | string;
   middleName1?: null | string;

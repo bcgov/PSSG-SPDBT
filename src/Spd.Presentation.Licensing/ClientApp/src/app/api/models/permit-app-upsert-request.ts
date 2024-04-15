@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { AliasResponse } from './alias-response';
+import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
 import { ArmouredVehiclePermitReasonCode } from './armoured-vehicle-permit-reason-code';
 import { BodyArmourPermitReasonCode } from './body-armour-permit-reason-code';
@@ -19,7 +19,8 @@ import { WeightUnitCode } from './weight-unit-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface PermitAppUpsertRequest {
   agreeToCompleteAndAccurate?: null | boolean;
-  aliases?: null | Array<AliasResponse>;
+  aliases?: null | Array<Alias>;
+  applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   armouredVehiclePermitReasonCodes?: null | Array<ArmouredVehiclePermitReasonCode>;
   bcDriversLicenceNumber?: null | string;
