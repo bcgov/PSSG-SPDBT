@@ -40,20 +40,6 @@ public interface IBcMailPlusApi
 /// </summary>
 public class JobStatus
 {
-    /// <summary>
-    /// Job status that indicates success
-    /// </summary>
-    public const string PdfCreated = "PDF_CREATED";
-
-    /// <summary>
-    /// Job status that indicates errors
-    /// </summary>
-    public const string ProcessingError = "PROCESSING_ERROR";
-
-    /// <summary>
-    /// Job status that indicates errors
-    /// </summary>
-    public const string FileReceived = "FILE_RECEIVED";
 
     /// <summary>
     /// The job id
@@ -141,4 +127,23 @@ public static class Jobs
     /// Metal dealer and recyclers permit job
     /// </summary>
     public const string MetalDealerAndRecyclersPermit = "PSSG-SPD-MTL-PMT";
+}
+
+public static class JobStatusValues
+{
+    /// <summary>
+    /// Job status that indicates success
+    /// </summary>
+    public const string PdfCreated = "PDF_CREATED";
+
+    /// <summary>
+    /// Job status that indicates errors
+    /// </summary>
+    public const string ProcessingError = "PROCESSING_ERROR";
+
+    /// <summary>
+    /// Job status that indicates errors
+    /// </summary>
+    public const string FileReceived = "FILE_RECEIVED";
+
 }

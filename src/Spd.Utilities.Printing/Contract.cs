@@ -1,16 +1,25 @@
 ﻿using System.Text.Json;
+using Spd.Utilities.Printing.BCMailPlus;
 
 namespace Spd.Utilities.Printing;
 
 public interface IPrinter
 {
-    Task<PrintResponse> PrintAsync(PrintRequest request, CancellationToken ct);
+    Task<PrintResponse> Send(PrintRequest request, CancellationToken ct);
+    Task<PrintResponse> Preview(PrintRequest request, CancellationToken ct);
+    Task<PrintResponse> Report(PrintRequest request, CancellationToken ct);
+    
 }
 
-public abstract record PrintRequest();
+public abstract record PrintRequest;
 
-public abstract record PrintResponse();
+public record BCMailPlusPrintRequest(string JobTemplate, JsonDocument payload) : PrintRequest();
 
-public record SynchronousBcMailPlusPrintRequest(string JobClass, IEnumerable<JsonDocument> Items) : PrintRequest;
+public record PrintResponse(JobStatus Status, IEnumerable<byte>? previewContent, string? ContentType, string? Error);
 
-public record BcMailPlusPrintResponse(IEnumerable<byte[]> Items) : PrintResponse;
+public enum JobStatus{
+    Queued,
+    InProgress,
+    Completed,
+    Failed
+}

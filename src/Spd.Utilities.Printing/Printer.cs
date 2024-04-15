@@ -1,47 +1,59 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Net.Mime;
 using Spd.Utilities.Printing.BCMailPlus;
 
 namespace Spd.Utilities.Printing;
 
-internal sealed class Printer : IPrinter
+internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
 {
-    private readonly IBcMailPlusApi bcMailPlusApi;
-
-    public Printer(IBcMailPlusApi bcMailPlusApi)
-    {
-        this.bcMailPlusApi = bcMailPlusApi;
-    }
-
-    public async Task<PrintResponse> PrintAsync(PrintRequest request, CancellationToken ct)
+    public async Task<PrintResponse> Preview(PrintRequest request, CancellationToken ct)
     {
         return request switch
         {
-            SynchronousBcMailPlusPrintRequest req => await HandleBcMailPlusPrintRequest(req, ct),
-            _ => throw new InvalidOperationException("")
+            BCMailPlusPrintRequest req => await HandleBcMailPlusPrintRequest(req, false, ct),
+            _ => throw new NotImplementedException()
         };
     }
 
-    private async Task<PrintResponse> HandleBcMailPlusPrintRequest(SynchronousBcMailPlusPrintRequest req, CancellationToken ct)
+    public Task<PrintResponse> Report(PrintRequest request, CancellationToken ct)
     {
-        var jobs = new ConcurrentBag<JobStatus>();
-        await Parallel.ForEachAsync(req.Items, ct, async (item, ct) =>
-        {
-            var jobStatus = await bcMailPlusApi.CreateJob(req.JobClass, item, ct);
-            while (!ct.IsCancellationRequested && jobStatus.Status != JobStatus.PdfCreated && string.IsNullOrEmpty(jobStatus.JobProperties?.Asset))
-            {
-                if (jobStatus.Status == JobStatus.ProcessingError) throw new InvalidOperationException($"job '{jobStatus.JobId}' error: {jobStatus.Errors}");
-                await Task.Delay(5000, ct);
-            }
-            jobs.Add(jobStatus);
-        });
+        throw new NotImplementedException();
+    }
 
-        var assets = new ConcurrentBag<byte[]>();
-        await Parallel.ForEachAsync(jobs, ct, async (job, ct) =>
+    public async Task<PrintResponse> Send(PrintRequest request, CancellationToken ct)
+    {
+        return request switch
         {
-            var asset = await bcMailPlusApi.GetAsset(job.JobId!, job.JobProperties!.Asset!, ct);
-            if (asset != null) assets.Add(asset);
-        });
-        return new BcMailPlusPrintResponse(assets.ToImmutableList());
+            BCMailPlusPrintRequest req => await HandleBcMailPlusPrintRequest(req, true, ct),
+            _ => throw new NotImplementedException()
+        };
+    }
+
+    private async Task<PrintResponse> HandleBcMailPlusPrintRequest(BCMailPlusPrintRequest req, bool isPreview, CancellationToken ct)
+    {
+        var createStatus = await bcMailPlusApi.CreateJob(req.JobTemplate, req.payload, ct);
+        if (createStatus.Errors != null) return new PrintResponse(JobStatus.Failed, null, null, createStatus.Errors);
+        if (createStatus.JobId == null) return new PrintResponse(JobStatus.Failed, null, null, "job id was returned null");
+        var jobId = createStatus.JobId!;
+
+        var jobStatus = (await bcMailPlusApi.GetJobStatus([jobId], CancellationToken.None)).Jobs.SingleOrDefault();
+        if (jobStatus == null) throw new InvalidOperationException("no job status was returned");
+        while (!ct.IsCancellationRequested && jobStatus.Status != JobStatusValues.PdfCreated)
+        {
+            await Task.Delay(1000, ct);
+            jobStatus = (await bcMailPlusApi.GetJobStatus([createStatus.JobId], CancellationToken.None)).Jobs.SingleOrDefault();
+            if (jobStatus == null) throw new InvalidOperationException("no job status was returned");
+            if (jobStatus.Status == JobStatusValues.ProcessingError) throw new InvalidOperationException($"Error in job: {jobStatus.Errors}");
+        }
+        if (isPreview)
+        {
+            if (jobStatus.JobProperties == null || jobStatus.JobProperties.Asset == null) throw new InvalidOperationException("job status returned in an inconsistent state");
+            var asset = await bcMailPlusApi.GetAsset(createStatus.JobId, jobStatus.JobProperties.Asset, ct);
+            if (asset == null) throw new InvalidOperationException("asset was returned null");
+            var contentType = jobStatus.JobProperties.Asset == "CARD_PREVIEW_IMAGE" ? "image/png" : "application/pdf";
+            return new PrintResponse(JobStatus.Completed, asset, contentType, null);
+        }
+        return new PrintResponse(JobStatus.Completed, null, null, null);
     }
 }

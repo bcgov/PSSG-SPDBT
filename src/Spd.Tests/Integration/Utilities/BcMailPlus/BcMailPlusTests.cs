@@ -72,19 +72,19 @@ public class BcMailPlusTests : IAsyncLifetime
         job.JobProperties.JobId.ShouldNotBeNull();
 
         var status = (await api.GetJobStatus([job.JobId], CancellationToken.None)).Jobs.Single();
-        while (status.Status != JobStatus.PdfCreated)
+        while (status.Status != JobStatusValues.PdfCreated)
         {
             await Task.Delay(10000);
             status = (await api.GetJobStatus([job.JobId!], CancellationToken.None)).Jobs.Single();
-            if (status.Status == JobStatus.ProcessingError) throw new InvalidOperationException("Error in job");
+            if (status.Status == JobStatusValues.ProcessingError) throw new InvalidOperationException("Error in job");
         }
 
         var asset = await api.GetAsset(job.JobId!, status.JobProperties!.Asset!, CancellationToken.None);
-        while (asset == null)
-        {
-            await Task.Delay(10000);
-            asset = await api.GetAsset(job.JobId!, job.JobProperties!.Asset!, CancellationToken.None);
-        }
+        // while (asset == null)
+        // {
+        //     await Task.Delay(10000);
+        //     asset = await api.GetAsset(job.JobId!, job.JobProperties!.Asset!, CancellationToken.None);
+        // }
         asset.ShouldNotBeNull();
         var extension = status.JobProperties!.Asset == "CARD_PREVIEW_IMAGE" ? ".png" : ".pdf";
         await File.WriteAllBytesAsync(payloadFileName + extension, asset);

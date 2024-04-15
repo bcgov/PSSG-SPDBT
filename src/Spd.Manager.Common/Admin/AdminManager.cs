@@ -6,13 +6,13 @@ using Spd.Utilities.Address;
 using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Common.Admin;
-internal class AdminManager :
+internal partial class AdminManager :
     IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
     IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
     IRequestHandler<GetBannerMsgQuery, string>,
     IRequestHandler<GetReplacementProcessingTimeQuery, string>,
-    IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
-    IAdminManager
+    IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>
+    //IAdminManager
 {
     private readonly IAddressAutocompleteClient _addressClient;
     private readonly IConfigRepository _configRepo;
