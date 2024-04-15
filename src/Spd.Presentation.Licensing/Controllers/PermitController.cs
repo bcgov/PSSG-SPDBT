@@ -123,7 +123,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             var validateResult = await _permitAppUpsertValidator.ValidateAsync(permitSubmitRequest, ct);
             if (!validateResult.IsValid)
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
             return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
         }
