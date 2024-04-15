@@ -1239,7 +1239,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		profile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
-					// id: new FormControl('123123'), // TODO add ID to alias
+					id: new FormControl(alias.id),
 					givenName: new FormControl(alias.givenName),
 					middleName1: new FormControl(alias.middleName1),
 					middleName2: new FormControl(alias.middleName2),
