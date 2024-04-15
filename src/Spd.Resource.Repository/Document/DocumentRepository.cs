@@ -209,7 +209,7 @@ internal class DocumentRepository : IDocumentRepository
             new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
         if (cmd.Tag1 != null)
         {
-            //have to detach and save, then do update again. becuase of "The version of the existing record doesn't match the RowVersion property provided."
+            // Have to detach and save, then do update again because of "The version of the existing record doesn't match the RowVersion property provided."
             _context.DetachLink(documenturl, nameof(documenturl.bcgov_Tag1Id), documenturl.bcgov_Tag1Id);
             _context.UpdateObject(documenturl);
             await _context.SaveChangesAsync(ct);
