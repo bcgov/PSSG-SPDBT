@@ -114,7 +114,6 @@ namespace Spd.Presentation.Screening
                     options.BucketName = configuration["storage:MainBucketSettings:bucket"];
                     options.Credentials = new BasicAWSCredentials(configuration["storage:MainBucketSettings:accessKey"], configuration["storage:MainBucketSettings:secret"]);
                 });
-            //.AddCheck<FileStorageHealthCheck>("storage");
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
@@ -132,13 +131,13 @@ namespace Spd.Presentation.Screening
             app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
-            app.MapHealthChecks("/startup", new HealthCheckOptions
+            app.MapHealthChecks("/health/startup", new HealthCheckOptions
             {
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             }).ShortCircuit();
-            app.MapHealthChecks("/liveness", new HealthCheckOptions { Predicate = _ => false })
+            app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
                .ShortCircuit();
-            app.MapHealthChecks("/ready", new HealthCheckOptions { Predicate = _ => false })
+            app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
                .ShortCircuit();
 
             app.UseDefaultHttpRequestLogging();
