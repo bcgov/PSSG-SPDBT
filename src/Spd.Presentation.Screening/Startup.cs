@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Amazon.Runtime;
+using Amazon.S3;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -94,12 +96,25 @@ namespace Spd.Presentation.Screening
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
 
-            //add smart health check
+            //add smart health check           
             if (redisConnection != null)
                 services.AddHealthChecks().AddRedis(redisConnection);
             services.AddHealthChecks()
                 .AddCheck<DynamicsHealthCheck>("dynamics")
-                .AddCheck<FileStorageHealthCheck>("storage");
+                .AddS3(options =>
+                {
+                    options.S3Config = new AmazonS3Config
+                    {
+                        ServiceURL = configuration["storage:MainBucketSettings:url"],
+                        ForcePathStyle = true,
+                        SignatureVersion = "2",
+                        SignatureMethod = SigningAlgorithm.HmacSHA1,
+                        UseHttp = false,
+                    };
+                    options.BucketName = configuration["storage:MainBucketSettings:bucket"];
+                    options.Credentials = new BasicAWSCredentials(configuration["storage:MainBucketSettings:accessKey"], configuration["storage:MainBucketSettings:secret"]);
+                });
+            //.AddCheck<FileStorageHealthCheck>("storage");
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
