@@ -1,12 +1,11 @@
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
 public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<PermitAppUpsertRequest>
 {
-    public PermitAppSubmitRequestValidator(IConfiguration configuration)
+    public PermitAppSubmitRequestValidator()
     {
         RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
         RuleFor(r => r.WorkerLicenceTypeCode).Must(t => t == WorkerLicenceTypeCode.ArmouredVehiclePermit || t == WorkerLicenceTypeCode.BodyArmourPermit);
@@ -86,7 +85,7 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
 
 public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseValidator<PermitAppSubmitRequest>
 {
-    public PermitAppAnonymousSubmitRequestValidator(IConfiguration configuration)
+    public PermitAppAnonymousSubmitRequestValidator()
     {
         RuleFor(r => r.WorkerLicenceTypeCode).Must(t => t == WorkerLicenceTypeCode.ArmouredVehiclePermit || t == WorkerLicenceTypeCode.BodyArmourPermit);
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
