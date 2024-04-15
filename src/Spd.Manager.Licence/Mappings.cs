@@ -28,8 +28,7 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            ;
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
         CreateMap<PermitAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
@@ -39,8 +38,13 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            ;
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
+
+        CreateMap<PermitAppUpsertRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
+            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
         CreateMap<ApplicantLoginCommand, Contact>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.BcscIdentityInfo.FirstName))
@@ -109,6 +113,8 @@ internal class Mappings : Profile
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.MailingAddress.Country));
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
+
+        CreateMap<LicenceApplicationCmdResp, PermitCommandResponse>();
 
         CreateMap<LicenceApplicationResp, WorkerLicenceAppResponse>()
              .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))

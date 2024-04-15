@@ -17,6 +17,7 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
+        IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
@@ -36,12 +37,38 @@ internal class PermitAppManager :
         ITaskRepository taskRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService)
-        : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
+        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
-        _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
     }
+
+    #region for portal
+    // Authenticated save
+    public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
+    {
+        bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
+            Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            cmd.PermitUpsertRequest.LicenceAppId,
+            cancellationToken);
+
+        if (hasDuplicate)
+        {
+            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+        }
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        if (cmd.PermitUpsertRequest.LicenceAppId == null)
+            cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.PermitUpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.PermitUpsertRequest.DocumentInfos,
+            cancellationToken);
+        return _mapper.Map<PermitCommandResponse>(response);
+    }
+
+    #endregion
 
     #region anonymous
 
