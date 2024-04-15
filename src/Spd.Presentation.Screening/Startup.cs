@@ -1,6 +1,11 @@
-﻿using FluentValidation;
+﻿using Amazon.Runtime;
+using Amazon.S3;
+using FluentValidation;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Spd.Manager.Screening;
+using Spd.Presentation.Screening.Health;
 using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
@@ -70,7 +75,16 @@ namespace Spd.Presentation.Screening
 
             services.AddAutoMapper(assemblies);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-            services.AddDistributedMemoryCache();
+
+            string? redisConnection = configuration.GetValue<string>("RedisConnection");
+            if (redisConnection != null && !string.IsNullOrWhiteSpace(redisConnection))
+            {
+                services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+            }
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
             services.AddTempFileStorageService();
             services.AddFileStorageProxy(configuration);
             services
@@ -81,7 +95,25 @@ namespace Spd.Presentation.Screening
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
-            services.AddHealthChecks();
+
+            //add smart health check           
+            if (redisConnection != null)
+                services.AddHealthChecks().AddRedis(redisConnection);
+            services.AddHealthChecks()
+                .AddCheck<DynamicsHealthCheck>("dynamics")
+                .AddS3(options =>
+                {
+                    options.S3Config = new AmazonS3Config
+                    {
+                        ServiceURL = configuration["storage:MainBucketSettings:url"],
+                        ForcePathStyle = true,
+                        SignatureVersion = "2",
+                        SignatureMethod = SigningAlgorithm.HmacSHA1,
+                        UseHttp = false,
+                    };
+                    options.BucketName = configuration["storage:MainBucketSettings:bucket"];
+                    options.Credentials = new BasicAWSCredentials(configuration["storage:MainBucketSettings:accessKey"], configuration["storage:MainBucketSettings:secret"]);
+                });
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
@@ -99,7 +131,14 @@ namespace Spd.Presentation.Screening
             app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
-            app.MapHealthChecks("/health").ShortCircuit();
+            app.MapHealthChecks("/health/startup", new HealthCheckOptions
+            {
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            }).ShortCircuit();
+            app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
+               .ShortCircuit();
+            app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
+               .ShortCircuit();
 
             app.UseDefaultHttpRequestLogging();
 
