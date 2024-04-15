@@ -1,6 +1,4 @@
-﻿using Spd.Utilities.Dynamics;
-
-namespace Spd.Resource.Repository.Alias;
+﻿namespace Spd.Resource.Repository.Alias;
 public interface IAliasRepository
 {
     public Task CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);
