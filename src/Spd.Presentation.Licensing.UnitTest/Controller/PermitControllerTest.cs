@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
@@ -19,6 +20,7 @@ public class PermitControllerTest
     private Mock<IMediator> mockMediator = new();
     private Mock<IDistributedCache> mockCache = new();
     private Mock<IValidator<PermitAppSubmitRequest>> mockPermitAppSubmitValidator = new();
+    private Mock<IValidator<PermitAppUpsertRequest>> mockPermitAppUpsertValidator = new();
     private Mock<IDataProtectionProvider> mockDpProvider = new();
     private Mock<IRecaptchaVerificationService> mockRecaptch = new();
     private PermitController sut;
@@ -47,6 +49,14 @@ public class PermitControllerTest
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitUpsertCommand>(), CancellationToken.None))
             .ReturnsAsync(new PermitCommandResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<PermitSubmitCommand>(), CancellationToken.None))
+            .ReturnsAsync(new PermitCommandResponse());
+
+        var validationResults = fixture.Build<ValidationResult>()
+            .With(r => r.Errors, [])
+            .Create();
+        mockPermitAppUpsertValidator.Setup(x => x.ValidateAsync(It.IsAny<PermitAppUpsertRequest>(), CancellationToken.None))
+            .ReturnsAsync(validationResults);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [
@@ -58,6 +68,7 @@ public class PermitControllerTest
                 mockMediator.Object,
                 configuration,
                 mockPermitAppSubmitValidator.Object,
+                mockPermitAppUpsertValidator.Object,
                 mockRecaptch.Object,
                 mockCache.Object,
                 mockDpProvider.Object);
@@ -102,5 +113,16 @@ public class PermitControllerTest
         PermitAppUpsertRequest request = new();
 
         _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SavePermitLicenceApplication(request));
+    }
+
+    [Fact]
+    public async void Post_SubmitPermitApplication_Return_PermitCommandResponse()
+    {
+        PermitAppUpsertRequest request = new();
+
+        var result = await sut.SubmitPermitApplication(request, CancellationToken.None);
+
+        Assert.IsType<PermitCommandResponse>(result);
+        mockMediator.Verify();
     }
 }
