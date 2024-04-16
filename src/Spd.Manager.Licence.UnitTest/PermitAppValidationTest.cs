@@ -1,11 +1,6 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
 using Spd.Manager.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class PermitAppValidationTest
@@ -62,8 +57,8 @@ public class PermitAppValidationTest
             .With(r => r.ResidentialAddress, residentialAddress)
             .With(r => r.Rationale, new string('a', 3000))
             .With(r => r.IsCanadianCitizen, true)
-            .With(r => r.BodyArmourPermitReasonCodes, new List<BodyArmourPermitReasonCode>() { BodyArmourPermitReasonCode.PersonalProtection} )
-            .With(r => r.ArmouredVehiclePermitReasonCodes, new List<ArmouredVehiclePermitReasonCode>() { ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty } )
+            .With(r => r.BodyArmourPermitReasonCodes, new List<BodyArmourPermitReasonCode>() { BodyArmourPermitReasonCode.PersonalProtection })
+            .With(r => r.ArmouredVehiclePermitReasonCodes, new List<ArmouredVehiclePermitReasonCode>() { ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty })
             .With(r => r.LicenceTermCode, LicenceTermCode.FiveYears)
             .With(r => r.DocumentInfos, new List<Document>() { canadianCitizenshipDocument, proofOfFingerprintDocument })
             .Create();
