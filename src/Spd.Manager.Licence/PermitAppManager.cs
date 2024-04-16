@@ -23,7 +23,6 @@ internal class PermitAppManager :
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
 {
-    private readonly ILicenceRepository _licenceRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 

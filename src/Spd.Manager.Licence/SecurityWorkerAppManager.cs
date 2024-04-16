@@ -27,7 +27,6 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceAppUpdateCommand, WorkerLicenceCommandResponse>,
         ISecurityWorkerAppManager
 {
-    private readonly ILicenceRepository _licenceRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IContactRepository _contactRepository;
 
