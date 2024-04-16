@@ -1,4 +1,4 @@
-﻿namespace Spd.Resource.Repository.Alias;
+namespace Spd.Resource.Repository.Alias;
 public interface IAliasRepository
 {
     public Task<Guid?> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);

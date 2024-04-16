@@ -139,4 +139,40 @@ public class PermitAppManagerTest
         //Assert
         await Assert.ThrowsAsync<ApiException>(act);
     }
+
+    [Fact]
+    public async void Handle_PermitSubmitCommand_WithoutLicAppId_Return_PermitCommandResponse()
+    {
+        //Arrange
+        Guid licAppId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == applicantId), CancellationToken.None)) //no dup lic
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { }
+            });
+        mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+        mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.Is<PermitAppUpsertRequest>(r => r.ApplicantId == applicantId)))
+            .Returns(new SaveLicenceApplicationCmd());
+        mockMapper.Setup(m => m.Map<PermitCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
+            .Returns(new PermitCommandResponse() { LicenceAppId = licAppId });
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp());
+        PermitAppUpsertRequest request = new()
+        {
+            LicenceAppId = null,
+            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ApplicantId = applicantId,
+        };
+
+        //Act
+        var viewResult = await sut.Handle(new PermitSubmitCommand(request), CancellationToken.None);
+
+        //Assert
+        Assert.IsType<PermitCommandResponse>(viewResult);
+        Assert.Equal(licAppId, viewResult.LicenceAppId);
+    }
 }

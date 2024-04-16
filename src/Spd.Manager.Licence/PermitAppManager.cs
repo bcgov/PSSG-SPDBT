@@ -18,6 +18,7 @@ internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
         IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
+        IRequestHandler<PermitSubmitCommand, PermitCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
@@ -65,6 +66,15 @@ internal class PermitAppManager :
             (List<Document>?)cmd.PermitUpsertRequest.DocumentInfos,
             cancellationToken);
         return _mapper.Map<PermitCommandResponse>(response);
+    }
+
+    public async Task<PermitCommandResponse> Handle(PermitSubmitCommand cmd, CancellationToken cancellationToken)
+    {
+        var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
+        decimal? cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        return new PermitCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     #endregion
