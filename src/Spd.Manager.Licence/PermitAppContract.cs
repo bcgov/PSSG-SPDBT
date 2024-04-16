@@ -25,7 +25,7 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
 
 #region authenticated user
 public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitCommandResponse>;
-public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest, string? BcscGuid = null)
+public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest) 
     : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitCommandResponse>;
 
 public record PermitAppUpsertRequest : PermitLicenceAppBase
