@@ -17,7 +17,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
-							<mat-radio-group aria-label="Select an option" formControlName="isPrintPermit">
+							<mat-radio-group aria-label="Select an option" formControlName="reprintLicence">
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-divider class="my-2"></mat-divider>
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -25,9 +25,9 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('isPrintPermit')?.dirty || form.get('isPrintPermit')?.touched) &&
-									form.get('isPrintPermit')?.invalid &&
-									form.get('isPrintPermit')?.hasError('required')
+									(form.get('reprintLicence')?.dirty || form.get('reprintLicence')?.touched) &&
+									form.get('reprintLicence')?.invalid &&
+									form.get('reprintLicence')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
@@ -42,7 +42,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 export class StepPermitPrintComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.permitApplicationService.printPermitFormGroup;
+	form: FormGroup = this.permitApplicationService.reprintLicenceFormGroup;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 

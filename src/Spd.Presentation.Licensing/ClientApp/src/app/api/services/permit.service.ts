@@ -290,6 +290,67 @@ export class PermitService extends BaseService {
   }
 
   /**
+   * Path part for operation apiPermitApplicationsSubmitPost
+   */
+  static readonly ApiPermitApplicationsSubmitPostPath = '/api/permit-applications/submit';
+
+  /**
+   * Submit Permit Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiPermitApplicationsSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiPermitApplicationsSubmitPost$Response(params: {
+    body: PermitAppUpsertRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PermitCommandResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsSubmitPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PermitCommandResponse>;
+      })
+    );
+  }
+
+  /**
+   * Submit Permit Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiPermitApplicationsSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiPermitApplicationsSubmitPost(params: {
+    body: PermitAppUpsertRequest
+  },
+  context?: HttpContext
+
+): Observable<PermitCommandResponse> {
+
+    return this.apiPermitApplicationsSubmitPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PermitCommandResponse>) => r.body as PermitCommandResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiPermitApplicationGet
    */
   static readonly ApiPermitApplicationGetPath = '/api/permit-application';

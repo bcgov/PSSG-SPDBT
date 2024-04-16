@@ -239,7 +239,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				console.log('resp', resp);
 				if (resp) {
 					if (isCreate) {
 						this.memberList.push(resp.data);

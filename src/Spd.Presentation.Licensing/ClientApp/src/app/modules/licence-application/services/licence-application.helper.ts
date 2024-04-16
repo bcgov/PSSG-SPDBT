@@ -788,9 +788,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	 */
 
 	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
-		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
-
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, true);
+
+		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		// documentInfos
@@ -799,9 +799,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	}
 
 	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppSubmitRequest, Array<Document>] {
-		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
-
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
+
+		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		// documentKeyCodes xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -834,6 +834,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
 
+		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
+		const documentInfos: Array<Document> = [];
+
 		// default the flag
 		residentialAddress.isMailingTheSameAsResidential = !!residentialAddress.isMailingTheSameAsResidential;
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
@@ -845,9 +848,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			personalInformationData.dateOfBirth,
 			SPD_CONSTANTS.date.backendDateFormat
 		);
-
-		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
-		const documentInfos: Array<Document> = [];
 
 		if (licenceModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.ArmouredCarGuard);
