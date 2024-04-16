@@ -423,8 +423,7 @@ export class CommonApplicationService {
 		isFound: boolean,
 		isExpired: boolean,
 		isInRenewalPeriod: boolean
-	): [string | null, string | null, string | null] {
-		let messageInfo = null;
+	): [string | null, string | null] {
 		let messageWarn = null;
 		let messageError = null;
 
@@ -446,7 +445,7 @@ export class CommonApplicationService {
 			messageError = `This ${label} number does not match any existing ${label}s.`;
 		}
 
-		return [messageInfo, messageWarn, messageError];
+		return [messageWarn, messageError];
 	}
 
 	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {

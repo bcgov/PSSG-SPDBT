@@ -161,17 +161,17 @@ export class CommonExpiredLicenceAnonymousComponent implements OnInit {
 		isInRenewalPeriod: boolean,
 		recaptchaCode: string
 	): void {
-		[this.messageInfo, this.messageWarn, this.messageError] =
-			this.commonApplicationService.setExpiredLicenceLookupMessage(
-				resp,
-				this.label,
-				this.workerLicenceTypeCode,
-				isFound,
-				isExpired,
-				isInRenewalPeriod
-			);
+		this.messageInfo = null;
+		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
+			resp,
+			this.label,
+			this.workerLicenceTypeCode,
+			isFound,
+			isExpired,
+			isInRenewalPeriod
+		);
 
-		if (isExpired && !this.messageInfo && !this.messageWarn && !this.messageError) {
+		if (isExpired && !this.messageWarn && !this.messageError) {
 			this.handleValidExpiredLicence(resp, recaptchaCode);
 		}
 	}
