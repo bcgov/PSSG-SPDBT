@@ -206,7 +206,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitPermitAuthenticated().subscribe({
+		this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit renewal has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());

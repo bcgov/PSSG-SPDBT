@@ -497,14 +497,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the permit data
 	 * @returns
 	 */
-	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyBaseAuthenticated(this.permitModelFormGroup.getRawValue());
+	submitPermitNewAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
 
-		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body });
 	}
 
-	submitPermitRenewalOrUpdateAuthenticated(): void {
-		//} Observable<StrictHttpResponse<PermitAppSubmitRequest>> {//WorkerLicenceCommandResponse
+	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
@@ -513,7 +518,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Create list of APIs to call for the newly added documents
-		// const documentsToSaveApis: Observable<string>[] = [];
+		const documentsToSaveApis: Observable<string>[] = [];
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -531,14 +536,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			});
 
 			if (newDocumentsOnly.length > 0) {
-				// documentsToSaveApis.push(
-				// 	this.permitService.apiWorkerLicenceApplicationsAuthenticatedFilesPost({
-				// 		body: {
-				// 			Documents: newDocumentsOnly,
-				// 			LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-				// 		},
-				// 	})
-				// );
+				documentsToSaveApis.push(
+					this.permitService.apiPermitApplicationsFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+						},
+					})
+				);
 			}
 		});
 
@@ -546,29 +551,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
 		console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
 
-		// if (documentsToSaveApis.length > 0) {
-		// 	return forkJoin(documentsToSaveApis).pipe(
-		// 		switchMap((resps: string[]) => {
-		// 			// pass in the list of document key codes
-		// 			body.documentKeyCodes = [...resps];
-		// 			// pass in the list of document ids that were in the original
-		// 			// application and are still being used
-		// 			body.previousDocumentIds = [...existingDocumentIds];
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
-		// 			return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-		// 				body,
-		// 			});
-		// 		})
-		// 	);
-		// } else {
-		// 	// pass in the list of document ids that were in the original
-		// 	// application and are still being used
-		// 	body.previousDocumentIds = [...existingDocumentIds];
+					return this.permitService.apiPermitApplicationsSubmitPost$Response({
+						body,
+					});
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = [...existingDocumentIds];
 
-		// 	return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-		// 		body,
-		// 	});
-		// }
+			return this.permitService.apiPermitApplicationsSubmitPost$Response({
+				body,
+			});
+		}
 	}
 
 	/**
@@ -1037,6 +1042,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		this.permitModelFormGroup.patchValue(
 			{
+				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
 				...originalLicenceData,

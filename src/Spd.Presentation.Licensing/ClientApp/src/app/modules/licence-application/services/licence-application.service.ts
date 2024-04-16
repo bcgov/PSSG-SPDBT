@@ -360,26 +360,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Determine if the step data should be saved. If the data has changed and category data exists;
-	 * @returns
-	 */
-	isAutoSave(): boolean {
-		if (
-			!this.authenticationService.isLoggedIn() ||
-			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
-		) {
-			return false;
-		}
-
-		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
-		return shouldSaveStep;
-	}
-
-	/*************************************************************/
-	// AUTHENTICATED
-	/*************************************************************/
-
-	/**
 	 * Link two applicants
 	 * @returns
 	 */
@@ -399,6 +379,47 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			})
 		);
 	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
+			return false;
+		}
+
+		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
+		return shouldSaveStep;
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
+	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
+			take(1),
+			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				const formValue = this.licenceModelFormGroup.getRawValue();
+				if (!formValue.licenceAppId) {
+					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+				}
+			})
+		);
+	}
+
+	/*************************************************************/
+	// AUTHENTICATED
+	/*************************************************************/
 
 	/**
 	 * Load a user profile
@@ -474,27 +495,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						);
 						break;
 					}
-				}
-			})
-		);
-	}
-
-	/**
-	 * Partial Save - Save the licence data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
-	 */
-	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
-
-		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
-			take(1),
-			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				const formValue = this.licenceModelFormGroup.getRawValue();
-				if (!formValue.licenceAppId) {
-					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})
 		);

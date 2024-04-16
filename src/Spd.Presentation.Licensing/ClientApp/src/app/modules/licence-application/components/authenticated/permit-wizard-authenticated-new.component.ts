@@ -216,7 +216,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitPermitAuthenticated().subscribe({
+		this.permitApplicationService.submitPermitNewAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
