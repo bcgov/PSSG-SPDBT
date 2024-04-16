@@ -35,6 +35,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
+	  <ProjectReference Include="..\Spd.Tests\Spd.Tests.csproj" />
 	  <ProjectReference Include="..\Spd.Utilities.Dynamics\Spd.Utilities.Dynamics.csproj" />
 	</ItemGroup>
 	
