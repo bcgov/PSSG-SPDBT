@@ -101,7 +101,7 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 			</div>
 			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">
-					Save & Continue to Application
+					{{ saveAndContinueLabel }}
 				</button>
 			</div>
 		</div>
@@ -110,6 +110,7 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 })
 export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
+	saveAndContinueLabel = 'Save & Continue to Application';
 
 	form: FormGroup = this.permitApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -135,14 +136,17 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state && state['applicationTypeCode'];
 
+		console.log('this.applicationTypeCode', this.applicationTypeCode);
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.alertText = 'Make sure your profile information is up-to-date before renewing your permit.';
+				this.saveAndContinueLabel = 'Save & Proceed to Renewal';
 				this.showConfirmation = true;
 				break;
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your permit.';
+				this.saveAndContinueLabel = 'Save & Proceed to Update';
 				this.showConfirmation = true;
 				break;
 			}

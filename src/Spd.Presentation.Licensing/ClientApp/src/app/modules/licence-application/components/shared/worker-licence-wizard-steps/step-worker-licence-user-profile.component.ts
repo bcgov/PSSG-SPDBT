@@ -107,7 +107,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 			</div>
 			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">
-					Save & Continue to Application
+					{{ saveAndContinueLabel }}
 				</button>
 			</div>
 		</div>
@@ -116,6 +116,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 })
 export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
+	saveAndContinueLabel = 'Save & Continue to Application';
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -152,17 +153,20 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				this.alertText = 'Make sure your address information is up-to-date before replacing your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Replacement';
 				this.showConfirmation = true;
 				this.isReadonlyPersonalInfo = true;
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
 				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Renewal';
 				this.showConfirmation = true;
 				break;
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Update';
 				this.showConfirmation = true;
 				break;
 			}
