@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -89,6 +89,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.Screening.UnitTest", "Spd.Manager.Screening.UnitTest\Spd.Manager.Screening.UnitTest.csproj", "{2971FFA0-A3D7-4632-89CD-D69C369B2DC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Presentation.Screening.UnitTest", "Spd.Presentation.Screening.UnitTest\Spd.Presentation.Screening.UnitTest.csproj", "{176888CB-63E7-41C9-A96D-67428EC6D27E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Engines.Transformation", "Spd.Engines.Transformation\Spd.Engines.Transformation.csproj", "{CDBED908-3EAC-4301-A472-3FBC3169F7BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,6 +234,10 @@ Global
 		{176888CB-63E7-41C9-A96D-67428EC6D27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{176888CB-63E7-41C9-A96D-67428EC6D27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{176888CB-63E7-41C9-A96D-67428EC6D27E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDBED908-3EAC-4301-A472-3FBC3169F7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDBED908-3EAC-4301-A472-3FBC3169F7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDBED908-3EAC-4301-A472-3FBC3169F7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDBED908-3EAC-4301-A472-3FBC3169F7BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

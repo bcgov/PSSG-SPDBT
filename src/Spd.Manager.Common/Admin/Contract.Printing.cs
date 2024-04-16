@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal;
-using MediatR;
+﻿using MediatR;
 
 namespace Spd.Manager.Common;
 
@@ -8,9 +7,9 @@ public record SendToPrintCommand(Guid JobId, JobSpecification JobSpecification) 
 
 public record PrintJobResponse(Guid JobId);
 
-public abstract record JobSpecification;
+public abstract record JobSpecification(bool isPreview);
 
-public record FingerprintLetterJobSpecification(Guid ApplicationId) : JobSpecification();
+public record FingerprintLetterJobSpecification(Guid ApplicationId) : JobSpecification(false);
 
 public record PrintJobStatusQuery(Guid JobId) : IRequest<PrintJobStatusResponse>;
 public record PrintJobStatusResponse(PrintJobStatus Status, string? Error);
