@@ -220,14 +220,13 @@ import {
 														<li>replacing your photo</li>
 													</ul>
 												</div>
-												<div class="col-lg-3 text-end">
+												<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 													<button
 														mat-flat-button
 														color="primary"
 														*ngIf="appl.isRenewalPeriod"
 														class="large my-2"
 														(click)="onRenew(appl)"
-														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>restore</mat-icon>Renew
 													</button>
@@ -237,10 +236,15 @@ import {
 														*ngIf="appl.isUpdatePeriod"
 														class="large my-2"
 														(click)="onUpdate(appl)"
-														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>update</mat-icon>Update
 													</button>
+												</div>
+												<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+													<app-alert type="info" icon="info">
+														This {{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed,
+														updated or replaced while an application is in progress
+													</app-alert>
 												</div>
 											</div>
 										</ng-container>
@@ -252,14 +256,13 @@ import {
 														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 													</div>
 												</div>
-												<div class="col-lg-3 text-end">
+												<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 													<button
 														mat-flat-button
 														color="primary"
 														*ngIf="appl.isRenewalPeriod"
 														class="large my-2"
 														(click)="onRenew(appl)"
-														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>restore</mat-icon>Renew
 													</button>
@@ -269,10 +272,21 @@ import {
 														*ngIf="appl.isUpdatePeriod"
 														class="large my-2"
 														(click)="onUpdate(appl)"
-														[disabled]="applicationIsInProgress"
 													>
 														<mat-icon>update</mat-icon>Update
 													</button>
+												</div>
+												<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+													<app-alert type="info" icon="info">
+														<ng-container *ngIf="appl.isReplacementPeriod; else NoPermitReplacementPeriod">
+															This {{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed,
+															updated or replaced while an application is in progress
+														</ng-container>
+														<ng-template #NoPermitReplacementPeriod>
+															This {{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed
+															or updated while an application is in progress
+														</ng-template>
+													</app-alert>
 												</div>
 											</div>
 										</ng-template>
@@ -348,10 +362,15 @@ import {
 										color="primary"
 										class="large mt-2 mt-lg-0"
 										(click)="onNewSecurityWorkerLicence()"
-										[disabled]="applicationIsInProgress"
+										*ngIf="!applicationIsInProgress"
 									>
 										<mat-icon>add</mat-icon>Apply for a New Security Worker Licence
 									</button>
+								</div>
+								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+									<app-alert type="info" icon="info">
+										A Security Worker Licence cannot be created while an application is in progress
+									</app-alert>
 								</div>
 							</div>
 						</div>
@@ -367,10 +386,15 @@ import {
 										color="primary"
 										class="large mt-2 mt-lg-0"
 										(click)="onNewBodyArmourPermit()"
-										[disabled]="applicationIsInProgress"
+										*ngIf="!applicationIsInProgress"
 									>
 										<mat-icon>add</mat-icon>Apply for a New Body Amour Permit
 									</button>
+								</div>
+								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+									<app-alert type="info" icon="info">
+										A Body Amour Permit cannot be created while an application is in progress
+									</app-alert>
 								</div>
 							</div>
 						</div>
@@ -386,10 +410,15 @@ import {
 										color="primary"
 										class="large mt-2 mt-lg-0"
 										(click)="onNewArmouredVehiclePermit()"
-										[disabled]="applicationIsInProgress"
+										*ngIf="!applicationIsInProgress"
 									>
 										<mat-icon>add</mat-icon>Apply for a New Armoured Vehicle Permit
 									</button>
+								</div>
+								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+									<app-alert type="info" icon="info">
+										An Armoured Vehicle Permit cannot be created while an application is in progress
+									</app-alert>
 								</div>
 							</div>
 						</div>
