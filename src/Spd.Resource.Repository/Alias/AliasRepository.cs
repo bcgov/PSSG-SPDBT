@@ -19,17 +19,18 @@ internal class AliasRepository : IAliasRepository
         _logger = logger;
     }
 
-    public async Task CreateAliasAsync(CreateAliasCommand cmd, CancellationToken ct)
+    public async Task<Guid?> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken ct)
     {
         contact? contact = await _context.GetContactById(cmd.ContactId, ct);
-
-        CreateAlias(contact, _mapper.Map<spd_alias>(cmd.Alias));
+        spd_alias alias = _mapper.Map<spd_alias>(cmd.Alias);
+        CreateAlias(contact, alias);
         await _context.SaveChangesAsync(ct);
+        return alias.spd_aliasid;
     }
 
     public async Task DeleteAliasAsync(List<Guid?> aliasIds, CancellationToken ct)
     {
-        foreach(var aliasId in aliasIds)
+        foreach (var aliasId in aliasIds)
         {
             spd_alias? alias = _context.spd_aliases.Where(a =>
                 a.spd_aliasid == aliasId &&

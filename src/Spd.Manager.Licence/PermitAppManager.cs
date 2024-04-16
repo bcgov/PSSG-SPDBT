@@ -24,7 +24,6 @@ internal class PermitAppManager :
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
 {
-    private readonly ILicenceRepository _licenceRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -238,7 +237,7 @@ internal class PermitAppManager :
     {
         ChangeSpec changes = new();
 
-        // Check if prupose changed
+        // Check if purpose changed
         changes.PurposeChanged = ChangeInPurpose(originalApp, newRequest);
 
         // Check if rationale changed
