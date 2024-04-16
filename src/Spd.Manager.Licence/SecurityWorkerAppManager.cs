@@ -134,7 +134,7 @@ internal class SecurityWorkerAppManager :
 
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        createApp.UploadedDocumentEnums =
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
 
@@ -313,6 +313,18 @@ internal class SecurityWorkerAppManager :
     }
 
     #endregion
+
+    private IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(IEnumerable<LicAppFileInfo> licAppFiles)
+    {
+        List<UploadedDocumentEnum> docEnums = new();
+        if (licAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+        if (licAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
+            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+        if (licAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
+            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        return docEnums;
+    }
 
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
         WorkerLicenceAppSubmitRequest newRequest,
