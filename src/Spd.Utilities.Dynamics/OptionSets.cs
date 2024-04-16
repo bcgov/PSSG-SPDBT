@@ -364,4 +364,11 @@ namespace Spd.Utilities.Dynamics
         Screening = 100000000,
         Licensing = 100000001,
     }
+
+    public enum UploadedDocumentOptionSet
+    {
+        Fingerprint = 100000000,
+        StudyPermit = 100000001,
+        WorkPermit = 100000002
+    }
 }

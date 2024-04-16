@@ -1,7 +1,7 @@
-﻿namespace Spd.Resource.Repository.Alias;
+namespace Spd.Resource.Repository.Alias;
 public interface IAliasRepository
 {
-    public Task CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);
+    public Task<Guid?> CreateAliasAsync(CreateAliasCommand cmd, CancellationToken cancellationToken);
     public Task DeleteAliasAsync(List<Guid?> aliasIds, CancellationToken cancellationToken);
     public Task UpdateAliasAsync(UpdateAliasCommand cmd, CancellationToken cancellationToken);
 }
