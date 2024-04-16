@@ -116,7 +116,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="permitSubmitRequest"></param>
         /// <returns></returns>
-        [Route("api/permit/submit")]
+        [Route("api/permit-applications/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<PermitCommandResponse> SubmitPermitApplication([FromBody][Required] PermitAppUpsertRequest permitSubmitRequest, CancellationToken ct)
