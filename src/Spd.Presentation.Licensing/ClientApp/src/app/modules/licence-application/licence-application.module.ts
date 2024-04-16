@@ -147,6 +147,7 @@ import { CommonBcDriverLicenceComponent } from './components/shared/step-compone
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
+import { CommonExpiredLicenceAnonymousComponent } from './components/shared/step-components/common-expired-licence-anonymous.component';
 import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
@@ -187,7 +188,7 @@ import { StepWorkerLicenceCriminalHistoryComponent } from './components/shared/w
 import { StepWorkerLicenceDogsAuthorizationComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceExpiredComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-expired.component';
 import { StepWorkerLicenceFingerprintsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-fingerprints.component';
-import { StepWorkerLicenceMailingAddressComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
+import { StepWorkerLicenceMailingAddressAnonymousComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mental-health-conditions.component';
 import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-anonymous.component';
 import { StepWorkerLicencePhotographOfYourselfNewComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-new.component';
@@ -230,6 +231,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonBusinessTermsComponent,
 		CommonContactInformationComponent,
 		CommonCriminalHistoryComponent,
+		CommonExpiredLicenceAnonymousComponent,
 		CommonExpiredLicenceComponent,
 		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,
@@ -355,7 +357,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceDogsAuthorizationComponent,
 		StepWorkerLicenceExpiredComponent,
 		StepWorkerLicenceFingerprintsComponent,
-		StepWorkerLicenceMailingAddressComponent,
+		StepWorkerLicenceMailingAddressAnonymousComponent,
 		StepWorkerLicenceMentalHealthConditionsComponent,
 		StepWorkerLicencePersonalInformationAnonymousComponent,
 		StepWorkerLicencePhotographOfYourselfAnonymousComponent,

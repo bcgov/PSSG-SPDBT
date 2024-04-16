@@ -120,6 +120,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-step-worker-licence-expired
 					(validExpiredLicenceData)="onValidExpiredLicence()"
+					[isLoggedIn]="isLoggedIn"
 				></app-step-worker-licence-expired>
 
 				<div class="row wizard-button-row">

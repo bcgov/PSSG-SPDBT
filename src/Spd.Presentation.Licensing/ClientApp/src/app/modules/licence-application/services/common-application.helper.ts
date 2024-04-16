@@ -38,17 +38,29 @@ export abstract class CommonApplicationHelper {
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
+			searchLicenceNumber: new FormControl(),
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
-			captchaFormGroup: new FormGroup({
-				token: new FormControl(''),
-			}),
+			captchaFormGroup: new FormGroup(
+				{
+					displayCaptcha: new FormControl(false),
+					token: new FormControl(''),
+				},
+				{
+					validators: [
+						FormGroupValidators.conditionalRequiredValidator(
+							'token',
+							(form) => form.get('displayCaptcha')?.value == true
+						),
+					],
+				}
+			),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'captchaFormGroup.token',
+					'searchLicenceNumber',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalRequiredValidator(

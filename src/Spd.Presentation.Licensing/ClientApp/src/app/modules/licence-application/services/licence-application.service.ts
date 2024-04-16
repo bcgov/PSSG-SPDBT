@@ -156,13 +156,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					// console.debug(
-					// 	'licenceModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
-					// 	this.licenceModelFormGroup.getRawValue()
-					// );
+					console.debug(
+						'licenceModelFormGroup CHANGED',
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						this.licenceModelFormGroup.getRawValue()
+					);
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -1260,6 +1260,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const expiredLicenceData = {
 			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
+			searchLicenceNumber: resp.expiredLicenceNumber,
 			expiredLicenceNumber: resp.expiredLicenceNumber,
 			expiryDate: resp.expiryDate,
 			expiredLicenceId: resp.expiredLicenceId,
