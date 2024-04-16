@@ -24,11 +24,13 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<PermitAppSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
+        private readonly IValidator<PermitAppUpsertRequest> _permitAppUpsertValidator;
 
         public PermitController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<PermitAppSubmitRequest> permitAppAnonymousSubmitRequestValidator,
+            IValidator<PermitAppUpsertRequest> permitAppUpsertValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -37,6 +39,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _configuration = configuration;
             _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
+            _permitAppUpsertValidator = permitAppUpsertValidator;
         }
 
         #region authenticated
@@ -106,6 +109,23 @@ namespace Spd.Presentation.Licensing.Controllers
             Guid fileKeyCode = Guid.NewGuid();
             await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
             return fileKeyCode;
+        }
+
+        /// <summary>
+        /// Submit Permit Application
+        /// </summary>
+        /// <param name="permitSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<PermitCommandResponse> SubmitPermitApplication([FromBody][Required] PermitAppUpsertRequest permitSubmitRequest, CancellationToken ct)
+        {
+            var validateResult = await _permitAppUpsertValidator.ValidateAsync(permitSubmitRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
         }
 
         #endregion
