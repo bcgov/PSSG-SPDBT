@@ -4,13 +4,21 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from '../../anonymous/permit-wizard-steps/step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAuthenticatedComponent } from '../../anonymous/permit-wizard-steps/step-permit-summary-authenticated.component';
+import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '../../anonymous/permit-wizard-steps/step-permit-summary-review-update-authenticated.component';
 
 @Component({
 	selector: 'app-steps-permit-review-authenticated',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-summary-authenticated (editStep)="onGoToStep($event)"></app-step-permit-summary-authenticated>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateReview">
+					<app-step-permit-summary-review-update-authenticated></app-step-permit-summary-review-update-authenticated>
+				</ng-container>
+				<ng-template #notUpdateReview>
+					<app-step-permit-summary-authenticated
+						(editStep)="onGoToStep($event)"
+					></app-step-permit-summary-authenticated>
+				</ng-template>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -47,12 +55,16 @@ import { StepPermitSummaryAuthenticatedComponent } from '../../anonymous/permit-
 export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepPermitSummaryAuthenticatedComponent) summaryReviewComponent!: StepPermitSummaryAuthenticatedComponent;
+	@ViewChild(StepPermitSummaryAuthenticatedComponent)
+	summaryReviewComponent!: StepPermitSummaryAuthenticatedComponent;
+	@ViewChild(StepPermitSummaryReviewUpdateAuthenticatedComponent)
+	summaryReviewUpdateComponent!: StepPermitSummaryReviewUpdateAuthenticatedComponent;
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
@@ -96,6 +108,10 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 
 	override onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
-		this.summaryReviewComponent.onUpdateData();
+		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+			this.summaryReviewUpdateComponent.onUpdateData();
+		} else {
+			this.summaryReviewComponent.onUpdateData();
+		}
 	}
 }

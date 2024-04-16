@@ -415,4 +415,53 @@ export class CommonApplicationService {
 				this.fileUtilService.downloadFile(resp.headers, resp.body);
 			});
 	}
+
+	setExpiredLicenceLookupMessage(
+		resp: LicenceResponse,
+		label: string,
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		isFound: boolean,
+		isExpired: boolean,
+		isInRenewalPeriod: boolean
+	): [string | null, string | null] {
+		let messageWarn = null;
+		let messageError = null;
+
+		if (isFound) {
+			if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
+				//   WorkerLicenceType does not match
+				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
+				messageError = `This ${label} is not a ${selWorkerLicenceTypeDesc}.`;
+			} else {
+				if (!isExpired) {
+					if (isInRenewalPeriod) {
+						messageWarn = `Your ${label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${label}</a>.`;
+					} else {
+						messageWarn = `This ${label} is still valid. Please renew it when you get your renewal notice in the mail.`;
+					}
+				}
+			}
+		} else {
+			messageError = `This ${label} number does not match any existing ${label}s.`;
+		}
+
+		return [messageWarn, messageError];
+	}
+
+	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
+		if (!expiryDate || !licenceTermCode) {
+			return false;
+		}
+
+		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days') + 1;
+
+		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
+		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
+		let renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
+		if (licenceTermCode === LicenceTermCode.NinetyDays) {
+			renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
+		}
+
+		return daysBetween > renewPeriodDays ? false : true;
+	}
 }
