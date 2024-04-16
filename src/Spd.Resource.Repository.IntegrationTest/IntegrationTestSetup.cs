@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
 using System.Reflection;
 
@@ -39,6 +40,7 @@ public class IntegrationTestSetup
         serviceCollection.AddDistributedMemoryCache();
         serviceCollection.AddTransient<IContactRepository, ContactRepository>();
         serviceCollection.AddTransient<IAliasRepository, AliasRepository>();
+        serviceCollection.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }

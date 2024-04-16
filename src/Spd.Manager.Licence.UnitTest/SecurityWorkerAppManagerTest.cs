@@ -482,13 +482,21 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_WorkerLicenceAppUpdateCommand_WithNoLicences_Throw_Exception()
         {
+            //Arrange
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+                .ReturnsAsync(new LicenceListResp()
+                {
+                    Items = new List<LicenceResp> { }
+                });
             Guid licAppId = Guid.NewGuid();
 
             var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
-            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, []);
 
+            //Action
+            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, []);
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
 
+            //Assert
             await Assert.ThrowsAsync<ArgumentException>(act);
         }
 
