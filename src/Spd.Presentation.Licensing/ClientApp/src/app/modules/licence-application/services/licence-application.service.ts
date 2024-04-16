@@ -1260,7 +1260,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const expiredLicenceData = {
 			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
-			searchLicenceNumber: resp.expiredLicenceNumber,
 			expiredLicenceNumber: resp.expiredLicenceNumber,
 			expiryDate: resp.expiryDate,
 			expiredLicenceId: resp.expiredLicenceId,

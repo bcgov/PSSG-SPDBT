@@ -47,12 +47,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								<input
 									matInput
 									type="search"
-									formControlName="searchLicenceNumber"
+									formControlName="expiredLicenceNumber"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
 									maxlength="10"
 								/>
-								<mat-error *ngIf="form.get('searchLicenceNumber')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
 
@@ -103,18 +103,6 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	ngOnInit(): void {
 		this.titleLabel = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 		this.label = this.titleLabel.toLowerCase();
-
-		if (
-			this.hasExpiredLicence.value === BooleanTypeCode.Yes &&
-			this.expiredLicenceNumber.value &&
-			this.expiryDate.value
-		) {
-			const formattedExpiryDate = this.formatDatePipe.transform(
-				this.expiryDate.value,
-				SPD_CONSTANTS.date.formalDateFormat
-			);
-			this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
-		}
 	}
 
 	onValidateAndSearch(): void {
@@ -123,19 +111,13 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			return;
 		}
 
-		if (this.searchLicenceNumber.value === this.expiredLicenceNumber.value) {
-			// do not re-search if already linked
-			this.validExpiredLicenceData.emit();
-			return;
-		}
-
-		this.performSearch(this.searchLicenceNumber.value);
+		this.performSearch(this.expiredLicenceNumber.value);
 	}
 
 	private performSearch(licenceNumber: string) {
 		this.form.markAllAsTouched();
 
-		this.form.patchValue({ expiredLicenceId: null, expiredLicenceNumber: null, expiryDate: null });
+		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
 
 		if (!licenceNumber || licenceNumber.trim().length == 0) return;
 
@@ -145,9 +127,10 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			.subscribe((resp: LicenceResponse) => {
 				const isFound = !!(resp && resp?.expiryDate);
 				const isExpired = isFound ? !this.utilService.getIsTodayOrFutureDate(resp?.expiryDate) : false;
-				const isInRenewalPeriod = isExpired
-					? false
-					: this.commonApplicationService.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
+				const isInRenewalPeriod =
+					isExpired || !isFound
+						? false
+						: this.commonApplicationService.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
 
 				this.handleLookupResult(resp, isFound, isExpired, isInRenewalPeriod);
 			});
@@ -207,9 +190,6 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 	get hasExpiredLicence(): FormControl {
 		return this.form.get('hasExpiredLicence') as FormControl;
-	}
-	get searchLicenceNumber(): FormControl {
-		return this.form.get('searchLicenceNumber') as FormControl;
 	}
 	get expiredLicenceNumber(): FormControl {
 		return this.form.get('expiredLicenceNumber') as FormControl;

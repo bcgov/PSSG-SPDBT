@@ -48,12 +48,12 @@ import { Subject } from 'rxjs';
 								<input
 									matInput
 									type="search"
-									formControlName="searchLicenceNumber"
+									formControlName="expiredLicenceNumber"
 									oninput="this.value = this.value.toUpperCase()"
 									[errorStateMatcher]="matcher"
 									maxlength="10"
 								/>
-								<mat-error *ngIf="form.get('searchLicenceNumber')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
 
@@ -128,13 +128,7 @@ export class CommonExpiredLicenceAnonymousComponent implements OnInit {
 			return;
 		}
 
-		if (this.searchLicenceNumber.value === this.expiredLicenceNumber.value) {
-			// do not re-search if already linked
-			this.validExpiredLicenceData.emit();
-			return;
-		}
-
-		this.performSearch(this.searchLicenceNumber.value);
+		this.performSearch(this.expiredLicenceNumber.value);
 	}
 
 	private performSearch(licenceNumber: string) {
@@ -216,9 +210,6 @@ export class CommonExpiredLicenceAnonymousComponent implements OnInit {
 
 	get hasExpiredLicence(): FormControl {
 		return this.form.get('hasExpiredLicence') as FormControl;
-	}
-	get searchLicenceNumber(): FormControl {
-		return this.form.get('searchLicenceNumber') as FormControl;
 	}
 	get expiredLicenceNumber(): FormControl {
 		return this.form.get('expiredLicenceNumber') as FormControl;
