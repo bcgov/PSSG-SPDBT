@@ -58,7 +58,10 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-expired (validExpiredLicenceData)="onValidExpiredLicence()"></app-step-permit-expired>
+				<app-step-permit-expired
+					(validExpiredLicenceData)="onValidExpiredLicence()"
+					[isLoggedIn]="isLoggedIn"
+				></app-step-permit-expired>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">

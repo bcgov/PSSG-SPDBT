@@ -84,7 +84,9 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepUpdatePrevious(STEP_REASON)">
+							Previous
+						</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_REASON)">
@@ -210,7 +212,13 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 				}
 				break;
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				if (this.showReprint) {
+				if (this.showReprint || this.hasBcscNameChanged) {
+					this.childstepper.previous();
+					return;
+				}
+				break;
+			case this.STEP_REASON:
+				if (this.hasGenderChanged || this.showReprint || this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}

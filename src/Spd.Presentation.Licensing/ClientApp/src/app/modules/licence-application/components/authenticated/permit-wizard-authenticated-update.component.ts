@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
@@ -50,7 +49,6 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 						<app-steps-permit-review-authenticated
 							[applicationTypeCode]="applicationTypeCodeUpdate"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextSubmitStep)="onSubmitStep()"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
 						></app-steps-permit-review-authenticated>
@@ -78,12 +76,11 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	@ViewChild(StepsPermitUpdatesAuthenticatedComponent) stepsUpdatesComponent!: StepsPermitUpdatesAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
-	stepsReviewAuthenticatedComponent!: StepsPermitReviewAuthenticatedComponent;
+	stepReviewAuthenticatedComponent!: StepsPermitReviewAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -114,7 +111,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 				this.stepsUpdatesComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepsReviewAuthenticatedComponent?.onGoToFirstStep();
+				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
 				break;
 		}
 
@@ -123,6 +120,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
+		console.log('onPreviousStepperStep', stepper.selectedIndex);
 
 		switch (stepper.selectedIndex) {
 			case this.STEP_PERMIT_CONFIRMATION:

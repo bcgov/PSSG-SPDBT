@@ -7,7 +7,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
-import { StepWorkerLicenceMailingAddressComponent } from '../shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
+import { StepWorkerLicenceMailingAddressAnonymousComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-replacement',
@@ -26,9 +26,9 @@ import { StepWorkerLicenceMailingAddressComponent } from '../shared/worker-licen
 
 			<mat-step>
 				<ng-template matStepLabel> Address Update </ng-template>
-				<app-step-worker-licence-mailing-address
+				<app-step-worker-licence-mailing-address-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-mailing-address>
+				></app-step-worker-licence-mailing-address-anonymous>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -51,8 +51,8 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	applicationTypeCode = ApplicationTypeCode.Replacement;
 	newLicenceAppId: string | null = null;
 
-	@ViewChild(StepWorkerLicenceMailingAddressComponent)
-	stepAddressComponent!: StepWorkerLicenceMailingAddressComponent;
+	@ViewChild(StepWorkerLicenceMailingAddressAnonymousComponent)
+	stepAddressComponent!: StepWorkerLicenceMailingAddressAnonymousComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
