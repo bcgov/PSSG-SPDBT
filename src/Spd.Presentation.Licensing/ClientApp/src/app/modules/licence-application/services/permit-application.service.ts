@@ -19,6 +19,7 @@ import {
 	LicenceTermCode,
 	PermitAppCommandResponse,
 	PermitAppSubmitRequest,
+	PermitAppUpsertRequest,
 	PermitCommandResponse,
 	PermitLicenceAppResponse,
 	WorkerLicenceTypeCode,
@@ -77,6 +78,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		originalLicenceId: new FormControl(null),
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
+		originalLicenceTermCode: new FormControl(null),
+		originalBusinessTypeCode: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false),
+		originalDogAuthorizationExists: new FormControl(false),
 
 		applicationPortalStatus: new FormControl(null),
 
@@ -90,6 +95,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		permitRationaleData: this.permitRationaleFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
+		reprintLicenceData: this.reprintLicenceFormGroup,
 		criminalHistoryData: this.criminalHistoryFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		citizenshipData: this.citizenshipFormGroup,
@@ -100,7 +106,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		residentialAddress: this.residentialAddressFormGroup,
 		mailingAddress: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
-		printPermitData: this.printPermitFormGroup,
 		profileConfirmationData: this.profileConfirmationFormGroup,
 	});
 
@@ -138,10 +143,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 					console.debug(
 						'permitModelFormGroup CHANGED',
-						// step1Complete,
-						// step2Complete,
-						// step3Complete,
-						// step4Complete,
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						step4Complete,
 						this.permitModelFormGroup.getRawValue()
 					);
 
@@ -309,26 +314,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isAutoSave(): boolean {
-		return false;
-		// if (
-		// 	!this.authenticationService.isLoggedIn() ||
-		// 	this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
-		// ) {
-		// 	return false;
-		// }
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
+			return false;
+		}
 
-		// return this.hasValueChanged;
+		return this.hasValueChanged;
 	}
 
 	/**
-	 * Save the permit data
-	 * @returns
+	 * Partial Save - Save the permit data as is.
+	 * @returns StrictHttpResponse<PermitCommandResponse>
 	 */
-	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyBaseAuthenticated(this.permitModelFormGroup.getRawValue());
+	savePermitStepAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
 		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
 			take(1),
-			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
+			tap((res: StrictHttpResponse<PermitCommandResponse>) => {
 				const formValue = this.permitModelFormGroup.getRawValue();
 				if (!formValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -407,29 +415,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Partial Save - Save the licence data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
-	 */
-	savePermitStepAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
-		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue);
-
-		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId; // TODO set applicantId type in permit
-
-		console.debug('savePermitStepAuthenticated PARTIAL SAVE', permitModelFormValue, body);
-
-		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
-			take(1),
-			tap((res: StrictHttpResponse<PermitCommandResponse>) => {
-				const formValue = this.permitModelFormGroup.getRawValue();
-				if (!formValue.licenceAppId) {
-					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
-				}
-			})
-		);
-	}
-
-	/**
 	 * Load an existing licence application
 	 * @param licenceAppId
 	 * @returns
@@ -479,8 +464,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	): Observable<PermitLicenceAppResponse> {
 		return this.getPermitOfTypeAuthenticated(licenceAppId, applicationTypeCode, userLicenceInformation).pipe(
 			tap((_resp: any) => {
-				this.permitModelFormGroup.patchValue({ originalApplicationId: licenceAppId }, { emitEvent: false });
-
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
@@ -514,14 +497,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Submit the permit data
 	 * @returns
 	 */
-	submitPermitAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-		const body = this.getSaveBodyBaseAuthenticated(this.permitModelFormGroup.getRawValue());
+	submitPermitNewAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
 
-		return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({ body });
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body });
 	}
 
-	submitPermitRenewalOrUpdateAuthenticated(): void {
-		//} Observable<StrictHttpResponse<PermitAppSubmitRequest>> {//WorkerLicenceCommandResponse
+	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
@@ -530,7 +518,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Create list of APIs to call for the newly added documents
-		// const documentsToSaveApis: Observable<string>[] = [];
+		const documentsToSaveApis: Observable<string>[] = [];
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -548,14 +536,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			});
 
 			if (newDocumentsOnly.length > 0) {
-				// documentsToSaveApis.push(
-				// 	this.permitService.apiWorkerLicenceApplicationsAuthenticatedFilesPost({
-				// 		body: {
-				// 			Documents: newDocumentsOnly,
-				// 			LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-				// 		},
-				// 	})
-				// );
+				documentsToSaveApis.push(
+					this.permitService.apiPermitApplicationsFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+						},
+					})
+				);
 			}
 		});
 
@@ -563,29 +551,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
 		console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
 
-		// if (documentsToSaveApis.length > 0) {
-		// 	return forkJoin(documentsToSaveApis).pipe(
-		// 		switchMap((resps: string[]) => {
-		// 			// pass in the list of document key codes
-		// 			body.documentKeyCodes = [...resps];
-		// 			// pass in the list of document ids that were in the original
-		// 			// application and are still being used
-		// 			body.previousDocumentIds = [...existingDocumentIds];
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = [...existingDocumentIds];
 
-		// 			return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-		// 				body,
-		// 			});
-		// 		})
-		// 	);
-		// } else {
-		// 	// pass in the list of document ids that were in the original
-		// 	// application and are still being used
-		// 	body.previousDocumentIds = [...existingDocumentIds];
+					return this.permitService.apiPermitApplicationsSubmitPost$Response({
+						body,
+					});
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = [...existingDocumentIds];
 
-		// 	return this.permitService.apiWorkerLicenceApplicationsAuthenticatedSubmitPost$Response({
-		// 		body,
-		// 	});
-		// }
+			return this.permitService.apiPermitApplicationsSubmitPost$Response({
+				body,
+			});
+		}
 	}
 
 	/**
@@ -1054,6 +1042,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		this.permitModelFormGroup.patchValue(
 			{
+				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
 				...originalLicenceData,
@@ -1330,6 +1319,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				licenceAppId: null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
+				originalPhotoOfYourselfExpired,
+
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,
@@ -1360,6 +1352,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,

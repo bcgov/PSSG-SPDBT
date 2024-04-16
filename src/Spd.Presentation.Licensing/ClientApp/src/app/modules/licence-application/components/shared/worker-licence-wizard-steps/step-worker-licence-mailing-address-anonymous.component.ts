@@ -9,7 +9,7 @@ import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-worker-licence-mailing-address',
+	selector: 'app-step-worker-licence-mailing-address-anonymous',
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -128,7 +128,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceMailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepWorkerLicenceMailingAddressAnonymousComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 

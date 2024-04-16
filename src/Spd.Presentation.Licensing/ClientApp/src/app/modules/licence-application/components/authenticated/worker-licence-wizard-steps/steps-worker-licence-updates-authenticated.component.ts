@@ -203,7 +203,7 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 				}
 				break;
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				if (this.showReprint) {
+				if (this.showReprint || this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}

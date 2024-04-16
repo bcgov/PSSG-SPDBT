@@ -10,7 +10,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
-import { StepsPermitDetailsRenewalComponent } from './permit-wizard-steps/steps-permit-details.component-renewal';
+import { StepsPermitDetailsRenewalComponent } from './permit-wizard-steps/steps-permit-details-renewal.component';
 import { StepsPermitIdentificationAnonymousComponent } from './permit-wizard-steps/steps-permit-identification-anonymous.component';
 import { StepsPermitPurposeAnonymousComponent } from './permit-wizard-steps/steps-permit-purpose.component-anonymous';
 import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps-permit-review-anonymous.component';
