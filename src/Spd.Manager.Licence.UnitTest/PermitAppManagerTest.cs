@@ -66,11 +66,20 @@ public class PermitAppManagerTest
             .Returns(new PermitCommandResponse() { LicenceAppId = licAppId });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
+        
+        var proofOfFingerprint = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.ProofOfFingerprint)
+            .Create();
+        var workPermit = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.WorkPermit)
+            .Create();
+
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = null,
             WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
+            DocumentInfos = new List<Document>() { proofOfFingerprint, workPermit }
         };
 
         //Act
