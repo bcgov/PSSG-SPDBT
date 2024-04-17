@@ -8,13 +8,14 @@ using Spd.Utilities.Printing;
 using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Common.Admin;
+
 internal partial class AdminManager(
         IAddressAutocompleteClient _addressClient,
         IMapper _mapper,
         IConfigRepository _configRepo,
         IOrgRepository _orgRepo,
         IDocumentTransformationEngine _documentTransformationEngine,
-        IPrinter printerService)
+        IPrinter _printer)
           : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
             IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
             IRequestHandler<GetBannerMsgQuery, string>,

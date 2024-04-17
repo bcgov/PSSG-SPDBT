@@ -6,7 +6,7 @@ namespace Spd.Utilities.Printing.BCMailPlus;
 /// <summary>
 /// BCMailPlus Sdk
 /// </summary>
-public interface IBcMailPlusApi
+internal interface IBcMailPlusApi
 {
     /// <summary>
     /// Creates a new job
@@ -38,9 +38,8 @@ public interface IBcMailPlusApi
 /// <summary>
 /// BCMailPlus job status response
 /// </summary>
-public class JobStatus
+internal class JobStatus
 {
-
     /// <summary>
     /// The job id
     /// </summary>
@@ -69,7 +68,7 @@ public class JobStatus
 /// <summary>
 /// BCMailPlus job properties
 /// </summary>
-public class JobProperties
+internal class JobProperties
 {
     /// <summary>
     /// BCMailPlus internal job id
@@ -87,7 +86,7 @@ public class JobProperties
 /// <summary>
 /// Response from job status request
 /// </summary>
-public class JobStatusResponse
+internal class JobStatusResponse
 {
     /// <summary>
     /// List of jobs with statuses
@@ -101,7 +100,7 @@ public class JobStatusResponse
 /// </summary>
 /// <param name="JobName">The job name as defined by BCMailPlus</param>
 /// <param name="AssetExtension">The file extension of the generated preview of the job</param>
-public record JobTemplate(string JobName, string AssetExtension);
+internal record JobTemplate(string JobName, string AssetExtension);
 
 /// <summary>
 /// Job names
@@ -129,7 +128,7 @@ public static class Jobs
     public const string MetalDealerAndRecyclersPermit = "PSSG-SPD-MTL-PMT";
 }
 
-public static class JobStatusValues
+internal static class JobStatusValues
 {
     /// <summary>
     /// Job status that indicates success
@@ -145,5 +144,4 @@ public static class JobStatusValues
     /// Job status that indicates errors
     /// </summary>
     public const string FileReceived = "FILE_RECEIVED";
-
 }

@@ -1,4 +1,6 @@
-﻿namespace Spd.Engines.Transformation.Documents;
+﻿using System.Text.Json;
+
+namespace Spd.Engines.Transformation.Documents;
 
 public interface IDocumentTransformationEngine
 {
@@ -7,12 +9,13 @@ public interface IDocumentTransformationEngine
 
 public abstract record DocumentTransformRequest;
 
-public abstract record DocumentData;
+public abstract record DocumentTransformResponse;
 
-public record DocumentTransformResponse(DocumentData Document, string ContentType);
+public record BcMailPlusTransformResponse(string JobTemplateId, JsonDocument Document) : DocumentTransformResponse;
 
 internal interface IDocumentTransformStrategy
 {
     bool CanTransform(DocumentTransformRequest request);
+
     Task<DocumentTransformResponse> Transform(DocumentTransformRequest request, CancellationToken cancellationToken);
 }

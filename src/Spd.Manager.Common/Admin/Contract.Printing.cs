@@ -2,19 +2,21 @@
 
 namespace Spd.Manager.Common;
 
+public record StartPrintJobCommand(PrintJob PrintJob) : IRequest<string>;
+public record PrintJobStatusQuery(string PrintJobId) : IRequest<PrintJobStatusResponse>;
+public record PreviewDocumentCommand(PrintJob PrintJob) : IRequest<PreviewDocumentResponse>;
 
-public record SendToPrintCommand(Guid JobId, JobSpecification JobSpecification) : IRequest<PrintJobResponse>;
+public record PrintJob(DocumentType DocumentType, Guid DocumentReferenceId);
 
-public record PrintJobResponse(Guid JobId);
+public enum DocumentType
+{
+    FingerprintLetter,
+}
 
-public abstract record JobSpecification(bool isPreview);
-
-public record FingerprintLetterJobSpecification(Guid ApplicationId) : JobSpecification(false);
-
-public record PrintJobStatusQuery(Guid JobId) : IRequest<PrintJobStatusResponse>;
 public record PrintJobStatusResponse(PrintJobStatus Status, string? Error);
 
-public enum PrintJobStatus{
+public enum PrintJobStatus
+{
     Pending,
     InProgress,
     Completed,
@@ -22,6 +24,4 @@ public enum PrintJobStatus{
     Cancelled
 }
 
-public record PrintJobContentQuery(Guid JobId) : IRequest<PrintJobContentResponse>;
-
-public record PrintJobContentResponse(Guid JobId, string ContentType, IEnumerable<byte> Content);
+public record PreviewDocumentResponse(string ContentType, IEnumerable<byte> Content);

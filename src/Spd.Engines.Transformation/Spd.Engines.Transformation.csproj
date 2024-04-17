@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Printing\Spd.Utilities.Printing.csproj" />
   </ItemGroup>
 </Project>

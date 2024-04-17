@@ -1,12 +1,35 @@
-﻿using System.Text.Json.Serialization;
-using Microsoft.OData.UriParser;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Spd.Resource.Repository.Application;
+using Spd.Utilities.Printing.BCMailPlus;
 
-namespace Spd.Engines.Transformation.Documents;
+namespace Spd.Engines.Transformation.Documents.TransformationStrategies;
+
+internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository) : IDocumentTransformStrategy
+{
+    private const string JobTemplate = Jobs.FingerprintsLetter;
+
+    public bool CanTransform(DocumentTransformRequest request) => request is FingerprintLetterTransformRequest;
+
+    public async Task<DocumentTransformResponse> Transform(DocumentTransformRequest request, CancellationToken cancellationToken)
+    {
+        return new BcMailPlusTransformResponse(Jobs.FingerprintsLetter, await CreateDocument(((FingerprintLetterTransformRequest)request).ApplicationId, cancellationToken));
+    }
+
+    private async Task<JsonDocument> CreateDocument(Guid applicationId, CancellationToken cancellationToken)
+    {
+        var application = await applicationRepository.QueryApplicationAsync(new ApplicationQry(applicationId), cancellationToken);
+
+        //TODO: map to document data
+        var documentData = new FingerprintLetter();
+
+        return JsonSerializer.SerializeToDocument(documentData);
+    }
+}
 
 public record FingerprintLetterTransformRequest(Guid ApplicationId) : DocumentTransformRequest;
 
-public record FingerprintLetter : DocumentData
+public record FingerprintLetter
 {
     [JsonPropertyName("date")]
     public string Date { get; set; }
@@ -26,7 +49,6 @@ public record FingerprintLetter : DocumentData
     [JsonPropertyName("organization")]
     public Organization Organization { get; set; }
 }
-
 
 public record Applicant
 {
@@ -83,21 +105,4 @@ public record Organization
 
     [JsonPropertyName("country")]
     public object Country { get; set; }
-}
-
-internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository) : IDocumentTransformStrategy
-{
-    public bool CanTransform(DocumentTransformRequest request) => request is FingerprintLetterTransformRequest;
-
-    public async Task<DocumentTransformResponse> Transform(DocumentTransformRequest request, CancellationToken cancellationToken)
-    {
-        var req = (FingerprintLetterTransformRequest)request;
-        var application = await applicationRepository.QueryApplicationAsync(new ApplicationQry(req.ApplicationId), cancellationToken);
-        
-        //TODO: map to document data
-
-        return new DocumentTransformResponse(new FingerprintLetter
-        {
-        }, "application/pdf");
-    }
 }

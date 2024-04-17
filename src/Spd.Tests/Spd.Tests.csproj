@@ -67,6 +67,9 @@
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Metal Dealers and Recyclers Permit.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated right%29.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 1 good).json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

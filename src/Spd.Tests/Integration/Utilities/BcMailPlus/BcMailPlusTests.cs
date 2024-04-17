@@ -16,10 +16,12 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 1 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 bad).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated right).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Security Worker Licence (Photo 3 rotated right).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 4 bad).json")]
     public async Task RunSecurityWorkerLicenseJob(string fileName)
     {
-       (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
+        (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
     }
 
     [Theory]
@@ -27,7 +29,8 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 3 bad).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 4 bad).json")]
-    public async Task RunArmouredVehiclePermitJob(string fileName) { 
+    public async Task RunArmouredVehiclePermitJob(string fileName)
+    {
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
     }
 
@@ -36,28 +39,32 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 3 bad).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 4 bad).json")]
-    public async Task RunBodyArmourPermitJob(string fileName) {
+    public async Task RunBodyArmourPermitJob(string fileName)
+    {
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
-     }
+    }
 
     [Theory]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Business Licence.json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Business Licence - Sole Proprietor.json")]
-    public async Task RunBusinessLicenseJob(string fileName) {
+    public async Task RunBusinessLicenseJob(string fileName)
+    {
         (await Run(Jobs.BusinessLicense, fileName)).ShouldBeTrue();
-     }
+    }
 
     [Theory]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Fingerprint Request Letter.json")]
-    public async Task RunFingerprintLetterJob(string fileName) {
+    public async Task RunFingerprintLetterJob(string fileName)
+    {
         (await Run(Jobs.FingerprintsLetter, fileName)).ShouldBeTrue();
-     }
+    }
 
     [Theory]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Metal Dealers and Recyclers Permit.json")]
-    public async Task RunMetalDealerAndRecyclersPermitJob(string fileName) {
+    public async Task RunMetalDealerAndRecyclersPermitJob(string fileName)
+    {
         (await Run(Jobs.MetalDealerAndRecyclersPermit, fileName)).ShouldBeTrue();
-     }
+    }
 
     private async Task<bool> Run(string jobName, string payloadFileName)
     {
@@ -80,11 +87,7 @@ public class BcMailPlusTests : IAsyncLifetime
         }
 
         var asset = await api.GetAsset(job.JobId!, status.JobProperties!.Asset!, CancellationToken.None);
-        // while (asset == null)
-        // {
-        //     await Task.Delay(10000);
-        //     asset = await api.GetAsset(job.JobId!, job.JobProperties!.Asset!, CancellationToken.None);
-        // }
+
         asset.ShouldNotBeNull();
         var extension = status.JobProperties!.Asset == "CARD_PREVIEW_IMAGE" ? ".png" : ".pdf";
         await File.WriteAllBytesAsync(payloadFileName + extension, asset);

@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -86,11 +87,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.FileStorage.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Common.UnitTest", "Spd.Manager.Common.UnitTest\Spd.Manager.Common.UnitTest.csproj", "{9C5AE33C-0C4E-47C1-8F87-D222B9ADC87C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Manager.Screening.UnitTest", "Spd.Manager.Screening.UnitTest\Spd.Manager.Screening.UnitTest.csproj", "{2971FFA0-A3D7-4632-89CD-D69C369B2DC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Screening.UnitTest", "Spd.Manager.Screening.UnitTest\Spd.Manager.Screening.UnitTest.csproj", "{2971FFA0-A3D7-4632-89CD-D69C369B2DC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Presentation.Screening.UnitTest", "Spd.Presentation.Screening.UnitTest\Spd.Presentation.Screening.UnitTest.csproj", "{176888CB-63E7-41C9-A96D-67428EC6D27E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Screening.UnitTest", "Spd.Presentation.Screening.UnitTest\Spd.Presentation.Screening.UnitTest.csproj", "{176888CB-63E7-41C9-A96D-67428EC6D27E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Engines.Transformation", "Spd.Engines.Transformation\Spd.Engines.Transformation.csproj", "{CDBED908-3EAC-4301-A472-3FBC3169F7BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Engines.Transformation", "Spd.Engines.Transformation\Spd.Engines.Transformation.csproj", "{CDBED908-3EAC-4301-A472-3FBC3169F7BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -277,6 +278,7 @@ Global
 		{9C5AE33C-0C4E-47C1-8F87-D222B9ADC87C} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{2971FFA0-A3D7-4632-89CD-D69C369B2DC6} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{176888CB-63E7-41C9-A96D-67428EC6D27E} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
+		{CDBED908-3EAC-4301-A472-3FBC3169F7BB} = {D2372F2D-0320-427B-9AA1-331722AB00EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}

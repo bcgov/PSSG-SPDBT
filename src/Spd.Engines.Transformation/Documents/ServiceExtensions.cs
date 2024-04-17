@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spd.Engines.Transformation.Documents;
+using Spd.Engines.Transformation.Documents.TransformationStrategies;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Repository;

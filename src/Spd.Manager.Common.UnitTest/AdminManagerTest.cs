@@ -6,6 +6,7 @@ using Spd.Manager.Common.Admin;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
+using Spd.Utilities.Printing;
 
 namespace Spd.Manager.Common.UnitTest;
 
@@ -17,6 +18,7 @@ public class AdminManagerTest
     private Mock<IOrgRepository> mockOrgRepo = new();
     private Mock<IMapper> mockMapper = new();
     private Mock<IDocumentTransformationEngine> mockDocumentTransformationEngine = new();
+    private Mock<IPrinter> mockPrinter = new();
     private AdminManager sut;
 
     public AdminManagerTest()
@@ -53,11 +55,7 @@ public class AdminManagerTest
         mockOrgRepo.Setup(m => m.QueryOrgAsync(It.IsAny<OrgsQry>(), CancellationToken.None))
             .ReturnsAsync(orgsQryResult);
 
-        var documentTransformResponse = fixture.Create<DocumentTransformResponse>();
-        mockDocumentTransformationEngine.Setup(m => m.Transform(It.IsAny<DocumentTransformRequest>(), CancellationToken.None))
-            .ReturnsAsync(documentTransformResponse);
-
-        sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object, mockDocumentTransformationEngine.Object);
+        sut = new AdminManager(mockAddressClient.Object, mockMapper.Object, mockConfigRepo.Object, mockOrgRepo.Object, mockDocumentTransformationEngine.Object, mockPrinter.Object);
     }
 
     [Fact]

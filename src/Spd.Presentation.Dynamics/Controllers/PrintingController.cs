@@ -1,7 +1,6 @@
-﻿using System.Net;
-using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Common;
 using Spd.Utilities.Shared;
@@ -9,39 +8,51 @@ using Spd.Utilities.Shared;
 namespace Spd.Presentation.Dynamics;
 
 [Authorize]
-public class PrintingController(IMediator mediator, Mapper mapper) : SpdControllerBase
+public class PrintingController(IMediator mediator) : SpdControllerBase
 {
-
     [HttpPost("api/printjobs/{jobId}")]
-    public async Task PostPrintJob(Guid? jobId, PrintJobRequest request, CancellationToken ct)
+    public async Task<Results<Ok<string>, BadRequest>> PostPrintJob(string? jobId, PrintJobRequest request, CancellationToken ct)
     {
-        await mediator.Send(new SendToPrintCommand(jobId ?? Guid.NewGuid(), mapper.Map<Spd.Manager.Common.JobSpecification>(request)), ct);
+        if (jobId != request.JobId) return TypedResults.BadRequest();
+        var printJob = new PrintJob(request.DocumentType, request.DocumentReferenceId);
+        var createdJobId = await mediator.Send(new StartPrintJobCommand(printJob), ct);
+        return TypedResults.Ok(createdJobId);
+    }
+
+    [HttpPost("api/printjobs/{jobId}/preview")]
+    public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(string? jobId, PrintJobRequest request, CancellationToken ct)
+    {
+        if (jobId != request.JobId) return TypedResults.BadRequest();
+        var printJob = new PrintJob(request.DocumentType, request.DocumentReferenceId);
+        var previewResponse = await mediator.Send(new PreviewDocumentCommand(printJob), ct);
+        return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
     }
 
     [HttpGet("api/printjobs/{jobId}/status")]
-    public async Task<ActionResult<PrintStatusResponse>> GetPrintJobStatus(Guid jobId, CancellationToken ct)
+    public async Task<Results<Ok<PrintJobStatusResponse>, BadRequest<PrintJobStatusResponse>>> GetPrintJobStatus(string jobId, CancellationToken ct)
     {
         var response = await mediator.Send(new PrintJobStatusQuery(jobId), ct);
-        if (response.Status == PrintJobStatus.Failed) return BadRequest(new PrintStatusResponse(jobId, response.Error));
-        return Ok(new PrintStatusResponse(jobId, null));
-    }
-
-    [HttpGet("api/printjobs/{jobId}")]
-    public async Task<FileContentResult> GetPrintJob(Guid jobId, CancellationToken ct)
-    {
-        var response = await mediator.Send(new PrintJobContentQuery(jobId), ct);
-        return File(response.Content.ToArray(), response.ContentType);
+        if (response.Status == Manager.Common.PrintJobStatus.Failed)
+        {
+            return TypedResults.BadRequest(new PrintJobStatusResponse(jobId, PrintJobStatus.Failed, response.Error));
+        }
+        return TypedResults.Ok(new PrintJobStatusResponse(jobId, PrintJobStatus.Success, null));
     }
 }
 
-public record PrintJobRequest(Guid JobId, JobSpecification JobSpecification);
+public record PrintJobRequest(string? JobId, DocumentType DocumentType, Guid DocumentReferenceId);
 
-public record JobSpecification(JobClassification Class, Guid JobContextId);
-
-public enum JobClassification
+public enum DocumenType
 {
     BcMailPlusFingerprintLetter,
     BCMailPlusBusinessLicence,
 }
 
-public record PrintStatusResponse(Guid JobId, string? ErrorMessage);
+public record PrintJobStatusResponse(string JobId, PrintJobStatus Status, string? ErrorMessage);
+
+public enum PrintJobStatus
+{
+    Success,
+    Pending,
+    Failed
+}
