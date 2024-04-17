@@ -156,13 +156,13 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const step3Complete = this.isStepIdentificationComplete();
 					const isValid = step1Complete && step2Complete && step3Complete;
 
-					// console.debug(
-					// 	'licenceModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
-					// 	this.licenceModelFormGroup.getRawValue()
-					// );
+					console.debug(
+						'licenceModelFormGroup CHANGED',
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						this.licenceModelFormGroup.getRawValue()
+					);
 
 					this.licenceModelValueChanges$.next(isValid);
 				}
@@ -360,27 +360,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Determine if the step data should be saved. If the data has changed and category data exists;
-	 * @returns
-	 */
-	isAutoSave(): boolean {
-		if (
-			!this.authenticationService.isLoggedIn() ||
-			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
-		) {
-			return false;
-		}
-
-		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
-		console.debug('shouldSaveStep', shouldSaveStep);
-		return shouldSaveStep;
-	}
-
-	/*************************************************************/
-	// AUTHENTICATED
-	/*************************************************************/
-
-	/**
 	 * Link two applicants
 	 * @returns
 	 */
@@ -400,6 +379,47 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			})
 		);
 	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
+			return false;
+		}
+
+		const shouldSaveStep = this.hasValueChanged && this.soleProprietorFormGroup.valid;
+		return shouldSaveStep;
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
+	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
+			take(1),
+			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				const formValue = this.licenceModelFormGroup.getRawValue();
+				if (!formValue.licenceAppId) {
+					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+				}
+			})
+		);
+	}
+
+	/*************************************************************/
+	// AUTHENTICATED
+	/*************************************************************/
 
 	/**
 	 * Load a user profile
@@ -475,29 +495,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						);
 						break;
 					}
-				}
-			})
-		);
-	}
-
-	/**
-	 * Partial Save - Save the licence data as is.
-	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
-	 */
-	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
-
-		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		console.debug('saveLicenceStepAuthenticated PARTIAL SAVE', licenceModelFormValue, body);
-
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
-			take(1),
-			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				const formValue = this.licenceModelFormGroup.getRawValue();
-				if (!formValue.licenceAppId) {
-					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})
 		);
@@ -1239,7 +1236,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		profile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
-					// id: new FormControl('123123'), // TODO add ID to alias
+					id: new FormControl(alias.id),
 					givenName: new FormControl(alias.givenName),
 					middleName1: new FormControl(alias.middleName1),
 					middleName2: new FormControl(alias.middleName2),

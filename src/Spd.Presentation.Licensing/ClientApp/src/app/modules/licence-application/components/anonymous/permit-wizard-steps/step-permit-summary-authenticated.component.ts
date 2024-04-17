@@ -72,12 +72,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 													</div>
 												</div>
-												<!-- <ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Print Permit</div>
-														<div class="summary-text-data">{{ isPrintPermit }}</div>
-													</div>
-												</ng-container> -->
 											</div>
 
 											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
@@ -231,49 +225,47 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</mat-panel-title>
 										</mat-expansion-panel-header>
 										<div class="panel-body">
-											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-												<div class="text-minor-heading">Citizenship</div>
-												<div class="row mt-0">
-													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">Canadian Citizen</div>
-														<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+											<div class="text-minor-heading">Citizenship</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Canadian Citizen</div>
+													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
+													<div class="text-label d-block text-muted">Resident of Canada</div>
+													<div class="summary-text-data">{{ isCanadianResident }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">
+														<span *ngIf="canadianCitizenProofTypeCode">
+															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+														</span>
+														<span *ngIf="proofOfResidentStatusCode">
+															{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
+														</span>
+														<span *ngIf="proofOfCitizenshipCode">
+															{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
+														</span>
 													</div>
-													<div class="col-lg-6 col-md-12" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
-														<div class="text-label d-block text-muted">Resident of Canada</div>
-														<div class="summary-text-data">{{ isCanadianResident }}</div>
-													</div>
-													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">
-															<span *ngIf="canadianCitizenProofTypeCode">
-																{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-															</span>
-															<span *ngIf="proofOfResidentStatusCode">
-																{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
-															</span>
-															<span *ngIf="proofOfCitizenshipCode">
-																{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
-															</span>
-														</div>
-														<div class="summary-text-data">
-															<div *ngFor="let doc of attachments; let i = index">
-																{{ doc.name }}
-															</div>
-														</div>
-													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-														<div class="text-label d-block text-muted">
-															{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-														</div>
-														<div class="summary-text-data">
-															<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of attachments; let i = index">
+															{{ doc.name }}
 														</div>
 													</div>
 												</div>
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-											</ng-container>
+
+												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
+													<div class="text-label d-block text-muted">
+														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+													</div>
+													<div class="summary-text-data">
+														<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+															{{ doc.name }}
+														</div>
+													</div>
+												</div>
+											</div>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
@@ -286,45 +278,41 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													</div>
 												</div>
 
-												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">BC Driver's Licence</div>
-														<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-													</div>
-												</ng-container>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">BC Driver's Licence</div>
+													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+												</div>
 											</div>
 
-											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-												<div class="row mt-0">
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Height</div>
-														<div class="summary-text-data">
-															{{ height }}
-															{{ heightUnitCode | options : 'HeightUnitTypes' }}
-															{{ heightInches }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Weight</div>
-														<div class="summary-text-data">
-															{{ weight }}
-															{{ weightUnitCode | options : 'WeightUnitTypes' }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Hair Colour</div>
-														<div class="summary-text-data">
-															{{ hairColourCode | options : 'HairColourTypes' }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Eye Colour</div>
-														<div class="summary-text-data">
-															{{ eyeColourCode | options : 'EyeColourTypes' }}
-														</div>
+											<div class="row mt-0">
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Height</div>
+													<div class="summary-text-data">
+														{{ height }}
+														{{ heightUnitCode | options : 'HeightUnitTypes' }}
+														{{ heightInches }}
 													</div>
 												</div>
-											</ng-container>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Weight</div>
+													<div class="summary-text-data">
+														{{ weight }}
+														{{ weightUnitCode | options : 'WeightUnitTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Hair Colour</div>
+													<div class="summary-text-data">
+														{{ hairColourCode | options : 'HairColourTypes' }}
+													</div>
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<div class="text-label d-block text-muted">Eye Colour</div>
+													<div class="summary-text-data">
+														{{ eyeColourCode | options : 'EyeColourTypes' }}
+													</div>
+												</div>
+											</div>
 										</div>
 									</mat-expansion-panel>
 								</mat-accordion>
@@ -384,7 +372,6 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	showEmployerInformation = false;
 
 	constants = SPD_CONSTANTS;
-	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
@@ -428,9 +415,6 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 
 	get licenceTermCode(): string {
 		return this.permitModelData.licenceTermData.licenceTermCode ?? '';
-	}
-	get isPrintPermit(): string {
-		return this.permitModelData.printPermitData.isPrintPermit ?? '';
 	}
 	get hasExpiredLicence(): string {
 		return this.permitModelData.expiredLicenceData.hasExpiredLicence ?? '';

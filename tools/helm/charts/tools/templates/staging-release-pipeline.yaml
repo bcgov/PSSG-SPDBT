@@ -1,0 +1,65 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: staging-release-pipeline
+  labels:
+    DataClass: Low
+spec:
+  tasks:
+
+   ## Promote test to staging ##
+    - name: staging-screening-portal
+      params:
+        - name: imageName
+          value: screening-portal
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: staging
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: staging-licensing-portal
+      params:
+        - name: imageName
+          value: licensing-portal
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: staging
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: staging-dynamics-helper
+      params:
+        - name: imageName
+          value: dynamics-helper
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: staging
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task
+
+    - name: staging-job-scheduler
+      params:
+        - name: imageName
+          value: jag-jobscheduler
+        - name: fromTag
+          value: test
+        - name: toTag
+          value: staging
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: promote-image-task

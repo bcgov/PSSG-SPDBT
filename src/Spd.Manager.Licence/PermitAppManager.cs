@@ -17,12 +17,13 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
+        IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
+        IRequestHandler<PermitSubmitCommand, PermitCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
 {
-    private readonly ILicenceRepository _licenceRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -36,12 +37,47 @@ internal class PermitAppManager :
         ITaskRepository taskRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService)
-        : base(mapper, documentUrlRepository, feeRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
+        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
-        _licenceRepository = licenceRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
     }
+
+    #region for portal
+    // Authenticated save
+    public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
+    {
+        bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
+            Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            cmd.PermitUpsertRequest.LicenceAppId,
+            cancellationToken);
+
+        if (hasDuplicate)
+        {
+            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
+        }
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        if (cmd.PermitUpsertRequest.LicenceAppId == null)
+            cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.PermitUpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.PermitUpsertRequest.DocumentInfos,
+            cancellationToken);
+        return _mapper.Map<PermitCommandResponse>(response);
+    }
+
+    public async Task<PermitCommandResponse> Handle(PermitSubmitCommand cmd, CancellationToken cancellationToken)
+    {
+        var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
+        decimal? cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        return new PermitCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+    }
+
+    #endregion
 
     #region anonymous
 
@@ -201,7 +237,7 @@ internal class PermitAppManager :
     {
         ChangeSpec changes = new();
 
-        // Check if prupose changed
+        // Check if purpose changed
         changes.PurposeChanged = ChangeInPurpose(originalApp, newRequest);
 
         // Check if rationale changed

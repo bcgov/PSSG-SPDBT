@@ -71,6 +71,7 @@ public record LicenceApplication
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
     public string? CriminalChargeDescription { get; set; }
+    public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
@@ -193,4 +194,11 @@ public enum PermitPurposeEnum
     OutdoorRecreation, //ba
     TravelInResponseToInternationalConflict, //ba
     Other //av,ba
+}
+
+public enum UploadedDocumentEnum
+{
+    Fingerprint,
+    StudyPermit,
+    WorkPermit
 }

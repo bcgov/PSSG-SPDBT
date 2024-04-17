@@ -4,6 +4,7 @@ public static class SpdConstants
     public static readonly Guid BcGovOrgId = Guid.Parse("720dbb43-0a37-ee11-b845-00505683fbf4");
     public static readonly int UserInviteValidDays = 7;
     public static readonly int ApplicationInviteValidDays = 14;
+    public static readonly int PrePaymentLinkValidDays = 15;
     public static readonly string BulkAppUploadFileExtension = ".tsv";
     public static readonly long UploadFileMaxSize = 26214400; //25M
     public static readonly string BulkAppUploadColSeperator = "\"\t\"";

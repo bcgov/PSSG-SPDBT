@@ -6,6 +6,7 @@ import {
 	ArmouredVehiclePermitReasonCode,
 	BodyArmourPermitReasonCode,
 	BusinessTypeCode,
+	Document,
 	DocumentExpiredInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
@@ -98,15 +99,19 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required]),
 	});
 
-	printPermitFormGroup: FormGroup = this.formBuilder.group(
+	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isPrintPermit: new FormControl(''),
+			reprintLicence: new FormControl(''),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'isPrintPermit',
-					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value === ApplicationTypeCode.Update
+				FormGroupValidators.conditionalRequiredValidator(
+					'reprintLicence',
+					(_form) =>
+						!!(
+							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
+							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
+						)
 				),
 			],
 		}
@@ -180,24 +185,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
 							form.get('isCanadianResident')?.value == BooleanTypeCode.No &&
 							form.get('proofOfCitizenshipCode')?.value !== LicenceDocumentTypeCode.NonCanadianPassport)
-				),
-			],
-		}
-	);
-
-	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
-		{
-			reprintLicence: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'reprintLicence',
-					(_form) =>
-						!!(
-							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
-							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
-						)
 				),
 			],
 		}
@@ -376,14 +363,14 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	}
 
 	getSaveBodyBaseAuthenticated(permitModelFormValue: any): PermitAppSubmitRequest {
-		const baseData = this.getSaveBodyBase(permitModelFormValue);
+		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		return baseData;
 	}
 
 	getSaveBodyBaseAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
-		const baseData = this.getSaveBodyBase(permitModelFormValue);
+		const baseData = this.getSaveBodyBase(permitModelFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		//  TODO list differences:
@@ -401,7 +388,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	private getSaveBodyBase(permitModelFormValue: any): any {
+	private getSaveBodyBase(permitModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = permitModelFormValue.licenceAppId;
 		const originalApplicationId = permitModelFormValue.originalApplicationId;
 		const originalLicenceId = permitModelFormValue.originalLicenceId;
@@ -416,10 +403,11 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const citizenshipData = { ...permitModelFormValue.citizenshipData };
 		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
-
 		const permitRequirementData = { ...permitModelFormValue.permitRequirementData };
 		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
-		const printPermitData = { ...permitModelFormValue.printPermitData };
+
+		const documentInfos: Array<Document> = [];
+
 		let employerData = {};
 		let employerPrimaryAddress = {};
 
@@ -432,50 +420,49 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
-		// get list of documents with expiry dates
-		const documentExpiredInfos: Array<DocumentExpiredInfo> = [];
-
-		// get list of previously saved documents
-		const previousDocumentIds: Array<string> = [];
-
 		if (personalInformationData.hasLegalNameChanged) {
-			personalInformationData.attachments
-				?.filter((doc: any) => doc.documentUrlId)
-				.forEach((doc: any) => {
-					previousDocumentIds.push(doc.documentUrlId);
+			personalInformationData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.LegalNameChange,
 				});
+			});
 		}
 		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
 
-		permitRationaleData.attachments
-			?.filter((doc: any) => doc.documentUrlId)
-			.forEach((doc: any) => {
-				previousDocumentIds.push(doc.documentUrlId);
+		permitRationaleData.attachments?.forEach((doc: any) => {
+			const licenceDocumentTypeCode =
+				workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+					? LicenceDocumentTypeCode.ArmouredVehicleRationale
+					: LicenceDocumentTypeCode.BodyArmourRationale;
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode,
 			});
-
-		const isCanadianCitizen = this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen);
-		citizenshipData.attachments?.forEach((doc: any) => {
-			if (citizenshipData.expiryDate) {
-				let licenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
-				if (!isCanadianCitizen) {
-					if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
-						licenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
-					} else {
-						licenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
-					}
-				}
-
-				documentExpiredInfos.push({
-					expiryDate: this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat),
-					licenceDocumentTypeCode,
-				});
-			}
-			if (doc.documentUrlId) {
-				previousDocumentIds.push(doc.documentUrlId);
-			}
 		});
 
-		const showAdditionalGovIdData = this.utilService.getPermitShowAdditionalGovIdData(
+		const isCanadianCitizen = this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen);
+
+		citizenshipData.attachments?.forEach((doc: any) => {
+			let licenceDocumentTypeCode = citizenshipData.canadianCitizenProofTypeCode;
+			if (!isCanadianCitizen) {
+				if (citizenshipData.isCanadianResident == BooleanTypeCode.Yes) {
+					licenceDocumentTypeCode = citizenshipData.proofOfResidentStatusCode;
+				} else {
+					licenceDocumentTypeCode = citizenshipData.proofOfCitizenshipCode;
+				}
+			}
+
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				expiryDate: citizenshipData.expiryDate
+					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+					: null,
+				licenceDocumentTypeCode,
+			});
+		});
+
+		const isIncludeAdditionalGovermentIdStepData = this.utilService.getPermitShowAdditionalGovIdData(
 			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
 			citizenshipData.isCanadianResident == BooleanTypeCode.Yes,
 			citizenshipData.canadianCitizenProofTypeCode,
@@ -483,46 +470,20 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			citizenshipData.proofOfCitizenshipCode
 		);
 
-		if (showAdditionalGovIdData && citizenshipData.governmentIssuedAttachments) {
+		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
 			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
-				if (citizenshipData.governmentIssuedExpiryDate) {
-					documentExpiredInfos.push({
-						expiryDate: this.formatDatePipe.transform(
-							citizenshipData.governmentIssuedExpiryDate,
-							SPD_CONSTANTS.date.backendDateFormat
-						),
-						licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
-					});
-				}
-				if (doc.documentUrlId) {
-					previousDocumentIds.push(doc.documentUrlId);
-				}
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					expiryDate: citizenshipData.governmentIssuedExpiryDate
+						? this.formatDatePipe.transform(
+								citizenshipData.governmentIssuedExpiryDate,
+								SPD_CONSTANTS.date.backendDateFormat
+						  )
+						: null,
+					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
+				});
 			});
 		}
-
-		photographOfYourselfData.attachments
-			?.filter((doc: any) => doc.documentUrlId)
-			.forEach((doc: any) => {
-				previousDocumentIds.push(doc.documentUrlId);
-			});
-
-		// TODO update photo
-		// const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
-		// if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
-		// 	photographOfYourselfData.attachments?.forEach((doc: any) => {
-		// 		documentInfos.push({
-		// 			documentUrlId: doc.documentUrlId,
-		// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-		// 		});
-		// 	});
-		// } else {
-		// 	photographOfYourselfData.updateAttachments?.forEach((doc: any) => {
-		// 		documentInfos.push({
-		// 			documentUrlId: doc.documentUrlId,
-		// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
-		// 		});
-		// 	});
-		// }
 
 		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
 			const ft: number = +characteristicsData.height;
@@ -609,6 +570,33 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				? criminalHistoryData.criminalChargeDescription
 				: '';
 
+		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || updatePhoto || !isAuthenticated) {
+			photographOfYourselfData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				});
+			});
+		} else {
+			photographOfYourselfData.updateAttachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself,
+				});
+			});
+		}
+
+		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+			documentInfos
+				.filter((doc) => doc.expiryDate)
+				.map((doc: Document) => {
+					return {
+						expiryDate: doc.expiryDate,
+						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+					} as DocumentExpiredInfo;
+				}) ?? [];
+
 		const body = {
 			licenceAppId,
 			originalApplicationId,
@@ -647,9 +635,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			reprint: this.utilService.booleanTypeToBoolean(printPermitData.isPrintPermit),
-			//-----------------------------------
 			licenceTermCode: permitModelFormValue.licenceTermData.licenceTermCode,
+			//-----------------------------------
+			reprint: this.utilService.booleanTypeToBoolean(permitModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
 			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
 			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
@@ -670,7 +658,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			permitOtherRequiredReason,
 			//-----------------------------------
 			documentExpiredInfos: [...documentExpiredInfos],
-			previousDocumentIds: [...previousDocumentIds],
+			documentInfos: [...documentInfos],
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);

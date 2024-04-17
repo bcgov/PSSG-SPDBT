@@ -41,16 +41,23 @@ export abstract class CommonApplicationHelper {
 			expiredLicenceNumber: new FormControl(),
 			expiredLicenceId: new FormControl(),
 			expiryDate: new FormControl(),
-			captchaFormGroup: new FormGroup({
-				token: new FormControl(''),
-			}),
+			captchaFormGroup: new FormGroup(
+				{
+					displayCaptcha: new FormControl(false),
+					token: new FormControl(''),
+				},
+				{
+					validators: [
+						FormGroupValidators.conditionalRequiredValidator(
+							'token',
+							(form) => form.get('displayCaptcha')?.value == true
+						),
+					],
+				}
+			),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'captchaFormGroup.token',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
