@@ -216,4 +216,29 @@ public class PermitAppManagerTest
         Assert.IsType<PermitAppCommandResponse>(viewResult);
         Assert.Equal(licAppId, viewResult.LicenceAppId);
     }
+
+    [Fact]
+    public async void Handle_PermitAppNewCommand_WithMissingFiles_Throw_Exception()
+    {
+        //Arrange
+        PermitAppSubmitRequest request = fixture.Build<PermitAppSubmitRequest>()
+            .With(r => r.IsCanadianCitizen, false)
+            .Create();
+
+        Guid licAppId = Guid.NewGuid();
+        Guid contactId = Guid.NewGuid();
+        Guid originalApplicationId = Guid.NewGuid();
+        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
+            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = originalApplicationId });
+        mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
+            .Returns(new CreateDocumentCmd());
+        mockLicAppRepo.Setup(a => a.CreateLicenceApplicationAsync(It.IsAny<CreateLicenceApplicationCmd>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, contactId));
+
+        //Act
+        Func<Task> act = () => sut.Handle(new PermitAppNewCommand(request, new List<LicAppFileInfo>()), CancellationToken.None);
+
+        //Assert
+        await Assert.ThrowsAsync<ApiException>(act);
+    }
 }
