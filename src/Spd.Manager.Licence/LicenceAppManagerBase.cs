@@ -235,4 +235,21 @@ internal abstract class LicenceAppManagerBase
             docEnums.Add(UploadedDocumentEnum.StudyPermit);
         return docEnums;
     }
+
+    protected async Task<IList<LicAppFileInfo>> GetExistingFileInfo(Guid? originalApplicationId, IEnumerable<Guid>? previousDocumentIds, CancellationToken ct)
+    {
+        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(originalApplicationId), ct);
+        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+        if (previousDocumentIds != null && docListResps != null)
+        {
+            existingFileInfos = docListResps.Items.Where(d => previousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
+            .Select(f => new LicAppFileInfo()
+            {
+                FileName = f.FileName ?? String.Empty,
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
+            }).ToList();
+        }
+        return existingFileInfos;
+    }
 }
