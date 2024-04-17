@@ -48,6 +48,33 @@ namespace Spd.Presentation.Licensing.Controllers
             await _mediator.Send(new ApplicantTermAgreeCommand(applicantId));
             return Ok();
         }
+
+        /// <summary>
+        /// login, for biz licensing portal, bceid login
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/biz/login")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBCeID")]
+        public async Task<BizUserLoginResponse?> BizLicencePortalLogin()
+        {
+            //var info = _currentUser.GetBcscUserIdentityInfo();
+            //var response = await _mediator.Send(new BizLoginCommand(info));
+            //return response;
+            return null;
+        }
+
+        /// <summary>
+        /// when user select agree to the Term. Call this endpoint.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/biz/{bizId}/user/{bizUserId}/term-agree")]
+        [Authorize(Policy = "OnlyBCeID")]
+        public async Task<ActionResult> BizLicencePortalTermAgree([FromRoute] Guid bizId, Guid bizUserId)
+        {
+            //await _mediator.Send(new ApplicantTermAgreeCommand(applicantId));
+            return Ok();
+        }
     }
 
 
