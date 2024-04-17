@@ -7,7 +7,7 @@ public class WorkerLicenceFixture
 {
     private readonly IFixture fixture;
 
-    public WorkerLicenceFixture(CancellationToken cancellationToken)
+    public WorkerLicenceFixture()
     {
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
