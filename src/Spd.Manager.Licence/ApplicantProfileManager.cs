@@ -204,8 +204,8 @@ namespace Spd.Manager.Licence
 
             if (cmd.ApplicantUpdateRequest.IsTreatedForMHC == true)
             {
-                if (!cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition) &&
-                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+                if (!(cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition) ||
+                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
                 }
@@ -213,8 +213,8 @@ namespace Spd.Manager.Licence
 
             if (cmd.ApplicantUpdateRequest.IsPoliceOrPeaceOfficer == true)
             {
-                if (!cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) &&
-                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+                if (!(cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) ||
+                    existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict)))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
                 }
