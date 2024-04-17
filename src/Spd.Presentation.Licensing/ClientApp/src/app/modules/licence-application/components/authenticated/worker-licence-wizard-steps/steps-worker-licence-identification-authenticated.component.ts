@@ -89,7 +89,9 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-bc-driver-licence></app-step-worker-licence-bc-driver-licence>
+				<app-step-worker-licence-bc-driver-licence
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-bc-driver-licence>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -129,7 +131,9 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-physical-characteristics></app-step-worker-licence-physical-characteristics>
+				<app-step-worker-licence-physical-characteristics
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-worker-licence-physical-characteristics>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
