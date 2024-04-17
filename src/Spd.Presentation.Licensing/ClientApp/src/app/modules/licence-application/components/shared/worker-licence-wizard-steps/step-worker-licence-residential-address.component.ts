@@ -57,11 +57,4 @@ export class StepWorkerLicenceResidentialAddressComponent implements LicenceChil
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
-	}
 }
