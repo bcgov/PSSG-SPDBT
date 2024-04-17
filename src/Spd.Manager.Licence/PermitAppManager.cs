@@ -58,6 +58,7 @@ internal class PermitAppManager :
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
+        saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.PermitUpsertRequest.DocumentInfos);
         var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
         if (cmd.PermitUpsertRequest.LicenceAppId == null)
             cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
@@ -96,6 +97,7 @@ internal class PermitAppManager :
         ValidateFilesForNewApp(cmd);
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
@@ -119,11 +121,13 @@ internal class PermitAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
-
+        
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         await UploadNewDocsAsync(request,
@@ -173,8 +177,8 @@ internal class PermitAppManager :
         if ((request.Reprint != null && request.Reprint.Value))
         {
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+            createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-
             await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
         }
         else

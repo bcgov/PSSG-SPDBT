@@ -77,9 +77,6 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
            .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
            .When(r => r.IsCanadianCitizen != null && r.IsCanadianCitizen.Value)
            .WithMessage("Missing citizen proof file because you are canadian.");
-        RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
-            .WithMessage("Missing ProofOfFingerprint file.");
     }
 }
 
