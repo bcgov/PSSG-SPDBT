@@ -466,23 +466,6 @@ internal class SecurityWorkerAppManager :
 
     }
 
-    private async Task<IList<LicAppFileInfo>> GetExistingFileInfo(WorkerLicenceAppSubmitRequest request, CancellationToken ct)
-    {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
-
-        if (request.PreviousDocumentIds != null && docListResps != null)
-        {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
-            {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
-        }
-        return existingFileInfos;
-    }
-
     private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
          IList<LicAppFileInfo> existingFileInfos,
