@@ -9,16 +9,15 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
+				<app-step-title title="Do you have a BC Driver's Licence?" [subtitle]="subtitle"></app-step-title>
 
-				<app-step-title
-					title="Do you have a BC Driver's Licence?"
-					subtitle="Providing your driver's licence number will speed up processing times"
-				></app-step-title>
+				<div class="row">
+					<div class="offset-md-2 col-md-8 col-sm-12">
+						<app-alert type="info" icon="info">
+							Providing your driver's licence number will speed up processing times
+						</app-alert>
+					</div>
+				</div>
 
 				<app-common-bc-driver-licence [form]="form"></app-common-bc-driver-licence>
 			</div>
@@ -27,11 +26,19 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	styles: [],
 })
 export class StepWorkerLicenceBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
+	subtitle = '';
+
 	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.subtitle = this.isRenewalOrUpdate
+			? `If your driver's licence information has changed from your previous application, update your selection`
+			: '';
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

@@ -13,13 +13,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title title="Do you want to request authorization to use dogs?"></app-step-title>
+				<app-step-title
+					title="Do you want to request authorization to use dogs?"
+					[subtitle]="subtitle"
+				></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -104,6 +101,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
 export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
+	subtitle = '';
+
 	originalDogAuthorizationExists = false;
 	booleanTypeCodes = BooleanTypeCode;
 
@@ -116,6 +115,8 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	constructor(private hotToastService: HotToastService, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
+		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+
 		this.originalDogAuthorizationExists = this.licenceApplicationService.licenceModelFormGroup.get(
 			'originalDogAuthorizationExists'
 		)?.value;

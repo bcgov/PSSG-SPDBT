@@ -226,6 +226,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		if (this.applicationTypeCode) {
 			this.licenceApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+			return;
 		}
 	}
 

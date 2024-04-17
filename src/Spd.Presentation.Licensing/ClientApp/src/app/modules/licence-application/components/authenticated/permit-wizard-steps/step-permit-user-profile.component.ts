@@ -196,6 +196,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 		if (this.applicationTypeCode) {
 			this.permitApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+			return;
 		}
 	}
 

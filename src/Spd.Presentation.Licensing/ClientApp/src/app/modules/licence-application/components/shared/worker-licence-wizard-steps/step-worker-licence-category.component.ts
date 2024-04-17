@@ -17,7 +17,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<app-common-update-renewal-alert
 						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
 						[applicationTypeCode]="applicationTypeCode"
-						[showLicenceData]="true"
 					></app-common-update-renewal-alert>
 				</ng-container>
 

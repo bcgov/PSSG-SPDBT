@@ -1,26 +1,25 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { CommonPhotographOfYourselfComponent } from '../../shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself-anonymous',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
+		<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else isRenewOrUpdate">
+			<app-step-permit-photograph-of-yourself-new [form]="form"></app-step-permit-photograph-of-yourself-new>
+		</ng-container>
 
-				<app-step-title
-					class="fs-7"
-					title="Upload a photograph of yourself"
-					subtitle="This will appear on your permit. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year."
-				></app-step-title>
+		<ng-template #isRenewOrUpdate>
+			<app-step-permit-photograph-of-yourself-renew-and-update
+				[form]="form"
+			></app-step-permit-photograph-of-yourself-renew-and-update>
+		</ng-template>
+
+		<!-- <section class="step-section">
+			<div class="step">
+				<app-step-title class="fs-7" [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<div class="row mb-3" *ngIf="isRenewalOrUpdate && photographOfYourself">
 					<div class="col-12 text-center">
@@ -39,39 +38,67 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 					(fileRemoved)="onFileRemoved()"
 				></app-common-photograph-of-yourself>
 			</div>
-		</section>
+		</section> -->
 	`,
 	styles: [],
 })
 export class StepPermitPhotographOfYourselfAnonymousComponent implements LicenceChildStepperStepComponent {
-	photographOfYourself = this.permitApplicationService.photographOfYourself;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(CommonPhotographOfYourselfComponent)
-	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
-
 	constructor(private permitApplicationService: PermitApplicationService) {}
-
-	onFileRemoved(): void {
-		this.permitApplicationService.hasValueChanged = true;
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
-
-	get attachments(): FormControl {
-		return this.form.get('attachments') as FormControl;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
-	}
 }
+
+// 	applicationTypeCodes = ApplicationTypeCode;
+// 	title = '';
+// 	subtitle = '';
+
+// 	photographOfYourself = this.permitApplicationService.photographOfYourself;
+
+// 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
+
+// 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
+// 	@ViewChild(CommonPhotographOfYourselfComponent)
+// 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
+
+// 	constructor(private permitApplicationService: PermitApplicationService) {}
+
+// 	ngOnInit(): void {
+// 		if (this.isRenewalOrUpdate) {
+// 			this.title = 'Your photograph of yourself';
+// 			this.subtitle = 'Update any information that has changed since your last application';
+// 		} else {
+// 			this.title = 'Upload a photograph of yourself';
+// 			this.subtitle = 'This will appear on your permit. It must be a passport-quality photo of your face looking straight at the camera against a plain, white background. It must be from within the last year.';
+// 		}
+// 	}
+
+// 	onFileRemoved(): void {
+// 		this.permitApplicationService.hasValueChanged = true;
+// 	}
+
+// 	isFormValid(): boolean {
+// 		this.form.markAllAsTouched();
+// 		return this.form.valid;
+// 	}
+
+// 	get attachments(): FormControl {
+// 		return this.form.get('attachments') as FormControl;
+// 	}
+
+// 	get isRenewalOrUpdate(): boolean {
+// 		return (
+// 			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+// 			this.applicationTypeCode === ApplicationTypeCode.Update
+// 		);
+// 	}
+// }

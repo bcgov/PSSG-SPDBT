@@ -318,7 +318,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
+												<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
 													<div class="text-label d-block text-muted">Photograph of Yourself</div>
 													<div class="summary-text-data">
 														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
@@ -726,7 +726,13 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		return this.permitModelData.photographOfYourselfData.attachments ?? [];
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
+			return this.permitModelData.photographOfYourselfData.attachments ?? [];
+		} else {
+			const updatePhoto = this.permitModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = this.permitModelData.photographOfYourselfData.updateAttachments ?? [];
+			return updatePhoto ? updateAttachments : null;
+		}
 	}
 
 	get emailAddress(): string {

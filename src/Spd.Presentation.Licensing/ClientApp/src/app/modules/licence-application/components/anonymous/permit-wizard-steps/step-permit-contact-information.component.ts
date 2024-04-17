@@ -10,13 +10,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
-				<app-step-title title="Provide your contact information"></app-step-title>
 				<div class="row">
 					<div class="col-12 mx-auto">
 						<app-common-contact-information [form]="form"></app-common-contact-information>
@@ -28,6 +23,9 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitContactInformationComponent implements LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
+
 	form: FormGroup = this.permitApplicationService.contactInformationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
@@ -35,6 +33,16 @@ export class StepPermitContactInformationComponent implements LicenceChildSteppe
 	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
+
+	ngOnInit(): void {
+		if (this.isRenewalOrUpdate) {
+			this.title = 'Confirm contact information';
+			this.subtitle = 'Update any information that has changed since your last application';
+		} else {
+			this.title = 'Provide your contact information';
+			this.subtitle = '';
+		}
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
