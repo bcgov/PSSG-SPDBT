@@ -136,7 +136,6 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state && state['applicationTypeCode'];
 
-		console.log('this.applicationTypeCode', this.applicationTypeCode);
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.alertText = 'Make sure your profile information is up-to-date before renewing your permit.';
