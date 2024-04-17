@@ -13,9 +13,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-common-update-renewal-alert
 						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
-						title=""
-						subtitle=""
-						[showLicenceData]="true"
 					></app-common-update-renewal-alert>
 				</ng-container>
 

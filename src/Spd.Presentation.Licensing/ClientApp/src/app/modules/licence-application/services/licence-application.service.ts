@@ -462,42 +462,50 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
-				switch (applicationTypeCode) {
-					case ApplicationTypeCode.Replacement: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
-							)
-						);
-						break;
-					}
-					case ApplicationTypeCode.Renewal: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
-							)
-						);
-						break;
-					}
-					case ApplicationTypeCode.Update: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-							)
-						);
-						break;
-					}
-					default: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-							)
-						);
-						break;
-					}
-				}
+				this.continueToNextStep(applicationTypeCode);
 			})
 		);
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_REPLACEMENT_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_RENEWAL_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
+					)
+				);
+				break;
+			}
+			default: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
+					)
+				);
+				break;
+			}
+		}
 	}
 
 	/**
