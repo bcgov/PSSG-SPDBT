@@ -184,4 +184,36 @@ public class PermitAppManagerTest
         Assert.IsType<PermitCommandResponse>(viewResult);
         Assert.Equal(licAppId, viewResult.LicenceAppId);
     }
+
+    [Fact]
+    public async void Handle_PermitAppNewCommand_Return_PermitAppCommandResponse()
+    {
+        //Arrange
+        PermitAppSubmitRequest request = fixture.Build<PermitAppSubmitRequest>()
+            .With(r => r.IsCanadianCitizen, true)
+            .Create();
+        LicAppFileInfo canadianCitizenship = fixture.Build<LicAppFileInfo>()
+            .With(i => i.LicenceDocumentTypeCode, LicenceDocumentTypeCode.CanadianCitizenship)
+            .Create();
+        LicAppFileInfo photoOfYourself = fixture.Build<LicAppFileInfo>()
+            .With(i => i.LicenceDocumentTypeCode, LicenceDocumentTypeCode.PhotoOfYourself)
+            .Create();
+
+        Guid licAppId = Guid.NewGuid();
+        Guid contactId = Guid.NewGuid();
+        Guid originalApplicationId = Guid.NewGuid();
+        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
+            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = originalApplicationId});
+        mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
+            .Returns(new CreateDocumentCmd());
+        mockLicAppRepo.Setup(a => a.CreateLicenceApplicationAsync(It.IsAny<CreateLicenceApplicationCmd>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, contactId));
+
+        //Act
+        var viewResult = await sut.Handle(new PermitAppNewCommand(request, new List<LicAppFileInfo>() { canadianCitizenship, photoOfYourself }), CancellationToken.None);
+
+        //Assert
+        Assert.IsType<PermitAppCommandResponse>(viewResult);
+        Assert.Equal(licAppId, viewResult.LicenceAppId);
+    }
 }
