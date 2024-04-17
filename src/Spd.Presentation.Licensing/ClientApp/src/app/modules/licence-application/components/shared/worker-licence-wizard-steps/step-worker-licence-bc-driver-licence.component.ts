@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -25,7 +25,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceBcDriverLicenceComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 
 	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;

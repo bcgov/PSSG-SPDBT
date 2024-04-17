@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
 import { CommonResidentialAddressComponent } from '@app/modules/licence-application/components/shared/step-components/common-residential-address.component';
@@ -18,7 +18,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceResidentialAddressComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 

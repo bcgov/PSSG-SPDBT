@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonContactInformationComponent } from '@app/modules/licence-application/components/shared/step-components/common-contact-information.component';
@@ -22,7 +22,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [],
 })
-export class StepPermitContactInformationComponent implements LicenceChildStepperStepComponent {
+export class StepPermitContactInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 
