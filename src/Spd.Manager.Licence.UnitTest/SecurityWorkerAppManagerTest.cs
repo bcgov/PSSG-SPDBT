@@ -35,7 +35,7 @@ namespace Spd.Manager.Licence.UnitTest
             fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            workerLicenceFixture = new WorkerLicenceFixture(CancellationToken.None);
+            workerLicenceFixture = new WorkerLicenceFixture();
 
             sut = new SecurityWorkerAppManager(mockLicRepo.Object,
                 mockLicAppRepo.Object,
@@ -336,21 +336,15 @@ namespace Spd.Manager.Licence.UnitTest
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
 
-            WorkerLicenceAppSubmitRequest wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
-            wLAppAnonymousSubmitRequest.PreviousDocumentIds = null;
-            wLAppAnonymousSubmitRequest.HasLegalNameChanged = false;
-            wLAppAnonymousSubmitRequest.IsPoliceOrPeaceOfficer = false;
-            wLAppAnonymousSubmitRequest.HasNewMentalHealthCondition = false;
-            wLAppAnonymousSubmitRequest.IsCanadianCitizen = true;
-            wLAppAnonymousSubmitRequest.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales };
+            WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
             LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
             List<LicAppFileInfo> licAppFileInfos = new() { canadianCitizenship, proofOfFingerprint, photoOfYourself };
-            WorkerLicenceAppRenewCommand request = new(wLAppAnonymousSubmitRequest, licAppFileInfos);
+            WorkerLicenceAppRenewCommand cmd = new(request, licAppFileInfos);
 
-            var result = await sut.Handle(request, CancellationToken.None);
+            var result = await sut.Handle(cmd, CancellationToken.None);
 
             Assert.IsType<WorkerLicenceCommandResponse>(result);
             Assert.Equal(licAppId, result.LicenceAppId);
@@ -445,22 +439,16 @@ namespace Spd.Manager.Licence.UnitTest
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
 
-            WorkerLicenceAppSubmitRequest swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
-            swlAppSubmitRequest.PreviousDocumentIds = null;
-            swlAppSubmitRequest.HasLegalNameChanged = false;
-            swlAppSubmitRequest.IsPoliceOrPeaceOfficer = false;
-            swlAppSubmitRequest.HasNewMentalHealthCondition = false;
-            swlAppSubmitRequest.IsCanadianCitizen = true;
-            swlAppSubmitRequest.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales };
+            WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
             LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
             List<LicAppFileInfo> licAppFileInfos = new() { canadianCitizenship, proofOfFingerprint, photoOfYourself };
 
-            WorkerLicenceAppUpdateCommand request = new(swlAppSubmitRequest, licAppFileInfos);
+            WorkerLicenceAppUpdateCommand cmd = new(request, licAppFileInfos);
 
-            var result = await sut.Handle(request, CancellationToken.None);
+            var result = await sut.Handle(cmd, CancellationToken.None);
 
             Assert.IsType<WorkerLicenceCommandResponse>(result);
             Assert.Equal(licAppId, result.LicenceAppId);
