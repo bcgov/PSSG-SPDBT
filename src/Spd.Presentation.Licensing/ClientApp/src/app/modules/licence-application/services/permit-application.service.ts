@@ -390,28 +390,36 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
-				switch (applicationTypeCode) {
-					case ApplicationTypeCode.Renewal: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_RENEWAL_AUTHENTICATED)
-						);
-						break;
-					}
-					case ApplicationTypeCode.Update: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED)
-						);
-						break;
-					}
-					default: {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED)
-						);
-						break;
-					}
-				}
+				this.continueToNextStep(applicationTypeCode);
 			})
 		);
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Renewal: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_RENEWAL_AUTHENTICATED)
+				);
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED)
+				);
+				break;
+			}
+			default: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED)
+				);
+				break;
+			}
+		}
 	}
 
 	/**
