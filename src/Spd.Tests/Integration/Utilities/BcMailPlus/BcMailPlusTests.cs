@@ -1,9 +1,9 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Utilities.Printing;
 using Spd.Utilities.Printing.BCMailPlus;
+using System.Text.Json;
 
 namespace Spd.Tests.Integration.Utilities.BcMailPlus;
 
@@ -17,7 +17,7 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 bad).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated right).json")]
-    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Security Worker Licence (Photo 3 rotated right).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated 270).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 4 bad).json")]
     public async Task RunSecurityWorkerLicenseJob(string fileName)
     {
