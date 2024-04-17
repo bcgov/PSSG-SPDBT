@@ -35,7 +35,7 @@ namespace Spd.Manager.Licence.UnitTest
             fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            workerLicenceFixture = new WorkerLicenceFixture(CancellationToken.None);
+            workerLicenceFixture = new WorkerLicenceFixture();
 
             sut = new SecurityWorkerAppManager(mockLicRepo.Object,
                 mockLicAppRepo.Object,
