@@ -314,7 +314,7 @@ public class PermitAppManagerTest
     }
 
     [Fact]
-    public async void HandlePermitAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
+    public async void Handle_PermitAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
     {
         Guid licAppId = Guid.NewGuid();
         DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays + 1);
