@@ -207,4 +207,32 @@ internal abstract class LicenceAppManagerBase
         }
         return false;
     }
+
+    protected IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(IEnumerable<LicAppFileInfo> newLicAppFiles, IEnumerable<LicAppFileInfo> existingLicAppFiles)
+    {
+        List<UploadedDocumentEnum> docEnums = new();
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
+            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
+            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        return docEnums;
+    }
+
+    protected IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnumsFromDocumentInfo(List<Document>? documentInfos)
+    {
+        List<UploadedDocumentEnum> docEnums = new();
+        if (documentInfos == null) { return docEnums; }
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
+            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
+            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        return docEnums;
+    }
 }

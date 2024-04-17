@@ -1,10 +1,11 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -68,6 +69,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
+							[applicationTypeCode]="applicationTypeCodeNew"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -84,7 +86,9 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 	`,
 	styles: [],
 })
-export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit, AfterViewInit {
+export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeCodeNew = ApplicationTypeCode.New;
+
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PURPOSE_AND_RATIONALE = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -130,15 +134,15 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		this.updateCompleteStatus();
 	}
 
-	ngAfterViewInit(): void {
-		if (this.step3Complete) {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		} else if (this.step2Complete) {
-			this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-		} else if (this.step1Complete) {
-			this.stepper.selectedIndex = this.STEP_PURPOSE_AND_RATIONALE;
-		}
-	}
+	// ngAfterViewInit(): void {
+	// 	if (this.step3Complete) {
+	// 		this.stepper.selectedIndex = this.STEP_REVIEW;
+	// 	} else if (this.step2Complete) {
+	// 		this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
+	// 	} else if (this.step1Complete) {
+	// 		this.stepper.selectedIndex = this.STEP_PURPOSE_AND_RATIONALE;
+	// 	}
+	// }
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
@@ -177,7 +181,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
 
@@ -212,7 +216,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onNextPayStep(): void {
-		this.permitApplicationService.submitPermitAuthenticated().subscribe({
+		this.permitApplicationService.submitPermitNewAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
@@ -241,7 +245,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			return;
 		}
 
-		this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+		this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.permitApplicationService.hasValueChanged = false;
 
@@ -278,7 +282,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onGoToReview() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
 					this.updateCompleteStatus();
@@ -305,7 +309,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onChildNextStep() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
 					this.hotToastService.success('Licence information has been saved');

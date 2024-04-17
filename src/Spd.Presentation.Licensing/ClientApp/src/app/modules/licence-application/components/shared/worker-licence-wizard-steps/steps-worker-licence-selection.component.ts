@@ -75,11 +75,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				</ng-template>
 			</mat-step>
 
-			<mat-step
-				*ngIf="
-					applicationTypeCode === applicationTypeCodes.Update || applicationTypeCode === applicationTypeCodes.Renewal
-				"
-			>
+			<mat-step *ngIf="isRenewalOrUpdate">
 				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 				<div class="row wizard-button-row">
@@ -96,16 +92,6 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 							Next
 						</button>
 					</div>
-					<!-- <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
-						>
-							Next: Review
-						</button>
-					</div> -->
 				</div>
 			</mat-step>
 
@@ -134,6 +120,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
 				<app-step-worker-licence-expired
 					(validExpiredLicenceData)="onValidExpiredLicence()"
+					[isLoggedIn]="isLoggedIn"
 				></app-step-worker-licence-expired>
 
 				<div class="row wizard-button-row">
@@ -437,5 +424,12 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	get showTermsOfUse(): boolean {
 		// anonymous: agree everytime for all
 		return !this.isLoggedIn;
+	}
+
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }

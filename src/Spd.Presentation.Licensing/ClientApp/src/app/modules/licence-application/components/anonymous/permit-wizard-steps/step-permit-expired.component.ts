@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
+import { CommonExpiredLicenceAnonymousComponent } from '../../shared/step-components/common-expired-licence-anonymous.component';
 import { CommonExpiredLicenceComponent } from '../../shared/step-components/common-expired-licence.component';
 
 @Component({
@@ -15,11 +16,21 @@ import { CommonExpiredLicenceComponent } from '../../shared/step-components/comm
 					subtitle="Processing time will be reduced if you provide info from your past permit"
 				></app-step-title>
 
-				<app-common-expired-licence
-					[form]="form"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					(validExpiredLicenceData)="onValidData()"
-				></app-common-expired-licence>
+				<ng-container *ngIf="isLoggedIn; else isAnonymous">
+					<app-common-expired-licence
+						[form]="form"
+						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						(validExpiredLicenceData)="onValidData()"
+					></app-common-expired-licence>
+				</ng-container>
+
+				<ng-template #isAnonymous>
+					<app-common-expired-licence-anonymous
+						[form]="form"
+						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						(validExpiredLicenceData)="onValidData()"
+					></app-common-expired-licence-anonymous>
+				</ng-template>
 			</div>
 		</section>
 	`,
@@ -29,10 +40,14 @@ export class StepPermitExpiredComponent implements OnInit, PermitChildStepperSte
 	form: FormGroup = this.permitApplicationService.expiredLicenceFormGroup;
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
+	@Input() isLoggedIn!: boolean;
 	@Output() validExpiredLicenceData = new EventEmitter();
 
 	@ViewChild(CommonExpiredLicenceComponent)
 	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
+
+	@ViewChild(CommonExpiredLicenceAnonymousComponent)
+	commonExpiredLicenceAnonymousComponent!: CommonExpiredLicenceAnonymousComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
@@ -43,7 +58,11 @@ export class StepPermitExpiredComponent implements OnInit, PermitChildStepperSte
 	}
 
 	onSearchAndValidate(): void {
-		this.commonExpiredLicenceComponent.onValidateAndSearch();
+		if (this.isLoggedIn) {
+			this.commonExpiredLicenceComponent.onValidateAndSearch();
+		} else {
+			this.commonExpiredLicenceAnonymousComponent.onValidateAndSearch();
+		}
 	}
 
 	isFormValid(): boolean {
