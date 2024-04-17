@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -9,13 +9,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title title="Your personal information"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
 					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
@@ -32,7 +26,10 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [],
 })
-export class StepPermitPersonalInformationComponent implements LicenceChildStepperStepComponent {
+export class StepPermitPersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
+
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.permitApplicationService.personalInformationFormGroup;
@@ -40,6 +37,12 @@ export class StepPermitPersonalInformationComponent implements LicenceChildStepp
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
+
+	ngOnInit(): void {
+		this.title = this.isRenewalOrUpdate ? 'Confirm your personal information' : 'Your personal information';
+
+		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

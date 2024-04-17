@@ -12,12 +12,6 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -114,12 +108,6 @@ export class StepPermitMailingAddressComponent implements OnInit, LicenceChildSt
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 	applicationTypeCodes = ApplicationTypeCode;
 
-	readonly title_new = 'Provide your mailing address';
-	readonly title_subtitle_new =
-		'Provide your mailing address, if different from your residential address. This cannot be a company address.';
-	readonly title_replacement = 'Review your mailing address';
-	readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
-
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
@@ -127,13 +115,20 @@ export class StepPermitMailingAddressComponent implements OnInit, LicenceChildSt
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.title = this.title_replacement;
-				this.subtitle = this.title_subtitle_replacement;
+				this.title = 'Review your mailing address';
+				this.subtitle = 'Ensure your mailing address is correct before submitting your application';
+				break;
+			}
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Update: {
+				this.title = 'Confirm your mailing address';
+				this.subtitle = 'Ensure your mailing address is correct before submitting your application';
 				break;
 			}
 			default: {
-				this.title = this.title_new;
-				this.subtitle = this.title_subtitle_new;
+				this.title = 'Provide your mailing address';
+				this.subtitle =
+					'Provide your mailing address, if different from your residential address. This cannot be a company address.';
 				break;
 			}
 		}
@@ -174,12 +169,5 @@ export class StepPermitMailingAddressComponent implements OnInit, LicenceChildSt
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }
