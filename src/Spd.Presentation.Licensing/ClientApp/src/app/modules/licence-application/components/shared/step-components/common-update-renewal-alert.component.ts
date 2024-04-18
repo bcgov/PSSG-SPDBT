@@ -10,7 +10,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 		<div class="row">
 			<div class="col-md-8 col-sm-12 mx-auto">
 				<div class="alert-confirm mb-3 p-2">
-					<div class="row mt-0 mx-3 mb-2" *ngIf="showLicenceData">
+					<div class="row mt-0 mx-3 mb-2">
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label text-center d-block text-muted mt-3">Licence Number</div>
 							<div class="summary-text-data text-center">{{ originalLicenceNumber }}</div>
@@ -27,11 +27,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 								{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}
 							</div>
 						</div>
-						<mat-divider class="my-2" *ngIf="title"></mat-divider>
-					</div>
-					<div class="title lh-base">
-						<div class="fs-4" [innerHtml]="title"></div>
-						<div class="fs-6 mt-1" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					</div>
 				</div>
 			</div>
@@ -39,14 +34,6 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [
 		`
-			.alert-info {
-				color: #0c5460;
-				border-color: #fcba19;
-				border-width: 2px;
-				border-style: solid;
-				border-radius: 0;
-			}
-
 			.alert-confirm {
 				color: #0c5460;
 				background-color: #eef8fa;
@@ -62,9 +49,6 @@ export class CommonUpdateRenewalAlertComponent implements OnInit {
 
 	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	@Input() showLicenceData = false;
-	@Input() title = 'Confirm this information';
-	@Input() subtitle = 'Update any information that has changed since your last application';
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
@@ -72,12 +56,10 @@ export class CommonUpdateRenewalAlertComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (this.showLicenceData) {
-			if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
-				this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
-			} else {
-				this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
-			}
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
+			this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		} else {
+			this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
 		}
 	}
 

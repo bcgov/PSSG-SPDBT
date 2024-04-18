@@ -87,7 +87,7 @@ namespace Spd.Manager.Screening
             OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(orgId), cancellationToken);
             if (!org.OrgResult.ServiceTypes.Any(s => IApplicationRepository.ScreeningServiceTypes.Contains(s)))
             {
-                //if it is screening org
+                //if it is not a screening org
                 return new OrgInviteVerifyResponse(null, false, "the organization is not a screening org");
             }
 

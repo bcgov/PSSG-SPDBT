@@ -17,7 +17,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 					<app-common-update-renewal-alert
 						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
 						[applicationTypeCode]="applicationTypeCode"
-						[showLicenceData]="true"
 					></app-common-update-renewal-alert>
 				</ng-container>
 
@@ -1084,10 +1083,10 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	readonly subtitle_new = 'You can add up to a total of 6 categories';
 
 	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
-	readonly subtitle_renew = 'You can change and remove existing categories as well as add new ones';
+	readonly subtitle_renew = 'You can remove existing categories as well as add new ones';
 
 	readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
-	readonly subtitle_update = 'You can change and remove existing categories as well as add new ones';
+	readonly subtitle_update = 'You can remove existing categories as well as add new ones';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 

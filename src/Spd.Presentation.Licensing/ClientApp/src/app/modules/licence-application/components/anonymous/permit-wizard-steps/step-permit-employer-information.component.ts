@@ -12,13 +12,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title [title]="title"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -163,6 +157,7 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 
 	form: FormGroup = this.permitApplicationService.employerInformationFormGroup;
 	title = '';
+	subtitle = '';
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
@@ -176,11 +171,13 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
-				this.title = this.title_new;
+				this.title = 'Provide your employer’s information';
+				this.subtitle = '';
 				break;
 			}
 			default: {
-				this.title = this.title_not_new;
+				this.title = 'Confirm your employer’s information';
+				this.subtitle = 'Update any information that has changed since your last application';
 				break;
 			}
 		}
@@ -221,12 +218,5 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }

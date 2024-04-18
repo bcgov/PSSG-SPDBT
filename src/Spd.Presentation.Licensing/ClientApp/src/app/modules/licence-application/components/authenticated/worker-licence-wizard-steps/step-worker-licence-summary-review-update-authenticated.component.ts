@@ -62,7 +62,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 								<div class="text-label d-block text-muted">Licence Term</div>
 								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-6 col-md-12" *ngIf="isReprint">
 								<div class="text-label d-block text-muted">Reprint Licence</div>
 								<div class="summary-text-data">{{ isReprint }}</div>
 							</div>
@@ -170,7 +170,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return this.licenceModelData.reprintLicenceData.reprintLicence ?? '';
 	}
 	get licenceFee(): number | null {
-		if (!this.licenceTermCode) {
+		if (!this.licenceTermCode || !this.isReprint) {
 			return null;
 		}
 

@@ -7,7 +7,7 @@ public class WorkerLicenceFixture
 {
     private readonly IFixture fixture;
 
-    public WorkerLicenceFixture(CancellationToken cancellationToken)
+    public WorkerLicenceFixture()
     {
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
@@ -19,11 +19,17 @@ public class WorkerLicenceFixture
         ApplicationTypeCode applicationTypeCode = ApplicationTypeCode.New,
         Guid? appLicId = null)
     {
-        WorkerLicenceAppSubmitRequest workerLicenceAppAnonymousSubmitRequest = fixture.Build<WorkerLicenceAppSubmitRequest>()
-            .With(w => w.OriginalApplicationId, appLicId ?? Guid.NewGuid())
-            .With(w => w.ApplicationTypeCode, applicationTypeCode)
+        WorkerLicenceAppSubmitRequest request = fixture.Build<WorkerLicenceAppSubmitRequest>()
+            .With(r => r.OriginalApplicationId, appLicId ?? Guid.NewGuid())
+            .With(r => r.ApplicationTypeCode, applicationTypeCode)
+            .With(r => r.HasLegalNameChanged, false)
+            .With(r => r.IsPoliceOrPeaceOfficer, false)
+            .With(r => r.HasNewMentalHealthCondition, false)
+            .With(r => r.IsCanadianCitizen, true)
+            .With(r => r.CategoryCodes, new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.BodyArmourSales })
+            .Without(r => r.PreviousDocumentIds)
             .Create();
 
-        return workerLicenceAppAnonymousSubmitRequest;
+        return request;
     }
 }

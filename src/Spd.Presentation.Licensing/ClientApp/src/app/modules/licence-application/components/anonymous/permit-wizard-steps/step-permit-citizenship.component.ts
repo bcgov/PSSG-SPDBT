@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
@@ -21,13 +21,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title title="Are you a Canadian citizen?"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -279,7 +273,10 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 	],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepPermitCitizenshipComponent implements LicenceChildStepperStepComponent {
+export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
+
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfResidenceStatusTypes = PermitProofOfResidenceStatusTypes;
 	proofOfCitizenshipTypes = PermitProofOfCitizenshipTypes;
@@ -299,6 +296,13 @@ export class StepPermitCitizenshipComponent implements LicenceChildStepperStepCo
 		private utilService: UtilService,
 		private hotToastService: HotToastService
 	) {}
+
+	ngOnInit(): void {
+		this.title = 'Are you a Canadian citizen?';
+		this.subtitle = this.isRenewalOrUpdate
+			? 'If your citizenship status has changed from your previous application, update your selections'
+			: '';
+	}
 
 	onFileUploaded(file: File): void {
 		this.permitApplicationService.hasValueChanged = true;
