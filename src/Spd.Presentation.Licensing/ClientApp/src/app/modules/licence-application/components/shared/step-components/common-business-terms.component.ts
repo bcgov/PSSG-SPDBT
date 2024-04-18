@@ -149,8 +149,8 @@ import { UtilService } from '@app/core/services/util.service';
 								instances, if you are accessing the Site on behalf of the security business, you will be required to
 								authenticate through the Business BCeID of the security business you are authorized to represent. If you
 								are accessing the site as a Controlling Member in your personal capacity, your identity will be verified
-								through your BC Services Card, approved government-issued ID, or other approved authentication method as
-								may be implemented from time to time.
+								through your BC Services Card account login, approved government-issued ID, or other approved
+								authentication method as may be implemented from time to time.
 							</li>
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
