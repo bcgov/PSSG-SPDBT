@@ -119,6 +119,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/add-bceid-primary-users/{orgId}")]
         [HttpGet]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<OrgUserResponse> AddBceidPrimaryUser([FromRoute] Guid orgId)
         {
             BceidIdentityInfo idInfo = _currentUser.GetBceidUserIdentityInfo();
