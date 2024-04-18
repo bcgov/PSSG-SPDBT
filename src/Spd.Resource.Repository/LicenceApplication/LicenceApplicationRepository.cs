@@ -79,20 +79,20 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
             app.statecode = DynamicsConstants.StateCode_Inactive;
-            app.spd_submittedon = DateTimeOffset.Now;
         }
         else
         {
             app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
         }
 
+        app.spd_submittedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
     }
 
     //for auth, do not need to create contact.
-    public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct, bool isSubmitted = false)
+    public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? app;
         if (cmd.LicenceAppId != null)
@@ -104,15 +104,11 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.LicenceAppId);
-            if (isSubmitted)
-                app.spd_submittedon = DateTimeOffset.Now;
             _context.UpdateObject(app);
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
-            if (isSubmitted)
-                app.spd_submittedon = DateTimeOffset.Now;
             _context.AddTospd_applications(app);
             var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
             if (contact != null)
