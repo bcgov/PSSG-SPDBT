@@ -101,17 +101,20 @@ import { UtilService } from '@app/core/services/util.service';
 							</li>
 							<div class="fs-5 terms-subtitle">Authentication:</div>
 							<li>
-								You must be authenticated before you can submit an online application for a new or renewed security
-								licence or permit, including a request to submit to Prescribed Checks. Your identity will be verified
-								through your BC Services Card, approved government-issued ID, or other approved authentication method as
-								may be implemented from time to time.
+								You must be authenticated to submit an online update to, or request a replacement of, your security
+								licence or permit, including submitting to Prescribed Checks, if applicable. Your identity will be
+								verified through your BC Services Card account login, approved government-issued ID, or other approved
+								authentication method as may be implemented from time to time, which at the time of an update to your
+								licence or permit may require that you gain access to the Site by way of a unique access code provided
+								to you
 							</li>
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
 								used, you may be required to follow a link to an external site, including the
 								<a href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card" target="_blank"
 									>BC Services Card Site</a
-								>, following which you will be returned to, and allowed to access the application portions of, the Site.
+								>, following which you will be returned to, and allowed to access the application or update portions of,
+								the Site.
 							</li>
 							<div class="fs-5 terms-subtitle">Payment:</div>
 							<li>

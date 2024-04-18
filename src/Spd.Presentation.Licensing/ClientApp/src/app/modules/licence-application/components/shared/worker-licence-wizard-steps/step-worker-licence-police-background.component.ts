@@ -13,12 +13,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -132,10 +126,6 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	title = '';
 	subtitle = '';
 
-	readonly title_confirm = 'Are you currently a Police Officer or Peace Officer?';
-	readonly subtitle_auth_new =
-		'A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence.';
-
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
@@ -145,8 +135,9 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
-		this.title = this.title_confirm;
-		this.subtitle = this.subtitle_auth_new;
+		this.title = 'Are you currently a Police Officer or Peace Officer?';
+		this.subtitle =
+			'A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence.';
 	}
 
 	onFileUploaded(file: File): void {
@@ -188,12 +179,5 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }
