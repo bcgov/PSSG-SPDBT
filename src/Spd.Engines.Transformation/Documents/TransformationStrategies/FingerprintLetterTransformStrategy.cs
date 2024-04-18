@@ -1,29 +1,18 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Printing.BCMailPlus;
 
 namespace Spd.Engines.Transformation.Documents.TransformationStrategies;
 
-internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository) : IDocumentTransformStrategy
+internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository)
+    : BcMailPlusTransformStrategyBase<FingerprintLetterTransformRequest, FingerprintLetter>(Jobs.FingerprintsLetter)
 {
-    private const string JobTemplate = Jobs.FingerprintsLetter;
-
-    public bool CanTransform(DocumentTransformRequest request) => request is FingerprintLetterTransformRequest;
-
-    public async Task<DocumentTransformResponse> Transform(DocumentTransformRequest request, CancellationToken cancellationToken)
+    protected override async Task<FingerprintLetter> CreateDocument(FingerprintLetterTransformRequest request, CancellationToken cancellationToken)
     {
-        return new BcMailPlusTransformResponse(Jobs.FingerprintsLetter, await CreateDocument(((FingerprintLetterTransformRequest)request).ApplicationId, cancellationToken));
-    }
-
-    private async Task<JsonDocument> CreateDocument(Guid applicationId, CancellationToken cancellationToken)
-    {
-        var application = await applicationRepository.QueryApplicationAsync(new ApplicationQry(applicationId), cancellationToken);
+        var application = await applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), cancellationToken);
 
         //TODO: map to document data
-        var documentData = new FingerprintLetter();
-
-        return JsonSerializer.SerializeToDocument(documentData);
+        return new FingerprintLetter { Date = application.CreatedOn?.ToString() ?? string.Empty };
     }
 }
 

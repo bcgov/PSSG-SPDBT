@@ -63,6 +63,6 @@ internal partial class AdminManager
     {
         var previewResponse = await _printer.Preview(new BCMailPlusPrintRequest(bcmailplusResponse.JobTemplateId, bcmailplusResponse.Document), cancellationToken);
         if (previewResponse.Status != JobStatus.Completed) throw new InvalidOperationException(previewResponse.Error);
-        return new PreviewDocumentResponse(previewResponse.ContentType!, previewResponse.PreviewContent!);
+        return new PreviewDocumentResponse(previewResponse.ContentType!, previewResponse.Content!);
     }
 }

@@ -17,11 +17,9 @@ public record PrintJobStatusResponse(PrintJobStatus Status, string? Error);
 
 public enum PrintJobStatus
 {
-    Pending,
     InProgress,
     Completed,
-    Failed,
-    Cancelled
+    Failed
 }
 
 public record PreviewDocumentResponse(string ContentType, IEnumerable<byte> Content);

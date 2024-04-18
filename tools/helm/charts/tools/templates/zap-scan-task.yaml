@@ -1,0 +1,44 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: zap-scan-task
+spec:
+  workspaces:
+    - name: owasp-settings
+      optional: true
+      mountPath: /zap/wrk
+  params:
+    - name: TARGET_URL
+      description: URL to scan
+    - name: SCAN_TYPE
+      description: Options include quick, api or full.
+      default: "quick"
+    - name: SCAN_DURATION
+      description: The duration of the OWASP scan in minutes.
+      default: "10"
+  steps:
+    - name: owasp-scan
+      image: owasp/zap2docker-stable
+      workingDir: $(workspaces.owasp-settings.path)
+      script: |
+        #!/bin/bash
+
+        if [ $(params.SCAN_TYPE) = "quick" ]
+        then
+          echo "performing quick scan"
+          zap-baseline.py -t $(params.TARGET_URL) -g gen.conf -r owasp-quick-results.html -m $(params.SCAN_DURATION) -I
+          cat $(workspaces.owasp-settings.path)/owasp-quick-results.json
+        elif [ $(params.SCAN_TYPE) = "full" ]
+        then
+          echo "performing full scan"
+          zap-full-scan.py -t $(params.TARGET_URL) -g gen.conf -r owasp-full-results.html -m $(params.SCAN_DURATION) -I
+          cat $(workspaces.owasp-settings.path)/owasp-full-results.json
+        elif [ $(params.SCAN_TYPE) = "api" ]
+        then
+          echo "performing api scan"
+          zap-api-scan.py -t $(params.TARGET_URL) -f openapi -g gen.conf -r owasp-api-results.html -m $(params.SCAN_DURATION) 
+          cat $(workspaces.owasp-settings.path)/owasp-api-results.json
+        else
+          echo "ERROR: Scan type must be set to quick, api or full."
+          exit 1
+        fi
