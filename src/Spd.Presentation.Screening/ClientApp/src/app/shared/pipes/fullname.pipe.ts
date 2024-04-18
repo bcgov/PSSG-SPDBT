@@ -10,15 +10,15 @@ export class FullnamePipe implements PipeTransform {
 		}
 
 		const { firstName, lastName } = model;
-		if (lastName) {
-			return !firstName ? lastName : `${firstName} ${lastName}`;
+		if (firstName || lastName) {
+			return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 		}
 
 		const { givenName, surname } = model;
-		if (surname) {
-			return !givenName ? surname : `${givenName} ${surname}`;
+		if (givenName || surname) {
+			return `${givenName ?? ''} ${surname ?? ''}`.trim();
 		}
 
-		return '';
+		return null;
 	}
 }
