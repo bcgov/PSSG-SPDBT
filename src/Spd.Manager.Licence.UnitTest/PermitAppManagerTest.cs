@@ -152,6 +152,126 @@ public class PermitAppManagerTest
     }
 
     [Fact]
+    public async void Handle_PermitAppReplaceCommand_Return_WorkerLicenceCommandResponse()
+    {
+        Guid licAppId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays + 1);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+            .With(r => r.ExpiryDate, expiryDate)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
+            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
+        mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp());
+        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LicenceFeeListResp());
+
+        PermitAppSubmitRequest request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+        LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
+        LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
+        List<LicAppFileInfo> licAppFileInfos = new() { canadianCitizenship, photoOfYourself };
+        PermitAppReplaceCommand cmd = new(request, licAppFileInfos);
+
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.IsType<PermitAppCommandResponse>(result);
+        Assert.Equal(licAppId, result.LicenceAppId);
+    }
+
+    [Fact]
+    public async void Handle_PermitAppReplaceCommand_WithWrongApplicationTypeCode_Throw_Exception()
+    {
+        Guid licAppId = Guid.NewGuid();
+
+        var request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.New, licAppId);
+        PermitAppReplaceCommand cmd = new(request, []);
+
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_PermitAppReplaceCommand_WithNoLicences_Throw_Exception()
+    {
+        Guid licAppId = Guid.NewGuid();
+
+        var request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+        PermitAppReplaceCommand cmd = new(request, []);
+
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_PermitAppReplaceCommand_WithInvalidExpirationDate_Throw_Exception()
+    {
+        Guid licAppId = Guid.NewGuid();
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+            .With(r => r.ExpiryDate, expiryDate)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+
+        var request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+        PermitAppReplaceCommand cmd = new(request, []);
+
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_PermitAppReplaceCommand_WithNoOriginalApplicationId_Throw_Exception()
+    {
+        Guid licAppId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays + 1);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+            .With(r => r.ExpiryDate, expiryDate)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
+            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
+        mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+
+        var request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
+        request.OriginalApplicationId = null;
+        PermitAppReplaceCommand cmd = new(request, []);
+
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
     public async void Handle_PermitSubmitCommand_WithoutLicAppId_Return_PermitCommandResponse()
     {
         //Arrange
