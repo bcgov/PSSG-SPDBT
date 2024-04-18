@@ -173,7 +173,11 @@ internal class Mappings : Profile
          .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => GetEmployerAddressData(s)))
          .ForMember(d => d.IsCanadianResident, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_resideincanada)))
          .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s.spd_permitpurpose)))
-         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => GetUploadedDocumentEnums(s.spd_uploadeddocuments)));
+         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
+         .ForMember(d => d.SupervisorEmailAddress, opt => opt.MapFrom(s => s.spd_employeremail))
+         .ForMember(d => d.SupervisorPhoneNumber, opt => opt.MapFrom(s => s.spd_employerphonenumber))
+         .ForMember(d => d.SupervisorName, opt => opt.MapFrom(s => s.spd_employercontactname))
+         .ForMember(d => d.EmployerName, opt => opt.MapFrom(s => s.spd_employername));
 
         _ = CreateMap<CreateLicenceApplicationCmd, spd_application>()
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
