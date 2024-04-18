@@ -58,10 +58,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBCeID")]
         public async Task<BizUserLoginResponse?> BizLicencePortalLogin()
         {
-            //var info = _currentUser.GetBcscUserIdentityInfo();
-            //var response = await _mediator.Send(new BizLoginCommand(info));
-            //return response;
-            return null;
+            var info = _currentUser.GetBceidUserIdentityInfo();
+            var response = await _mediator.Send(new BizLoginCommand(info));
+            return response;
         }
 
         /// <summary>
