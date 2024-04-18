@@ -128,6 +128,52 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
         }
 
+        /// <summary>
+        /// Submit Permit Application Json part for authenticated users, supports only: renewal, update and replace
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// </summary>
+        /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/permit-application/authenticated/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<PermitAppCommandResponse?> SubmitPermitApplicationJsonAuthenticated(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
+        {
+            PermitAppCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
+            var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                PermitAppReplaceCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                PermitAppRenewCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+            {
+                PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            return response;
+        }
+
         #endregion
 
         #region anonymous 
