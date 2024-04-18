@@ -45,7 +45,7 @@ internal class PermitAppManager :
 
     #region for portal
     // Authenticated save
-    public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
+    public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken, bool isSubmitted = false)
     {
         bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
             Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
@@ -58,7 +58,7 @@ internal class PermitAppManager :
         }
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken, isSubmitted);
         if (cmd.PermitUpsertRequest.LicenceAppId == null)
             cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
@@ -70,7 +70,8 @@ internal class PermitAppManager :
 
     public async Task<PermitCommandResponse> Handle(PermitSubmitCommand cmd, CancellationToken cancellationToken)
     {
-        var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
+        //cmd.PermitUpsertRequest.s
+        var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken, true);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
         decimal? cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);

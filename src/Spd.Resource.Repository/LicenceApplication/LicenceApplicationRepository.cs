@@ -92,7 +92,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
     }
 
     //for auth, do not need to create contact.
-    public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
+    public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct, bool isSubmitted = false)
     {
         spd_application? app;
         if (cmd.LicenceAppId != null)
@@ -104,11 +104,15 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.LicenceAppId);
+            if (isSubmitted)
+                app.spd_submittedon = DateTimeOffset.Now;
             _context.UpdateObject(app);
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
+            if (isSubmitted)
+                app.spd_submittedon = DateTimeOffset.Now;
             _context.AddTospd_applications(app);
             var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
             if (contact != null)
