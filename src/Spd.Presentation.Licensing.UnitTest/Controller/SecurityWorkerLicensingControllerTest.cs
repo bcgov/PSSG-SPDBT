@@ -41,7 +41,7 @@ public class SecurityWorkerLicensingControllerTest
         fixture = new Fixture();
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        workerLicenceFixture = new WorkerLicenceFixture(CancellationToken.None);
+        workerLicenceFixture = new WorkerLicenceFixture();
 
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(uploadFileConfiguration)
