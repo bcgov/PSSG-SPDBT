@@ -20,7 +20,6 @@ import { StepPermitExpiredComponent } from './components/anonymous/permit-wizard
 import { StepPermitMailingAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-mailing-address.component';
 import { StepPermitPersonalInformationComponent } from './components/anonymous/permit-wizard-steps/step-permit-personal-information.component';
 import { StepPermitPhotographOfYourselfAnonymousComponent } from './components/anonymous/permit-wizard-steps/step-permit-photograph-of-yourself-anonymous.component';
-import { StepPermitPrintComponent } from './components/anonymous/permit-wizard-steps/step-permit-print.component';
 import { StepPermitRationaleComponent } from './components/anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from './components/anonymous/permit-wizard-steps/step-permit-reason.component';
 import { StepPermitResidentialAddressComponent } from './components/anonymous/permit-wizard-steps/step-permit-residential-address.component';
@@ -328,7 +327,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitPhotographOfYourselfNewComponent,
 		StepPermitPhotographOfYourselfRenewAndUpdateComponent,
 		StepPermitPhysicalCharacteristicsComponent,
-		StepPermitPrintComponent,
 		StepPermitRationaleComponent,
 		StepPermitReasonComponent,
 		StepPermitReprintComponent,

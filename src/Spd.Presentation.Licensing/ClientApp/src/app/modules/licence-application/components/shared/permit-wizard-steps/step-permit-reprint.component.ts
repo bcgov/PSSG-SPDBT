@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
@@ -8,7 +9,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title title="Do you need a new permit printed?"></app-step-title>
+				<app-step-title title="Do you need a new permit printed?" [subtitle]="subtitle"></app-step-title>
 
 				<app-common-reprint [form]="form"></app-common-reprint>
 			</div>
@@ -17,9 +18,19 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitReprintComponent implements LicenceChildStepperStepComponent {
+	subtitle = '';
 	form: FormGroup = this.permitApplicationService.reprintLicenceFormGroup;
 
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+
 	constructor(private permitApplicationService: PermitApplicationService) {}
+
+	ngOnInit(): void {
+		this.subtitle =
+			this.applicationTypeCode === ApplicationTypeCode.Update
+				? 'If your permit was lost or stolen, we can mail you a replacement'
+				: '';
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
