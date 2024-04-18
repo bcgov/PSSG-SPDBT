@@ -9,13 +9,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title [title]="title"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<app-common-physical-characteristics [form]="form"></app-common-physical-characteristics>
 			</div>
@@ -25,6 +19,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 })
 export class StepPermitPhysicalCharacteristicsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
+	subtitle = '';
 	form: FormGroup = this.permitApplicationService.characteristicsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
@@ -32,13 +27,12 @@ export class StepPermitPhysicalCharacteristicsComponent implements OnInit, Licen
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
-		if (
-			this.applicationTypeCode === ApplicationTypeCode.Update ||
-			this.applicationTypeCode === ApplicationTypeCode.Renewal
-		) {
+		if (this.isRenewalOrUpdate) {
 			this.title = 'Confirm identifying information';
+			this.subtitle = 'Update any information that has changed since your last application';
 		} else {
 			this.title = 'Provide identifying information';
+			this.subtitle = '';
 		}
 	}
 
