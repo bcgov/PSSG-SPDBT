@@ -49,7 +49,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								<div class="col-lg-7 col-md-12">
 									<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 										<mat-form-field>
-											<mat-label>Proof of Canadian citizenship</mat-label>
+											<mat-label>Proof of Canadian Citizenship</mat-label>
 											<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -267,7 +267,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 		this.licenceApplicationService.hasValueChanged = true;
 
 		if (this.licenceApplicationService.isAutoSave()) {
-			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value ?? LicenceDocumentTypeCode.BcServicesCard; // default value (f nothing is selected)
+			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value;
 
 			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
 				next: (resp: any) => {

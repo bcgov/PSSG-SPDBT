@@ -74,7 +74,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												</div>
 												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Print Licence</div>
+														<div class="text-label d-block text-muted">Reprint Licence</div>
 														<div class="summary-text-data">{{ isPrintPermit }}</div>
 													</div>
 												</ng-container>
@@ -576,7 +576,7 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		return this.permitModelData.licenceTermData.licenceTermCode ?? '';
 	}
 	get isPrintPermit(): string {
-		return this.permitModelData.printPermitData.isPrintPermit ?? '';
+		return this.permitModelData.reprintLicenceData.reprintLicence ?? '';
 	}
 	get hasExpiredLicence(): string {
 		return this.permitModelData.expiredLicenceData.hasExpiredLicence ?? '';

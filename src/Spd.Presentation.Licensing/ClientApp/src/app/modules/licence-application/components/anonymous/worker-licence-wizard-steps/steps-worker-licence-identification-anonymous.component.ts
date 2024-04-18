@@ -6,7 +6,7 @@ import { StepWorkerLicenceAliasesComponent } from '@app/modules/licence-applicat
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
 import { StepWorkerLicenceContactInformationComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-contact-information.component';
-import { StepWorkerLicenceMailingAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address.component';
+import { StepWorkerLicenceMailingAddressAnonymousComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
 import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-anonymous.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicenceResidentialAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-residential-address.component';
@@ -259,9 +259,9 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 			</mat-step>
 
 			<mat-step *ngIf="showMailingAddressStep">
-				<app-step-worker-licence-mailing-address
+				<app-step-worker-licence-mailing-address-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-mailing-address>
+				></app-step-worker-licence-mailing-address-anonymous>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
@@ -354,8 +354,8 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	photoComponent!: StepWorkerLicencePhotographOfYourselfAnonymousComponent;
 	@ViewChild(StepWorkerLicenceResidentialAddressComponent)
 	residentialAddressComponent!: StepWorkerLicenceResidentialAddressComponent;
-	@ViewChild(StepWorkerLicenceMailingAddressComponent)
-	mailingAddressComponent!: StepWorkerLicenceMailingAddressComponent;
+	@ViewChild(StepWorkerLicenceMailingAddressAnonymousComponent)
+	mailingAddressComponent!: StepWorkerLicenceMailingAddressAnonymousComponent;
 	@ViewChild(StepWorkerLicenceContactInformationComponent)
 	stepContactInformationComponent!: StepWorkerLicenceContactInformationComponent;
 	@ViewChild(StepWorkerLicenceReprintComponent)

@@ -1,18 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { LicenceResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import * as moment from 'moment';
-import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-common-expired-licence',
@@ -42,7 +41,7 @@ import { Subject } from 'rxjs';
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 					<div class="row">
-						<div class="col-xl-6 col-lg-12 mt-2">
+						<div class="col-xl-6 col-lg-12 mt-2 mx-auto">
 							<mat-form-field>
 								<mat-label>Expired {{ titleLabel }} Number</mat-label>
 								<input
@@ -55,21 +54,6 @@ import { Subject } from 'rxjs';
 								/>
 								<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
-						</div>
-
-						<div class="col-xl-6 col-lg-12 mt-2">
-							<div formGroupName="captchaFormGroup" class="mb-3">
-								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-										captchaFormGroup.get('token')?.invalid &&
-										captchaFormGroup.get('token')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
 						</div>
 
 						<app-alert type="info" icon="check_circle" *ngIf="messageInfo">
@@ -96,12 +80,11 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	titleLabel!: string;
 	label!: string;
 
-	messageInfo = '';
-	messageWarn = '';
-	messageError = '';
+	messageInfo: string | null = null;
+	messageWarn: string | null = null;
+	messageError: string | null = null;
 
 	matcher = new FormErrorStateMatcher();
-	resetRecaptcha: Subject<void> = new Subject<void>();
 
 	@Input() form!: FormGroup;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
@@ -113,7 +96,8 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
 		private licenceService: LicenceService,
-		private formatDatePipe: FormatDatePipe
+		private formatDatePipe: FormatDatePipe,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -135,19 +119,20 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
 
-		const recaptchaCode = this.captchaFormGroup.get('token')?.value;
-
-		if (!licenceNumber || licenceNumber.trim().length == 0 || !recaptchaCode) return;
+		if (!licenceNumber || licenceNumber.trim().length == 0) return;
 
 		return this.licenceService
-			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
+			.apiLicenceLookupLicenceNumberGet({ licenceNumber })
 			.pipe()
 			.subscribe((resp: LicenceResponse) => {
 				const isFound = !!(resp && resp?.expiryDate);
 				const isExpired = isFound ? !this.utilService.getIsTodayOrFutureDate(resp?.expiryDate) : false;
-				const isInRenewalPeriod = isExpired ? false : this.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
+				const isInRenewalPeriod =
+					isExpired || !isFound
+						? false
+						: this.commonApplicationService.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
 
-				this.handleLookupResult(resp, isFound, isExpired, isInRenewalPeriod, recaptchaCode);
+				this.handleLookupResult(resp, isFound, isExpired, isInRenewalPeriod);
 			});
 	}
 
@@ -155,37 +140,24 @@ export class CommonExpiredLicenceComponent implements OnInit {
 		resp: LicenceResponse,
 		isFound: boolean,
 		isExpired: boolean,
-		isInRenewalPeriod: boolean,
-		recaptchaCode: string
+		isInRenewalPeriod: boolean
 	): void {
-		this.messageInfo = '';
-		this.messageWarn = '';
-		this.messageError = '';
+		this.messageInfo = null;
+		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
+			resp,
+			this.label,
+			this.workerLicenceTypeCode,
+			isFound,
+			isExpired,
+			isInRenewalPeriod
+		);
 
-		if (isFound) {
-			if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
-				//   WorkerLicenceType does not match
-				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-				this.messageError = `This ${this.label} is not a ${selWorkerLicenceTypeDesc}.`;
-			} else {
-				if (isExpired) {
-					this.handleValidExpiredLicence(resp, recaptchaCode);
-				} else {
-					if (isInRenewalPeriod) {
-						this.messageWarn = `Your ${this.label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${this.label}</a>.`;
-					} else {
-						this.messageWarn = `This ${this.label} is still valid. Please renew it when you get your renewal notice in the mail.`;
-					}
-				}
-			}
-		} else {
-			this.messageError = `This ${this.label} number does not match any existing ${this.label}s.`;
+		if (isExpired && !this.messageWarn && !this.messageError) {
+			this.handleValidExpiredLicence(resp);
 		}
-
-		this.resetRecaptcha.next();
 	}
 
-	private handleValidExpiredLicence(resp: LicenceResponse, recaptchaCode: string): void {
+	private handleValidExpiredLicence(resp: LicenceResponse): void {
 		const name = resp.licenceHolderName;
 
 		const formattedExpiryDate = this.formatDatePipe.transform(resp.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
@@ -208,32 +180,12 @@ export class CommonExpiredLicenceComponent implements OnInit {
 				if (response) {
 					this.form.patchValue({
 						expiredLicenceId: resp.licenceId,
+						expiredLicenceNumber: resp.licenceNumber,
 						expiryDate: resp.expiryDate,
-						captchaFormGroup: { token: recaptchaCode },
 					});
 					this.validExpiredLicenceData.emit();
 				}
 			});
-	}
-
-	private getIsInRenewalPeriod(
-		expiryDate: string | null | undefined,
-		licenceTermCode: LicenceTermCode | undefined
-	): boolean {
-		if (!expiryDate || !licenceTermCode) {
-			return false;
-		}
-
-		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days') + 1;
-
-		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
-		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
-		let renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
-		if (licenceTermCode === LicenceTermCode.NinetyDays) {
-			renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
-		}
-
-		return daysBetween > renewPeriodDays ? false : true;
 	}
 
 	get hasExpiredLicence(): FormControl {
@@ -247,8 +199,5 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	}
 	get expiryDate(): FormControl {
 		return this.form.get('expiryDate') as FormControl;
-	}
-	get captchaFormGroup(): FormGroup {
-		return this.form.get('captchaFormGroup') as FormGroup;
 	}
 }

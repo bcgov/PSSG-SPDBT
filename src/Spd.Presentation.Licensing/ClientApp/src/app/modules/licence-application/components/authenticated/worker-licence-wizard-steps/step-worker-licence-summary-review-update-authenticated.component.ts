@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
-	BusinessTypeCode,
 	LicenceFeeResponse,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
@@ -35,7 +34,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 								<div class="text-label d-block text-muted">Licence Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="hasGenderChanged">
+							<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
 								<div class="text-label d-block text-muted">Photograph of Yourself</div>
 								<div class="summary-text-data">
 									<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
@@ -62,6 +61,10 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Term</div>
 								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+							</div>
+							<div class="col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Reprint Licence</div>
+								<div class="summary-text-data">{{ isReprint }}</div>
 							</div>
 							<div class="col-lg-6 col-md-12" *ngIf="licenceFee">
 								<div class="text-label d-block text-muted">Reprint Fee</div>
@@ -134,6 +137,9 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 			this.licenceModelData.personalInformationData.surname
 		);
 	}
+	get showPhotographOfYourself(): boolean {
+		return this.hasGenderChanged && this.photoOfYourselfAttachments?.length > 0;
+	}
 
 	get hasBcscNameChanged(): boolean {
 		return this.licenceModelData.personalInformationData.hasBcscNameChanged ?? '';
@@ -160,24 +166,21 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	get licenceTermCode(): string {
 		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
+	get isReprint(): string {
+		return this.licenceModelData.reprintLicenceData.reprintLicence ?? '';
+	}
 	get licenceFee(): number | null {
 		if (!this.licenceTermCode) {
 			return null;
 		}
 
-		const applicationTypeCode = this.applicationTypeCode;
-		let businessTypeCode: BusinessTypeCode | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.New) {
-			businessTypeCode = this.licenceModelData.soleProprietorData.businessTypeCode;
-		} else {
-			businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
-		}
+		const businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
-				applicationTypeCode,
+				ApplicationTypeCode.Update,
 				businessTypeCode,
 				originalLicenceTermCode
 			)

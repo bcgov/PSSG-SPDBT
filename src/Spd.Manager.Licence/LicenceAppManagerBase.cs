@@ -2,6 +2,7 @@
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
@@ -14,6 +15,7 @@ internal abstract class LicenceAppManagerBase
     protected readonly IMapper _mapper;
     protected readonly IDocumentRepository _documentRepository;
     protected readonly ILicenceFeeRepository _feeRepository;
+    protected readonly ILicenceRepository _licenceRepository;
     protected readonly ILicenceApplicationRepository _licenceAppRepository;
     protected readonly IMainFileStorageService _mainFileService;
     protected readonly ITransientFileStorageService _transientFileService;
@@ -21,6 +23,7 @@ internal abstract class LicenceAppManagerBase
     public LicenceAppManagerBase(IMapper mapper,
         IDocumentRepository documentRepository,
         ILicenceFeeRepository feeRepository,
+        ILicenceRepository licenceRepository,
         ILicenceApplicationRepository licenceAppRepository,
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService)
@@ -28,6 +31,7 @@ internal abstract class LicenceAppManagerBase
         _mapper = mapper;
         _documentRepository = documentRepository;
         _feeRepository = feeRepository;
+        _licenceRepository = licenceRepository;
         _licenceAppRepository = licenceAppRepository;
         _mainFileService = mainFileService;
         _transientFileService = transientFileService;
@@ -94,13 +98,13 @@ internal abstract class LicenceAppManagerBase
     }
 
     //for auth, update doc expired date and remove old files
-    protected async Task UpdateDocumentsAsync(WorkerLicenceAppUpsertRequest request, CancellationToken ct)
+    protected async Task UpdateDocumentsAsync(Guid licenceAppId, List<Document>? documentInfos, CancellationToken ct)
     {
         //for all files under this application, if it is not in request.DocumentInfos, deactivate it.
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(request.LicenceAppId), ct);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(licenceAppId), ct);
         foreach (DocumentResp existingDoc in existingDocs.Items)
         {
-            var doc = request.DocumentInfos?.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
+            var doc = documentInfos?.FirstOrDefault(d => d.DocumentUrlId == existingDoc.DocumentUrlId);
             if (doc == null)
             {
                 //remove existingDoc and delete it from s3 bucket.
@@ -153,5 +157,82 @@ internal abstract class LicenceAppManagerBase
                     cancellationToken);
             }
         }
+    }
+
+    protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
+    {
+        LicenceAppQuery q = new(
+            applicantId,
+            new List<WorkerLicenceTypeEnum>
+            {
+                workerLicenceType
+            },
+            new List<ApplicationPortalStatusEnum>
+            {
+                ApplicationPortalStatusEnum.Draft,
+                ApplicationPortalStatusEnum.AwaitingThirdParty,
+                ApplicationPortalStatusEnum.AwaitingPayment,
+                ApplicationPortalStatusEnum.Incomplete,
+                ApplicationPortalStatusEnum.InProgress,
+                ApplicationPortalStatusEnum.AwaitingApplicant,
+                ApplicationPortalStatusEnum.UnderAssessment,
+                ApplicationPortalStatusEnum.VerifyIdentity,
+            }
+        );
+        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        if (response.Any())
+        {
+            if (existingLicAppId != null)
+            {
+                if (response.Any(l => l.LicenceAppId != existingLicAppId))
+                    return true;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        var licResponse = await _licenceRepository.QueryAsync(
+            new LicenceQry
+            {
+                ContactId = applicantId,
+                Type = workerLicenceType,
+                IsExpired = false
+            }, ct);
+
+        if (licResponse.Items.Any())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    protected IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(IEnumerable<LicAppFileInfo> newLicAppFiles, IEnumerable<LicAppFileInfo> existingLicAppFiles)
+    {
+        List<UploadedDocumentEnum> docEnums = new();
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
+            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
+            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        return docEnums;
+    }
+
+    protected IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnumsFromDocumentInfo(List<Document>? documentInfos)
+    {
+        List<UploadedDocumentEnum> docEnums = new();
+        if (documentInfos == null) { return docEnums; }
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
+            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
+            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        return docEnums;
     }
 }

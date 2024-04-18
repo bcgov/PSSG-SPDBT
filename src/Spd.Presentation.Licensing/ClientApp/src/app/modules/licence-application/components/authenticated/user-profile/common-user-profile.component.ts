@@ -20,7 +20,8 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 		</section>
 
 		<section>
-			<div class="text-minor-heading pb-3">Aliases or Previous Names</div>
+			<mat-divider class="mat-divider-main"></mat-divider>
+			<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
 			<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonlyPersonalInfo"></app-common-alias-list>
 		</section>
 

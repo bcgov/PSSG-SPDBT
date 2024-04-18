@@ -1,11 +1,13 @@
 using AutoMapper;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json;
 
@@ -28,8 +30,7 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            ;
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
         CreateMap<PermitAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
@@ -39,8 +40,14 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
+
+        CreateMap<PermitAppUpsertRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
+            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            ;
+            .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPurposeEnums(s.BodyArmourPermitReasonCodes, s.ArmouredVehiclePermitReasonCodes)));
 
         CreateMap<ApplicantLoginCommand, Contact>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.BcscIdentityInfo.FirstName))
@@ -110,6 +117,8 @@ internal class Mappings : Profile
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
 
+        CreateMap<LicenceApplicationCmdResp, PermitCommandResponse>();
+
         CreateMap<LicenceApplicationResp, WorkerLicenceAppResponse>()
              .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
              .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
@@ -140,6 +149,9 @@ internal class Mappings : Profile
 
         CreateMap<MailingAddress, MailingAddr>()
             .IncludeBase<Address, Addr>()
+            .ReverseMap();
+
+        CreateMap<Alias, AliasResp>()
             .ReverseMap();
 
         CreateMap<UploadFileRequest, CreateDocumentCmd>()
@@ -178,7 +190,7 @@ internal class Mappings : Profile
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
     {
-        List<WorkerCategoryTypeEnum> categories = new List<WorkerCategoryTypeEnum> { };
+        List<WorkerCategoryTypeEnum> categories = new() { };
         foreach (WorkerCategoryTypeCode code in codes)
         {
             categories.Add(Enum.Parse<WorkerCategoryTypeEnum>(code.ToString()));
@@ -318,6 +330,25 @@ internal class Mappings : Profile
         }
 
         return armouredVehiclePermitReasonCodes;
+    }
+
+    private static List<PermitPurposeEnum> GetPurposeEnums(IEnumerable<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes, IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes)
+    {
+        List<PermitPurposeEnum> permitPurposes = new();
+
+        foreach (var bodyArmourPermitReasonCode in bodyArmourPermitReasonCodes)
+        {
+            var permitPurpose = Enum.Parse<PermitPurposeEnum>(bodyArmourPermitReasonCode.ToString());
+            permitPurposes.Add(permitPurpose);
+        }
+
+        foreach (var armouredVehiclePermitReasonCode in ArmouredVehiclePermitReasonCodes)
+        {
+            var permitPurpose = Enum.Parse<PermitPurposeEnum>(armouredVehiclePermitReasonCode.ToString());
+            permitPurposes.Add(permitPurpose);
+        }
+
+        return permitPurposes;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()

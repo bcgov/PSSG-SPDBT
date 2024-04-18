@@ -24,11 +24,13 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
         private readonly IValidator<PermitAppSubmitRequest> _permitAppAnonymousSubmitRequestValidator;
+        private readonly IValidator<PermitAppUpsertRequest> _permitAppUpsertValidator;
 
         public PermitController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<PermitAppSubmitRequest> permitAppAnonymousSubmitRequestValidator,
+            IValidator<PermitAppUpsertRequest> permitAppUpsertValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -37,6 +39,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
             _configuration = configuration;
             _permitAppAnonymousSubmitRequestValidator = permitAppAnonymousSubmitRequestValidator;
+            _permitAppUpsertValidator = permitAppUpsertValidator;
         }
 
         #region authenticated
@@ -50,8 +53,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<PermitCommandResponse> SavePermitLicenceApplication([FromBody][Required] PermitAppUpsertRequest licenceCreateRequest)
         {
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest, info.Sub));
+            if (licenceCreateRequest.ApplicantId == Guid.Empty)
+                throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+            return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest));
         }
 
         /// <summary>
@@ -107,15 +111,32 @@ namespace Spd.Presentation.Licensing.Controllers
             return fileKeyCode;
         }
 
-    #endregion
+        /// <summary>
+        /// Submit Permit Application
+        /// </summary>
+        /// <param name="permitSubmitRequest"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<PermitCommandResponse> SubmitPermitApplication([FromBody][Required] PermitAppUpsertRequest permitSubmitRequest, CancellationToken ct)
+        {
+            var validateResult = await _permitAppUpsertValidator.ValidateAsync(permitSubmitRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-    #region anonymous 
+            return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
+        }
 
-    /// <summary>
-    /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
-    /// </summary>
-    /// <returns></returns>
-    [Route("api/permit-application")]
+        #endregion
+
+        #region anonymous 
+
+        /// <summary>
+        /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/permit-application")]
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetPermitApplicationAnonymous()
         {
