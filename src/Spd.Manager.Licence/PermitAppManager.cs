@@ -104,6 +104,13 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
+    public async Task<PermitAppCommandResponse> Handle(PermitAppReplaceCommand cmd, CancellationToken cancellationToken)
+    {
+
+
+        return null;
+    }
+
     public async Task<PermitAppCommandResponse> Handle(PermitAppRenewCommand cmd, CancellationToken cancellationToken)
     {
         PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
