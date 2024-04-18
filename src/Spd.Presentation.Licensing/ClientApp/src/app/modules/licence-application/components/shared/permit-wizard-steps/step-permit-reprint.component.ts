@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -17,7 +17,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	`,
 	styles: [],
 })
-export class StepPermitReprintComponent implements LicenceChildStepperStepComponent {
+export class StepPermitReprintComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 	form: FormGroup = this.permitApplicationService.reprintLicenceFormGroup;
 
