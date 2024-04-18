@@ -70,6 +70,9 @@
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 270%29.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 360%29.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated right%29.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

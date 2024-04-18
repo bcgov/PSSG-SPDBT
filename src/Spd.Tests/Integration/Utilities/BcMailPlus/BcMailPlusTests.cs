@@ -18,6 +18,7 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 bad).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated right).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated 270).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated 360).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 4 bad).json")]
     public async Task RunSecurityWorkerLicenseJob(string fileName)
     {
