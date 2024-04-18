@@ -213,7 +213,7 @@ internal class SecurityWorkerAppManager :
                 || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles.ToList(),
@@ -281,7 +281,7 @@ internal class SecurityWorkerAppManager :
         if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles,
@@ -464,23 +464,6 @@ internal class SecurityWorkerAppManager :
             }
         }
 
-    }
-
-    private async Task<IList<LicAppFileInfo>> GetExistingFileInfo(WorkerLicenceAppSubmitRequest request, CancellationToken ct)
-    {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
-        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
-
-        if (request.PreviousDocumentIds != null && docListResps != null)
-        {
-            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
-            .Select(f => new LicAppFileInfo()
-            {
-                FileName = f.FileName ?? String.Empty,
-                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
-            }).ToList();
-        }
-        return existingFileInfos;
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppSubmitRequest request,
