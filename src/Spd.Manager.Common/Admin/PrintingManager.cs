@@ -5,7 +5,7 @@ using Spd.Utilities.Printing;
 
 namespace Spd.Manager.Common.Admin;
 
-internal partial class AdminManager
+internal class PrintingManager(IDocumentTransformationEngine _documentTransformationEngine, IPrinter _printer)
   : IRequestHandler<StartPrintJobCommand, string>,
     IRequestHandler<PrintJobStatusQuery, PrintJobStatusResponse>,
     IRequestHandler<PreviewDocumentCommand, PreviewDocumentResponse>

@@ -1,27 +1,23 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Engines.Transformation.Documents;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
-using Spd.Utilities.Printing;
 using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Common.Admin;
 
-internal partial class AdminManager(
+internal class AdminManager(
         IAddressAutocompleteClient _addressClient,
         IMapper _mapper,
         IConfigRepository _configRepo,
-        IOrgRepository _orgRepo,
-        IDocumentTransformationEngine _documentTransformationEngine,
-        IPrinter _printer)
+        IOrgRepository _orgRepo)
           : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
             IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
             IRequestHandler<GetBannerMsgQuery, string>,
             IRequestHandler<GetReplacementProcessingTimeQuery, string>,
-            IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>
-//IAdminManager
+            IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
+            IAdminManager
 {
     public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
     {
