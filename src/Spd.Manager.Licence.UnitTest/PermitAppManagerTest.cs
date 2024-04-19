@@ -152,7 +152,7 @@ public class PermitAppManagerTest
     }
 
     [Fact]
-    public async void Handle_PermitAppReplaceCommand_Return_WorkerLicenceCommandResponse()
+    public async void Handle_PermitAppReplaceCommand_Return_PermitAppCommandResponse()
     {
         Guid licAppId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
