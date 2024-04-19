@@ -4,6 +4,7 @@ namespace Spd.Manager.Licence;
 public interface IPermitAppManager
 {
     public Task<PermitAppCommandResponse> Handle(PermitAppNewCommand command, CancellationToken ct);
+    public Task<PermitAppCommandResponse> Handle(PermitAppReplaceCommand command, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(PermitAppRenewCommand command, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(PermitAppUpdateCommand command, CancellationToken ct);
     public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
@@ -43,6 +44,11 @@ public record PermitCommandResponse : LicenceAppUpsertResponse
 
 #region anonymous user
 public record PermitAppNewCommand(
+    PermitAppSubmitRequest LicenceAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    : IRequest<PermitAppCommandResponse>;
+
+public record PermitAppReplaceCommand(
     PermitAppSubmitRequest LicenceAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
