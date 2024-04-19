@@ -73,6 +73,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		applicantId: new FormControl(null), // when authenticated, the applicant id
 
 		originalApplicationId: new FormControl(null),
 		originalLicenceId: new FormControl(null),
@@ -568,7 +569,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.permitService.apiPermitApplicationsSubmitPost$Response({
+					return this.permitService.apiPermitApplicationsAuthenticatedSubmitPost$Response({
 						body,
 					});
 				})
@@ -578,7 +579,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.permitService.apiPermitApplicationsSubmitPost$Response({
+			return this.permitService.apiPermitApplicationsAuthenticatedSubmitPost$Response({
 				body,
 			});
 		}

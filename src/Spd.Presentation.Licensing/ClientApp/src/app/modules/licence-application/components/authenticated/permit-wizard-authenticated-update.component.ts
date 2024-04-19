@@ -3,9 +3,11 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PermitCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
@@ -76,11 +78,12 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	@ViewChild(StepsPermitUpdatesAuthenticatedComponent) stepsUpdatesComponent!: StepsPermitUpdatesAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
-	stepReviewAuthenticatedComponent!: StepsPermitReviewAuthenticatedComponent;
+	stepsReviewAuthenticatedComponent!: StepsPermitReviewAuthenticatedComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {
@@ -111,7 +114,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 				this.stepsUpdatesComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
-				this.stepReviewAuthenticatedComponent?.onGoToFirstStep();
+				this.stepsReviewAuthenticatedComponent?.onGoToFirstStep();
 				break;
 		}
 
@@ -142,46 +145,35 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 		stepper.next();
 	}
 
-	onPayNow(): void {
-		// this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
-		// 	next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-		// 		this.hotToastService.success('Your licence update has been successfully submitted');
-		// 		this.payNow(_resp.body.licenceAppId!);
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 		this.hotToastService.error('An error occurred during the save. Please try again.');
-		// 	},
-		// });
-	}
-
 	onSubmitStep(): void {
-		// if (this.newLicenceAppId) {
-		// 	if (this.newLicenceCost > 0) {
-		// 		this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
-		// 	} else {
-		// 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
-		// 	}
-		// } else {
-		// 	this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
-		// 		next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-		// 			const workerLicenceCommandResponse = resp.body;
-		// 			// save this locally just in application payment fails
-		// 			this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
-		// 			this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
-		// 			if (this.newLicenceCost > 0) {
-		// 				this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
-		// 			} else {
-		// 				this.hotToastService.success('Your licence update has been successfully submitted');
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
-		// 			}
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during save', error);
-		// 			this.hotToastService.error('An error occurred during the save. Please try again.');
-		// 		},
-		// 	});
-		// }
+		if (this.newLicenceAppId) {
+			if (this.newLicenceCost > 0) {
+				this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
+			} else {
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+			}
+		} else {
+			this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
+				next: (resp: StrictHttpResponse<PermitCommandResponse>) => {
+					const permitCommandResponse = resp.body;
+
+					// save this locally just in application payment fails
+					this.newLicenceAppId = permitCommandResponse.licenceAppId!;
+					this.newLicenceCost = permitCommandResponse.cost ?? 0;
+
+					if (this.newLicenceCost > 0) {
+						this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
+					} else {
+						this.hotToastService.success('Your permit update has been successfully submitted');
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+					}
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+					this.hotToastService.error('An error occurred during the save. Please try again.');
+				},
+			});
+		}
 	}
 
 	onNextPayStep(): void {
@@ -189,6 +181,6 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for Permit Update');
+		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for Permit update');
 	}
 }

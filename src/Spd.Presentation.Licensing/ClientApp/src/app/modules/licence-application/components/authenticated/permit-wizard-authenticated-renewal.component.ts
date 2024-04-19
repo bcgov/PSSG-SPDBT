@@ -13,6 +13,7 @@ import { LicenceApplicationRoutes } from '@app/modules/licence-application/licen
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitDetailsNewComponent } from '../anonymous/permit-wizard-steps/steps-permit-details-new.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './permit-wizard-steps/steps-permit-identification-authenticated.component';
@@ -116,7 +117,8 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		private dialog: MatDialog,
 		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -209,7 +211,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit renewal has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -218,9 +220,9 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		});
 	}
 
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNow(licenceAppId,  `Payment for Case ID: ${application.applicationNumber}`);
-	// }
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for Permit renewal');
+	}
 
 	onGoToStep(step: number) {
 		this.stepPermitDetailsComponent?.onGoToFirstStep();
