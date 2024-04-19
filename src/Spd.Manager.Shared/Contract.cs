@@ -159,4 +159,12 @@ namespace Spd.Manager.Shared
         ThreeYears,
         FiveYears
     }
+
+    public enum LicenceStatusCode
+    {
+        Active,
+        Inactive,
+        Expired,
+        Suspended
+    }
 }
