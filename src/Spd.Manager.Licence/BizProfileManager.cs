@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Registration;
 
 namespace Spd.Manager.Licence;
@@ -16,51 +18,67 @@ internal class BizProfileManager :
 
     private readonly ILogger<IFeeManager> _logger;
     private readonly IIdentityRepository _idRepository;
+    private readonly IOrgRepository _orgRepository;
+    private readonly IPortalUserRepository _portalUserRepository;
     private readonly IMapper _mapper;
 
     public BizProfileManager(
         ILogger<IFeeManager> logger,
         IIdentityRepository idRepository,
+        IOrgRepository orgRepository,
+        IPortalUserRepository portalUserRepository,
         IMapper mapper)
     {
         _mapper = mapper;
         _logger = logger;
-        this.idRepository = idRepository;
+        _idRepository = idRepository;
+        _orgRepository = orgRepository;
+        _portalUserRepository = portalUserRepository;
     }
 
     public async Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct)
     {
-        ContactResp? contactResp = null;
-        var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+        //get current user org
+        OrgResult? currentUserOrg = null;
+        OrgsQryResult orgs = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(cmd.BceidIdentityInfo.BizGuid), ct);
+        if (orgs != null && orgs.OrgResults.Any())
+            currentUserOrg = orgs.OrgResults.FirstOrDefault();
 
-        if (result == null || !result.Items.Any()) //first time to use system
+        //get current user identity
+        Identity? currentUserIdentity = null;
+        IdentityQueryResult idResult = await _idRepository.Query(
+            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderTypeEnum.BusinessBceId),
+            ct);
+        if (idResult != null && idResult.Items.Any())
+            currentUserIdentity = idResult.Items.FirstOrDefault();
+
+        if (currentUserOrg != null && currentUserOrg.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence)) //the org is already there as a security business, so, it is registered
         {
-            //add identity
-            var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-            CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
-            createContactCmd.IdentityId = id.Id;
-            contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
-        }
-        else
-        {
-            Identity? id = result.Items.FirstOrDefault();
-            if (id?.ContactId != null)
+            if (currentUserIdentity == null) //current user is not a manager for this org,
             {
-                //contact exists
-                UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
-                updateContactCmd.Id = (Guid)id.ContactId;
-                updateContactCmd.IdentityId = id.Id;
-                contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+                //var portalUsers = await _portalUserRepository.QueryAsync(new PortalUserQry { OrgId = currentUserOrg.Id }, ct);
+                //if (portalUsers.Items.Any(u => u.)
+                //if this org does not have any primaryBizManager, then add user as primaryBizManager, and let him in
+                //if this org does not has primaryBizManager, tell user to contact primaryBizManager
             }
             else
             {
-                //there is identity, but no contact
-                CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
-                createContactCmd.IdentityId = id.Id;
-                contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
+
             }
+            //if current user is a manager for this org, then let him login
+
+            //if current user is not a manager for this org, and there is a primaryBizManager, then ask user to .
+
         }
-        return _mapper.Map<ApplicantLoginResponse>(contactResp);
+
+
+        //the org is not registered, this is the first time this bceid login to biz portal
+        //create org and add user to this org as primary Biz manager
+        //
+
+        //the org is not registered, this is the first time this bceid login to biz portal
+        //create org and add user to this org as primary Biz manager
+
         return new BizUserLoginResponse
         {
             BizUserId = Guid.NewGuid(),

@@ -1,5 +1,3 @@
-using Amazon.S3.Model;
-
 namespace Spd.Resource.Repository.PortalUser
 {
     public interface IPortalUserRepository
@@ -20,6 +18,7 @@ namespace Spd.Resource.Repository.PortalUser
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? IsPSA { get; set; }
+        public IEnumerable<ContactRoleCode> ContactRoleCodes { get; set; }
     }
 
     public record PortalUserQry
@@ -33,7 +32,7 @@ namespace Spd.Resource.Repository.PortalUser
     };
 
 
-    public abstract record PortalUserCmd 
+    public abstract record PortalUserCmd
     {
         public string? EmailAddress { get; set; }
         public Guid? IdentityId { get; set; }

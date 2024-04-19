@@ -23,6 +23,7 @@ internal class PortalUserRepository : IPortalUserRepository
     public async Task<PortalUserListResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken)
     {
         IQueryable<spd_portaluser> users = _context.spd_portalusers
+            .Expand(u => u.spd_spd_role_spd_portaluser)
             .Expand(d => d.spd_OrganizationId);
 
         if (!qry.IncludeInactive)
