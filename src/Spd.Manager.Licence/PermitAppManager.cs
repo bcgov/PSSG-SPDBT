@@ -20,6 +20,7 @@ internal class PermitAppManager :
         IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
         IRequestHandler<PermitSubmitCommand, PermitCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
+        IRequestHandler<PermitAppReplaceCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
