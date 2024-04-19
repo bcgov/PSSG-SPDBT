@@ -488,8 +488,6 @@ public class PermitAppManagerTest
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
         mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<PermitAppSubmitRequest>()))
             .Returns(new UpdateContactCmd());
-        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new LicenceFeeListResp());
         mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
             .Returns(new CreateDocumentCmd());
 
