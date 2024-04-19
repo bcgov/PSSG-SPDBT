@@ -180,7 +180,7 @@ public class LicenceManagerTest
                 LicenceAppId = licenceResp.LicenceAppId,
                 LicenceNumber = licenceResp.LicenceNumber,
                 LicenceHolderId = licenceResp.LicenceHolderId,
-                LicenceStatusCode = licenceResp.LicenceStatusCode
+                LicenceStatusCode = Enum.Parse<LicenceStatusCode>(licenceResp.LicenceStatusCode.ToString())
             }
         };
 
