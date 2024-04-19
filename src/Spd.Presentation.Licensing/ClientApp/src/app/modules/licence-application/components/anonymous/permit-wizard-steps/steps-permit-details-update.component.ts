@@ -6,7 +6,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
-import { StepPermitPrintComponent } from './step-permit-print.component';
+import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
 @Component({
@@ -55,7 +55,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-print></app-step-permit-print>
+				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -84,7 +84,7 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent i
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
-	@ViewChild(StepPermitPrintComponent) stepPermitPrintComponent!: StepPermitPrintComponent;
+	@ViewChild(StepPermitReprintComponent) stepPermitPrintComponent!: StepPermitReprintComponent;
 
 	constructor(
 		private router: Router,

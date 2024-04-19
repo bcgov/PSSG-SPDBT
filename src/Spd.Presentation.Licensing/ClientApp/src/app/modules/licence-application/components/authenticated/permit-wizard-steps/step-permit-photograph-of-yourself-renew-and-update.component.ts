@@ -18,11 +18,7 @@ import { CommonPhotographOfYourselfComponent } from '../../shared/step-component
 						<div class="row mb-3" *ngIf="photographOfYourself">
 							<div class="col-12 text-center">
 								<div class="fs-5 mb-2">Current licence photo:</div>
-								<img
-									[src]="photographOfYourself"
-									alt="Photograph of yourself"
-									style="max-height: 200px;max-width: 200px;"
-								/>
+								<img class="photo-of-yourself" [src]="photographOfYourself" alt="Photograph of yourself" />
 							</div>
 						</div>
 
