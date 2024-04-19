@@ -20,6 +20,7 @@ internal class PermitAppManager :
         IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
         IRequestHandler<PermitSubmitCommand, PermitCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
+        IRequestHandler<PermitAppReplaceCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
@@ -101,6 +102,45 @@ internal class PermitAppManager :
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+    }
+
+    public async Task<PermitAppCommandResponse> Handle(PermitAppReplaceCommand cmd, CancellationToken cancellationToken)
+    {
+        PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
+        if (cmd.LicenceAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
+            throw new ArgumentException("should be a replacement request");
+
+        //validation: check if original licence meet replacement condition.
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
+        if (licences == null || !licences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be replaced.");
+        if (DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays) > licences.Items.First().ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
+
+        CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
+        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+
+        //add photo file copying here.
+        if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
+            throw new ArgumentException("replacement request must have original application id");
+
+        var photos = await _documentRepository.QueryAsync(
+            new DocumentQry(
+                ApplicationId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
+                FileType: DocumentTypeEnum.Photograph),
+            cancellationToken);
+        if (photos.Items.Any())
+        {
+            foreach (var photo in photos.Items)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(photo.DocumentUrlId, response.LicenceAppId, response.ContactId),
+                    cancellationToken);
+            }
+        }
+
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -196,7 +236,7 @@ internal class PermitAppManager :
             null,
             changes.PurposeChangeTaskId,
             cancellationToken);
-        return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
+        return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
 
     #endregion
