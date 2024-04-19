@@ -252,6 +252,7 @@ export class LoginSelectionComponent implements OnInit {
 					message:
 						'Somebody from our team will reach out to complete a video call with you to verify your identity before your application can be processed.',
 					actionText: 'Continue',
+					cancelText: 'Cancel',
 				};
 
 				this.dialog

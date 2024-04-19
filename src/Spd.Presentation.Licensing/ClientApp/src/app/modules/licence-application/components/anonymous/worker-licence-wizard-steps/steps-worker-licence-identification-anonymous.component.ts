@@ -52,7 +52,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-				<app-step-worker-licence-aliases></app-step-worker-licence-aliases>
+				<app-step-worker-licence-aliases [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-aliases>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>

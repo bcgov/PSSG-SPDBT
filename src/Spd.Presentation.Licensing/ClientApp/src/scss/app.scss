@@ -559,3 +559,13 @@ ngx-dropzone-remove-badge {
 	border: 1px solid var(--color-grey-light);
 	box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 }
+
+.photo-of-yourself {
+	border: 3px solid var(--color-grey-lighter);
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	padding: 10px;
+
+	max-height: 250px;
+	max-width: 250px;
+}

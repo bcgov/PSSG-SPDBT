@@ -770,21 +770,30 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onRequestReplacement(appl: UserLicenceResponse): void {
-		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceApplicationService
-				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-							),
-							{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
+		switch (appl.workerLicenceTypeCode) {
+			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				this.licenceApplicationService
+					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				// There is no Replacement flow for Permit. Send the user to Update flow.
+				this.onUpdate(appl);
+				break;
+			}
 		}
 	}
 

@@ -30,7 +30,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 			</mat-step>
 
 			<mat-step *ngIf="showReprint">
-				<app-step-permit-reprint></app-step-permit-reprint>
+				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
 
 				<div class="row wizard-button-row">
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
