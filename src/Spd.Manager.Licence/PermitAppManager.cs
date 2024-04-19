@@ -236,7 +236,7 @@ internal class PermitAppManager :
             null,
             changes.PurposeChangeTaskId,
             cancellationToken);
-        return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId };
+        return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
 
     #endregion
