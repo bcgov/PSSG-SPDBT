@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository.Licence;
 
 namespace Spd.Manager.Licence;
 
@@ -21,6 +22,7 @@ public record LicenceResponse
     public string? LicenceHolderName { get; set; }
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
+    public LicenceStatusEnum LicenceStatusCode { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
