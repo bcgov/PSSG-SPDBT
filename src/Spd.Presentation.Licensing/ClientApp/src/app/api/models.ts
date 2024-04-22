@@ -30,6 +30,7 @@ export { LicenceDocumentTypeCode } from './models/licence-document-type-code';
 export { LicenceFeeListResponse } from './models/licence-fee-list-response';
 export { LicenceFeeResponse } from './models/licence-fee-response';
 export { LicenceResponse } from './models/licence-response';
+export { LicenceStatusCode } from './models/licence-status-code';
 export { LicenceTermCode } from './models/licence-term-code';
 export { MailingAddress } from './models/mailing-address';
 export { OidcConfiguration } from './models/oidc-configuration';

@@ -74,6 +74,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
 		applicantId: new FormControl(null), // when authenticated, the applicant id
+		caseNumber: new FormControl(null), // placeholder to save info for display purposes
 
 		originalApplicationId: new FormControl(null),
 		originalLicenceId: new FormControl(null),
@@ -388,10 +389,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	saveUserProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
+	saveUserProfileAndContinue(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<StrictHttpResponse<string>> {
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
-				this.continueToNextStep(applicationTypeCode);
+				this.continueToNextStep(workerLicenceTypeCode, applicationTypeCode);
 			})
 		);
 	}
@@ -400,7 +404,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
+	continueToNextStep(workerLicenceTypeCode: WorkerLicenceTypeCode, applicationTypeCode: ApplicationTypeCode): void {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
@@ -410,7 +414,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 			case ApplicationTypeCode.Update: {
 				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED)
+					LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED),
+					{ state: { workerLicenceTypeCode: workerLicenceTypeCode } }
 				);
 				break;
 			}
@@ -1274,6 +1279,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: resp.licenceAppId,
+				caseNumber: resp.caseNumber,
 				applicationPortalStatus: resp.applicationPortalStatus,
 				workerLicenceTypeData,
 				permitRequirementData,

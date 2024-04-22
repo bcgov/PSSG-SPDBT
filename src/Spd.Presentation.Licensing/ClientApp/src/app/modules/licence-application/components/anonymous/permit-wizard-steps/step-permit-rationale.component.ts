@@ -31,9 +31,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								<mat-error *ngIf="form.get('rationale')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-					</div>
-					<div class="row mt-2">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto mt-2">
 							<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
 							<div class="my-2">
 								These could be a police report which refers to the safety concern, a protection order, a news article

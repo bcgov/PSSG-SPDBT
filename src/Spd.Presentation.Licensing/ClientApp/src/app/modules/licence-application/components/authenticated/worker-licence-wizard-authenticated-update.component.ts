@@ -173,7 +173,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 			if (this.newLicenceCost > 0) {
 				this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
 			} else {
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
 			}
 		} else {
 			this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
@@ -188,7 +188,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 						this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
 					} else {
 						this.hotToastService.success('Your licence update has been successfully submitted');
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
 					}
 				},
 				error: (error: any) => {

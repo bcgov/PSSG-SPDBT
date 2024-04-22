@@ -7,6 +7,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	LicenceAppListResponse,
+	LicenceStatusCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -609,9 +610,13 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				});
 
 				// User Licences/Permits
-				const activeLicences = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
+				const activeLicences = userLicencesList.filter(
+					(item: UserLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+				);
 
-				this.expiredLicences = userLicencesList.filter((item: UserLicenceResponse) => item.isExpired);
+				this.expiredLicences = userLicencesList.filter(
+					(item: UserLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+				);
 
 				const renewals = activeLicences.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
 				renewals.forEach((item: UserLicenceResponse) => {
@@ -634,7 +639,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				// User Licence/Permit Applications
 				this.applicationsDataSource = new MatTableDataSource(userApplicationsList ?? []);
 				this.applicationIsInProgress = !!userApplicationsList.find(
-					(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+					(item: UserApplicationResponse) =>
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingApplicant ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.UnderAssessment ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.VerifyIdentity
 				);
 
 				// Set flags that determine if NEW licences/permits can be created
@@ -744,7 +754,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						LicenceApplicationRoutes.pathPermitAuthenticated(
 							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
+								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -761,7 +776,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						LicenceApplicationRoutes.pathPermitAuthenticated(
 							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
+								pplicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -836,6 +856,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								),
 								{
 									state: {
+										workerLicenceTypeCode: appl.serviceTypeCode,
 										applicationTypeCode: _resp.applicationTypeData.applicationTypeCode,
 									},
 								}
@@ -877,7 +898,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								LicenceApplicationRoutes.pathPermitAuthenticated(
 									LicenceApplicationRoutes.PERMIT_UPDATE_TERMS_AUTHENTICATED
 								),
-								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+								{ state: { workerLicenceTypeCode: appl.workerLicenceTypeCode } }
 							);
 						}),
 						take(1)
@@ -916,7 +937,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								LicenceApplicationRoutes.pathPermitAuthenticated(
 									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 								),
-								{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+								{
+									state: {
+										workerLicenceTypeCode: appl.workerLicenceTypeCode,
+										applicationTypeCode: ApplicationTypeCode.Renewal,
+									},
+								}
 							);
 						}),
 						take(1)

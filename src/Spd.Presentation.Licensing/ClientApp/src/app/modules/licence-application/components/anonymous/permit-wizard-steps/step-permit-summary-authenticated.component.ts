@@ -100,7 +100,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														{{ reasonForRequirement }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="isOtherReason">
+												<div class="col-12" *ngIf="isOtherReason">
 													<div class="text-label d-block text-muted">Other Reason</div>
 													<div class="summary-text-data">
 														{{ otherReason }}

@@ -7,6 +7,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	LicenceAppListResponse,
+	LicenceStatusCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -434,7 +435,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				isReplacementPeriod: true,
 				hasBcscNameChanged: false,
 				licenceReprintFee: null,
-				isExpired: false,
+				licenceStatusCode: LicenceStatusCode.Active,
 				dogAuthorization: null,
 				restraintAuthorization: null,
 			},
