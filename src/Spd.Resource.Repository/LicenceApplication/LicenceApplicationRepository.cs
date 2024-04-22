@@ -79,13 +79,13 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
             app.statecode = DynamicsConstants.StateCode_Inactive;
-            app.spd_submittedon = DateTimeOffset.Now;
         }
         else
         {
             app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
         }
 
+        app.spd_submittedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
