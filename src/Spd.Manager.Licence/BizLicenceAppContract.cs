@@ -110,3 +110,8 @@ public record Employee : PersonalInfo
 {
     public string? SecurityWorkerLicenceNumber { get; set; }
 }
+
+public record BizLicenceAppSubmitRequest : BizLicenceAppBase
+{
+
+}
