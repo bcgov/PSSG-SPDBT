@@ -15,6 +15,7 @@ namespace Spd.Resource.Repository.PortalUser
     {
         public Guid Id { get; set; }
         public Guid? OrganizationId { get; set; }
+        public Guid? IdentityId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? IsPSA { get; set; }
@@ -31,24 +32,18 @@ namespace Spd.Resource.Repository.PortalUser
         public bool IncludeInactive { get; set; } = false;
     };
 
-
     public abstract record PortalUserCmd
     {
         public string? EmailAddress { get; set; }
         public Guid? IdentityId { get; set; }
-    };
-    public record UpdatePortalUserCmd : PortalUserCmd
-    {
-        public Guid Id { get; set; }
+        public ContactRoleCode? ContactRoleCode { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public Guid? OrgId { get; set; }
     };
-    public record CreatePortalUserCmd : PortalUserCmd
+    public record UpdatePortalUserCmd : PortalUserCmd
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Guid OrgId { get; set; }
-    }
-
+        public Guid Id { get; set; }
+    };
+    public record CreatePortalUserCmd : PortalUserCmd;
 }

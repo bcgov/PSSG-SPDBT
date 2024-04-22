@@ -15,7 +15,7 @@ public interface IBizProfileManager
 }
 
 public record GetBizProfileQuery(Guid BizId) : IRequest<BizProfileResponse>;
-public record BizLoginCommand(BceidIdentityInfo BceidIdentityInfo) : IRequest<BizUserLoginResponse>;
+public record BizLoginCommand(BceidIdentityInfo BceidIdentityInfo, Guid? BizId) : IRequest<BizUserLoginResponse>;
 public record BizTermAgreeCommand(Guid BizUserId) : IRequest<Unit>;
 public record BizProfileUpdateCommand(
     Guid BizUserId,
@@ -23,7 +23,7 @@ public record BizProfileUpdateCommand(
     BizProfileUpdateRequest BizProfileUpdateRequest)
     : IRequest<Unit>;
 
-public record Biz
+public record BizInfo
 {
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
@@ -31,11 +31,11 @@ public record Biz
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? MailingAddress { get; set; }
-    public IEnumerable<Branch> Branches { get; set; }
+    public IEnumerable<BranchInfo> Branches { get; set; }
     public bool? MailingAddressIsSameBizAddress { get; set; }
 }
 
-public record Branch
+public record BranchInfo
 {
     public Guid? BranchId { get; set; }
     public Address? BranchAddress { get; set; }
@@ -44,7 +44,7 @@ public record Branch
     public string BranchEmailAddr { get; set; }
 }
 
-public record BizProfileResponse : Biz
+public record BizProfileResponse : BizInfo
 {
     public Guid BizId { get; set; } //which is accountid in account
 }
@@ -62,7 +62,7 @@ public record BizUserLoginResponse
     public string? BizLegalName { get; set; }
 }
 
-public record BizProfileUpdateRequest : Biz
+public record BizProfileUpdateRequest : BizInfo
 {
     public Guid? BizId { get; set; } //used when user is in update, renew or replace flow.
 }
