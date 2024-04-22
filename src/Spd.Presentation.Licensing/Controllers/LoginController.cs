@@ -53,13 +53,13 @@ namespace Spd.Presentation.Licensing.Controllers
         /// login, for biz licensing portal, bceid login
         /// </summary>
         /// <returns></returns>
-        [Route("api/biz/login")]
+        [Route("api/biz/{bizId}/login")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<BizUserLoginResponse?> BizLicencePortalLogin()
+        public async Task<BizUserLoginResponse?> BizLicencePortalLogin(Guid bizId)
         {
             var info = _currentUser.GetBceidUserIdentityInfo();
-            var response = await _mediator.Send(new BizLoginCommand(info));
+            var response = await _mediator.Send(new BizLoginCommand(info, bizId));
             return response;
         }
 

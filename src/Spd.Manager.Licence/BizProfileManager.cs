@@ -56,7 +56,7 @@ internal class BizProfileManager :
             if (cmd.BizId == null)
                 bizId = (await CreateBiz(cmd, ct)).Id;
             else
-                bizId = await AddServiceTypeToBiz(cmd, ct);
+                bizId = (await AddServiceTypeToBiz(cmd, ct)).Id;
 
             if (currentUserIdentity == null)
                 identityId = await CreateUserIdentity(cmd, ct);
@@ -145,7 +145,7 @@ internal class BizProfileManager :
         return await _bizRepository.ManageBizAsync(new BizCreateCmd(b), ct);
     }
 
-    private async Task<BizManageResult> AddServiceTypeToBiz(BizLoginCommand cmd, CancellationToken ct)
+    private async Task<BizResult> AddServiceTypeToBiz(BizLoginCommand cmd, CancellationToken ct)
     {
         Biz b = new()
         {

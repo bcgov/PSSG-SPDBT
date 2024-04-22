@@ -30,7 +30,7 @@ namespace Spd.Resource.Repository.Identity
         {
             return cmd switch
             {
-                c => await HandleCreateIdentityCmd(c, ct),
+                CreateIdentityCmd c => await HandleCreateIdentityCmd(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }

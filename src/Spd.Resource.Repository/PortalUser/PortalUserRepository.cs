@@ -90,7 +90,7 @@ internal class PortalUserRepository : IPortalUserRepository
     {
         spd_portaluser portaluser = _mapper.Map<spd_portaluser>(c);
         _context.AddTospd_portalusers(portaluser);
-        account? org = await _context.GetOrgById(c.OrgId, ct);
+        account? org = await _context.GetOrgById((Guid)c.OrgId, ct);
         spd_identity? identity = null;
         if (c.IdentityId != null)
         {
