@@ -65,7 +65,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</div>
 					</div>
 					<div class="row mt-3" *ngIf="isOther === true">
-						<div class="col-xxl-6 col-xl-8 col-lg-12 mx-auto">
+						<div class="col-xl-8 col-lg-12 mx-auto">
 							<mat-form-field>
 								<mat-label>Describe Requirement</mat-label>
 								<textarea
