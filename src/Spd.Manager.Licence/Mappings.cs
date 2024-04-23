@@ -7,7 +7,7 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
-using System.Collections.Generic;
+using Spd.Resource.Repository.PortalUser;
 using System.Collections.Immutable;
 using System.Text.Json;
 
@@ -186,6 +186,11 @@ internal class Mappings : Profile
             .ForPath(d => d.EmployerPrimaryAddress.PostalCode, opt => opt.MapFrom(s => s.EmployerPrimaryAddress.PostalCode))
             .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
             .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
+
+        CreateMap<PortalUserResp, BizUserLoginResponse>()
+            .ForMember(d => d.BizUserId, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.OrganizationId))
+            .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.IsFirstTimeLogin));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

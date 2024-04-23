@@ -68,14 +68,18 @@ namespace Spd.Resource.Repository.Biz
                 BizUpdateCmd c => await BizUpdateAsync(c, ct),
                 BizCreateCmd c => await BizCreateAsync(c, ct),
                 BizGuidUpdateCmd c => await BizGuidUpdateAsync(c, ct),
+                BizAddServiceTypeCmd c => await BizAddServiceTypeAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
 
         private async Task<BizResult?> BizUpdateAsync(BizUpdateCmd updateBizCmd, CancellationToken ct)
         {
-            /*
-            var Biz = await _dynaContext.GetBizById(updateBizCmd.Biz.Id, ct);
+            IQueryable<account> accounts = _dynaContext.accounts
+                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                 .Where(a => a.accountid == updateBizCmd.Biz.Id);
+
+            account? Biz = await accounts.FirstOrDefaultAsync(ct);
             var response = _mapper.Map<BizResult>(Biz);
 
             _mapper.Map(updateBizCmd.Biz, Biz);
@@ -83,8 +87,7 @@ namespace Spd.Resource.Repository.Biz
             _dynaContext.UpdateObject(Biz);
             await _dynaContext.SaveChangesAsync(ct);
 
-            return new BizManageResult(_mapper.Map<BizResult>(Biz));*/
-            return null;
+            return _mapper.Map<BizResult>(Biz);
         }
 
         private async Task<BizResult?> BizCreateAsync(BizCreateCmd createBizCmd, CancellationToken ct)
@@ -114,6 +117,23 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<BizResult>(biz);
         }
 
+        private async Task<BizResult> BizAddServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
+        {
+            //tried with Biz expand, does not work. so have to make another call.
+            spd_servicetype st = _dynaContext.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
+            IQueryable<account> accounts = _dynaContext.accounts
+                .Expand(a => a.spd_account_spd_servicetype)
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == bizAddServiceTypeCmd.BizId);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
+            if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
+            {
+
+                _dynaContext.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
+                await _dynaContext.SaveChangesAsync(ct);
+            }
+            return await GetBizAsync(bizAddServiceTypeCmd.BizId, ct);
+        }
 
     }
 }

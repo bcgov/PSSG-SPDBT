@@ -15,7 +15,8 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.IdentityId, opt => opt.MapFrom(s => s._spd_identityid_value))
             .ForMember(d => d.IsPSA, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_psa)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
-            .ForMember(d => d.ContactRoleCodes, opt => opt.MapFrom(s => GetContactRoleCodes(s.spd_spd_role_spd_portaluser)));
+            .ForMember(d => d.ContactRoleCode, opt => opt.MapFrom(s => GetContactRoleCode(s.spd_spd_role_spd_portaluser)))
+            .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.spd_lastloggedin == null));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -24,15 +25,18 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress));
         }
 
-        private IEnumerable<ContactRoleCode> GetContactRoleCodes(IEnumerable<spd_role> spd_Roles)
+        private ContactRoleCode? GetContactRoleCode(IEnumerable<spd_role> spdRoles)
         {
-            List<ContactRoleCode> contactRoleCodes = new();
-            foreach (var spd_role in spd_Roles)
+            spd_role role = spdRoles.FirstOrDefault();
+            if (role == null) return null;
+
+            if (role.spd_roleid == Guid.Parse("22b5624f-e38f-ee11-b849-00505683fbf4"))
             {
-                contactRoleCodes.Add(Enum.Parse<ContactRoleCode>(
-                    DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == spd_role.spd_roleid).Key));
+                string test = "a";
             }
-            return contactRoleCodes;
+
+            return Enum.Parse<ContactRoleCode>(
+               DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == role.spd_roleid).Key);
         }
     }
 }

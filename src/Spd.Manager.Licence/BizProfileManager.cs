@@ -56,7 +56,11 @@ internal class BizProfileManager :
             if (cmd.BizId == null)
                 bizId = (await CreateBiz(cmd, ct)).Id;
             else
-                bizId = (await AddServiceTypeToBiz(cmd, ct)).Id;
+            {
+                //add biz type to org
+                BizResult b = await _bizRepository.ManageBizAsync(new BizAddServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
+                bizId = b.Id;
+            }
 
             if (currentUserIdentity == null)
                 identityId = await CreateUserIdentity(cmd, ct);
@@ -105,7 +109,7 @@ internal class BizProfileManager :
             return true;
 
         var portalUsers = await _portalUserRepository.QueryAsync(new PortalUserQry { OrgId = cmd.BizId }, ct);
-        if (!portalUsers.Items.Any(u => u.ContactRoleCodes.Contains(ContactRoleCode.PrimaryBusinessManager)))
+        if (!portalUsers.Items.Any(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager || u.ContactRoleCode == ContactRoleCode.BusinessManager))
         {
             return true; //when no user has primary biz manager role, means it is first time login
         }
@@ -120,7 +124,7 @@ internal class BizProfileManager :
 
         var portalUsers = await _portalUserRepository.QueryAsync(new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id }, ct);
         PortalUserResp resp = portalUsers.Items.FirstOrDefault();
-        if (resp != null && (resp.ContactRoleCodes.Contains(ContactRoleCode.PrimaryBusinessManager) || resp.ContactRoleCodes.Contains(ContactRoleCode.BusinessManager)))
+        if (resp != null && (resp.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager || resp.ContactRoleCode == ContactRoleCode.BusinessManager))
             return resp;
         return null;
     }
@@ -143,17 +147,6 @@ internal class BizProfileManager :
             Email = cmd.BceidIdentityInfo.Email,
         };
         return await _bizRepository.ManageBizAsync(new BizCreateCmd(b), ct);
-    }
-
-    private async Task<BizResult> AddServiceTypeToBiz(BizLoginCommand cmd, CancellationToken ct)
-    {
-        Biz b = new()
-        {
-            ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
-            BizLegalName = cmd.BceidIdentityInfo.BizName,
-            Email = cmd.BceidIdentityInfo.Email,
-        };
-        return await _bizRepository.ManageBizAsync(new BizUpdateCmd(b), ct);
     }
 
     private async Task<PortalUserResp> AddPortalUserToBiz(BceidIdentityInfo info, Guid identityId, Guid bizId, CancellationToken ct)

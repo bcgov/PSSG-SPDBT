@@ -19,7 +19,8 @@ namespace Spd.Resource.Repository.PortalUser
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? IsPSA { get; set; }
-        public IEnumerable<ContactRoleCode> ContactRoleCodes { get; set; }
+        public ContactRoleCode? ContactRoleCode { get; set; }
+        public bool? IsFirstTimeLogin { get; set; }
     }
 
     public record PortalUserQry

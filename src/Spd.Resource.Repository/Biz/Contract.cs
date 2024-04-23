@@ -11,6 +11,7 @@
     public record BizUpdateCmd(Biz Biz) : BizCmd;
     public record BizCreateCmd(Biz Biz) : BizCmd;
     public record BizGuidUpdateCmd(Guid BizId, string? BizGuid) : BizCmd;
+    public record BizAddServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
 
     //query
     public record BizsQry(Guid? BizGuid = null, bool IncludeInactive = false, string? BizCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null);

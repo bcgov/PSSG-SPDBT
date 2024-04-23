@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Spd.Resource.Repository;
 using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Licence;
@@ -55,11 +56,8 @@ public record BizUserLoginResponse
     public Guid BizId { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    public string? EmailAddress { get; set; }
-    public string? MiddleName1 { get; set; }
-    public string? MiddleName2 { get; set; }
     public bool? IsFirstTimeLogin { get; set; } = false;
-    public string? BizLegalName { get; set; }
+    public ContactRoleCode ContactRoleCode { get; set; }
 }
 
 public record BizProfileUpdateRequest : BizInfo

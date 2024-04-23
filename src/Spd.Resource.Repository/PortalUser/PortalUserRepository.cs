@@ -15,7 +15,7 @@ internal class PortalUserRepository : IPortalUserRepository
         IMapper mapper,
         ILogger<PortalUserRepository> logger)
     {
-        _context = ctx.Create();
+        _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
         _logger = logger;
     }
@@ -109,8 +109,21 @@ internal class PortalUserRepository : IPortalUserRepository
         _context.SetLink(portaluser, nameof(portaluser.spd_OrganizationId), org);
         if (identity != null)
             _context.SetLink(portaluser, nameof(portaluser.spd_IdentityId), identity);
+
+        if (c.ContactRoleCode != null)
+        {
+            spd_role? role = _context.LookupRole(c.ContactRoleCode.ToString());
+            if (role != null)
+            {
+                _context.AddLink(portaluser, nameof(portaluser.spd_spd_role_spd_portaluser), role);
+                await _context.SaveChangesAsync(ct);
+            }
+        }
         await _context.SaveChangesAsync(ct);
-        return _mapper.Map<PortalUserResp>(portaluser);
+        PortalUserResp userResp = _mapper.Map<PortalUserResp>(portaluser);
+        userResp.OrganizationId = c.OrgId;
+        userResp.ContactRoleCode = c.ContactRoleCode;
+        return userResp;
     }
 }
 
