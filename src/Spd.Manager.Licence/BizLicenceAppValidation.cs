@@ -41,8 +41,8 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
         RuleFor(r => r.EmailAddress).NotEmpty().MaximumLength(75).EmailAddress();
         RuleFor(r => r.DocumentsBranding)
             .NotEmpty()
-            .Must(r => r.Count() <= Constants.MaximumNumberOfUserEnteredAliases)
-            .WithMessage("No more than 10 documents are allowed for branding");
+            .Must(r => r.Count() <= Constants.MaximumNumberOfBrandingDocuments)
+            .WithMessage($"No more than {Constants.MaximumNumberOfBrandingDocuments} documents are allowed for branding");
         RuleFor(r => r.Insurnace)
             .NotEmpty();
         RuleFor(r => r.CategoryCodes)
@@ -127,6 +127,15 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .MaximumLength(75)
             .EmailAddress()
             .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
-        
+        RuleFor(r => r.ControllerMemberInfo)
+            .NotEmpty()
+            .Must(r => r.Count() <= Constants.MaximumNumberOfControllingMembers)
+            .ForEach(rule => rule
+                .Must(r => r.Name != null && r.Name.Length > 0)
+                .Must(r => r.SecurityWorkerLicenceNumber != null && r.SecurityWorkerLicenceNumber.Length > 0 && r.SecurityWorkerLicenceNumber.Length <= 10)
+                .Must(r => r.Status != null))
+            .WithMessage($"No more than {Constants.MaximumNumberOfControllingMembers} controller members are allowed")
+            .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
+                r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
     }
 }
