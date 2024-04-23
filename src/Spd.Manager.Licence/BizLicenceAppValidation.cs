@@ -75,6 +75,10 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .NotEmpty()
             .IsInEnum()
             .Must(r => r == LicenceTermCode.OneYear || r == LicenceTermCode.TwoYears || r == LicenceTermCode.ThreeYears);
+        RuleFor(r => r.BusinessManagerInfo)
+            .NotEmpty()
+            .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor && 
+                r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.BusinessManagerInfo.GivenName)
             .NotEmpty()
             .MaximumLength(40)
@@ -98,30 +102,34 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .MaximumLength(75)
             .EmailAddress()
             .When(r => r.BusinessManagerInfo != null);
-
+        RuleFor(r => r.OtherContactInfo)
+            .NotEmpty()
+            .When(r => r.BusinessManagerInfo?.IsBusinessManager == false);
         RuleFor(r => r.OtherContactInfo.GivenName)
             .NotEmpty()
             .MaximumLength(40)
-            .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
+            .When(r => r.OtherContactInfo != null);
         RuleFor(r => r.OtherContactInfo.Surname)
-            .NotEmpty()
             .MaximumLength(40)
-            .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
+            .When(r => r.OtherContactInfo != null);
         RuleFor(r => r.OtherContactInfo.MiddleName1)
             .MaximumLength(40)
-            .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
+            .When(r => r.OtherContactInfo != null);
         RuleFor(r => r.OtherContactInfo.MiddleName2)
             .MaximumLength(40)
-            .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
+            .When(r => r.OtherContactInfo != null);
         RuleFor(r => r.OtherContactInfo.PhoneNumber)
             .NotEmpty()
             .MaximumLength(15)
-            .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
+            .When(r => r.OtherContactInfo != null);
         RuleFor(r => r.OtherContactInfo.EmailAddress)
             .NotEmpty()
             .MaximumLength(75)
             .EmailAddress()
             .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
-
+        RuleFor(r => r.BusinessAddress.AddressLine1)
+            .NotEmpty()
+            .MaximumLength(46)
+            .When(r => r.BusinessAddress )
     }
 }
