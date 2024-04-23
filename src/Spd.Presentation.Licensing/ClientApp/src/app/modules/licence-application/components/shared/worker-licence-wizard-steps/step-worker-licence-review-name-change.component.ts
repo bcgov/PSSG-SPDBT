@@ -11,7 +11,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
-					title="Review updated name"
+					title="Review your updated name"
 					subtitle="Your licence will be updated with your new name"
 				></app-step-title>
 
