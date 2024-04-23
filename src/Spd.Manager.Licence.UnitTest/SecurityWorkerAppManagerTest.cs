@@ -392,6 +392,47 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
+        public async void Handle_WorkerLicenceAppRenewCommand_AnonymousRequest_WithoutPoliceBackgroundLetter_Should_Throw_Exception()
+        {
+            Guid licAppId = Guid.NewGuid();
+            Guid applicantId = Guid.NewGuid();
+            DateTime dateTime = DateTime.UtcNow.AddDays(-1);
+            DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+
+            LicenceResp licenceResp = fixture.Build<LicenceResp>()
+                .With(r => r.ExpiryDate, expiryDate)
+                .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
+                .Create();
+
+            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+                .ReturnsAsync(new LicenceListResp()
+                {
+                    Items = new List<LicenceResp> { licenceResp }
+                });
+            mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
+                .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
+            mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
+                .Returns(new CreateDocumentCmd());
+            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+            mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LicenceFeeListResp());
+
+            WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            request.IsPoliceOrPeaceOfficer = true;
+
+            LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
+            LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
+            LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
+            List<LicAppFileInfo> licAppFileInfos = new() { canadianCitizenship, proofOfFingerprint, photoOfYourself };
+            WorkerLicenceAppRenewCommand cmd = new(request, licAppFileInfos);
+
+            Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+            await Assert.ThrowsAsync<ApiException>(act);
+        }
+
+        [Fact]
         public async void Handle_WorkerLicenceAppRenewCommand_WithWrongApplicationTypeCode_Throw_Exception()
         {
             Guid licAppId = Guid.NewGuid();
@@ -500,12 +541,11 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
-            DateTime dateTime = DateTime.UtcNow.AddDays(-1);
+            DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays + 1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.ExpiryDate, expiryDate)
-                .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
                 .Create();
 
             mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
@@ -515,14 +555,26 @@ namespace Spd.Manager.Licence.UnitTest
                 });
             mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
-            mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
-                .Returns(new CreateDocumentCmd());
+
+            LicenceApplicationResp originalApp = fixture.Build<LicenceApplicationResp>()
+                .With(r => r.ExpiryDate, expiryDate)
+                .With(r => r.LicenceAppId, licAppId)
+                .Create();
+            mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
+                .ReturnsAsync(originalApp);
+
+            mockTaskAppRepo.Setup(m => m.ManageAsync(It.IsAny<CreateTaskCmd>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskResp());
             mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
+            mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
+                .Returns(new UpdateContactCmd());
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
+            mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
+                .Returns(new CreateDocumentCmd());
 
-            WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
             request.HasNewMentalHealthCondition = true;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
