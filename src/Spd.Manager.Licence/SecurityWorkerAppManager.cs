@@ -217,6 +217,7 @@ internal class SecurityWorkerAppManager :
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles.ToList(),
+            cmd.IsAuthenticated,
             cancellationToken);
 
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
@@ -285,6 +286,7 @@ internal class SecurityWorkerAppManager :
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles,
+            cmd.IsAuthenticated,
             cancellationToken);
 
         LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
@@ -468,7 +470,8 @@ internal class SecurityWorkerAppManager :
 
     private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppSubmitRequest request,
         IList<LicAppFileInfo> newFileInfos,
-         IList<LicAppFileInfo> existingFileInfos,
+        IList<LicAppFileInfo> existingFileInfos,
+        bool isAuthenticated,
         CancellationToken ct)
     {
         if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
@@ -476,7 +479,7 @@ internal class SecurityWorkerAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
         }
 
-        if (request.IsPoliceOrPeaceOfficer == true && request.IsAuthenticated == false)
+        if (request.IsPoliceOrPeaceOfficer == true && isAuthenticated == false)
         {
             if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) &&
                 !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
@@ -486,7 +489,7 @@ internal class SecurityWorkerAppManager :
         }
 
         if (request.HasNewMentalHealthCondition == true &&
-            request.IsAuthenticated == false &&
+            isAuthenticated == false &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
