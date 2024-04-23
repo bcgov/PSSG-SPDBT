@@ -7,4 +7,5 @@ internal static class Constants
     internal const int LicenceUpdateValidBeforeExpirationInDays = 14;//Licence holder can't request an update within 14 days of expiry date
     internal const int MaximumNumberOfUserEnteredAliases = 10;
     internal const int MaximumNumberOfBrandingDocuments = 10;
+    internal const int MaximumNumberOfControllingMembers = 20;
 }
