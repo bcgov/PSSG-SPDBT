@@ -30,12 +30,14 @@ public record WorkerLicenceAppReplaceCommand(
 
 public record WorkerLicenceAppRenewCommand(
     WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
+    bool IsAuthenticated = false)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record WorkerLicenceAppUpdateCommand(
     WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
+    bool IsAuthenticated = false)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
@@ -103,7 +105,6 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
     public string? CriminalChargeDescription { get; set; }
-    public bool IsAuthenticated { get; set; }
 }
 
 #endregion
