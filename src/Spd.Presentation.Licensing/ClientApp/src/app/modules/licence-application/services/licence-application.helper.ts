@@ -795,8 +795,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
-		// documentInfos
-
 		return baseData;
 	}
 
@@ -805,13 +803,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
-
-		// documentKeyCodes xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-		// criminalChargeDescription
-		// originalApplicationId
-		// originalLicenceId
-		// previousDocumentIds
-		// reprint
 
 		return [baseData, baseData.documentInfos];
 	}

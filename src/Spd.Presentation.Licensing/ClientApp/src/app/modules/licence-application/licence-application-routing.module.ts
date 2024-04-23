@@ -43,8 +43,9 @@ import { LicencePaymentFailAnonymousComponent } from './components/shared/licenc
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
-import { LicenceUpdateReceivedSuccessAnonymousComponent } from './components/shared/licence-update-received-success-anonymous.component';
+import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
+import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepWorkerLicenceUserProfileComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
@@ -108,7 +109,8 @@ export class LicenceApplicationRoutes {
 	public static PAYMENT_FAIL = 'payment-fail';
 	public static PAYMENT_CANCEL = 'payment-cancel';
 	public static PAYMENT_ERROR = 'payment-error';
-	public static UPDATE_SUCCESS = 'update-success';
+	public static LICENCE_UPDATE_SUCCESS = 'licence-update-success';
+	public static PERMIT_UPDATE_SUCCESS = 'permit-update-success';
 
 	public static MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
 
@@ -361,7 +363,8 @@ const routes: Routes = [
 			{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailAnonymousComponent },
 			{ path: `${LicenceApplicationRoutes.PAYMENT_CANCEL}/:id`, component: LicencePaymentCancelAnonymousComponent },
 			{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: LicencePaymentErrorAnonymousComponent },
-			{ path: LicenceApplicationRoutes.UPDATE_SUCCESS, component: LicenceUpdateReceivedSuccessAnonymousComponent },
+			{ path: LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS, component: LicenceUpdateReceivedSuccessComponent },
+			{ path: LicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS, component: PermitUpdateReceivedSuccessComponent },
 			{
 				path: '',
 				redirectTo: LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION),

@@ -3,11 +3,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { StepWorkerLicenceMailingAddressAnonymousComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
-import { StepWorkerLicenceMailingAddressAnonymousComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-replacement',
@@ -96,6 +96,6 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence Replacement');
+		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence replacement');
 	}
 }
