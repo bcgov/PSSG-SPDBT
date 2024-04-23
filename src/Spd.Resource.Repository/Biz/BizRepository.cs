@@ -17,7 +17,7 @@ namespace Spd.Resource.Repository.Biz
             _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
         }
-        public async Task<IEnumerable<BizResult>?> QueryBizAsync(BizsQry qry, CancellationToken ct)
+        public async Task<IEnumerable<BizResult>> QueryBizAsync(BizsQry qry, CancellationToken ct)
         {
             IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_account_spd_servicetype);
             if (!qry.IncludeInactive)

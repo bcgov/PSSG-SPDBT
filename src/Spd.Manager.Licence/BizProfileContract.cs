@@ -8,11 +8,8 @@ public interface IBizProfileManager
 {
     public Task<IEnumerable<BizListResponse>> Handle(GetBizsQuery query, CancellationToken ct);
     public Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct);
-
-    public Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct); //used for applicant portal
-
+    public Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct); //used for biz lic portal
     public Task<Unit> Handle(BizTermAgreeCommand cmd, CancellationToken ct);
-
     public Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct);
 }
 
@@ -34,7 +31,7 @@ public record BizInfo
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? MailingAddress { get; set; }
-    public IEnumerable<BranchInfo> Branches { get; set; }
+    public IEnumerable<BranchInfo>? Branches { get; set; }
     public bool? MailingAddressIsSameBizAddress { get; set; }
 }
 
@@ -42,9 +39,9 @@ public record BranchInfo
 {
     public Guid? BranchId { get; set; }
     public Address? BranchAddress { get; set; }
-    public string BranchManager { get; set; }
-    public string BranchPhoneNumber { get; set; }
-    public string BranchEmailAddr { get; set; }
+    public string? BranchManager { get; set; }
+    public string? BranchPhoneNumber { get; set; }
+    public string? BranchEmailAddr { get; set; }
 }
 
 public record BizListResponse
@@ -70,7 +67,7 @@ public record BizUserLoginResponse
 
 public record BizProfileUpdateRequest : BizInfo
 {
-    public Guid? BizId { get; set; } //used when user is in update, renew or replace flow.
+    public Guid? BizId { get; set; } //used when in update, renew or replace flow.
 }
 
 public enum BizTypeCode

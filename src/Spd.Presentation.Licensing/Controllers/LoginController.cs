@@ -87,20 +87,6 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<BizUserLoginResponse?> BizLicencePortalLogin(Guid bizId)
         {
             var info = _currentUser.GetBceidUserIdentityInfo();
-            //string test = @"{
-            //    ""BCeIDUserName"": ""VictoriaCharity"",
-            //    ""DisplayName"": ""Qu Tester"",
-            //    ""FirstName"": ""Qu Tester"",
-            //    ""LastName"": """",
-            //    ""PreferredUserName"": ""846597a702244ba0884bdc3ac8cb21b5@bceidbusiness"",
-            //    ""UserGuid"": ""846597a7-0224-4ba0-884b-dc3ac8cb21b5"",
-            //    ""BizGuid"": ""fbb17094-2532-4fd8-befc-b6bbcd679df3"",
-            //    ""BizName"": ""Victoria Charity"",
-            //    ""Issuer"": ""https://dev.loginproxy.gov.bc.ca/auth/realms/standard"",
-            //    ""EmailVerified"": false,
-            //    ""Email"": ""peggy.zhang@quartech.com""
-            //}";
-            //BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
             var response = await _mediator.Send(new BizLoginCommand(info, bizId));
             return response;
         }
