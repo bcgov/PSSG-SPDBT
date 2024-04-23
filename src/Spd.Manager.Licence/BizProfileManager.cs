@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Identity;
@@ -17,22 +16,18 @@ internal class BizProfileManager :
         IRequestHandler<BizProfileUpdateCommand, Unit>,
         IBizProfileManager
 {
-
-    private readonly ILogger<IFeeManager> _logger;
     private readonly IIdentityRepository _idRepository;
     private readonly IBizRepository _bizRepository;
     private readonly IPortalUserRepository _portalUserRepository;
     private readonly IMapper _mapper;
 
     public BizProfileManager(
-        ILogger<IFeeManager> logger,
         IIdentityRepository idRepository,
         IBizRepository bizRepository,
         IPortalUserRepository portalUserRepository,
         IMapper mapper)
     {
         _mapper = mapper;
-        _logger = logger;
         _idRepository = idRepository;
         _bizRepository = bizRepository;
         _portalUserRepository = portalUserRepository;
@@ -144,7 +139,9 @@ internal class BizProfileManager :
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
+            BizName = cmd.BceidIdentityInfo.
             Email = cmd.BceidIdentityInfo.Email,
+            BizGuid = cmd.BceidIdentityInfo.BizGuid,
         };
         return await _bizRepository.ManageBizAsync(new BizCreateCmd(b), ct);
     }

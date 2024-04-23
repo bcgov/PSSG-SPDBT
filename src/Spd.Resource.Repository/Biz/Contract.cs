@@ -32,6 +32,7 @@
         public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
         public string? BizName { get; set; }
         public string? BizLegalName { get; set; }
+        public Guid? BizGuid { get; set; }
     }
     public record BizResult : Biz
     {
