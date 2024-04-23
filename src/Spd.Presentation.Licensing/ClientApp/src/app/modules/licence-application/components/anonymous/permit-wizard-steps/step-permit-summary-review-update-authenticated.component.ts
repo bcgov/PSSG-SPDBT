@@ -24,7 +24,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 				></app-step-title>
 
 				<div class="row">
-					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row mt-0 mb-4">
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">
@@ -32,55 +32,67 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								</div>
 								<div class="summary-text-data">{{ licenceHolderName }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-3 col-md-12">
 								<div class="text-label d-block text-muted">Licence Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
-								<div class="text-label d-block text-muted">Photograph of Yourself</div>
-								<div class="summary-text-data">
-									<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-										{{ doc.name }}
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-3 col-md-12">
 								<div class="text-label d-block text-muted">Expiry Date</div>
 								<div class="summary-text-data">
 									{{ originalExpiryDate | formatDate : formalDateFormat }}
 								</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-3 col-md-12">
 								<div class="text-label d-block text-muted">Licence Term</div>
 								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-3 col-md-12">
 								<div class="text-label d-block text-muted">Print Permit</div>
 								<div class="summary-text-data">{{ isReprint }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="licenceFee">
+							<div class="col-lg-3 col-md-12" *ngIf="licenceFee">
 								<div class="text-label d-block text-muted">Reprint Fee</div>
 								<div class="summary-text-data">
 									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 								</div>
 							</div>
+							<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
+								<div class="text-label d-block text-muted">Photograph of Yourself</div>
+								<div class="summary-text-data">
+									<ul class="m-0">
+										<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+											<li>{{ doc.name }}</li>
+										</ng-container>
+									</ul>
+								</div>
+							</div>
 
-							<div class="text-minor-heading mt-4">Purpose and Rationale</div>
+							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<div class="text-minor-heading">Purpose</div>
 							<div class="row mt-0">
 								<div class="col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Reason to Require a Permit</div>
+									<div class="text-label d-block text-muted">{{ purposeLabel }}</div>
 									<div class="summary-text-data">
-										{{ reasonForRequirement }}
+										<ul class="m-0">
+											<ng-container *ngFor="let reason of purposeReasons; let i = index">
+												<li>{{ reason }}</li>
+											</ng-container>
+										</ul>
 									</div>
 								</div>
-								<div class="col-lg-6 col-md-12" *ngIf="isOtherReason">
+								<div class="col-12" *ngIf="isOtherReason">
 									<div class="text-label d-block text-muted">Other Reason</div>
 									<div class="summary-text-data">
 										{{ otherReason }}
 									</div>
 								</div>
+							</div>
+
+							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<div class="text-minor-heading">Rationale</div>
+							<div class="row mt-0">
 								<div class="col-12">
-									<div class="text-label d-block text-muted">Rationale</div>
+									<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
 									<div class="summary-text-data">
 										{{ rationale }}
 									</div>
@@ -88,14 +100,17 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								<div class="col-lg-6 col-md-12" *ngIf="isRationaleAttachments">
 									<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
 									<div class="summary-text-data">
-										<div *ngFor="let doc of rationaleAttachments; let i = index">
-											{{ doc.name }}
-										</div>
+										<ul class="m-0">
+											<ng-container *ngFor="let doc of rationaleAttachments; let i = index">
+												<li>{{ doc.name }}</li>
+											</ng-container>
+										</ul>
 									</div>
 								</div>
 							</div>
 
 							<ng-container *ngIf="showEmployerInformation">
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading">Business Name</div>
 								<div class="row mt-0">
 									<div class="col-lg-6 col-md-12">
@@ -123,8 +138,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
 
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading">Business's Primary Address</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
@@ -301,7 +316,14 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitModelData.reprintLicenceData.reprintLicence ?? '';
 	}
 
-	get reasonForRequirement(): string {
+	get purposeLabel(): string {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Reasons for Requiring an Armoured Vehicle';
+		} else {
+			return 'Reasons for Requiring Body Armour';
+		}
+	}
+	get purposeReasons(): Array<string> {
 		const reasonList = [];
 		this.showEmployerInformation = false;
 
@@ -380,7 +402,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 				reasonList.push(this.optionsPipe.transform(BodyArmourPermitReasonCode.Other, 'BodyArmourPermitReasonTypes'));
 			}
 		}
-		return reasonList.join(', ');
+		return reasonList;
 	}
 	get isOtherReason(): boolean {
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
@@ -395,6 +417,13 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitModelData.permitRequirementData.otherReason;
 	}
 
+	get rationaleLabel(): string {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Rationale for Requiring an Armoured Vehicle';
+		} else {
+			return 'Rationale for Requiring Body Armour';
+		}
+	}
 	get rationale(): string {
 		return this.permitModelData.permitRationaleData?.rationale ?? '';
 	}
