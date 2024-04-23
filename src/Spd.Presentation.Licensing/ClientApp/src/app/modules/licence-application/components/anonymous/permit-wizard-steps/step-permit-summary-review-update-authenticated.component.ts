@@ -59,20 +59,22 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 							<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
 								<div class="text-label d-block text-muted">Photograph of Yourself</div>
 								<div class="summary-text-data">
-									<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-										{{ doc.name }}
-									</div>
+									<ul class="m-0">
+										<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+											<li>{{ doc.name }}</li>
+										</ng-container>
+									</ul>
 								</div>
 							</div>
 
 							<mat-divider class="mt-3 mb-2"></mat-divider>
-							<div class="text-minor-heading">Purpose and Rationale</div>
+							<div class="text-minor-heading">Purpose</div>
 							<div class="row mt-0">
 								<div class="col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Reason to Require a Permit</div>
+									<div class="text-label d-block text-muted">{{ purposeLabel }}</div>
 									<div class="summary-text-data">
 										<ul class="m-0">
-											<ng-container *ngFor="let reason of reasonForRequirements; let i = index">
+											<ng-container *ngFor="let reason of purposeReasons; let i = index">
 												<li>{{ reason }}</li>
 											</ng-container>
 										</ul>
@@ -84,8 +86,13 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										{{ otherReason }}
 									</div>
 								</div>
+							</div>
+
+							<mat-divider class="mt-3 mb-2"></mat-divider>
+							<div class="text-minor-heading">Rationale</div>
+							<div class="row mt-0">
 								<div class="col-12">
-									<div class="text-label d-block text-muted">Rationale</div>
+									<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
 									<div class="summary-text-data">
 										{{ rationale }}
 									</div>
@@ -131,8 +138,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 									</div>
 								</div>
-								<mat-divider class="mt-3 mb-2"></mat-divider>
 
+								<mat-divider class="mt-3 mb-2"></mat-divider>
 								<div class="text-minor-heading">Business's Primary Address</div>
 								<div class="row mt-0">
 									<div class="col-lg-4 col-md-12">
@@ -309,7 +316,14 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitModelData.reprintLicenceData.reprintLicence ?? '';
 	}
 
-	get reasonForRequirements(): Array<string> {
+	get purposeLabel(): string {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Reasons for Requiring an Armoured Vehicle';
+		} else {
+			return 'Reasons for Requiring Body Armour';
+		}
+	}
+	get purposeReasons(): Array<string> {
 		const reasonList = [];
 		this.showEmployerInformation = false;
 
@@ -403,6 +417,13 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitModelData.permitRequirementData.otherReason;
 	}
 
+	get rationaleLabel(): string {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Rationale for Requiring an Armoured Vehicle';
+		} else {
+			return 'Rationale for Requiring Body Armour';
+		}
+	}
 	get rationale(): string {
 		return this.permitModelData.permitRationaleData?.rationale ?? '';
 	}

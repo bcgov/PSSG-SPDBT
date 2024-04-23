@@ -101,7 +101,7 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 			}
 			default: {
 				this.title = `Confirm your rationale for requiring ${name}`;
-				this.subtitle = `If the purpose for requiring ${workerLicenceTypeDesc} has changed from your previous application, update your rationale`;
+				this.subtitle = `If the purpose for requiring your ${workerLicenceTypeDesc} has changed from your previous application, update your rationale`;
 				break;
 			}
 		}

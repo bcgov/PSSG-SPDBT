@@ -4,6 +4,7 @@ import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-step-permit-reason',
@@ -98,15 +99,25 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 
-	constructor(private permitApplicationService: PermitApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
 		const name =
 			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
-		this.title = `Why do you require a permit for ${name}?`;
-		this.subtitle = this.isRenewalOrUpdate
-			? `If the purpose for possessing ${name} has changed from your previous application, update your selection`
-			: '';
+		const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = `Provide your reasons for requiring ${name}`;
+				this.subtitle = '';
+				break;
+			}
+			default: {
+				this.title = `Confirm your reasons for requiring ${name}`;
+				this.subtitle = `If the reasons for requiring your ${workerLicenceTypeDesc} have changed from your previous application, update your reasons`;
+				break;
+			}
+		}
 	}
 
 	isFormValid(): boolean {
