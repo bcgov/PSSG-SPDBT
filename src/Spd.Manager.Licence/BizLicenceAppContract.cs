@@ -35,13 +35,13 @@ public abstract record BizLicenceAppBase
     public BusinessManagerInfo? OtherContactInfo { get; set; }
 
     // Business address
-    public bool? IsMailingTheSameAsBusiness { get; set; }
-    public BusinessAddress? BusinessAddress { get; set; }
-    public BusinessMailingAddress? BusinessMailingAddress { get; set; }
-    public BcAddress? BcAddress { get; set; }
+    //public bool? IsMailingTheSameAsBusiness { get; set; }
+    //public BusinessAddress? BusinessAddress { get; set; }
+    //public BusinessMailingAddress? BusinessMailingAddress { get; set; }
+    //public BcAddress? BcAddress { get; set; }
 
     // Branches
-    public IEnumerable<BusinessAddress> BranchOffices { get; set; } = Enumerable.Empty<BusinessAddress>();
+    //public IEnumerable<BusinessAddress> BranchOffices { get; set; } = Enumerable.Empty<BusinessAddress>();
 
     // Controlling member
     public ControllerMemberInfo? ControllerMemberInfo { get; set; }
