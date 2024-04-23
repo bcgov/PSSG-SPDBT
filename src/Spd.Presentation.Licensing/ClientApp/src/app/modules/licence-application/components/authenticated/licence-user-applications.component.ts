@@ -100,9 +100,9 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="caseNumber">
-										<mat-header-cell *matHeaderCellDef>Case Id</mat-header-cell>
+										<mat-header-cell *matHeaderCellDef>Case Number</mat-header-cell>
 										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Case Id:</span>
+											<span class="mobile-label">Case Number:</span>
 											{{ application.caseNumber }}
 										</mat-cell>
 									</ng-container>
@@ -166,7 +166,7 @@ import {
 												<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-3">
-												<div class="d-block text-muted mt-2 mt-lg-0">Case Id</div>
+												<div class="d-block text-muted mt-2 mt-lg-0">Case Number</div>
 												<div class="text-data">{{ appl.caseNumber }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
