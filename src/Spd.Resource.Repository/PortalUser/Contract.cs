@@ -31,6 +31,7 @@ namespace Spd.Resource.Repository.PortalUser
         public Guid? IdentityId { get; set; }
         public string? UserEmail { get; set; }
         public bool IncludeInactive { get; set; } = false;
+        public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
     };
 
     public abstract record PortalUserCmd
@@ -45,6 +46,11 @@ namespace Spd.Resource.Repository.PortalUser
     public record UpdatePortalUserCmd : PortalUserCmd
     {
         public Guid Id { get; set; }
+        public DateTimeOffset? TermAgreeTime { get; set; }
     };
-    public record CreatePortalUserCmd : PortalUserCmd;
+    public record CreatePortalUserCmd : PortalUserCmd
+    {
+        public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
+    };
+
 }

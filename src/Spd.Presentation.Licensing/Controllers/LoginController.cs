@@ -50,14 +50,14 @@ namespace Spd.Presentation.Licensing.Controllers
             return Ok();
         }
 
+
         /// <summary>
-        /// login, for biz licensing portal, bceid login
+        /// when user select agree to the Term. Call this endpoint.
         /// </summary>
         /// <returns></returns>
-        [Route("api/biz/{bizId}/login")]
-        [HttpGet]
-        //[Authorize(Policy = "OnlyBCeID")]
-        public async Task<BizUserLoginResponse?> BizLicencePortalLogin(Guid bizId)
+        [Route("api/bizs")]
+        [Authorize(Policy = "OnlyBCeID")]
+        public async Task<ActionResult> BizList()
         {
             //var info = _currentUser.GetBceidUserIdentityInfo();
             string test = @"{
@@ -74,19 +74,47 @@ namespace Spd.Presentation.Licensing.Controllers
                 ""Email"": ""peggy.zhang@quartech.com""
             }";
             BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
+            var response = await _mediator.Send(new GetBizsQuery(info.BizGuid));
+            return Ok(response);
+        }
+        /// <summary>
+        /// login, for biz licensing portal, bceid login
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/biz/{bizId}/login")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBCeID")]
+        public async Task<BizUserLoginResponse?> BizLicencePortalLogin(Guid bizId)
+        {
+            var info = _currentUser.GetBceidUserIdentityInfo();
+            //string test = @"{
+            //    ""BCeIDUserName"": ""VictoriaCharity"",
+            //    ""DisplayName"": ""Qu Tester"",
+            //    ""FirstName"": ""Qu Tester"",
+            //    ""LastName"": """",
+            //    ""PreferredUserName"": ""846597a702244ba0884bdc3ac8cb21b5@bceidbusiness"",
+            //    ""UserGuid"": ""846597a7-0224-4ba0-884b-dc3ac8cb21b5"",
+            //    ""BizGuid"": ""fbb17094-2532-4fd8-befc-b6bbcd679df3"",
+            //    ""BizName"": ""Victoria Charity"",
+            //    ""Issuer"": ""https://dev.loginproxy.gov.bc.ca/auth/realms/standard"",
+            //    ""EmailVerified"": false,
+            //    ""Email"": ""peggy.zhang@quartech.com""
+            //}";
+            //BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
             var response = await _mediator.Send(new BizLoginCommand(info, bizId));
             return response;
         }
 
         /// <summary>
-        /// when user select agree to the Term. Call this endpoint.
+        /// when manager select agree to the Term. Call this endpoint.
         /// </summary>
         /// <returns></returns>
-        [Route("api/biz/{bizId}/user/{bizUserId}/term-agree")]
+        [Route("api/biz/{bizId}/manager/{bizUserId}/term-agree")]
         [Authorize(Policy = "OnlyBCeID")]
+        [HttpGet]
         public async Task<ActionResult> BizLicencePortalTermAgree([FromRoute] Guid bizId, Guid bizUserId)
         {
-            //await _mediator.Send(new ApplicantTermAgreeCommand(applicantId));
+            await _mediator.Send(new BizTermAgreeCommand(bizId, bizUserId));
             return Ok();
         }
     }

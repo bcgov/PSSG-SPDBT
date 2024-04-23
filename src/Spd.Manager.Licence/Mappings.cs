@@ -2,6 +2,7 @@ using AutoMapper;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -191,6 +192,8 @@ internal class Mappings : Profile
             .ForMember(d => d.BizUserId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.OrganizationId))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.IsFirstTimeLogin));
+
+        CreateMap<BizResult, BizListResponse>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

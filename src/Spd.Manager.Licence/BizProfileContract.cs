@@ -6,6 +6,7 @@ namespace Spd.Manager.Licence;
 
 public interface IBizProfileManager
 {
+    public Task<IEnumerable<BizListResponse>> Handle(GetBizsQuery query, CancellationToken ct);
     public Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct);
 
     public Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct); //used for applicant portal
@@ -16,8 +17,9 @@ public interface IBizProfileManager
 }
 
 public record GetBizProfileQuery(Guid BizId) : IRequest<BizProfileResponse>;
+public record GetBizsQuery(Guid BizGuid) : IRequest<IEnumerable<BizListResponse>>;
 public record BizLoginCommand(BceidIdentityInfo BceidIdentityInfo, Guid? BizId) : IRequest<BizUserLoginResponse>;
-public record BizTermAgreeCommand(Guid BizUserId) : IRequest<Unit>;
+public record BizTermAgreeCommand(Guid BizId, Guid BizUserId) : IRequest<Unit>;
 public record BizProfileUpdateCommand(
     Guid BizUserId,
     Guid BizId,
@@ -43,6 +45,12 @@ public record BranchInfo
     public string BranchManager { get; set; }
     public string BranchPhoneNumber { get; set; }
     public string BranchEmailAddr { get; set; }
+}
+
+public record BizListResponse
+{
+    public Guid BizId { get; set; } //which is accountid in account
+    public string? BizLegalName { get; set; }
 }
 
 public record BizProfileResponse : BizInfo

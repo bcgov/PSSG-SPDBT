@@ -22,7 +22,10 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
-            .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress));
+            .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.spd_servicecategory, opt => opt.MapFrom(s =>
+                s.PortalUserServiceCategory == PortalUserServiceCategoryEnum.Licensing ?
+                (int)PortalUserServiceCategoryOptionSet.Licensing : (int)PortalUserServiceCategoryOptionSet.Screening));
         }
 
         private ContactRoleCode? GetContactRoleCode(IEnumerable<spd_role> spdRoles)

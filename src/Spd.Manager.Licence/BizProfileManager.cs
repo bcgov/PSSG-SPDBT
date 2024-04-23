@@ -14,6 +14,7 @@ internal class BizProfileManager :
         IRequestHandler<GetBizProfileQuery, BizProfileResponse>,
         IRequestHandler<BizTermAgreeCommand, Unit>,
         IRequestHandler<BizProfileUpdateCommand, Unit>,
+        IRequestHandler<GetBizsQuery, IEnumerable<BizListResponse>>,
         IBizProfileManager
 {
     private readonly IIdentityRepository _idRepository;
@@ -80,17 +81,26 @@ internal class BizProfileManager :
         }
     }
 
-    public Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct)
+    public async Task<IEnumerable<BizListResponse>> Handle(GetBizsQuery query, CancellationToken ct)
+    {
+        IEnumerable<BizResult> result = await _bizRepository.QueryBizAsync(new BizsQry(query.BizGuid), ct);
+        return _mapper.Map<IEnumerable<BizListResponse>>(result);
+    }
+
+    public async Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Unit> Handle(BizTermAgreeCommand cmd, CancellationToken ct)
+    public async Task<Unit> Handle(BizTermAgreeCommand cmd, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        await _portalUserRepository.ManageAsync(
+            new UpdatePortalUserCmd() { Id = cmd.BizUserId, TermAgreeTime = DateTimeOffset.UtcNow },
+            ct);
+        return default;
     }
 
-    public Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
+    public async Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
@@ -103,10 +113,12 @@ internal class BizProfileManager :
         if (!biz.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence))
             return true;
 
-        var portalUsers = await _portalUserRepository.QueryAsync(new PortalUserQry { OrgId = cmd.BizId }, ct);
-        if (!portalUsers.Items.Any(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager || u.ContactRoleCode == ContactRoleCode.BusinessManager))
+        var portalUsers = await _portalUserRepository.QueryAsync(
+            new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
+            ct);
+        if (portalUsers == null || !portalUsers.Items.Any())
         {
-            return true; //when no user has primary biz manager role, means it is first time login
+            return true; //no user registered as licensing means it is first time login
         }
         return false;
     }
@@ -117,7 +129,9 @@ internal class BizProfileManager :
         if (currentUserIdentity == null)
             return null;
 
-        var portalUsers = await _portalUserRepository.QueryAsync(new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id }, ct);
+        var portalUsers = await _portalUserRepository.QueryAsync(
+            new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
+            ct);
         PortalUserResp resp = portalUsers.Items.FirstOrDefault();
         if (resp != null && (resp.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager || resp.ContactRoleCode == ContactRoleCode.BusinessManager))
             return resp;
@@ -139,7 +153,7 @@ internal class BizProfileManager :
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
-            BizName = cmd.BceidIdentityInfo.
+            BizName = cmd.BceidIdentityInfo.BizName,
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
         };
@@ -155,7 +169,8 @@ internal class BizProfileManager :
             FirstName = info.FirstName,
             LastName = info.LastName,
             OrgId = bizId,
-            ContactRoleCode = ContactRoleCode.PrimaryBusinessManager
+            ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
+            PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
         }, ct);
     }
 }

@@ -31,6 +31,10 @@ internal class PortalUserRepository : IPortalUserRepository
         if (qry.OrgId != null) users = users.Where(d => d._spd_organizationid_value == qry.OrgId);
         if (qry.UserEmail != null) users = users.Where(d => d.spd_emailaddress1 == qry.UserEmail);
         if (qry.IdentityId != null) users = users.Where(d => d._spd_identityid_value == qry.IdentityId);
+        if (qry.PortalUserServiceCategory == null || qry.PortalUserServiceCategory == PortalUserServiceCategoryEnum.Screening)
+            users = users.Where(d => d.spd_servicecategory == null || d.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening);
+        else
+            users = users.Where(d => d.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Licensing);
 
         List<spd_portaluser> userList = users.ToList();
         IEnumerable<spd_portaluser> results = userList;
@@ -70,6 +74,7 @@ internal class PortalUserRepository : IPortalUserRepository
         if (c.FirstName != null) portalUser.spd_firstname = c.FirstName;
         if (c.LastName != null) portalUser.spd_surname = c.LastName;
         if (c.EmailAddress != null) portalUser.spd_emailaddress1 = c.EmailAddress;
+        if (c.TermAgreeTime != null) portalUser.spd_lastloggedin = c.TermAgreeTime;
         _context.UpdateObject(portalUser);
 
         if (c.OrgId != null && portalUser._spd_organizationid_value != c.OrgId)
@@ -116,7 +121,6 @@ internal class PortalUserRepository : IPortalUserRepository
             if (role != null)
             {
                 _context.AddLink(portaluser, nameof(portaluser.spd_spd_role_spd_portaluser), role);
-                await _context.SaveChangesAsync(ct);
             }
         }
         await _context.SaveChangesAsync(ct);
