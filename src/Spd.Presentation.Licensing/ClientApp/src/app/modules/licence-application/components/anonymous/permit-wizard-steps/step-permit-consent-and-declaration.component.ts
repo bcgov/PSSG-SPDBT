@@ -23,7 +23,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 											<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 												I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal
 												record check, police information check and correctional service information check (Prescribed
-												Checks) on me pursuant to the <i>{{ collectionNoticeActName }}</i
+												Checks) on me pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
 												>.
 											</mat-checkbox>
 											<mat-error
@@ -76,7 +76,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 											<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 												I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal
 												record check, police information check and correctional service information check (Prescribed
-												Checks) on me pursuant to the <i>{{ collectionNoticeActName }}</i
+												Checks) on me pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
 												>.
 											</mat-checkbox>
 											<mat-error
@@ -213,6 +213,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';
+	collectionNoticeActNameWithAbbrev = '';
 	check3Name = '';
 	check4Name = '';
 
@@ -231,11 +232,13 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		if (this.isArmouredVehiclePermit) {
-			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act (AVAMCCA)';
+			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act';
+			this.collectionNoticeActNameWithAbbrev = `${this.collectionNoticeActName} (AVAMCCA)`;
 			this.check3Name = 'operating an armoured vehicle';
 			this.check4Name = 'an armoured vehicle operator';
 		} else {
-			this.collectionNoticeActName = 'Body Armour Control Act (BACA)';
+			this.collectionNoticeActName = 'Body Armour Control Act';
+			this.collectionNoticeActNameWithAbbrev = `${this.collectionNoticeActName} (BACA)`;
 			this.check3Name = 'possessing body armour';
 			this.check4Name = 'a body armour permit holder';
 		}
