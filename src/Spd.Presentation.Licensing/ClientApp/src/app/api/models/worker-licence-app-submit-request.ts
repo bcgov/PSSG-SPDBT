@@ -43,7 +43,6 @@ export interface WorkerLicenceAppSubmitRequest {
   hasPreviousName?: null | boolean;
   height?: null | number;
   heightUnitCode?: HeightUnitCode;
-  isAuthenticated?: boolean;
   isCanadianCitizen?: null | boolean;
   isDogsPurposeDetectionDrugs?: null | boolean;
   isDogsPurposeDetectionExplosives?: null | boolean;
