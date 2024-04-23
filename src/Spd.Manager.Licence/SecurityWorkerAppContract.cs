@@ -95,7 +95,7 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 
 #region anonymous user
 
-public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase //for anonymous user
+public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
@@ -103,6 +103,7 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase //for anonymo
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
     public string? CriminalChargeDescription { get; set; }
+    public bool IsAuthenticated { get; set; }
 }
 
 #endregion
