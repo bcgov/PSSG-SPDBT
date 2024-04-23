@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -79,21 +79,14 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 						</section>
 
 						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false">
-								<div class="mb-2">COLLECTION NOTICE</div>
-								All information regarding this application is collected under the <i>Security Services Act</i> and its
-								Regulation and will be used for that purpose. The use of this information will comply with the
-								<i>Freedom of Information</i> and <i>Privacy Act</i> and the federal <i>Privacy Act</i>. If you have any
-								questions regarding the collection or use of this information, please contact
-								<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
-							</app-alert>
+							<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="row mt-3">
+		<div class="row wizard-button-row">
 			<div class="offset-xl-6 offset-lg-5 col-xl-2 col-lg-3 col-md-6 col-sm-12">
 				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
 					<i class="fa fa-times mr-2"></i>Cancel
@@ -110,9 +103,11 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 })
 export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
+	collectionNoticeActName = '';
 	saveAndContinueLabel = 'Save & Continue to Application';
 
 	form: FormGroup = this.permitApplicationService.profileConfirmationFormGroup;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	showConfirmation = false;
 
@@ -134,6 +129,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	) {
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
 		this.applicationTypeCode = state && state['applicationTypeCode'];
 
 		switch (this.applicationTypeCode) {
@@ -161,8 +157,13 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		if (!this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
 		}
-	}
 
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act (AVAMCCA)';
+		} else {
+			this.collectionNoticeActName = 'Body Armour Control Act (BACA)';
+		}
+	}
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 	}
@@ -195,7 +196,9 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 		}
 
 		if (this.applicationTypeCode) {
-			this.permitApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+			this.permitApplicationService
+				.saveUserProfileAndContinue(this.workerLicenceTypeCode!, this.applicationTypeCode)
+				.subscribe();
 			return;
 		}
 	}

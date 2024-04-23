@@ -126,6 +126,7 @@ import { StepsBusinessLicenceControllingMembersNewComponent } from './components
 import { StepsBusinessLicenceInformationNewComponent } from './components/business/steps-business-licence-information-new.component';
 import { StepsBusinessLicenceReviewComponent } from './components/business/steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionNewComponent } from './components/business/steps-business-licence-selection-new.component';
+import { CollectionNoticeComponent } from './components/shared/collection-notice.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorAnonymousComponent } from './components/shared/licence-payment-error-anonymous.component';
@@ -134,8 +135,9 @@ import { LicencePaymentFailAnonymousComponent } from './components/shared/licenc
 import { LicencePaymentFailComponent } from './components/shared/licence-payment-fail.component';
 import { LicencePaymentSuccessAnonymousComponent } from './components/shared/licence-payment-success-anonymous.component';
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
-import { LicenceUpdateReceivedSuccessAnonymousComponent } from './components/shared/licence-update-received-success-anonymous.component';
+import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
+import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-steps/step-permit-reprint.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
@@ -218,6 +220,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		ModalBusinessManagerEditComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
+		CollectionNoticeComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAddressComponent,
 		CommonAliasListComponent,
@@ -272,11 +275,12 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentErrorAnonymousComponent,
 		LicencePaymentFailAnonymousComponent,
 		LicencePaymentSuccessAnonymousComponent,
-		LicenceUpdateReceivedSuccessAnonymousComponent,
+		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
 		ModalMemberWithoutSwlEditComponent,
 		ModalMemberWithSwlAddComponent,
 		PermitApplicationBaseAnonymousComponent,
+		PermitUpdateReceivedSuccessComponent,
 		PermitWizardAnonymousNewComponent,
 		PermitWizardAnonymousRenewalComponent,
 		PermitWizardAnonymousUpdateComponent,

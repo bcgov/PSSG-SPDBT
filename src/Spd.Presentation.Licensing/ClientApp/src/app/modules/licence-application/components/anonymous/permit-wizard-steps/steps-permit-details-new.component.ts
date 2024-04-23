@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -87,6 +87,7 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	private permitModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
@@ -109,6 +110,9 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
+				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
@@ -136,7 +140,7 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	onGotoUserProfile(): void {
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED),
-			{ state: { applicationTypeCode: this.applicationTypeCode } }
+			{ state: { workerLicenceTypeCode: this.workerLicenceTypeCode, applicationTypeCode: this.applicationTypeCode } }
 		);
 	}
 
