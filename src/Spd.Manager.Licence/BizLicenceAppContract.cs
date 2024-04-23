@@ -4,22 +4,25 @@ namespace Spd.Manager.Licence;
 public abstract record BizLicenceAppBase
 {
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+    public string? ExpiredLicenceNumber { get; set; }
+    public bool? HasExpiredLicence { get; set; }  //for new application type
     public BusinessTypeCode? BusinessTypeCode { get; set; }
     public string? BusinessLicenceNumber { get; set; }
-    public string? ExpiredLicenceNumber { get; set; }
     public string? LegalBusinessName { get; set; }
     public DateOnly? ExpiryDate { get; set; }
-    public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }
+    public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }     // * might not be needed in request
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
 
     // Branding
-    public IEnumerable<Document>? DocumentBranding { get; set; }    // What kind of field do we need for "Document"?
+    public IEnumerable<Document>? DocumentsBranding { get; set; }    // What kind of field do we need for "Document"?
 
     // Proof of insurance
     public Document? Insurnace { get; set; }   // What kind of document?
 
     // Licence category
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public IEnumerable<Document>? DocumentRegistrar { get; set; }    // What kind of field do we need for "Document"?
+    public IEnumerable<Document>? DocumentsRegistrar { get; set; }    // What kind of field do we need for "Document"?
     public PrivateInvestigatorInfo? PrivateInvestigatorInfo { get; set; }
     public bool? UseDogs { get; set; }
     public Document? SecurityDogCertificate { get; set; }
@@ -53,7 +56,7 @@ public abstract record BizLicenceAppBase
 public record SecurityWorkerInfo : PersonalInfo
 {
     public string? LicenceNumber { get; set; }  //security worker licence number
-    public bool? IslicenceValid { get; set; }
+    public bool? IsLicenceValid { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
 }
