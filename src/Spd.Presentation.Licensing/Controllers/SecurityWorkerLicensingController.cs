@@ -154,6 +154,8 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
+            jsonRequest.IsAuthenticated = true;
+
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
