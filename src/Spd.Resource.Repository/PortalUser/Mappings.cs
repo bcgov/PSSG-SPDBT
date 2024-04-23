@@ -29,12 +29,6 @@ namespace Spd.Resource.Repository.PortalUser
         {
             spd_role role = spdRoles.FirstOrDefault();
             if (role == null) return null;
-
-            if (role.spd_roleid == Guid.Parse("22b5624f-e38f-ee11-b849-00505683fbf4"))
-            {
-                string test = "a";
-            }
-
             return Enum.Parse<ContactRoleCode>(
                DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == role.spd_roleid).Key);
         }
