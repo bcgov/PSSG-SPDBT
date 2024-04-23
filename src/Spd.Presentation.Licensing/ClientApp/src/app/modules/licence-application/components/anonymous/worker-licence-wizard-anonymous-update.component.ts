@@ -208,7 +208,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 			if (this.newLicenceCost > 0) {
 				this.stepReviewLicenceComponent?.onGoToLastStep();
 			} else {
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
 			}
 		} else {
 			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
@@ -223,7 +223,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 						this.stepReviewLicenceComponent?.onGoToLastStep();
 					} else {
 						this.hotToastService.success('Your licence update has been successfully submitted');
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
 					}
 				},
 				error: (error: any) => {
@@ -247,6 +247,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence Update');
+		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence update');
 	}
 }

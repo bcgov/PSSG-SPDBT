@@ -18,7 +18,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							regular office hours: {{ spdPhoneNumber }}
 						</app-alert>
 						<div class="row mt-0 mb-3">
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-4 col-md-12">
 								<div class="text-label d-block text-muted">Permit Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
@@ -26,7 +26,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="text-label d-block text-muted">Permit Type</div>
 								<div class="summary-text-data">{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-lg-4 col-md-12">
 								<div class="text-label d-block text-muted">Expiry Date</div>
 								<div class="summary-text-data">
 									{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}

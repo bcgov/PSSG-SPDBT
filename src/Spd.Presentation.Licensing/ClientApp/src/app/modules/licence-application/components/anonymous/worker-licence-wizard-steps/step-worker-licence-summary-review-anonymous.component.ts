@@ -107,9 +107,11 @@ import { Subscription } from 'rxjs';
 															{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 													<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
@@ -117,12 +119,20 @@ import { Subscription } from 'rxjs';
 															{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-															<div *ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 													<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
@@ -130,9 +140,11 @@ import { Subscription } from 'rxjs';
 															{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categoryLocksmithAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categoryLocksmithAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -143,13 +155,20 @@ import { Subscription } from 'rxjs';
 														</div>
 														<div class="summary-text-data">
 															<div class="summary-text-data">
-																<div *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-
-																<div *ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
+																<ul class="m-0">
+																	<ng-container
+																		*ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index"
+																	>
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
+																<ul class="m-0">
+																	<ng-container
+																		*ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index"
+																	>
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
 															</div>
 														</div>
 													</div>
@@ -162,14 +181,16 @@ import { Subscription } from 'rxjs';
 															Documents
 														</div>
 														<div class="summary-text-data">
-															<div
-																*ngFor="
-																	let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
-																	let i = index
-																"
-															>
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="
+																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
+																		let i = index
+																	"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -179,9 +200,13 @@ import { Subscription } from 'rxjs';
 															Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -190,12 +215,18 @@ import { Subscription } from 'rxjs';
 															{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-															<div *ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -204,9 +235,11 @@ import { Subscription } from 'rxjs';
 															{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 												</div>
@@ -245,9 +278,11 @@ import { Subscription } from 'rxjs';
 																{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 															</div>
 															<div class="summary-text-data">
-																<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
+																<ul class="m-0">
+																	<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
 															</div>
 														</div>
 													</ng-container>
@@ -272,9 +307,11 @@ import { Subscription } from 'rxjs';
 														<div class="col-lg-4 col-md-12">
 															<div class="text-label d-block text-muted">Dog Validation Certificate</div>
 															<div class="summary-text-data">
-																<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
+																<ul class="m-0">
+																	<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
 															</div>
 														</div>
 													</ng-container>
@@ -325,9 +362,11 @@ import { Subscription } from 'rxjs';
 													<div class="col-lg-4 col-md-12" *ngIf="letterOfNoConflictAttachments">
 														<div class="text-label d-block text-muted">Letter of No Conflict</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of letterOfNoConflictAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 												</ng-container>
@@ -343,9 +382,11 @@ import { Subscription } from 'rxjs';
 												<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
 													<div class="text-label d-block text-muted">Mental Health Condition Form</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of mentalHealthConditionAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 											</div>
@@ -370,9 +411,11 @@ import { Subscription } from 'rxjs';
 													<div class="col-12">
 														<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 												</div>
@@ -467,9 +510,11 @@ import { Subscription } from 'rxjs';
 															</span>
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of citizenshipAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -478,18 +523,22 @@ import { Subscription } from 'rxjs';
 															{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
 													<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
 														<div class="text-label d-block text-muted">Photograph of Yourself</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
