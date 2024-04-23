@@ -476,7 +476,7 @@ internal class SecurityWorkerAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
         }
 
-        if (request.IsPoliceOrPeaceOfficer == true)
+        if (request.IsPoliceOrPeaceOfficer == true && request.IsAuthenticated == false)
         {
             if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) &&
                 !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
@@ -486,6 +486,7 @@ internal class SecurityWorkerAppManager :
         }
 
         if (request.HasNewMentalHealthCondition == true &&
+            request.IsAuthenticated == false &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
