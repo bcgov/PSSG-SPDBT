@@ -28,7 +28,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								</p>
 								<p>
 									These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of
-									British Columbia, represented by the Minister of Public Safety and SolicitorGeneral (the "Province")
+									British Columbia, represented by the Minister of Public Safety and Solicitor General (the "Province")
 									and they govern your use of the Site and, where applicable, any associated service ("Associated
 									Service" and, together with the Site, the "Services"). By clicking the box to indicate that you accept
 									these Terms of Use, and in consideration of your use of the Services, you agree, to the terms and
@@ -45,9 +45,9 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									<strong class="terms-subtitle">Disclaimer:</strong>
 									<li>
 										Reasonable efforts have been made to provide accurate, complete and timely information regarding the
-										Services and the Site in general. However, you are encouraged to refer to the Criminal Records
-										Review Act, any related policy and other official information materials before submitting an online
-										request for a criminal record check.
+										Services and the Site in general. However, you are encouraged to refer to the
+										<i>Criminal Records Review Act</i>, any related Regulations and other official information materials
+										before submitting an online request for a criminal record check.
 									</li>
 									<li>
 										THE SERVICES ARE PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND INCLUDING WARRANTY OF FITNESS FOR A
