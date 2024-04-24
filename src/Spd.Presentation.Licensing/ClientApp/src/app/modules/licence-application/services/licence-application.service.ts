@@ -460,13 +460,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-
-		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			body,
-		});
+		return this.saveUserProfile();
 	}
 
 	/**

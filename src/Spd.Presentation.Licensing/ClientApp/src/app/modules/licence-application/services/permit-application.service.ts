@@ -109,6 +109,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		mailingAddress: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
 		profileConfirmationData: this.profileConfirmationFormGroup,
+
+		policeBackgroundData: this.policeBackgroundFormGroup, // placeholder to store current values for the user - not displayed
+		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup, // placeholder to store current values for the user - not displayed
 	});
 
 	permitModelChangedSubscription!: Subscription;
@@ -388,13 +391,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
-		const licenceModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-
-		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			body,
-		});
+		return this.saveUserProfile();
 	}
 
 	/**
@@ -509,8 +506,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(permitModelFormValue);
+		const existingDocumentIds = this.getProfileDocsToSaveKeep(permitModelFormValue);
+
+		body.previousDocumentIds = [...existingDocumentIds];
 
 		console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
+		console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
 		console.debug('[saveUserProfile] getProfileSaveBody', body);
 
 		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
@@ -1066,6 +1067,43 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			criminalChargeDescription: '',
 		};
 
+		const policeBackgroundDataAttachments: Array<File> = [];
+		const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+		profile.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.MentalHealthCondition: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					mentalHealthConditionsDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					policeBackgroundDataAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		let policeBackgroundData = {};
+		let mentalHealthConditionsData = {};
+
+		if ('isPoliceOrPeaceOfficer' in profile && 'policeOfficerRoleCode' in profile && 'otherOfficerRole' in profile) {
+			policeBackgroundData = {
+				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profile.isPoliceOrPeaceOfficer),
+				policeOfficerRoleCode: profile.policeOfficerRoleCode,
+				otherOfficerRole: profile.otherOfficerRole,
+				attachments: policeBackgroundDataAttachments,
+			};
+		}
+
+		if ('isTreatedForMHC' in profile) {
+			mentalHealthConditionsData = {
+				isTreatedForMHC: this.utilService.booleanToBooleanType(profile.isTreatedForMHC),
+				attachments: mentalHealthConditionsDataAttachments,
+			};
+		}
+
 		this.permitModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
@@ -1083,6 +1121,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					aliases: [],
 				},
 				criminalHistoryData,
+				policeBackgroundData,
+				mentalHealthConditionsData,
 			},
 			{
 				emitEvent: false,
