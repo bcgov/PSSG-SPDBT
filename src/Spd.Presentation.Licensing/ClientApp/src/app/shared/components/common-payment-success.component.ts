@@ -101,7 +101,7 @@ import { CommonApplicationService } from '@app/modules/licence-application/servi
 						<div class="payment__text">{{ payment?.transAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
-						<div class="d-block payment__text-label text-md-end">Case ID</div>
+						<div class="d-block payment__text-label text-md-end">Case Number</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">{{ payment?.caseNumber }}</div>
