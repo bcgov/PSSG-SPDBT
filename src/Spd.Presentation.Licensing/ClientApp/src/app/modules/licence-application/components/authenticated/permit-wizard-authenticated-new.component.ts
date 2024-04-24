@@ -225,7 +225,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onSaveAndExit() {
-		if (!this.permitApplicationService.isAutoSave()) {
+		if (!this.permitApplicationService.isSaveAndExit()) {
 			return;
 		}
 
@@ -233,7 +233,10 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			next: (_resp: any) => {
 				this.permitApplicationService.hasValueChanged = false;
 
-				this.hotToastService.success('Licence information has been saved');
+				this.hotToastService.success(
+					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
+				);
+
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {

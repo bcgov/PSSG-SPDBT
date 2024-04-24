@@ -31,6 +31,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
 		this.nextStepperStep.emit(true);
 	}
 
