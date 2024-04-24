@@ -1,18 +1,45 @@
 import { Injectable } from '@angular/core';
-import { ApplicantLoginResponse } from '@app/api/models';
+import { MatDialog } from '@angular/material/dialog';
+import { BizListResponse, BizUserLoginResponse } from '@app/api/models';
+import {
+	BizSelectionDialogData,
+	BizSelectionModalComponent,
+} from '@app/shared/components/biz-selection-modal.component';
 import { lastValueFrom } from 'rxjs';
 import { LoginService } from 'src/app/api/services';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBceidService {
-	bceidUserProfile: ApplicantLoginResponse | null = null;
+	bceidUserProfile: BizUserLoginResponse | null = null;
 
-	constructor(private loginService: LoginService) {}
+	constructor(private loginService: LoginService, private dialog: MatDialog) {}
 
 	async whoAmIAsync(): Promise<boolean> {
 		this.clearUserData();
 
-		const resp: ApplicantLoginResponse = await lastValueFrom(this.loginService.apiApplicantLoginGet());
+		const bizsList: Array<BizListResponse> = await lastValueFrom(this.loginService.apiBizsGet());
+
+		if (bizsList.length === 0) {
+			return await this.setBizProfile(null);
+		} else if (bizsList.length === 1) {
+			return await this.setBizProfile(bizsList[0].bizId!);
+		} else {
+			const biz = await this.bizSelectionAsync(bizsList);
+			return await this.setBizProfile(biz.bizId ?? null);
+		}
+	}
+
+	public clearUserData(): void {
+		this.bceidUserProfile = null;
+	}
+
+	//----------------------------------------------------------
+	// *
+	// * get the biz profile
+	private async setBizProfile(bizId: string | null): Promise<boolean> {
+		const resp: BizUserLoginResponse = await lastValueFrom(
+			this.loginService.apiBizBizIdLoginGet({ bizId: bizId ?? '' }) // TODO remove when nulls allowed
+		);
 		if (resp) {
 			this.bceidUserProfile = resp;
 			return Promise.resolve(true);
@@ -21,7 +48,21 @@ export class AuthUserBceidService {
 		return Promise.resolve(false);
 	}
 
-	public clearUserData(): void {
-		this.bceidUserProfile = null;
+	//----------------------------------------------------------
+	// *
+	// * let the user pick the biz to use
+	private async bizSelectionAsync(bizsList: Array<BizListResponse>): Promise<BizListResponse> {
+		const dialogOptions: BizSelectionDialogData = {
+			bizsList: bizsList,
+		};
+
+		return lastValueFrom(
+			this.dialog
+				.open(BizSelectionModalComponent, {
+					width: '500px',
+					data: dialogOptions,
+				})
+				.afterClosed()
+		);
 	}
 }
