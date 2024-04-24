@@ -48,6 +48,8 @@ public record BizListResponse
 {
     public Guid BizId { get; set; } //which is accountid in account
     public string? BizLegalName { get; set; }
+    public string? BizName { get; set; }
+    public Guid? BizGuid { get; set; }
 }
 
 public record BizProfileResponse : BizInfo
