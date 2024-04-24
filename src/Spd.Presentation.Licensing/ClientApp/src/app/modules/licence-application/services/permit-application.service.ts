@@ -312,14 +312,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * Determine if the Save & Exit process can occur
 	 * @returns
 	 */
-	isAutoSave(): boolean {
+	isSaveAndExit(): boolean {
 		if (
 			!this.authenticationService.isLoggedIn() ||
 			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
 		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (!this.isSaveAndExit()) {
 			return false;
 		}
 
