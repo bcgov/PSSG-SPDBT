@@ -8,4 +8,6 @@ internal static class Constants
     internal const int MaximumNumberOfUserEnteredAliases = 10;
     internal const int MaximumNumberOfBrandingDocuments = 10;
     internal const int MaximumNumberOfControllingMembers = 20;
+    internal const int MaximumNumberOfEmployees = 20;
+    internal const string EmailRegex = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
 }
