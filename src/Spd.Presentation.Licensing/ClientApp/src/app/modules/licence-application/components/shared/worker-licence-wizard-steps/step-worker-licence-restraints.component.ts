@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -13,13 +13,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
-				<app-step-title title="Do you want to request authorization to use restraints?"></app-step-title>
+				<app-step-title
+					title="Do you want to request authorization to use restraints?"
+					[subtitle]="subtitle"
+				></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -97,7 +94,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class StepWorkerLicenceRestraintsComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChildStepperStepComponent {
+	subtitle = '';
+
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 
@@ -108,6 +107,10 @@ export class StepWorkerLicenceRestraintsComponent implements LicenceChildStepper
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
+
+	ngOnInit(): void {
+		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+	}
 
 	onFileUploaded(file: File): void {
 		this.licenceApplicationService.hasValueChanged = true;

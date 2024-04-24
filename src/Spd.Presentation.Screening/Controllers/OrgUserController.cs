@@ -37,6 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="orgUserInvitationRequest">which include InviteHashCode</param>
         /// <returns></returns>
         [Route("api/user/invitation")]
+        [Authorize(Policy = "OnlyBCeID")]
         [HttpPost]
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {
@@ -119,6 +120,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/add-bceid-primary-users/{orgId}")]
         [HttpGet]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<OrgUserResponse> AddBceidPrimaryUser([FromRoute] Guid orgId)
         {
             BceidIdentityInfo idInfo = _currentUser.GetBceidUserIdentityInfo();

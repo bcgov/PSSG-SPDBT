@@ -34,6 +34,7 @@ namespace Spd.Resource.Repository.Org
             return cmd switch
             {
                 OrgUpdateCmd c => await OrgUpdateAsync(c, ct),
+                OrgGuidUpdateCmd c => await OrgGuidUpdateAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -69,6 +70,24 @@ namespace Spd.Resource.Repository.Org
             _dynaContext.UpdateObject(org);
             await _dynaContext.SaveChangesAsync(ct);
 
+            return new OrgManageResult(_mapper.Map<OrgResult>(org));
+        }
+
+        private async Task<OrgManageResult?> OrgGuidUpdateAsync(OrgGuidUpdateCmd updateOrgGuidCmd, CancellationToken ct)
+        {
+            var org = await _dynaContext.GetOrgById(updateOrgGuidCmd.OrgId, ct);
+            if (org == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the organization");
+
+            if (updateOrgGuidCmd.OrgGuid != null)
+            {
+                if (org.spd_orgguid == null)
+                {
+                    org.spd_orgguid = updateOrgGuidCmd.OrgGuid;
+                    _dynaContext.UpdateObject(org);
+                    await _dynaContext.SaveChangesAsync(ct);
+                }
+            }
             return new OrgManageResult(_mapper.Map<OrgResult>(org));
         }
 

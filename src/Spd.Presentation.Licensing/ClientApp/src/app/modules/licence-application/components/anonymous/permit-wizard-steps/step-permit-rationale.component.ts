@@ -13,12 +13,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -37,9 +31,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								<mat-error *ngIf="form.get('rationale')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-					</div>
-					<div class="row mt-2">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto mt-2">
 							<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
 							<div class="my-2">
 								These could be a police report which refers to the safety concern, a protection order, a news article
@@ -109,7 +101,7 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 			}
 			default: {
 				this.title = `Confirm your rationale for requiring ${name}`;
-				this.subtitle = `If the purpose for requiring ${workerLicenceTypeDesc} has changed from your previous application, update your rationale`;
+				this.subtitle = `If the purpose for requiring your ${workerLicenceTypeDesc} has changed from your previous application, update your rationale`;
 				break;
 			}
 		}
@@ -144,11 +136,5 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }

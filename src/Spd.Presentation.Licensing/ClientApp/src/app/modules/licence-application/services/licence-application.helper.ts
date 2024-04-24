@@ -436,6 +436,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			hasNewCriminalRecordCharge = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
 		}
 
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
 			applicationTypeCode,
@@ -459,9 +461,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
 			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
-			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
-			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			isPoliceOrPeaceOfficer: isPoliceOrPeaceOfficer,
+			policeOfficerRoleCode: isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null,
+			otherOfficerRole: isPoliceOrPeaceOfficer ? policeBackgroundData.otherOfficerRole : null,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
 			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
@@ -793,8 +795,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
-		// documentInfos
-
 		return baseData;
 	}
 
@@ -803,13 +803,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
-
-		// documentKeyCodes xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-		// criminalChargeDescription
-		// originalApplicationId
-		// originalLicenceId
-		// previousDocumentIds
-		// reprint
 
 		return [baseData, baseData.documentInfos];
 	}

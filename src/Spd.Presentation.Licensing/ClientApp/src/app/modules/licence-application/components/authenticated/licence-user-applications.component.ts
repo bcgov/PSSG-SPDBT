@@ -7,6 +7,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	LicenceAppListResponse,
+	LicenceStatusCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -99,9 +100,9 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="caseNumber">
-										<mat-header-cell *matHeaderCellDef>Case Id</mat-header-cell>
+										<mat-header-cell *matHeaderCellDef>Case Number</mat-header-cell>
 										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Case Id:</span>
+											<span class="mobile-label">Case Number:</span>
 											{{ application.caseNumber }}
 										</mat-cell>
 									</ng-container>
@@ -165,7 +166,7 @@ import {
 												<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-3">
-												<div class="d-block text-muted mt-2 mt-lg-0">Case Id</div>
+												<div class="d-block text-muted mt-2 mt-lg-0">Case Number</div>
 												<div class="text-data">{{ appl.caseNumber }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
@@ -609,9 +610,13 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				});
 
 				// User Licences/Permits
-				const activeLicences = userLicencesList.filter((item: UserLicenceResponse) => !item.isExpired);
+				const activeLicences = userLicencesList.filter(
+					(item: UserLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+				);
 
-				this.expiredLicences = userLicencesList.filter((item: UserLicenceResponse) => item.isExpired);
+				this.expiredLicences = userLicencesList.filter(
+					(item: UserLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+				);
 
 				const renewals = activeLicences.filter((item: UserLicenceResponse) => item.isRenewalPeriod);
 				renewals.forEach((item: UserLicenceResponse) => {
@@ -634,7 +639,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				// User Licence/Permit Applications
 				this.applicationsDataSource = new MatTableDataSource(userApplicationsList ?? []);
 				this.applicationIsInProgress = !!userApplicationsList.find(
-					(item: UserApplicationResponse) => item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress
+					(item: UserApplicationResponse) =>
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingApplicant ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.UnderAssessment ||
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.VerifyIdentity
 				);
 
 				// Set flags that determine if NEW licences/permits can be created
@@ -744,7 +754,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						LicenceApplicationRoutes.pathPermitAuthenticated(
 							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
+								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -761,7 +776,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						LicenceApplicationRoutes.pathPermitAuthenticated(
 							LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 						),
-						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
+						{
+							state: {
+								workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
+								applicationTypeCode: ApplicationTypeCode.New,
+							},
+						}
 					);
 				}),
 				take(1)
@@ -770,21 +790,30 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onRequestReplacement(appl: UserLicenceResponse): void {
-		if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceApplicationService
-				.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-								LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-							),
-							{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
+		switch (appl.workerLicenceTypeCode) {
+			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				this.licenceApplicationService
+					.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+									LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+								),
+								{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				break;
+			}
+			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
+			case WorkerLicenceTypeCode.BodyArmourPermit: {
+				// There is no Replacement flow for Permit. Send the user to Update flow.
+				this.onUpdate(appl);
+				break;
+			}
 		}
 	}
 
@@ -827,6 +856,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								),
 								{
 									state: {
+										workerLicenceTypeCode: appl.serviceTypeCode,
 										applicationTypeCode: _resp.applicationTypeData.applicationTypeCode,
 									},
 								}
@@ -868,7 +898,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								LicenceApplicationRoutes.pathPermitAuthenticated(
 									LicenceApplicationRoutes.PERMIT_UPDATE_TERMS_AUTHENTICATED
 								),
-								{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+								{ state: { workerLicenceTypeCode: appl.workerLicenceTypeCode } }
 							);
 						}),
 						take(1)
@@ -907,7 +937,12 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								LicenceApplicationRoutes.pathPermitAuthenticated(
 									LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 								),
-								{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+								{
+									state: {
+										workerLicenceTypeCode: appl.workerLicenceTypeCode,
+										applicationTypeCode: ApplicationTypeCode.Renewal,
+									},
+								}
 							);
 						}),
 						take(1)

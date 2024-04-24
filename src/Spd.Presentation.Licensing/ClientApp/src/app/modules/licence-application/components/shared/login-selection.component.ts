@@ -7,7 +7,6 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { take, tap } from 'rxjs';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
@@ -195,7 +194,6 @@ export class LoginSelectionComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService,
-		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
 
@@ -204,17 +202,7 @@ export class LoginSelectionComponent implements OnInit {
 	}
 
 	async onRegisterWithBceid(): Promise<void> {
-		this.businessApplicationService // TODO hookup login with bceid
-			.createNewBusinessLicence()
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-				}),
-				take(1)
-			)
-			.subscribe();
-
-		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.USER_APPLICATIONS_BCEID));
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 	}
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
@@ -252,6 +240,7 @@ export class LoginSelectionComponent implements OnInit {
 					message:
 						'Somebody from our team will reach out to complete a video call with you to verify your identity before your application can be processed.',
 					actionText: 'Continue',
+					cancelText: 'Cancel',
 				};
 
 				this.dialog

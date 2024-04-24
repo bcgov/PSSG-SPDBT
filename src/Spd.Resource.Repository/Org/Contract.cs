@@ -11,6 +11,7 @@ namespace Spd.Resource.Repository.Org
     //command
     public abstract record OrgCmd;
     public record OrgUpdateCmd(Org Org) : OrgCmd;
+    public record OrgGuidUpdateCmd(Guid OrgId, string? OrgGuid) : OrgCmd;
     public record OrgManageResult(OrgResult Org);
 
     //query

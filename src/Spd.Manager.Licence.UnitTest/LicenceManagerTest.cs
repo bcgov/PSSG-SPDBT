@@ -156,4 +156,42 @@ public class LicenceManagerTest
 
         await Assert.ThrowsAsync<ApiException>(act);
     }
+
+    [Fact]
+    public async void Handle_ApplicantLicenceListQuery_Return_LicenceResponse_List()
+    {
+        Guid applicantId = Guid.NewGuid();
+
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+            .With(r => r.LicenceHolderId, applicantId)
+            .Create();
+
+        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == applicantId && q.IncludeInactive == true), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { licenceResp }
+            });
+
+        List<LicenceResponse> licenceResponses = new List<LicenceResponse>()
+        {
+            new LicenceResponse()
+            {
+                LicenceId = licenceResp.LicenceId,
+                LicenceAppId = licenceResp.LicenceAppId,
+                LicenceNumber = licenceResp.LicenceNumber,
+                LicenceHolderId = licenceResp.LicenceHolderId,
+                LicenceStatusCode = Enum.Parse<LicenceStatusCode>(licenceResp.LicenceStatusCode.ToString())
+            }
+        };
+
+        mockMapper.Setup(m => m.Map<IEnumerable<LicenceResponse>>(It.Is<IEnumerable<LicenceResp>>(r => r.Any(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired))))
+            .Returns(licenceResponses);
+
+        ApplicantLicenceListQuery request = new ApplicantLicenceListQuery(applicantId);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.IsType<List<LicenceResponse>>(result);
+        Assert.Equal(applicantId, result.First().LicenceHolderId);
+    }
 }

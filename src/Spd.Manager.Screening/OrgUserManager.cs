@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Registration;
@@ -174,6 +175,9 @@ namespace Spd.Manager.Screening
             {
                 identityId = idResult.Items.First().Id;
             }
+
+            //update org with orgGuid
+            await _orgRepository.ManageOrgAsync(new OrgGuidUpdateCmd(request.OrganizationId, request.IdentityInfo.BizGuid.ToString()), ct);
 
             OrgUsersResult orgUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(request.OrganizationId, null), ct);
             if (orgUser != null && orgUser.UserResults.Any(u => u.UserGuid == request.IdentityInfo.UserGuid))

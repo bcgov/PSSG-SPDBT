@@ -13,12 +13,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.New">
-					<app-common-update-renewal-alert
-						[applicationTypeCode]="applicationTypeCode"
-					></app-common-update-renewal-alert>
-				</ng-container>
-
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
@@ -98,14 +92,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							</section>
 
 							<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Replacement">
-								<app-alert type="info" icon="" [showBorder]="false">
-									<div class="mb-2">COLLECTION NOTICE</div>
-									All information regarding this application is collected under the <i>Security Services Act</i> and its
-									Regulation and will be used for that purpose. The use of this information will comply with the
-									<i>Freedom of Information</i> and <i>Privacy Act</i> and the federal <i>Privacy Act</i>. If you have
-									any questions regarding the collection or use of this information, please contact
-									<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
-								</app-alert>
+								<app-collection-notice></app-collection-notice>
 
 								<div formGroupName="captchaFormGroup" *ngIf="displayCaptcha.value">
 									<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
@@ -139,12 +126,6 @@ export class StepWorkerLicenceMailingAddressAnonymousComponent implements OnInit
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 	applicationTypeCodes = ApplicationTypeCode;
 
-	readonly title_new = 'Provide your mailing address';
-	readonly title_subtitle_new =
-		'Provide your mailing address, if different from your residential address. This cannot be a company address.';
-	readonly title_replacement = 'Review your mailing address';
-	readonly title_subtitle_replacement = 'Ensure your mailing address is correct before submitting your application';
-
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
@@ -155,17 +136,24 @@ export class StepWorkerLicenceMailingAddressAnonymousComponent implements OnInit
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
-				this.title = this.title_replacement;
-				this.subtitle = this.title_subtitle_replacement;
+				this.title = 'Review your mailing address';
+				this.subtitle = 'Ensure your mailing address is correct before submitting your application';
 
 				this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 					this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
 				});
 				break;
 			}
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Update: {
+				this.title = 'Confirm your mailing address';
+				this.subtitle = 'Ensure your mailing address is correct before submitting your application';
+				break;
+			}
 			default: {
-				this.title = this.title_new;
-				this.subtitle = this.title_subtitle_new;
+				this.title = 'Provide your mailing address';
+				this.subtitle =
+					'Provide your mailing address, if different from your residential address. This cannot be a company address.';
 				break;
 			}
 		}

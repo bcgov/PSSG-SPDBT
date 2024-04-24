@@ -15,14 +15,10 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 
 				<div [formGroup]="form" class="row">
 					<ng-container *ngIf="!originalPhotoOfYourselfExpired">
-						<div class="row mb-3" *ngIf="photographOfYourself">
-							<div class="col-12 text-center">
-								<div class="fs-5 mb-2">Current licence photo:</div>
-								<img
-									[src]="photographOfYourself"
-									alt="Photograph of yourself"
-									style="max-height: 200px;max-width: 200px;"
-								/>
+						<div class="d-flex justify-content-center" *ngIf="photographOfYourself">
+							<div class="photo-of-yourself">
+								<div class="fs-5">Current licence photo</div>
+								<img class="photo-of-yourself__item" [src]="photographOfYourself" alt="Photograph of yourself" />
 							</div>
 						</div>
 

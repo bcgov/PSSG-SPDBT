@@ -7,7 +7,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
-import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
@@ -209,8 +208,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onSaveAndExit() {
-		if (!this.authenticationService.isLoggedIn()) {
-			this.exitAndLoseChanges();
+		if (!this.licenceApplicationService.isAutoSave()) {
 			return;
 		}
 
@@ -228,25 +226,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				}
 			},
 		});
-	}
-
-	private exitAndLoseChanges() {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Are you sure you want to leave this application? All of your data will be lost.',
-			actionText: 'Yes',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigate([AppRoutes.LANDING]);
-				}
-			});
 	}
 
 	onGoToReview() {
@@ -348,7 +327,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	private payNow(licenceAppId: string): void {
 		this.commonApplicationService.payNowAuthenticated(
 			licenceAppId,
-			'Payment for New Security Worker Licence Application'
+			'Payment for new Security Worker Licence application'
 		);
 	}
 }

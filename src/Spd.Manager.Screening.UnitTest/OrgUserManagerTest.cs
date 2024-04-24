@@ -1,10 +1,12 @@
 using AutoFixture;
 using AutoMapper;
 using Moq;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Screening.UnitTest;
 
@@ -52,6 +54,10 @@ public class OrgUserManagerTest
             .Returns(fixture.Create<User>());
         mockMapper.Setup(m => m.Map<OrgUserResponse>(It.IsAny<UserResult>()))
             .Returns(fixture.Create<OrgUserResponse>());
+        mockOrgRepo.Setup(org => org.ManageOrgAsync(
+            It.IsAny<OrgGuidUpdateCmd>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fixture.Create<OrgManageResult>());
         var bceid = fixture.Build<BceidIdentityInfo>()
             .With(b => b.UserGuid, userGuid)
             .With(b => b.BizGuid, orgGuid)
@@ -80,6 +86,10 @@ public class OrgUserManagerTest
                 It.IsAny<CreateIdentityCmd>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(fixture.Create<IdentityCmdResult>());
+        mockOrgRepo.Setup(org => org.ManageOrgAsync(
+            It.IsAny<OrgGuidUpdateCmd>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fixture.Create<OrgManageResult>());
         mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(
                 It.IsAny<OrgUsersSearch>(),
                 It.IsAny<CancellationToken>()))
@@ -135,7 +145,7 @@ public class OrgUserManagerTest
         Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
 
         //Assert
-        await Assert.ThrowsAsync<ArgumentException>(act);
+        await Assert.ThrowsAsync<ApiException>(act);
     }
 
     [Fact]
@@ -169,7 +179,7 @@ public class OrgUserManagerTest
         Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
 
         //Assert
-        await Assert.ThrowsAsync<ArgumentException>(act);
+        await Assert.ThrowsAsync<ApiException>(act);
     }
 
 }

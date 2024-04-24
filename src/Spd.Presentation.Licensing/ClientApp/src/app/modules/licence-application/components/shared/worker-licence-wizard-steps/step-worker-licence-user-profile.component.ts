@@ -85,14 +85,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 						</section>
 
 						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false">
-								<div class="mb-2">COLLECTION NOTICE</div>
-								All information regarding this application is collected under the <i>Security Services Act</i> and its
-								Regulation and will be used for that purpose. The use of this information will comply with the
-								<i>Freedom of Information</i> and <i>Privacy Act</i> and the federal <i>Privacy Act</i>. If you have any
-								questions regarding the collection or use of this information, please contact
-								<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
-							</app-alert>
+							<app-collection-notice></app-collection-notice>
 						</div>
 					</div>
 				</div>
@@ -107,7 +100,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 			</div>
 			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">
-					Save & Continue to Application
+					{{ saveAndContinueLabel }}
 				</button>
 			</div>
 		</div>
@@ -116,6 +109,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 })
 export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	alertText = '';
+	saveAndContinueLabel = 'Save & Continue to Application';
 
 	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -152,17 +146,20 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				this.alertText = 'Make sure your address information is up-to-date before replacing your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Replacement';
 				this.showConfirmation = true;
 				this.isReadonlyPersonalInfo = true;
 				break;
 			}
 			case ApplicationTypeCode.Renewal: {
 				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Renewal';
 				this.showConfirmation = true;
 				break;
 			}
 			case ApplicationTypeCode.Update: {
 				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Update';
 				this.showConfirmation = true;
 				break;
 			}
@@ -222,6 +219,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 
 		if (this.applicationTypeCode) {
 			this.licenceApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+			return;
 		}
 	}
 
