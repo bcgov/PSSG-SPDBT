@@ -2,11 +2,12 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
-using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.BCeIDWS;
@@ -65,7 +66,7 @@ namespace Spd.Manager.Screening
             var orgRegisters = await _orgRegistrationRepository.Query(new OrgRegistrationQuery(null, orgGuid, IncludeInactive: true), ct);
             foreach (var orgRegister in orgRegisters.OrgRegistrationResults)
             {
-                UserInfo ui = new UserInfo();
+                UserInfo ui = new();
                 ui.OrgRegistrationStatusCode = orgRegister?.OrgRegistrationStatusStr switch
                 {
                     "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
@@ -93,7 +94,7 @@ namespace Spd.Manager.Screening
                 ct);
             foreach (OrgResult org in orgResult.OrgResults)
             {
-                UserInfo ui = new UserInfo();
+                UserInfo ui = new();
                 var orgUsers = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(org.Id), ct);
                 var u = orgUsers.UserResults.FirstOrDefault(u => u.UserGuid == userGuid && u.IsActive);
                 if (u != null)
@@ -108,7 +109,7 @@ namespace Spd.Manager.Screening
 
             if (!orgRegisters.OrgRegistrationResults.Any() && !orgResult.OrgResults.Any()) //not found in org registration and org
             {
-                UserInfo ui = new UserInfo();
+                UserInfo ui = new();
                 ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
                 userInfos.Add(ui);
             }
@@ -195,7 +196,7 @@ namespace Spd.Manager.Screening
 
             if (cmd.IdirUserIdentity.Email != null)
             {
-                var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
+                var existingUser = await _portalUserRepository.QueryAsync(
                     new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
 
@@ -203,20 +204,21 @@ namespace Spd.Manager.Screening
 
                 if (result == null)
                 {
-                    CreatePortalUserCmd createUserCmd = new CreatePortalUserCmd()
+                    CreatePortalUserCmd createUserCmd = new()
                     {
                         OrgId = orgId,
                         EmailAddress = cmd.IdirUserIdentity.Email,
                         FirstName = cmd.IdirUserIdentity.FirstName,
                         LastName = cmd.IdirUserIdentity.LastName,
                         IdentityId = identityId,
+                        PortalUserServiceCategory = PortalUserServiceCategoryEnum.Screening
                     };
                     result = await _portalUserRepository.ManageAsync(createUserCmd, ct);
                 }
                 else
                 {
                     _logger.LogDebug($"userId = {result.Id}, username={result.LastName}, {result.FirstName}");
-                    UpdatePortalUserCmd updateUserCmd = new UpdatePortalUserCmd()
+                    UpdatePortalUserCmd updateUserCmd = new()
                     {
                         Id = result.Id,
                         OrgId = orgId,
@@ -249,7 +251,7 @@ namespace Spd.Manager.Screening
             Guid? identityId = identity?.Id;
             if (identity != null)
             {
-                var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
+                var existingUser = await _portalUserRepository.QueryAsync(
                     new PortalUserQry() { IdentityId = identityId, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
                 var result = existingUser.Items.FirstOrDefault();

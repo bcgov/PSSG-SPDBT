@@ -91,6 +91,7 @@ namespace Spd.Resource.Repository.User
             {
                 //check if current org already has the same user
                 spd_portaluser? dupUser = await _dynaContext.spd_portalusers
+                    .Where(u => u.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening || u.spd_servicecategory == null)
                     .Where(u => u._spd_identityid_value == identity.spd_identityid)
                     .Where(u => u.statecode == DynamicsConstants.StateCode_Active)
                     .Where(u => u._spd_organizationid_value == invite._spd_organizationid_value)
@@ -238,7 +239,8 @@ namespace Spd.Resource.Repository.User
             IQueryable<spd_portaluser> users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
                 .Expand(u => u.spd_IdentityId)
-                .Where(u => u.statecode == DynamicsConstants.StateCode_Active);
+                .Where(u => u.statecode == DynamicsConstants.StateCode_Active)
+                .Where(u => u.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening || u.spd_servicecategory == null);
 
             if (organizationId != null)
                 users = users.Where(u => u._spd_organizationid_value == organizationId);
@@ -285,6 +287,7 @@ namespace Spd.Resource.Repository.User
                     .Expand(m => m.spd_spd_role_spd_portaluser)
                     .Expand(m => m.spd_IdentityId)
                     .Where(a => a.spd_portaluserid == userId)
+                    .Where(u => u.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening || u.spd_servicecategory == null)
                     .FirstOrDefaultAsync(ct);
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
