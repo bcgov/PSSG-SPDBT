@@ -44,10 +44,6 @@ namespace Spd.Resource.Repository.User
         public bool IsActive { get; set; }
     };
 
-    public enum ContactRoleCode
-    {
-        Primary,
-        Contact
-    }
+
 
 }
