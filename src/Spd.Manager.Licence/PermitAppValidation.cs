@@ -70,8 +70,12 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
         RuleFor(r => r.LicenceTermCode).Must(t => t == LicenceTermCode.FiveYears)
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit);
         RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
-            .When(r => r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
+            .Must(r => r.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+            .When(r => r.IsCanadianResident != null && !r.IsCanadianResident.Value && r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
+            .WithMessage("Missing proven file because you are not a resident.");
+        RuleFor(r => r.DocumentInfos)
+            .Must(r => r.Any(f => LicenceAppDocumentManager.CanadianResidencyProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+            .When(r => r.IsCanadianResident != null && r.IsCanadianResident.Value)
             .WithMessage("Missing proven file because you are not canadian.");
         RuleFor(r => r.DocumentInfos)
            .Must(r => r.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
