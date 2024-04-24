@@ -37,6 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="orgUserInvitationRequest">which include InviteHashCode</param>
         /// <returns></returns>
         [Route("api/user/invitation")]
+        [Authorize(Policy = "OnlyBCeID")]
         [HttpPost]
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {

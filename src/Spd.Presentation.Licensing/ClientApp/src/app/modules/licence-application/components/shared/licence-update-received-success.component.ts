@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -44,7 +44,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 							<div class="payment__text">{{ 0 | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 						</div>
 						<div class="col-md-6 col-sm-12 mt-2">
-							<div class="d-block payment__text-label text-md-end">Case ID</div>
+							<div class="d-block payment__text-label text-md-end">Case Number</div>
 						</div>
 						<div class="col-md-6 col-sm-12 mt-md-2">
 							<div class="payment__text">{{ caseNumber }}</div>
@@ -81,7 +81,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 		`,
 	],
 })
-export class LicenceUpdateReceivedSuccessComponent {
+export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	licenceModelData: any = {};
 
 	constructor(
