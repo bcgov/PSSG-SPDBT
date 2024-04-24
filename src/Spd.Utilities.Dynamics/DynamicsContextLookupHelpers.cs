@@ -66,7 +66,10 @@ namespace Spd.Utilities.Dynamics
         {
             {"Contact", Guid.Parse("47ca4197-12ba-ed11-b83e-00505683fbf4")},
             {"Primary", Guid.Parse("99af5c0a-a1c2-ed11-b840-00505683fbf4")},
+            {"PrimaryBusinessManager", Guid.Parse("22b5624f-e38f-ee11-b849-00505683fbf4")},
+            {"BusinessManager", Guid.Parse("f32fcc57-e38f-ee11-b849-00505683fbf4")}
         }.ToImmutableDictionary();
+
         public static spd_role? LookupRole(this DynamicsContext context, string key)
         {
             var keyExisted = RoleGuidDictionary.TryGetValue(key, out Guid guid);
@@ -225,11 +228,11 @@ namespace Spd.Utilities.Dynamics
             {"SecurityAlarmSales", Guid.Parse("4df0a63c-3a62-ee11-b843-005056830319")},
             {"ClosedCircuitTelevisionInstaller", Guid.Parse("4ff0a63c-3a62-ee11-b843-005056830319")},
             {"LocksmithUnderSupervision", Guid.Parse("51f0a63c-3a62-ee11-b843-005056830319")},
-            {"Locksmith", Guid.Parse("53f0a63c-3a62-ee11-b843-005056830319")}, 
+            {"Locksmith", Guid.Parse("53f0a63c-3a62-ee11-b843-005056830319")},
             {"PrivateInvestigatorUnderSupervision", Guid.Parse("55f0a63c-3a62-ee11-b843-005056830319")},
             {"PrivateInvestigator", Guid.Parse("57f0a63c-3a62-ee11-b843-005056830319")},
             {"FireInvestigator", Guid.Parse("59f0a63c-3a62-ee11-b843-005056830319")},
-            {"SecurityConsultant", Guid.Parse("5bf0a63c-3a62-ee11-b843-005056830319")}, 
+            {"SecurityConsultant", Guid.Parse("5bf0a63c-3a62-ee11-b843-005056830319")},
             {"SecurityGuardUnderSupervision", Guid.Parse("5df0a63c-3a62-ee11-b843-005056830319")},
             {"SecurityGuard", Guid.Parse("5ff0a63c-3a62-ee11-b843-005056830319")},
             {"BodyArmourSales", Guid.Parse("61f0a63c-3a62-ee11-b843-005056830319")},
@@ -328,7 +331,7 @@ namespace Spd.Utilities.Dynamics
         {
             try
             {
-                return await context.spd_payments.Where(p=>p.spd_paymentid == paymentId).SingleOrDefaultAsync(ct);
+                return await context.spd_payments.Where(p => p.spd_paymentid == paymentId).SingleOrDefaultAsync(ct);
             }
             catch (DataServiceQueryException ex)
             {

@@ -11,7 +11,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
-					title="Review updated name"
+					title="Review your updated name"
 					subtitle="Your permit will be updated with your new name"
 				></app-step-title>
 

@@ -371,4 +371,10 @@ namespace Spd.Utilities.Dynamics
         StudyPermit = 100000001,
         WorkPermit = 100000002
     }
+
+    public enum PortalUserServiceCategoryOptionSet
+    {
+        Screening = 100000000,
+        Licensing = 100000001
+    }
 }

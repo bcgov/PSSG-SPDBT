@@ -99,9 +99,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 													<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
@@ -109,12 +111,20 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-															<div *ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 													<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
@@ -122,9 +132,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categoryLocksmithAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categoryLocksmithAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -135,13 +147,20 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 														</div>
 														<div class="summary-text-data">
 															<div class="summary-text-data">
-																<div *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
-
-																<div *ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
+																<ul class="m-0">
+																	<ng-container
+																		*ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index"
+																	>
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
+																<ul class="m-0">
+																	<ng-container
+																		*ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index"
+																	>
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
 															</div>
 														</div>
 													</div>
@@ -154,14 +173,16 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															Documents
 														</div>
 														<div class="summary-text-data">
-															<div
-																*ngFor="
-																	let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
-																	let i = index
-																"
-															>
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="
+																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
+																		let i = index
+																	"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -171,9 +192,13 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -182,12 +207,18 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
-																{{ doc.name }}
-															</div>
-															<div *ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -196,9 +227,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 															{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 												</div>
@@ -237,9 +270,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 																{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 															</div>
 															<div class="summary-text-data">
-																<div *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
+																<ul class="m-0">
+																	<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
 															</div>
 														</div>
 													</ng-container>
@@ -264,9 +299,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 														<div class="col-lg-4 col-md-12">
 															<div class="text-label d-block text-muted">Dog Validation Certificate</div>
 															<div class="summary-text-data">
-																<div *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																	{{ doc.name }}
-																</div>
+																<ul class="m-0">
+																	<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
 															</div>
 														</div>
 													</ng-container>
@@ -310,9 +347,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 														</span>
 													</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of citizenshipAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
@@ -320,9 +359,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 													</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 												<div class="col-lg-6 col-md-12">
@@ -332,17 +373,21 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 												<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
 													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 												<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
 													<div class="text-label d-block text-muted">Photograph of Yourself</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 											</div>

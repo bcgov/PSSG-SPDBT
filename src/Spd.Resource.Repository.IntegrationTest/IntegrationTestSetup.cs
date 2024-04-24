@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.PortalUser;
 using Spd.Utilities.Dynamics;
 using System.Reflection;
 
@@ -41,8 +43,10 @@ public class IntegrationTestSetup
         serviceCollection.AddDistributedMemoryCache();
         serviceCollection.AddTransient<IContactRepository, ContactRepository>();
         serviceCollection.AddTransient<IAliasRepository, AliasRepository>();
+        serviceCollection.AddTransient<IBizRepository, BizRepository>();
         serviceCollection.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
         serviceCollection.AddTransient<IOrgRepository, OrgRepository>();
+        serviceCollection.AddTransient<IPortalUserRepository, PortalUserRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }

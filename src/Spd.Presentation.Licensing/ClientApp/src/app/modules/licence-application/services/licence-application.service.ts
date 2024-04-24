@@ -97,6 +97,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationTypeData: this.applicationTypeFormGroup,
 		soleProprietorData: this.soleProprietorFormGroup,
 		licenceTermData: this.licenceTermFormGroup,
+
 		restraintsAuthorizationData: this.restraintsAuthorizationFormGroup,
 		dogsAuthorizationData: this.dogsAuthorizationFormGroup,
 		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
@@ -116,6 +117,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		categorySecurityAlarmSalesFormGroup: this.categorySecurityAlarmSalesFormGroup,
 		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
 		categorySecurityGuardSupFormGroup: this.categorySecurityGuardSupFormGroup,
+
 		policeBackgroundData: this.policeBackgroundFormGroup,
 		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
 		criminalHistoryData: this.criminalHistoryFormGroup,

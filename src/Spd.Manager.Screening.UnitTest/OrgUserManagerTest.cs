@@ -1,6 +1,7 @@
 using AutoFixture;
 using AutoMapper;
 using Moq;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.User;

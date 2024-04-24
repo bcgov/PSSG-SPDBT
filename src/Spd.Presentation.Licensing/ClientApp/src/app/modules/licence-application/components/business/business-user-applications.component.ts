@@ -7,6 +7,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	LicenceAppListResponse,
+	LicenceStatusCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -102,9 +103,9 @@ import { take, tap } from 'rxjs';
 									</ng-container>
 
 									<ng-container matColumnDef="caseNumber">
-										<mat-header-cell *matHeaderCellDef>Case Id</mat-header-cell>
+										<mat-header-cell *matHeaderCellDef>Case Number</mat-header-cell>
 										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Case Id:</span>
+											<span class="mobile-label">Case Number:</span>
 											{{ application.caseNumber }}
 										</mat-cell>
 									</ng-container>
@@ -176,7 +177,7 @@ import { take, tap } from 'rxjs';
 								<div class="col-lg-10">
 									<div class="row">
 										<div class="col-lg-6">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Id</div>
+											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
 											<div class="text-data">{{ appl.licenceNumber }}</div>
 										</div>
 										<div class="col-lg-3">
@@ -296,7 +297,7 @@ import { take, tap } from 'rxjs';
 								<div class="col-lg-9">
 									<div class="row">
 										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Id</div>
+											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
 											<div class="text-data">{{ appl.licenceNumber }}</div>
 										</div>
 										<div class="col-lg-3">
@@ -434,7 +435,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				isReplacementPeriod: true,
 				hasBcscNameChanged: false,
 				licenceReprintFee: null,
-				isExpired: false,
+				licenceStatusCode: LicenceStatusCode.Active,
 				dogAuthorization: null,
 				restraintAuthorization: null,
 			},

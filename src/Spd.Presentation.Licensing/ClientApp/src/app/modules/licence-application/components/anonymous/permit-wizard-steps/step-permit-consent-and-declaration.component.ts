@@ -23,7 +23,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 											<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 												I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal
 												record check, police information check and correctional service information check (Prescribed
-												Checks) on me pursuant to the <i>{{ collectionNoticeActName }}</i
+												Checks) on me pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
 												>.
 											</mat-checkbox>
 											<mat-error
@@ -76,7 +76,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 											<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 												I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal
 												record check, police information check and correctional service information check (Prescribed
-												Checks) on me pursuant to the <i>{{ collectionNoticeActName }}</i
+												Checks) on me pursuant to the <i>{{ collectionNoticeActNameWithAbbrev }}</i
 												>.
 											</mat-checkbox>
 											<mat-error
@@ -200,15 +200,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 							<div class="row">
 								<div class="col-12">
-									<app-alert type="info" icon="" [showBorder]="false">
-										<div class="mb-2">COLLECTION NOTICE</div>
-										All information regarding this application is collected under the
-										<i>{{ collectionNoticeActName }}</i> and its Regulation and will be used for that purpose. The use
-										of this information will comply with the <i>Freedom of Information</i> and <i>Privacy Act</i> and
-										the federal <i>Privacy Act</i>. If you have any questions regarding the collection or use of this
-										information, please contact
-										<a href="mailto:securitylicensing@gov.bc.ca">securitylicensing&#64;gov.bc.ca</a>
-									</app-alert>
+									<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
 								</div>
 							</div>
 						</div>
@@ -221,6 +213,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class StepPermitConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	collectionNoticeActName = '';
+	collectionNoticeActNameWithAbbrev = '';
 	check3Name = '';
 	check4Name = '';
 
@@ -239,11 +232,13 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		if (this.isArmouredVehiclePermit) {
-			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act (AVAMCCA)';
+			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act';
+			this.collectionNoticeActNameWithAbbrev = `${this.collectionNoticeActName} (AVAMCCA)`;
 			this.check3Name = 'operating an armoured vehicle';
 			this.check4Name = 'an armoured vehicle operator';
 		} else {
-			this.collectionNoticeActName = 'Body Armour Control Act (BACA)';
+			this.collectionNoticeActName = 'Body Armour Control Act';
+			this.collectionNoticeActNameWithAbbrev = `${this.collectionNoticeActName} (BACA)`;
 			this.check3Name = 'possessing body armour';
 			this.check4Name = 'a body armour permit holder';
 		}

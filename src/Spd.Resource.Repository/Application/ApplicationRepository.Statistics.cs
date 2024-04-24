@@ -15,7 +15,6 @@ internal partial class ApplicationRepository : IApplicationRepository
             if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
             if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
             if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
-            if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
             if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
             if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
             if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.Incomplete, organizationStatistics.Incomplete.Value);

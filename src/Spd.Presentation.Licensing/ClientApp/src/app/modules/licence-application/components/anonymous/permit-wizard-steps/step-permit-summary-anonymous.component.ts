@@ -90,24 +90,31 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													</div>
 												</div>
 											</ng-container>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading mt-4">Purpose and Rationale</div>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Purpose</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Reason to Require a Permit</div>
+													<div class="text-label d-block text-muted">{{ purposeLabel }}</div>
 													<div class="summary-text-data">
-														{{ reasonForRequirement }}
+														<ng-container *ngFor="let reason of purposeReasons; let i = index">
+															<li>{{ reason }}</li>
+														</ng-container>
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="isOtherReason">
+												<div class="col-12" *ngIf="isOtherReason">
 													<div class="text-label d-block text-muted">Other Reason</div>
 													<div class="summary-text-data">
 														{{ otherReason }}
 													</div>
 												</div>
+											</div>
+
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Rationale</div>
+											<div class="row mt-0">
 												<div class="col-12">
-													<div class="text-label d-block text-muted">Rationale</div>
+													<div class="text-label d-block text-muted">{{ rationaleLabel }}</div>
 													<div class="summary-text-data">
 														{{ rationale }}
 													</div>
@@ -115,9 +122,11 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="col-lg-6 col-md-12" *ngIf="isRationaleAttachments">
 													<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of rationaleAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of rationaleAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 											</div>
@@ -170,8 +179,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<div class="text-minor-heading">Business's Primary Address</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
@@ -247,8 +256,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 												<div class="text-minor-heading">Aliases</div>
 												<div class="row mt-0">
@@ -271,8 +280,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														</ng-container>
 													</div>
 												</div>
-												<mat-divider class="mt-3 mb-2"></mat-divider>
 
+												<mat-divider class="mt-3 mb-2"></mat-divider>
 												<div class="text-minor-heading">Citizenship</div>
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12">
@@ -296,9 +305,11 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 															</span>
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of attachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of attachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 
@@ -307,9 +318,11 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 															{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 														</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 												</div>
@@ -321,9 +334,11 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
 													<div class="text-label d-block text-muted">Photograph of Yourself</div>
 													<div class="summary-text-data">
-														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-															{{ doc.name }}
-														</div>
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 
@@ -742,7 +757,14 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.contactInformationData?.phoneNumber ?? '';
 	}
 
-	get reasonForRequirement(): string {
+	get purposeLabel(): string {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Reasons for Requiring an Armoured Vehicle';
+		} else {
+			return 'Reasons for Requiring Body Armour';
+		}
+	}
+	get purposeReasons(): Array<string> {
 		const reasonList = [];
 		this.showEmployerInformation = false;
 
@@ -821,7 +843,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 				reasonList.push(this.optionsPipe.transform(BodyArmourPermitReasonCode.Other, 'BodyArmourPermitReasonTypes'));
 			}
 		}
-		return reasonList.join(', ');
+		return reasonList;
 	}
 	get isOtherReason(): boolean {
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
@@ -836,6 +858,13 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.permitRequirementData.otherReason;
 	}
 
+	get rationaleLabel(): string {
+		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Rationale for Requiring an Armoured Vehicle';
+		} else {
+			return 'Rationale for Requiring Body Armour';
+		}
+	}
 	get rationale(): string {
 		return this.permitModelData.permitRationaleData?.rationale ?? '';
 	}

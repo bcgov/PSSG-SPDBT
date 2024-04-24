@@ -128,7 +128,7 @@ export class FileUploadHelper {
 		</button>
 
 		<ng-template #infoText>
-			<div class="mat-option-hint" *ngIf="accept">Accepted file formats: {{ accept }}</div>
+			<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
 			<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
 			<div class="mat-option-hint">Maximum number of files: {{ maxNumberOfFiles }}</div>
 		</ng-template>

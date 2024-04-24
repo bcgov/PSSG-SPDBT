@@ -366,20 +366,17 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
+		console.debug('[getSaveBodyBaseAnonymous] permitModelFormValue', permitModelFormValue);
+		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
+
 		return baseData;
 	}
 
 	getSaveBodyBaseAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, false);
-		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
-		//  TODO list differences:
-		// documentKeyCodes
-		// criminalChargeDescription
-		// originalApplicationId
-		// originalLicenceId
-		// previousDocumentIds
-		// reprint
+		console.debug('[getSaveBodyBaseAnonymous] permitModelFormValue', permitModelFormValue);
+		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		return baseData;
 	}

@@ -30,12 +30,14 @@ public record WorkerLicenceAppReplaceCommand(
 
 public record WorkerLicenceAppRenewCommand(
     WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
+    bool IsAuthenticated = false)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record WorkerLicenceAppUpdateCommand(
     WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
+    bool IsAuthenticated = false)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
@@ -95,7 +97,7 @@ public record WorkerLicenceCommandResponse : LicenceAppUpsertResponse
 
 #region anonymous user
 
-public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase //for anonymous user
+public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew

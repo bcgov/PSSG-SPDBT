@@ -9,6 +9,7 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	LicenceResponse,
+	LicenceStatusCode,
 	LicenceTermCode,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
@@ -47,10 +48,10 @@ export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLic
 	licenceHolderName?: null | string;
 	licenceExpiryDate?: string;
 	licenceExpiryNumberOfDays?: null | number;
+	licenceStatusCode?: LicenceStatusCode;
 	licenceId?: null | string;
 	licenceNumber?: null | string;
 	licenceReprintFee: null | number;
-	isExpired: boolean;
 	isRenewalPeriod: boolean;
 	isUpdatePeriod: boolean;
 	isReplacementPeriod: boolean;
@@ -213,7 +214,6 @@ export class CommonApplicationService {
 								const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
 								const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
 
-								licence.isExpired = false;
 								licence.isRenewalPeriod = false;
 								licence.isUpdatePeriod = false;
 								licence.isReplacementPeriod = false;
@@ -225,16 +225,15 @@ export class CommonApplicationService {
 								if (matchingLicence) {
 									licence.cardHolderName = matchingLicence.nameOnCard;
 									licence.licenceHolderName = matchingLicence.licenceHolderName;
+									licence.licenceStatusCode = matchingLicence.licenceStatusCode;
 									licence.licenceExpiryDate = matchingLicence.expiryDate;
 									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).diff(moment(), 'days') + 1;
 									licence.licenceId = matchingLicence.licenceId;
 									licence.licenceNumber = matchingLicence.licenceNumber;
 									licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
 
-									licence.isExpired = moment().isAfter(moment(licence.licenceExpiryDate));
-
 									if (
-										!licence.isExpired &&
+										licence.licenceStatusCode === LicenceStatusCode.Active &&
 										moment().isBefore(
 											moment(licence.licenceExpiryDate).subtract(licenceUpdatePeriodPreventionDays, 'days')
 										)

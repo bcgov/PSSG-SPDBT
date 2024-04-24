@@ -167,13 +167,13 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                WorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppRenewCommand command = new(jsonRequest, newDocInfos, true);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                WorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos);
+                WorkerLicenceAppUpdateCommand command = new(jsonRequest, newDocInfos, true);
                 response = await _mediator.Send(command, ct);
             }
 

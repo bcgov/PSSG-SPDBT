@@ -33,7 +33,7 @@ export class LicencePaymentCancelAnonymousComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowAnonymous(this.licenceAppId!, 'Payment for Application');
+		this.commonApplicationService.payNowAnonymous(this.licenceAppId!, 'Payment for Application/Licence');
 	}
 
 	onDownloadManualPaymentForm(): void {

@@ -22,7 +22,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				></app-step-title>
 
 				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row mt-0 mb-4">
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">
@@ -37,9 +37,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 							<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
 								<div class="text-label d-block text-muted">Photograph of Yourself</div>
 								<div class="summary-text-data">
-									<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-										{{ doc.name }}
-									</div>
+									<ul class="m-0">
+										<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+											<li>{{ doc.name }}</li>
+										</ng-container>
+									</ul>
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-12">

@@ -492,10 +492,15 @@ ngx-dropzone-remove-badge {
 
 .wizard-button-row {
 	margin-top: 1rem !important;
+	margin-left: 0.1rem !important;
+	margin-right: 0.1rem !important;
 }
 
 .outside-wizard-button-row {
-	margin: 1rem !important;
+	margin-top: 1rem !important;
+	margin-left: 0.1rem !important;
+	margin-right: 0.1rem !important;
+	margin-bottom: 1rem !important;
 }
 
 .login-selection-container {
@@ -561,11 +566,19 @@ ngx-dropzone-remove-badge {
 }
 
 .photo-of-yourself {
+	text-align: center !important;
 	border: 3px solid var(--color-grey-lighter);
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 	padding: 10px;
 
-	max-height: 250px;
-	max-width: 250px;
+	&__item {
+		padding: 10px;
+		max-height: 200px;
+		max-width: 200px;
+	}
+}
+
+.email-address-link {
+	word-break: break-word;
 }

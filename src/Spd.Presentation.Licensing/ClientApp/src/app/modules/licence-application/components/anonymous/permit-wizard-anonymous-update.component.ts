@@ -227,7 +227,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 			if (this.newLicenceCost > 0) {
 				this.stepReviewLicenceComponent?.onGoToLastStep();
 			} else {
-				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS));
 			}
 		} else {
 			this.permitApplicationService.submitPermitAnonymous().subscribe({
@@ -245,7 +245,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 					if (this.newLicenceCost > 0) {
 						this.stepReviewLicenceComponent?.onGoToLastStep();
 					} else {
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.UPDATE_SUCCESS));
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS));
 					}
 				},
 				error: (error: any) => {
@@ -270,6 +270,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Permit Update');
+		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Permit update');
 	}
 }

@@ -2,6 +2,7 @@
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ApplicationInvite;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Delegates;
@@ -52,6 +53,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IConfigRepository, ConfigRepository>();
             configurationServices.Services.AddTransient<IServiceTypeRepository, ServiceTypeRepository>();
             configurationServices.Services.AddTransient<IAliasRepository, AliasRepository>();
+            configurationServices.Services.AddTransient<IBizRepository, BizRepository>();
         }
     }
 }

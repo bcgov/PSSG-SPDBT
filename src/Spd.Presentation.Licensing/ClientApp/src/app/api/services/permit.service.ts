@@ -351,6 +351,77 @@ export class PermitService extends BaseService {
   }
 
   /**
+   * Path part for operation apiPermitApplicationsAuthenticatedSubmitPost
+   */
+  static readonly ApiPermitApplicationsAuthenticatedSubmitPostPath = '/api/permit-applications/authenticated/submit';
+
+  /**
+   * Submit Permit Application Json part for authenticated users, supports only: renewal, update and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiPermitApplicationsAuthenticatedSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiPermitApplicationsAuthenticatedSubmitPost$Response(params?: {
+
+    /**
+     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     */
+    body?: PermitAppSubmitRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsAuthenticatedSubmitPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PermitAppCommandResponse>;
+      })
+    );
+  }
+
+  /**
+   * Submit Permit Application Json part for authenticated users, supports only: renewal, update and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiPermitApplicationsAuthenticatedSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiPermitApplicationsAuthenticatedSubmitPost(params?: {
+
+    /**
+     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     */
+    body?: PermitAppSubmitRequest
+  },
+  context?: HttpContext
+
+): Observable<PermitAppCommandResponse> {
+
+    return this.apiPermitApplicationsAuthenticatedSubmitPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PermitAppCommandResponse>) => r.body as PermitAppCommandResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiPermitApplicationGet
    */
   static readonly ApiPermitApplicationGetPath = '/api/permit-application';

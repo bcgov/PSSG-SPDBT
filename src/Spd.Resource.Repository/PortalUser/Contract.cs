@@ -1,5 +1,3 @@
-using Amazon.S3.Model;
-
 namespace Spd.Resource.Repository.PortalUser
 {
     public interface IPortalUserRepository
@@ -17,9 +15,12 @@ namespace Spd.Resource.Repository.PortalUser
     {
         public Guid Id { get; set; }
         public Guid? OrganizationId { get; set; }
+        public Guid? IdentityId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool? IsPSA { get; set; }
+        public ContactRoleCode? ContactRoleCode { get; set; }
+        public bool? IsFirstTimeLogin { get; set; }
     }
 
     public record PortalUserQry
@@ -30,26 +31,26 @@ namespace Spd.Resource.Repository.PortalUser
         public Guid? IdentityId { get; set; }
         public string? UserEmail { get; set; }
         public bool IncludeInactive { get; set; } = false;
+        public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
     };
 
-
-    public abstract record PortalUserCmd 
+    public abstract record PortalUserCmd
     {
         public string? EmailAddress { get; set; }
         public Guid? IdentityId { get; set; }
-    };
-    public record UpdatePortalUserCmd : PortalUserCmd
-    {
-        public Guid Id { get; set; }
+        public ContactRoleCode? ContactRoleCode { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public Guid? OrgId { get; set; }
     };
+    public record UpdatePortalUserCmd : PortalUserCmd
+    {
+        public Guid Id { get; set; }
+        public DateTimeOffset? TermAgreeTime { get; set; }
+    };
     public record CreatePortalUserCmd : PortalUserCmd
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Guid OrgId { get; set; }
-    }
+        public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
+    };
 
 }
