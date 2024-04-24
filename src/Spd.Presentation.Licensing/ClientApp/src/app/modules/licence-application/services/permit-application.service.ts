@@ -1262,16 +1262,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		let photographOfYourselfLastUploadedDateTime = '';
 
 		resp.documentInfos?.forEach((doc: Document) => {
-			switch (
-				doc.licenceDocumentTypeCode // TODO verify permit auth licence doc types are correct here
-			) {
+			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.DriversLicenceAdditional:
 				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
-				case LicenceDocumentTypeCode.NonCanadianPassport: {
+				case LicenceDocumentTypeCode.PassportAdditional: {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					governmentIssuedAttachments.push(aFile);
 
@@ -1286,6 +1284,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				case LicenceDocumentTypeCode.CanadianCitizenship:
 				case LicenceDocumentTypeCode.DriversLicence: //PermitProofOfCitizenshipTypes
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId:
+				case LicenceDocumentTypeCode.NonCanadianPassport:
 				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument: //PermitProofOfResidenceStatusTypes
 				case LicenceDocumentTypeCode.PermanentResidentCard:
 				case LicenceDocumentTypeCode.RecordOfLandingDocument:
