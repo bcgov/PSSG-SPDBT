@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Spd.Manager.Shared;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceAppSubmitRequest>
@@ -127,15 +128,40 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .MaximumLength(75)
             .EmailAddress()
             .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
-        RuleFor(r => r.ControllerMemberInfo)
-            .NotEmpty()
-            .Must(r => r.Count() <= Constants.MaximumNumberOfControllingMembers)
+        RuleFor(r => r.SwlControllerMemberInfos)
             .ForEach(rule => rule
-                .Must(r => r.Name != null && r.Name.Length > 0)
-                .Must(r => r.SecurityWorkerLicenceNumber != null && r.SecurityWorkerLicenceNumber.Length > 0 && r.SecurityWorkerLicenceNumber.Length <= 10)
-                .Must(r => r.Status != null))
+                .Must(r => r.GivenName?.Length <= 40)
+                .Must(r => r.MiddleName1?.Length <= 40)
+                .Must(r => r.MiddleName2?.Length <= 40)
+                .Must(r => r.Surname != null && r.Surname.Length > 0))
+                    .WithMessage("Surname cannot be empty")
+            .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
+                r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
+        RuleFor(r => r.NonSwlControllerMemberInfos)
+            .ForEach(rule => rule
+                .Must(r => r.GivenName?.Length <= 40)
+                .Must(r => r.MiddleName1?.Length <= 40)
+                .Must(r => r.MiddleName2?.Length <= 40)
+                .Must(r => r.Surname != null && r.Surname.Length > 0)
+                    .WithMessage("Surname cannot be empty")
+                .Must(r => { Regex rgx = new(Constants.EmailRegex); return rgx.IsMatch(r.EmailAddress); }))
+                    .WithMessage("Email is not valid")
+            .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
+                r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
+        RuleFor(r => r)
+            .Must(r => (r.SwlControllerMemberInfos.Count() + r.NonSwlControllerMemberInfos.Count()) <= Constants.MaximumNumberOfControllingMembers)
             .WithMessage($"No more than {Constants.MaximumNumberOfControllingMembers} controller members are allowed")
             .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
                 r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
+        RuleFor(r => r.Employees)
+            .Must(r => r.Count() <= Constants.MaximumNumberOfEmployees)
+            .ForEach(rule => rule
+                .Must(r => r.GivenName?.Length <= 40)
+                .Must(r => r.MiddleName1?.Length <= 40)
+                .Must(r => r.MiddleName2?.Length <= 40)
+                .Must(r => r.Surname != null && r.Surname.Length > 0)
+                    .WithMessage("Surname cannot be empty"))
+                .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
+                    r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
     }
 }
