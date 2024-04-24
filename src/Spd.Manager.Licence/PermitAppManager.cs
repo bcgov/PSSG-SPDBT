@@ -256,7 +256,7 @@ internal class PermitAppManager :
 
         if (request.IsCanadianCitizen == false && request.IsCanadianResident == false)
         {
-            if (!fileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            if (!fileInfos.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)))
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian but you are not a resident in canada.");
             }
@@ -372,8 +372,8 @@ internal class PermitAppManager :
         }
         else
         {
-            if (!newFileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
-                !existingFileInfos.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains(f.LicenceDocumentTypeCode)))
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
             }
