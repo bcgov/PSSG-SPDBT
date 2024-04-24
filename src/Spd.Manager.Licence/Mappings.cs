@@ -193,7 +193,8 @@ internal class Mappings : Profile
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.OrganizationId))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.IsFirstTimeLogin));
 
-        CreateMap<BizResult, BizListResponse>();
+        CreateMap<BizResult, BizListResponse>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
