@@ -51,7 +51,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
 
         /// <summary>
-        /// when user select agree to the Term. Call this endpoint.
+        /// user call this endpoint to get the list of the biz that already existing in system.
         /// </summary>
         /// <returns></returns>
         [Route("api/bizs")]
