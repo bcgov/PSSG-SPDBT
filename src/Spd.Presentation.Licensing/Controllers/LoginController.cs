@@ -56,6 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/bizs")]
         [Authorize(Policy = "OnlyBCeID")]
+        [HttpGet]
         public async Task<IEnumerable<BizListResponse>> BizList()
         {
             var info = _currentUser.GetBceidUserIdentityInfo();
