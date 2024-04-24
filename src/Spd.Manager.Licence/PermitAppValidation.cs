@@ -70,7 +70,7 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
         RuleFor(r => r.LicenceTermCode).Must(t => t == LicenceTermCode.FiveYears)
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit);
         RuleFor(r => r.DocumentInfos)
-            .Must(r => r.Any(f => LicenceAppDocumentManager.NonCanadiaCitizenProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
+            .Must(r => r.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
             .When(r => r.IsCanadianResident != null && !r.IsCanadianResident.Value && r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
             .WithMessage("Missing proven file because you are not a resident.");
         RuleFor(r => r.DocumentInfos)
