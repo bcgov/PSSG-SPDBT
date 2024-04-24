@@ -6,13 +6,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
-import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitDetailsNewComponent } from '../anonymous/permit-wizard-steps/steps-permit-details-new.component';
 import { StepsPermitIdentificationAuthenticatedComponent } from './permit-wizard-steps/steps-permit-identification-authenticated.component';
@@ -114,8 +113,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {
 		super(breakpointObserver);
@@ -133,16 +132,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 		this.updateCompleteStatus();
 	}
-
-	// ngAfterViewInit(): void {
-	// 	if (this.step3Complete) {
-	// 		this.stepper.selectedIndex = this.STEP_REVIEW;
-	// 	} else if (this.step2Complete) {
-	// 		this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-	// 	} else if (this.step1Complete) {
-	// 		this.stepper.selectedIndex = this.STEP_PURPOSE_AND_RATIONALE;
-	// 	}
-	// }
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
@@ -219,7 +208,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		this.permitApplicationService.submitPermitNewAuthenticated().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your permit has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -227,10 +216,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			},
 		});
 	}
-
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNow(licenceAppId,  `Payment for Case ID: ${application.applicationNumber}`);
-	// }
 
 	onGoToStep(step: number) {
 		this.stepPermitDetailsComponent?.onGoToFirstStep();
@@ -240,8 +225,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	onSaveAndExit() {
-		if (!this.authenticationService.isLoggedIn()) {
-			this.exitAndLoseChanges();
+		if (!this.permitApplicationService.isAutoSave()) {
 			return;
 		}
 
@@ -259,25 +243,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				}
 			},
 		});
-	}
-
-	private exitAndLoseChanges() {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Are you sure you want to leave this application? All of your data will be lost.',
-			actionText: 'Yes',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigate([AppRoutes.LANDING]);
-				}
-			});
 	}
 
 	onGoToReview() {
@@ -325,6 +290,10 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for new Permit application');
 	}
 
 	private updateCompleteStatus(): void {
