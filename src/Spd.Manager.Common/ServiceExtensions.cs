@@ -8,7 +8,7 @@ namespace Spd.Manager.Common
     {
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
-            //configurationServices.Services.AddTransient<IAdminManager, AdminManager>();
+            configurationServices.Services.AddTransient<IAdminManager, AdminManager>();
         }
     }
 }

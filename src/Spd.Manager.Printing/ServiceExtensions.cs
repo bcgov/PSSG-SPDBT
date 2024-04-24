@@ -1,4 +1,7 @@
-﻿using Spd.Utilities.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Spd.Manager.Printing.Documents;
+using Spd.Manager.Printing.Documents.TransformationStrategies;
+using Spd.Utilities.Hosting;
 
 namespace Spd.Manager.Printing
 {
@@ -6,7 +9,9 @@ namespace Spd.Manager.Printing
     {
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
-            //configurationServices.Services.AddTransient<IAdminManager, AdminManager>();
+            configurationServices.Services.AddTransient<IPrintingManager, PrintingManager>();
+            configurationServices.Services.AddScoped<IDocumentTransformationEngine, DocumentTransformationEngine>();
+            configurationServices.Services.AddScoped<IDocumentTransformStrategy, FingerPrintLetterTransformStrategy>();
         }
     }
 }

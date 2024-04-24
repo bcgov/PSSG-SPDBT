@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 
-namespace Spd.Presentation.Dynamics;
+namespace Spd.Presentation.Dynamics.Controllers;
 
 public class Mapping : Profile
 {
     public Mapping()
     {
-        CreateMap<PrintJobRequest, Spd.Manager.Common.PrintJob>();
+        CreateMap<PrintJobRequest, Manager.Printing.PrintJob>();
     }
 }

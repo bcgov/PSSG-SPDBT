@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Spd.Manager.Printing.Documents;
+using Spd.Manager.Printing.Documents.TransformationStrategies;
 using Spd.Utilities.Printing;
 
 namespace Spd.Manager.Printing;
@@ -6,7 +8,8 @@ namespace Spd.Manager.Printing;
 internal class PrintingManager(IDocumentTransformationEngine _documentTransformationEngine, IPrinter _printer)
   : IRequestHandler<StartPrintJobCommand, string>,
     IRequestHandler<PrintJobStatusQuery, PrintJobStatusResponse>,
-    IRequestHandler<PreviewDocumentCommand, PreviewDocumentResponse>
+    IRequestHandler<PreviewDocumentCommand, PreviewDocumentResponse>,
+    IPrintingManager
 {
     public async Task<string> Handle(StartPrintJobCommand request, CancellationToken cancellationToken)
     {

@@ -2,6 +2,12 @@
 
 namespace Spd.Manager.Printing;
 
+public interface IPrintingManager
+{
+    public Task<string> Handle(StartPrintJobCommand cmd, CancellationToken ct);
+    public Task<PrintJobStatusResponse> Handle(PrintJobStatusQuery cmd, CancellationToken ct);
+    public Task<PreviewDocumentResponse> Handle(PreviewDocumentCommand request, CancellationToken ct);
+}
 public record StartPrintJobCommand(PrintJob PrintJob) : IRequest<string>;
 public record PrintJobStatusQuery(string PrintJobId) : IRequest<PrintJobStatusResponse>;
 public record PreviewDocumentCommand(PrintJob PrintJob) : IRequest<PreviewDocumentResponse>;

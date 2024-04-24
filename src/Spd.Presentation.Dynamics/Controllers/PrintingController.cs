@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Common;
+using Spd.Manager.Printing;
 using Spd.Utilities.Shared;
 
-namespace Spd.Presentation.Dynamics;
+namespace Spd.Presentation.Dynamics.Controllers;
 
 [Authorize]
 public class PrintingController(IMediator mediator) : SpdControllerBase
@@ -32,7 +32,7 @@ public class PrintingController(IMediator mediator) : SpdControllerBase
     public async Task<Results<Ok<PrintJobStatusResponse>, BadRequest<PrintJobStatusResponse>>> GetPrintJobStatus(string jobId, CancellationToken ct)
     {
         var response = await mediator.Send(new PrintJobStatusQuery(jobId), ct);
-        if (response.Status == Manager.Common.PrintJobStatus.Failed)
+        if (response.Status == Spd.Manager.Printing.PrintJobStatus.Failed)
         {
             return TypedResults.BadRequest(new PrintJobStatusResponse(jobId, PrintJobStatus.Failed, response.Error));
         }

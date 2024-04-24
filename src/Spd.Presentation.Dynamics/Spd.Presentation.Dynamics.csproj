@@ -13,13 +13,13 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
+		<ProjectReference Include="..\Spd.Manager.Printing\Spd.Manager.Printing.csproj" />
 		<ProjectReference Include="..\Spd.Manager.Screening\Spd.Manager.Screening.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.BCeIDWS\Spd.Utilities.BCeIDWS.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
-		<ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>
