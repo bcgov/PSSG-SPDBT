@@ -55,7 +55,7 @@ export class LicenceApplicationRoutes {
 	public static LOGIN_SELECTION = 'login-selection';
 
 	// AUTHENTICATED
-	public static LICENCE_APPLICATION_AUTHENTICATED = 'user';
+	public static LICENCE_BASE = 'user';
 	public static LICENCE_USER_APPLICATIONS_AUTHENTICATED = 'applications';
 
 	public static LICENCE_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
@@ -119,13 +119,13 @@ export class LicenceApplicationRoutes {
 	}
 
 	public static pathUserApplications(): string {
-		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}/${LicenceApplicationRoutes.LICENCE_USER_APPLICATIONS_AUTHENTICATED}`;
+		return `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_BASE}/${LicenceApplicationRoutes.LICENCE_USER_APPLICATIONS_AUTHENTICATED}`;
 	}
 
 	public static pathSecurityWorkerLicenceAuthenticated(route: string | null = null): string {
 		return route
-			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}`;
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_BASE}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_BASE}`;
 	}
 
 	public static pathSecurityWorkerLicenceAnonymous(route: string | null = null): string {
@@ -142,8 +142,8 @@ export class LicenceApplicationRoutes {
 
 	public static pathPermitAuthenticated(route: string | null = null): string {
 		return route
-			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}/${route}`
-			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED}`;
+			? `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_BASE}/${route}`
+			: `/${LicenceApplicationRoutes.MODULE_PATH}/${LicenceApplicationRoutes.LICENCE_BASE}`;
 	}
 
 	public static pathBusinessLicence(route: string | null = null): string {
@@ -273,7 +273,7 @@ const routes: Routes = [
 				/**************************************************** */
 				// LICENCE AUTHENTICATED
 				/**************************************************** */
-				path: LicenceApplicationRoutes.LICENCE_APPLICATION_AUTHENTICATED,
+				path: LicenceApplicationRoutes.LICENCE_BASE,
 				component: LicenceApplicationBaseAuthenticatedComponent,
 				children: [
 					{
