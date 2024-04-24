@@ -126,6 +126,7 @@ internal partial class LicenceAppDocumentManager :
 
     public static readonly List<LicenceDocumentTypeCode> NonCanadiaCitizenProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.DriversLicence,
-            LicenceDocumentTypeCode.GovernmentIssuedPhotoId
+            LicenceDocumentTypeCode.GovernmentIssuedPhotoId,
+            LicenceDocumentTypeCode.NonCanadianPassport
         };
 }
