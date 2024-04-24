@@ -22,7 +22,6 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 [
                     new Claim("bceid_user_guid", bizUserGuid.ToString()),

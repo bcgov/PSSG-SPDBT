@@ -48,7 +48,6 @@ namespace Spd.Resource.Repository.Biz
 
             if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            //tried with Biz expand, does not work. so have to make another call.
             List<spd_account_spd_servicetype> serviceTypes = _dynaContext.spd_account_spd_servicetypeset
                 .Where(so => so.accountid == Biz.accountid)
                 .ToList();

@@ -26,8 +26,5 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         //Assert
         Assert.NotNull(response);
-
     }
-
-
 }
