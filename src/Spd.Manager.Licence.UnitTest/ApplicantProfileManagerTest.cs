@@ -115,14 +115,8 @@ namespace Spd.Manager.Licence.UnitTest
             mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<ApplicantUpdateRequest>()))
                 .Returns(new UpdateContactCmd());
 
-            DocumentResp document = new DocumentResp()
-            {
-                DocumentType = DocumentTypeEnum.MentalHealthConditionForm,
-                DocumentType2 = DocumentTypeEnum.MentalHealthConditionForm,
-                DocumentUrlId = request.PreviousDocumentIds.First()
-            };
             mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() { document } });
+                .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() });
 
             _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.Handle(cmd, CancellationToken.None));
         }
@@ -146,14 +140,8 @@ namespace Spd.Manager.Licence.UnitTest
             mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<ApplicantUpdateRequest>()))
                 .Returns(new UpdateContactCmd());
 
-            DocumentResp document = new DocumentResp()
-            {
-                DocumentType = DocumentTypeEnum.LetterOfNoConflict,
-                DocumentType2 = DocumentTypeEnum.LetterOfNoConflict,
-                DocumentUrlId = request.PreviousDocumentIds.First()
-            };
             mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() { document } });
+                .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() });
 
             _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.Handle(cmd, CancellationToken.None));
         }
