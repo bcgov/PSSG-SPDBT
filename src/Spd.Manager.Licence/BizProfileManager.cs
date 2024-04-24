@@ -66,7 +66,7 @@ internal class BizProfileManager :
         }
         else
         {
-            PortalUserResp portalUser = await IsCurrentUserBizManager(cmd, currentUserIdentity, ct);
+            PortalUserResp? portalUser = await GetBizManagerForCurrentUser(cmd, currentUserIdentity, ct);
             if (portalUser != null)
             {
                 //let user login
@@ -123,7 +123,7 @@ internal class BizProfileManager :
         return false;
     }
 
-    private async Task<PortalUserResp?> IsCurrentUserBizManager(BizLoginCommand cmd, Identity currentUserIdentity, CancellationToken ct)
+    private async Task<PortalUserResp?> GetBizManagerForCurrentUser(BizLoginCommand cmd, Identity currentUserIdentity, CancellationToken ct)
     {
         //get current user identity
         if (currentUserIdentity == null)
@@ -140,16 +140,23 @@ internal class BizProfileManager :
 
     private async Task<Guid> CreateUserIdentity(BizLoginCommand cmd, CancellationToken ct)
     {
-        IdentityCmdResult id = await _idRepository.Manage(new CreateIdentityCmd(
+        IdentityCmdResult? identity = await _idRepository.Manage(new CreateIdentityCmd(
             cmd.BceidIdentityInfo.UserGuid.ToString(),
             cmd.BceidIdentityInfo.BizGuid,
             IdentityProviderTypeEnum.BusinessBceId), ct);
-        return id.Id;
+        if ((identity == null))
+        {
+            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "create identity failed.");
+        }
+        else
+        {
+            return identity.Id;
+        }
     }
 
     private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
     {
-        Biz b = new()
+        Biz biz = new()
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
@@ -157,7 +164,7 @@ internal class BizProfileManager :
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
         };
-        return await _bizRepository.ManageBizAsync(new BizCreateCmd(b), ct);
+        return await _bizRepository.ManageBizAsync(new BizCreateCmd(biz), ct);
     }
 
     private async Task<PortalUserResp> AddPortalUserToBiz(BceidIdentityInfo info, Guid identityId, Guid bizId, CancellationToken ct)

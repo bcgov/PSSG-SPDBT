@@ -54,7 +54,7 @@ namespace Spd.Resource.Repository.Biz
                 .ToList();
 
             if (!serviceTypes.Any())
-                throw new ApiException(HttpStatusCode.InternalServerError, $"Bizanization {Biz.name} does not have service type.");
+                throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {Biz.name} does not have service type.");
 
             var response = _mapper.Map<BizResult>(Biz);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
@@ -98,15 +98,16 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<BizResult>(account);
         }
 
-        private async Task<BizResult> BizAddServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
+        private async Task<BizResult?> BizAddServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
         {
-            //tried with Biz expand, does not work. so have to make another call.
-            spd_servicetype st = _dynaContext.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
+            spd_servicetype? st = _dynaContext.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
             IQueryable<account> accounts = _dynaContext.accounts
                 .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == bizAddServiceTypeCmd.BizId);
             account? biz = await accounts.FirstOrDefaultAsync(ct);
+            if (biz == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the biz");
             if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
             {
 

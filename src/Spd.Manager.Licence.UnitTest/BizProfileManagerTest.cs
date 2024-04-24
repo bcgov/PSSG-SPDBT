@@ -78,7 +78,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             Guid portalUserId = Guid.NewGuid();
             BizLoginCommand bizLogin = new(identityInfo, bizId);
-            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
@@ -119,7 +119,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             Guid portalUserId = Guid.NewGuid();
             BizLoginCommand bizLogin = new(identityInfo, bizId);
-            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(c => c == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
@@ -185,10 +185,10 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(
                     new PortalUserListResp()
                     {
-                        Items = new List<PortalUserResp> { new(){
-                            Id=portalUserId,
-                            ContactRoleCode = ContactRoleCode.PrimaryBusinessManager
-                    } }
+                        Items = new List<PortalUserResp>
+                        {
+                            new(){ Id = portalUserId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager}
+                        }
                     });
 
             mockMapper.Setup(m => m.Map<BizUserLoginResponse>(It.IsAny<PortalUserResp>()))

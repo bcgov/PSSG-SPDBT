@@ -51,7 +51,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
 
         /// <summary>
-        /// user call this endpoint to get the list of the biz that already existing in system.
+        /// user calls this endpoint to get the list of the biz that are already existing in system.
         /// </summary>
         /// <returns></returns>
         [Route("api/bizs")]
