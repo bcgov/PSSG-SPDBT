@@ -111,7 +111,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 									<div class="col-lg-7 col-md-12">
 										<ng-container *ngIf="isCanadianResident.value === booleanTypeCodes.Yes; else notResidentOfCanada">
 											<mat-form-field>
-												<mat-label>Proof of resident status</mat-label>
+												<mat-label>Proof of Resident Status</mat-label>
 												<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
 													<mat-option
 														class="proof-option"
@@ -129,7 +129,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 
 										<ng-template #notResidentOfCanada>
 											<mat-form-field>
-												<mat-label>Proof of citizenship</mat-label>
+												<mat-label>Proof of Citizenship</mat-label>
 												<mat-select formControlName="proofOfCitizenshipCode" [errorStateMatcher]="matcher">
 													<mat-option
 														class="proof-option"
