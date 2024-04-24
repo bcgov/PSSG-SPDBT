@@ -203,30 +203,31 @@ export class LoginService extends BaseService {
   }
 
   /**
-   * Path part for operation apiBizBizIdLoginGet
+   * Path part for operation apiBizLoginGet
    */
-  static readonly ApiBizBizIdLoginGetPath = '/api/biz/{bizId}/login';
+  static readonly ApiBizLoginGetPath = '/api/biz/login';
 
   /**
-   * login, for biz licensing portal, bceid login.
+   * login, for biz licensing portal, bceid login, sample: api/biz/login?bizId=123
+   * or api/biz/login.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBizBizIdLoginGet()` instead.
+   * To access only the response body, use `apiBizLoginGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBizBizIdLoginGet$Response(params: {
-    bizId: string;
+  apiBizLoginGet$Response(params?: {
+    bizId?: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<BizUserLoginResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizBizIdLoginGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizLoginGetPath, 'get');
     if (params) {
-      rb.path('bizId', params.bizId, {"style":"simple"});
+      rb.query('bizId', params.bizId, {"style":"form"});
     }
 
     return this.http.request(rb.build({
@@ -242,23 +243,24 @@ export class LoginService extends BaseService {
   }
 
   /**
-   * login, for biz licensing portal, bceid login.
+   * login, for biz licensing portal, bceid login, sample: api/biz/login?bizId=123
+   * or api/biz/login.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBizBizIdLoginGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBizLoginGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBizBizIdLoginGet(params: {
-    bizId: string;
+  apiBizLoginGet(params?: {
+    bizId?: string;
   },
   context?: HttpContext
 
 ): Observable<BizUserLoginResponse> {
 
-    return this.apiBizBizIdLoginGet$Response(params,context).pipe(
+    return this.apiBizLoginGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<BizUserLoginResponse>) => r.body as BizUserLoginResponse)
     );
   }

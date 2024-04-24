@@ -20,12 +20,12 @@ export class AuthUserBceidService {
 		const bizsList: Array<BizListResponse> = await lastValueFrom(this.loginService.apiBizsGet());
 
 		if (bizsList.length === 0) {
-			return await this.setBizProfile(null);
+			return await this.setBizProfile();
 		} else if (bizsList.length === 1) {
 			return await this.setBizProfile(bizsList[0].bizId!);
 		} else {
 			const biz = await this.bizSelectionAsync(bizsList);
-			return await this.setBizProfile(biz.bizId ?? null);
+			return await this.setBizProfile(biz.bizId);
 		}
 	}
 
@@ -36,10 +36,8 @@ export class AuthUserBceidService {
 	//----------------------------------------------------------
 	// *
 	// * get the biz profile
-	private async setBizProfile(bizId: string | null): Promise<boolean> {
-		const resp: BizUserLoginResponse = await lastValueFrom(
-			this.loginService.apiBizBizIdLoginGet({ bizId: bizId ?? '' }) // TODO remove when nulls allowed
-		);
+	private async setBizProfile(bizId?: string | undefined): Promise<boolean> {
+		const resp: BizUserLoginResponse = await lastValueFrom(this.loginService.apiBizLoginGet({ bizId: bizId }));
 		if (resp) {
 			this.bceidUserProfile = resp;
 			return Promise.resolve(true);
