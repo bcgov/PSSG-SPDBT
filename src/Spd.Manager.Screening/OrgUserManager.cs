@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Registration;

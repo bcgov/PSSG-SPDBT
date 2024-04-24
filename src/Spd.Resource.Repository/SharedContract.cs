@@ -122,3 +122,17 @@ public enum ServiceTypeCategoryEnum
     Screening,
     Licensing
 }
+
+public enum ContactRoleCode
+{
+    Primary, //screening
+    Contact, //screening
+    PrimaryBusinessManager, //licensing
+    BusinessManager //licensing
+}
+
+public enum PortalUserServiceCategoryEnum
+{
+    Screening,
+    Licensing
+}
