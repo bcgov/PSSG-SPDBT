@@ -779,7 +779,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						{
 							state: {
 								workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
-								pplicationTypeCode: ApplicationTypeCode.New,
+								applicationTypeCode: ApplicationTypeCode.New,
 							},
 						}
 					);

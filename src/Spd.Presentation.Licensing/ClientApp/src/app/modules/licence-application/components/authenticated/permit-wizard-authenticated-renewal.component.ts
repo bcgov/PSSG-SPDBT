@@ -6,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
-import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -36,7 +35,6 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 						<ng-template matStepLabel>Permit Details</ng-template>
 						<app-steps-permit-details-renewal
 							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(nextStepperStep)="onNextStepperStep(stepper)"
 							(scrollIntoView)="onScrollIntoView()"
@@ -47,7 +45,6 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 						<ng-template matStepLabel>Purpose & Rationale</ng-template>
 						<app-steps-permit-purpose-authenticated
 							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -59,7 +56,6 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-permit-identification-authenticated
 							(childNextStep)="onChildNextStep()"
-							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -229,47 +225,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		this.stepPurposeComponent?.onGoToFirstStep();
 		this.stepIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
-	}
-
-	onSaveAndExit() {
-		if (!this.authenticationService.isLoggedIn()) {
-			this.exitAndLoseChanges();
-			return;
-		}
-
-		this.permitApplicationService.savePermitStepAuthenticated().subscribe({
-			next: (_resp: any) => {
-				this.permitApplicationService.hasValueChanged = false;
-
-				this.hotToastService.success('Licence information has been saved');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				// only 403s will be here as an error
-				if (error.status == 403) {
-					this.handleDuplicateLicence();
-				}
-			},
-		});
-	}
-
-	private exitAndLoseChanges() {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: 'Are you sure you want to leave this application? All of your data will be lost.',
-			actionText: 'Yes',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigate([AppRoutes.LANDING]);
-				}
-			});
 	}
 
 	onGoToReview() {

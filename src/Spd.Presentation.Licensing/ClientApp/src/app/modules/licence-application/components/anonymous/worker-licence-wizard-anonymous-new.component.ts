@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -9,7 +9,7 @@ import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/licence-appl
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
 import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-anonymous.component';
@@ -57,7 +57,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Review & Confirm</ng-template>
+				<ng-template matStepLabel>{{ reviewSwlLabel }}</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -68,6 +68,18 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
+			<!-- <ng-container *ngIf="isSoleProprietor">
+				<mat-step>
+					<ng-template matStepLabel>Business Information</ng-template>
+				</mat-step>
+				<mat-step>
+					<ng-template matStepLabel>Business Licence</ng-template>
+				</mat-step>
+				<mat-step>
+					<ng-template matStepLabel>Review Business</ng-template>
+				</mat-step>
+			</ng-container> -->
+
 			<mat-step completed="false">
 				<ng-template matStepLabel>Pay</ng-template>
 			</mat-step>
@@ -75,7 +87,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit {
+export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeCode = ApplicationTypeCode.New;
 
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -88,6 +100,11 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	step3Complete = false;
 
 	licenceAppId: string | null = null;
+
+	reviewSwlLabel = 'Review & Confirm';
+	// isSoleProprietor = false;
+
+	private licenceModelChangedSubscription!: Subscription;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
@@ -117,6 +134,20 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
+
+		// this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		// 	(_resp: boolean) => {
+		// 		this.isSoleProprietor =
+		// 			this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
+		// 			BooleanTypeCode.Yes;
+
+		// 		this.reviewSwlLabel = this.isSoleProprietor ? 'Review Worker' : 'Review & Confirm';
+		// 	}
+		// );
+	}
+
+	ngOnDestroy() {
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
