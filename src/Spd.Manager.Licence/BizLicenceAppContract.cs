@@ -34,17 +34,7 @@ public abstract record BizLicenceAppBase
     public BusinessManagerInfo? BusinessManagerInfo { get; set; }
     public BusinessManagerInfo? OtherContactInfo { get; set; }
 
-    // Business address
-    //public bool? IsMailingTheSameAsBusiness { get; set; }
-    //public BusinessAddress? BusinessAddress { get; set; }
-    //public BusinessMailingAddress? BusinessMailingAddress { get; set; }
-    //public BcAddress? BcAddress { get; set; }
-
-    // Branches
-    //public IEnumerable<BusinessAddress> BranchOffices { get; set; } = Enumerable.Empty<BusinessAddress>();
-
     // Controlling member
-    public IEnumerable<ControllerMemberInfo> ControllerMemberInfo { get; set; } = Enumerable.Empty<ControllerMemberInfo>();
     public IEnumerable<SwlControllerMemberInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlControllerMemberInfo>();
     public IEnumerable<NonSwlControllerMemberInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<NonSwlControllerMemberInfo>();
     public Document? BcReport { get; set; }
