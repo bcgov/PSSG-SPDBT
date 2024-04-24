@@ -5,7 +5,6 @@ using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Security.Principal;
-using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -57,25 +56,24 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/bizs")]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<ActionResult> BizList()
+        public async Task<IEnumerable<BizListResponse>> BizList()
         {
-            //var info = _currentUser.GetBceidUserIdentityInfo();
-            string test = @"{
-                ""BCeIDUserName"": ""VictoriaCharity"",
-                ""DisplayName"": ""Qu Tester"",
-                ""FirstName"": ""Qu Tester"",
-                ""LastName"": """",
-                ""PreferredUserName"": ""846597a702244ba0884bdc3ac8cb21b5@bceidbusiness"",
-                ""UserGuid"": ""846597a7-0224-4ba0-884b-dc3ac8cb21b5"",
-                ""BizGuid"": ""fbb17094-2532-4fd8-befc-b6bbcd679df3"",
-                ""BizName"": ""Victoria Charity"",
-                ""Issuer"": ""https://dev.loginproxy.gov.bc.ca/auth/realms/standard"",
-                ""EmailVerified"": false,
-                ""Email"": ""peggy.zhang@quartech.com""
-            }";
-            BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
-            var response = await _mediator.Send(new GetBizsQuery(info.BizGuid));
-            return Ok(response);
+            var info = _currentUser.GetBceidUserIdentityInfo();
+            //string test = @"{
+            //    ""BCeIDUserName"": ""VictoriaCharity"",
+            //    ""DisplayName"": ""Qu Tester"",
+            //    ""FirstName"": ""Qu Tester"",
+            //    ""LastName"": """",
+            //    ""PreferredUserName"": ""846597a702244ba0884bdc3ac8cb21b5@bceidbusiness"",
+            //    ""UserGuid"": ""846597a7-0224-4ba0-884b-dc3ac8cb21b5"",
+            //    ""BizGuid"": ""fbb17094-2532-4fd8-befc-b6bbcd679df3"",
+            //    ""BizName"": ""Victoria Charity"",
+            //    ""Issuer"": ""https://dev.loginproxy.gov.bc.ca/auth/realms/standard"",
+            //    ""EmailVerified"": false,
+            //    ""Email"": ""peggy.zhang@quartech.com""
+            //}";
+            //BceidIdentityInfo info = JsonSerializer.Deserialize<BceidIdentityInfo>(test);
+            return await _mediator.Send(new GetBizsQuery(info.BizGuid));
         }
         /// <summary>
         /// login, for biz licensing portal, bceid login

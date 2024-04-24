@@ -10,7 +10,6 @@
     public abstract record BizCmd;
     public record BizUpdateCmd(Biz Biz) : BizCmd;
     public record BizCreateCmd(Biz Biz) : BizCmd;
-    public record BizGuidUpdateCmd(Guid BizId, string? BizGuid) : BizCmd;
     public record BizAddServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
 
     //query

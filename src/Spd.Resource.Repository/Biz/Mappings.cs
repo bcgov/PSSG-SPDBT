@@ -18,6 +18,7 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.AddressLine2))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
             .ReverseMap();
 
             _ = CreateMap<account, BizResult>()

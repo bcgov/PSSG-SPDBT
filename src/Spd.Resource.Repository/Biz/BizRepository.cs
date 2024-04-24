@@ -67,7 +67,6 @@ namespace Spd.Resource.Repository.Biz
             {
                 BizUpdateCmd c => await BizUpdateAsync(c, ct),
                 BizCreateCmd c => await BizCreateAsync(c, ct),
-                BizGuidUpdateCmd c => await BizGuidUpdateAsync(c, ct),
                 BizAddServiceTypeCmd c => await BizAddServiceTypeAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
@@ -97,24 +96,6 @@ namespace Spd.Resource.Repository.Biz
             await _dynaContext.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);
-        }
-
-        private async Task<BizResult> BizGuidUpdateAsync(BizGuidUpdateCmd updateBizGuidCmd, CancellationToken ct)
-        {
-            account biz = await _dynaContext.accounts.Where(a => a.accountid == updateBizGuidCmd.BizId).FirstOrDefaultAsync(ct);
-            if (biz == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the Biz");
-
-            if (updateBizGuidCmd.BizGuid != null)
-            {
-                if (biz.spd_orgguid == null)
-                {
-                    biz.spd_orgguid = updateBizGuidCmd.BizGuid;
-                    _dynaContext.UpdateObject(biz);
-                    await _dynaContext.SaveChangesAsync(ct);
-                }
-            }
-            return _mapper.Map<BizResult>(biz);
         }
 
         private async Task<BizResult> BizAddServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
