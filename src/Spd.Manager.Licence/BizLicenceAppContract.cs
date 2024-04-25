@@ -8,9 +8,7 @@ public interface IBizLicenceAppMananger
     public Task<Guid> Handle(BizLicenceAppNewCommand command, CancellationToken ct);
 }
 
-public record BizLicenceAppNewCommand(
-    BizLicenceAppSubmitRequest bizLicenceSubmitRequest)
-    : IRequest<Guid>;
+public record BizLicenceAppNewCommand(BizLicenceAppUpsertRequest bizLicenceSubmitRequest) : IRequest<Guid>;
 
 public abstract record BizLicenceApp
 {
