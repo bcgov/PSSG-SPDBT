@@ -94,8 +94,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				</div>
 			</div>
 
-			<div class="text-minor-heading mt-4 mb-2">Add controlling members</div>
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-lg-6 col-md-12">
 					<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
 						Add Member with Security Worker Licence

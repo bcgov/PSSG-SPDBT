@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
@@ -90,6 +90,47 @@ export abstract class CommonApplicationHelper {
 					(_form) =>
 						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
 						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
+				),
+			],
+		}
+	);
+
+	policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
+			policeOfficerRoleCode: new FormControl(''),
+			otherOfficerRole: new FormControl(''),
+			attachments: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'policeOfficerRoleCode',
+					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'otherOfficerRole',
+					(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
+				),
+			],
+		}
+	);
+
+	mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
+			attachments: new FormControl(''),
+			hasPreviousMhcFormUpload: new FormControl(''), // used to determine label to display
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
 				),
 			],
 		}
