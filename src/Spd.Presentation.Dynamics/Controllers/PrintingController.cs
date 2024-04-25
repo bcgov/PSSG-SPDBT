@@ -6,12 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Printing;
 using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.Shared;
+using PrintJobStatus = Spd.Presentation.Dynamics.Models.PrintJobStatus;
 
 namespace Spd.Presentation.Dynamics.Controllers;
 
 [Authorize]
 public class PrintingController(IMediator mediator, IMapper mapper) : SpdControllerBase
 {
+    /// <summary>
+    /// Set applicationId, this endpoint will print out paper for mailing to applicant. Set jobId to null.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     [HttpPost("api/printjobs")]
     public async Task<Results<Ok<string>, BadRequest>> PostPrintJob([FromBody] PrintJobRequest request, CancellationToken ct)
     {
@@ -29,15 +36,21 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
         return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
     }
 
+    /// <summary>
+    /// in put jobId, this endpoint will return the job status.
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     [HttpGet("api/printjobs/{jobId}/status")]
-    public async Task<Results<Ok<PrintJobStatusResponse>, BadRequest<PrintJobStatusResponse>>> GetPrintJobStatus(string jobId, CancellationToken ct)
+    public async Task<PrintJobStatusResponse> GetPrintJobStatus(string jobId, CancellationToken ct)
     {
         var response = await mediator.Send(new PrintJobStatusQuery(jobId), ct);
         if (response.Status == Spd.Manager.Printing.PrintJobStatus.Failed)
         {
-            return TypedResults.BadRequest(new PrintJobStatusResponse(jobId, Models.PrintJobStatus.Failed, response.Error));
+            return new PrintJobStatusResponse(jobId, PrintJobStatus.Failed, response.Error);
         }
-        return TypedResults.Ok(new PrintJobStatusResponse(jobId, Models.PrintJobStatus.Success, null));
+        return new PrintJobStatusResponse(jobId, PrintJobStatus.Success, null);
     }
 }
 

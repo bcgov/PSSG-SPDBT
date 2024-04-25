@@ -58,7 +58,7 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
     private async Task<string> PrintViaBcMailPlus(BcMailPlusTransformResponse bcmailplusResponse, CancellationToken cancellationToken)
     {
         var printResponse = await _printer.Send(new BCMailPlusPrintRequest(bcmailplusResponse.JobTemplateId, bcmailplusResponse.Document), cancellationToken);
-        if (printResponse.Status != JobStatus.Completed) throw new InvalidOperationException(printResponse.Error);
+        if (printResponse.Status == JobStatus.Failed) throw new InvalidOperationException(printResponse.Error);
         return printResponse.PrintJobId!;
     }
 
