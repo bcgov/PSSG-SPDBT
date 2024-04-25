@@ -85,6 +85,7 @@ import { BusinessCategoryAmouredCarGuardComponent } from './components/business/
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business/business-category-private-investigator.component';
 import { BusinessCategorySecurityGuardComponent } from './components/business/business-category-security-guard.component';
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
+import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
@@ -218,6 +219,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepPermitUserProfileComponent,
 		ModalBcBranchEditComponent,
 		ModalBusinessManagerEditComponent,
+		BusinessFirstTimeUserTermsOfUseComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
 		CollectionNoticeComponent,
