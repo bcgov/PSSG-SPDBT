@@ -141,7 +141,17 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				></app-step-worker-licence-category>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button
+							mat-flat-button
+							class="large bordered mb-2"
+							(click)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
+							*ngIf="showSaveAndExit"
+						>
+							Save & Exit
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">

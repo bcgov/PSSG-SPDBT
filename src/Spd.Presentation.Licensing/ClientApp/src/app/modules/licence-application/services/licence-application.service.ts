@@ -383,14 +383,26 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * Determine if the Save & Exit process can occur
 	 * @returns
 	 */
-	isAutoSave(): boolean {
+	isSaveAndExit(): boolean {
 		if (
 			!this.authenticationService.isLoggedIn() ||
 			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
 		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (!this.isSaveAndExit()) {
 			return false;
 		}
 
@@ -448,13 +460,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
-		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-
-		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			body,
-		});
+		return this.saveUserProfile();
 	}
 
 	/**

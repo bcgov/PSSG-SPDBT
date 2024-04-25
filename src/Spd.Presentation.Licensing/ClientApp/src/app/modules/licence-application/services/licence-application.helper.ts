@@ -8,7 +8,6 @@ import {
 	DocumentExpiredInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
-	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
@@ -257,47 +256,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		}
 	);
 
-	policeBackgroundFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
-			policeOfficerRoleCode: new FormControl(''),
-			otherOfficerRole: new FormControl(''),
-			attachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'policeOfficerRoleCode',
-					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'otherOfficerRole',
-					(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
-
-	mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl(''),
-			hasPreviousMhcFormUpload: new FormControl(''), // used to determine label to display
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
-
 	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
 	});
@@ -475,6 +433,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getProfileSaveBody] requestbody', requestbody);
+
 		return requestbody;
 	}
 
