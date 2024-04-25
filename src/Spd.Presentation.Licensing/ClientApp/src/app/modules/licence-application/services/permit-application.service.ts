@@ -109,6 +109,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		mailingAddress: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
 		profileConfirmationData: this.profileConfirmationFormGroup,
+
+		policeBackgroundData: this.policeBackgroundFormGroup, // placeholder to store current values for the user - not displayed
+		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup, // placeholder to store current values for the user - not displayed
 	});
 
 	permitModelChangedSubscription!: Subscription;
@@ -312,14 +315,26 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	/**
-	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * Determine if the Save & Exit process can occur
 	 * @returns
 	 */
-	isAutoSave(): boolean {
+	isSaveAndExit(): boolean {
 		if (
 			!this.authenticationService.isLoggedIn() ||
 			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
 		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (!this.isSaveAndExit()) {
 			return false;
 		}
 
@@ -376,13 +391,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveLoginUserProfile(): Observable<StrictHttpResponse<string>> {
-		const licenceModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
-
-		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			body,
-		});
+		return this.saveUserProfile();
 	}
 
 	/**
@@ -497,8 +506,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(permitModelFormValue);
+		const existingDocumentIds = this.getProfileDocsToSaveKeep(permitModelFormValue);
+
+		body.previousDocumentIds = [...existingDocumentIds];
 
 		console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
+		console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
 		console.debug('[saveUserProfile] getProfileSaveBody', body);
 
 		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
@@ -1054,6 +1067,43 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			criminalChargeDescription: '',
 		};
 
+		const policeBackgroundDataAttachments: Array<File> = [];
+		const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+		profile.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.MentalHealthCondition: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					mentalHealthConditionsDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					policeBackgroundDataAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		let policeBackgroundData = {};
+		let mentalHealthConditionsData = {};
+
+		if ('isPoliceOrPeaceOfficer' in profile && 'policeOfficerRoleCode' in profile && 'otherOfficerRole' in profile) {
+			policeBackgroundData = {
+				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profile.isPoliceOrPeaceOfficer),
+				policeOfficerRoleCode: profile.policeOfficerRoleCode,
+				otherOfficerRole: profile.otherOfficerRole,
+				attachments: policeBackgroundDataAttachments,
+			};
+		}
+
+		if ('isTreatedForMHC' in profile) {
+			mentalHealthConditionsData = {
+				isTreatedForMHC: this.utilService.booleanToBooleanType(profile.isTreatedForMHC),
+				attachments: mentalHealthConditionsDataAttachments,
+			};
+		}
+
 		this.permitModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
@@ -1071,6 +1121,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					aliases: [],
 				},
 				criminalHistoryData,
+				policeBackgroundData,
+				mentalHealthConditionsData,
 			},
 			{
 				emitEvent: false,
@@ -1210,16 +1262,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		let photographOfYourselfLastUploadedDateTime = '';
 
 		resp.documentInfos?.forEach((doc: Document) => {
-			switch (
-				doc.licenceDocumentTypeCode // TODO verify permit auth licence doc types are correct here
-			) {
+			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.DriversLicenceAdditional:
 				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
-				case LicenceDocumentTypeCode.NonCanadianPassport: {
+				case LicenceDocumentTypeCode.PassportAdditional: {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					governmentIssuedAttachments.push(aFile);
 
@@ -1234,6 +1284,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				case LicenceDocumentTypeCode.CanadianCitizenship:
 				case LicenceDocumentTypeCode.DriversLicence: //PermitProofOfCitizenshipTypes
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId:
+				case LicenceDocumentTypeCode.NonCanadianPassport:
 				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument: //PermitProofOfResidenceStatusTypes
 				case LicenceDocumentTypeCode.PermanentResidentCard:
 				case LicenceDocumentTypeCode.RecordOfLandingDocument:

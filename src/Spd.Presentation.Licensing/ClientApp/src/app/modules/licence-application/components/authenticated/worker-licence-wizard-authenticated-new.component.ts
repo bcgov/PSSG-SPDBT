@@ -207,8 +207,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		this.stepper.selectedIndex = step;
 	}
 
-	onSaveAndExit() {
-		if (!this.licenceApplicationService.isAutoSave()) {
+	onSaveAndExit(): void {
+		if (!this.licenceApplicationService.isSaveAndExit()) {
 			return;
 		}
 
@@ -216,7 +216,10 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			next: (_resp: any) => {
 				this.licenceApplicationService.hasValueChanged = false;
 
-				this.hotToastService.success('Licence information has been saved');
+				this.hotToastService.success(
+					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
+				);
+
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {
