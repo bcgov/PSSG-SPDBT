@@ -92,7 +92,7 @@ public record Employee : PersonalInfo
     public Guid? EmployeeContactId { get; set; }
 }
 
-public record BizLicenceAppSubmitRequest : BizLicenceApp
+public record BizLicenceAppUpsertRequest : BizLicenceApp
 {
 
 }
