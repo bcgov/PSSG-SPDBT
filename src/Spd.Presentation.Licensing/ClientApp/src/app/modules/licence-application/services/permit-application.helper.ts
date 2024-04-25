@@ -227,13 +227,17 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
-		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
-		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
-		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
-		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
-		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
-		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
+	getProfileSaveBody(permitModelFormValue: any): ApplicantUpdateRequest {
+		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
+		const contactInformationData = { ...permitModelFormValue.contactInformationData };
+		const residentialAddress = { ...permitModelFormValue.residentialAddress };
+		const mailingAddress = { ...permitModelFormValue.mailingAddress };
+		const personalInformationData = { ...permitModelFormValue.personalInformationData };
+		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
+
+		// Even thought this used by permits, still need to save the original data
+		const policeBackgroundData = { ...permitModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...permitModelFormValue.mentalHealthConditionsData };
 
 		const applicationTypeCode = applicationTypeData.applicationTypeCode;
 
@@ -246,10 +250,14 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const documentKeyCodes: null | Array<string> = [];
 		const previousDocumentIds: null | Array<string> = [];
 
+		let hasNewMentalHealthCondition: boolean | null = null;
 		let hasNewCriminalRecordCharge: boolean | null = null;
 		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			hasNewMentalHealthCondition = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
 			hasNewCriminalRecordCharge = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
 		}
+
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
@@ -264,12 +272,19 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			aliases:
-				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? licenceModelFormValue.aliasesData.aliases
+				permitModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? permitModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
 			documentKeyCodes,
 			previousDocumentIds,
+			//-----------------------------------
+			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
+			//-----------------------------------
+			isPoliceOrPeaceOfficer: isPoliceOrPeaceOfficer,
+			policeOfficerRoleCode: isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null,
+			otherOfficerRole: isPoliceOrPeaceOfficer ? policeBackgroundData.otherOfficerRole : null,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
 			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
@@ -279,7 +294,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			residentialAddress: residentialAddress,
 		};
 
+		console.debug('[getProfileSaveBody] permitModelFormValue', permitModelFormValue);
 		console.debug('[getProfileSaveBody] requestbody', requestbody);
+
 		return requestbody;
 	}
 
@@ -359,6 +376,25 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		}
 
 		console.debug('getDocsToSaveBlobs documentsToSave', documents);
+		return documents;
+	}
+
+	getProfileDocsToSaveKeep(permitModelFormValue: any): Array<string> {
+		// documents are never added/updates/removed to a permit profile,
+		// so just return the existing documents on the profile
+		const documents: Array<string> = [];
+
+		const policeBackgroundData = { ...permitModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...permitModelFormValue.mentalHealthConditionsData };
+
+		policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+			documents.push(doc.documentUrlId!);
+		});
+
+		mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+			documents.push(doc.documentUrlId!);
+		});
+
 		return documents;
 	}
 
