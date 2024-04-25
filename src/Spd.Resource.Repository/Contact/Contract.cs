@@ -34,6 +34,7 @@ namespace Spd.Resource.Repository.Contact
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
         public string? CriminalChargeDescription { get; set; }
+        public string? BirthPlace { get; set; }
     }
     public record ContactResp : Contact
     {

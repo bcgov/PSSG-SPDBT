@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Presentation.Dynamics.Models;
 
 namespace Spd.Presentation.Dynamics.Controllers;
 

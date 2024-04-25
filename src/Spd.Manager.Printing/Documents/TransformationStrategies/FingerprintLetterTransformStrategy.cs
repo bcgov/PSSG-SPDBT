@@ -1,18 +1,28 @@
-﻿using Spd.Resource.Repository.Application;
+﻿using AutoMapper;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Org;
 using Spd.Utilities.Printing.BCMailPlus;
 using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
-internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository)
+internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository,
+    IContactRepository contactRepository,
+    IOrgRepository orgRepository,
+    IMapper mapper)
     : BcMailPlusTransformStrategyBase<FingerprintLetterTransformRequest, FingerprintLetter>(Jobs.FingerprintsLetter)
 {
     protected override async Task<FingerprintLetter> CreateDocument(FingerprintLetterTransformRequest request, CancellationToken cancellationToken)
     {
-        var application = await applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), cancellationToken);
-
-        //TODO: map to document data
-        return new FingerprintLetter { Date = application.CreatedOn?.ToString() ?? string.Empty };
+        ApplicationResult app = await applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), cancellationToken);
+        ContactResp applicant = await contactRepository.GetAsync((Guid)app.ApplicantId, cancellationToken);
+        OrgQryResult org = (OrgQryResult)await orgRepository.QueryOrgAsync(new OrgByIdentifierQry(app.OrgId), cancellationToken);
+        FingerprintLetter letter = mapper.Map<FingerprintLetter>(app);
+        letter.WorksWithCategory = org.OrgResult.EmployeeInteractionType?.ToString();
+        letter.Applicant = mapper.Map<Applicant>(applicant);
+        letter.Organization = mapper.Map<Organization>(org.OrgResult);
+        return letter;
     }
 }
 
@@ -57,7 +67,7 @@ public record Applicant
     public string MailingAddress1 { get; set; }
 
     [JsonPropertyName("mailingAddress2")]
-    public object MailingAddress2 { get; set; }
+    public string MailingAddress2 { get; set; }
 
     [JsonPropertyName("city")]
     public string City { get; set; }
