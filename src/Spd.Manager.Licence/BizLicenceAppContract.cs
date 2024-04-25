@@ -3,26 +3,35 @@
 namespace Spd.Manager.Licence;
 public abstract record BizLicenceAppBase
 {
+    // Licence info
+    public string? ApplicationNumber {  get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+
+    // Expired licence info
     public string? ExpiredLicenceNumber { get; set; }
     public bool? HasExpiredLicence { get; set; }  //for new application type
-    public BusinessTypeCode? BusinessTypeCode { get; set; }
-    public string? BusinessLicenceNumber { get; set; }
-    public string? LegalBusinessName { get; set; }
+    public string? BusinessName { get; set; }
     public DateOnly? ExpiryDate { get; set; }
+
+    // Existing licence info * Section might not be needed in request
+    public string? LegalBusinessName { get; set; }
+    public string? BusinessLicenceNumber { get; set; }
+    
+    // Business info
+    public BusinessTypeCode? BusinessTypeCode { get; set; }
     public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }     // * might not be needed in request
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
 
     // Branding
-    public IEnumerable<Document>? DocumentsBranding { get; set; }    // What kind of field do we need for "Document"?
+    public IEnumerable<Document>? BrandingDocuments { get; set; }    // What kind of field do we need for "Document"?
 
     // Proof of insurance
     public Document? Insurnace { get; set; }   // What kind of document?
 
     // Licence category
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public IEnumerable<Document>? DocumentsRegistrar { get; set; }    // What kind of field do we need for "Document"?
+    public IEnumerable<Document>? RegistrarDocuments { get; set; }    // What kind of field do we need for "Document"?
     public PrivateInvestigatorInfo? PrivateInvestigatorInfo { get; set; }
     public bool? UseDogs { get; set; }
     public Document? SecurityDogCertificate { get; set; }
