@@ -20,7 +20,7 @@ import {
 							<mat-form-field>
 								<mat-label>Hair Colour</mat-label>
 								<mat-select formControlName="hairColourCode" [errorStateMatcher]="matcher">
-									<mat-option *ngFor="let item of hairColourTypes" [value]="item.code">
+									<mat-option *ngFor="let item of hairColourTypes; let i = index" [value]="item.code">
 										{{ item.desc }}
 									</mat-option>
 								</mat-select>
@@ -31,7 +31,7 @@ import {
 							<mat-form-field>
 								<mat-label>Eye Colour</mat-label>
 								<mat-select formControlName="eyeColourCode" [errorStateMatcher]="matcher">
-									<mat-option *ngFor="let item of eyeColourTypes" [value]="item.code">
+									<mat-option *ngFor="let item of eyeColourTypes; let i = index" [value]="item.code">
 										{{ item.desc }}
 									</mat-option>
 								</mat-select>
@@ -64,7 +64,7 @@ import {
 							<mat-form-field>
 								<mat-label>Units</mat-label>
 								<mat-select formControlName="heightUnitCode" [errorStateMatcher]="matcher">
-									<mat-option *ngFor="let item of heightUnitTypes" [value]="item.code">
+									<mat-option *ngFor="let item of heightUnitTypes; let i = index" [value]="item.code">
 										{{ item.desc }}
 									</mat-option>
 								</mat-select>
@@ -98,7 +98,7 @@ import {
 							<mat-form-field>
 								<mat-label>Units</mat-label>
 								<mat-select formControlName="weightUnitCode" [errorStateMatcher]="matcher">
-									<mat-option *ngFor="let item of weightUnitTypes" [value]="item.code">
+									<mat-option *ngFor="let item of weightUnitTypes; let i = index" [value]="item.code">
 										{{ item.desc }}
 									</mat-option>
 								</mat-select>

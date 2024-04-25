@@ -6,11 +6,11 @@ import { CommonApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<mat-toolbar color="primary" class="no-print footer">
 			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">Contact Us</a>
+			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a>
+			<a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a>
+			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a>
+			<a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a>
+			<a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services" target="_blank">Contact Us</a>
 		</mat-toolbar>
 	`,
 	styles: [

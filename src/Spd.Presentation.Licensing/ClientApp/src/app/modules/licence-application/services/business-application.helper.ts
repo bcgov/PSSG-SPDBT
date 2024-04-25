@@ -217,16 +217,24 @@ export abstract class BusinessApplicationHelper {
 		branches: this.formBuilder.array([]),
 	});
 
-	membersWithSwlFormGroup: FormGroup = this.formBuilder.group({
-		hasMembersWithSwl: new FormControl(''),
-		licenceNumberLookup: new FormControl(''),
+	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
 		members: this.formBuilder.array([]),
 	});
 
-	membersWithoutSwlFormGroup: FormGroup = this.formBuilder.group({
-		hasMembersWithoutSwl: new FormControl(''),
-		members: this.formBuilder.array([]),
+	employeesFormGroup: FormGroup = this.formBuilder.group({
+		employees: this.formBuilder.array([]),
 	});
+
+	// membersWithSwlFormGroup: FormGroup = this.formBuilder.group({
+	// 	hasMembersWithSwl: new FormControl(''),
+	// 	licenceNumberLookup: new FormControl(''),
+	// 	members: this.formBuilder.array([]),
+	// });
+
+	// membersWithoutSwlFormGroup: FormGroup = this.formBuilder.group({
+	// 	hasMembersWithoutSwl: new FormControl(''),
+	// 	members: this.formBuilder.array([]),
+	// });
 
 	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
 		attachments: this.formBuilder.array([]),
@@ -253,10 +261,6 @@ export abstract class BusinessApplicationHelper {
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
 
-	employeeWithSwlFormGroup: FormGroup = this.formBuilder.group({
-		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
-	});
-
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
 			givenName: new FormControl('', [FormControlValidators.required]),
@@ -276,11 +280,11 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
-	employeesFormGroup: FormGroup = this.formBuilder.group({
-		hasEmployees: new FormControl(''),
-		licenceNumberLookup: new FormControl(''),
-		employees: this.formBuilder.array([]),
-	});
+	// employeesFormGroup: FormGroup = this.formBuilder.group({
+	// 	hasEmployees: new FormControl(''),
+	// 	licenceNumberLookup: new FormControl(''),
+	// 	employees: this.formBuilder.array([]),
+	// });
 
 	managerFormGroup: FormGroup = this.formBuilder.group({
 		givenName: new FormControl('', [FormControlValidators.required]),

@@ -52,7 +52,7 @@ export class Address {
 						<mat-autocomplete #auto="matAutocomplete">
 							<mat-option
 								class="address-option"
-								*ngFor="let field of addressAutocompleteFields"
+								*ngFor="let field of addressAutocompleteFields; let i = index"
 								[value]="field.text"
 								(click)="onAutocomplete(field)"
 							>
@@ -80,7 +80,7 @@ export class Address {
 					<mat-form-field>
 						<mat-label>Country</mat-label>
 						<mat-select formControlName="country">
-							<mat-option *ngFor="let ctry of countryList" [value]="ctry.code">
+							<mat-option *ngFor="let ctry of countryList; let i = index" [value]="ctry.code">
 								<span [ngClass]="{ 'text-option fw-semibold': ctry.code === 'CAN' || ctry.code === 'USA' }">{{
 									ctry.desc
 								}}</span>
