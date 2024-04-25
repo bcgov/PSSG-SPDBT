@@ -13,6 +13,7 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.contactid))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.lastname))
+            .ForMember(d => d.FullName, opt => opt.MapFrom(s => s.fullname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))

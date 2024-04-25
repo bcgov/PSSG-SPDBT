@@ -4,7 +4,7 @@
     {
         public string? JobId { get; set; }
         public DocumentType DocumentType { get; set; }
-        public Guid DocumentReferenceId { get; set; }
+        public Guid ApplicationId { get; set; }
     };
     public enum DocumentType
     {

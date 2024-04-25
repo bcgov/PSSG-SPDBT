@@ -10,12 +10,12 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
         public Mappings()
         {
             CreateMap<ApplicationResult, FingerprintLetter>()
-                .ForMember(d => d.Date, opt => opt.MapFrom(s => s.CreatedOn.ToString()))
+                .ForMember(d => d.Date, opt => opt.MapFrom(s => DateTime.Now.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.ApplicationNumber))
                 .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => s.ServiceType.ToString()));
 
             CreateMap<ContactResp, Applicant>()
-                .ForMember(d => d.Name, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}"))
+                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.FullName))
                 .ForMember(d => d.Sex, opt => opt.MapFrom(s => s.Gender.ToString()))
                 .ForMember(d => d.DateoOfBirth, opt => opt.MapFrom(s => s.BirthDate))
                 .ForMember(d => d.PlaceOfBirth, opt => opt.MapFrom(s => s.BirthPlace))

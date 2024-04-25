@@ -19,6 +19,7 @@ namespace Spd.Resource.Repository.Contact
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? FullName { get; set; }
         public string? EmailAddress { get; set; }
         public string? PhoneNumber { get; set; }
         public string? MiddleName1 { get; set; }

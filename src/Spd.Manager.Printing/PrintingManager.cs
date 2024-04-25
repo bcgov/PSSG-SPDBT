@@ -13,7 +13,9 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
 {
     public async Task<string> Handle(StartPrintJobCommand request, CancellationToken cancellationToken)
     {
-        var transformResponse = await _documentTransformationEngine.Transform(CreateDocumentTransformRequest(request.PrintJob), cancellationToken);
+        var transformResponse = await _documentTransformationEngine.Transform(
+            CreateDocumentTransformRequest(request.PrintJob),
+            cancellationToken);
         return transformResponse switch
         {
             BcMailPlusTransformResponse bcmailplusResponse => await PrintViaBcMailPlus(bcmailplusResponse, cancellationToken),
@@ -48,7 +50,7 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
     private static DocumentTransformRequest CreateDocumentTransformRequest(PrintJob printJob) =>
       printJob.DocumentType switch
       {
-          DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest(printJob.DocumentReferenceId),
+          DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest(printJob.ApplicationId),
 
           _ => throw new NotImplementedException()
       };

@@ -3,6 +3,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Printing.BCMailPlus;
+using Spd.Utilities.Shared.Exceptions;
 using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
@@ -16,7 +17,11 @@ internal class FingerPrintLetterTransformStrategy(IApplicationRepository applica
     protected override async Task<FingerprintLetter> CreateDocument(FingerprintLetterTransformRequest request, CancellationToken cancellationToken)
     {
         ApplicationResult app = await applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), cancellationToken);
+        if (app == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the application");
+
         ContactResp applicant = await contactRepository.GetAsync((Guid)app.ApplicantId, cancellationToken);
+        if (applicant == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the applicant");
+
         OrgQryResult org = (OrgQryResult)await orgRepository.QueryOrgAsync(new OrgByIdentifierQry(app.OrgId), cancellationToken);
         FingerprintLetter letter = mapper.Map<FingerprintLetter>(app);
         letter.WorksWithCategory = org.OrgResult.EmployeeInteractionType?.ToString();
