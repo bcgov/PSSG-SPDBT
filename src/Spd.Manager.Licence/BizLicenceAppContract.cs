@@ -1,40 +1,38 @@
-﻿using Spd.Manager.Shared;
+﻿using MediatR;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
-public abstract record BizLicenceAppBase
+
+public interface IBizLicenceAppMananger
+{
+    public Task<Guid> Handle(BizLicenceAppNewCommand command, CancellationToken ct);
+}
+
+public record BizLicenceAppNewCommand(
+    BizLicenceAppSubmitRequest bizLicenceSubmitRequest)
+    : IRequest<Guid>;
+
+public abstract record BizLicenceApp
 {
     // Licence info
-    public string? ApplicationNumber {  get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
 
     // Expired licence info
-    public string? ExpiredLicenceNumber { get; set; }
-    public bool? HasExpiredLicence { get; set; }  //for new application type
-    public string? BusinessName { get; set; }
+    public Guid? ExpiredLicenceId { get; set; }
+    public bool? HasExpiredLicence { get; set; }                        // For new application type
     public DateOnly? ExpiryDate { get; set; }
 
-    // Existing licence info * Section might not be needed in request
-    public string? LegalBusinessName { get; set; }
-    public string? BusinessLicenceNumber { get; set; }
-    
     // Business info
-    public BusinessTypeCode? BusinessTypeCode { get; set; }
-    public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }     // * might not be needed in request
+    public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
 
-    // Branding
-    public IEnumerable<Document>? BrandingDocuments { get; set; }    // What kind of field do we need for "Document"?
-
-    // Proof of insurance
-    public Document? Insurnace { get; set; }   // What kind of document?
+    public IEnumerable<Document>? DocumentInfos { get; set; }           // Contains branding, insurance, registrar, security dog certificate and BC report documents
 
     // Licence category
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public IEnumerable<Document>? RegistrarDocuments { get; set; }    // What kind of field do we need for "Document"?
     public PrivateInvestigatorInfo? PrivateInvestigatorInfo { get; set; }
     public bool? UseDogs { get; set; }
-    public Document? SecurityDogCertificate { get; set; }
 
     // Licence term
     public LicenceTermCode? LicenceTermCode { get; set; }
@@ -46,7 +44,6 @@ public abstract record BizLicenceAppBase
     // Controlling member
     public IEnumerable<SwlControllerMemberInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlControllerMemberInfo>();
     public IEnumerable<NonSwlControllerMemberInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<NonSwlControllerMemberInfo>();
-    public Document? BcReport { get; set; }
 
     // Employees
     public IEnumerable<Employee> Employees { get; set; } = Enumerable.Empty<Employee>();
@@ -54,7 +51,7 @@ public abstract record BizLicenceAppBase
 
 public record SecurityWorkerInfo : PersonalInfo
 {
-    public string? LicenceNumber { get; set; }  //security worker licence number
+    public string? LicenceNumber { get; set; }                          // Security worker licence number
     public bool? IsLicenceValid { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
@@ -80,24 +77,6 @@ public record PersonalInfo
     public string? Surname { get; set; }
 }
 
-public record BusinessAddress : Address;
-public record BusinessMailingAddress : Address;
-public record BcAddress : Address;
-
-public record BranchInfo : Address
-{
-    public string? BranchManager { get; set; }
-    public string? ManagerEmail { get; set; }
-    public string? ManagerPhoneNumber { get; set; }
-}
-
-public record ControllerMemberInfo
-{
-    public string? Name { get; set; }
-    public string? SecurityWorkerLicenceNumber { get; set; }
-    public LicenceStatusCode? Status { get; set; }
-}
-
 public record SwlControllerMemberInfo : PersonalInfo
 {
     public string? SecurityWorkerLicenceNumber { get; set; }
@@ -110,10 +89,10 @@ public record NonSwlControllerMemberInfo : PersonalInfo
 
 public record Employee : PersonalInfo
 {
-    public string? SecurityWorkerLicenceNumber { get; set; }
+    public Guid? EmployeeContactId { get; set; }
 }
 
-public record BizLicenceAppSubmitRequest : BizLicenceAppBase
+public record BizLicenceAppSubmitRequest : BizLicenceApp
 {
 
 }
