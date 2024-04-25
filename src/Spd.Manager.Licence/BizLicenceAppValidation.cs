@@ -9,6 +9,7 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
     {
         RuleFor(r => r.ExpiredLicenceNumber)
             .NotEmpty()
+            .MaximumLength(6)
             .When(r => r.HasExpiredLicence == true);
         RuleFor(r => r.BusinessTypeCode).NotEmpty().IsInEnum();
         RuleFor(r => r.SecurityWorkerInfo.GivenName)
@@ -40,7 +41,7 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .WithMessage("The name of your business must be your name, as it appears on your security worker licence");
         RuleFor(r => r.PhoneNumber).NotEmpty().MaximumLength(15);
         RuleFor(r => r.EmailAddress).NotEmpty().MaximumLength(75).EmailAddress();
-        RuleFor(r => r.DocumentsBranding)
+        RuleFor(r => r.BrandingDocuments)
             .NotEmpty()
             .Must(r => r.Count() <= Constants.MaximumNumberOfBrandingDocuments)
             .WithMessage($"No more than {Constants.MaximumNumberOfBrandingDocuments} documents are allowed for branding");
@@ -48,7 +49,7 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .NotEmpty();
         RuleFor(r => r.CategoryCodes)
             .NotEmpty();
-        RuleFor(r => r.DocumentsRegistrar)
+        RuleFor(r => r.RegistrarDocuments)
             .NotEmpty()
             .When(r => r.CategoryCodes.Any(c => c.Equals(WorkerCategoryTypeCode.ArmouredCarGuard)));
         RuleFor(r => r.PrivateInvestigatorInfo.GivenName)
@@ -127,7 +128,7 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
             .NotEmpty()
             .MaximumLength(75)
             .EmailAddress()
-            .When(r => r.OtherContactInfo != null && r.BusinessManagerInfo?.IsBusinessManager == false);
+            .When(r => r.OtherContactInfo != null);
         RuleFor(r => r.SwlControllerMemberInfos)
             .ForEach(rule => rule
                 .Must(r => r.GivenName?.Length <= 40)
@@ -156,12 +157,13 @@ public class BizLicenceAppSubmitRequestValidator : AbstractValidator<BizLicenceA
         RuleFor(r => r.Employees)
             .Must(r => r.Count() <= Constants.MaximumNumberOfEmployees)
             .ForEach(rule => rule
+                .Must(r => r.SecurityWorkerLicenceNumber != null && r.SecurityWorkerLicenceNumber.Length <= 10)
                 .Must(r => r.GivenName?.Length <= 40)
                 .Must(r => r.MiddleName1?.Length <= 40)
                 .Must(r => r.MiddleName2?.Length <= 40)
                 .Must(r => r.Surname != null && r.Surname.Length > 0)
                     .WithMessage("Surname cannot be empty"))
-                .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
-                    r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
+            .When(r => r.BusinessTypeCode != BusinessTypeCode.NonRegisteredSoleProprietor &&
+                r.BusinessTypeCode != BusinessTypeCode.RegisteredSoleProprietor);
     }
 }
