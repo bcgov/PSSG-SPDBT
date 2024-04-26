@@ -72,7 +72,12 @@ public enum LicenceDocumentTypeCode
     BCID,
     ArmouredVehicleRationale,
     BodyArmourRationale,
-    PassportAdditional
+    PassportAdditional,
+    Branding,
+    Insurance,
+    Registrar,
+    SecurityDogCertificate,
+    BCReport
 }
 
 public enum BusinessTypeCode
