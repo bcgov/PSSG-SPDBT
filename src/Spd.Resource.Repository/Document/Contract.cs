@@ -144,6 +144,8 @@ namespace Spd.Resource.Repository.Document
         UseForceEmployerLetterASTEquivalent,
         Resume,
         NonCanadianPassport,
-        BCID
+        BCID,
+        CompanyBranding,
+        CorporateSummary
     }
 }
