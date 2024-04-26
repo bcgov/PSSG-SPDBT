@@ -4,6 +4,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.ServiceTypes;
 using Spd.Utilities.Printing.BCMailPlus;
 using Spd.Utilities.Shared.Exceptions;
 using System.Text.Json.Serialization;
@@ -14,6 +15,7 @@ internal class FingerPrintLetterTransformStrategy(IApplicationRepository applica
     IContactRepository contactRepository,
     IOrgRepository orgRepository,
     IOptionSetRepository optionsetRepository,
+    IServiceTypeRepository serviceTypeRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<FingerprintLetterTransformRequest, FingerprintLetter>(Jobs.FingerprintsLetter)
 {
@@ -28,6 +30,8 @@ internal class FingerPrintLetterTransformStrategy(IApplicationRepository applica
         OrgQryResult org = (OrgQryResult)await orgRepository.QueryOrgAsync(new OrgByIdentifierQry(app.OrgId), cancellationToken);
 
         FingerprintLetter letter = mapper.Map<FingerprintLetter>(app);
+        letter.ServiceType = await GetServiceTypeForLetter(app.ServiceType, cancellationToken);
+
         if (org.OrgResult?.EmployeeInteractionType == null)
             letter.WorksWithCategory = string.Empty;
         else
@@ -43,6 +47,16 @@ internal class FingerPrintLetterTransformStrategy(IApplicationRepository applica
 
         letter.Organization = mapper.Map<Organization>(org.OrgResult);
         return letter;
+    }
+
+    private async Task<string> GetServiceTypeForLetter(ServiceTypeEnum? serviceType, CancellationToken cancellationToken)
+    {
+        if (serviceType == null) return string.Empty;
+        var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
+            new ServiceTypeQry(null, serviceType), cancellationToken);
+        string name = serviceTypeListResp.Items.First().ServiceTypeName;
+        if (name.StartsWith("CRRP - ")) return name.Substring(7);
+        return name;
     }
 }
 
