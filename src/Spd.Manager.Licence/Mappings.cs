@@ -414,6 +414,11 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.ArmouredVehicleRationale, DocumentTypeEnum.ArmouredVehicleRationale},
         {LicenceDocumentTypeCode.BodyArmourRationale, DocumentTypeEnum.BodyArmourRationale},
         {LicenceDocumentTypeCode.PassportAdditional, DocumentTypeEnum.Passport},
+        {LicenceDocumentTypeCode.BizBranding, DocumentTypeEnum.CompanyBranding },
+        {LicenceDocumentTypeCode.BizInsurance, DocumentTypeEnum.BusinessInsurance },
+        {LicenceDocumentTypeCode.ArmourCarGuardRegistrar, DocumentTypeEnum.ArmouredCarGuard },
+        {LicenceDocumentTypeCode.BizSecurityDogCertificate, DocumentTypeEnum.DogCertificate },
+        {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary }
     }.ToImmutableDictionary();
 
 
