@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Printing.BCMailPlus;
 using Spd.Utilities.Shared.Exceptions;
@@ -11,6 +13,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository,
     IContactRepository contactRepository,
     IOrgRepository orgRepository,
+    IOptionSetRepository optionsetRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<FingerprintLetterTransformRequest, FingerprintLetter>(Jobs.FingerprintsLetter)
 {
@@ -23,9 +26,21 @@ internal class FingerPrintLetterTransformStrategy(IApplicationRepository applica
         if (applicant == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the applicant");
 
         OrgQryResult org = (OrgQryResult)await orgRepository.QueryOrgAsync(new OrgByIdentifierQry(app.OrgId), cancellationToken);
+
         FingerprintLetter letter = mapper.Map<FingerprintLetter>(app);
-        letter.WorksWithCategory = org.OrgResult.EmployeeInteractionType?.ToString();
+        if (org.OrgResult?.EmployeeInteractionType == null)
+            letter.WorksWithCategory = string.Empty;
+        else
+            letter.WorksWithCategory = await optionsetRepository.GetLabelAsync(
+                (EmployeeInteractionTypeCode)org.OrgResult.EmployeeInteractionType,
+                cancellationToken);
+
         letter.Applicant = mapper.Map<Applicant>(applicant);
+        if (applicant.Gender == null)
+            letter.Applicant.Sex = string.Empty;
+        else
+            letter.Applicant.Sex = await optionsetRepository.GetLabelAsync((GenderEnum)applicant.Gender, CancellationToken.None);
+
         letter.Organization = mapper.Map<Organization>(org.OrgResult);
         return letter;
     }

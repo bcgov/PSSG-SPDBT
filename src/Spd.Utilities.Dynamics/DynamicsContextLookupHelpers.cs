@@ -254,6 +254,26 @@ namespace Spd.Utilities.Dynamics
             return LicenceCategoryDictionary.FirstOrDefault(s => s.Value == licenceCategoryId).Key;
         }
         #endregion
+
+        //#region Optionset labels
+        public static readonly ImmutableDictionary<string, string> ServiceTypeLabelDictionary = new Dictionary<string, string>()
+        {
+            {"PSSO", "PSSO" },
+            {"CRRP_EMPLOYEE", "Employee"},
+            {"CRRP_VOLUNTEER","Volunteer"},
+            {"MCFD", "MCFD"},
+            {"PE_CRC", "PE-CRC"},
+            {"PE_CRC_VS","PE-CRC-VS"},
+            {"SecurityWorkerLicence","Security Worker Licence"},
+            {"PSSO_VS", "PSSO-VS"},
+            {"SecurityBusinessLicence","Security Business Licence"},
+            {"ArmouredVehiclePermit", "Armoured Vehicle Permit"},
+            {"BodyArmourPermit", "Body Armour Permit"},
+            {"MDRA", "Metal Dealers and Recyclers Act"},
+            {"SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC","Security Business Licence - Controlling Member CRC"},
+        }.ToImmutableDictionary();
+        //#endregion
+
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)
         {
             try

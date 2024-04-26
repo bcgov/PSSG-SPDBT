@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies
 {
     public class Mappings : Profile
     {
+        public IOptionSetRepository _optionSetRepository { get; }
+
         public Mappings()
         {
             CreateMap<ApplicationResult, FingerprintLetter>()
@@ -16,8 +19,8 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
 
             CreateMap<ContactResp, Applicant>()
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.FullName))
-                .ForMember(d => d.Sex, opt => opt.MapFrom(s => s.Gender.ToString()))
-                .ForMember(d => d.DateoOfBirth, opt => opt.MapFrom(s => s.BirthDate))
+                .ForMember(d => d.Sex, opt => opt.MapFrom(s => s.Gender))
+                .ForMember(d => d.DateoOfBirth, opt => opt.MapFrom(s => s.BirthDate.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.PlaceOfBirth, opt => opt.MapFrom(s => s.BirthPlace))
                 .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
                 .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
