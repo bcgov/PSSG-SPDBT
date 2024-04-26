@@ -1,23 +1,32 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser;
-using Spd.Utilities.Shared;
+using Spd.Utilities.Recaptcha;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class BizLicensingController : SpdControllerBase
+    public class BizLicensingController : SpdApplicantLicenceControllerBase
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
-        public BizLicensingController(IPrincipal currentUser, IMediator mediator)
+        private readonly IConfiguration _configuration;
+        public BizLicensingController(IPrincipal currentUser, 
+            IMediator mediator,
+            IConfiguration configuration,
+            IRecaptchaVerificationService recaptchaVerificationService,
+            IDistributedCache cache,
+            IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _currentUser = currentUser;
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         /// <summary>
