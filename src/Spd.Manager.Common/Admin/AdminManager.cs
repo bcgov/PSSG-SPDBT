@@ -12,12 +12,12 @@ internal class AdminManager(
         IMapper _mapper,
         IConfigRepository _configRepo,
         IOrgRepository _orgRepo)
-          : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
-            IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
-            IRequestHandler<GetBannerMsgQuery, string>,
-            IRequestHandler<GetReplacementProcessingTimeQuery, string>,
-            IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
-            IAdminManager
+        : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
+        IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
+        IRequestHandler<GetBannerMsgQuery, string>,
+        IRequestHandler<GetReplacementProcessingTimeQuery, string>,
+        IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
+        IAdminManager
 {
     public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
     {
