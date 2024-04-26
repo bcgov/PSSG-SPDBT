@@ -265,7 +265,7 @@ export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
 	{ desc: 'Canadian Firearms Licence', code: LicenceDocumentTypeCode.CanadianFirearmsLicence },
 	{ desc: 'Canadian Permanent Resident Card', code: LicenceDocumentTypeCode.PermanentResidentCardAdditional },
 	{ desc: `Driver's Licence`, code: LicenceDocumentTypeCode.DriversLicenceAdditional },
-	{ desc: 'Passport', code: LicenceDocumentTypeCode.NonCanadianPassport },
+	{ desc: 'Passport', code: LicenceDocumentTypeCode.PassportAdditional },
 	{
 		desc: 'Secure certificate of Indian Status (with photo)',
 		code: LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional,

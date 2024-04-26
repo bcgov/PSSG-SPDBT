@@ -9,6 +9,7 @@ import { AccessDeniedComponent } from './components/access-denied.component';
 import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
 import { AlertComponent } from './components/alert.component';
 import { BaseFilterComponent } from './components/base-filter.component';
+import { BizSelectionModalComponent } from './components/biz-selection-modal.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CommonPaymentCancelComponent } from './components/common-payment-cancel.component';
 import { CommonPaymentErrorComponent } from './components/common-payment-error.component';
@@ -34,6 +35,7 @@ const SHARED_COMPONENTS = [
 	SpdFooterComponent,
 	DialogComponent,
 	DialogOopsComponent,
+	BizSelectionModalComponent,
 	AddressAutocompleteComponent,
 	ModalAddressComponent,
 	DropdownOverlayComponent,

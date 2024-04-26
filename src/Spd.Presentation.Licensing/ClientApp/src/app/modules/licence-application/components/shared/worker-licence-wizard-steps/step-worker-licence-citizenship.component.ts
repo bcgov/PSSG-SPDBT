@@ -43,13 +43,20 @@ import { HotToastService } from '@ngneat/hot-toast';
 					</div>
 
 					<div class="row mt-4" *ngIf="isCanadianCitizen.value" @showHideTriggerSlideAnimation>
-						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mb-3 mat-divider-primary" *ngIf="isNotRenewal"></mat-divider>
+
+							<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenHeading">
+								<div class="text-minor-heading mb-2">Proof of Canadian citizenship</div>
+							</ng-container>
+							<ng-template #notCanadianCitizenHeading>
+								<div class="text-minor-heading mb-2">Proof of residency</div>
+							</ng-template>
+
 							<div class="row my-2">
 								<div class="col-lg-7 col-md-12">
 									<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 										<mat-form-field>
-											<mat-label>Proof of Canadian Citizenship</mat-label>
 											<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -66,7 +73,6 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</ng-container>
 									<ng-template #notCanadianCitizen>
 										<mat-form-field>
-											<mat-label>Proof of ability to work in Canada</mat-label>
 											<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -138,10 +144,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 							<div class="row mt-4" *ngIf="showAdditionalGovIdData" @showHideTriggerSlideAnimation>
 								<div class="col-12">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+									<div class="text-minor-heading mb-2">Type of additional piece of government-issued photo ID</div>
 									<div class="row my-2">
 										<div class="col-lg-6 col-md-12">
 											<mat-form-field>
-												<mat-label>Type of additional piece of government-issued photo ID</mat-label>
 												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
 													<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
 														{{ item.desc }}

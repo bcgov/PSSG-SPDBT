@@ -18,12 +18,13 @@ import {
 	CommonApplicationService,
 	UserLicenceResponse,
 } from '@app/modules/licence-application/services/common-application.service';
-import { take, tap } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-business-user-applications',
 	template: `
 		<section class="step-section">
+			<!-- TODO  *ngIf="results$ | async" -->
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
@@ -384,6 +385,7 @@ import { take, tap } from 'rxjs';
 export class BusinessUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
+	results$!: Observable<any>; // TODO implement
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 

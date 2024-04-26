@@ -40,7 +40,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								<div class="row mt-2">
 									<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
-											<mat-label>Your current role</mat-label>
+											<mat-label>Your Current Role</mat-label>
 											<mat-select formControlName="policeOfficerRoleCode" [errorStateMatcher]="matcher">
 												<mat-option *ngFor="let item of policeOfficerRoleTypes" [value]="item.code">
 													{{ item.desc }}

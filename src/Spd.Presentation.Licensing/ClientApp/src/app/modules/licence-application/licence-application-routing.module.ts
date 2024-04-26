@@ -30,6 +30,7 @@ import { WorkerLicenceWizardAuthenticatedReplacementComponent } from './componen
 import { WorkerLicenceWizardAuthenticatedUpdateComponent } from './components/authenticated/worker-licence-wizard-authenticated-update.component';
 import { StepWorkerLicenceUpdateTermsAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-steps/step-worker-licence-update-terms-authenticated.component';
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
+import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
@@ -237,7 +238,7 @@ const routes: Routes = [
 				children: [
 					{
 						path: LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
-						component: LicenceFirstTimeUserTermsOfUseComponent,
+						component: BusinessFirstTimeUserTermsOfUseComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,

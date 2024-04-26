@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
@@ -94,6 +95,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private authUserBcscService: AuthUserBcscService,
+		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
@@ -101,7 +103,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			console.debug('HeaderComponent isLoggedIn', isLoggedIn);
+			console.debug('[HeaderComponent] isLoggedIn', isLoggedIn);
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;
@@ -138,22 +140,14 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		// console.debug(
-		// 	'BCeID bceidUserInfoProfile',
-		// 	this.authUserBceidService.bceidUserInfoProfile,
-		// 	'loggedInUserTokenData',
-		// 	this.authProcessService.loggedInUserTokenData
-		// );
-
-		// const userData = this.authUserBceidService.bceidUserInfoProfile;
-		// let name = '';
-		// if (userData) {
-		// 	name = this.utilService.getFullName(userData.firstName, userData.lastName);
-		// }
-		// if (!name) {
-		// 	name = this.authProcessService.loggedInUserTokenData.display_name;
-		// }
-		// this.loggedInUserDisplay = name ?? 'BCeID User';
-		this.loggedInUserDisplay = 'BCeID User';
+		const userData = this.authUserBceidService.bceidUserProfile;
+		let name: string | null = null;
+		if (userData) {
+			name = this.utilService.getFullName(userData.firstName, userData.lastName);
+		}
+		if (!name) {
+			name = this.authProcessService.loggedInUserTokenData.display_name;
+		}
+		this.loggedInUserDisplay = name ?? 'BCeID User';
 	}
 }
