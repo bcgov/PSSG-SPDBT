@@ -6,12 +6,7 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Presentation.Licensing.UnitTest;
 public class BizLicensingControllerTest
@@ -47,11 +42,11 @@ public class BizLicensingControllerTest
                 new Claim("sub", "test"),
             ], "mock"));
 
-        sut = new BizLicensingController(user, 
-            mockMediator.Object, 
-            configuration, 
-            mockRecaptch.Object, 
-            mockCache.Object, 
+        sut = new BizLicensingController(user,
+            mockMediator.Object,
+            configuration,
+            mockRecaptch.Object,
+            mockCache.Object,
             mockDpProvider.Object);
     }
 
