@@ -46,6 +46,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
         {
+            VerifyFiles(fileUploadRequest.Documents);
             var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
             return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
