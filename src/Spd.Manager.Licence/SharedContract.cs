@@ -73,11 +73,11 @@ public enum LicenceDocumentTypeCode
     ArmouredVehicleRationale,
     BodyArmourRationale,
     PassportAdditional,
-    Branding,
-    Insurance,
-    Registrar,
-    SecurityDogCertificate,
-    BCReport
+    BizBranding,
+    BizInsurance,
+    ArmourCarGuardRegistrar,
+    BizSecurityDogCertificate,
+    BizBCReport
 }
 
 public enum BusinessTypeCode
