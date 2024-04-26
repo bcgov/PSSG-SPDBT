@@ -59,6 +59,146 @@ public class LicenceAppDocumentManagerTest
     }
 
     [Fact]
+    public async void Handle_CreateDocumentInTransientStoreCommand_WithBizBranding_Return_LicenceAppDocumentResponse_List()
+    {
+        var file = new Mock<IFormFile>();
+        file.Setup(f => f.FileName).Returns("test.txt");
+        file.Setup(f => f.ContentType).Returns("multipart/form-data");
+        file.Setup(f => f.Length).Returns(1);
+
+        var document = file.Object;
+
+        LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding);
+        CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
+
+        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationResp());
+        mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+        mockTempFileStorageService.Setup(m => m.HandleCommand(It.IsAny<SaveTempFileCommand>(), CancellationToken.None))
+            .ReturnsAsync(Guid.NewGuid().ToString());
+        mockDocRepo.Setup(m => m.ManageAsync(It.IsAny<CreateDocumentCmd>(), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<LicenceAppDocumentResponse[]>(result);
+    }
+
+    [Fact]
+    public async void Handle_CreateDocumentInTransientStoreCommand_WithBizInsurance_Return_LicenceAppDocumentResponse_List()
+    {
+        var file = new Mock<IFormFile>();
+        file.Setup(f => f.FileName).Returns("test.txt");
+        file.Setup(f => f.ContentType).Returns("multipart/form-data");
+        file.Setup(f => f.Length).Returns(1);
+
+        var document = file.Object;
+
+        LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance);
+        CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
+
+        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationResp());
+        mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+        mockTempFileStorageService.Setup(m => m.HandleCommand(It.IsAny<SaveTempFileCommand>(), CancellationToken.None))
+            .ReturnsAsync(Guid.NewGuid().ToString());
+        mockDocRepo.Setup(m => m.ManageAsync(It.IsAny<CreateDocumentCmd>(), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<LicenceAppDocumentResponse[]>(result);
+    }
+
+    [Fact]
+    public async void Handle_CreateDocumentInTransientStoreCommand_WithArmourCarGuardRegistrar_Return_LicenceAppDocumentResponse_List()
+    {
+        var file = new Mock<IFormFile>();
+        file.Setup(f => f.FileName).Returns("test.txt");
+        file.Setup(f => f.ContentType).Returns("multipart/form-data");
+        file.Setup(f => f.Length).Returns(1);
+
+        var document = file.Object;
+
+        LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.ArmourCarGuardRegistrar);
+        CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
+
+        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationResp());
+        mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+        mockTempFileStorageService.Setup(m => m.HandleCommand(It.IsAny<SaveTempFileCommand>(), CancellationToken.None))
+            .ReturnsAsync(Guid.NewGuid().ToString());
+        mockDocRepo.Setup(m => m.ManageAsync(It.IsAny<CreateDocumentCmd>(), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<LicenceAppDocumentResponse[]>(result);
+    }
+
+    [Fact]
+    public async void Handle_CreateDocumentInTransientStoreCommand_WithBizSecurityDogCertificate_Return_LicenceAppDocumentResponse_List()
+    {
+        var file = new Mock<IFormFile>();
+        file.Setup(f => f.FileName).Returns("test.txt");
+        file.Setup(f => f.ContentType).Returns("multipart/form-data");
+        file.Setup(f => f.Length).Returns(1);
+
+        var document = file.Object;
+
+        LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizSecurityDogCertificate);
+        CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
+
+        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationResp());
+        mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+        mockTempFileStorageService.Setup(m => m.HandleCommand(It.IsAny<SaveTempFileCommand>(), CancellationToken.None))
+            .ReturnsAsync(Guid.NewGuid().ToString());
+        mockDocRepo.Setup(m => m.ManageAsync(It.IsAny<CreateDocumentCmd>(), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<LicenceAppDocumentResponse[]>(result);
+    }
+
+    [Fact]
+    public async void Handle_CreateDocumentInTransientStoreCommand_WithBizBCReport_Return_LicenceAppDocumentResponse_List()
+    {
+        var file = new Mock<IFormFile>();
+        file.Setup(f => f.FileName).Returns("test.txt");
+        file.Setup(f => f.ContentType).Returns("multipart/form-data");
+        file.Setup(f => f.Length).Returns(1);
+
+        var document = file.Object;
+
+        LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizBCReport);
+        CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
+
+        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+            .ReturnsAsync(new LicenceApplicationResp());
+        mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+        mockTempFileStorageService.Setup(m => m.HandleCommand(It.IsAny<SaveTempFileCommand>(), CancellationToken.None))
+            .ReturnsAsync(Guid.NewGuid().ToString());
+        mockDocRepo.Setup(m => m.ManageAsync(It.IsAny<CreateDocumentCmd>(), CancellationToken.None))
+            .ReturnsAsync(new DocumentResp());
+
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<LicenceAppDocumentResponse[]>(result);
+    }
+
+    [Fact]
     public async void Handle_CreateDocumentInTransientStoreCommand_WithInvalidAppId_Throw_Exception()
     {
         LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
