@@ -1,4 +1,4 @@
-﻿namespace Spd.Presentation.Licensing.Configurations;
+﻿namespace Spd.Utilities.Shared;
 
 public class UploadFileConfiguration
 {
