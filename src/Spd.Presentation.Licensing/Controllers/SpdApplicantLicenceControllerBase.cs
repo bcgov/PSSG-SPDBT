@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Presentation.Licensing.Configurations;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.Tools;
-using System.Configuration;
 using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
@@ -16,17 +13,15 @@ public abstract class SpdApplicantLicenceControllerBase : SpdControllerBase
     private readonly ITimeLimitedDataProtector _dataProtector;
     private readonly IDistributedCache _cache;
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
-    private readonly IConfiguration _configuration;
 
-    protected SpdApplicantLicenceControllerBase(IDistributedCache cache, 
-        IDataProtectionProvider dpProvider, 
+    protected SpdApplicantLicenceControllerBase(IDistributedCache cache,
+        IDataProtectionProvider dpProvider,
         IRecaptchaVerificationService recaptchaVerificationService,
-        IConfiguration configuration)
+        IConfiguration configuration) : base(configuration)
     {
         _cache = cache;
         _dataProtector = dpProvider.CreateProtector(SessionConstants.AnonymousRequestDataProtectorName).ToTimeLimitedDataProtector();
         _recaptchaVerificationService = recaptchaVerificationService;
-        _configuration = configuration;
     }
 
     protected IDistributedCache Cache { get { return _cache; } }
@@ -80,7 +75,7 @@ public abstract class SpdApplicantLicenceControllerBase : SpdControllerBase
         foreach (Guid docKey in array)
         {
             IEnumerable<LicAppFileInfo>? items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
-            if (items!=null && items.Any())
+            if (items != null && items.Any())
             {
                 results.AddRange(items);
             }
