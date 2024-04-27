@@ -19,8 +19,9 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="mediator"></param>
         /// <param name="logger"></param>
         public ApplicantLicenceAppController(IMediator mediator,
-            ILogger<PaymentController> logger
-            )
+            ILogger<PaymentController> logger,
+            IConfiguration configuration
+            ) : base(configuration)
         {
             _mediator = mediator;
             _logger = logger;
