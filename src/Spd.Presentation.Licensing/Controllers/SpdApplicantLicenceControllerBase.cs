@@ -99,25 +99,4 @@ public abstract class SpdApplicantLicenceControllerBase : SpdControllerBase
         }
     }
 
-    protected void VerifyFiles(IList<IFormFile> documents)
-    {
-        UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
-        if (fileUploadConfig == null)
-            throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
-
-        //validation files
-        foreach (IFormFile file in documents)
-        {
-            string? fileexe = FileHelper.GetFileExtension(file.FileName);
-            if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
-            }
-            long fileSize = file.Length;
-            if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
-            }
-        }
-    }
 }
