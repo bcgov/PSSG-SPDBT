@@ -22,14 +22,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
+		expiredLicenceData: this.expiredLicenceFormGroup,
 		businessTypeData: this.businessTypeFormGroup,
+		businessNameData: this.businessNameFormGroup,
+		companyBrandingData: this.companyBrandingFormGroup,
+		liabilityData: this.liabilityFormGroup,
+
 		categoryData: this.categoryFormGroup,
 		categoryArmouredCarGuardData: this.categoryArmouredCarGuardFormGroup,
 		categoryPrivateInvestigatorData: this.categoryPrivateInvestigatorFormGroup,
 		categorySecurityGuardData: this.categorySecurityGuardFormGroup,
+
+		licenceTermData: this.licenceTermFormGroup,
+		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
 		mailingAddress: this.mailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
+
 		branchesInBcData: this.branchesInBcFormGroup,
 		controllingMembersData: this.controllingMembersFormGroup,
 		employeesData: this.employeesFormGroup,

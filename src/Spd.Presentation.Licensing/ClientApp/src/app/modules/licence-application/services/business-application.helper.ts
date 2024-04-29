@@ -24,14 +24,8 @@ export abstract class BusinessApplicationHelper {
 		licenceTermCode: new FormControl('', [FormControlValidators.required]),
 	});
 
-	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
-		isBusinessManager: new FormControl(),
+	businessNameFormGroup: FormGroup = this.formBuilder.group({
+		name: new FormControl(''),
 	});
 
 	expiredLicenceFormGroup = this.formBuilder.group(
@@ -147,6 +141,16 @@ export abstract class BusinessApplicationHelper {
 			],
 		}
 	);
+
+	businessManagerFormGroup: FormGroup = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+		isBusinessManager: new FormControl(),
+	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
