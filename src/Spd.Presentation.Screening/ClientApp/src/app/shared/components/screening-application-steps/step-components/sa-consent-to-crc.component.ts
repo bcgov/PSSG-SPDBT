@@ -14,10 +14,13 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 					<div class="row">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="consentToShareResultCrc">
-								I understand that to share the result of a criminal record check, I must have completed a criminal
-								record check within the last 5 years through the Criminal Records Review Program (CRRP) and the sharing
-								request must be for the same type of check as previously completed, either for children, vulnerable
-								adults, or both children and vulnerable adults.
+								As an applicant having undergone a previous criminal record check under the
+								<i>Criminal Records Review Act</i> (CRRA), I hereby request to share the results of my criminal record
+								check with the organization I am now applying to. I understand that to share the result of a criminal
+								record check, I must have completed a criminal record check within the last 5 (five) years through the
+								Criminal Records Review Programs (CRRP). I also understand that the sharing request must be for the same
+								type of check as previously completed, either for children, vulnerable adults, or both children and
+								vulnerable adults.
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
@@ -29,11 +32,11 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								>This is required</mat-error
 							>
 							<mat-checkbox formControlName="consentToCompletedCrc">
-								I confirm I have completed a criminal record check within the past five years with the CRRP which did
-								not result in a determination of risk to children and/or vulnerable adults as defined in the Criminal
-								Records Review Act. I understand no details will be disclosed to the organization I am applying to, only
-								the result. I hereby consent to share the result of the completed check with the organization I am
-								applying to.
+								I confirm I have completed a criminal record check within the past 5 (five) years with the CRRP which
+								did not result in a determination of risk to children and/or vulnerable adults as defined in the CRRA. I
+								understand that my sharing request is for an organization enrolled or registered with the CRRP, and that
+								no details will be disclosed to the organization I am applying to, only the result. I hereby consent to
+								share the result of the completed check with the organization I am applying to.
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
@@ -45,8 +48,11 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								>This is required</mat-error
 							>
 							<mat-checkbox formControlName="consentToNotifyNoCrc">
-								I understand that if the Registrar determines I do not have criminal record check to share according to
-								the above criteria, I will be promptly notified.
+								I understand that if the Registrar determines I do not have a criminal record check to share according
+								to the above criteria, I will be promptly notified. I also understand that even if I have a criminal
+								record check to share according to the above criteria, the organization I am applying to is under no
+								obligation to accept my sharing request and may require that I undergo a new criminal record check under
+								the CRRA.
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
@@ -58,10 +64,10 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								>This is required</mat-error
 							>
 							<mat-checkbox formControlName="consentToNotifyRisk">
-								I understand that within 5 years of the date of my completing this Consent to Share a Criminal Record
-								Check form, should the CRRP make a determination that I pose a risk to children and/or vulnerable
-								adults, the Deputy Registrar will promptly provide notification to me and to the persons and entities
-								(organizations) identified on this Consent to Share a Criminal Record Check.
+								I understand that within 5 (five) years of the date of my providing this Consent to Share a Criminal
+								Record Check, should the Deputy Registrar make a determination that I pose a risk to children and/or
+								vulnerable adults, the Deputy Registrar will promptly provide notification to me and to the persons and
+								entities (organizations) identified in this Consent to Share a Criminal Record Check request process.
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
@@ -72,6 +78,20 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								"
 								>This is required</mat-error
 							>
+							<strong> Collection Notice </strong>
+							<p>
+								The Security Programs Division (SPD) will collect your personal information for the purpose of
+								fulfilling the criminal record check requirements of the <i>Criminal Records Review Act</i> and in
+								accordance with section 26(c) and 27(1)(a)(i) and (b) of the
+								<i>Freedom of Information and Protection of Privacy Act</i> (FoIPPA). Additionally, SPD may collect
+								personal information under section 26(e) and 27(1)(a)(i) and (b) of FoIPPA for the purpose of evaluating
+								the Criminal Records Review Program and activities to better serve you. Should you have any questions
+								about the collection, use, or disclosure of your personal information, please contact the Policy Analyst
+								of the Criminal Records Review Program, Security Programs Division via mail to PO Box 9217 Stn Prov Govt
+								Victoria, BC V8W 9J1; email to
+								<a href="mailto:criminalrecords@gov.bc.ca">criminalrecords&#64;gov.bc.ca</a>; or by telephone at 1-
+								855-587-0185 (option 2).
+							</p>
 						</div>
 					</div>
 				</div>
