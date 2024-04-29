@@ -53,7 +53,7 @@ public class BizLicensingControllerTest
     [Fact]
     public async void Post_UploadLicenceAppFiles_Return_LicenceAppDocumentResponse_List()
     {
-        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.Insurance);
+        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance);
 
         var result = await sut.UploadLicenceAppFiles(request, Guid.NewGuid(), CancellationToken.None);
 
