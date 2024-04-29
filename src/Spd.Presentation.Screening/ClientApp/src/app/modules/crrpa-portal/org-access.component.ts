@@ -22,13 +22,6 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 						<ul>
 							<li>Be at least 12 years of age as of today's date.</li>
 							<li>Have an access code provided by your organization.</li>
-							<li>
-								Have your identity verified by using your
-								<a href="https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp" target="_blank"
-									>BC Services Card</a
-								>. If you don't have a BC Services Card or are unable to verify your identity through the app, your
-								organization will verify your ID after you submit your criminal record check application.1-855-587-0185
-							</li>
 						</ul>
 						<h3 class="subheading fw-normal my-3">Access code:</h3>
 						<p>

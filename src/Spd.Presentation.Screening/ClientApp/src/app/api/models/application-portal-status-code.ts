@@ -11,7 +11,6 @@ export enum ApplicationPortalStatusCode {
   Incomplete = 'Incomplete',
   CompletedCleared = 'CompletedCleared',
   RiskFound = 'RiskFound',
-  ClosedJudicialReview = 'ClosedJudicialReview',
   ClosedNoResponse = 'ClosedNoResponse',
   ClosedNoConsent = 'ClosedNoConsent',
   CancelledByApplicant = 'CancelledByApplicant',
