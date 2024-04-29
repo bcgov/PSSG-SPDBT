@@ -50,7 +50,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						(selectionChange)="onChangeGender($event)"
 						[errorStateMatcher]="matcher"
 					>
-						<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+						<mat-option *ngFor="let gdr of genderTypes; let i = index" [value]="gdr.code">
 							{{ gdr.desc }}
 						</mat-option>
 					</mat-select>
@@ -97,7 +97,7 @@ export class CommonUserProfilePersonalInformationComponent implements OnInit, Li
 
 	title = 'Confirm your personal information';
 	subtitle =
-		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
+		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx" target="_blank">visit ICBC</a>.';
 
 	@Input() isReadonly = false;
 	@Input() personalInformationFormGroup!: FormGroup;

@@ -56,7 +56,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-form-field>
 								<mat-label>Sex</mat-label>
 								<mat-select formControlName="genderCode" [errorStateMatcher]="matcher">
-									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+									<mat-option *ngFor="let gdr of genderTypes; let i = index" [value]="gdr.code">
 										{{ gdr.desc }}
 									</mat-option>
 								</mat-select>

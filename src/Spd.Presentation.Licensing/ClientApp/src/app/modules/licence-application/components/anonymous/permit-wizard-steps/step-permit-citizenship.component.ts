@@ -60,7 +60,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 										<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 											<mat-option
 												class="proof-option"
-												*ngFor="let item of proofOfCanadianCitizenshipTypes"
+												*ngFor="let item of proofOfCanadianCitizenshipTypes; let i = index"
 												[value]="item.code"
 											>
 												{{ item.desc }}
@@ -115,7 +115,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 												<mat-select formControlName="proofOfResidentStatusCode" [errorStateMatcher]="matcher">
 													<mat-option
 														class="proof-option"
-														*ngFor="let item of proofOfResidenceStatusTypes"
+														*ngFor="let item of proofOfResidenceStatusTypes; let i = index"
 														[value]="item.code"
 													>
 														{{ item.desc }}
@@ -133,7 +133,7 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 												<mat-select formControlName="proofOfCitizenshipCode" [errorStateMatcher]="matcher">
 													<mat-option
 														class="proof-option"
-														*ngFor="let item of proofOfCitizenshipTypes"
+														*ngFor="let item of proofOfCitizenshipTypes; let i = index"
 														[value]="item.code"
 													>
 														{{ item.desc }}
@@ -205,7 +205,10 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 										<div class="col-lg-7 col-md-12">
 											<mat-form-field>
 												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
-													<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
+													<mat-option
+														*ngFor="let item of governmentIssuedPhotoIdTypes; let i = index"
+														[value]="item.code"
+													>
 														{{ item.desc }}
 													</mat-option>
 												</mat-select>

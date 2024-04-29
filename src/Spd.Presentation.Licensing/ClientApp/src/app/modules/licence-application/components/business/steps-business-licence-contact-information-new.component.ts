@@ -11,7 +11,7 @@ import { StepBusinessLicenceBcBusinessAddressComponent } from './step-business_l
 import { StepBusinessLicenceBusinessAddressComponent } from './step-business_licence-business-address.component';
 
 @Component({
-	selector: 'app-steps-business-licence-contact-information-new',
+	selector: 'app-steps-business-licence-contact-information-new', // TODO delete this component?
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>

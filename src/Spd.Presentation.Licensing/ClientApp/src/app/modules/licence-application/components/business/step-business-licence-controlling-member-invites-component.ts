@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormArray } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
@@ -19,47 +20,74 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					</div>
 				</div>
 
-				<form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<div class="summary-heading mb-2">
-								A link to the online criminal record check consent form has been sent to
-							</div>
-							<div class="row">
-								<div class="col-6">Nav Singh</div>
-								<div class="col-6">Nav.Singh&#64;hotmail.com</div>
-								<div class="col-6">John Lee</div>
-								<div class="col-6">John.Lee&#64;gmail.com</div>
-							</div>
+				<div class="row">
+					<div class="offset-md-2 col-md-8 col-sm-12">
+						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+						<div class="summary-heading mb-2">
+							A link to the online criminal record check consent form has been sent to:
+						</div>
+						<div class="row">
+							<ng-container *ngFor="let empl of membersWithoutSwlListWithEmail; let i = index">
+								<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.givenName }} {{ empl.surname }}</div>
+								<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">{{ empl.emailAddress }}</div>
+							</ng-container>
 						</div>
 					</div>
+				</div>
 
-					<div class="row mb-3">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
-							<div class="summary-heading mb-2">
-								Download the Consent to Criminal Record Check form and provide it to the following member to fill out
-							</div>
-							<div class="row">
-								<div class="col-6">Gerhart Lang</div>
-								<div class="col-6">Manual Form</div>
-							</div>
+				<div class="row mb-3">
+					<div class="offset-md-2 col-md-8 col-sm-12">
+						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+						<div class="summary-heading mb-2">
+							Download the Consent to Criminal Record Check form and provide it to the following member to fill out:
+						</div>
+						<div class="row">
+							<ng-container *ngFor="let empl of membersWithoutSwlListWithoutEmail; let i = index">
+								<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.givenName }} {{ empl.surname }}</div>
+								<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">
+									<a
+										color="primary"
+										class="large"
+										aria-label="Download Business Member Auth Consent"
+										download="Business Member Auth Consent"
+										[href]="downloadFilePath"
+										>Manual Form</a
+									>
+								</div>
+							</ng-container>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceControllingMemberInvitesComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.businessApplicationService.membersConfirmationFormGroup;
+export class StepBusinessLicenceControllingMemberInvitesComponent implements OnInit, LicenceChildStepperStepComponent {
+	memberList: Array<any> = [];
+	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
-	constructor(private formBuilder: FormBuilder, private businessApplicationService: BusinessApplicationService) {}
+	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
+	employeesFormGroup = this.businessApplicationService.employeesFormGroup;
+
+	constructor(private businessApplicationService: BusinessApplicationService) {}
+
+	ngOnInit(): void {
+		this.memberList = this.membersArray.value;
+	}
 
 	isFormValid(): boolean {
 		// this.form.markAllAsTouched();
 		// return this.form.valid;
 		return true;
+	}
+	get membersArray(): FormArray {
+		return <FormArray>this.controllingMembersFormGroup.get('members');
+	}
+	get membersWithoutSwlListWithEmail(): Array<any> {
+		return this.memberList.filter((item) => !item.licenceNumber && !!item.emailAddress);
+	}
+	get membersWithoutSwlListWithoutEmail(): Array<any> {
+		return this.memberList.filter((item) => !item.licenceNumber && !item.emailAddress);
 	}
 }
