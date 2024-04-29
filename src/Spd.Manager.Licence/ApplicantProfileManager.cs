@@ -78,11 +78,22 @@ namespace Spd.Manager.Licence
                 Identity? id = result.Items.FirstOrDefault();
                 if (id?.ContactId != null)
                 {
-                    //contact exists
-                    UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
-                    updateContactCmd.Id = (Guid)id.ContactId;
-                    updateContactCmd.IdentityId = id.Id;
-                    contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+                    contactResp = await _contactRepository.GetAsync((Guid)id.ContactId, ct);
+                    if (contactResp == null || !contactResp.IsActive)
+                    {
+                        //there is identity, but no contact
+                        CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
+                        createContactCmd.IdentityId = id.Id;
+                        contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
+                    }
+                    else
+                    {
+                        //contact exists
+                        UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
+                        updateContactCmd.Id = (Guid)id.ContactId;
+                        updateContactCmd.IdentityId = id.Id;
+                        contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+                    }
                 }
                 else
                 {
