@@ -19,6 +19,7 @@ namespace Spd.Resource.Repository.Contact
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? FullName { get; set; }
         public string? EmailAddress { get; set; }
         public string? PhoneNumber { get; set; }
         public string? MiddleName1 { get; set; }
@@ -34,6 +35,7 @@ namespace Spd.Resource.Repository.Contact
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
         public string? CriminalChargeDescription { get; set; }
+        public string? BirthPlace { get; set; }
     }
     public record ContactResp : Contact
     {
@@ -41,6 +43,7 @@ namespace Spd.Resource.Repository.Contact
         public DateTime? LastestScreeningLogin { get; set; }
         public DateTimeOffset? LicensingTermAgreedDateTime { get; set; }
         public IEnumerable<LicenceInfo> LicenceInfos { get; set; } = [];
+        public bool IsActive { get; set; } = true;
     }
     public record LicenceInfo
     {

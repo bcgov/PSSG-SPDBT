@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -64,7 +64,7 @@ import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.comp
 									class="table-button w-auto"
 									style="color: var(--color-red);"
 									aria-label="Remove controlling member"
-									(click)="onRemoveMember(i)"
+									(click)="onRemoveEmployee(i)"
 								>
 									<mat-icon>delete_outline</mat-icon>Remove
 								</button>
@@ -80,7 +80,7 @@ import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.comp
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-12">
 					<button mat-flat-button color="primary" class="large mt-4 mb-2" (click)="onAddLicenceHolder()">
-						Add Licence Holder
+						Add Employee
 					</button>
 				</div>
 			</div>
@@ -103,7 +103,7 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 
 	@Input() form!: FormGroup;
 
-	licenceHolderList: Array<any> = [];
+	employeesList: Array<any> = [];
 
 	dataSource!: MatTableDataSource<any>;
 	columns: string[] = ['fullName', 'licenceNumber', 'status', 'expiryDate', 'action1'];
@@ -111,25 +111,8 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
-		this.licenceHolderList = [
-			{
-				id: 1,
-				givenName: 'Barbara',
-				surname: 'Streisand',
-				licenceNumber: '7465766',
-				status: 'Valid',
-				expiryDate: '2024-05-15',
-			},
-			{
-				id: 2,
-				givenName: 'Yank',
-				surname: 'Alexander',
-				licenceNumber: '2345433',
-				status: 'Expired',
-				expiryDate: '2023-02-25',
-			},
-		];
-		this.dataSource = new MatTableDataSource(this.licenceHolderList);
+		this.employeesList = this.employeesArray.value;
+		this.dataSource = new MatTableDataSource(this.employeesList);
 		this.updateAndSortData();
 	}
 
@@ -139,11 +122,11 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 		return true;
 	}
 
-	onRemoveMember(index: number) {
+	onRemoveEmployee(index: number) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to remove this licence holder?',
+			message: 'Are you sure you want to remove this employee?',
 			actionText: 'Yes, remove',
 			cancelText: 'Cancel',
 		};
@@ -153,8 +136,8 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.licenceHolderList.splice(index, 1);
-					this.dataSource = new MatTableDataSource(this.licenceHolderList);
+					this.employeesList.splice(index, 1);
+					this.dataSource = new MatTableDataSource(this.employeesList);
 				}
 			});
 	}
@@ -168,24 +151,21 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 			.afterClosed()
 			.subscribe((resp: any) => {
 				if (resp) {
-					this.licenceHolderList.push(resp.data);
-					this.hotToastService.success('Licence Holder was successfully added');
+					this.employeesList.push(resp.data);
+					this.hotToastService.success('Employee was successfully added');
 					this.updateAndSortData();
 				}
 			});
 	}
 
 	private updateAndSortData() {
-		this.licenceHolderList = [...this.licenceHolderList].sort((a, b) => {
+		this.employeesList = [...this.employeesList].sort((a, b) => {
 			return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
 		});
-		this.dataSource.data = this.licenceHolderList;
+		this.dataSource.data = this.employeesList;
 	}
 
-	get hasMembersWithSwl(): FormControl {
-		return this.form.get('hasMembersWithSwl') as FormControl;
-	}
-	get membersArray(): FormArray {
-		return <FormArray>this.form.get('members');
+	get employeesArray(): FormArray {
+		return <FormArray>this.form.get('employees');
 	}
 }

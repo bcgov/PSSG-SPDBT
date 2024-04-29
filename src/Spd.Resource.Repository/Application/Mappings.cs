@@ -93,7 +93,8 @@ namespace Spd.Resource.Repository.Application
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
             .ForMember(d => d.PaidOn, opt => opt.MapFrom(s => s.spd_paidon))
             .ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => GetScreenType(s.spd_screeningrequesttype)))
-            .ForMember(d => d.NumberOfAttempts, opt => opt.MapFrom(s => s.spd_numberofattempts));
+            .ForMember(d => d.NumberOfAttempts, opt => opt.MapFrom(s => s.spd_numberofattempts))
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s._spd_applicantid_value));
 
             _ = CreateMap<spd_clearanceaccess, ClearanceAccessResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))

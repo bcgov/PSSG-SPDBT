@@ -1,0 +1,50 @@
+{
+    "licenceNumber": "MDR126",
+    "licenceType": "Metal Dealers And Recyclers Permit",
+    "photo": null,
+    "licenceCategories": null,
+    "applicantName": "Mitchell Metal Recycling Ltd.",
+    "doingBusinessAsName": null,
+    "issuedDate": "2023-12-21",
+    "expiryDate": "2026-12-20",
+    "mailingAddress1": "12100 Mitchell Road",
+    "mailingAddress2": null,
+    "city": "Richmond",
+    "provinceState": "BC",
+    "postalCode": "V6V 1M8",
+    "country": null,
+    "branchOffices": [
+        {
+            "mailingAddress1": "789 Maple Street",
+            "mailingAddress2": "Floor 5",
+            "city": "Victoria",
+            "provinceState": "BC",
+            "postalCode": "V6B 3J4",
+            "country": null
+        },
+        {
+            "mailingAddress1": "456 Birch Avenue",
+            "mailingAddress2": "Suite 301",
+            "city": "Vancouver",
+            "provinceState": "BC",
+            "postalCode": "V2H 5K2",
+            "country": null
+        },
+        {
+            "mailingAddress1": "123 Cedar Lane",
+            "mailingAddress2": null,
+            "city": "Vancouver",
+            "provinceState": "BC",
+            "postalCode": "V6J 2E6",
+            "country": null
+        }
+    ],
+    "conditions": null,
+    "SPD_CARD": {
+        "eyes": null,
+        "hair": null,
+        "height": null,
+        "weight": null,
+        "temporaryLicence": false
+    }
+}

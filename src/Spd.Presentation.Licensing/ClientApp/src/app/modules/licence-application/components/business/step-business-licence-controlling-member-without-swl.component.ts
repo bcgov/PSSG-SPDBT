@@ -12,7 +12,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
-	selector: 'app-step-business-licence-controlling-member-without-swl',
+	selector: 'app-step-business-licence-controlling-member-without-swl', // TODO delete this component?
 	template: `
 		<section class="step-section">
 			<div class="step">
@@ -176,7 +176,7 @@ export class StepBusinessLicenceControllingMemberWithoutSwlComponent
 {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.businessApplicationService.membersWithoutSwlFormGroup;
+	form: FormGroup = new FormGroup({}); //  = this.businessApplicationService.membersWithoutSwlFormGroup;
 
 	memberList: Array<any> = [];
 

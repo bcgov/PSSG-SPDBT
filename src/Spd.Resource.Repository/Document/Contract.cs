@@ -4,6 +4,7 @@ namespace Spd.Resource.Repository.Document
 {
     public interface IDocumentRepository
     {
+        public Task<DocumentResp> GetAsync(Guid docUrlId, CancellationToken ct);
         public Task<DocumentListResp> QueryAsync(DocumentQry query, CancellationToken cancellationToken);
         public Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken cancellationToken);
     }

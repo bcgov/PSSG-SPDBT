@@ -13,11 +13,13 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.contactid))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.lastname))
+            .ForMember(d => d.FullName, opt => opt.MapFrom(s => s.fullname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.birthdate)))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
+            .ForMember(d => d.BirthPlace, opt => opt.MapFrom(s => s.spd_birthplace))
             .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.telephone1))
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => GetResidentialAddress(s)))
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => GetMailingAddress(s)))
@@ -29,7 +31,8 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_peaceofficerstatus)))
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
             .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
-            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal));
+            .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.statecode == DynamicsConstants.StateCode_Active));
 
             _ = CreateMap<ContactCmd, contact>()
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))

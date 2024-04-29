@@ -29,7 +29,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								<mat-form-field>
 									<mat-label>Category</mat-label>
 									<mat-select [(ngModel)]="category">
-										<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
+										<mat-option *ngFor="let item of validCategoryList; let i = index" [value]="item.code">
 											{{ item.desc }}
 										</mat-option>
 									</mat-select>

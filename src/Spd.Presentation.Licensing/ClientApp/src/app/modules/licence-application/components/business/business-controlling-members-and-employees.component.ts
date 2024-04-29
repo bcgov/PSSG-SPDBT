@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { BusinessApplicationService } from '../../services/business-application.service';
 
 @Component({
 	selector: 'app-business-controlling-members-and-employees',
 	template: `
 		<section class="step-section">
 			<div class="row">
-				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
 						<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
 							<h2 class="fs-3">Controlling Members & Employees</h2>
@@ -35,36 +34,22 @@ import { BusinessApplicationService } from '../../services/business-application.
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<mat-accordion multi="false">
-						<div class="fs-5 mb-2 mt-4">Controlling Members Updates</div>
-						<div>
-							If your controlling members change during the business licence term, update their information here.
-						</div>
-						<mat-expansion-panel class="my-2 w-100">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="title"> Controlling Members </mat-panel-title>
-							</mat-expansion-panel-header>
+					<div class="fs-5 mb-2">Controlling Members Updates</div>
+					<app-alert type="info" icon="info">
+						If your controlling members change during the business licence term, update their information here.
+					</app-alert>
 
-							<app-common-business-controlling-members
-								[form]="membersWithSwlFormGroup"
-							></app-common-business-controlling-members>
-						</mat-expansion-panel>
+					<app-common-controlling-members></app-common-controlling-members>
 
-						<mat-divider class="my-4"></mat-divider>
+					<mat-divider class="mat-divider-primary my-4"></mat-divider>
 
-						<div class="fs-5 mb-2">Licence Holders Updates</div>
-						<div>
-							If your employees who are licence holders for the business change during the business licence term, update
-							their information here.
-						</div>
-						<mat-expansion-panel class="my-2 w-100">
-							<mat-expansion-panel-header>
-								<mat-panel-title class="title"> Licence Holders </mat-panel-title>
-							</mat-expansion-panel-header>
+					<div class="fs-5 mb-2">Employee Updates</div>
+					<app-alert type="info" icon="info">
+						If your employees who are licence holders for the business change during the business licence term, update
+						their information here.
+					</app-alert>
 
-							<app-common-business-employees [form]="employeeWithSwlFormGroup"></app-common-business-employees>
-						</mat-expansion-panel>
-					</mat-accordion>
+					<app-common-employees></app-common-employees>
 				</div>
 			</div>
 		</section>
@@ -72,10 +57,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
-	membersWithSwlFormGroup = this.businessApplicationService.membersWithSwlFormGroup;
-	employeeWithSwlFormGroup = this.businessApplicationService.employeeWithSwlFormGroup;
-
-	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {}
+	constructor(private router: Router) {}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
