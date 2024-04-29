@@ -22,15 +22,26 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
+		expiredLicenceData: this.expiredLicenceFormGroup,
 		businessTypeData: this.businessTypeFormGroup,
+		businessNameData: this.businessNameFormGroup,
+		companyBrandingData: this.companyBrandingFormGroup,
+		liabilityData: this.liabilityFormGroup,
+
 		categoryData: this.categoryFormGroup,
 		categoryArmouredCarGuardData: this.categoryArmouredCarGuardFormGroup,
 		categoryPrivateInvestigatorData: this.categoryPrivateInvestigatorFormGroup,
 		categorySecurityGuardData: this.categorySecurityGuardFormGroup,
+
+		licenceTermData: this.licenceTermFormGroup,
+		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
 		mailingAddress: this.mailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
+
 		branchesInBcData: this.branchesInBcFormGroup,
+		controllingMembersData: this.controllingMembersFormGroup,
+		employeesData: this.employeesFormGroup,
 	});
 
 	businessModelChangedSubscription!: Subscription;
@@ -115,6 +126,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
 		while (bcBranchesArray.length) {
 			bcBranchesArray.removeAt(0);
+		}
+		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
+		while (controllingMembersArray.length) {
+			controllingMembersArray.removeAt(0);
+		}
+		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
+		while (employeesArray.length) {
+			employeesArray.removeAt(0);
 		}
 	}
 
@@ -260,6 +279,78 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				managerSwlNumber: new FormControl('4456789'),
 				managerPhoneNumber: new FormControl('5551228787'),
 				managerEmail: new FormControl('zzz@zzz.com'),
+			})
+		);
+
+		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
+		controllingMembersArray.push(
+			new FormGroup({
+				id: new FormControl('1'),
+				givenName: new FormControl('Kimberly'),
+				surname: new FormControl('Streisand'),
+				emailAddress: new FormControl(),
+				licenceNumber: new FormControl('7465766'),
+				status: new FormControl('Valid'),
+				expiryDate: new FormControl('2024-05-15'),
+				clearanceStatus: new FormControl('Completed'),
+			})
+		);
+		controllingMembersArray.push(
+			new FormGroup({
+				id: new FormControl('2'),
+				givenName: new FormControl('Yank'),
+				surname: new FormControl('Alexander'),
+				emailAddress: new FormControl(),
+				licenceNumber: new FormControl('2345433'),
+				status: new FormControl('Expired'),
+				expiryDate: new FormControl('2023-05-15'),
+				clearanceStatus: new FormControl('Completed'),
+			})
+		);
+		controllingMembersArray.push(
+			new FormGroup({
+				id: new FormControl('3'),
+				givenName: new FormControl('Anderson'),
+				surname: new FormControl('Cooper'),
+				emailAddress: new FormControl('test@test.com'),
+				licenceNumber: new FormControl(),
+				status: new FormControl(),
+				expiryDate: new FormControl(),
+				clearanceStatus: new FormControl('Completed'),
+			})
+		);
+		controllingMembersArray.push(
+			new FormGroup({
+				id: new FormControl('3'),
+				givenName: new FormControl('James'),
+				surname: new FormControl('Clark'),
+				emailAddress: new FormControl(),
+				licenceNumber: new FormControl(),
+				status: new FormControl(),
+				expiryDate: new FormControl(),
+				clearanceStatus: new FormControl('Completed'),
+			})
+		);
+
+		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
+		employeesArray.push(
+			new FormGroup({
+				id: new FormControl('1'),
+				givenName: new FormControl('Barbara'),
+				surname: new FormControl('Streisand'),
+				licenceNumber: new FormControl('7465766'),
+				status: new FormControl('Valid'),
+				expiryDate: new FormControl('2024-05-15'),
+			})
+		);
+		employeesArray.push(
+			new FormGroup({
+				id: new FormControl('2'),
+				givenName: new FormControl('Yank'),
+				surname: new FormControl('Alexander'),
+				licenceNumber: new FormControl('2345433'),
+				status: new FormControl('Expired'),
+				expiryDate: new FormControl('2023-05-15'),
 			})
 		);
 

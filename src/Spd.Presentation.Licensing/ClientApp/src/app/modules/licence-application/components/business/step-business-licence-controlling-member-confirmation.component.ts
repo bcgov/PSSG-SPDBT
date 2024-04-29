@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
@@ -14,12 +15,13 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<div class="summary-heading mb-2">Current members with active security worker licences</div>
+							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+							<div class="fs-5 mb-2">Current members with active security worker licences</div>
 							<div class="row">
-								<div class="col-6">Nav Singh</div>
-								<div class="col-6">E1234398</div>
-								<div class="col-6">John Lee</div>
-								<div class="col-6">E5627844</div>
+								<ng-container *ngFor="let empl of membersWithSwlList; let i = index">
+									<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.givenName }} {{ empl.surname }}</div>
+									<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">{{ empl.licenceNumber }}</div>
+								</ng-container>
 							</div>
 						</div>
 					</div>
@@ -27,18 +29,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					<div class="row">
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
-							<div class="summary-heading mb-2">Current members without active security worker licences</div>
-							<div class="row">
-								<div class="col-12">Sammy Jung</div>
-								<div class="col-12">Gerhart Lang</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
-							<div class="summary-heading mb-2">Members who require criminal record checks</div>
+							<div class="fs-5 mb-2">Members who require criminal record checks</div>
 							<p>
 								A link to an online application form will be sent to each controlling member via email. They must
 								provide personal information and consent to a criminal record check. We must receive criminal record
@@ -46,10 +37,21 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								reviewed.
 							</p>
 							<div class="row">
-								<div class="col-6">Sammy Jung</div>
-								<div class="col-6">Sammy.Jung&#64;hotmail.com</div>
-								<div class="col-6">Gerhart Lang</div>
-								<div class="col-6">Manual Form</div>
+								<ng-container *ngFor="let empl of membersWithoutSwlList; let i = index">
+									<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.givenName }} {{ empl.surname }}</div>
+									<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">
+										{{ empl.emailAddress }}
+										<a
+											*ngIf="!empl.emailAddress"
+											color="primary"
+											class="large"
+											aria-label="Download Business Member Auth Consent"
+											download="Business Member Auth Consent"
+											[href]="downloadFilePath"
+											>Manual Form</a
+										>
+									</div>
+								</ng-container>
 							</div>
 						</div>
 					</div>
@@ -57,7 +59,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					<div class="row mt-2">
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mat-divider-main my-3"></mat-divider>
-							<div class="mb-2">
+							<div class="text-minor-heading lh-base mb-2">
 								Upload a copy of the corporate registry documents for your business in the province in which you are
 								originally registered
 							</div>
@@ -65,7 +67,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								(fileUploaded)="onFileUploaded($event)"
 								(fileRemoved)="onFileRemoved()"
 								[control]="attachments"
-								[maxNumberOfFiles]="5"
+								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 							></app-file-upload>
 						</div>
@@ -76,12 +78,24 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceControllingMemberConfirmationComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceControllingMemberConfirmationComponent
+	implements OnInit, LicenceChildStepperStepComponent
+{
 	booleanTypeCodes = BooleanTypeCode;
+	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
 	form: FormGroup = this.businessApplicationService.membersConfirmationFormGroup;
 
-	constructor(private formBuilder: FormBuilder, private businessApplicationService: BusinessApplicationService) {}
+	memberList: Array<any> = [];
+
+	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
+	employeesFormGroup = this.businessApplicationService.employeesFormGroup;
+
+	constructor(private businessApplicationService: BusinessApplicationService) {}
+
+	ngOnInit(): void {
+		this.memberList = this.membersArray.value;
+	}
 
 	onFileUploaded(_file: File): void {
 		// 	this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
@@ -109,5 +123,14 @@ export class StepBusinessLicenceControllingMemberConfirmationComponent implement
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get membersArray(): FormArray {
+		return <FormArray>this.controllingMembersFormGroup.get('members');
+	}
+	get membersWithSwlList(): Array<any> {
+		return this.memberList.filter((item) => !!item.licenceNumber);
+	}
+	get membersWithoutSwlList(): Array<any> {
+		return this.memberList.filter((item) => !item.licenceNumber);
 	}
 }

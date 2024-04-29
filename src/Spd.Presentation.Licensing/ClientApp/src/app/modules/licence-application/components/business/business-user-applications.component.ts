@@ -461,9 +461,19 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onManageMembers(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES)
-		);
+		this.businessApplicationService
+			.createNewBusinessLicence()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(
+							LicenceApplicationRoutes.BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES
+						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	onKeydownManageMembers(event: KeyboardEvent) {

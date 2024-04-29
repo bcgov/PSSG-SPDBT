@@ -60,7 +60,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 											<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
-													*ngFor="let item of proofOfCanadianCitizenshipTypes"
+													*ngFor="let item of proofOfCanadianCitizenshipTypes; let i = index"
 													[value]="item.code"
 												>
 													{{ item.desc }}
@@ -76,7 +76,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 											<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
-													*ngFor="let item of proofOfAbilityToWorkInCanadaTypes"
+													*ngFor="let item of proofOfAbilityToWorkInCanadaTypes; let i = index"
 													[value]="item.code"
 												>
 													{{ item.desc }}
@@ -149,7 +149,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 										<div class="col-lg-6 col-md-12">
 											<mat-form-field>
 												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
-													<mat-option *ngFor="let item of governmentIssuedPhotoIdTypes" [value]="item.code">
+													<mat-option
+														*ngFor="let item of governmentIssuedPhotoIdTypes; let i = index"
+														[value]="item.code"
+													>
 														{{ item.desc }}
 													</mat-option>
 												</mat-select>

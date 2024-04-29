@@ -16,7 +16,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 					<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
 						<form [formGroup]="form" novalidate>
 							<div class="row mb-4">
-								<ng-container *ngFor="let item of businessCategoryTypes">
+								<ng-container *ngFor="let item of businessCategoryTypes; let i = index">
 									<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 col-sm-12">
 										<mat-checkbox [formControlName]="item.code" (click)="onCategoryChange(item.code)">
 											{{ item.desc }}
