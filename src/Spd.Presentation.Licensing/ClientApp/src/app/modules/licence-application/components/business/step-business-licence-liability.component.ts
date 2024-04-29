@@ -11,7 +11,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 			<div class="step">
 				<app-step-title
 					title="Provide proof of insurance"
-					subtitle="Provide <a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply'>proof of insurance</a> that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability"
+					subtitle="Provide <a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply' target='_blank'>proof of insurance</a> that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability"
 				></app-step-title>
 
 				<form [formGroup]="form" novalidate>

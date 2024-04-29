@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
@@ -140,35 +140,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
-		this.memberList = [
-			{
-				id: 1,
-				givenName: 'Barbara',
-				surname: 'Streisand',
-				licenceNumber: '7465766',
-				status: 'Valid',
-				expiryDate: '2024-05-15',
-				clearanceStatus: 'Completed',
-			},
-			{
-				id: 2,
-				givenName: 'Yank',
-				surname: 'Alexander',
-				licenceNumber: '2345433',
-				status: 'Expired',
-				expiryDate: '2023-02-25',
-				clearanceStatus: 'Completed',
-			},
-			{
-				id: 3,
-				givenName: 'Anderson',
-				surname: 'Cooper',
-				licenceNumber: null,
-				status: null,
-				expiryDate: null,
-				clearanceStatus: 'Completed',
-			},
-		];
+		this.memberList = this.membersArray.value;
 		this.dataSource = new MatTableDataSource(this.memberList);
 		this.updateAndSortData();
 	}
@@ -255,9 +227,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			});
 	}
 
-	get hasMembersWithSwl(): FormControl {
-		return this.form.get('hasMembersWithSwl') as FormControl;
-	}
 	get membersArray(): FormArray {
 		return <FormArray>this.form.get('members');
 	}

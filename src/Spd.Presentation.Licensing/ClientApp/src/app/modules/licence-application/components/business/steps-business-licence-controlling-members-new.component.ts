@@ -6,8 +6,7 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './step-business-licence-controlling-member-confirmation.component';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './step-business-licence-controlling-member-invites-component';
-import { StepBusinessLicenceControllingMemberWithSwlComponent } from './step-business-licence-controlling-member-with-swl.component';
-import { StepBusinessLicenceControllingMemberWithoutSwlComponent } from './step-business-licence-controlling-member-without-swl.component';
+import { StepBusinessLicenceControllingMembersComponent } from './step-business-licence-controlling-members.component';
 import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-employees.component';
 
 @Component({
@@ -15,7 +14,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-business-licence-controlling-member-with-swl></app-step-business-licence-controlling-member-with-swl>
+				<app-step-business-licence-controlling-members></app-step-business-licence-controlling-members>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -26,7 +25,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 							mat-flat-button
 							color="primary"
 							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_WITH_SWL)"
+							(click)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS)"
 						>
 							Next
 						</button>
@@ -36,37 +35,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 							mat-stroked-button
 							color="primary"
 							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CONTROLLING_MEMBERS_WITH_SWL)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-step-business-licence-controlling-member-without-swl></app-step-business-licence-controlling-member-without-swl>
-
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_WITHOUT_SWL)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CONTROLLING_MEMBERS_WITHOUT_SWL)"
+							(click)="onNextReview(STEP_CONTROLLING_MEMBERS)"
 						>
 							Next: Review
 						</button>
@@ -139,6 +108,31 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_EMPLOYEES)">
+							Next
+						</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="large next-review-step mb-2"
+							(click)="onNextReview(STEP_EMPLOYEES)"
+						>
+							Next: Review
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<!-- <mat-step>
+				<app-step-business-licence-employeesxxx></app-step-business-licence-employeesxxx>
+
+				<div class="row wizard-button-row">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -162,7 +156,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
 				<app-step-business-licence-application-on-hold></app-step-business-licence-application-on-hold>
@@ -172,12 +166,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepNext(STEP_CONTROLLING_MEMBERS_EMPLOYEES)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_APPLICATION_ON_HOLD)">
 							Next
 						</button>
 					</div>
@@ -186,7 +175,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 							mat-stroked-button
 							color="primary"
 							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CONTROLLING_MEMBERS_EMPLOYEES)"
+							(click)="onNextReview(STEP_APPLICATION_ON_HOLD)"
 						>
 							Next: Review
 						</button>
@@ -199,25 +188,23 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWizardStepComponent {
-	readonly STEP_CONTROLLING_MEMBERS_WITH_SWL = 1;
-	readonly STEP_CONTROLLING_MEMBERS_WITHOUT_SWL = 2;
-	readonly STEP_CONTROLLING_MEMBERS_CONFIRMATION = 3;
-	readonly STEP_CONTROLLING_MEMBERS_INVITES = 4;
-	readonly STEP_CONTROLLING_MEMBERS_EMPLOYEES = 5;
-	readonly STEP_CONTROLLING_MEMBERS_ON_HOLD = 6;
+	readonly STEP_CONTROLLING_MEMBERS = 1;
+	readonly STEP_CONTROLLING_MEMBERS_CONFIRMATION = 2;
+	readonly STEP_CONTROLLING_MEMBERS_INVITES = 3;
+	readonly STEP_EMPLOYEES = 4;
+	readonly STEP_APPLICATION_ON_HOLD = 5;
 
 	isFormValid = false;
 
-	@ViewChild(StepBusinessLicenceControllingMemberWithSwlComponent)
-	stepMembersWithSwlComponent!: StepBusinessLicenceControllingMemberWithSwlComponent;
-	@ViewChild(StepBusinessLicenceControllingMemberWithoutSwlComponent)
-	stepMembersWithoutSwlComponent!: StepBusinessLicenceControllingMemberWithoutSwlComponent;
+	@ViewChild(StepBusinessLicenceControllingMembersComponent)
+	stepControllingMembersComponent!: StepBusinessLicenceControllingMembersComponent;
+	@ViewChild(StepBusinessLicenceEmployeesComponent) stepEmployeesComponent!: StepBusinessLicenceEmployeesComponent;
 	@ViewChild(StepBusinessLicenceControllingMemberConfirmationComponent)
 	stepMembersConfirmationComponent!: StepBusinessLicenceControllingMemberConfirmationComponent;
 	@ViewChild(StepBusinessLicenceControllingMemberInvitesComponent)
 	stepMembersInvitesComponent!: StepBusinessLicenceControllingMemberInvitesComponent;
-	@ViewChild(StepBusinessLicenceEmployeesComponent)
-	stepEmployeesComponent!: StepBusinessLicenceEmployeesComponent;
+	// @ViewChild(StepBusinessLicenceEmployeesComponent)
+	// stepEmployeesComponent!: StepBusinessLicenceEmployeesComponent;
 	@ViewChild(StepBusinessLicenceApplicationOnHoldComponent)
 	stepOnHoldComponent!: StepBusinessLicenceApplicationOnHoldComponent;
 
@@ -247,17 +234,15 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
-			case this.STEP_CONTROLLING_MEMBERS_WITH_SWL:
-				return this.stepMembersWithSwlComponent.isFormValid();
-			case this.STEP_CONTROLLING_MEMBERS_WITHOUT_SWL:
-				return this.stepMembersWithoutSwlComponent.isFormValid();
+			case this.STEP_CONTROLLING_MEMBERS:
+				return this.stepControllingMembersComponent.isFormValid();
 			case this.STEP_CONTROLLING_MEMBERS_CONFIRMATION:
 				return this.stepMembersConfirmationComponent.isFormValid();
 			case this.STEP_CONTROLLING_MEMBERS_INVITES:
 				return this.stepMembersInvitesComponent.isFormValid();
-			case this.STEP_CONTROLLING_MEMBERS_EMPLOYEES:
+			case this.STEP_EMPLOYEES:
 				return this.stepEmployeesComponent.isFormValid();
-			case this.STEP_CONTROLLING_MEMBERS_ON_HOLD:
+			case this.STEP_APPLICATION_ON_HOLD:
 				return this.stepOnHoldComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
