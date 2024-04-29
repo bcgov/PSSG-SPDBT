@@ -18,7 +18,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class PermitController : SpdApplicantLicenceControllerBase
+    public class PermitController : SpdLicenceControllerBase
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
