@@ -1,0 +1,50 @@
+{
+    "licenceNumber": "B1301",
+    "licenceType": "Security Business Licence",
+    "photo": null,
+    "licenceCategories": [ "Security Alarm Installer", "Security Alarm Sales", "Closed Circuit Television Installer", "Electronic Locking Device Installer", "Private Investigator" ],
+    "applicantName": "!@#$%^&*()-_=+[{]}|;:',<.>/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+    "doingBusinessAsName": "!@#$%^&*()-_=+[{]}|;:',<.>/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+    "issuedDate": "2023-03-22",
+    "expiryDate": "2024-03-21",
+    "mailingAddress1": "1234 Sunshine Boulevard, Suite 567, Towercrest Plaza, Apt 1010",
+    "mailingAddress2": "5678 Meadowview Lane, Unit 304, Sunrise Towers, Birchwood Place, Parkside Manor",
+    "city": "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
+    "provinceState": "North Rhine-Westphalia",
+    "postalCode": "ABCD1234EFGH5678IJKL",
+    "country": "The United Kingdom of Great Britain and Northern Ireland",
+    "branchOffices": [
+        {
+            "mailingAddress1": "1234 Evergreen Terrace, Apt 101, Sunrise Heights Condominiums, Birchwood Court, Willow Grove",
+            "mailingAddress2": "5678 Maple Avenue, Suite 202, Riverfront Manor, Cedar Lane, Sunset Plaza",
+            "city": "Springfield",
+            "provinceState": "Illinois",
+            "postalCode": "62704",
+            "country": "USA"
+        },
+        {
+            "mailingAddress1": "23@4 Willow $treet, Ap@rtment 5&, R@inbow Gardens, S!lver H!ll, L&keview",
+            "mailingAddress2": "#131-415 Pine Road, Building C, Mountainview Villas, Magnolia Lane, Parkview Terrace",
+            "city": "S!lverH!ll&SunsetBeach#MysticRiver@OceanView*TropicalParadise+EmeraldCity",
+            "provinceState": "XyZ#Provi~nce@of$Phanta$m^agoria&Land-@of*Drea%ms",
+            "postalCode": "A1@3B#5C&7D*9E(0F)2G",
+            "country": "Nova*Atlantis$Republic+of@Eterna^Sunshine&Land#ofDreams"
+        },
+        {
+            "mailingAddress1": "161718 Elm Drive, Apartment 404, Valleyview Towers, Birchwood Lane, Woodland Court",
+            "mailingAddress2": null,
+            "city": "Charleston",
+            "provinceState": "West Virginia",
+            "postalCode": "25301",
+            "country": "United States of America"
+        }
+    ],
+    "conditions": [],
+    "SPD_CARD": {
+        "eyes": null,
+        "hair": null,
+        "height": null,
+        "weight": null,
+        "temporaryLicence": false
+    }
+}
