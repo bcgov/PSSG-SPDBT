@@ -332,7 +332,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	onChangeMinistry(event: MatSelectChange, index: number): void {
-		this.populateServiceTypes(event.value, index);
+		this.populatePssoServiceTypes(event.value, index);
 	}
 
 	onAddRow() {
@@ -340,7 +340,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		crcsArray.push(this.initiateForm());
 		this.form.setControl('crcs', crcsArray);
 
-		this.populateServiceTypes(this.orgId!, crcsArray.length - 1);
+		this.populatePssoServiceTypes(this.orgId!, crcsArray.length - 1);
 	}
 
 	onDeleteRow(index: number) {
@@ -430,7 +430,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		const crcsArray = this.form.get('crcs') as FormArray;
 		crcsArray.push(this.initiateForm(inviteDefault));
 
-		this.populateServiceTypes(this.orgId!, crcsArray.length - 1);
+		this.populatePssoServiceTypes(this.orgId!, crcsArray.length - 1);
 	}
 
 	private promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {
@@ -601,7 +601,11 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.showServiceType = true;
 	}
 
-	private populateServiceTypes(orgId: string, index: number) {
+	private populatePssoServiceTypes(orgId: string, index: number) {
+		if (this.portal != PortalTypeCode.Psso) {
+			return;
+		}
+
 		const currentMinistry = this.ministries.find((item: MinistryResponse) => item.id === orgId);
 		const serviceTypes =
 			currentMinistry?.serviceTypeCodes?.map(
