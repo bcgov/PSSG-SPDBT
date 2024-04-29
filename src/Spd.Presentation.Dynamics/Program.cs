@@ -1,3 +1,7 @@
+using System.Configuration;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Spd.Presentation.Dynamics.Swagger;
@@ -7,11 +11,8 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.Payment;
+using Spd.Utilities.Printing;
 using Spd.Utilities.TempFileStorage;
-using System.Configuration;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +60,9 @@ builder.Services
     .AddTempFileStorageService()
     .AddFileStorageProxy(builder.Configuration)
     .AddPaymentService(builder.Configuration)
-    .AddDynamicsProxy(builder.Configuration);
+    .AddDynamicsProxy(builder.Configuration)
+    .AddPrinting(builder.Configuration);
+
 builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
 builder.Services.AddAuthentication(options =>
 {

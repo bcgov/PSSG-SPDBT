@@ -14,6 +14,7 @@ using Spd.Resource.Repository.Invoice;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.PortalUser;
@@ -54,6 +55,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IServiceTypeRepository, ServiceTypeRepository>();
             configurationServices.Services.AddTransient<IAliasRepository, AliasRepository>();
             configurationServices.Services.AddTransient<IBizRepository, BizRepository>();
+            configurationServices.Services.AddTransient<IOptionSetRepository, OptionSetRepository>();
         }
     }
 }

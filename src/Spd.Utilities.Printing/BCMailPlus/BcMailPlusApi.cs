@@ -23,10 +23,17 @@ internal sealed class BcMailPlusApi : IBcMailPlusApi
         var response = await httpClient.PostAsync(uri, content, ct);
         response.EnsureSuccessStatusCode();
 
-        var str = await response.Content.ReadAsStringAsync(ct);
-        var jobStatusResponse = await JsonSerializer.DeserializeAsync<JobStatus>(await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
-
-        return jobStatusResponse!;
+        try
+        {
+            var jobStatusResponse = await JsonSerializer.DeserializeAsync<JobStatus>(await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
+            if (jobStatusResponse?.JobId == null) throw new InvalidOperationException($"Error creating job {jobClass}");
+            return jobStatusResponse!;
+        }
+        catch (JsonException e)
+        {
+            var responseAsString = await response.Content.ReadAsStringAsync(ct);
+            throw new InvalidOperationException($"Error parsing BCMailPlus response: {responseAsString}", e);
+        }
     }
 
     public async Task<byte[]?> GetAsset(string jobId, string asset, CancellationToken ct)
@@ -37,20 +44,25 @@ internal sealed class BcMailPlusApi : IBcMailPlusApi
         var response = await httpClient.PostAsync(uri, content, ct);
         response.EnsureSuccessStatusCode();
 
-        var assetResponse = await response.Content.ReadAsByteArrayAsync(ct);
-
-        return assetResponse;
+        return await response.Content.ReadAsByteArrayAsync(ct);
     }
 
-    public async Task<IEnumerable<JobStatus>> GetJobStatus(IEnumerable<string> jobs, CancellationToken ct)
+    public async Task<JobStatusResponse> GetJobStatus(IEnumerable<string> jobs, CancellationToken ct)
     {
         using var content = new StringContent(JsonSerializer.Serialize(new { jobs }), Encoding.UTF8, MediaTypeNames.Application.Json);
         var uri = new Uri($"{this.baseUri}/status");
         var response = await httpClient.PostAsync(uri, content, ct);
         response.EnsureSuccessStatusCode();
 
-        var jobStatusResponse = await JsonSerializer.DeserializeAsync<IEnumerable<JobStatus>>(await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
-
-        return jobStatusResponse!;
+        try
+        {
+            var jobStatusResponse = await JsonSerializer.DeserializeAsync<JobStatusResponse>(await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
+            return jobStatusResponse!;
+        }
+        catch (JsonException e)
+        {
+            var responseAsString = await response.Content.ReadAsStringAsync(ct);
+            throw new InvalidOperationException($"Error parsing BCMailPlus response: {responseAsString}", e);
+        }
     }
 }

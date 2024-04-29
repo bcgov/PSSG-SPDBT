@@ -254,6 +254,7 @@ namespace Spd.Utilities.Dynamics
             return LicenceCategoryDictionary.FirstOrDefault(s => s.Value == licenceCategoryId).Key;
         }
         #endregion
+
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)
         {
             try
