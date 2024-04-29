@@ -90,12 +90,12 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'PE-CRC + Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'PSSO', code: ServiceTypeCode.Psso },
 	{ desc: 'PSSO + Vulnerable Sector', code: ServiceTypeCode.PssoVs },
-	{ desc: 'SecurityWorkerLicence', code: ServiceTypeCode.SecurityWorkerLicence },
-	{ desc: 'SecurityBusinessLicence', code: ServiceTypeCode.SecurityBusinessLicence },
-	{ desc: 'ArmouredVehiclePermit', code: ServiceTypeCode.ArmouredVehiclePermit },
-	{ desc: 'BodyArmourPermit', code: ServiceTypeCode.BodyArmourPermit },
+	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
+	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
+	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
+	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
 	{
-		desc: 'SecurityBusinessLicenceControllingMemberCrc',
+		desc: 'Security Business Licence Controlling Member CRC',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
 ];
