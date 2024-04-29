@@ -37,7 +37,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     }
 
     /// <summary>
-    /// put jobId, this endpoint will return the job status.
+    /// input jobId, this endpoint will return the job status.
     /// </summary>
     /// <param name="jobId"></param>
     /// <param name="ct"></param>
@@ -53,7 +53,3 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
         return new PrintJobStatusResponse(jobId, PrintJobStatus.Success, null);
     }
 }
-
-
-
-

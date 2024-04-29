@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
-using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies
 {
     public class Mappings : Profile
     {
-        public IOptionSetRepository _optionSetRepository { get; }
-
         public Mappings()
         {
             CreateMap<ApplicationResult, FingerprintLetter>()

@@ -11,7 +11,7 @@ namespace Spd.Manager.Printing
         {
             configurationServices.Services.AddTransient<IPrintingManager, PrintingManager>();
             configurationServices.Services.AddScoped<IDocumentTransformationEngine, DocumentTransformationEngine>();
-            configurationServices.Services.AddScoped<IDocumentTransformStrategy, FingerPrintLetterTransformStrategy>();
+            configurationServices.Services.AddScoped<IDocumentTransformStrategy, FingerprintLetterTransformStrategy>();
         }
     }
 }

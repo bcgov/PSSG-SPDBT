@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
-internal class FingerPrintLetterTransformStrategy(IApplicationRepository applicationRepository,
+internal class FingerprintLetterTransformStrategy(IApplicationRepository applicationRepository,
     IContactRepository contactRepository,
     IOrgRepository orgRepository,
     IOptionSetRepository optionsetRepository,
@@ -25,8 +25,6 @@ internal class FingerPrintLetterTransformStrategy(IApplicationRepository applica
         if (app == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the application");
 
         ContactResp applicant = await contactRepository.GetAsync((Guid)app.ApplicantId, cancellationToken);
-        if (applicant == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the applicant");
-
         OrgQryResult org = (OrgQryResult)await orgRepository.QueryOrgAsync(new OrgByIdentifierQry(app.OrgId), cancellationToken);
 
         FingerprintLetter letter = mapper.Map<FingerprintLetter>(app);
