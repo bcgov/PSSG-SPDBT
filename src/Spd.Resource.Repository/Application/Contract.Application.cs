@@ -154,6 +154,7 @@ public record ApplicationResult
     public ScreenTypeEnum? ScreeningType { get; set; }
     public DateTimeOffset? PaidOn { get; set; }
     public int? NumberOfAttempts { get; set; }
+    public Guid? ApplicantId { get; set; }
 }
 
 public class ApplicationListResp

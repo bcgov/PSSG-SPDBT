@@ -6,30 +6,23 @@ using Spd.Utilities.Address;
 using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Common.Admin;
-internal class AdminManager :
-    IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
-    IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
-    IRequestHandler<GetBannerMsgQuery, string>,
-    IRequestHandler<GetReplacementProcessingTimeQuery, string>,
-    IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
-    IAdminManager
-{
-    private readonly IAddressAutocompleteClient _addressClient;
-    private readonly IConfigRepository _configRepo;
-    private readonly IOrgRepository _orgRepo;
-    private readonly IMapper _mapper;
-    public AdminManager(IAddressAutocompleteClient addressClient, IMapper mapper, IConfigRepository configRepo, IOrgRepository orgRepo)
-    {
-        _addressClient = addressClient;
-        _mapper = mapper;
-        _configRepo = configRepo;
-        _orgRepo = orgRepo;
-    }
 
+internal class AdminManager(
+        IAddressAutocompleteClient _addressClient,
+        IMapper _mapper,
+        IConfigRepository _configRepo,
+        IOrgRepository _orgRepo)
+        : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
+        IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
+        IRequestHandler<GetBannerMsgQuery, string>,
+        IRequestHandler<GetReplacementProcessingTimeQuery, string>,
+        IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
+        IAdminManager
+{
     public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
     {
         IEnumerable<AddressAutocompleteFindResponse> result =
-            (IEnumerable<AddressAutocompleteFindResponse>)await this._addressClient.Query(
+            (IEnumerable<AddressAutocompleteFindResponse>)await _addressClient.Query(
                 new AddressSearchQuery { SearchTerm = query.SearchTerm, Country = query.Country, LastId = query.LastId },
                 cancellationToken);
         return _mapper.Map<IEnumerable<AddressFindResponse>>(result);
@@ -38,7 +31,7 @@ internal class AdminManager :
     public async Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery query, CancellationToken cancellationToken)
     {
         IEnumerable<AddressAutocompleteRetrieveResponse> result =
-            (IEnumerable<AddressAutocompleteRetrieveResponse>)await this._addressClient.Query(new AddressRetrieveQuery { Id = query.Id }, cancellationToken);
+            (IEnumerable<AddressAutocompleteRetrieveResponse>)await _addressClient.Query(new AddressRetrieveQuery { Id = query.Id }, cancellationToken);
         return _mapper.Map<IEnumerable<AddressRetrieveResponse>>(result);
     }
 
