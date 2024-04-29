@@ -18,7 +18,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class SecurityWorkerLicensingController : SpdApplicantLicenceControllerBase
+    public class SecurityWorkerLicensingController : SpdLicenceControllerBase
     {
         private readonly ILogger<SecurityWorkerLicensingController> _logger;
         private readonly IPrincipal _currentUser;
