@@ -165,7 +165,6 @@ namespace Spd.Utilities.Dynamics
         Incomplete = 100000007,
         CompletedCleared = 100000008,
         RiskFound = 100000009,
-        ClosedJudicialReview = 100000010,
         ClosedNoResponse = 100000011,
         ClosedNoConsent = 100000012,
         CancelledByApplicant = 100000014,
