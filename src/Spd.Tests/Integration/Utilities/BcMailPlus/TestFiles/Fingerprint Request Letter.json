@@ -1,0 +1,27 @@
+{
+    "date": "2024-01-12",
+    "caseNumber": "CRE-C8D1W10924",
+    "serviceType": "Employee",
+    "worksWithCategory": "Children and Vulnerable Adults",
+    "applicant": {
+        "name": "Brown, Danny",
+        "sex": "Male",
+        "dateoOfBirth": "1979-07-11",
+        "placeOfBirth": "Canada",
+        "mailingAddress1": "4211 Kingsway",
+        "mailingAddress2": null,
+        "city": "Burnaby",
+        "provinceState": "BC",
+        "postalCode": "V5H 1Z6",
+        "country": null
+    },
+    "organization": {
+        "name": "Victoria Charity",
+        "mailingAddress1": "200-703 Broughton St",
+        "mailingAddress2": null,
+        "city": "Victoria",
+        "provinceState": "BC",
+        "postalCode": "V8W 1E2",
+        "country": null
+    }
+}

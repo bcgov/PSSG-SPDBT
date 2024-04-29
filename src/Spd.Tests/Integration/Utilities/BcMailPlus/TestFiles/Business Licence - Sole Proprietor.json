@@ -1,0 +1,25 @@
+{
+    "licenceNumber": "B2539",
+    "licenceType": "Security Business Licence",
+    "photo": null,
+    "licenceCategories": [ "Private Investigator" ],
+    "applicantName": "Mahar, Wayne James",
+    "doingBusinessAsName": "Q.T. Investigations",
+    "issuedDate": "2022-11-13",
+    "expiryDate": "2025-11-12",
+    "mailingAddress1": "6313 Corfu Drive",
+    "mailingAddress2": null,
+    "city": "Nanaimo",
+    "provinceState": "BC",
+    "postalCode": "V9V 1N5",
+    "country": null,
+    "branchOffices": [],
+    "conditions": [],
+    "SPD_CARD": {
+        "eyes": null,
+        "hair": null,
+        "height": null,
+        "weight": null,
+        "temporaryLicence": false
+    }
+}

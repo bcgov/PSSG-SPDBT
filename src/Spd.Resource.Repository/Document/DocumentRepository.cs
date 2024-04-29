@@ -26,6 +26,15 @@ internal class DocumentRepository : IDocumentRepository
         _tempFileService = tempFileService;
         _transientFileStorageService = transientFileStorageService;
     }
+
+    public async Task<DocumentResp> GetAsync(Guid docUrlId, CancellationToken ct)
+    {
+        var document = await _context.bcgov_documenturls
+            .Where(d => d.bcgov_documenturlid == docUrlId)
+            .FirstOrDefaultAsync(ct);
+        return _mapper.Map<DocumentResp>(document);
+    }
+
     public async Task<DocumentListResp> QueryAsync(DocumentQry qry, CancellationToken ct)
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
@@ -141,7 +150,7 @@ internal class DocumentRepository : IDocumentRepository
         bcgov_documenturl sourceDoc = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == cmd.SourceDocumentUrlId).FirstOrDefault();
         if (sourceDoc == null)
             throw new ArgumentException("cannot find the source documenturl for copying");
-        bcgov_documenturl destDoc = new bcgov_documenturl();
+        bcgov_documenturl destDoc = new();
         destDoc.bcgov_documenturlid = Guid.NewGuid();
         destDoc.bcgov_url = $"spd_application/{cmd.DestApplicationId}";
         destDoc.bcgov_filename = sourceDoc.bcgov_filename;
@@ -247,18 +256,18 @@ internal class DocumentRepository : IDocumentRepository
                 FileName = tempFile.FileName,
             };
             FileTag fileTag = tag == null ?
-                new FileTag() { Tags = new List<Tag> { new Tag("file-classification", "Unclassified") } } :
+                new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
                 new FileTag()
                 {
                     Tags = new List<Tag>
                     {
-                    new Tag("file-classification", "Unclassified"),
-                    new Tag("file-tag", tag.bcgov_name)
+                    new("file-classification", "Unclassified"),
+                    new("file-tag", tag.bcgov_name)
                     }
                 };
 
             string folder = applicationId == null ? $"contact/{contactId}" : $"spd_application/{applicationId}";
-            UploadFileCommand uploadFileCmd = new UploadFileCommand(
+            UploadFileCommand uploadFileCmd = new(
                         Key: ((Guid)docUrlId).ToString(),
                         Folder: folder,
                         File: file,
@@ -281,17 +290,17 @@ internal class DocumentRepository : IDocumentRepository
                 FileName = tempFile.FileName,
             };
             FileTag fileTag = tag == null ?
-                new FileTag() { Tags = new List<Tag> { new Tag("file-classification", "Unclassified") } } :
+                new FileTag() { Tags = new List<Tag> { new("file-classification", "Unclassified") } } :
                 new FileTag()
                 {
                     Tags = new List<Tag>
                     {
-                    new Tag("file-classification", "Unclassified"),
-                    new Tag("file-tag", tag.bcgov_name)
+                    new("file-classification", "Unclassified"),
+                    new("file-tag", tag.bcgov_name)
                     }
                 };
 
-            UploadFileStreamCommand uploadFileCmd = new UploadFileStreamCommand(
+            UploadFileStreamCommand uploadFileCmd = new(
                 Key: ((Guid)docUrlId).ToString(),
                 Folder: $"spd_application/{applicationId}",
                 FileStream: fileStream,
@@ -310,7 +319,7 @@ internal class DocumentRepository : IDocumentRepository
     private async Task DeleteFileAsync(Guid docUrlId, Guid applicationId, CancellationToken ct)
     {
         await _transientFileStorageService.HandleDeleteCommand(new StorageDeleteCommand(
-            Key: ((Guid)docUrlId).ToString(),
+            Key: docUrlId.ToString(),
             Folder: $"spd_application/{applicationId}"), ct);
     }
 
