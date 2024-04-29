@@ -332,3 +332,10 @@ mat-label {
 .mat-mdc-form-field-hint {
 	line-height: initial;
 }
+
+// MAT TOOLTIP
+.mat-mdc-tooltip .mdc-tooltip__surface {
+	font-size: 1em !important;
+	line-height: 1.25 !important;
+	padding: 10px;
+}
