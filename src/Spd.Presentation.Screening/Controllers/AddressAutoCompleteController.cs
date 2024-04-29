@@ -11,7 +11,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly ILogger<AddressAutoCompleteController> _logger;
         private readonly IMediator _mediator;
 
-        public AddressAutoCompleteController(ILogger<AddressAutoCompleteController> logger, IMediator mediator)
+        public AddressAutoCompleteController(ILogger<AddressAutoCompleteController> logger, IMediator mediator, IConfiguration configuration) : base(configuration)
         {
             _logger = logger;
             _mediator = mediator;

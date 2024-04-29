@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Screening;
 using Spd.Manager.Shared;
-using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -28,7 +27,7 @@ namespace Spd.Presentation.Screening.Controllers
         public ApplicantController(IMediator mediator,
             IPrincipal currentUser,
             IRecaptchaVerificationService verificationService,
-            IConfiguration configuration)
+            IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
             _currentUser = currentUser;

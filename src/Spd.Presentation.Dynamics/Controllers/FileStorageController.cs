@@ -19,7 +19,7 @@ public class FileStorageController : SpdControllerBase
 {
     private readonly IMainFileStorageService _storageService;
     private readonly ITransientFileStorageService _tranientFileStorageService;
-    public FileStorageController(IMainFileStorageService storageService, ITransientFileStorageService tranientFileStorageService) : base()
+    public FileStorageController(IMainFileStorageService storageService, ITransientFileStorageService tranientFileStorageService, IConfiguration configuration) : base(configuration)
     {
         _storageService = storageService;
         _tranientFileStorageService = tranientFileStorageService;

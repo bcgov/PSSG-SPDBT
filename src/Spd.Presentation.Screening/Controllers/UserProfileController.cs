@@ -24,7 +24,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="currentUser"></param>
-        public UserProfileController(IMediator mediator, IPrincipal currentUser, IMapper mapper)
+        public UserProfileController(IMediator mediator, IPrincipal currentUser, IMapper mapper, IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
             _mapper = mapper;

@@ -23,7 +23,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IConfiguration _configuration;
         private readonly IPrincipal _currentUser;
 
-        public OrgUserController(ILogger<OrgUserController> logger, IMediator mediator, IConfiguration configuration, IPrincipal currentUser)
+        public OrgUserController(ILogger<OrgUserController> logger, IMediator mediator, IConfiguration configuration, IPrincipal currentUser) : base(configuration)
         {
             _logger = logger;
             _mediator = mediator;

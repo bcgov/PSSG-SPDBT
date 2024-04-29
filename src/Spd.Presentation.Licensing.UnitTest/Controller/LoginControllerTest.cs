@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
@@ -12,6 +13,7 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller
     {
         private readonly IFixture fixture;
         private Mock<IMediator> mockMediator = new();
+        private Mock<IConfiguration> mockConfiguration = new();
         private LoginController sut;
         private Guid bizGuid = Guid.NewGuid();
         private Guid bizUserGuid = Guid.NewGuid();
@@ -29,7 +31,8 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller
                 ], "mock"));
             sut = new LoginController(null,
                 user,
-                mockMediator.Object);
+                mockMediator.Object,
+                mockConfiguration.Object);
         }
 
         [Fact]

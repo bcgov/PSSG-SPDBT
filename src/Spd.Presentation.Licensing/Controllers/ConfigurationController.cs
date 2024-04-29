@@ -23,7 +23,7 @@ namespace Spd.Presentation.Licensing.Controllers
             IOptions<GoogleReCaptchaConfiguration> captchaOption,
             IOptions<BcscAuthenticationConfiguration> bcscConfiguration,
             IConfiguration configuration,
-            IMediator mediator)
+            IMediator mediator) : base(configuration)
         {
             _bceidOption = bceidConfiguration;
             _captchaOption = captchaOption;

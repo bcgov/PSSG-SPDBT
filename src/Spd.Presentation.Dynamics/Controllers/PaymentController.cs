@@ -16,7 +16,7 @@ public class PaymentController : SpdControllerBase
     private readonly IMediator _mediator;
     private readonly IConfiguration _configuration;
 
-    public PaymentController(IMediator mediator, IConfiguration configuration) : base()
+    public PaymentController(IMediator mediator, IConfiguration configuration) : base(configuration)
     {
         _mediator = mediator;
         _configuration = configuration;

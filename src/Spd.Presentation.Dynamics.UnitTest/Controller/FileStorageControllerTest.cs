@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Spd.Presentation.Dynamics.Controllers;
 using Spd.Presentation.Dynamics.Models;
@@ -11,6 +12,7 @@ public class FileStorageControllerTest
 {
     private Mock<IMainFileStorageService> mockService = new Mock<IMainFileStorageService>();
     private Mock<ITransientFileStorageService> mockTransientService = new Mock<ITransientFileStorageService>();
+    private Mock<IConfiguration> mockConfiguration = new();
     private FileStorageController sut;
     public FileStorageControllerTest()
     {
@@ -19,7 +21,7 @@ public class FileStorageControllerTest
         mockService.Setup(s => s.HandleCommand(It.IsAny<UploadFileCommand>(),
             CancellationToken.None))
             .ReturnsAsync("key");
-        sut = new FileStorageController(mockService.Object, mockTransientService.Object);
+        sut = new FileStorageController(mockService.Object, mockTransientService.Object, mockConfiguration.Object);
     }
 
     [Fact]

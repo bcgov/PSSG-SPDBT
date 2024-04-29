@@ -9,7 +9,7 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
 
-        public MinistryController(IMediator mediator)
+        public MinistryController(IMediator mediator, IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
         }

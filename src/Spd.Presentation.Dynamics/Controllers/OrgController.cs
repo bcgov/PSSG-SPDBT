@@ -16,7 +16,7 @@ public class OrgController : SpdControllerBase
     private readonly IMediator _mediator;
     private readonly IConfiguration _configuration;
 
-    public OrgController(IMediator mediator, IConfiguration configuration) : base()
+    public OrgController(IMediator mediator, IConfiguration configuration) : base(configuration)
     {
         _mediator = mediator;
         _configuration = configuration;

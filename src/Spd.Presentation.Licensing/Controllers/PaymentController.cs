@@ -31,8 +31,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public PaymentController(IMediator mediator,
             IMapper mapper,
             IConfiguration configuration,
-            ILogger<PaymentController> logger
-            )
+            ILogger<PaymentController> logger) : base(configuration)
         {
             _mediator = mediator;
             _mapper = mapper;

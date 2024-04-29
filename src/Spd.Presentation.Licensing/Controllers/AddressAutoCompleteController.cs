@@ -10,7 +10,8 @@ public class AddressAutoCompleteController : SpdControllerBase
 {
     private readonly IMediator _mediator;
 
-    public AddressAutoCompleteController(IMediator mediator)
+    public AddressAutoCompleteController(IMediator mediator, IConfiguration configuration) : base(configuration)
+
     {
         _mediator = mediator;
     }

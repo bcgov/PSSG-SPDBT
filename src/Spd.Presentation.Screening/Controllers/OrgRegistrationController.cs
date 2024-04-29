@@ -20,7 +20,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IRecaptchaVerificationService _verificationService;
         private readonly IConfiguration _configuration;
 
-        public OrgRegistrationController(IMediator mediator, IRecaptchaVerificationService verificationService, IConfiguration configuration)
+        public OrgRegistrationController(IMediator mediator, IRecaptchaVerificationService verificationService, IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
             _verificationService = verificationService;

@@ -32,7 +32,7 @@ namespace Spd.Presentation.Screening.Controllers
             IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator,
             IConfiguration configuration,
             IPrincipal currentUser,
-            ILogger<ApplicationController> logger)
+            ILogger<ApplicationController> logger) : base(configuration)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;

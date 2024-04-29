@@ -23,7 +23,7 @@ namespace Spd.Presentation.Screening.Controllers
             IOptions<IdirAuthenticationConfiguration> idirConfiguration,
             IOptions<GoogleReCaptchaConfiguration> captchaOption,
             IMediator mediator,
-            IConfiguration configuration)
+            IConfiguration configuration) : base(configuration)
         {
             _bceidOption = bceidConfiguration;
             _captchaOption = captchaOption;

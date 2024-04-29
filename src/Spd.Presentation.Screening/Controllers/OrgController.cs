@@ -16,7 +16,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public OrgController(IMediator mediator, IMapper mapper)
+        public OrgController(IMediator mediator, IMapper mapper, IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
             _mapper = mapper;

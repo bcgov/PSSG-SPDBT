@@ -31,7 +31,7 @@ namespace Spd.Presentation.Screening.Controllers
             IMapper mapper,
             IConfiguration configuration,
             ILogger<PaymentController> logger
-            )
+            ) : base(configuration)
         {
             _mediator = mediator;
             _mapper = mapper;

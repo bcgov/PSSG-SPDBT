@@ -6,6 +6,7 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Net;
 using File = Spd.Utilities.FileStorage.File;
 
@@ -18,7 +19,7 @@ namespace Spd.Presentation.Dynamics.Controllers;
 public class TransientFileStorageController : SpdControllerBase
 {
     private readonly ITransientFileStorageService _storageService;
-    public TransientFileStorageController(ITransientFileStorageService storageService) : base()
+    public TransientFileStorageController(ITransientFileStorageService storageService, IConfiguration configuration) : base(configuration)
     {
         _storageService = storageService;
     }

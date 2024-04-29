@@ -11,7 +11,8 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IMediator _mediator;
 
         public LicenceFeeController(
-            IMediator mediator)
+            IMediator mediator,
+            IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
         }

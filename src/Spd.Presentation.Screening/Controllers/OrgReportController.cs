@@ -23,7 +23,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="currentUser"></param>
-        public OrgReportController(IMediator mediator, IPrincipal currentUser, IMapper mapper)
+        public OrgReportController(IMediator mediator, IPrincipal currentUser, IMapper mapper, IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
             _mapper = mapper;

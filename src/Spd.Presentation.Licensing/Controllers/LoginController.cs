@@ -15,7 +15,10 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
 
-        public LoginController(ILogger<LoginController> logger, IPrincipal currentUser, IMediator mediator)
+        public LoginController(ILogger<LoginController> logger, 
+            IPrincipal currentUser, 
+            IMediator mediator,
+            IConfiguration configuration) : base(configuration)
         {
             _logger = logger;
             _currentUser = currentUser;

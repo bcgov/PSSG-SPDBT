@@ -20,7 +20,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMapper _mapper;
         private readonly IPrincipal _currentUser;
 
-        public DelegateController(IMediator mediator, IMapper mapper, IPrincipal currentUser)
+        public DelegateController(IMediator mediator, IMapper mapper, IPrincipal currentUser, IConfiguration configuration) : base(configuration)
         {
             _mediator = mediator;
             _mapper = mapper;
