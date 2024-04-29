@@ -12,7 +12,7 @@ using System.Security.Principal;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class BizLicensingController : SpdApplicantLicenceControllerBase
+    public class BizLicensingController : SpdLicenceControllerBase
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
