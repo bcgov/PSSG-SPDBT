@@ -380,7 +380,6 @@ export class PaymentsComponent implements OnInit {
 			ApplicationPortalStatusCode.AwaitingThirdParty,
 			ApplicationPortalStatusCode.CancelledByApplicant,
 			ApplicationPortalStatusCode.CancelledByOrganization,
-			ApplicationPortalStatusCode.ClosedJudicialReview,
 			ApplicationPortalStatusCode.ClosedNoConsent,
 			ApplicationPortalStatusCode.ClosedNoResponse,
 			ApplicationPortalStatusCode.CompletedCleared,
