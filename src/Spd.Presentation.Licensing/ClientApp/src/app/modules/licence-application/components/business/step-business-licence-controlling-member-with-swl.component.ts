@@ -10,13 +10,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
-	selector: 'app-step-business-licence-controlling-member-with-swl',
+	selector: 'app-step-business-licence-controlling-member-with-swl', // TODO delete this component?
 	template: `
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Add all controlling members of this business"
-					info="<a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/rules'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence."
+					info="<a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/rules' target='_blank'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence."
 				>
 				</app-step-title>
 
@@ -145,7 +145,7 @@ export class StepBusinessLicenceControllingMemberWithSwlComponent implements OnI
 
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.businessApplicationService.membersWithSwlFormGroup;
+	form: FormGroup = new FormGroup({}); // this.businessApplicationService.membersWithSwlFormGroup;
 
 	memberList: Array<any> = [];
 

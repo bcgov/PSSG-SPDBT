@@ -63,7 +63,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									(selectionChange)="onChangeGender($event)"
 									[errorStateMatcher]="matcher"
 								>
-									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+									<mat-option *ngFor="let gdr of genderTypes; let i = index" [value]="gdr.code">
 										{{ gdr.desc }}
 									</mat-option>
 								</mat-select>
