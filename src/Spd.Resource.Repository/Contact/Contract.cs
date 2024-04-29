@@ -41,6 +41,7 @@ namespace Spd.Resource.Repository.Contact
         public DateTime? LastestScreeningLogin { get; set; }
         public DateTimeOffset? LicensingTermAgreedDateTime { get; set; }
         public IEnumerable<LicenceInfo> LicenceInfos { get; set; } = [];
+        public bool IsActive { get; set; } = true;
     }
     public record LicenceInfo
     {
