@@ -35,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="bizUpsertRequest"></param>
         /// <returns></returns>
         [Route("api/business-licence")]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
         public async Task<Unit> SaveBusinessLicenceApplication([FromBody][Required] BizLicenceAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
@@ -52,13 +52,12 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence/{licenceAppId}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBceid")]
         public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
         {
             VerifyFiles(fileUploadRequest.Documents);
-            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
-            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, null, licenceAppId), ct);
         }
     }
 }
