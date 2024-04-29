@@ -24,7 +24,6 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        // private readonly IValidator<WorkerLicenceAppSubmitRequest> _wslSubmitValidator;
         private readonly IValidator<WorkerLicenceAppUpsertRequest> _wslUpsertValidator;
         private readonly IValidator<WorkerLicenceAppSubmitRequest> _anonymousLicenceAppSubmitRequestValidator;
 
@@ -42,7 +41,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _currentUser = currentUser;
             _mediator = mediator;
             _configuration = configuration;
-            //_wslSubmitValidator = wslSubmitValidator;
             _wslUpsertValidator = wslUpsertValidator;
             _anonymousLicenceAppSubmitRequestValidator = anonymousLicenceAppSubmitRequestValidator;
         }
