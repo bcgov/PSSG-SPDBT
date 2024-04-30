@@ -67,11 +67,11 @@ public class PermitAppManagerTest
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
         mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.Is<PermitAppUpsertRequest>(r => r.ApplicantId == applicantId)))
             .Returns(new SaveLicenceApplicationCmd());
-        mockMapper.Setup(m => m.Map<PermitCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
-            .Returns(new PermitCommandResponse() { LicenceAppId = licAppId });
+        mockMapper.Setup(m => m.Map<PermitAppCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
+            .Returns(new PermitAppCommandResponse() { LicenceAppId = licAppId });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
-        
+
         var workPermit = fixture.Build<Document>()
             .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.WorkPermit)
             .Create();
@@ -88,7 +88,7 @@ public class PermitAppManagerTest
         var viewResult = await sut.Handle(new PermitUpsertCommand(request), CancellationToken.None);
 
         //Assert
-        Assert.IsType<PermitCommandResponse>(viewResult);
+        Assert.IsType<PermitAppCommandResponse>(viewResult);
         Assert.Equal(licAppId, viewResult.LicenceAppId);
     }
 
@@ -288,8 +288,8 @@ public class PermitAppManagerTest
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
         mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.Is<PermitAppUpsertRequest>(r => r.ApplicantId == applicantId)))
             .Returns(new SaveLicenceApplicationCmd());
-        mockMapper.Setup(m => m.Map<PermitCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
-            .Returns(new PermitCommandResponse() { LicenceAppId = licAppId });
+        mockMapper.Setup(m => m.Map<PermitAppCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
+            .Returns(new PermitAppCommandResponse() { LicenceAppId = licAppId });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
         PermitAppUpsertRequest request = new()
@@ -303,7 +303,7 @@ public class PermitAppManagerTest
         var viewResult = await sut.Handle(new PermitSubmitCommand(request), CancellationToken.None);
 
         //Assert
-        Assert.IsType<PermitCommandResponse>(viewResult);
+        Assert.IsType<PermitAppCommandResponse>(viewResult);
         Assert.Equal(licAppId, viewResult.LicenceAppId);
     }
 
@@ -325,7 +325,7 @@ public class PermitAppManagerTest
         Guid contactId = Guid.NewGuid();
         Guid originalApplicationId = Guid.NewGuid();
         mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = originalApplicationId});
+            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = originalApplicationId });
         mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
             .Returns(new CreateDocumentCmd());
         mockLicAppRepo.Setup(a => a.CreateLicenceApplicationAsync(It.IsAny<CreateLicenceApplicationCmd>(), CancellationToken.None))
