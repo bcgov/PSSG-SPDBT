@@ -130,6 +130,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_permitpurpose, opt => opt.MapFrom(s => GetPermitPurposeOptionSets(s.PermitPurposeEnums)))
          .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
          .ForMember(d => d.spd_criminalchargesconvictionsdetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
+         .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .ReverseMap()
          .ForMember(d => d.ContactEmailAddress, opt => opt.Ignore())
          .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
