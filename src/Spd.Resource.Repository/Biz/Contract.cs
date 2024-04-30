@@ -32,6 +32,7 @@
         public string? BizName { get; set; }
         public string? BizLegalName { get; set; }
         public Guid? BizGuid { get; set; }
+        public BizTypeEnum BizType { get; set; }
     }
     public record BizResult : Biz
     {
