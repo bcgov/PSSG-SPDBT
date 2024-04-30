@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 
 namespace Spd.Manager.Licence;
 public interface IPermitAppManager
@@ -8,6 +8,8 @@ public interface IPermitAppManager
     public Task<PermitAppCommandResponse> Handle(PermitAppRenewCommand command, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(PermitAppUpdateCommand command, CancellationToken ct);
     public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
+    public Task<PermitAppCommandResponse> Handle(PermitUpsertCommand command, CancellationToken ct);
+    public Task<PermitAppCommandResponse> Handle(PermitSubmitCommand command, CancellationToken ct);
 }
 
 public record PermitLicenceAppBase : PersonalLicenceAppBase
@@ -25,9 +27,9 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
 }
 
 #region authenticated user
-public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitCommandResponse>;
+public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitAppCommandResponse>;
 public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest)
-    : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitCommandResponse>;
+    : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitAppCommandResponse>;
 
 public record PermitAppUpsertRequest : PermitLicenceAppBase
 {
@@ -36,10 +38,6 @@ public record PermitAppUpsertRequest : PermitLicenceAppBase
     public Guid ApplicantId { get; set; }
 };
 
-public record PermitCommandResponse : LicenceAppUpsertResponse
-{
-    public decimal? Cost { get; set; }
-};
 #endregion
 
 #region anonymous user
