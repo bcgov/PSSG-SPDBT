@@ -372,6 +372,19 @@ internal class Mappings : Profile
         return permitPurposes;
     }
 
+    private static List<ServiceTypeCode> GetServiceTypeCodes(IEnumerable<ServiceTypeEnum> serviceTypes)
+    {
+        List<ServiceTypeCode> serviceTypeCodes = new();
+
+        foreach (ServiceTypeEnum serviceType in serviceTypes)
+        {
+            var serviceTypeCode = Enum.Parse<ServiceTypeCode>(serviceType.ToString());
+            serviceTypeCodes.Add(serviceTypeCode);
+        }
+
+        return serviceTypeCodes;
+    }
+
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {
         {LicenceDocumentTypeCode.BcServicesCard, DocumentTypeEnum.BCServicesCard},
