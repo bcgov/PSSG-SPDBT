@@ -86,6 +86,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         }
 
         app.spd_submittedon = DateTimeOffset.Now;
+        app.spd_portalmodifiedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
